@@ -72,6 +72,12 @@ Token names contain `:` which is invalid in filenames on many operating systems.
 | `[IMPL-CONFIG_LOADER]` | Configuration Loader Module | Active | [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI] | [Detail](implementation-decisions/IMPL-CONFIG_LOADER.md) |
 | `[IMPL-THEME_INJECTION]` | Theme CSS Variable Injection | Active | [ARCH-THEME_INJECTION] [REQ-CONFIG_DRIVEN_UI] | [Detail](implementation-decisions/IMPL-THEME_INJECTION.md) |
 | `[IMPL-CLASS_OVERRIDES]` | Tailwind Class Override Implementation | Active | [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI] | [Detail](implementation-decisions/IMPL-CLASS_OVERRIDES.md) |
+| `[IMPL-CONFIG_DRIVEN_APPEARANCE]` | Config-Driven Appearance for All Pages | Active | [ARCH-CONFIG_DRIVEN_APPEARANCE] [REQ-CONFIG_DRIVEN_APPEARANCE] | [Detail](implementation-decisions/IMPL-CONFIG_DRIVEN_APPEARANCE.md) |
+| `[IMPL-JOBS_DATA]` | Jobs Data Layer Implementation | Active | [ARCH-JOB_TRACKER_STORAGE] [REQ-JOB_TRACKER_DATA] | [Detail](implementation-decisions/IMPL-JOBS_DATA.md) |
+| `[IMPL-JOBS_ACTIONS]` | Jobs Server Actions Implementation | Active | [ARCH-JOB_TRACKER_UI] [REQ-JOB_TRACKER_CRUD] | [Detail](implementation-decisions/IMPL-JOBS_ACTIONS.md) |
+| `[IMPL-JOBS_LIST_PAGE]` | Jobs List Page Implementation | Active | [ARCH-JOB_TRACKER_UI] [REQ-JOB_TRACKER_LIST] | [Detail](implementation-decisions/IMPL-JOBS_LIST_PAGE.md) |
+| `[IMPL-JOBS_EDIT_PAGE]` | Jobs Edit Page Implementation | Active | [ARCH-JOB_TRACKER_UI] [REQ-JOB_TRACKER_EDIT] | [Detail](implementation-decisions/IMPL-JOBS_EDIT_PAGE.md) |
+| `[IMPL-JOBS_API]` | Jobs API Implementation | Active | [ARCH-JOB_TRACKER_API] [REQ-JOB_TRACKER_CRUD] | [Detail](implementation-decisions/IMPL-JOBS_API.md) |
 
 ### Status Values
 

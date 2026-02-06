@@ -55,10 +55,12 @@ export default defineConfig({
       // [IMPL-TEST_CONFIG] Collect coverage from all files (even untested)
       all: true,
       // [IMPL-TEST_CONFIG] [REQ-BUILD_SYSTEM] 80% minimum coverage thresholds
-      lines: 80,
-      functions: 80,
-      branches: 80,
-      statements: 80,
+      thresholds: {
+        lines: 80,
+        functions: 80,
+        branches: 80,
+        statements: 80,
+      },
     },
   },
   // [IMPL-TEST_CONFIG] Path aliases matching tsconfig.json for consistent imports

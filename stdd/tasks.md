@@ -133,6 +133,57 @@ This document tracks all tasks and subtasks for implementing this project. Tasks
 
 **Priority Rationale**: P0 because configuration-driven UI is the core differentiator that makes this project a usable template. Without it, every customization requires code changes.
 
+## P1: Job Search Tracker [REQ-JOB_SEARCH_TRACKER] [ARCH-CONFIG_DRIVEN_CRUD] [IMPL-JOB_SEARCH_TRACKER]
+
+**Status**: ✅ Complete
+
+**Description**: Implement a config-driven job search activity tracker with YAML data storage, dynamic form/table UI, and RESTful API routes. Extends the existing config-driven architecture to CRUD features.
+
+**Dependencies**: [REQ-CONFIG_DRIVEN_UI], [REQ-APP_STRUCTURE]
+
+**Completion Criteria**:
+- [x] YAML config file (`config/jobs.yaml`) defines 7 fields, 5 status options, and table settings
+- [x] YAML data file (`data/jobs.yaml`) persists records
+- [x] TypeScript interfaces define config and data schemas (`src/lib/jobs.types.ts`)
+- [x] Data layer module provides config loading + CRUD operations (`src/lib/jobs.ts`)
+- [x] API routes handle GET/POST/PUT/DELETE (`src/app/api/jobs/`)
+- [x] Table page renders config-driven columns (`/jobs`)
+- [x] Form component dynamically renders field types (`JobForm`)
+- [x] Edit and new pages use shared form component
+- [x] Home page navigation updated with link to `/jobs`
+- [x] Full CRUD cycle verified (POST 201, GET 200, PUT 200, DELETE 204)
+- [x] TypeScript compilation passes without errors
+- [x] STDD documentation complete (1 REQ, 2 ARCH decisions, 4 IMPL decisions, registries updated)
+- [x] `[PROC-TOKEN_AUDIT]` verified across all new files
+
+**Priority Rationale**: P1 because this is the first data-backed feature demonstrating the config-driven architecture's extensibility to CRUD applications.
+
+## P0: Config-Driven Appearance for All Pages [REQ-CONFIG_DRIVEN_APPEARANCE] [ARCH-CONFIG_DRIVEN_APPEARANCE] [IMPL-CONFIG_DRIVEN_APPEARANCE]
+
+**Status**: ✅ Complete
+
+**Description**: Ensure appearance and layout of all page elements are dictated by configuration files so the project serves as a highly-configurable template. Extend config-driven UI to jobs routes and components; remove hard-coded layout, copy, and styling from jobs app.
+
+**Dependencies**: [REQ-CONFIG_DRIVEN_UI], [REQ-JOB_TRACKER_LIST], [REQ-JOB_TRACKER_EDIT]
+
+**Subtasks** (completed):
+- [x] Add jobs config loader (`getJobsConfig()`) and types for `config/jobs.yaml` (schema + copy section) [IMPL-CONFIG_DRIVEN_APPEARANCE]
+- [x] Extend `config/theme.yaml` with jobs layout/overrides and status badge class mapping [ARCH-CONFIG_DRIVEN_APPEARANCE]
+- [x] Extend config.types.ts (or theme types) with jobs overrides and jobs copy types [IMPL-CONFIG_DRIVEN_APPEARANCE]
+- [x] Refactor jobs list page to use getJobsConfig() + getThemeConfig() for layout, copy, and classes [IMPL-JOBS_LIST_PAGE]
+- [x] Refactor jobs new and edit pages to use config for layout, headings, and copy [IMPL-JOBS_EDIT_PAGE]
+- [x] Refactor JobsTable to receive copy and status badge class map as props; remove getStatusColorClass [IMPL-JOBS_LIST_PAGE]
+- [x] Refactor PositionForm, ApplicationForm, DeletePositionButton to receive copy and class props from config [IMPL-JOBS_EDIT_PAGE]
+- [x] Add/update tests for config-driven jobs UI and config loader [REQ-CONFIG_DRIVEN_APPEARANCE]
+- [x] Run `[PROC-TOKEN_AUDIT]` and `./scripts/validate_tokens.sh`; log outcomes [PROC-TOKEN_VALIDATION]
+
+**Completion Criteria**:
+- [x] All jobs pages and components consume config for layout, copy, and styling; no hard-coded user-facing strings or layout-only classes in jobs TSX
+- [x] Changing config/jobs.yaml or config/theme.yaml (jobs section) changes jobs UI without code changes
+- [x] Documentation and semantic tokens updated; token audit and validation logged
+
+**Priority Rationale**: P0 because it is required for the project to qualify as a highly-configurable template; without it, the template promise is incomplete.
+
 ## Phase 2: Core Components
 
 ### Task 2.1: Core Feature Implementation

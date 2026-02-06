@@ -164,4 +164,93 @@ export interface ThemeConfig {
   sizing: SizingConfig;
   /** Per-element class overrides (advanced). All keys are optional. */
   overrides: ClassOverrides;
+  /** Jobs app layout and status badge classes (optional). [REQ-CONFIG_DRIVEN_APPEARANCE] */
+  jobs?: JobsThemeConfig;
+}
+
+// ---------------------------------------------------------------------------
+// Jobs configuration (config/jobs.yaml) [REQ-CONFIG_DRIVEN_APPEARANCE]
+// ---------------------------------------------------------------------------
+
+/** Jobs app section in theme (layout overrides + status badge classes). */
+export interface JobsThemeConfig {
+  /** Per-element class overrides for jobs pages/components. */
+  overrides?: JobsThemeOverrides;
+  /** Status value → Tailwind class string for badges (e.g. applied, rejected). */
+  statusBadges?: Record<string, string>;
+}
+
+export interface JobsThemeOverrides {
+  pageContainer?: string;
+  card?: string;
+  table?: string;
+  tableHeader?: string;
+  primaryButton?: string;
+  secondaryButton?: string;
+  dangerButton?: string;
+  /** Default badge when status has no mapping */
+  statusBadgeDefault?: string;
+}
+
+/** Select option for jobs config fields. */
+export interface JobsFieldOption {
+  value: string;
+  label: string;
+}
+
+/** Single field definition in config/jobs.yaml. */
+export interface JobsFieldConfig {
+  name: string;
+  label: string;
+  type: "text" | "date" | "textarea" | "select" | "url-list";
+  required?: boolean;
+  showInTable?: boolean;
+  options?: JobsFieldOption[];
+}
+
+/** Copy strings for jobs UI (all user-facing text from config). */
+export interface JobsCopyConfig {
+  listTitle?: string;
+  listSubtitle?: string;
+  addNewButton?: string;
+  emptyTitle?: string;
+  emptyLink?: string;
+  editLink?: string;
+  editPageTitle?: string;
+  backToList?: string;
+  deleteButton?: string;
+  deleteConfirm?: string;
+  newPageTitle?: string;
+  newPageSubtitle?: string;
+  positionDetails?: string;
+  applications?: string;
+  addApplication?: string;
+  editApplication?: string;
+  saveButton?: string;
+  updateButton?: string;
+  addButton?: string;
+  cancel?: string;
+  remove?: string;
+  addUrl?: string;
+  createPosition?: string;
+  updatePosition?: string;
+  saving?: string;
+}
+
+export interface JobsAppConfig {
+  title: string;
+  description: string;
+}
+
+export interface JobsTableConfig {
+  defaultSort: string;
+  defaultSortDirection: "asc" | "desc";
+}
+
+/** Top-level jobs configuration schema (config/jobs.yaml). */
+export interface JobsConfig {
+  app: JobsAppConfig;
+  fields: JobsFieldConfig[];
+  table: JobsTableConfig;
+  copy?: JobsCopyConfig;
 }

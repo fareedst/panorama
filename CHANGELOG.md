@@ -5,6 +5,100 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-02-06
+
+### Added
+
+#### Job Search Tracker [REQ-JOB_SEARCH_TRACKER]
+- **Config-driven CRUD application** for tracking job search activity -- all field definitions, status options, labels, and table columns are driven by `config/jobs.yaml`
+- **Config-driven appearance** [REQ-CONFIG_DRIVEN_APPEARANCE]: All jobs page layout, copy, and styling come from config (no hard-coded strings or status colors in components). `config/jobs.yaml` includes a `copy` section for list title, buttons, empty state, edit/delete labels, form headings, and button text. `config/theme.yaml` includes a `jobs` section with per-element class overrides (pageContainer, card, table, primaryButton, secondaryButton, dangerButton) and `statusBadges` (status value → Tailwind class string). Config loader exposes `getJobsConfig()`, `getJobsOverride()`, and `getStatusBadgeClass()`; jobs pages and components receive copy and class props from server.
+- **YAML data storage** (`data/positions.yaml`, `data/applications.yaml`) for position and application records with `js-yaml` read/write (no new dependencies)
+- **7 configurable fields**: Position Title (text), Posting Date (date), URLs (url-list), Description (textarea), Application Status (select), Status Date (date), Notes (textarea)
+- **5 application status options**: None, Interested, To Apply, Applied, Rejected -- all configurable in YAML
+- **Table view page** (`/jobs`) -- server component with config-driven column rendering, empty state, edit links, and status badge classes from theme config
+- **Edit page** (`/jobs/[id]/edit`) -- server component wrapper loading record data; copy, section headings, and status badge classes from config
+- **New page** (`/jobs/new`) -- server component wrapper; title, subtitle, and card layout from config
+- **Dynamic form components** (`PositionForm`, `ApplicationForm`) -- client components that accept optional `copy` and `statusOptions` from config; form labels and button text configurable via `config/jobs.yaml` copy section
+- **URL list field** -- dynamic add/remove URL input list sub-component
+- **RESTful API routes**:
+  - `GET /api/jobs` -- list all records (sorted by config default)
+  - `POST /api/jobs` -- create record (returns 201)
+  - `GET /api/jobs/[id]` -- single record
+  - `PUT /api/jobs/[id]` -- update record
+  - `DELETE /api/jobs/[id]` -- delete record (returns 204)
+- **Data layer module** (`src/lib/jobs.ts`) with config loading (cached), data CRUD (uncached), deep merge with defaults, and `crypto.randomUUID()` for record IDs
+- **TypeScript interfaces** (`src/lib/jobs.types.ts`) for `FieldConfig`, `FieldType`, `JobsAppConfig`, `JobRecord`, `JobsDataFile`
+- **Home page navigation** -- "Job Search Tracker" primary button added to `config/site.yaml`
+
+#### STDD Documentation [REQ-JOB_SEARCH_TRACKER] [REQ-CONFIG_DRIVEN_APPEARANCE]
+- New requirement: `[REQ-JOB_SEARCH_TRACKER]` in `stdd/requirements.md`
+- New requirement: `[REQ-CONFIG_DRIVEN_APPEARANCE]` -- all page elements appearance and layout from config (template scope)
+- New architecture decisions:
+  - `[ARCH-YAML_DATA_STORAGE]` -- YAML file-based data persistence
+  - `[ARCH-CONFIG_DRIVEN_CRUD]` -- config-driven CRUD pattern for forms and tables
+  - `[ARCH-CONFIG_DRIVEN_APPEARANCE]` -- config-driven appearance for all pages (jobs copy, theme jobs overrides, status badges)
+- New implementation decisions:
+  - `[IMPL-JOB_SEARCH_TRACKER]` -- overall feature implementation
+  - `[IMPL-JOBS_DATA_LAYER]` -- data layer module
+  - `[IMPL-JOBS_API_ROUTES]` -- API route handlers
+  - `[IMPL-JOBS_UI_PAGES]` -- UI pages and form component
+  - `[IMPL-CONFIG_DRIVEN_APPEARANCE]` -- jobs config loader, theme jobs extension, jobs UI refactor
+- Updated semantic tokens registry with new tokens
+- Updated tasks.md with completed job search tracker and config-driven appearance tasks
+
+### Technical Details
+
+#### New Files
+- `config/jobs.yaml` -- app schema (fields, table), plus `copy` section for all jobs UI strings [REQ-CONFIG_DRIVEN_APPEARANCE]
+- `config/theme.yaml` -- extended with `jobs.overrides` and `jobs.statusBadges` for jobs layout and status badge classes
+- `data/positions.yaml`, `data/applications.yaml` -- record data storage
+- `src/lib/jobs.types.ts` -- TypeScript interfaces
+- `src/lib/jobs.data.ts` -- data CRUD; jobs config loaded via `src/lib/config.ts` (`getJobsConfig()`)
+- `src/app/api/jobs/route.ts` -- collection API endpoints
+- `src/app/api/jobs/[id]/route.ts` -- individual record API endpoints
+- `src/app/jobs/page.tsx` -- table view page (config-driven layout, copy, status badges)
+- `src/app/jobs/new/page.tsx` -- new record page (config-driven copy and layout)
+- `src/app/jobs/[id]/edit/page.tsx` -- edit record page (config-driven copy, headings, status badges)
+- `src/app/jobs/components/PositionForm.tsx` -- position form client component (optional config copy)
+- `src/app/jobs/components/ApplicationForm.tsx` -- application form client component (optional copy and status options from config)
+- `src/app/jobs/components/JobsTable.tsx` -- table with config-driven copy and status badge classes
+- `src/app/jobs/components/DeletePositionButton.tsx` -- delete button with config-driven label and confirm message
+- `stdd/architecture-decisions/ARCH-YAML_DATA_STORAGE.md`
+- `stdd/architecture-decisions/ARCH-CONFIG_DRIVEN_CRUD.md`
+- `stdd/implementation-decisions/IMPL-JOB_SEARCH_TRACKER.md`
+- `stdd/implementation-decisions/IMPL-JOBS_DATA_LAYER.md`
+- `stdd/implementation-decisions/IMPL-JOBS_API_ROUTES.md`
+- `stdd/implementation-decisions/IMPL-JOBS_UI_PAGES.md`
+
+#### Modified Files
+- `config/site.yaml` -- added "Job Search Tracker" navigation button
+- `config/theme.yaml` -- added `jobs` section (overrides, statusBadges) for config-driven appearance
+- `src/lib/config.ts` -- added `getJobsConfig()`, `getJobsOverride()`, `getStatusBadgeClass()`, jobs cache and defaults
+- `src/lib/config.types.ts` -- added `JobsConfig`, `JobsCopyConfig`, `JobsThemeConfig`, `JobsThemeOverrides`, and related types
+- `src/lib/config.test.ts` -- added tests for getJobsConfig, getJobsOverride, getStatusBadgeClass
+
+#### New Semantic Tokens
+- `[REQ-JOB_SEARCH_TRACKER]` -- Job search tracker requirement
+- `[REQ-CONFIG_DRIVEN_APPEARANCE]` -- All page elements appearance and layout from config
+- `[ARCH-YAML_DATA_STORAGE]` -- YAML data storage architecture
+- `[ARCH-CONFIG_DRIVEN_CRUD]` -- Config-driven CRUD architecture
+- `[ARCH-CONFIG_DRIVEN_APPEARANCE]` -- Config-driven appearance for all pages
+- `[IMPL-JOB_SEARCH_TRACKER]` -- Feature implementation
+- `[IMPL-JOBS_DATA_LAYER]` -- Data layer implementation
+- `[IMPL-JOBS_API_ROUTES]` -- API routes implementation
+- `[IMPL-JOBS_UI_PAGES]` -- UI pages implementation
+- `[IMPL-CONFIG_DRIVEN_APPEARANCE]` -- Config-driven appearance implementation (getJobsConfig, theme jobs, refactor)
+
+#### Data Flow
+```
+config/jobs.yaml  --> getJobsConfig() --> pages + components (fields, table, copy)
+config/theme.yaml --> getThemeConfig() --> jobs pages (jobs.overrides, jobs.statusBadges)
+data/positions.yaml, data/applications.yaml --> getPositions(), getApplications() --> list/edit pages
+Server pages resolve copy + statusBadgeClasses from config and pass as props to JobsTable, PositionForm, ApplicationForm, DeletePositionButton
+```
+
+---
+
 ## [0.2.0] - 2026-02-06
 
 ### Added
@@ -315,5 +409,6 @@ This baseline establishes a solid foundation for feature development:
 
 **Note**: This version represents the initial STDD documentation baseline. All existing functionality has been documented with requirements, architecture decisions, implementation decisions, and comprehensive tests. The application is ready for feature development with full traceability.
 
+[0.3.0]: https://github.com/yourusername/nx1/releases/tag/v0.3.0
 [0.2.0]: https://github.com/yourusername/nx1/releases/tag/v0.2.0
 [0.1.0]: https://github.com/yourusername/nx1/releases/tag/v0.1.0

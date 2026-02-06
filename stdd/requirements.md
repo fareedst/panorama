@@ -54,6 +54,17 @@ Each requirement includes:
 | Token | Requirement | Priority | Status | Architecture | Implementation |
 |-------|------------|----------|--------|--------------|----------------|
 | [REQ-CONFIG_DRIVEN_UI] | Configuration-driven UI via YAML files | P0 | ✅ | [ARCH-CONFIG_DRIVEN_UI], [ARCH-THEME_INJECTION], [ARCH-CLASS_OVERRIDES] | [IMPL-YAML_CONFIG], [IMPL-CONFIG_LOADER], [IMPL-THEME_INJECTION], [IMPL-CLASS_OVERRIDES] |
+| [REQ-CONFIG_DRIVEN_APPEARANCE] | All page elements appearance and layout from config (template scope) | P0 | ✅ | [ARCH-CONFIG_DRIVEN_UI], [ARCH-CONFIG_DRIVEN_APPEARANCE] | [IMPL-CONFIG_LOADER], [IMPL-CONFIG_DRIVEN_APPEARANCE] |
+
+### Job Search Tracking Requirements
+
+| Token | Requirement | Priority | Status | Architecture | Implementation |
+|-------|------------|----------|--------|--------------|----------------|
+| [REQ-JOB_TRACKER_DATA] | Job position data storage and retrieval | P0 | ⏳ | [ARCH-JOB_TRACKER_STORAGE] | [IMPL-JOBS_CONFIG] |
+| [REQ-JOB_TRACKER_LIST] | View all job positions in a table | P0 | ⏳ | [ARCH-JOB_TRACKER_UI] | [IMPL-JOBS_LIST_PAGE] |
+| [REQ-JOB_TRACKER_EDIT] | Edit job position records | P0 | ⏳ | [ARCH-JOB_TRACKER_UI] | [IMPL-JOBS_EDIT_PAGE] |
+| [REQ-JOB_TRACKER_STATUS] | Track application status with dates and notes | P1 | ⏳ | [ARCH-JOB_TRACKER_STORAGE] | [IMPL-JOBS_CONFIG] |
+| [REQ-JOB_TRACKER_CRUD] | Create, update, and delete job positions | P0 | ⏳ | [ARCH-JOB_TRACKER_API] | [IMPL-JOBS_API] |
 
 ### Immutable Requirements (Major Version Change Required)
 
@@ -64,7 +75,6 @@ Each requirement includes:
 
 | Token | Requirement | Priority | Status | Architecture | Implementation |
 |-------|------------|----------|--------|--------------|----------------|
-
 ---
 
 ## Detailed Requirements
@@ -372,6 +382,30 @@ Each requirement includes:
 
 **Status**: ✅ Implemented
 
+### [REQ-CONFIG_DRIVEN_APPEARANCE] All Page Elements Appearance and Layout from Config
+
+**Priority: P0 (Critical)**
+
+- **Description**: For the project to serve as a highly-configurable template, the appearance and layout of **all** page elements must be dictated by one or more configuration files instead of hard-coded values. This applies to every route (home, jobs list, jobs new, jobs edit) and every shared component (tables, forms, buttons, cards). No layout classes, spacing, colors, copy, or visual tokens may remain hard-coded in TSX or CSS; they must be sourced from `config/site.yaml`, `config/theme.yaml`, `config/jobs.yaml`, or extended config sections.
+- **Rationale**: The template is only truly configurable if a user can change look and feel entirely via YAML. Gaps (e.g. jobs app using hard-coded classes and copy) undermine the template promise and force code edits for customization.
+- **Satisfaction Criteria**:
+  - Home and root layout already use config for all appearance and layout (existing).
+  - Jobs list page: container, padding, max-width, page title, subtitle, primary button label and classes come from config.
+  - Jobs new/edit pages: same layout and copy from config; section headings and form labels from jobs config (field definitions).
+  - Jobs table: column headers, empty-state copy, link labels, status badge colors and classes from config.
+  - Jobs forms: labels from field definitions; input/button/card classes from theme or jobs layout config.
+  - Status badge colors (e.g. applied, rejected, interested) are defined in config and applied by key, not hard-coded in components.
+  - Per-element class overrides extend to jobs UI (e.g. theme overrides for jobs page, table, cards, buttons) where applicable.
+  - Single source of truth: `config/jobs.yaml` for jobs copy and schema; `config/theme.yaml` (or extended section) for layout tokens and class overrides used by jobs pages and components.
+- **Validation Criteria**:
+  - Changing values in the relevant config file(s) changes the rendered appearance/layout/copy without code changes.
+  - No grep for layout or copy strings in jobs TSX yields hard-coded user-facing text or layout-only class strings that belong in config.
+  - Tests assert config-driven values where appropriate; token audit confirms [REQ-CONFIG_DRIVEN_APPEARANCE] coverage.
+- **Architecture**: See `architecture-decisions.md` § Config-Driven UI [ARCH-CONFIG_DRIVEN_UI], Config-Driven Appearance for All Pages [ARCH-CONFIG_DRIVEN_APPEARANCE]
+- **Implementation**: See `implementation-decisions.md` § Config Loader [IMPL-CONFIG_LOADER], Config-Driven Appearance [IMPL-CONFIG_DRIVEN_APPEARANCE]
+
+**Status**: ✅ Implemented
+
 ### Configuration & Build
 
 ### [REQ-METADATA] Page Metadata Configuration
@@ -454,6 +488,35 @@ Each requirement includes:
 
 **Status**: ✅ Implemented
 
+### Application Features
+
+### [REQ-JOB_SEARCH_TRACKER] Job Search Activity Tracker
+
+**Priority: P1 (Important)**
+
+- **Description**: The application must provide a job search activity tracker that allows users to record, view, edit, and delete open positions. Each position record includes posting date, URLs, title, description, application status, status date, and notes. Application status options include none, interested, to apply, applied, and rejected. All field definitions, status options, labels, and table column visibility must be driven by a YAML configuration file so the schema can be customized without code changes. Records are persisted in a YAML data file.
+- **Rationale**: Job seekers need a structured way to track positions and application progress. Extending the existing config-driven architecture to data-backed CRUD features demonstrates the template's flexibility and provides real utility. YAML data storage keeps the app self-contained without requiring a database.
+- **Satisfaction Criteria**:
+  - YAML config file (`config/jobs.yaml`) defines field names, labels, types, required flags, table visibility, and select options
+  - YAML data file (`data/jobs.yaml`) persists position records
+  - Table page (`/jobs`) displays all records with columns driven by config
+  - Edit page (`/jobs/[id]/edit`) loads and saves existing records
+  - New page (`/jobs/new`) creates records with config-driven form fields
+  - API routes provide GET, POST, PUT, DELETE operations
+  - Form dynamically renders text, date, textarea, select, and url-list field types based on config
+  - Application status field provides configurable enum options
+  - All labels, columns, and options are customizable via YAML without code changes
+- **Validation Criteria**:
+  - All routes return 200 (table, new, edit pages)
+  - Full CRUD cycle works: POST creates (201), GET lists, PUT updates (200), DELETE removes (204)
+  - Data persists to `data/jobs.yaml` across requests
+  - Changing field definitions in `config/jobs.yaml` changes form and table rendering
+  - TypeScript compilation passes without errors
+- **Architecture**: See `architecture-decisions.md` § YAML Data Storage [ARCH-YAML_DATA_STORAGE], Config-Driven CRUD [ARCH-CONFIG_DRIVEN_CRUD]
+- **Implementation**: See `implementation-decisions.md` § Job Search Tracker [IMPL-JOB_SEARCH_TRACKER], Jobs Data Layer [IMPL-JOBS_DATA_LAYER], Jobs API Routes [IMPL-JOBS_API_ROUTES], Jobs UI Pages [IMPL-JOBS_UI_PAGES]
+
+**Status**: ✅ Implemented
+
 ### Core Functionality
 
 ### [REQ-STDD_SETUP] STDD Methodology Setup
@@ -499,6 +562,136 @@ Each requirement includes:
 - **Implementation**: See `implementation-decisions.md` § Module Validation Implementation [IMPL-MODULE_VALIDATION]
 
 **Status**: ✅ Implemented
+
+---
+
+## Job Search Tracking
+
+### [REQ-JOB_TRACKER_DATA] Job Position Data Storage and Retrieval
+
+**Priority: P0 (Critical)**
+
+- **Description**: The application must store job position information including title, posting date, URLs, description, application status (with date and notes), and general notes. Data must be persisted in YAML format following the existing configuration-driven architecture pattern. Each position must have a unique identifier.
+- **Rationale**: Users need to track job opportunities throughout their job search process. Using YAML storage maintains consistency with the existing configuration system and allows data to be version-controlled, human-readable, and easily editable.
+- **Satisfaction Criteria**:
+  - Job position data is stored in `config/jobs.yaml`
+  - Each position has a unique ID, title, posting date, URLs array, description, application status object, and notes
+  - Application status includes: status type (none/interested/to apply/applied/rejected), date, and notes
+  - Data persists across application restarts
+  - YAML format is valid and parseable
+- **Validation Criteria**:
+  - Config loader successfully reads and parses `config/jobs.yaml`
+  - TypeScript types enforce correct data structure
+  - Unit tests verify YAML parsing and data retrieval
+  - Manual verification that data persists after server restart
+- **Architecture**: See `architecture-decisions.md` § Job Tracker Storage Architecture [ARCH-JOB_TRACKER_STORAGE]
+- **Implementation**: See `implementation-decisions.md` § Jobs Configuration Implementation [IMPL-JOBS_CONFIG]
+
+**Status**: ⏳ Planned
+
+### [REQ-JOB_TRACKER_LIST] View All Job Positions in Table
+
+**Priority: P0 (Critical)**
+
+- **Description**: The application must provide a page that displays all job positions in a responsive table format showing key information: title, posting date, application status, and action links. The table must be accessible on both desktop and mobile devices.
+- **Rationale**: Users need to see an overview of all job positions at a glance to track their job search progress, identify opportunities, and manage their pipeline effectively.
+- **Satisfaction Criteria**:
+  - Page accessible at `/jobs` route
+  - Table displays: position title, posting date, application status, and actions (edit/view)
+  - Application status is color-coded by type
+  - Table is responsive (stacks on mobile, horizontal scroll if needed)
+  - "New Position" button to create new records
+  - Empty state message when no positions exist
+- **Validation Criteria**:
+  - Page renders without errors
+  - All position data displays correctly
+  - Status colors match defined palette (gray/blue/yellow/purple/red)
+  - Table is usable on mobile viewport (320px+)
+  - Links navigate to correct edit pages
+  - Tests verify table rendering and data display
+- **Architecture**: See `architecture-decisions.md` § Job Tracker UI Architecture [ARCH-JOB_TRACKER_UI]
+- **Implementation**: See `implementation-decisions.md` § Jobs List Page Implementation [IMPL-JOBS_LIST_PAGE]
+
+**Status**: ⏳ Planned
+
+### [REQ-JOB_TRACKER_EDIT] Edit Job Position Records
+
+**Priority: P0 (Critical)**
+
+- **Description**: The application must provide a page with a form to create new job positions and edit existing ones. The form must include all position fields: title, posting date, URLs (multiple), description, application status (type, date, notes), and general notes. Form must validate required fields and save data to YAML storage.
+- **Rationale**: Users need to capture detailed information about job opportunities as they find them and update records as they progress through the application process.
+- **Satisfaction Criteria**:
+  - Page accessible at `/jobs/edit/[id]` route
+  - Form includes all fields: title, posting date, URLs, description, status dropdown, status date, status notes, general notes
+  - Required fields are validated (title, posting date)
+  - Form submits data via API route
+  - Success redirects to jobs list page
+  - Cancel button returns to jobs list
+  - Support for creating new positions (id = "new")
+  - Support for editing existing positions
+- **Validation Criteria**:
+  - Form renders with correct fields
+  - Validation prevents submission with missing required fields
+  - Successful submission saves data to `config/jobs.yaml`
+  - Redirect occurs after successful save
+  - Cancel button navigates back without saving
+  - Tests verify form rendering, validation, and submission
+- **Architecture**: See `architecture-decisions.md` § Job Tracker UI Architecture [ARCH-JOB_TRACKER_UI]
+- **Implementation**: See `implementation-decisions.md` § Jobs Edit Page Implementation [IMPL-JOBS_EDIT_PAGE]
+
+**Status**: ⏳ Planned
+
+### [REQ-JOB_TRACKER_STATUS] Track Application Status with Dates and Notes
+
+**Priority: P1 (Important)**
+
+- **Description**: Each job position must track its application status with a status type (none, interested, to apply, applied, rejected), an optional date when the status changed, and optional notes about the status. The interface must make it easy to update status as the job search progresses.
+- **Rationale**: Tracking application status helps users manage their job search pipeline, follow up on applications at appropriate times, and maintain records of their job search activity for personal tracking and potential follow-up.
+- **Satisfaction Criteria**:
+  - Five status types available: none, interested, to apply, applied, rejected
+  - Status includes optional date field
+  - Status includes optional notes field
+  - Status type is required, date and notes are optional
+  - Status displays with color coding in list view
+  - Status can be updated via edit form
+- **Validation Criteria**:
+  - Status dropdown includes all five status types
+  - Status date field accepts valid dates
+  - Status notes field accepts multi-line text
+  - Status changes persist to YAML storage
+  - Status colors display correctly in list view
+  - Tests verify status tracking and display
+- **Architecture**: See `architecture-decisions.md` § Job Tracker Storage Architecture [ARCH-JOB_TRACKER_STORAGE]
+- **Implementation**: See `implementation-decisions.md` § Jobs Configuration Implementation [IMPL-JOBS_CONFIG]
+
+**Status**: ⏳ Planned
+
+### [REQ-JOB_TRACKER_CRUD] Create, Update, and Delete Job Positions
+
+**Priority: P0 (Critical)**
+
+- **Description**: The application must provide API endpoints to create new job positions, update existing positions, and delete positions. All operations must persist changes to the YAML storage file and maintain data integrity.
+- **Rationale**: Users need full control over their job position data to manage their job search effectively, including adding new opportunities, updating information as it changes, and removing positions that are no longer relevant.
+- **Satisfaction Criteria**:
+  - API endpoint accepts POST requests to create/update positions
+  - API endpoint accepts DELETE requests to remove positions
+  - Create operation generates unique ID for new positions
+  - Update operation preserves existing ID
+  - Delete operation removes position from storage
+  - All operations write to `config/jobs.yaml`
+  - Operations maintain YAML file validity
+- **Validation Criteria**:
+  - POST endpoint successfully creates new positions
+  - POST endpoint successfully updates existing positions
+  - DELETE endpoint successfully removes positions
+  - YAML file remains valid after all operations
+  - Concurrent operations don't corrupt data
+  - Tests verify all CRUD operations
+  - Error handling for invalid requests
+- **Architecture**: See `architecture-decisions.md` § Job Tracker API Architecture [ARCH-JOB_TRACKER_API]
+- **Implementation**: See `implementation-decisions.md` § Jobs API Implementation [IMPL-JOBS_API]
+
+**Status**: ⏳ Planned
 
 ---
 

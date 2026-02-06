@@ -71,6 +71,10 @@ Token names use the same format in text and filenames:
 | `[ARCH-CONFIG_DRIVEN_UI]` | Configuration-Driven UI Architecture | Active | [REQ-CONFIG_DRIVEN_UI] | [Detail](architecture-decisions/ARCH-CONFIG_DRIVEN_UI.md) |
 | `[ARCH-THEME_INJECTION]` | Theme CSS Variable Injection | Active | [REQ-CONFIG_DRIVEN_UI], [ARCH-CSS_VARIABLES] | [Detail](architecture-decisions/ARCH-THEME_INJECTION.md) |
 | `[ARCH-CLASS_OVERRIDES]` | Tailwind Class Override System | Active | [REQ-CONFIG_DRIVEN_UI], [ARCH-TAILWIND_V4] | [Detail](architecture-decisions/ARCH-CLASS_OVERRIDES.md) |
+| `[ARCH-CONFIG_DRIVEN_APPEARANCE]` | Config-Driven Appearance for All Pages | Active | [REQ-CONFIG_DRIVEN_APPEARANCE], [REQ-CONFIG_DRIVEN_UI] | [Detail](architecture-decisions/ARCH-CONFIG_DRIVEN_APPEARANCE.md) |
+| `[ARCH-JOB_TRACKER_STORAGE]` | Job Tracker Storage Architecture | Planned | [REQ-JOB_TRACKER_DATA], [REQ-JOB_TRACKER_STATUS] | [Detail](architecture-decisions/ARCH-JOB_TRACKER_STORAGE.md) |
+| `[ARCH-JOB_TRACKER_UI]` | Job Tracker UI Architecture | Planned | [REQ-JOB_TRACKER_LIST], [REQ-JOB_TRACKER_EDIT] | [Detail](architecture-decisions/ARCH-JOB_TRACKER_UI.md) |
+| `[ARCH-JOB_TRACKER_API]` | Job Tracker API Architecture | Planned | [REQ-JOB_TRACKER_CRUD] | [Detail](architecture-decisions/ARCH-JOB_TRACKER_API.md) |
 
 ### Status Values
 

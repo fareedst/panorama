@@ -1,0 +1,87 @@
+# [REQ-JOB_SEARCH_TRACKER] Job Search App Configuration
+# This file defines the schema for the job search tracker:
+# field definitions, status options, and table display settings.
+# Edit values here to customize the app without touching any code.
+
+app:
+  title: "Job Search Tracker"
+  description: "Track open positions and applications"
+
+# Field definitions for position records.
+# Each field has a name, label, type, and display options.
+# Supported types: text, date, textarea, select, url-list
+fields:
+  - name: title
+    label: "Position Title"
+    type: text
+    required: true
+    showInTable: true
+  - name: postingDate
+    label: "Posting Date"
+    type: date
+    showInTable: true
+  - name: urls
+    label: "URLs"
+    type: url-list
+    showInTable: false
+  - name: description
+    label: "Description"
+    type: textarea
+    showInTable: false
+  - name: applicationStatus
+    label: "Application Status"
+    type: select
+    showInTable: true
+    options:
+      - value: none
+        label: "None"
+      - value: interested
+        label: "Interested"
+      - value: to_apply
+        label: "To Apply"
+      - value: applied
+        label: "Applied"
+      - value: rejected
+        label: "Rejected"
+  - name: statusDate
+    label: "Status Date"
+    type: date
+    showInTable: true
+  - name: notes
+    label: "Notes"
+    type: textarea
+    showInTable: false
+
+# Table display configuration
+table:
+  defaultSort: "postingDate"
+  defaultSortDirection: "desc"
+
+# [REQ-CONFIG_DRIVEN_APPEARANCE] Copy for all jobs UI (labels, buttons, headings).
+# Edit here to customize text without touching code.
+copy:
+  listTitle: "Job Search Tracker"
+  listSubtitle: "Track your job applications and positions"
+  addNewButton: "Add New Position"
+  emptyTitle: "No positions found."
+  emptyLink: "Create your first position"
+  editLink: "Edit"
+  editPageTitle: "Edit Position"
+  backToList: "Back to List"
+  deleteButton: "Delete Position"
+  deleteConfirm: "Are you sure you want to delete this position?"
+  newPageTitle: "Add New Position"
+  newPageSubtitle: "Enter details about a new job position"
+  positionDetails: "Position Details"
+  applications: "Applications"
+  addApplication: "Add Application"
+  editApplication: "Edit Application"
+  saveButton: "Save"
+  updateButton: "Update"
+  addButton: "Add"
+  cancel: "Cancel"
+  remove: "Remove"
+  addUrl: "+ Add URL"
+  createPosition: "Create Position"
+  updatePosition: "Update Position"
+  saving: "Saving..."

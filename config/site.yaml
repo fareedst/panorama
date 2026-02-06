@@ -38,9 +38,12 @@ navigation:
 
   # Call-to-action buttons displayed below the content
   buttons:
+    - label: "Job Tracker"
+      href: "/jobs"
+      variant: "primary"
     - label: "Deploy Now"
       href: "https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-      variant: "primary"
+      variant: "secondary"
       icon:
         src: "/vercel.svg"
         alt: "Vercel logomark"

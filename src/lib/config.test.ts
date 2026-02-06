@@ -7,8 +7,11 @@ import { describe, it, expect, beforeEach } from "vitest";
 import {
   getSiteConfig,
   getThemeConfig,
+  getJobsConfig,
   generateThemeCss,
   getOverride,
+  getJobsOverride,
+  getStatusBadgeClass,
   _resetConfigCache,
   _deepMerge,
   _DEFAULT_SITE_CONFIG,
@@ -301,5 +304,85 @@ describe("Default configs [IMPL-YAML_CONFIG]", () => {
     expect(_DEFAULT_THEME_CONFIG.fonts.mono.variable).toBeTruthy();
     expect(_DEFAULT_THEME_CONFIG.spacing.page.paddingY).toBeTruthy();
     expect(_DEFAULT_THEME_CONFIG.sizing.maxContentWidth).toBeTruthy();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// getJobsConfig [REQ-CONFIG_DRIVEN_APPEARANCE] [IMPL-CONFIG_DRIVEN_APPEARANCE]
+// ---------------------------------------------------------------------------
+
+describe("getJobsConfig [REQ-CONFIG_DRIVEN_APPEARANCE] [IMPL-CONFIG_LOADER]", () => {
+  it("returns a complete JobsConfig object", () => {
+    const config = getJobsConfig();
+    expect(config).toBeDefined();
+    expect(config.app).toBeDefined();
+    expect(config.fields).toBeDefined();
+    expect(config.table).toBeDefined();
+    expect(config.copy).toBeDefined();
+  });
+
+  it("loads app title and description", () => {
+    const config = getJobsConfig();
+    expect(config.app.title).toBe("Job Search Tracker");
+    expect(config.app.description).toContain("Track");
+  });
+
+  it("loads fields with applicationStatus options", () => {
+    const config = getJobsConfig();
+    const statusField = config.fields.find((f) => f.name === "applicationStatus");
+    expect(statusField).toBeDefined();
+    expect(statusField?.options?.length).toBeGreaterThan(0);
+    expect(statusField?.options?.some((o) => o.value === "applied")).toBe(true);
+  });
+
+  it("loads copy strings for jobs UI", () => {
+    const config = getJobsConfig();
+    expect(config.copy?.listTitle).toBeTruthy();
+    expect(config.copy?.addNewButton).toBeTruthy();
+    expect(config.copy?.emptyTitle).toBeTruthy();
+    expect(config.copy?.editLink).toBeTruthy();
+  });
+
+  it("caches the result on subsequent calls", () => {
+    const config1 = getJobsConfig();
+    const config2 = getJobsConfig();
+    expect(config1).toBe(config2);
+  });
+
+  it("returns fresh config after cache reset", () => {
+    const config1 = getJobsConfig();
+    _resetConfigCache();
+    const config2 = getJobsConfig();
+    expect(config1).not.toBe(config2);
+    expect(config1.app.title).toBe(config2.app.title);
+  });
+});
+
+describe("getJobsOverride [REQ-CONFIG_DRIVEN_APPEARANCE]", () => {
+  it("returns empty string for undefined overrides", () => {
+    expect(getJobsOverride(undefined, "pageContainer")).toBe("");
+  });
+
+  it("returns empty string for missing key", () => {
+    expect(getJobsOverride({}, "primaryButton")).toBe("");
+  });
+
+  it("returns trimmed override value when present", () => {
+    expect(getJobsOverride({ card: " shadow-lg " }, "card")).toBe("shadow-lg");
+  });
+});
+
+describe("getStatusBadgeClass [REQ-CONFIG_DRIVEN_APPEARANCE]", () => {
+  it("returns class for known status from theme", () => {
+    const theme = getThemeConfig();
+    expect(getStatusBadgeClass(theme, "applied")).toContain("blue");
+    expect(getStatusBadgeClass(theme, "rejected")).toContain("red");
+  });
+
+  it("returns default when status not in config", () => {
+    const theme = getThemeConfig();
+    const cls = getStatusBadgeClass(theme, "unknown");
+    expect(cls).toBeTruthy();
+    expect(typeof cls).toBe("string");
   });
 });

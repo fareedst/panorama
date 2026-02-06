@@ -1,15 +1,17 @@
 # Next.js Application with STDD Methodology
 
-**Version**: 0.2.0  
+**Version**: 0.3.0  
 **Last Updated**: 2026-02-06
 
 A modern, **highly configurable** Next.js template built with React 19, TypeScript, and Tailwind CSS v4, following **Semantic Token-Driven Development (STDD)** methodology for complete traceability from requirements through implementation.
 
-All page content, appearance, and layout are driven by YAML configuration files -- customize everything without touching source code.
+All page content, appearance, and layout are driven by YAML configuration files -- customize everything without touching source code. Includes a **Job Search Tracker** app demonstrating config-driven CRUD with YAML data storage.
 
 ## Features
 
-- **Configuration-Driven UI** -- all content, colors, fonts, spacing, and layout controlled via two YAML files
+- **Configuration-Driven UI** -- all content, colors, fonts, spacing, and layout controlled via YAML files
+- **Job Search Tracker** -- config-driven CRUD app to track positions and applications, with table view, edit/new forms, and RESTful API (field definitions, status options, and table columns all customizable via `config/jobs.yaml`)
+- **YAML Data Storage** -- position records persisted in `data/jobs.yaml` with no external database required
 - **Next.js 16.1** with App Router and React Server Components
 - **React 19.2** with modern concurrent features
 - **TypeScript 5.x** with strict mode for type safety
@@ -94,6 +96,43 @@ overrides:
 ```
 
 Partial configs work -- omit any field and the built-in default is used.
+
+### `config/jobs.yaml` -- Job Search Tracker schema
+
+```yaml
+app:
+  title: "Job Search Tracker"
+  description: "Track open positions and applications"
+
+fields:
+  - name: title
+    label: "Position Title"
+    type: text                     # text | date | textarea | select | url-list
+    required: true
+    showInTable: true              # Show as column in table view
+  - name: applicationStatus
+    label: "Application Status"
+    type: select
+    showInTable: true
+    options:                       # Options for select fields
+      - value: none
+        label: "None"
+      - value: interested
+        label: "Interested"
+      - value: to_apply
+        label: "To Apply"
+      - value: applied
+        label: "Applied"
+      - value: rejected
+        label: "Rejected"
+  # ... more fields (postingDate, urls, description, statusDate, notes)
+
+table:
+  defaultSort: "postingDate"       # Field to sort by
+  defaultSortDirection: "desc"     # "asc" or "desc"
+```
+
+Add, remove, or reorder fields -- the form and table update automatically. Customize status options, labels, and table columns without touching any code.
 
 ## Prerequisites
 
@@ -450,16 +489,30 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 nx1/
 ├── config/                        # YAML configuration files
 │   ├── site.yaml                 # Site content, metadata, navigation
-│   └── theme.yaml                # Colors, fonts, spacing, class overrides
+│   ├── theme.yaml                # Colors, fonts, spacing, class overrides
+│   └── jobs.yaml                 # Job search tracker schema (fields, statuses, table)
+├── data/                          # YAML data storage
+│   └── jobs.yaml                 # Job position records
 ├── src/
 │   ├── app/                       # Next.js App Router
 │   │   ├── layout.tsx            # Root layout [IMPL-ROOT_LAYOUT]
 │   │   ├── page.tsx              # Home page [IMPL-HOME_PAGE]
 │   │   ├── globals.css           # Global styles [IMPL-DARK_MODE]
+│   │   ├── api/jobs/             # Job search API routes
+│   │   │   ├── route.ts          # GET (list) + POST (create)
+│   │   │   └── [id]/route.ts     # GET + PUT + DELETE
+│   │   ├── jobs/                  # Job search tracker pages
+│   │   │   ├── page.tsx          # Table view [IMPL-JOBS_UI_PAGES]
+│   │   │   ├── new/page.tsx      # New record form
+│   │   │   ├── [id]/edit/page.tsx # Edit record form
+│   │   │   └── components/       # Shared components
+│   │   │       └── JobForm.tsx   # Dynamic form (client component)
 │   │   └── *.test.tsx            # Component tests
 │   ├── lib/                       # Shared modules
-│   │   ├── config.ts             # Config loader [IMPL-CONFIG_LOADER]
-│   │   ├── config.types.ts       # Config TypeScript interfaces
+│   │   ├── config.ts             # Site/theme config loader [IMPL-CONFIG_LOADER]
+│   │   ├── config.types.ts       # Site/theme TypeScript interfaces
+│   │   ├── jobs.ts               # Jobs config + data CRUD [IMPL-JOBS_DATA_LAYER]
+│   │   ├── jobs.types.ts         # Jobs TypeScript interfaces
 │   │   └── config.test.ts        # Config loader tests
 │   └── test/                     # Test utilities and tests
 │       ├── setup.ts              # Test configuration
@@ -571,10 +624,10 @@ STDD creates a traceable chain of intent from requirements to code:
 
 All STDD documentation is in the `stdd/` directory:
 
-- **[Requirements](stdd/requirements.md)** - 15 documented requirements
-- **[Architecture Decisions](stdd/architecture-decisions.md)** - 17 decision files
-- **[Implementation Decisions](stdd/implementation-decisions.md)** - 18 implementation files
-- **[Semantic Tokens](stdd/semantic-tokens.md)** - 42 token registry
+- **[Requirements](stdd/requirements.md)** - 16 documented requirements
+- **[Architecture Decisions](stdd/architecture-decisions.md)** - 19 decision files
+- **[Implementation Decisions](stdd/implementation-decisions.md)** - 22 implementation files
+- **[Semantic Tokens](stdd/semantic-tokens.md)** - 49 token registry
 - **[Tasks](stdd/tasks.md)** - Task tracking with priorities
 
 ### For Developers
@@ -720,4 +773,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 **Built with Next.js, React, and STDD Methodology**
 
-*Version 0.2.0 - Configuration-Driven UI*
+*Version 0.3.0 - Job Search Tracker*

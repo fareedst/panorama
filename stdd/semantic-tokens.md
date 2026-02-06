@@ -9,6 +9,7 @@ This document serves as the **central directory/registry** for all semantic toke
 - **Requirements tokens**: See `requirements.md` for full descriptions, rationale, satisfaction criteria, and validation criteria
 - **Architecture tokens**: See `architecture-decisions.md` for architectural decisions, rationale, and alternatives considered
 - **Implementation tokens**: See `implementation-decisions.md` for implementation details, code structures, and algorithms
+- **Code vs docs audit**: See `STDD-AUDIT-CODE-VS-DOCS.md` for whether code and semantic tokens are correctly represented for agent recreatability
 
 ## AI Assistant Integration Guidelines [REQ-DOC_016]
 
@@ -98,6 +99,18 @@ When referencing other tokens:
 
 ## Requirements Tokens Registry
 
+### Job Search Tracking
+
+| Token | Description | Status | Document |
+|-------|-------------|--------|----------|
+| `[REQ-JOB_TRACKER_DATA]` | Job position data storage and retrieval | Planned | [requirements.md](requirements.md) |
+| `[REQ-JOB_TRACKER_LIST]` | View all job positions in table | Planned | [requirements.md](requirements.md) |
+| `[REQ-JOB_TRACKER_EDIT]` | Edit job position records | Planned | [requirements.md](requirements.md) |
+| `[REQ-JOB_TRACKER_STATUS]` | Track application status with dates/notes | Planned | [requirements.md](requirements.md) |
+| `[REQ-JOB_TRACKER_CRUD]` | Create, update, and delete job positions | Planned | [requirements.md](requirements.md) |
+
+
+
 **📖 Full details**: See `requirements.md`
 
 ### Immutable Requirements
@@ -124,8 +137,17 @@ When referencing other tokens:
 
 ### Configurability Requirements
 - `[REQ-CONFIG_DRIVEN_UI]` - Configuration-driven UI via YAML files for all page elements
+- `[REQ-CONFIG_DRIVEN_APPEARANCE]` - All page elements appearance and layout from config (template scope)
 
 ## Architecture Tokens Registry
+
+### Job Search Tracking
+
+| Token | Description | Status | Document |
+|-------|-------------|--------|----------|
+| `[ARCH-JOB_TRACKER_STORAGE]` | Job tracker YAML storage architecture | Planned | [architecture-decisions/ARCH-JOB_TRACKER_STORAGE.md](architecture-decisions/ARCH-JOB_TRACKER_STORAGE.md) |
+| `[ARCH-JOB_TRACKER_UI]` | Job tracker UI page architecture | Planned | [architecture-decisions/ARCH-JOB_TRACKER_UI.md](architecture-decisions/ARCH-JOB_TRACKER_UI.md) |
+| `[ARCH-JOB_TRACKER_API]` | Job tracker API route architecture | Planned | [architecture-decisions/ARCH-JOB_TRACKER_API.md](architecture-decisions/ARCH-JOB_TRACKER_API.md) |
 
 **📖 Full details**: See `architecture-decisions.md` (index) and `architecture-decisions/` (detail files)
 
@@ -146,8 +168,21 @@ When referencing other tokens:
 - `[ARCH-CONFIG_DRIVEN_UI]` - YAML configuration-driven UI architecture [REQ-CONFIG_DRIVEN_UI]
 - `[ARCH-THEME_INJECTION]` - CSS variable injection from theme config [REQ-CONFIG_DRIVEN_UI] [ARCH-CSS_VARIABLES]
 - `[ARCH-CLASS_OVERRIDES]` - Tailwind class override system via config [REQ-CONFIG_DRIVEN_UI] [ARCH-TAILWIND_V4]
+- `[ARCH-CONFIG_DRIVEN_APPEARANCE]` - Config-driven appearance for all pages [REQ-CONFIG_DRIVEN_APPEARANCE] [REQ-CONFIG_DRIVEN_UI]
+- `[ARCH-JOB_TRACKER_STORAGE]` - Job tracker YAML storage architecture [REQ-JOB_TRACKER_DATA] [REQ-JOB_TRACKER_STATUS]
+- `[ARCH-JOB_TRACKER_UI]` - Job tracker UI page architecture [REQ-JOB_TRACKER_LIST] [REQ-JOB_TRACKER_EDIT]
+- `[ARCH-JOB_TRACKER_API]` - Job tracker API route architecture [REQ-JOB_TRACKER_CRUD]
 
 ## Implementation Tokens Registry
+
+### Job Search Tracking
+
+| Token | Description | Status | Document |
+|-------|-------------|--------|----------|
+| `[IMPL-JOBS_CONFIG]` | Jobs configuration loader and types | Planned | [implementation-decisions/IMPL-JOBS_CONFIG.md](implementation-decisions/IMPL-JOBS_CONFIG.md) |
+| `[IMPL-JOBS_LIST_PAGE]` | Jobs list page with table view | Planned | [implementation-decisions/IMPL-JOBS_LIST_PAGE.md](implementation-decisions/IMPL-JOBS_LIST_PAGE.md) |
+| `[IMPL-JOBS_EDIT_PAGE]` | Jobs edit page with form | Planned | [implementation-decisions/IMPL-JOBS_EDIT_PAGE.md](implementation-decisions/IMPL-JOBS_EDIT_PAGE.md) |
+| `[IMPL-JOBS_API]` | Jobs API route handlers | Planned | [implementation-decisions/IMPL-JOBS_API.md](implementation-decisions/IMPL-JOBS_API.md) |
 
 **📖 Full details**: See `implementation-decisions.md` (index) and `implementation-decisions/` (detail files)
 
@@ -169,6 +204,12 @@ When referencing other tokens:
 - `[IMPL-CONFIG_LOADER]` - Config loader module with YAML parsing and caching [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]
 - `[IMPL-THEME_INJECTION]` - CSS variable injection from theme config in layout [ARCH-THEME_INJECTION] [REQ-CONFIG_DRIVEN_UI]
 - `[IMPL-CLASS_OVERRIDES]` - tailwind-merge class override implementation [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI]
+- `[IMPL-CONFIG_DRIVEN_APPEARANCE]` - Config-driven appearance for all pages (jobs config loader, theme extension, jobs UI refactor) [ARCH-CONFIG_DRIVEN_APPEARANCE] [REQ-CONFIG_DRIVEN_APPEARANCE]
+- `[IMPL-JOBS_DATA]` - Jobs data layer (jobs.data.ts, jobs.types.ts) for Position/Application entities [ARCH-JOB_TRACKER_STORAGE] [REQ-JOB_TRACKER_DATA]
+- `[IMPL-JOBS_ACTIONS]` - Server actions for CRUD operations [ARCH-JOB_TRACKER_UI] [REQ-JOB_TRACKER_CRUD]
+- `[IMPL-JOBS_LIST_PAGE]` - Jobs list page with table view (page.tsx, JobsTable.tsx) [ARCH-JOB_TRACKER_UI] [REQ-JOB_TRACKER_LIST]
+- `[IMPL-JOBS_EDIT_PAGE]` - Jobs edit/create pages and forms (PositionForm, ApplicationForm) [ARCH-JOB_TRACKER_UI] [REQ-JOB_TRACKER_EDIT]
+- `[IMPL-JOBS_API]` - Jobs API route handlers using jobs.data.ts [ARCH-JOB_TRACKER_API] [REQ-JOB_TRACKER_CRUD]
 
 ## Token Relationships
 
