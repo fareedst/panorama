@@ -78,6 +78,8 @@ Token names contain `:` which is invalid in filenames on many operating systems.
 | `[IMPL-JOBS_LIST_PAGE]` | Jobs List Page Implementation | Active | [ARCH-JOB_TRACKER_UI] [REQ-JOB_TRACKER_LIST] | [Detail](implementation-decisions/IMPL-JOBS_LIST_PAGE.md) |
 | `[IMPL-JOBS_EDIT_PAGE]` | Jobs Edit Page Implementation | Active | [ARCH-JOB_TRACKER_UI] [REQ-JOB_TRACKER_EDIT] | [Detail](implementation-decisions/IMPL-JOBS_EDIT_PAGE.md) |
 | `[IMPL-JOBS_API]` | Jobs API Implementation | Active | [ARCH-JOB_TRACKER_API] [REQ-JOB_TRACKER_CRUD] | [Detail](implementation-decisions/IMPL-JOBS_API.md) |
+| `[IMPL-CALENDAR_PAGE]` | Calendar Page Server Component | Planned | [ARCH-CALENDAR_VIEW] [REQ-JOB_TRACKER_CALENDAR] | [Detail](implementation-decisions/IMPL-CALENDAR_PAGE.md) |
+| `[IMPL-CALENDAR_GRID]` | Calendar Grid Client Component | Planned | [ARCH-CALENDAR_VIEW] [REQ-JOB_TRACKER_CALENDAR] | [Detail](implementation-decisions/IMPL-CALENDAR_GRID.md) |
 
 ### Status Values
 

@@ -65,6 +65,7 @@ Each requirement includes:
 | [REQ-JOB_TRACKER_EDIT] | Edit job position records | P0 | ⏳ | [ARCH-JOB_TRACKER_UI] | [IMPL-JOBS_EDIT_PAGE] |
 | [REQ-JOB_TRACKER_STATUS] | Track application status with dates and notes | P1 | ⏳ | [ARCH-JOB_TRACKER_STORAGE] | [IMPL-JOBS_CONFIG] |
 | [REQ-JOB_TRACKER_CRUD] | Create, update, and delete job positions | P0 | ⏳ | [ARCH-JOB_TRACKER_API] | [IMPL-JOBS_API] |
+| [REQ-JOB_TRACKER_CALENDAR] | Calendar month view for positions and applications | P1 | ⏳ | [ARCH-CALENDAR_VIEW] | [IMPL-CALENDAR_PAGE], [IMPL-CALENDAR_GRID] |
 
 ### Immutable Requirements (Major Version Change Required)
 
@@ -690,6 +691,36 @@ Each requirement includes:
   - Error handling for invalid requests
 - **Architecture**: See `architecture-decisions.md` § Job Tracker API Architecture [ARCH-JOB_TRACKER_API]
 - **Implementation**: See `implementation-decisions.md` § Jobs API Implementation [IMPL-JOBS_API]
+
+**Status**: ⏳ Planned
+
+### [REQ-JOB_TRACKER_CALENDAR] Calendar Month View for Positions and Applications
+
+**Priority: P1 (Important)**
+
+- **Description**: The application must provide a calendar month view page that displays positions and applications on a single-month grid. Each position appears on its posting date and each application appears on its application date. Users can navigate between months and click on any item to view its details in a panel above the calendar grid. All UI elements (labels, button text, layout classes) must be driven by configuration files.
+- **Rationale**: A calendar view provides users with a visual timeline of their job search activity, making it easier to identify patterns, plan follow-ups, and see the temporal distribution of opportunities and applications. The month-at-a-glance view complements the existing table view by offering a different perspective on the same data.
+- **Satisfaction Criteria**:
+  - Page accessible at `/jobs/calendar` route
+  - Calendar displays one month at a time in a standard 7-column grid (Sun-Sat)
+  - Positions appear on their `postingDate`, applications appear on their `date`
+  - Month navigation controls (Previous, Next, Today) allow browsing different months
+  - Clicking an item displays its details in a panel above the grid
+  - Detail panel shows position info (title, date, description, URLs, notes, edit link) or application info (position title, status, date, notes, edit link)
+  - Calendar grid, navigation, and detail panel use config-driven copy and styling
+  - Navigation link to calendar view appears on main jobs list page
+- **Validation Criteria**:
+  - Page renders without errors at `/jobs/calendar`
+  - Calendar grid correctly displays days for the current month
+  - Items appear on the correct dates
+  - Month navigation updates the displayed month
+  - Clicking items updates the detail panel
+  - Detail panel displays correct information for positions and applications
+  - All text comes from config (no hard-coded labels)
+  - Responsive layout works on mobile and desktop
+  - Tests verify calendar rendering, item placement, navigation, and detail display
+- **Architecture**: See `architecture-decisions.md` § Calendar View Architecture [ARCH-CALENDAR_VIEW]
+- **Implementation**: See `implementation-decisions.md` § Calendar Page Implementation [IMPL-CALENDAR_PAGE], Calendar Grid Implementation [IMPL-CALENDAR_GRID]
 
 **Status**: ⏳ Planned
 

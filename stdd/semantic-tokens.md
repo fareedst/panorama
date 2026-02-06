@@ -108,6 +108,7 @@ When referencing other tokens:
 | `[REQ-JOB_TRACKER_EDIT]` | Edit job position records | Planned | [requirements.md](requirements.md) |
 | `[REQ-JOB_TRACKER_STATUS]` | Track application status with dates/notes | Planned | [requirements.md](requirements.md) |
 | `[REQ-JOB_TRACKER_CRUD]` | Create, update, and delete job positions | Planned | [requirements.md](requirements.md) |
+| `[REQ-JOB_TRACKER_CALENDAR]` | Calendar month view for positions and applications | Planned | [requirements.md](requirements.md) |
 
 
 
@@ -148,6 +149,7 @@ When referencing other tokens:
 | `[ARCH-JOB_TRACKER_STORAGE]` | Job tracker YAML storage architecture | Planned | [architecture-decisions/ARCH-JOB_TRACKER_STORAGE.md](architecture-decisions/ARCH-JOB_TRACKER_STORAGE.md) |
 | `[ARCH-JOB_TRACKER_UI]` | Job tracker UI page architecture | Planned | [architecture-decisions/ARCH-JOB_TRACKER_UI.md](architecture-decisions/ARCH-JOB_TRACKER_UI.md) |
 | `[ARCH-JOB_TRACKER_API]` | Job tracker API route architecture | Planned | [architecture-decisions/ARCH-JOB_TRACKER_API.md](architecture-decisions/ARCH-JOB_TRACKER_API.md) |
+| `[ARCH-CALENDAR_VIEW]` | Calendar view architecture for month grid display | Planned | [architecture-decisions/ARCH-CALENDAR_VIEW.md](architecture-decisions/ARCH-CALENDAR_VIEW.md) |
 
 **📖 Full details**: See `architecture-decisions.md` (index) and `architecture-decisions/` (detail files)
 
@@ -172,6 +174,7 @@ When referencing other tokens:
 - `[ARCH-JOB_TRACKER_STORAGE]` - Job tracker YAML storage architecture [REQ-JOB_TRACKER_DATA] [REQ-JOB_TRACKER_STATUS]
 - `[ARCH-JOB_TRACKER_UI]` - Job tracker UI page architecture [REQ-JOB_TRACKER_LIST] [REQ-JOB_TRACKER_EDIT]
 - `[ARCH-JOB_TRACKER_API]` - Job tracker API route architecture [REQ-JOB_TRACKER_CRUD]
+- `[ARCH-CALENDAR_VIEW]` - Calendar view architecture for month grid display [REQ-JOB_TRACKER_CALENDAR]
 
 ## Implementation Tokens Registry
 
@@ -183,6 +186,8 @@ When referencing other tokens:
 | `[IMPL-JOBS_LIST_PAGE]` | Jobs list page with table view | Planned | [implementation-decisions/IMPL-JOBS_LIST_PAGE.md](implementation-decisions/IMPL-JOBS_LIST_PAGE.md) |
 | `[IMPL-JOBS_EDIT_PAGE]` | Jobs edit page with form | Planned | [implementation-decisions/IMPL-JOBS_EDIT_PAGE.md](implementation-decisions/IMPL-JOBS_EDIT_PAGE.md) |
 | `[IMPL-JOBS_API]` | Jobs API route handlers | Planned | [implementation-decisions/IMPL-JOBS_API.md](implementation-decisions/IMPL-JOBS_API.md) |
+| `[IMPL-CALENDAR_PAGE]` | Calendar page server component implementation | Planned | [implementation-decisions/IMPL-CALENDAR_PAGE.md](implementation-decisions/IMPL-CALENDAR_PAGE.md) |
+| `[IMPL-CALENDAR_GRID]` | Calendar grid client component with month view and detail panel | Planned | [implementation-decisions/IMPL-CALENDAR_GRID.md](implementation-decisions/IMPL-CALENDAR_GRID.md) |
 
 **📖 Full details**: See `implementation-decisions.md` (index) and `implementation-decisions/` (detail files)
 
@@ -210,6 +215,8 @@ When referencing other tokens:
 - `[IMPL-JOBS_LIST_PAGE]` - Jobs list page with table view (page.tsx, JobsTable.tsx) [ARCH-JOB_TRACKER_UI] [REQ-JOB_TRACKER_LIST]
 - `[IMPL-JOBS_EDIT_PAGE]` - Jobs edit/create pages and forms (PositionForm, ApplicationForm) [ARCH-JOB_TRACKER_UI] [REQ-JOB_TRACKER_EDIT]
 - `[IMPL-JOBS_API]` - Jobs API route handlers using jobs.data.ts [ARCH-JOB_TRACKER_API] [REQ-JOB_TRACKER_CRUD]
+- `[IMPL-CALENDAR_PAGE]` - Calendar page server component implementation [ARCH-CALENDAR_VIEW] [REQ-JOB_TRACKER_CALENDAR]
+- `[IMPL-CALENDAR_GRID]` - Calendar grid client component with month view and detail panel [ARCH-CALENDAR_VIEW] [REQ-JOB_TRACKER_CALENDAR]
 
 ## Token Relationships
 

@@ -182,6 +182,19 @@ const DEFAULT_JOBS_CONFIG: JobsConfig = {
     createPosition: "Create Position",
     updatePosition: "Update Position",
     saving: "Saving...",
+    // [REQ-JOB_TRACKER_CALENDAR] Calendar view copy defaults
+    calendarTitle: "Calendar View",
+    calendarSubtitle: "Positions and applications by date",
+    calendarPrev: "Previous",
+    calendarNext: "Next",
+    calendarToday: "Today",
+    calendarNoItems: "No items for this day",
+    calendarPositionLabel: "Position",
+    calendarApplicationLabel: "Application",
+    calendarDetailClose: "Close",
+    calendarBackToList: "Back to List",
+    calendarDayNames: "Sun,Mon,Tue,Wed,Thu,Fri,Sat",
+    calendarViewButton: "Calendar View",
   },
 };
 

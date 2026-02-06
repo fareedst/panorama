@@ -67,6 +67,7 @@ export default function JobsPage() {
   const emptyTitle = copy.emptyTitle ?? "No positions found.";
   const emptyLink = copy.emptyLink ?? "Create your first position";
   const editLink = copy.editLink ?? "Edit";
+  const calendarViewButton = copy.calendarViewButton ?? "Calendar View"; // [REQ-JOB_TRACKER_CALENDAR]
 
   const jo = theme.jobs?.overrides;
   const pageContainerClass = twMerge(
@@ -96,9 +97,17 @@ export default function JobsPage() {
             <h1 className={headerTitleClass}>{listTitle}</h1>
             <p className={headerSubtitleClass}>{listSubtitle}</p>
           </div>
-          <Link href="/jobs/new" className={primaryButtonClass}>
-            {addNewButton}
-          </Link>
+          <div className="flex gap-2">
+            <Link href="/jobs/calendar" className={twMerge(
+              "inline-flex items-center justify-center rounded-full bg-white dark:bg-zinc-900 px-5 h-12 text-zinc-900 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-700 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800 font-medium",
+              getJobsOverride(jo, "secondaryButton"),
+            )}>
+              {calendarViewButton}
+            </Link>
+            <Link href="/jobs/new" className={primaryButtonClass}>
+              {addNewButton}
+            </Link>
+          </div>
         </div>
         <div className={cardClass}>
           <JobsTable

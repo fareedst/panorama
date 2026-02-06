@@ -75,6 +75,7 @@ Token names use the same format in text and filenames:
 | `[ARCH-JOB_TRACKER_STORAGE]` | Job Tracker Storage Architecture | Planned | [REQ-JOB_TRACKER_DATA], [REQ-JOB_TRACKER_STATUS] | [Detail](architecture-decisions/ARCH-JOB_TRACKER_STORAGE.md) |
 | `[ARCH-JOB_TRACKER_UI]` | Job Tracker UI Architecture | Planned | [REQ-JOB_TRACKER_LIST], [REQ-JOB_TRACKER_EDIT] | [Detail](architecture-decisions/ARCH-JOB_TRACKER_UI.md) |
 | `[ARCH-JOB_TRACKER_API]` | Job Tracker API Architecture | Planned | [REQ-JOB_TRACKER_CRUD] | [Detail](architecture-decisions/ARCH-JOB_TRACKER_API.md) |
+| `[ARCH-CALENDAR_VIEW]` | Calendar Month View Architecture | Planned | [REQ-JOB_TRACKER_CALENDAR] | [Detail](architecture-decisions/ARCH-CALENDAR_VIEW.md) |
 
 ### Status Values
 

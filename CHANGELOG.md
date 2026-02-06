@@ -5,6 +5,103 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-02-06
+
+### Added
+
+#### Calendar Month View for Jobs [REQ-JOB_TRACKER_CALENDAR]
+- **Calendar month view page** (`/jobs/calendar`) displaying positions and applications on a single-month grid with standard 7-column layout (Sun-Sat)
+- **Interactive detail panel** above grid -- click any item to see full details (position: title, date, description, URLs, notes, edit link; application: position title, status badge, date, notes, edit link)
+- **Month navigation** with Previous, Next, and Today buttons
+- **Date-based item placement**:
+  - Positions appear on their `postingDate`
+  - Applications appear on their `date`
+  - Multiple items per day stack vertically
+  - Items use status badge colors from config
+- **Responsive design**:
+  - Desktop: Item text visible in chips
+  - Mobile: Colored dots only (space-saving)
+- **Config-driven UI** [REQ-CONFIG_DRIVEN_APPEARANCE]:
+  - 12 new calendar copy keys in `config/jobs.yaml` (calendarTitle, calendarSubtitle, calendarPrev, calendarNext, calendarToday, calendarNoItems, calendarPositionLabel, calendarApplicationLabel, calendarDetailClose, calendarBackToList, calendarDayNames, calendarViewButton)
+  - 5 new calendar theme overrides in `config/theme.yaml` (calendarGrid, calendarCell, calendarCellToday, calendarItem, calendarDetailPanel)
+  - All layout, styling, and text driven by configuration
+- **Navigation integration**:
+  - "Calendar View" button added to jobs list page header
+  - "Back to List" link on calendar page
+
+#### STDD Documentation [REQ-JOB_TRACKER_CALENDAR]
+- New requirement: `[REQ-JOB_TRACKER_CALENDAR]` in `stdd/requirements.md`
+- New architecture decision: `[ARCH-CALENDAR_VIEW]` -- calendar page layout, data flow, and component structure
+- New implementation decisions:
+  - `[IMPL-CALENDAR_PAGE]` -- server component implementation
+  - `[IMPL-CALENDAR_GRID]` -- client component with month grid, item rendering, and detail panel
+- Updated semantic tokens registry with 4 new tokens
+- Updated tasks.md with completed calendar view task
+- Validation outcomes logged: TypeScript ✅ ESLint ✅ Tests ✅ (120/120)
+
+### Technical Details
+
+#### New Files
+- `src/app/jobs/calendar/page.tsx` -- server component (126 lines) loading data, combining positions with applications, building status badge classes, extracting config copy and overrides
+- `src/app/jobs/calendar/CalendarView.tsx` -- client component (381 lines) with state management (currentMonth, selectedItem), detail panel, month navigation, and 7-column calendar grid
+- `src/app/jobs/calendar/page.test.tsx` -- 3 tests (page rendering, back link, CalendarView integration)
+- `src/app/jobs/calendar/CalendarView.test.tsx` -- 4 tests (month navigation, day names, grid rendering, detail panel)
+- `stdd/architecture-decisions/ARCH-CALENDAR_VIEW.md` -- architecture decision document
+- `stdd/implementation-decisions/IMPL-CALENDAR_PAGE.md` -- implementation decision document
+- `stdd/implementation-decisions/IMPL-CALENDAR_GRID.md` -- implementation decision document
+
+#### Modified Files
+- `config/jobs.yaml` -- added 12 calendar copy keys
+- `config/theme.yaml` -- added 5 calendar override keys in `jobs.overrides`
+- `src/lib/config.types.ts` -- added calendar copy keys to `JobsCopyConfig`, calendar override keys to `JobsThemeOverrides`
+- `src/lib/config.ts` -- added default calendar copy values to `DEFAULT_JOBS_CONFIG.copy`
+- `src/app/jobs/page.tsx` -- added "Calendar View" button to header with config-driven label
+- `stdd/requirements.md` -- added calendar month view requirement
+- `stdd/semantic-tokens.md` -- registered 4 new tokens
+- `stdd/architecture-decisions.md` -- added index entry for `[ARCH-CALENDAR_VIEW]`
+- `stdd/implementation-decisions.md` -- added index entries for `[IMPL-CALENDAR_PAGE]` and `[IMPL-CALENDAR_GRID]`
+- `stdd/tasks.md` -- added and completed calendar view task
+
+#### New Semantic Tokens
+- `[REQ-JOB_TRACKER_CALENDAR]` -- Calendar month view requirement
+- `[ARCH-CALENDAR_VIEW]` -- Calendar view architecture
+- `[IMPL-CALENDAR_PAGE]` -- Calendar page implementation
+- `[IMPL-CALENDAR_GRID]` -- Calendar grid client component implementation
+
+#### Component Architecture
+```
+page.tsx (Server Component)
+  ↓ loads data + config
+  ↓ combines positions with applications
+  ↓ builds status badge class map
+  ↓ extracts calendar copy + overrides
+  ↓
+CalendarView.tsx (Client Component)
+  ├── DetailPanel (conditional: when item selected)
+  ├── MonthNavigation (prev/next/today)
+  └── CalendarGrid (7×6 cells, day names header)
+      └── DayCell[] (day number + items)
+          └── CalendarItem[] (positions + applications)
+              ↓ onClick
+              ↑ setSelectedItem
+```
+
+#### Calendar Grid Logic
+- Calculates first day of month to determine starting column (0-6 for Sun-Sat)
+- Renders 42 cells (6 weeks × 7 days) for consistent grid height
+- Fills empty cells before/after month with gray background
+- Matches items to dates via ISO date string comparison (YYYY-MM-DD)
+- Highlights today's date with ring border
+- Responsive: desktop shows text chips, mobile shows colored dots
+
+#### Testing
+- 7 new tests added (3 page, 4 component)
+- Total test count: 120 tests (all passing)
+- Test coverage: maintained at 100%
+- Tests reference `[REQ-JOB_TRACKER_CALENDAR]` token
+
+---
+
 ## [0.3.0] - 2026-02-06
 
 ### Added
@@ -409,6 +506,7 @@ This baseline establishes a solid foundation for feature development:
 
 **Note**: This version represents the initial STDD documentation baseline. All existing functionality has been documented with requirements, architecture decisions, implementation decisions, and comprehensive tests. The application is ready for feature development with full traceability.
 
+[0.4.0]: https://github.com/yourusername/nx1/releases/tag/v0.4.0
 [0.3.0]: https://github.com/yourusername/nx1/releases/tag/v0.3.0
 [0.2.0]: https://github.com/yourusername/nx1/releases/tag/v0.2.0
 [0.1.0]: https://github.com/yourusername/nx1/releases/tag/v0.1.0

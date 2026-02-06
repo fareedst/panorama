@@ -184,6 +184,38 @@ This document tracks all tasks and subtasks for implementing this project. Tasks
 
 **Priority Rationale**: P0 because it is required for the project to qualify as a highly-configurable template; without it, the template promise is incomplete.
 
+## P1: Calendar Month View for Jobs [REQ-JOB_TRACKER_CALENDAR] [ARCH-CALENDAR_VIEW] [IMPL-CALENDAR_PAGE] [IMPL-CALENDAR_GRID]
+
+**Status**: ✅ Complete
+
+**Description**: Add a calendar month view page displaying positions and applications on a single-month grid. Users can click items to view details in a panel above the grid. All UI elements are config-driven.
+
+**Dependencies**: [REQ-CONFIG_DRIVEN_APPEARANCE], [REQ-JOB_TRACKER_DATA], [REQ-JOB_TRACKER_LIST]
+
+**Subtasks**:
+- [x] Update STDD documentation with new semantic tokens [PROC-TOKEN_AUDIT]
+- [x] Add calendar copy keys to JobsCopyConfig and theme overrides to JobsThemeOverrides [IMPL-CALENDAR_PAGE]
+- [x] Add default calendar values to config loader [IMPL-CALENDAR_PAGE]
+- [x] Update config YAML files with calendar copy and overrides [REQ-CONFIG_DRIVEN_APPEARANCE]
+- [x] Create calendar page server component (src/app/jobs/calendar/page.tsx) [IMPL-CALENDAR_PAGE]
+- [x] Create CalendarView client component with state, detail panel, navigation, and grid [IMPL-CALENDAR_GRID]
+- [x] Add calendar view link to jobs list page header [REQ-JOB_TRACKER_CALENDAR]
+- [x] Write tests for calendar page and components [REQ-JOB_TRACKER_CALENDAR]
+- [x] Run lints and verify TypeScript compilation [PROC-TOKEN_VALIDATION]
+
+**Completion Criteria**:
+- [x] All subtasks complete
+- [x] Calendar page renders at /jobs/calendar with month grid
+- [x] Items appear on correct dates (positions on postingDate, applications on date)
+- [x] Month navigation (prev/next/today) works correctly
+- [x] Clicking items displays details in panel above grid
+- [x] All UI text and styling driven by config
+- [x] Tests pass with semantic token references (120 tests passing)
+- [x] Documentation updated
+- [x] `[PROC-TOKEN_AUDIT]` and `[PROC-TOKEN_VALIDATION]` outcomes logged
+
+**Priority Rationale**: P1 because it enhances the existing job tracker with a complementary view, providing users with timeline visualization of their job search activity.
+
 ## Phase 2: Core Components
 
 ### Task 2.1: Core Feature Implementation

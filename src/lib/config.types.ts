@@ -190,6 +190,12 @@ export interface JobsThemeOverrides {
   dangerButton?: string;
   /** Default badge when status has no mapping */
   statusBadgeDefault?: string;
+  // [REQ-JOB_TRACKER_CALENDAR] Calendar view overrides
+  calendarGrid?: string;
+  calendarCell?: string;
+  calendarCellToday?: string;
+  calendarItem?: string;
+  calendarDetailPanel?: string;
 }
 
 /** Select option for jobs config fields. */
@@ -235,6 +241,19 @@ export interface JobsCopyConfig {
   createPosition?: string;
   updatePosition?: string;
   saving?: string;
+  // [REQ-JOB_TRACKER_CALENDAR] Calendar view copy
+  calendarTitle?: string;
+  calendarSubtitle?: string;
+  calendarPrev?: string;
+  calendarNext?: string;
+  calendarToday?: string;
+  calendarNoItems?: string;
+  calendarPositionLabel?: string;
+  calendarApplicationLabel?: string;
+  calendarDetailClose?: string;
+  calendarBackToList?: string;
+  calendarDayNames?: string;
+  calendarViewButton?: string;
 }
 
 export interface JobsAppConfig {
