@@ -1,10 +1,21 @@
+/* [IMPL-DARK_MODE] [ARCH-TAILWIND_V4] [REQ-TAILWIND_STYLING]
+   Global stylesheet that imports Tailwind CSS and defines CSS variables
+   for theming. Supports light and dark modes automatically. */
+
 @import "tailwindcss";
 
+/* [IMPL-DARK_MODE] [ARCH-CSS_VARIABLES] [REQ-DARK_MODE] [REQ-GLOBAL_STYLES]
+   Light mode color variables. These define the default color scheme used
+   when the user's system preference is set to light mode. */
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
 
+/* [IMPL-DARK_MODE] [ARCH-TAILWIND_V4] [REQ-TAILWIND_STYLING]
+   Tailwind theme configuration using @theme inline directive (Tailwind v4).
+   Maps CSS variables to Tailwind utilities and includes font variables
+   created by next/font. */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -12,6 +23,9 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* [IMPL-DARK_MODE] [ARCH-CSS_VARIABLES] [REQ-DARK_MODE]
+   Dark mode color variables. Automatically applied when user's system
+   color scheme preference is set to dark. No JavaScript required. */
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -19,6 +33,9 @@
   }
 }
 
+/* [IMPL-DARK_MODE] [REQ-GLOBAL_STYLES]
+   Base body styles that apply CSS variables for background and foreground
+   colors. These values update automatically based on prefers-color-scheme. */
 body {
   background: var(--background);
   color: var(--foreground);
