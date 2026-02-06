@@ -1,7 +1,7 @@
 "use client";
 
-// [IMPL-CALENDAR_GRID] [ARCH-CALENDAR_VIEW] [REQ-JOB_TRACKER_CALENDAR] [REQ-CONFIG_DRIVEN_APPEARANCE]
-// Calendar view client component with interactive month grid, detail panel, and navigation.
+// [IMPL-CALENDAR_GRID] [IMPL-EDIT_PAGE_RETURN_SOURCE] [ARCH-CALENDAR_VIEW] [REQ-JOB_TRACKER_CALENDAR] [REQ-CONFIG_DRIVEN_APPEARANCE]
+// Calendar view client component with interactive month grid, detail panel, and navigation. Edit links use ?from=calendar for return destination.
 
 import { useState } from "react";
 import Link from "next/link";
@@ -196,7 +196,7 @@ export default function CalendarView({
                     </div>
                   )}
                   <Link
-                    href={`/jobs/${selectedItem.data.id}/edit`}
+                    href={`/jobs/${selectedItem.data.id}/edit?from=calendar`}
                     className="inline-block text-sm text-blue-600 dark:text-blue-400 hover:underline"
                   >
                     Edit Position →
@@ -232,7 +232,7 @@ export default function CalendarView({
                     </div>
                   )}
                   <Link
-                    href={`/jobs/${selectedItem.data.positionId}/edit`}
+                    href={`/jobs/${selectedItem.data.positionId}/edit?from=calendar`}
                     className="inline-block text-sm text-blue-600 dark:text-blue-400 hover:underline"
                   >
                     Edit Position →

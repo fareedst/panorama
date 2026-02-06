@@ -37,6 +37,12 @@ Token audit performed on jobs-related code:
 
 **Result**: ✅ Pass - Token alignment complete; code and docs use consistent token set.
 
+### Edit page return-to-source (2026-02-06)
+
+- **Feature**: Edit Position page Return button destination and label depend on navigation source (Calendar vs List). Documented in [IMPL-EDIT_PAGE_RETURN_SOURCE](implementation-decisions/IMPL-EDIT_PAGE_RETURN_SOURCE.md).
+- **Code**: CalendarView edit links use `?from=calendar`; edit page uses `searchParams.from` to set return href and label; config key `backToCalendar` added.
+- **Tokens**: `[IMPL-EDIT_PAGE_RETURN_SOURCE]` in CalendarView and edit page; token registered in semantic-tokens.md and implementation-decisions index.
+
 ---
 
 ## Original Audit (Historical Reference)

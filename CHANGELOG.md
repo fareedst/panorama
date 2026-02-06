@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.1] - 2026-02-06
+
+### Added
+
+#### Edit Position return to source view [IMPL-EDIT_PAGE_RETURN_SOURCE]
+- **Return destination by source**: When opening Edit Position from the Calendar view, the Return button now navigates back to `/jobs/calendar` instead of the list. When opening from the List view (or without a source), Return still goes to `/jobs`.
+- **Return button label**: The button text reflects the destination: "Return to Calendar" when returning to the calendar, "Back to List" when returning to the list. Both labels are configurable via `config/jobs.yaml` (`backToCalendar`, `backToList`).
+- **Implementation**: Calendar "Edit Position" links append `?from=calendar`; the edit page reads `searchParams.from` and sets the return link href and label accordingly.
+
+#### STDD documentation
+- New implementation decision: `[IMPL-EDIT_PAGE_RETURN_SOURCE]` — edit page return destination and label from query param (calendar vs list).
+- New semantic token registered; implementation-decisions index and tasks.md updated. Task P2 "Edit Position Return to Source View" completed.
+
+### Fixed
+- **Edit from Calendar**: Clicking Return on the Edit Position page after navigating from the Calendar view no longer incorrectly returns to the List view; it now returns to the Calendar view as expected.
+
+### Technical details
+- **Modified**: `src/app/jobs/calendar/CalendarView.tsx` — edit links use `?from=calendar`; `src/app/jobs/[id]/edit/page.tsx` — accepts `searchParams`, derives `returnHref` and `returnLabel`; `config/jobs.yaml`, `src/lib/config.ts`, `src/lib/config.types.ts` — added `backToCalendar` copy key.
+- **New**: `stdd/implementation-decisions/IMPL-EDIT_PAGE_RETURN_SOURCE.md`.
+
+---
+
 ## [0.4.0] - 2026-02-06
 
 ### Added

@@ -217,6 +217,7 @@ When referencing other tokens:
 - `[IMPL-JOBS_API]` - Jobs API route handlers using jobs.data.ts [ARCH-JOB_TRACKER_API] [REQ-JOB_TRACKER_CRUD]
 - `[IMPL-CALENDAR_PAGE]` - Calendar page server component implementation [ARCH-CALENDAR_VIEW] [REQ-JOB_TRACKER_CALENDAR]
 - `[IMPL-CALENDAR_GRID]` - Calendar grid client component with month view and detail panel [ARCH-CALENDAR_VIEW] [REQ-JOB_TRACKER_CALENDAR]
+- `[IMPL-EDIT_PAGE_RETURN_SOURCE]` - Edit page return button destination and label from query param (calendar vs list) [ARCH-JOB_TRACKER_UI] [ARCH-CALENDAR_VIEW] [REQ-JOB_TRACKER_EDIT] [REQ-JOB_TRACKER_CALENDAR]
 
 ## Token Relationships
 

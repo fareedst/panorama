@@ -224,6 +224,7 @@ export interface JobsCopyConfig {
   editLink?: string;
   editPageTitle?: string;
   backToList?: string;
+  backToCalendar?: string;
   deleteButton?: string;
   deleteConfirm?: string;
   newPageTitle?: string;

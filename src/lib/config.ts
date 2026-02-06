@@ -165,6 +165,7 @@ const DEFAULT_JOBS_CONFIG: JobsConfig = {
     editLink: "Edit",
     editPageTitle: "Edit Position",
     backToList: "Back to List",
+    backToCalendar: "Return to Calendar",
     deleteButton: "Delete Position",
     deleteConfirm: "Are you sure you want to delete this position?",
     newPageTitle: "Add New Position",

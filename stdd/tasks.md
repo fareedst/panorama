@@ -216,6 +216,26 @@ This document tracks all tasks and subtasks for implementing this project. Tasks
 
 **Priority Rationale**: P1 because it enhances the existing job tracker with a complementary view, providing users with timeline visualization of their job search activity.
 
+## P2: Edit Position Return to Source View [REQ-JOB_TRACKER_EDIT] [REQ-JOB_TRACKER_CALENDAR] [IMPL-EDIT_PAGE_RETURN_SOURCE]
+
+**Status**: ✅ Complete
+
+**Description**: When the user opens Edit Position from the Calendar view, the Return button must navigate back to the Calendar view and show a label that indicates that destination (e.g. "Return to Calendar"). When opened from the List view, it continues to go to the List with "Back to List".
+
+**Dependencies**: [IMPL-JOBS_EDIT_PAGE], [IMPL-CALENDAR_GRID]
+
+**Subtasks**:
+- [x] Add `?from=calendar` to Edit Position links in CalendarView (position and application panels) [IMPL-EDIT_PAGE_RETURN_SOURCE]
+- [x] Edit page: accept `searchParams`, derive return URL and label from `from`, use in Return Link [IMPL-EDIT_PAGE_RETURN_SOURCE]
+- [x] Add `backToCalendar` copy key to config (jobs.yaml, config.ts, config.types.ts) [REQ-CONFIG_DRIVEN_APPEARANCE]
+
+**Completion Criteria**:
+- [x] From Calendar → Edit → Return goes to /jobs/calendar with label "Return to Calendar" (or config)
+- [x] From List → Edit → Return goes to /jobs with label "Back to List"
+- [x] Documentation and semantic tokens updated
+
+**Priority Rationale**: P2 UX improvement so return behavior matches user expectation and button label reflects destination.
+
 ## Phase 2: Core Components
 
 ### Task 2.1: Core Feature Implementation

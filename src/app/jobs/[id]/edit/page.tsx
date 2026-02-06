@@ -1,4 +1,4 @@
-// [IMPL-JOBS_EDIT_PAGE] [ARCH-JOB_TRACKER_UI] [REQ-JOB_TRACKER_EDIT] [REQ-CONFIG_DRIVEN_APPEARANCE]
+// [IMPL-JOBS_EDIT_PAGE] [IMPL-EDIT_PAGE_RETURN_SOURCE] [ARCH-JOB_TRACKER_UI] [REQ-JOB_TRACKER_EDIT] [REQ-CONFIG_DRIVEN_APPEARANCE]
 // Page for editing a position. Copy, layout, and status badge classes from config.
 
 import { notFound } from "next/navigation";
@@ -15,6 +15,7 @@ import DeletePositionButton from "../../components/DeletePositionButton";
 
 interface EditPositionPageProps {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ from?: string }>;
 }
 
 function formatDate(dateStr: string | undefined): string {
@@ -37,8 +38,9 @@ function formatStatus(status: string): string {
     .join(" ");
 }
 
-export default async function EditPositionPage({ params }: EditPositionPageProps) {
+export default async function EditPositionPage({ params, searchParams }: EditPositionPageProps) {
   const { id } = await params;
+  const resolvedSearchParams = await searchParams;
   const position = getPositionById(id);
   if (!position) notFound();
 
@@ -51,7 +53,12 @@ export default async function EditPositionPage({ params }: EditPositionPageProps
   const theme = getThemeConfig();
   const copy = jobsConfig.copy ?? {};
   const editPageTitle = copy.editPageTitle ?? "Edit Position";
-  const backToList = copy.backToList ?? "Back to List";
+  // [IMPL-EDIT_PAGE_RETURN_SOURCE] Return destination and label from ?from=calendar
+  const fromCalendar = resolvedSearchParams.from === "calendar";
+  const returnHref = fromCalendar ? "/jobs/calendar" : "/jobs";
+  const returnLabel = fromCalendar
+    ? (copy.backToCalendar ?? "Return to Calendar")
+    : (copy.backToList ?? "Back to List");
   const positionDetails = copy.positionDetails ?? "Position Details";
   const applicationsHeading = copy.applications ?? "Applications";
   const statusBadgeClasses: Record<string, string> = {};
@@ -87,8 +94,8 @@ export default async function EditPositionPage({ params }: EditPositionPageProps
             <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">{position.title}</p>
           </div>
           <div className="flex gap-2">
-            <Link href="/jobs" className={secondaryButtonClass}>
-              {backToList}
+            <Link href={returnHref} className={secondaryButtonClass}>
+              {returnLabel}
             </Link>
             <DeletePositionButton
               positionId={id}

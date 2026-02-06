@@ -11,7 +11,7 @@ All page content, appearance, and layout are driven by YAML configuration files 
 
 - **Configuration-Driven UI** -- all content, colors, fonts, spacing, and layout controlled via YAML files
 - **Job Search Tracker** -- config-driven CRUD app to track positions and applications, with table view, calendar month view, edit/new forms, and RESTful API (field definitions, status options, and table columns all customizable via `config/jobs.yaml`)
-- **Calendar Month View** -- visual timeline of positions and applications on a single-month grid with interactive detail panel (at `/jobs/calendar`)
+- **Calendar Month View** -- visual timeline of positions and applications on a single-month grid with interactive detail panel (at `/jobs/calendar`). From the calendar, "Edit Position" opens the edit page and the Return button goes back to the calendar with label "Return to Calendar"; from the list view, Return goes to the list with "Back to List".
 - **YAML Data Storage** -- position records persisted in `data/jobs.yaml` with no external database required
 - **Next.js 16.1** with App Router and React Server Components
 - **React 19.2** with modern concurrent features
@@ -505,7 +505,7 @@ nx1/
 │   │   ├── jobs/                  # Job search tracker pages
 │   │   │   ├── page.tsx          # Table view [IMPL-JOBS_UI_PAGES]
 │   │   │   ├── new/page.tsx      # New record form
-│   │   │   ├── [id]/edit/page.tsx # Edit record form
+│   │   │   ├── [id]/edit/page.tsx # Edit record form [IMPL-JOBS_EDIT_PAGE] [IMPL-EDIT_PAGE_RETURN_SOURCE]
 │   │   │   ├── calendar/         # Calendar month view
 │   │   │   │   ├── page.tsx      # Calendar page [IMPL-CALENDAR_PAGE]
 │   │   │   │   └── CalendarView.tsx # Calendar grid component [IMPL-CALENDAR_GRID]
@@ -630,8 +630,8 @@ All STDD documentation is in the `stdd/` directory:
 
 - **[Requirements](stdd/requirements.md)** - 17 documented requirements
 - **[Architecture Decisions](stdd/architecture-decisions.md)** - 20 decision files
-- **[Implementation Decisions](stdd/implementation-decisions.md)** - 24 implementation files
-- **[Semantic Tokens](stdd/semantic-tokens.md)** - 53 token registry
+- **[Implementation Decisions](stdd/implementation-decisions.md)** - 25 implementation files (including edit-page return-to-source)
+- **[Semantic Tokens](stdd/semantic-tokens.md)** - token registry (REQ/ARCH/IMPL)
 - **[Tasks](stdd/tasks.md)** - Task tracking with priorities
 
 ### For Developers
@@ -777,4 +777,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 **Built with Next.js, React, and STDD Methodology**
 
-*Version 0.4.0 - Calendar Month View*
+*Version 0.4.0 - Calendar Month View; Edit return to source (0.4.1)*
