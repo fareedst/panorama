@@ -5,6 +5,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.2] - 2026-02-06
+
+### Added
+
+#### Global Error Boundary [IMPL-GLOBAL_ERROR_BOUNDARY]
+- **Root-level error boundary** (`global-error.tsx`) that catches unexpected errors at the root layout level and provides users with a friendly error message in production
+- **Full HTML document rendering**: Component renders its own `<html>` and `<body>` tags to replace the entire root layout when activated (unlike segment-level error boundaries)
+- **User-friendly error UI**:
+  - Clear "Something went wrong" heading
+  - Actionable instructions with recovery options
+  - "Try again" button that calls Next.js `reset()` function to attempt recovery
+  - "Home page" link as escape route
+  - Collapsible error details section showing error message and digest for debugging
+- **Self-contained styling**: Inline CSS ensures error page renders correctly even if global CSS, config-driven theme, or Tailwind fails to load
+- **Production-only**: Error boundary functions only in production builds; development shows Next.js error overlay for debugging
+- **Error digest support**: Displays optional digest property for matching client-side errors with server-side logs
+
+#### STDD documentation
+- New requirement: `[REQ-ERROR_HANDLING]` in `stdd/requirements.md` — root-level error boundary for production error recovery
+- New implementation decision: `[IMPL-GLOBAL_ERROR_BOUNDARY]` in `stdd/implementation-decisions/IMPL-GLOBAL_ERROR_BOUNDARY.md` — global error boundary component with full HTML document
+- Updated semantic tokens registry with new token
+- Updated implementation-decisions index
+
+### Fixed
+- **Next.js tooling warning**: Satisfies "No global-error.tsx found" tooltip recommendation from Next.js linting/IDE extensions
+
+### Technical details
+- **New file**: `src/app/global-error.tsx` — client component (143 lines) with GlobalErrorProps interface, self-contained dark theme styling, error details display
+- **Modified**: `stdd/semantic-tokens.md` — added `[REQ-ERROR_HANDLING]` and `[IMPL-GLOBAL_ERROR_BOUNDARY]` tokens
+- **Modified**: `stdd/implementation-decisions.md` — added index entry for `[IMPL-GLOBAL_ERROR_BOUNDARY]`
+- **New**: `stdd/implementation-decisions/IMPL-GLOBAL_ERROR_BOUNDARY.md` — detailed implementation decision document
+
+---
+
 ## [0.4.1] - 2026-02-06
 
 ### Added

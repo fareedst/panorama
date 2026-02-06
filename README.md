@@ -777,4 +777,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 **Built with Next.js, React, and STDD Methodology**
 
-*Version 0.4.0 - Calendar Month View; Edit return to source (0.4.1)*
+*Version 0.4.2 - Global Error Boundary*

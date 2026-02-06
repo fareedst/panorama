@@ -81,6 +81,7 @@ Token names contain `:` which is invalid in filenames on many operating systems.
 | `[IMPL-CALENDAR_PAGE]` | Calendar Page Server Component | Planned | [ARCH-CALENDAR_VIEW] [REQ-JOB_TRACKER_CALENDAR] | [Detail](implementation-decisions/IMPL-CALENDAR_PAGE.md) |
 | `[IMPL-CALENDAR_GRID]` | Calendar Grid Client Component | Planned | [ARCH-CALENDAR_VIEW] [REQ-JOB_TRACKER_CALENDAR] | [Detail](implementation-decisions/IMPL-CALENDAR_GRID.md) |
 | `[IMPL-EDIT_PAGE_RETURN_SOURCE]` | Edit Position Return to Source View | Active | [ARCH-JOB_TRACKER_UI] [ARCH-CALENDAR_VIEW] [REQ-JOB_TRACKER_EDIT] [REQ-JOB_TRACKER_CALENDAR] | [Detail](implementation-decisions/IMPL-EDIT_PAGE_RETURN_SOURCE.md) |
+| `[IMPL-GLOBAL_ERROR_BOUNDARY]` | Global Error Boundary Component | Active | [ARCH-NEXTJS_FRAMEWORK] [REQ-ERROR_HANDLING] | [Detail](implementation-decisions/IMPL-GLOBAL_ERROR_BOUNDARY.md) |
 
 ### Status Values
 

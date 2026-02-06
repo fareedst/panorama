@@ -135,6 +135,7 @@ When referencing other tokens:
 - `[REQ-ACCESSIBILITY]` - Semantic HTML and accessible image alt text
 - `[REQ-TYPESCRIPT]` - TypeScript type safety throughout
 - `[REQ-BUILD_SYSTEM]` - Next.js build and development scripts
+- `[REQ-ERROR_HANDLING]` - Root-level error boundary for production error recovery
 
 ### Configurability Requirements
 - `[REQ-CONFIG_DRIVEN_UI]` - Configuration-driven UI via YAML files for all page elements
@@ -218,6 +219,7 @@ When referencing other tokens:
 - `[IMPL-CALENDAR_PAGE]` - Calendar page server component implementation [ARCH-CALENDAR_VIEW] [REQ-JOB_TRACKER_CALENDAR]
 - `[IMPL-CALENDAR_GRID]` - Calendar grid client component with month view and detail panel [ARCH-CALENDAR_VIEW] [REQ-JOB_TRACKER_CALENDAR]
 - `[IMPL-EDIT_PAGE_RETURN_SOURCE]` - Edit page return button destination and label from query param (calendar vs list) [ARCH-JOB_TRACKER_UI] [ARCH-CALENDAR_VIEW] [REQ-JOB_TRACKER_EDIT] [REQ-JOB_TRACKER_CALENDAR]
+- `[IMPL-GLOBAL_ERROR_BOUNDARY]` - Global error boundary component with full HTML document for root-level error recovery [ARCH-NEXTJS_FRAMEWORK] [REQ-ERROR_HANDLING]
 
 ## Token Relationships
 
