@@ -1,21 +1,15 @@
-/* [IMPL-DARK_MODE] [ARCH-TAILWIND_V4] [REQ-TAILWIND_STYLING]
-   Global stylesheet that imports Tailwind CSS and defines CSS variables
-   for theming. Supports light and dark modes automatically. */
+/* [IMPL-DARK_MODE] [ARCH-TAILWIND_V4] [REQ-TAILWIND_STYLING] [REQ-CONFIG_DRIVEN_UI]
+   Global stylesheet that imports Tailwind CSS and defines CSS variable
+   references for theming. Color values are injected by the root layout
+   from config/theme.yaml – this file only REFERENCES the variables. */
 
 @import "tailwindcss";
 
-/* [IMPL-DARK_MODE] [ARCH-CSS_VARIABLES] [REQ-DARK_MODE] [REQ-GLOBAL_STYLES]
-   Light mode color variables. These define the default color scheme used
-   when the user's system preference is set to light mode. */
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-/* [IMPL-DARK_MODE] [ARCH-TAILWIND_V4] [REQ-TAILWIND_STYLING]
+/* [IMPL-DARK_MODE] [ARCH-TAILWIND_V4] [REQ-TAILWIND_STYLING] [REQ-CONFIG_DRIVEN_UI]
    Tailwind theme configuration using @theme inline directive (Tailwind v4).
    Maps CSS variables to Tailwind utilities and includes font variables
-   created by next/font. */
+   created by next/font. Color values come from the <style> tag injected
+   by layout.tsx based on config/theme.yaml. */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -23,21 +17,12 @@
   --font-mono: var(--font-geist-mono);
 }
 
-/* [IMPL-DARK_MODE] [ARCH-CSS_VARIABLES] [REQ-DARK_MODE]
-   Dark mode color variables. Automatically applied when user's system
-   color scheme preference is set to dark. No JavaScript required. */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-/* [IMPL-DARK_MODE] [REQ-GLOBAL_STYLES]
+/* [IMPL-DARK_MODE] [REQ-GLOBAL_STYLES] [REQ-CONFIG_DRIVEN_UI]
    Base body styles that apply CSS variables for background and foreground
-   colors. These values update automatically based on prefers-color-scheme. */
+   colors. These values are set by the theme config and update automatically
+   based on prefers-color-scheme via the injected style tag. */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans, Arial, Helvetica, sans-serif);
 }

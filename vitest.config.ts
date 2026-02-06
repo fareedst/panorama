@@ -47,9 +47,10 @@ export default defineConfig({
         'src/test/setup.ts',
         'src/test/utils.tsx',
       ],
-      // [IMPL-TEST_CONFIG] Include only application code in coverage
+      // [IMPL-TEST_CONFIG] Include application code and library modules in coverage
       include: [
         'src/app/**/*.{ts,tsx}',
+        'src/lib/**/*.{ts,tsx}',
       ],
       // [IMPL-TEST_CONFIG] Collect coverage from all files (even untested)
       all: true,

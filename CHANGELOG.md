@@ -5,6 +5,105 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-02-06
+
+### Added
+
+#### Configuration-Driven UI [REQ-CONFIG_DRIVEN_UI]
+- **YAML configuration system** with two config files that control all page elements:
+  - `config/site.yaml` -- site metadata, locale, branding, page content, navigation links, link security
+  - `config/theme.yaml` -- color palette (light/dark), font variables, spacing, sizing, per-element class overrides
+- **Typed config loader module** (`src/lib/config.ts`) that reads YAML files, deep-merges with built-in defaults, and caches results at module level
+- **TypeScript config interfaces** (`src/lib/config.types.ts`) providing full type safety for `SiteConfig` and `ThemeConfig`
+- **Theme CSS variable injection** -- layout.tsx renders a `<style>` tag with CSS custom properties from theme config, replacing hard-coded values in globals.css
+- **Tailwind class override system** -- `config/theme.yaml` `overrides` section allows per-element Tailwind class customization via `tailwind-merge`
+- **Placeholder syntax** in content description -- `{key}` tokens are replaced with inline link components from `navigation.inlineLinks`
+- **Partial config support** -- missing fields gracefully fall back to built-in defaults; missing config files use full defaults
+- **Helper components** in page.tsx: `ConfigImage` for config-driven images, `CtaButton` for config-driven buttons, `renderDescription` for placeholder-based inline links
+
+#### New Dependencies
+- `js-yaml` -- YAML parser for reading configuration files
+- `@types/js-yaml` -- TypeScript type definitions for js-yaml
+- `tailwind-merge` -- intelligent Tailwind CSS class merging for the override system
+
+#### Testing [REQ-CONFIG_DRIVEN_UI]
+- **31 new config loader tests** (`src/lib/config.test.ts`):
+  - Site config loading and field validation
+  - Theme config loading and field validation
+  - Deep merge behavior (nested objects, arrays, immutability, edge cases)
+  - `generateThemeCss()` output validation
+  - `getOverride()` for all override keys
+  - Cache behavior and reset
+  - Default config structure validation
+- **Updated all existing tests** to use config-driven assertions instead of hard-coded expected values
+- Test count increased from 66 to **102 tests** across 6 test files
+- Coverage includes `src/lib/` in addition to `src/app/`
+
+#### STDD Documentation [REQ-CONFIG_DRIVEN_UI]
+- New requirement: `[REQ-CONFIG_DRIVEN_UI]` in `stdd/requirements.md`
+- New architecture decisions:
+  - `[ARCH-CONFIG_DRIVEN_UI]` -- YAML config architecture with deep-merge and caching
+  - `[ARCH-THEME_INJECTION]` -- CSS variable injection from config via `<style>` tag
+  - `[ARCH-CLASS_OVERRIDES]` -- Tailwind class override system with `tailwind-merge`
+- New implementation decisions:
+  - `[IMPL-YAML_CONFIG]` -- YAML file structure and placeholder syntax
+  - `[IMPL-CONFIG_LOADER]` -- Config loader module with public/internal API
+  - `[IMPL-THEME_INJECTION]` -- `generateThemeCss()` and layout integration
+  - `[IMPL-CLASS_OVERRIDES]` -- `getOverride()` and `twMerge` usage patterns
+- Updated semantic tokens registry with 8 new tokens
+- Updated tasks.md with completed configuration task
+
+### Changed
+
+#### Component Updates
+- **`src/app/layout.tsx`**: Reads metadata and locale from `config/site.yaml`; injects theme CSS variables from `config/theme.yaml` via `<style>` tag in `<head>`
+- **`src/app/page.tsx`**: All content (text, links, images, buttons) driven by `config/site.yaml`; all styling tokens (spacing, sizing, colors) driven by `config/theme.yaml`; class overrides applied via `tailwind-merge`
+- **`src/app/globals.css`**: Removed hard-coded `:root` and dark mode color values; now references CSS variables injected by layout; body font-family uses CSS variable with fallback
+
+#### Test Updates
+- All component tests import config values for assertions instead of hard-coding expected strings
+- Tests validate that rendered content matches config, ensuring config changes propagate correctly
+- Integration tests verify end-to-end config-to-rendered-content pipeline
+
+### Technical Details
+
+#### Configuration Data Flow
+```
+config/site.yaml  --> readYamlFile() --> deepMerge(defaults) --> cache --> getSiteConfig()
+config/theme.yaml --> readYamlFile() --> deepMerge(defaults) --> cache --> getThemeConfig()
+                                                                    \
+getSiteConfig() --> layout.tsx (metadata, locale)                    |
+                --> page.tsx (content, navigation, branding)         |
+getThemeConfig() --> layout.tsx (CSS variable injection)             |
+                 --> page.tsx (spacing, sizing, class overrides) <--/
+```
+
+#### New Files
+- `config/site.yaml` -- site content configuration
+- `config/theme.yaml` -- visual design configuration
+- `src/lib/config.ts` -- config loader module
+- `src/lib/config.types.ts` -- TypeScript config interfaces
+- `src/lib/config.test.ts` -- config loader unit tests
+- `stdd/architecture-decisions/ARCH-CONFIG_DRIVEN_UI.md`
+- `stdd/architecture-decisions/ARCH-THEME_INJECTION.md`
+- `stdd/architecture-decisions/ARCH-CLASS_OVERRIDES.md`
+- `stdd/implementation-decisions/IMPL-YAML_CONFIG.md`
+- `stdd/implementation-decisions/IMPL-CONFIG_LOADER.md`
+- `stdd/implementation-decisions/IMPL-THEME_INJECTION.md`
+- `stdd/implementation-decisions/IMPL-CLASS_OVERRIDES.md`
+
+#### New Semantic Tokens
+- `[REQ-CONFIG_DRIVEN_UI]` -- Configuration-driven UI requirement
+- `[ARCH-CONFIG_DRIVEN_UI]` -- YAML config architecture
+- `[ARCH-THEME_INJECTION]` -- CSS variable injection architecture
+- `[ARCH-CLASS_OVERRIDES]` -- Class override architecture
+- `[IMPL-YAML_CONFIG]` -- YAML file structure implementation
+- `[IMPL-CONFIG_LOADER]` -- Config loader implementation
+- `[IMPL-THEME_INJECTION]` -- Theme injection implementation
+- `[IMPL-CLASS_OVERRIDES]` -- Class override implementation
+
+---
+
 ## [0.1.0] - 2026-02-06
 
 ### Added
@@ -216,4 +315,5 @@ This baseline establishes a solid foundation for feature development:
 
 **Note**: This version represents the initial STDD documentation baseline. All existing functionality has been documented with requirements, architecture decisions, implementation decisions, and comprehensive tests. The application is ready for feature development with full traceability.
 
+[0.2.0]: https://github.com/yourusername/nx1/releases/tag/v0.2.0
 [0.1.0]: https://github.com/yourusername/nx1/releases/tag/v0.1.0

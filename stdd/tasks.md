@@ -111,6 +111,28 @@ This document tracks all tasks and subtasks for implementing this project. Tasks
 
 **Priority Rationale**: Processes are now a primary STDD concern; all consumers must see the v1.1.0 upgrade immediately to maintain alignment.
 
+## P0: Configuration-Driven UI [REQ-CONFIG_DRIVEN_UI] [ARCH-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]
+
+**Status**: ✅ Complete
+
+**Description**: Extract all hard-coded appearance, layout, and content values from page components into YAML configuration files, making the project a highly configurable template.
+
+**Dependencies**: [REQ-APP_STRUCTURE], [REQ-DARK_MODE], [REQ-TAILWIND_STYLING]
+
+**Completion Criteria**:
+- [x] Two YAML config files created (config/site.yaml, config/theme.yaml)
+- [x] TypeScript interfaces define config schemas (src/lib/config.types.ts)
+- [x] Config loader module reads YAML, merges with defaults, caches (src/lib/config.ts)
+- [x] globals.css simplified to reference CSS variables only (no hard-coded colors)
+- [x] layout.tsx consumes config for metadata, locale, and theme CSS injection
+- [x] page.tsx consumes config for all content, links, images, and class overrides
+- [x] Config loader unit tests pass (31 tests)
+- [x] All component/integration tests updated for config-driven content (102 total tests)
+- [x] STDD documentation complete (requirement, 3 ARCH decisions, 4 IMPL decisions, registries updated)
+- [x] `[PROC-TOKEN_AUDIT]` verified across all new/modified files
+
+**Priority Rationale**: P0 because configuration-driven UI is the core differentiator that makes this project a usable template. Without it, every customization requires code changes.
+
 ## Phase 2: Core Components
 
 ### Task 2.1: Core Feature Implementation

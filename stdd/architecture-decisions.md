@@ -68,6 +68,9 @@ Token names use the same format in text and filenames:
 | `[ARCH-GOOGLE_FONTS]` | Google Fonts Optimization | Active | [REQ-FONT_SYSTEM] | [Detail](architecture-decisions/ARCH-GOOGLE_FONTS.md) |
 | `[ARCH-CSS_VARIABLES_FONTS]` | CSS Variables for Fonts | Active | [REQ-FONT_SYSTEM] | [Detail](architecture-decisions/ARCH-CSS_VARIABLES_FONTS.md) |
 | `[ARCH-TEST_FRAMEWORK]` | Vitest Testing Framework | Active | [REQ-BUILD_SYSTEM] | [Detail](architecture-decisions/ARCH-TEST_FRAMEWORK.md) |
+| `[ARCH-CONFIG_DRIVEN_UI]` | Configuration-Driven UI Architecture | Active | [REQ-CONFIG_DRIVEN_UI] | [Detail](architecture-decisions/ARCH-CONFIG_DRIVEN_UI.md) |
+| `[ARCH-THEME_INJECTION]` | Theme CSS Variable Injection | Active | [REQ-CONFIG_DRIVEN_UI], [ARCH-CSS_VARIABLES] | [Detail](architecture-decisions/ARCH-THEME_INJECTION.md) |
+| `[ARCH-CLASS_OVERRIDES]` | Tailwind Class Override System | Active | [REQ-CONFIG_DRIVEN_UI], [ARCH-TAILWIND_V4] | [Detail](architecture-decisions/ARCH-CLASS_OVERRIDES.md) |
 
 ### Status Values
 

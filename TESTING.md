@@ -1,6 +1,6 @@
 # Testing Guide
 
-**Version**: 0.1.0  
+**Version**: 0.2.0  
 **Last Updated**: 2026-02-06
 
 This document provides comprehensive information about testing in this Next.js application, including test structure, coverage requirements, and best practices following STDD methodology.
@@ -78,12 +78,12 @@ npx vitest run -u
 
 ## Test Coverage
 
-### Current Coverage (v0.1.0)
+### Current Coverage (v0.2.0)
 
 ```
-Test Files:  5 passed (5)
-Tests:       66 passed (66)
-Coverage:    100% (application code)
+Test Files:  6 passed (6)
+Tests:       102 passed (102)
+Coverage:    Application code (src/app/) and library code (src/lib/)
 ```
 
 ### Latest Coverage Report
@@ -91,15 +91,13 @@ Coverage:    100% (application code)
 Run `npm run test:coverage` to generate a full coverage report.
 
 **Summary**:
-- **Application Code** (`src/app/`): **100%** coverage ✅
-- **All Statements**: 100%
-- **All Branches**: 100%
-- **All Functions**: 100%
-- **All Lines**: 100%
+- **Application Code** (`src/app/`): Covered
+- **Library Code** (`src/lib/`): Covered (config loader module)
+- Run `npm run test:coverage` for exact percentages
 
 **Excluded from Coverage**:
 - Configuration files (`*.config.ts`, `*.mjs`)
-- Test files (`*.test.tsx`, `*.spec.tsx`)
+- Test files (`*.test.tsx`, `*.test.ts`, `*.spec.tsx`)
 - Test utilities (`src/test/`)
 - Build output (`.next/`, `out/`, `dist/`)
 - Dependencies (`node_modules/`)
@@ -209,62 +207,81 @@ If coverage falls below the minimum:
 src/
 ├── app/
 │   ├── layout.tsx              # Application code
-│   ├── layout.test.tsx         # [REQ-ROOT_LAYOUT] tests
+│   ├── layout.test.tsx         # [REQ-ROOT_LAYOUT] [REQ-CONFIG_DRIVEN_UI] tests
 │   ├── page.tsx                # Application code
-│   └── page.test.tsx           # [REQ-HOME_PAGE] tests
+│   └── page.test.tsx           # [REQ-HOME_PAGE] [REQ-CONFIG_DRIVEN_UI] tests
+├── lib/
+│   ├── config.ts               # Config loader module
+│   ├── config.types.ts         # Config TypeScript interfaces
+│   └── config.test.ts          # [REQ-CONFIG_DRIVEN_UI] config loader tests
 └── test/
     ├── setup.ts                # Test configuration
     ├── utils.tsx               # Test utilities (excluded from coverage)
-    ├── dark-mode.test.tsx      # [REQ-DARK_MODE] tests
-    ├── responsive.test.tsx     # [REQ-RESPONSIVE_DESIGN] tests
+    ├── dark-mode.test.tsx      # [REQ-DARK_MODE] [REQ-CONFIG_DRIVEN_UI] tests
+    ├── responsive.test.tsx     # [REQ-RESPONSIVE_DESIGN] [REQ-CONFIG_DRIVEN_UI] tests
     └── integration/
-        └── app.test.tsx        # [REQ-APP_STRUCTURE] integration tests
+        └── app.test.tsx        # [REQ-APP_STRUCTURE] [REQ-CONFIG_DRIVEN_UI] integration tests
 ```
 
 ### Test Categories
 
-#### 1. Component Tests (Co-located)
+#### 1. Config Loader Tests (src/lib/)
+
+Unit tests for the configuration system:
+- `config.test.ts` - YAML parsing, deep merge, caching, theme CSS generation, class overrides
+
+**Test**: Config loading, defaults merging, validation, cache behavior
+
+#### 2. Component Tests (Co-located)
 
 Tests placed next to components they test:
-- `src/app/layout.test.tsx`
-- `src/app/page.test.tsx`
+- `src/app/layout.test.tsx` - Layout structure, metadata from config, theme injection
+- `src/app/page.test.tsx` - Content from config, navigation, accessibility
 
-**Test**: Component rendering, props, interactions
+**Test**: Component rendering with config-driven assertions
 
-#### 2. Feature Tests (src/test/)
+#### 3. Feature Tests (src/test/)
 
 Tests for cross-cutting features:
-- `dark-mode.test.tsx` - Theme switching
-- `responsive.test.tsx` - Responsive behavior
+- `dark-mode.test.tsx` - Theme switching, config-driven color values
+- `responsive.test.tsx` - Responsive behavior, config-driven spacing/sizing
 
-**Test**: Feature functionality across components
+**Test**: Feature functionality with values validated against config
 
-#### 3. Integration Tests (src/test/integration/)
+#### 4. Integration Tests (src/test/integration/)
 
 Tests for full application behavior:
-- `app.test.tsx` - Complete app rendering
+- `app.test.tsx` - Complete app rendering with config propagation
 
-**Test**: Multiple components working together
+**Test**: Multiple components working together, end-to-end config pipeline
 
 ## Writing Tests with STDD
 
 ### STDD Test Pattern
 
-Every test follows STDD methodology with semantic token references:
+Every test follows STDD methodology with semantic token references. Since v0.2.0, tests import config values for assertions instead of hard-coding expected strings:
 
 ```typescript
-// [REQ-FEATURE_NAME] Test file description
-// Tests for [feature] verifying [behavior]
+// [REQ-FEATURE_NAME] [REQ-CONFIG_DRIVEN_UI] Test file description
+// Tests for [feature] verifying [behavior] with config-driven assertions
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { getSiteConfig, _resetConfigCache } from '../lib/config';
 
-describe('Feature Name [REQ-FEATURE_NAME]', () => {
-  it('validates behavior [IMPL-IMPLEMENTATION_NAME]', () => {
-    // [REQ-FEATURE_NAME] Test description
+beforeEach(() => {
+  _resetConfigCache();
+});
+
+const site = getSiteConfig();
+
+describe('Feature Name [REQ-FEATURE_NAME] [REQ-CONFIG_DRIVEN_UI]', () => {
+  it('validates behavior from config [IMPL-IMPLEMENTATION_NAME]', () => {
+    // [REQ-FEATURE_NAME] [REQ-CONFIG_DRIVEN_UI] Test description
     render(<Component />);
     
-    expect(screen.getByText('content')).toBeInTheDocument();
+    // Assert against config values, not hard-coded strings
+    expect(screen.getByRole('heading')).toHaveTextContent(site.content.heading);
   });
 });
 ```

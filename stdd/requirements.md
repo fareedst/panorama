@@ -49,6 +49,12 @@ Each requirement includes:
 | [REQ-TYPESCRIPT] | TypeScript type safety throughout | P0 | ✅ | [ARCH-TYPESCRIPT_LANG] | Multiple implementations |
 | [REQ-BUILD_SYSTEM] | Next.js build, development, and testing scripts | P0 | ✅ | [ARCH-NEXTJS_FRAMEWORK], [ARCH-TEST_FRAMEWORK] | [IMPL-BUILD_SCRIPTS], [IMPL-TEST_CONFIG] |
 
+### Configurability Requirements
+
+| Token | Requirement | Priority | Status | Architecture | Implementation |
+|-------|------------|----------|--------|--------------|----------------|
+| [REQ-CONFIG_DRIVEN_UI] | Configuration-driven UI via YAML files | P0 | ✅ | [ARCH-CONFIG_DRIVEN_UI], [ARCH-THEME_INJECTION], [ARCH-CLASS_OVERRIDES] | [IMPL-YAML_CONFIG], [IMPL-CONFIG_LOADER], [IMPL-THEME_INJECTION], [IMPL-CLASS_OVERRIDES] |
+
 ### Immutable Requirements (Major Version Change Required)
 
 | Token | Requirement | Priority | Status | Architecture | Implementation |
@@ -332,6 +338,37 @@ Each requirement includes:
   - Tab order is logical and predictable
 - **Architecture**: See `architecture-decisions.md` § Server Components [ARCH-SERVER_COMPONENTS]
 - **Implementation**: See `implementation-decisions.md` § Image Optimization [IMPL-IMAGE_OPTIMIZATION]
+
+**Status**: ✅ Implemented
+
+### Configurability
+
+### [REQ-CONFIG_DRIVEN_UI] Configuration-Driven UI
+
+**Priority: P0 (Critical)**
+
+- **Description**: All page element appearance, layout, and content must be dictated by YAML configuration files rather than hard-coded values. Two configuration files control the template: `config/site.yaml` (what the site shows: metadata, branding, content, navigation) and `config/theme.yaml` (how it looks: colors, fonts, spacing, sizing, per-element class overrides). A typed config loader module reads these files, merges user values with built-in defaults, and provides typed configuration objects to server components.
+- **Rationale**: The project serves as a highly-configurable template. Users must be able to customize appearance and content by editing YAML files without modifying source code. Separating content from visual design follows separation of concerns. Deep-merge with defaults ensures partial configs work – users only override what they need.
+- **Satisfaction Criteria**:
+  - Two YAML config files exist at `config/site.yaml` and `config/theme.yaml`
+  - All page text content (headings, paragraphs, link labels) comes from config
+  - All navigation links (URLs, labels, security attributes) come from config
+  - All branding assets (logo source, alt text, dimensions) come from config
+  - All theme colors (light/dark mode CSS variables) come from config
+  - Page metadata (title, description) comes from config
+  - HTML locale attribute comes from config
+  - Spacing and sizing values (padding, gaps, max-widths, button dimensions) come from config
+  - Per-element Tailwind class overrides are supported via config
+  - Partial config files work (missing values use built-in defaults)
+  - Missing config files gracefully fall back to full defaults
+- **Validation Criteria**:
+  - Config loader unit tests pass (31 tests for parsing, defaults, merging, caching)
+  - Component tests validate content comes from config (not hard-coded assertions)
+  - Integration tests verify config changes propagate to rendered output
+  - TypeScript compilation passes with config type safety
+  - Changing a value in YAML config changes the rendered output
+- **Architecture**: See `architecture-decisions.md` § Config-Driven UI [ARCH-CONFIG_DRIVEN_UI], Theme Injection [ARCH-THEME_INJECTION], Class Overrides [ARCH-CLASS_OVERRIDES]
+- **Implementation**: See `implementation-decisions.md` § YAML Config [IMPL-YAML_CONFIG], Config Loader [IMPL-CONFIG_LOADER], Theme Injection [IMPL-THEME_INJECTION], Class Overrides [IMPL-CLASS_OVERRIDES]
 
 **Status**: ✅ Implemented
 

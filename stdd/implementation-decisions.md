@@ -68,6 +68,10 @@ Token names contain `:` which is invalid in filenames on many operating systems.
 | `[IMPL-BUILD_SCRIPTS]` | Build and Test Scripts | Active | [ARCH-NEXTJS_FRAMEWORK] [REQ-BUILD_SYSTEM] | [Detail](implementation-decisions/IMPL-BUILD_SCRIPTS.md) |
 | `[IMPL-TEST_SETUP]` | Test Setup and Utilities | Active | [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM] | [Detail](implementation-decisions/IMPL-TEST_SETUP.md) |
 | `[IMPL-STDD_FILES]` | STDD Methodology Files | Active | [ARCH-STDD_STRUCTURE] [REQ-STDD_SETUP] | [Detail](implementation-decisions/IMPL-STDD_FILES.md) |
+| `[IMPL-YAML_CONFIG]` | YAML Configuration File Structure | Active | [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI] | [Detail](implementation-decisions/IMPL-YAML_CONFIG.md) |
+| `[IMPL-CONFIG_LOADER]` | Configuration Loader Module | Active | [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI] | [Detail](implementation-decisions/IMPL-CONFIG_LOADER.md) |
+| `[IMPL-THEME_INJECTION]` | Theme CSS Variable Injection | Active | [ARCH-THEME_INJECTION] [REQ-CONFIG_DRIVEN_UI] | [Detail](implementation-decisions/IMPL-THEME_INJECTION.md) |
+| `[IMPL-CLASS_OVERRIDES]` | Tailwind Class Override Implementation | Active | [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI] | [Detail](implementation-decisions/IMPL-CLASS_OVERRIDES.md) |
 
 ### Status Values
 

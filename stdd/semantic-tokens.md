@@ -122,6 +122,9 @@ When referencing other tokens:
 - `[REQ-TYPESCRIPT]` - TypeScript type safety throughout
 - `[REQ-BUILD_SYSTEM]` - Next.js build and development scripts
 
+### Configurability Requirements
+- `[REQ-CONFIG_DRIVEN_UI]` - Configuration-driven UI via YAML files for all page elements
+
 ## Architecture Tokens Registry
 
 **📖 Full details**: See `architecture-decisions.md` (index) and `architecture-decisions/` (detail files)
@@ -140,6 +143,9 @@ When referencing other tokens:
 - `[ARCH-GOOGLE_FONTS]` - Google Fonts optimization with next/font [REQ-FONT_SYSTEM]
 - `[ARCH-CSS_VARIABLES_FONTS]` - CSS Variables for font assignment [REQ-FONT_SYSTEM]
 - `[ARCH-TEST_FRAMEWORK]` - Vitest testing framework with React Testing Library [REQ-BUILD_SYSTEM]
+- `[ARCH-CONFIG_DRIVEN_UI]` - YAML configuration-driven UI architecture [REQ-CONFIG_DRIVEN_UI]
+- `[ARCH-THEME_INJECTION]` - CSS variable injection from theme config [REQ-CONFIG_DRIVEN_UI] [ARCH-CSS_VARIABLES]
+- `[ARCH-CLASS_OVERRIDES]` - Tailwind class override system via config [REQ-CONFIG_DRIVEN_UI] [ARCH-TAILWIND_V4]
 
 ## Implementation Tokens Registry
 
@@ -159,6 +165,10 @@ When referencing other tokens:
 - `[IMPL-BUILD_SCRIPTS]` - NPM scripts for build, dev, and test [ARCH-NEXTJS_FRAMEWORK] [REQ-BUILD_SYSTEM]
 - `[IMPL-TEST_SETUP]` - Test setup with mocks and utilities [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]
 - `[IMPL-STDD_FILES]` - STDD methodology file creation and structure [ARCH-STDD_STRUCTURE] [REQ-STDD_SETUP]
+- `[IMPL-YAML_CONFIG]` - YAML configuration file structure [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]
+- `[IMPL-CONFIG_LOADER]` - Config loader module with YAML parsing and caching [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]
+- `[IMPL-THEME_INJECTION]` - CSS variable injection from theme config in layout [ARCH-THEME_INJECTION] [REQ-CONFIG_DRIVEN_UI]
+- `[IMPL-CLASS_OVERRIDES]` - tailwind-merge class override implementation [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI]
 
 ## Token Relationships
 

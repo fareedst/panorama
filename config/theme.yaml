@@ -1,0 +1,56 @@
+# [REQ-CONFIG_DRIVEN_UI] Theme Configuration
+# This file controls HOW the site looks: colors, fonts, spacing, sizing,
+# and per-element Tailwind class overrides for advanced customization.
+
+# Color palette – CSS custom property values for light and dark modes.
+# These are injected as CSS variables (:root / @media prefers-color-scheme).
+colors:
+  light:
+    background: "#ffffff"
+    foreground: "#171717"
+  dark:
+    background: "#0a0a0a"
+    foreground: "#ededed"
+
+# Font system – CSS variable names created by next/font and fallback stacks.
+# NOTE: Changing the actual Google Font family requires editing layout.tsx
+# because next/font/google needs static analysis at build time.
+fonts:
+  sans:
+    variable: "--font-geist-sans"
+    fallback: "Arial, Helvetica, sans-serif"
+  mono:
+    variable: "--font-geist-mono"
+    fallback: "monospace"
+
+# Spacing values – Tailwind size tokens (e.g. "32" maps to py-32).
+spacing:
+  page:
+    paddingY: "32"
+    paddingX: "16"
+  contentGap: "6"
+  buttonGap: "4"
+
+# Sizing constraints
+sizing:
+  # Tailwind max-width token (e.g. "3xl" → max-w-3xl)
+  maxContentWidth: "3xl"
+  # Tailwind height token (e.g. "12" → h-12)
+  buttonHeight: "12"
+  # Exact pixel width for buttons on desktop viewports
+  buttonDesktopWidth: "158px"
+
+# Per-element Tailwind class overrides (advanced).
+# Add extra classes here to customize specific elements without editing TSX.
+# These are MERGED with (not replacing) the default classes using tailwind-merge.
+# Leave empty strings or omit keys to use defaults only.
+overrides:
+  outerContainer: ""
+  main: ""
+  heading: ""
+  paragraph: ""
+  contentSection: ""
+  buttonGroup: ""
+  primaryButton: ""
+  secondaryButton: ""
+  inlineLink: ""

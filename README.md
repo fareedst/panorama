@@ -1,22 +1,101 @@
 # Next.js Application with STDD Methodology
 
-**Version**: 0.1.0  
+**Version**: 0.2.0  
 **Last Updated**: 2026-02-06
 
-A modern Next.js application built with React 19, TypeScript, and Tailwind CSS v4, following **Semantic Token-Driven Development (STDD)** methodology for complete traceability from requirements through implementation.
+A modern, **highly configurable** Next.js template built with React 19, TypeScript, and Tailwind CSS v4, following **Semantic Token-Driven Development (STDD)** methodology for complete traceability from requirements through implementation.
 
-## 🚀 Features
+All page content, appearance, and layout are driven by YAML configuration files -- customize everything without touching source code.
 
+## Features
+
+- **Configuration-Driven UI** -- all content, colors, fonts, spacing, and layout controlled via two YAML files
 - **Next.js 16.1** with App Router and React Server Components
 - **React 19.2** with modern concurrent features
 - **TypeScript 5.x** with strict mode for type safety
-- **Tailwind CSS v4** with mobile-first responsive design
-- **Dark Mode** with automatic system preference detection
-- **Optimized Fonts** using next/font with Geist Sans & Geist Mono
+- **Tailwind CSS v4** with mobile-first responsive design and per-element class overrides
+- **Dark Mode** with automatic system preference detection (colors configurable)
+- **Optimized Fonts** using next/font with Geist Sans and Geist Mono
 - **STDD Documentation** with full requirements traceability
-- **Comprehensive Testing** with Vitest and React Testing Library (66 tests)
+- **Comprehensive Testing** with Vitest and React Testing Library (102 tests)
 
-## 📋 Prerequisites
+## Quick Start: Customizing the Template
+
+Edit the two YAML files in the `config/` directory to customize the template:
+
+### `config/site.yaml` -- What the site shows
+
+```yaml
+metadata:
+  title: "My App"                    # Browser tab title
+  description: "My app description"  # SEO meta description
+
+locale: "en"                          # HTML lang attribute
+
+branding:
+  logo:
+    src: "/my-logo.svg"              # Logo image path (in public/)
+    alt: "My App logo"
+    width: 120
+    height: 30
+    darkInvert: true                 # Invert logo in dark mode
+
+content:
+  heading: "Welcome to My App"       # Main heading text
+  description: "Get started by visiting {docs} or browsing {examples}."
+
+navigation:
+  inlineLinks:                       # Links embedded in description text
+    docs:
+      label: "our docs"
+      href: "https://docs.example.com"
+    examples:
+      label: "examples"
+      href: "https://examples.example.com"
+  buttons:                           # Call-to-action buttons
+    - label: "Get Started"
+      href: "https://example.com/start"
+      variant: "primary"             # "primary" (filled) or "secondary" (outlined)
+    - label: "Learn More"
+      href: "https://example.com/docs"
+      variant: "secondary"
+  security:                          # Applied to all external links
+    target: "_blank"
+    rel: "noopener noreferrer"
+```
+
+### `config/theme.yaml` -- How the site looks
+
+```yaml
+colors:
+  light:
+    background: "#ffffff"
+    foreground: "#171717"
+  dark:
+    background: "#0a0a0a"
+    foreground: "#ededed"
+
+spacing:
+  page:
+    paddingY: "32"                   # Tailwind size tokens
+    paddingX: "16"
+  contentGap: "6"
+  buttonGap: "4"
+
+sizing:
+  maxContentWidth: "3xl"             # Tailwind max-width token
+  buttonHeight: "12"
+  buttonDesktopWidth: "158px"
+
+# Advanced: override Tailwind classes on any element
+overrides:
+  heading: "text-4xl text-blue-600"
+  primaryButton: "bg-blue-600 hover:bg-blue-700"
+```
+
+Partial configs work -- omit any field and the built-in default is used.
+
+## Prerequisites
 
 Before you begin, ensure you have the following installed:
 
@@ -30,7 +109,7 @@ node --version  # Should be v18.17+
 npm --version   # Should be v9.x+
 ```
 
-## 🛠️ Installation
+## Installation
 
 1. **Clone the repository** (if not already done):
    ```bash
@@ -47,6 +126,7 @@ npm --version   # Should be v9.x+
    - Next.js, React, and React DOM
    - TypeScript and type definitions
    - Tailwind CSS v4 and PostCSS
+   - js-yaml and tailwind-merge (for configuration system)
    - Vitest and React Testing Library
    - ESLint for code quality
 
@@ -55,7 +135,7 @@ npm --version   # Should be v9.x+
    npm run lint  # Should complete without errors
    ```
 
-## 🔨 Development Workflow
+## Development Workflow
 
 ### Starting Development Server
 
@@ -69,7 +149,14 @@ The application will be available at:
 - **Local**: http://localhost:3000
 - **Network**: http://[your-ip]:3000
 
-The page auto-updates as you edit files. Changes to `src/app/page.tsx` will be reflected immediately.
+The page auto-updates as you edit files. Changes to `config/site.yaml` or `config/theme.yaml` are picked up on the next page load (restart the dev server for immediate effect).
+
+### Customizing the Template
+
+1. **Edit `config/site.yaml`** to change content, metadata, branding, and navigation
+2. **Edit `config/theme.yaml`** to change colors, fonts, spacing, sizing, and element styles
+3. **Place assets** (logos, images) in the `public/` directory
+4. **Restart dev server** to see config changes reflected
 
 ### Development Best Practices
 
@@ -89,7 +176,55 @@ The page auto-updates as you edit files. Changes to `src/app/page.tsx` will be r
    - Add semantic token comments to code
    - Maintain type safety with TypeScript
 
-## 🧪 Testing
+## Configuration System
+
+### Architecture
+
+Two YAML configuration files feed a typed config loader module, which Next.js server components consume at render time:
+
+```
+config/site.yaml   -->  src/lib/config.ts  -->  layout.tsx (metadata, locale, theme CSS)
+config/theme.yaml  -->  (typed loader)     -->  page.tsx   (content, links, styling)
+```
+
+### `config/site.yaml` -- Site Content
+
+| Section | Controls |
+|---------|----------|
+| `metadata` | Page title and description (SEO) |
+| `locale` | HTML lang attribute (e.g. "en", "fr") |
+| `branding` | Logo image (src, alt, dimensions, dark mode inversion) |
+| `content` | Heading text, description with `{placeholder}` syntax for inline links |
+| `navigation.inlineLinks` | Links embedded in description text (keyed by placeholder name) |
+| `navigation.buttons` | CTA buttons with label, URL, variant (primary/secondary), optional icon |
+| `navigation.security` | `target` and `rel` attributes for all external links |
+
+### `config/theme.yaml` -- Visual Design
+
+| Section | Controls |
+|---------|----------|
+| `colors.light` | Light mode CSS custom properties (background, foreground, + custom) |
+| `colors.dark` | Dark mode CSS custom properties |
+| `fonts` | Font CSS variable names and fallback stacks |
+| `spacing` | Page padding and gap values (Tailwind size tokens) |
+| `sizing` | Max content width, button height, button desktop width |
+| `overrides` | Per-element Tailwind class strings merged onto defaults |
+
+### Class Overrides (Advanced)
+
+The `overrides` section in `config/theme.yaml` lets you add or replace Tailwind classes on specific elements. Override strings are merged intelligently with `tailwind-merge` so conflicting utilities resolve correctly (e.g. `bg-red-500` properly overrides `bg-white`).
+
+Available override keys: `outerContainer`, `main`, `heading`, `paragraph`, `contentSection`, `buttonGroup`, `primaryButton`, `secondaryButton`, `inlineLink`.
+
+### Fonts
+
+Font CSS variable names and fallback stacks are configurable in `config/theme.yaml`. However, changing the actual Google Font family requires editing `src/app/layout.tsx` because `next/font/google` requires static analysis at build time. This is documented in the font config comments.
+
+### Defaults
+
+Every configuration field has a built-in default. If a YAML file is missing or a field is omitted, the default value is used. This means you can start with an empty config and only override what you need.
+
+## Testing
 
 ### Running Tests
 
@@ -112,13 +247,9 @@ npm run test:coverage
 
 ### Test Coverage
 
-**Current Status**: 66 tests, all passing ✅
+**Current Status**: 102 tests, all passing
 
-**Coverage**: 100% for application code (`src/app/`)
-- Statements: 100%
-- Branches: 100%
-- Functions: 100%
-- Lines: 100%
+**Coverage**: Application code (`src/app/`) and library code (`src/lib/`)
 
 View detailed coverage report:
 ```bash
@@ -133,26 +264,29 @@ Tests are organized by feature and include semantic token references:
 ```
 src/
 ├── app/
-│   ├── layout.test.tsx        # Layout, fonts, metadata tests
-│   └── page.test.tsx          # Home page, navigation, accessibility
+│   ├── layout.test.tsx        # Layout, fonts, metadata, theme injection tests
+│   └── page.test.tsx          # Home page, navigation, accessibility, config tests
+├── lib/
+│   └── config.test.ts         # Config loader: parsing, merging, caching, overrides
 └── test/
     ├── dark-mode.test.tsx     # Dark mode functionality
     ├── responsive.test.tsx    # Responsive design
     └── integration/
-        └── app.test.tsx       # Full application integration
+        └── app.test.tsx       # Full application integration with config
 ```
 
 ### Test Categories
 
-- **Component Tests**: Layout, page, and UI component testing
-- **Integration Tests**: Full application rendering and interaction
+- **Config Loader Tests**: YAML parsing, defaults merging, caching, theme CSS generation, class overrides
+- **Component Tests**: Layout, page, and UI component testing with config-driven assertions
+- **Integration Tests**: Full application rendering and config propagation
 - **Accessibility Tests**: WCAG compliance and screen reader support
-- **Responsive Tests**: Mobile-first design validation
-- **Dark Mode Tests**: Theme switching and contrast ratios
+- **Responsive Tests**: Mobile-first design validation with config-driven sizing
+- **Dark Mode Tests**: Theme switching, contrast ratios, config-driven colors
 
 **For detailed testing documentation**, see **[TESTING.md](TESTING.md)**
 
-## 🏗️ Building for Production
+## Building for Production
 
 ### Build Process
 
@@ -164,15 +298,16 @@ npm run build
 
 This command:
 1. Compiles TypeScript to JavaScript
-2. Optimizes React components with React Compiler
-3. Generates static pages where possible
-4. Optimizes images, fonts, and CSS
-5. Creates minified bundles with code splitting
-6. Outputs to `.next/` directory
+2. Reads YAML configuration files and bakes values into the build
+3. Optimizes React components with React Compiler
+4. Generates static pages where possible
+5. Optimizes images, fonts, and CSS
+6. Creates minified bundles with code splitting
+7. Outputs to `.next/` directory
 
 **Build output includes**:
 - Optimized JavaScript bundles (code-split per route)
-- Static HTML pages (pre-rendered)
+- Static HTML pages (pre-rendered with config values)
 - Optimized images (WebP/AVIF)
 - CSS with unused styles purged
 - Font files (WOFF2, self-hosted)
@@ -193,8 +328,9 @@ The production server runs at http://localhost:3000
 - Test dark mode switching (should be instant)
 - Verify all links work correctly
 - Check responsive design on different screen sizes
+- Verify config values are reflected in the rendered page
 
-## 🚢 Deployment
+## Deployment
 
 ### Deployment Options
 
@@ -240,7 +376,7 @@ docker build -t nx1-app .
 docker run -p 3000:3000 nx1-app
 ```
 
-**Note**: Create a `Dockerfile` following [Next.js Docker example](https://github.com/vercel/next.js/tree/canary/examples/with-docker).
+**Note**: Create a `Dockerfile` following [Next.js Docker example](https://github.com/vercel/next.js/tree/canary/examples/with-docker). Ensure the `config/` directory is included in the image.
 
 #### Option 3: Static Export
 
@@ -275,6 +411,7 @@ Deploy to any Node.js hosting:
 2. Upload files to your server:
    - `.next/` directory
    - `public/` directory
+   - `config/` directory
    - `package.json`
    - `package-lock.json`
 
@@ -301,22 +438,29 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
 **For production**, set environment variables in your deployment platform:
-- Vercel: Project Settings → Environment Variables
+- Vercel: Project Settings -> Environment Variables
 - Docker: Use `-e` flag or docker-compose
 - Self-hosted: System environment or .env file
 
 **Security Note**: Never commit `.env.local` or `.env` files with secrets!
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 nx1/
+├── config/                        # YAML configuration files
+│   ├── site.yaml                 # Site content, metadata, navigation
+│   └── theme.yaml                # Colors, fonts, spacing, class overrides
 ├── src/
 │   ├── app/                       # Next.js App Router
 │   │   ├── layout.tsx            # Root layout [IMPL-ROOT_LAYOUT]
 │   │   ├── page.tsx              # Home page [IMPL-HOME_PAGE]
 │   │   ├── globals.css           # Global styles [IMPL-DARK_MODE]
 │   │   └── *.test.tsx            # Component tests
+│   ├── lib/                       # Shared modules
+│   │   ├── config.ts             # Config loader [IMPL-CONFIG_LOADER]
+│   │   ├── config.types.ts       # Config TypeScript interfaces
+│   │   └── config.test.ts        # Config loader tests
 │   └── test/                     # Test utilities and tests
 │       ├── setup.ts              # Test configuration
 │       ├── utils.tsx             # Test helpers
@@ -336,6 +480,7 @@ nx1/
 ├── .gitignore                    # Git ignore rules
 ├── CHANGELOG.md                  # Version history
 ├── README.md                     # This file
+├── TESTING.md                    # Testing guide
 ├── eslint.config.mjs             # ESLint configuration
 ├── next.config.ts                # Next.js configuration
 ├── package.json                  # Dependencies and scripts
@@ -344,7 +489,7 @@ nx1/
 └── vitest.config.ts              # Vitest test configuration
 ```
 
-## 📜 Available Scripts
+## Available Scripts
 
 ### Development
 - `npm run dev` - Start development server with hot reload
@@ -371,17 +516,21 @@ nx1/
 | `test:watch` | `vitest --watch` | Runs tests on file changes | Development |
 | `test:coverage` | `vitest --coverage` | Generates coverage report | Code review |
 
-## 🎨 Technology Stack
+## Technology Stack
 
 ### Core Framework
 - **Next.js 16.1.6** - React framework with App Router
 - **React 19.2.3** - UI library with Server Components
 - **TypeScript 5.x** - Type-safe JavaScript
 
+### Configuration
+- **js-yaml** - YAML parser for configuration files
+- **tailwind-merge** - Intelligent Tailwind CSS class merging for overrides
+
 ### Styling
 - **Tailwind CSS v4** - Utility-first CSS framework
 - **PostCSS** - CSS transformation tool
-- **CSS Custom Properties** - For theming (dark mode)
+- **CSS Custom Properties** - For theming (dark mode), injected from config
 
 ### Fonts
 - **next/font/google** - Optimized font loading
@@ -399,7 +548,7 @@ nx1/
 - **TypeScript Compiler** - Type checking
 - **React Compiler** - Optimizing compiler (babel plugin)
 
-## 📚 STDD Methodology
+## STDD Methodology
 
 This project follows **Semantic Token-Driven Development (STDD) v1.3.0**.
 
@@ -408,7 +557,7 @@ This project follows **Semantic Token-Driven Development (STDD) v1.3.0**.
 STDD creates a traceable chain of intent from requirements to code:
 
 ```
-[REQ-*] → [ARCH-*] → [IMPL-*] → Code → Tests
+[REQ-*] -> [ARCH-*] -> [IMPL-*] -> Code -> Tests
 ```
 
 **Every feature includes**:
@@ -422,10 +571,10 @@ STDD creates a traceable chain of intent from requirements to code:
 
 All STDD documentation is in the `stdd/` directory:
 
-- **[Requirements](stdd/requirements.md)** - 14 documented requirements
-- **[Architecture Decisions](stdd/architecture-decisions.md)** - 11 decision files
-- **[Implementation Decisions](stdd/implementation-decisions.md)** - 9 implementation files
-- **[Semantic Tokens](stdd/semantic-tokens.md)** - 34 token registry
+- **[Requirements](stdd/requirements.md)** - 15 documented requirements
+- **[Architecture Decisions](stdd/architecture-decisions.md)** - 17 decision files
+- **[Implementation Decisions](stdd/implementation-decisions.md)** - 18 implementation files
+- **[Semantic Tokens](stdd/semantic-tokens.md)** - 42 token registry
 - **[Tasks](stdd/tasks.md)** - Task tracking with priorities
 
 ### For Developers
@@ -441,7 +590,7 @@ When adding new features:
 
 See `stdd/AGENTS.md` and `ai-principles.md` for complete guidelines.
 
-## 🔍 Code Quality
+## Code Quality
 
 ### Linting
 
@@ -481,7 +630,7 @@ Before committing code:
 - [ ] Documentation is updated
 - [ ] CHANGELOG.md is updated (for releases)
 
-## 🌐 Browser Support
+## Browser Support
 
 This application supports modern browsers:
 
@@ -494,7 +643,7 @@ This application supports modern browsers:
 - Internet Explorer (all versions)
 - Very old browser versions
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -521,15 +670,21 @@ npm install
 ```
 
 **Dark mode not working**:
-- Check browser DevTools → Application → Appearance
+- Check browser DevTools -> Application -> Appearance
 - Verify system dark mode is enabled
 - Check browser cache (try hard refresh: Ctrl+Shift+R)
 
-## 📄 License
+**Config changes not appearing**:
+- Restart the development server (`npm run dev`)
+- Check YAML syntax is valid (indentation matters)
+- Verify config file paths: `config/site.yaml`, `config/theme.yaml`
+- Check for YAML parsing errors in the terminal output
+
+## License
 
 [Add your license here]
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please follow the STDD methodology:
 
@@ -545,14 +700,14 @@ Contributions are welcome! Please follow the STDD methodology:
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
-## 📞 Support
+## Support
 
 - **Documentation**: See `stdd/` directory for complete documentation
 - **Issues**: [GitHub Issues](https://github.com/yourusername/nx1/issues)
 - **Next.js Docs**: https://nextjs.org/docs
 - **STDD Methodology**: See `ai-principles.md` and `AGENTS.md`
 
-## 🔗 Links
+## Links
 
 - **Next.js**: https://nextjs.org
 - **React**: https://react.dev
@@ -563,6 +718,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 ---
 
-**Built with ❤️ using Next.js, React, and STDD Methodology**
+**Built with Next.js, React, and STDD Methodology**
 
-*Version 0.1.0 - Initial STDD Documentation Baseline*
+*Version 0.2.0 - Configuration-Driven UI*
