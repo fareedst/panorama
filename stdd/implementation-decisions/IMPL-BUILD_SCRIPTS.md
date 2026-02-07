@@ -74,6 +74,12 @@
 
 **Fix Issues**: `npm run lint -- --fix`
 
+**Inline disable policy** (when to use eslint-disable comments):
+- **`react-hooks/set-state-in-effect`**: Allow when synchronizing with an external system (e.g. reading from localStorage on dialog open). Add a short comment justifying the sync.
+- **`@next/next/no-html-link-for-pages`**: Allow in `global-error.tsx` only, because it renders a full HTML document without Next.js context, so `<Link>` is not available.
+- **`react-hooks/exhaustive-deps`**: Allow when the effect is intentionally tied to a subset of dependencies (e.g. re-run only on `panes` and `focusIndex`). Prefer stabilizing callbacks with `useCallback` and document the intentional dependency list.
+- **`@typescript-eslint/no-unused-vars` in catch**: Use `catch { }` (no binding) when the error value is not used, to avoid unused-variable warnings.
+
 ### Production Scripts
 
 #### `npm run build`

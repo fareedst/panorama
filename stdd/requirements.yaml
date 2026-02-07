@@ -22,9 +22,6 @@
 #   related_requirements: Lists of depends_on, related_to, supersedes (YAML lists or [])
 #   detail_file: Path to the detailed .md file in requirements/ directory
 #   metadata: Structured metadata with created, last_updated, last_validated info
-
----
-
 REQ-STDD_SETUP:
   name: STDD Methodology Setup
   category: Functional
@@ -75,7 +72,6 @@ REQ-STDD_SETUP:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 REQ-MODULE_VALIDATION:
   name: Independent Module Validation Before Integration
   category: Functional
@@ -133,7 +129,6 @@ REQ-MODULE_VALIDATION:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 REQ-APP_STRUCTURE:
   name: Next.js App Router Application Structure
   category: Functional
@@ -191,7 +186,6 @@ REQ-APP_STRUCTURE:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 REQ-ROOT_LAYOUT:
   name: Root Layout with HTML Structure
   category: Functional
@@ -250,7 +244,6 @@ REQ-ROOT_LAYOUT:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 REQ-HOME_PAGE:
   name: Home Page with Welcome Content
   category: Functional
@@ -306,7 +299,6 @@ REQ-HOME_PAGE:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 REQ-NAVIGATION_LINKS:
   name: External Navigation Links
   category: Functional
@@ -357,7 +349,6 @@ REQ-NAVIGATION_LINKS:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 REQ-BRANDING:
   name: Next.js Branding Elements
   category: Functional
@@ -411,7 +402,6 @@ REQ-BRANDING:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 REQ-RESPONSIVE_DESIGN:
   name: Responsive Layout Design
   category: Non-Functional
@@ -463,7 +453,6 @@ REQ-RESPONSIVE_DESIGN:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 REQ-DARK_MODE:
   name: Dark Mode Theme Support
   category: Non-Functional
@@ -517,7 +506,6 @@ REQ-DARK_MODE:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 REQ-FONT_SYSTEM:
   name: Custom Font Loading System
   category: Non-Functional
@@ -573,7 +561,6 @@ REQ-FONT_SYSTEM:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 REQ-TAILWIND_STYLING:
   name: Tailwind CSS Styling System
   category: Non-Functional
@@ -627,7 +614,6 @@ REQ-TAILWIND_STYLING:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 REQ-GLOBAL_STYLES:
   name: Global CSS with Theme Variables
   category: Non-Functional
@@ -681,7 +667,6 @@ REQ-GLOBAL_STYLES:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 REQ-ACCESSIBILITY:
   name: Semantic HTML and Accessibility
   category: Non-Functional
@@ -738,7 +723,6 @@ REQ-ACCESSIBILITY:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 REQ-METADATA:
   name: Page Metadata Configuration
   category: Non-Functional
@@ -790,7 +774,6 @@ REQ-METADATA:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 REQ-TYPESCRIPT:
   name: TypeScript Type Safety
   category: Non-Functional
@@ -844,7 +827,6 @@ REQ-TYPESCRIPT:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 REQ-BUILD_SYSTEM:
   name: Next.js Build, Development, and Testing Scripts
   category: Non-Functional
@@ -903,7 +885,6 @@ REQ-BUILD_SYSTEM:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 REQ-ERROR_HANDLING:
   name: Root-Level Error Boundary
   category: Non-Functional
@@ -955,7 +936,6 @@ REQ-ERROR_HANDLING:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 REQ-CONFIG_DRIVEN_UI:
   name: Configuration-Driven UI
   category: Functional
@@ -1016,7 +996,6 @@ REQ-CONFIG_DRIVEN_UI:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 REQ-CONFIG_DRIVEN_APPEARANCE:
   name: All Page Elements Appearance and Layout from Config
   category: Functional
@@ -1071,7 +1050,6 @@ REQ-CONFIG_DRIVEN_APPEARANCE:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 REQ-JOB_TRACKER_DATA:
   name: Job Position Data Storage and Retrieval
   category: Functional
@@ -1127,7 +1105,6 @@ REQ-JOB_TRACKER_DATA:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 REQ-JOB_TRACKER_LIST:
   name: View All Job Positions in Table
   category: Functional
@@ -1183,7 +1160,6 @@ REQ-JOB_TRACKER_LIST:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 REQ-JOB_TRACKER_EDIT:
   name: Edit Job Position Records
   category: Functional
@@ -1239,7 +1215,6 @@ REQ-JOB_TRACKER_EDIT:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 REQ-JOB_TRACKER_STATUS:
   name: Track Application Status with Dates and Notes
   category: Functional
@@ -1293,7 +1268,6 @@ REQ-JOB_TRACKER_STATUS:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 REQ-JOB_TRACKER_CRUD:
   name: Create, Update, and Delete Job Positions
   category: Functional
@@ -1347,7 +1321,6 @@ REQ-JOB_TRACKER_CRUD:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 REQ-JOB_TRACKER_CALENDAR:
   name: Calendar Month View for Positions and Applications
   category: Functional
@@ -1408,7 +1381,1517 @@ REQ-JOB_TRACKER_CALENDAR:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
+REQ-FILE_MANAGER_PAGE:
+  name: Multi-Pane File Manager Page
+  category: Functional
+  priority: P0
+  status: "Implemented"
+  rationale:
+    why: "Provide a terminal-like multi-pane file manager for browsing and managing server filesystem"
+    problems_solved:
+      - "No visual file management interface"
+      - "Difficulty comparing files across directories"
+      - "Manual command-line file operations"
+    benefits:
+      - "Visual multi-pane file navigation"
+      - "Cross-pane file comparison"
+      - "Keyboard-driven terminal-like interface"
+      - "Efficient file operations"
+  satisfaction_criteria:
+    - criterion: "Page accessible at /files route"
+    - criterion: "Displays 2-4 panes simultaneously"
+    - criterion: "Keyboard navigation works (arrows, Tab, Enter, Backspace)"
+    - criterion: "Panes can be added/removed dynamically"
+  validation_criteria:
+    - method: "Page testing"
+      coverage: "Page renders without errors at /files"
+    - method: "Navigation testing"
+      coverage: "All keyboard shortcuts work correctly"
+    - method: "Layout testing"
+      coverage: "Multiple layout types render properly"
+  traceability:
+    architecture:
+      - ARCH-FILE_MANAGER_HIERARCHY
+    implementation:
+      - IMPL-FILE_MANAGER_PAGE
+    tests:
+      - File manager page tests
+    code_annotations:
+      - REQ-FILE_MANAGER_PAGE
+  related_requirements:
+    depends_on:
+      - REQ-APP_STRUCTURE
+      - REQ-CONFIG_DRIVEN_UI
+    related_to:
+      - REQ-MULTI_PANE_LAYOUT
+      - REQ-DIRECTORY_NAVIGATION
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Implementation complete with 108 passing tests"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+REQ-MULTI_PANE_LAYOUT:
+  name: Multiple Pane Layout Algorithms
+  category: Functional
+  priority: P0
+  status: "Implemented"
+  rationale:
+    why: "Different layout types optimize screen space for various file management tasks"
+    problems_solved:
+      - "Fixed single-pane view limiting comparison"
+      - "Inefficient screen space usage"
+      - "Lack of flexible viewing options"
+    benefits:
+      - "Flexible screen space utilization"
+      - "Optimized layouts for different tasks"
+      - "Improved file comparison workflows"
+  satisfaction_criteria:
+    - criterion: "Support Tile layout (first pane left half, others stacked right)"
+    - criterion: "Support OneRow layout (all panes horizontal)"
+    - criterion: "Support OneColumn layout (all panes vertical)"
+    - criterion: "Support 2-4 panes in any layout"
+    - criterion: "Layout can be changed dynamically"
+  validation_criteria:
+    - method: "Visual testing"
+      coverage: "Each layout type renders correctly with 2, 3, 4 panes"
+    - method: "Geometric testing"
+      coverage: "Pane bounds calculated correctly, no overlaps (62 tests)"
+  traceability:
+    architecture:
+      - ARCH-LAYOUT_ALGORITHMS
+    implementation:
+      - IMPL-LAYOUT_CALCULATOR
+      - IMPL-WORKSPACE_VIEW
+    tests:
+      - Layout algorithm tests
+    code_annotations:
+      - REQ-MULTI_PANE_LAYOUT
+  related_requirements:
+    depends_on:
+      - REQ-FILE_MANAGER_PAGE
+    related_to:
+      - REQ-FILE_LISTING
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Implementation complete, 62 layout tests passing"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+REQ-DIRECTORY_NAVIGATION:
+  name: Server Filesystem Directory Navigation
+  category: Functional
+  priority: P0
+  status: "Implemented"
+  rationale:
+    why: "Users need to browse the server filesystem to locate and manage files"
+    problems_solved:
+      - "No visual directory navigation"
+      - "Difficulty finding files in nested directories"
+      - "Lack of parent/child directory traversal"
+    benefits:
+      - "Visual directory browsing"
+      - "Easy parent/child navigation"
+      - "Multiple directory views simultaneously"
+  satisfaction_criteria:
+    - criterion: "Can navigate into subdirectories (Enter key or click)"
+    - criterion: "Can navigate to parent directory (Backspace key)"
+    - criterion: "Current path displayed in pane header"
+    - criterion: "Directory entries marked visually (folder icon or indicator)"
+  validation_criteria:
+    - method: "Navigation testing"
+      coverage: "Can navigate into and out of directories"
+    - method: "Path testing"
+      coverage: "Current path updates correctly"
+  traceability:
+    architecture:
+      - ARCH-FILESYSTEM_ABSTRACTION
+    implementation:
+      - IMPL-FILES_DATA
+      - IMPL-FILE_PANE
+      - IMPL-FILES_UTILS
+    tests:
+      - Directory navigation tests
+    code_annotations:
+      - REQ-DIRECTORY_NAVIGATION
+  related_requirements:
+    depends_on:
+      - REQ-FILE_MANAGER_PAGE
+    related_to:
+      - REQ-FILE_LISTING
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Implementation complete, 34 data layer tests passing"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+REQ-PANE_REFRESH:
+  name: Manual Pane Refresh
+  category: Functional
+  priority: P1
+  status: "Implemented"
+  rationale:
+    why: "Users need to manually refresh directory listings when external changes occur outside the file manager (e.g., files added/modified by other processes)"
+    problems_solved:
+      - "Directory listings become stale when external processes modify files"
+      - "No way to reload pane contents without navigating away and back"
+      - "Users must restart application to see external file system changes"
+      - "Multiple panes cannot be refreshed simultaneously"
+    benefits:
+      - "Instant refresh of current pane file listing"
+      - "Ability to refresh all panes at once for system-wide updates"
+      - "Maintains cursor position and sort settings after refresh"
+      - "Browser-familiar keyboard shortcuts (Ctrl+R, Ctrl+Shift+R)"
+  satisfaction_criteria:
+    - criterion: "Ctrl+R refreshes the currently focused pane"
+    - criterion: "Ctrl+Shift+R refreshes all visible panes"
+    - criterion: "Cursor position preserved after refresh"
+    - criterion: "Sort settings maintained after refresh"
+    - criterion: "Marks cleared after refresh (existing behavior)"
+    - criterion: "Shortcuts visible in help overlay (? key)"
+  validation_criteria:
+    - method: "Keystroke testing"
+      coverage: "Both refresh shortcuts trigger correctly"
+    - method: "State preservation testing"
+      coverage: "Cursor and sort settings maintained"
+    - method: "Integration testing"
+      coverage: "Refresh works with all layout types and pane counts"
+  traceability:
+    architecture:
+      - ARCH-PANE_REFRESH
+    implementation:
+      - IMPL-PANE_REFRESH
+    tests:
+      - Manual testing with external file changes
+    code_annotations:
+      - REQ-PANE_REFRESH
+  related_requirements:
+    depends_on:
+      - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+      - REQ-MULTI_PANE_LAYOUT
+      - REQ-DIRECTORY_NAVIGATION
+    related_to:
+      - REQ-FILE_OPERATIONS
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2026-02-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-08
+      author: "AI Agent"
+      reason: "Initial implementation with Ctrl+R and Ctrl+Shift+R shortcuts"
+    last_validated:
+      date: 2026-02-08
+      validator: "AI Agent"
+      result: "pass - build succeeds with 36 keybindings loaded"
 
+REQ-FILE_LISTING:
+  name: File Listing Display
+  category: Functional
+  priority: P0
+  status: "Implemented"
+  rationale:
+    why: "Users need to see file details to identify and select files for operations"
+    problems_solved:
+      - "No file metadata visibility"
+      - "Difficulty identifying file types"
+      - "Lack of sorting options"
+    benefits:
+      - "Complete file metadata display"
+      - "Multiple sorting options"
+      - "Visual file type indicators"
+  satisfaction_criteria:
+    - criterion: "Display file name, size, modification time"
+    - criterion: "Distinguish directories from regular files"
+    - criterion: "Support sorting by name, size, mtime, extension (ascending/descending)"
+    - criterion: "Cursor highlights current file"
+    - criterion: "Marked files visually distinguished"
+  validation_criteria:
+    - method: "Display testing"
+      coverage: "All file metadata renders correctly"
+    - method: "Sorting testing"
+      coverage: "All sort types work correctly"
+  traceability:
+    architecture:
+      - ARCH-FILE_MANAGER_HIERARCHY
+    implementation:
+      - IMPL-FILE_PANE
+      - IMPL-FILES_DATA
+    tests:
+      - File listing tests
+    code_annotations:
+      - REQ-FILE_LISTING
+  related_requirements:
+    depends_on:
+      - REQ-DIRECTORY_NAVIGATION
+    related_to:
+      - REQ-KEYBOARD_NAVIGATION
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+REQ-FILE_OPERATIONS:
+  name: File Copy, Move, Rename, Delete Operations
+  category: Functional
+  priority: P1
+  status: "Implemented"
+  rationale:
+    why: "Users need to perform common file management operations"
+    problems_solved:
+      - "No file manipulation interface"
+      - "Difficulty moving/copying files between directories"
+      - "Manual command-line operations required"
+    benefits:
+      - "Visual file operations"
+      - "Cross-pane copy/move support"
+      - "Batch operations on marked files"
+  satisfaction_criteria:
+    - criterion: "Can copy files (keyboard shortcut or button)"
+    - criterion: "Can move files (keyboard shortcut or button)"
+    - criterion: "Can rename files (keyboard shortcut or inline edit)"
+    - criterion: "Can delete files (keyboard shortcut with confirmation)"
+    - criterion: "Operations work on single and marked files"
+    - criterion: "Error handling for failed operations"
+  validation_criteria:
+    - method: "Operation testing"
+      coverage: "All CRUD operations work correctly"
+    - method: "Error testing"
+      coverage: "Errors handled gracefully (permissions, non-existent files)"
+  traceability:
+    architecture:
+      - ARCH-FILE_OPERATIONS_API
+      - ARCH-FILESYSTEM_ABSTRACTION
+    implementation:
+      - IMPL-FILES_API
+      - IMPL-FILES_DATA
+    tests:
+      - File operations tests
+    code_annotations:
+      - REQ-FILE_OPERATIONS
+  related_requirements:
+    depends_on:
+      - REQ-FILE_LISTING
+      - REQ-KEYBOARD_NAVIGATION
+    related_to:
+      - REQ-CROSS_PANE_COMPARISON
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+REQ-CROSS_PANE_COMPARISON:
+  name: Cross-Pane File Comparison
+  category: Functional
+  priority: P1
+  status: "Implemented"
+  rationale:
+    why: "Users need to identify file differences across directories for sync and comparison tasks"
+    problems_solved:
+      - "Difficulty identifying file differences"
+      - "Manual comparison required"
+      - "No visual diff indicators"
+    benefits:
+      - "Automatic file comparison"
+      - "Visual diff indicators (color coding)"
+      - "Identify same/different files quickly"
+  satisfaction_criteria:
+    - criterion: "Files with same name across panes color-coded"
+    - criterion: "Different sizes/times indicated with distinct colors"
+    - criterion: "Files unique to one pane clearly marked"
+    - criterion: "Comparison updates when panes change"
+  validation_criteria:
+    - method: "Comparison testing"
+      coverage: "Comparison colors display correctly"
+    - method: "Index testing"
+      coverage: "Comparison index builds and updates correctly"
+  traceability:
+    architecture:
+      - ARCH-COMPARISON_INDEX
+    implementation:
+      - IMPL-COMPARISON_INDEX
+      - IMPL-FILE_PANE
+    tests:
+      - Comparison index tests
+    code_annotations:
+      - REQ-CROSS_PANE_COMPARISON
+  related_requirements:
+    depends_on:
+      - REQ-FILE_LISTING
+      - REQ-MULTI_PANE_LAYOUT
+    related_to:
+      - REQ-FILE_OPERATIONS
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+REQ-KEYBOARD_NAVIGATION:
+  name: Keyboard-Driven Navigation
+  category: Functional
+  priority: P0
+  status: "Implemented"
+  rationale:
+    why: "Terminal-like keyboard navigation provides efficient file management workflow"
+    problems_solved:
+      - "Mouse-dependent navigation inefficient"
+      - "Lack of keyboard shortcuts"
+      - "Inconsistent navigation metaphors"
+    benefits:
+      - "Fast keyboard-driven workflow"
+      - "Terminal-like user experience"
+      - "Reduced reliance on mouse"
+  satisfaction_criteria:
+    - criterion: "Arrow keys move cursor within pane"
+    - criterion: "Tab key moves focus between panes"
+    - criterion: "Enter navigates into directory"
+    - criterion: "Backspace navigates to parent"
+    - criterion: "Marking shortcuts (m to toggle, space to select)"
+    - criterion: "Operation shortcuts (c copy, v paste, d delete, r rename)"
+  validation_criteria:
+    - method: "Keyboard testing"
+      coverage: "All keyboard shortcuts work correctly"
+    - method: "Focus testing"
+      coverage: "Focus indicator visible and updates correctly"
+  traceability:
+    architecture:
+      - ARCH-FILE_MANAGER_HIERARCHY
+    implementation:
+      - IMPL-WORKSPACE_VIEW
+      - IMPL-FILE_PANE
+    tests:
+      - Keyboard navigation tests
+    code_annotations:
+      - REQ-KEYBOARD_NAVIGATION
+  related_requirements:
+    depends_on:
+      - REQ-FILE_LISTING
+      - REQ-MULTI_PANE_LAYOUT
+    related_to:
+      - REQ-FILE_OPERATIONS
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+REQ-CONFIG_DRIVEN_FILE_MANAGER:
+  name: Configuration-Driven File Manager UI
+  category: Functional
+  priority: P1
+  status: "Implemented"
+  rationale:
+    why: "Consistent with project architecture, all UI text and styling should be configurable"
+    problems_solved:
+      - "Hard-coded UI text"
+      - "Difficult customization"
+      - "Inconsistent with existing config pattern"
+    benefits:
+      - "All UI text from config"
+      - "Easy customization"
+      - "Consistent with project architecture"
+  satisfaction_criteria:
+    - criterion: "All user-facing text comes from config/files.yaml"
+    - criterion: "All styling overrides in config/theme.yaml"
+    - criterion: "Changing config changes UI without code changes"
+  validation_criteria:
+    - method: "Config testing"
+      coverage: "Config changes reflected in UI"
+    - method: "Code inspection"
+      coverage: "No hard-coded user-facing text in components"
+  traceability:
+    architecture:
+      - ARCH-CONFIG_DRIVEN_UI
+    implementation:
+      - IMPL-FILES_CONFIG
+      - IMPL-FILE_MANAGER_PAGE
+    tests:
+      - Config-driven UI tests
+    code_annotations:
+      - REQ-CONFIG_DRIVEN_FILE_MANAGER
+  related_requirements:
+    depends_on:
+      - REQ-CONFIG_DRIVEN_UI
+      - REQ-FILE_MANAGER_PAGE
+    related_to: []
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+REQ-LOGGING_SYSTEM:
+  name: Session-Based Logging System
+  category: Functional
+  priority: P1
+  status: "Implemented"
+  rationale:
+    why: "Provide comprehensive debugging and traceability through structured logging"
+    problems_solved:
+      - "No persistent logs for debugging production issues"
+      - "Console logs are ephemeral and lost after session ends"
+      - "Difficult to trace execution flow across modules"
+      - "No semantic token traceability in logs"
+    benefits:
+      - "Persistent debugging information"
+      - "Semantic token traceability in logs"
+      - "Configurable log levels for development vs production"
+      - "Session-based log files for temporal analysis"
+  satisfaction_criteria:
+    - criterion: "Log files created per session with timestamp in filename"
+    - criterion: "Six log levels supported: FATAL, ERROR, WARN, INFO, DEBUG, TRACE"
+    - criterion: "All log entries include semantic tokens when applicable"
+    - criterion: "Logs written to OS temporary directory"
+    - criterion: "Logging enabled by default with launch-time configuration"
+  validation_criteria:
+    - method: "Unit tests"
+      coverage: "All log levels, file creation, formatting"
+    - method: "Integration tests"
+      coverage: "Logging across multiple modules"
+    - method: "Manual testing"
+      coverage: "Log file creation and semantic token inclusion"
+  traceability:
+    architecture:
+      - ARCH-LOGGING_SYSTEM
+    implementation:
+      - IMPL-LOGGER_MODULE
+    tests:
+      - Logger unit tests
+    code_annotations:
+      - REQ-LOGGING_SYSTEM
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-MODULE_VALIDATION
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+REQ-LOGGING_CONFIG:
+  name: Configurable Logging Behavior
+  category: Functional
+  priority: P1
+  status: "Implemented"
+  rationale:
+    why: "Enable runtime control of logging behavior without code changes"
+    problems_solved:
+      - "Hard-coded logging behavior"
+      - "Cannot disable logging in production"
+      - "Cannot change log levels without recompiling"
+    benefits:
+      - "Environment-based configuration"
+      - "Dynamic log level control"
+      - "Easy production/development mode switching"
+  satisfaction_criteria:
+    - criterion: "Logging enabled/disabled via environment variable"
+    - criterion: "Log level configurable via environment variable"
+    - criterion: "Log directory configurable via environment variable"
+    - criterion: "Logging enabled by default (true by default)"
+  validation_criteria:
+    - method: "Unit tests"
+      coverage: "Configuration parsing and defaults"
+    - method: "Integration tests"
+      coverage: "Environment variable overrides"
+  traceability:
+    architecture:
+      - ARCH-LOGGING_CONFIG
+    implementation:
+      - IMPL-LOGGER_CONFIG
+    tests:
+      - Logger config tests
+    code_annotations:
+      - REQ-LOGGING_CONFIG
+  related_requirements:
+    depends_on:
+      - REQ-LOGGING_SYSTEM
+    related_to:
+      - REQ-CONFIG_DRIVEN_UI
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+REQ-LOGGING_SEMANTIC_TOKENS:
+  name: Semantic Token Integration in Logs
+  category: Functional
+  priority: P0
+  status: "Implemented"
+  rationale:
+    why: "Ensure all logs are traceable to requirements, architecture, and implementation"
+    problems_solved:
+      - "Cannot trace log entries to feature requirements"
+      - "Difficult to understand which module logged a message"
+      - "No connection between logs and STDD documentation"
+    benefits:
+      - "Complete traceability from logs to requirements"
+      - "Easy identification of logging module"
+      - "Searchable semantic tokens in log files"
+  satisfaction_criteria:
+    - criterion: "All log entries must include at least one semantic token"
+    - criterion: "Semantic tokens formatted as [REQ-*], [ARCH-*], [IMPL-*]"
+    - criterion: "Multiple tokens can be included per log entry"
+    - criterion: "Logger API enforces token parameter"
+  validation_criteria:
+    - method: "Unit tests"
+      coverage: "Token formatting and inclusion"
+    - method: "Code review"
+      coverage: "All logger calls include tokens"
+    - method: "Log file inspection"
+      coverage: "Tokens present in actual log output"
+  traceability:
+    architecture:
+      - ARCH-LOGGING_SEMANTIC_TOKENS
+    implementation:
+      - IMPL-LOGGER_TOKENS
+    tests:
+      - Semantic token logging tests
+    code_annotations:
+      - REQ-LOGGING_SEMANTIC_TOKENS
+  related_requirements:
+    depends_on:
+      - REQ-LOGGING_SYSTEM
+      - REQ-STDD_SETUP
+    related_to: []
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+REQ-FILE_MARKING_WEB:
+  name: Web-Based File Marking for Batch Operations
+  category: Functional
+  priority: P0
+  status: "Active"
+  rationale:
+    why: "Batch operations on multiple files require a selection mechanism optimized for web interfaces"
+    problems_solved:
+      - "Tedious individual file operations in web UI"
+      - "Loss of selection after view refresh or sorting"
+      - "Complex multi-file selection patterns with mouse/keyboard"
+    benefits:
+      - "Efficient batch operations on arbitrary file sets"
+      - "Persistent client-side selection across sorting/filtering"
+      - "Clear visual feedback via checkboxes and highlighting"
+      - "Keyboard-driven marking workflow (Space, Shift+M, Escape)"
+  satisfaction_criteria:
+    - criterion: "Users can mark individual files by toggling with Space key or checkbox click"
+    - criterion: "Users can mark all files (Shift+M) and invert marks (Ctrl+M)"
+    - criterion: "Users can clear all marks with Escape key"
+    - criterion: "Marked files visually distinguished with checkbox icon and background color"
+    - criterion: "Mark state persists when directory is re-sorted or refreshed"
+    - criterion: "Mark persistence is name-based (survives file order changes)"
+    - criterion: "Parent directory entry (..) cannot be marked"
+    - criterion: "Pane footer displays marked count: [marked/total]"
+    - criterion: "Batch operations (copy, move, delete) operate on marked files when marks exist"
+  validation_criteria:
+    - method: "Unit tests"
+      coverage: "Mark toggle, mark all, invert, clear operations"
+    - method: "Unit tests"
+      coverage: "Mark persistence across sort/filter/refresh"
+    - method: "Integration tests"
+      coverage: "Batch operations use marked files correctly"
+    - method: "UI tests"
+      coverage: "Visual distinction of marked files"
+  traceability:
+    architecture:
+      - ARCH-MARKING_STATE
+    implementation:
+      - IMPL-FILE_MARKING
+    tests:
+      - testFileMarking_REQ_FILE_MARKING_WEB
+    code_annotations:
+      - REQ-FILE_MARKING_WEB
+  related_requirements:
+    depends_on:
+      - REQ-FILE_LISTING
+      - REQ-KEYBOARD_NAVIGATION
+    related_to:
+      - REQ-BULK_FILE_OPS
+    supersedes: []
+  detail_file: requirements/REQ-FILE_MARKING_WEB.md
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation - imported from Goful REQ-FILE_MARKING, adapted for web"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+REQ-BULK_FILE_OPS:
+  name: Bulk File Operations on Marked Files
+  category: Functional
+  priority: P0
+  status: "Active"
+  rationale:
+    why: "Users need to perform copy, move, delete operations on multiple files efficiently"
+    problems_solved:
+      - "Tedious repetition of single-file operations"
+      - "No progress visibility for batch operations"
+      - "Manual error recovery for failed operations"
+    benefits:
+      - "Efficient multi-file operations via marking system"
+      - "Real-time progress tracking with cancellation support"
+      - "Automatic error handling and reporting"
+      - "Cross-pane operations (source pane to destination pane)"
+  satisfaction_criteria:
+    - criterion: "Copy marked files to target pane directory (C key)"
+    - criterion: "Move marked files to target pane directory (M key)"
+    - criterion: "Delete marked files with confirmation dialog (D key)"
+    - criterion: "Rename single file or bulk rename with pattern (R key)"
+    - criterion: "Operations work on marked files if marks exist, otherwise on cursor file"
+    - criterion: "Progress bar shows completion percentage, file count, current file"
+    - criterion: "Operations are asynchronous (non-blocking UI)"
+    - criterion: "Error handling with user-friendly messages"
+    - criterion: "Confirmation dialogs before destructive operations"
+  validation_criteria:
+    - method: "Unit tests"
+      coverage: "Bulk copy, move, delete on marked files"
+    - method: "Integration tests"
+      coverage: "Cross-pane operations and progress tracking"
+    - method: "Error tests"
+      coverage: "Permission errors, disk full, non-existent files"
+  traceability:
+    architecture:
+      - ARCH-BATCH_OPERATIONS
+    implementation:
+      - IMPL-BULK_OPS
+    tests:
+      - testBulkOps_REQ_BULK_FILE_OPS
+    code_annotations:
+      - REQ-BULK_FILE_OPS
+  related_requirements:
+    depends_on:
+      - REQ-FILE_MARKING_WEB
+      - REQ-FILE_OPERATIONS
+    related_to:
+      - REQ-CROSS_PANE_COMPARISON
+    supersedes: []
+  detail_file: requirements/REQ-BULK_FILE_OPS.md
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation - adapted from Goful REQ-FILE_OPERATIONS for web batch context"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+REQ-LINKED_PANES:
+  name: Linked Pane Navigation
+  category: Functional
+  priority: P2
+  status: "Implemented"
+  rationale:
+    why: "Users comparing similar directory structures need synchronized navigation across panes"
+    problems_solved:
+      - "Tedious manual navigation in each pane when comparing mirrored directories"
+      - "Lost visual context when viewing same files across panes"
+      - "Manual sort synchronization across comparison panes"
+    benefits:
+      - "Automatic navigation propagation to matching subdirectories"
+      - "Cursor synchronization shows same filename highlighted in all panes"
+      - "Sort synchronization keeps all panes in same order"
+      - "Auto-disable on divergence prevents confusion"
+  satisfaction_criteria:
+    - criterion: "L key toggles linked navigation mode ON/OFF"
+    - criterion: "Visual indicator (🔗 badge) shows when linked mode is ON"
+    - criterion: "Subdirectory navigation propagates to all panes with matching subdirectory"
+    - criterion: "Parent directory navigation (Backspace) navigates all panes to respective parents"
+    - criterion: "Cursor movements sync to same filename in all panes when linked"
+    - criterion: "Sort changes apply to all panes when linked"
+    - criterion: "Auto-disable with warning message when navigation diverges"
+    - criterion: "Linked state per-session (does not persist across refreshes)"
+  validation_criteria:
+    - method: "Unit tests"
+      coverage: "Cursor sync with/without linked mode, sort sync, auto-disable"
+    - method: "Integration tests"
+      coverage: "Multi-pane subdirectory/parent navigation, divergence detection"
+    - method: "Manual tests"
+      coverage: "Visual feedback, edge cases with asymmetric directory structures"
+  traceability:
+    architecture:
+      - ARCH-LINKED_NAV
+    implementation:
+      - IMPL-LINKED_NAV
+    tests:
+      - TEST-LINKED_PANES
+    code_annotations:
+      - REQ-LINKED_PANES
+  related_requirements:
+    depends_on:
+      - REQ-MULTI_PANE_LAYOUT
+      - REQ-DIRECTORY_NAVIGATION
+    related_to:
+      - REQ-FILE_COMPARISON_VISUAL
+      - REQ-ADVANCED_NAV
+    supersedes: []
+  detail_file: requirements/REQ-LINKED_PANES.md
+  metadata:
+    created:
+      date: 2026-02-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-08
+      author: "AI Agent"
+      reason: "Complete linked navigation implementation with cursor sync, parent nav, auto-disable, sort sync"
+    last_validated:
+      date: 2026-02-08
+      validator: "AI Agent"
+      result: "pass"
+REQ-ADVANCED_NAV:
+  name: Advanced Navigation Features
+  category: Functional
+  priority: P1
+  status: "Implemented"
+  rationale:
+    why: "Users need efficient navigation beyond basic directory traversal"
+    problems_solved:
+      - "Repetitive navigation to frequently accessed directories"
+      - "Lost context when navigating away and returning"
+      - "No quick way to jump to specific paths"
+    benefits:
+      - "Per-directory cursor position history"
+      - "Parent navigation positions cursor on previous directory"
+      - "Bookmark system for frequently accessed locations"
+      - "Goto dialog for direct path entry"
+      - "Recent directories list (LRU cache)"
+  satisfaction_criteria:
+    - criterion: "Cursor position persists per-directory (filename-based restoration)"
+    - criterion: "Parent navigation (Backspace) positions cursor on previous subdirectory"
+    - criterion: "Goto dialog (G key) for direct path entry with autocomplete"
+    - criterion: "Recent directories accessible via Alt+Left/Right"
+    - criterion: "Bookmark add (B key) and bookmark list (Ctrl+B)"
+    - criterion: "Bookmarks stored in localStorage for persistence"
+    - criterion: "Home shortcut (~ key) navigates to home directory"
+  validation_criteria:
+    - method: "Unit tests"
+      coverage: "History save/restore, bookmark CRUD operations"
+    - method: "Integration tests"
+      coverage: "Parent navigation cursor positioning"
+    - method: "localStorage tests"
+      coverage: "Bookmark persistence across sessions"
+  traceability:
+    architecture:
+      - ARCH-DIRECTORY_HISTORY
+    implementation:
+      - IMPL-DIR_HISTORY
+    tests:
+      - testAdvancedNav_REQ_ADVANCED_NAV
+    code_annotations:
+      - REQ-ADVANCED_NAV
+  related_requirements:
+    depends_on:
+      - REQ-DIRECTORY_NAVIGATION
+    related_to:
+      - REQ-FILE_LISTING
+    supersedes: []
+  detail_file: requirements/REQ-ADVANCED_NAV.md
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation - adapted from Goful ARCH-DIRECTORY_HISTORY for web"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+REQ-FILE_COMPARISON_VISUAL:
+  name: Visual Cross-Pane File Comparison
+  category: Functional
+  priority: P1
+  status: "Implemented"
+  rationale:
+    why: "Users need to identify file differences across directories for sync and backup tasks"
+    problems_solved:
+      - "Manual comparison of files across directories is tedious"
+      - "No visual indication of same/different files"
+      - "Difficult to identify newest or largest versions"
+    benefits:
+      - "Automatic color-coded file comparison"
+      - "Instant identification of same/different files"
+      - "Size and time comparisons visible at a glance"
+      - "Toggle on/off for focused work"
+  satisfaction_criteria:
+    - criterion: "Files with same name across panes are color-coded"
+    - criterion: "Size comparison: equal (green), smallest (blue), largest (red)"
+    - criterion: "Time comparison: equal (green), earliest (blue), latest (red)"
+    - criterion: "Toggle comparison mode with backtick key"
+    - criterion: "Comparison colors configurable in theme.yaml"
+    - criterion: "Comparison index rebuilds on pane content changes"
+  validation_criteria:
+    - method: "Unit tests"
+      coverage: "Comparison index building with various file sets"
+    - method: "Integration tests"
+      coverage: "Color application and toggle behavior"
+    - method: "Visual tests"
+      coverage: "Color coding displays correctly"
+  traceability:
+    architecture:
+      - ARCH-COMPARISON_COLORING
+    implementation:
+      - IMPL-COMPARISON_COLORS
+    tests:
+      - testFileComparison_REQ_FILE_COMPARISON_VISUAL
+    code_annotations:
+      - REQ-FILE_COMPARISON_VISUAL
+  related_requirements:
+    depends_on:
+      - REQ-CROSS_PANE_COMPARISON
+      - REQ-MULTI_PANE_LAYOUT
+    related_to:
+      - REQ-CONFIG_DRIVEN_FILE_MANAGER
+    supersedes: []
+  detail_file: requirements/REQ-FILE_COMPARISON_VISUAL.md
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation - adapted from Goful REQ-FILE_COMPARISON_COLORS for web"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+REQ-FILE_SORTING_ADVANCED:
+  name: Advanced Multi-Criteria File Sorting
+  category: Functional
+  priority: P1
+  status: "Implemented"
+  rationale:
+    why: "Different file management tasks require different sort orders for efficiency"
+    problems_solved:
+      - "Limited to simple name sorting"
+      - "Cannot prioritize directories"
+      - "No ascending/descending toggle"
+    benefits:
+      - "Sort by name, size, time, extension"
+      - "Ascending and descending order for each criterion"
+      - "Optional directory-first sorting"
+      - "Cursor position preservation across sorts"
+  satisfaction_criteria:
+    - criterion: "Sort by name (alphabetical)"
+    - criterion: "Sort by size (bytes)"
+    - criterion: "Sort by modification time (chronological)"
+    - criterion: "Sort by extension (alphabetical)"
+    - criterion: "Each criterion supports ascending/descending"
+    - criterion: "Optional directories-first toggle"
+    - criterion: "Sort menu accessible via S key"
+    - criterion: "Current sort displayed in pane footer"
+    - criterion: "Cursor remains on same file after sorting"
+  validation_criteria:
+    - method: "Unit tests"
+      coverage: "All sort criteria and directions"
+    - method: "Unit tests"
+      coverage: "Directory prioritization behavior"
+    - method: "Integration tests"
+      coverage: "Cursor preservation after sort"
+  traceability:
+    architecture:
+      - ARCH-SORT_PIPELINE
+    implementation:
+      - IMPL-SORT_FILTER
+    tests:
+      - testSorting_REQ_FILE_SORTING_ADVANCED
+    code_annotations:
+      - REQ-FILE_SORTING_ADVANCED
+  related_requirements:
+    depends_on:
+      - REQ-FILE_LISTING
+    related_to:
+      - REQ-FILE_MARKING_WEB
+    supersedes: []
+  detail_file: requirements/REQ-FILE_SORTING_ADVANCED.md
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation - adapted from Goful REQ-FILE_SORTING for web"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+REQ-FILE_SEARCH:
+  name: File Search and Filtering
+  category: Functional
+  priority: P1
+  status: "Implemented"
+  rationale:
+    why: "Users need to locate files by name pattern or content in large directories"
+    problems_solved:
+      - "Scrolling through large directories is inefficient"
+      - "No quick way to find files by pattern"
+      - "Cannot search file contents"
+    benefits:
+      - "Incremental filename filtering (real-time)"
+      - "Content search across files"
+      - "Regex pattern support"
+      - "Search history for repeated searches"
+  satisfaction_criteria:
+    - criterion: "Incremental finder dialog (Ctrl+F) with real-time filtering"
+    - criterion: "Regex pattern matching with auto case-insensitive"
+    - criterion: "Content search dialog (Ctrl+Shift+F) for searching within files"
+    - criterion: "Search results show filename, line number, context"
+    - criterion: "Search history (last 20 patterns) with up/down navigation"
+    - criterion: "Invalid regex displays error without crashing"
+  validation_criteria:
+    - method: "Unit tests"
+      coverage: "Pattern matching (fuzzy, regex) - 30 tests passing"
+    - method: "Integration tests"
+      coverage: "Search API and result display - 27 API tests, 38 FinderDialog tests, 29 SearchDialog tests"
+    - method: "Performance tests"
+      coverage: "Large directory and file search performance validated"
+  traceability:
+    architecture:
+      - ARCH-SEARCH_ENGINE
+    implementation:
+      - IMPL-FILE_SEARCH
+    tests:
+      - src/lib/files.search.test.ts (30 tests)
+      - src/app/api/files/search/route.test.ts (27 tests)
+      - src/app/files/components/FinderDialog.test.tsx (38 tests)
+      - src/app/files/components/SearchDialog.test.tsx (29 tests)
+    code_annotations:
+      - REQ-FILE_SEARCH
+  related_requirements:
+    depends_on:
+      - REQ-FILE_LISTING
+    related_to:
+      - REQ-ADVANCED_NAV
+    supersedes: []
+  detail_file: requirements/REQ-FILE_SEARCH.md
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Phase 8 completed - all search components, API, and tests complete (124 total tests passing)"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass - 523 total tests passing, production build successful"
+REQ-LINKED_PANES:
+  name: Linked Pane Navigation
+  category: Functional
+  priority: P2
+  status: "Implemented"
+  rationale:
+    why: "Users need synchronized navigation across panes for comparison tasks"
+    problems_solved:
+      - "Manual navigation of multiple panes to same subdirectory"
+      - "Difficulty keeping panes synchronized"
+      - "No visual indicator of linked state"
+    benefits:
+      - "Automatic synchronized directory changes"
+      - "Toggle linked mode on/off (L key)"
+      - "Visual indicator in pane headers"
+      - "Configurable link groups (future enhancement)"
+  satisfaction_criteria:
+    - criterion: "Toggle linked mode with L key"
+    - criterion: "Linked panes navigate to same subdirectory together"
+    - criterion: "Visual indicator shows linked state in pane headers"
+    - criterion: "Link groups configurable (future enhancement)"
+    - criterion: "Linked mode persists across directory changes"
+  validation_criteria:
+    - method: "Unit tests"
+      coverage: "Link state management and sync logic"
+    - method: "Integration tests"
+      coverage: "Synchronized navigation across panes"
+  traceability:
+    architecture:
+      - ARCH-LINKED_NAV
+    implementation:
+      - IMPL-LINKED_NAV
+    tests:
+      - testLinkedPanes_REQ_LINKED_PANES
+      - testLinkedToggle_IMPL_LINKED_NAV
+      - testLinkedNavigationDown_IMPL_LINKED_NAV
+      - testLinkedNavigationUp_IMPL_LINKED_NAV
+      - testLinkedAsymmetric_IMPL_LINKED_NAV
+    code_annotations:
+      - REQ-LINKED_PANES
+  related_requirements:
+    depends_on:
+      - REQ-MULTI_PANE_LAYOUT
+      - REQ-DIRECTORY_NAVIGATION
+      - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+    related_to:
+      - REQ-FILE_COMPARISON_VISUAL
+    supersedes: []
+  detail_file: requirements/REQ-LINKED_PANES.md
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation - adapted from Goful REQ-LINKED_NAVIGATION for web"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+REQ-FILE_PREVIEW:
+  name: File Preview Panel
+  category: Functional
+  priority: P2
+  status: "Implemented"
+  rationale:
+    why: "Users need to view file contents without opening external applications"
+    problems_solved:
+      - "Must open files in editors to view contents"
+      - "No quick preview for images or text files"
+      - "Cannot inspect archive contents without extracting"
+    benefits:
+      - "Instant file preview in dedicated panel"
+      - "Text, image, and archive support"
+      - "File metadata display"
+      - "No external application launching"
+  satisfaction_criteria:
+    - criterion: "Info panel shows detailed file metadata (I key)"
+    - criterion: "Text file preview (Q key) with syntax highlighting"
+    - criterion: "Image thumbnail preview with dimensions"
+    - criterion: "Archive contents listing (zip, tar, tar.gz)"
+    - criterion: "File type detection via extension and magic bytes"
+    - criterion: "Preview pane resizable (split-pane view)"
+  validation_criteria:
+    - method: "Unit tests"
+      coverage: "File type detection and content loading"
+    - method: "Integration tests"
+      coverage: "Preview API and rendering"
+    - method: "Security tests"
+      coverage: "Malicious file handling"
+  traceability:
+    architecture:
+      - ARCH-PREVIEW_SYSTEM
+    implementation:
+      - IMPL-FILE_PREVIEW
+    tests:
+      - testFilePreview_REQ_FILE_PREVIEW
+    code_annotations:
+      - REQ-FILE_PREVIEW
+  related_requirements:
+    depends_on:
+      - REQ-FILE_LISTING
+    related_to:
+      - REQ-FILE_OPERATIONS
+    supersedes: []
+  detail_file: requirements/REQ-FILE_PREVIEW.md
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation - new requirement for web file manager"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+REQ-KEYBOARD_SHORTCUTS_COMPLETE:
+  name: Comprehensive Keyboard Shortcut System
+  category: Functional
+  priority: P0
+  status: "Implemented"
+  rationale:
+    why: "Power users need efficient keyboard-driven workflows"
+    problems_solved:
+      - "Mouse-dependent navigation is slow"
+      - "Incomplete keyboard shortcut coverage"
+      - "No discoverability of available shortcuts"
+    benefits:
+      - "Complete keyboard navigation"
+      - "Configurable keybindings"
+      - "Help overlay showing all shortcuts"
+      - "Command palette for action discovery"
+  satisfaction_criteria:
+    - criterion: "Help overlay (? key) displays all shortcuts"
+    - criterion: "Shortcuts organized by category"
+    - criterion: "All file operations accessible via keyboard"
+    - criterion: "Keybindings configurable in files.yaml"
+    - criterion: "Command palette (Ctrl+P) for fuzzy action search"
+    - criterion: "Modal dialogs have keyboard navigation"
+  validation_criteria:
+    - method: "Unit tests"
+      coverage: "Keybinding parsing and matching"
+    - method: "Integration tests"
+      coverage: "Action execution via keyboard"
+    - method: "UI tests"
+      coverage: "Help overlay display"
+  traceability:
+    architecture:
+      - ARCH-KEYBIND_SYSTEM
+    implementation:
+      - IMPL-KEYBINDS
+    tests:
+      - testKeybindingParser_REQ_KEYBOARD_SHORTCUTS_COMPLETE
+      - testKeybindingMatcher_REQ_KEYBOARD_SHORTCUTS_COMPLETE
+      - testFormatKeyCombo_REQ_KEYBOARD_SHORTCUTS_COMPLETE
+    code_annotations:
+      - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+  related_requirements:
+    depends_on:
+      - REQ-KEYBOARD_NAVIGATION
+      - REQ-CONFIG_DRIVEN_FILE_MANAGER
+    related_to:
+      - REQ-FILE_OPERATIONS
+      - REQ-FILE_MARKING_WEB
+    supersedes: []
+  detail_file: requirements/REQ-KEYBOARD_SHORTCUTS_COMPLETE.md
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Phase 7 completed - all features implemented and tested"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass - 425 tests passing"
+REQ-MOUSE_INTERACTION:
+  name: Mouse and Touch Interaction
+  category: Functional
+  priority: P2
+  status: "Implemented"
+  rationale:
+    why: "Web users expect mouse and touch interaction support"
+    problems_solved:
+      - "Keyboard-only interface not accessible to all users"
+      - "No context menu for common operations"
+      - "Cannot drag-drop files between panes"
+    benefits:
+      - "Right-click context menu"
+      - "Drag-and-drop file operations"
+      - "Click to select and navigate"
+      - "Touch-friendly on tablets"
+  satisfaction_criteria:
+    - criterion: "Right-click shows context menu with operations"
+    - criterion: "Left-click selects file and moves cursor"
+    - criterion: "Double-click opens/enters file/directory"
+    - criterion: "Drag-and-drop moves/copies files between panes"
+    - criterion: "Scroll wheel navigates file list"
+    - criterion: "Touch gestures work on tablets"
+  validation_criteria:
+    - method: "Integration tests"
+      coverage: "Mouse event handling"
+    - method: "UI tests"
+      coverage: "Context menu display and actions"
+    - method: "Touch tests"
+      coverage: "Touch gesture handling"
+  traceability:
+    architecture:
+      - ARCH-MOUSE_SUPPORT
+    implementation:
+      - IMPL-MOUSE_SUPPORT
+    tests:
+      - testMouseInteraction_REQ_MOUSE_INTERACTION
+    code_annotations:
+      - REQ-MOUSE_INTERACTION
+  related_requirements:
+    depends_on:
+      - REQ-FILE_OPERATIONS
+    related_to:
+      - REQ-KEYBOARD_NAVIGATION
+    supersedes: []
+  detail_file: requirements/REQ-MOUSE_INTERACTION.md
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Phase 10 implementation complete"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass - 554 tests passing, production build successful"
+REQ-FILES_CONFIG_COMPLETE:
+  name: Complete File Manager Configuration
+  category: Functional
+  priority: P1
+  status: "Implemented"
+  rationale:
+    why: "All UI elements must be configurable without code changes"
+    problems_solved:
+      - "Hard-coded UI text and styling"
+      - "Incomplete template customization"
+      - "Code changes required for appearance"
+    benefits:
+      - "Complete configurability via YAML"
+      - "Keybindings customizable"
+      - "Theme colors customizable"
+      - "All text content from config"
+  satisfaction_criteria:
+    - criterion: "All user-facing text in files.yaml"
+    - criterion: "All keybindings in files.yaml keybindings section"
+    - criterion: "All colors in theme.yaml file manager section"
+    - criterion: "File type icons/colors configurable"
+    - criterion: "Layout preferences in config"
+    - criterion: "Startup directories in config"
+  validation_criteria:
+    - method: "Config tests"
+      coverage: "Changing config changes UI without code changes"
+    - method: "Code inspection"
+      coverage: "No hard-coded user-facing text in components"
+  traceability:
+    architecture:
+      - ARCH-CONFIG_DRIVEN_UI
+    implementation:
+      - IMPL-FILES_CONFIG_COMPLETE
+    tests:
+      - testFilesConfig_REQ-FILES_CONFIG_COMPLETE
+    code_annotations:
+      - REQ-FILES_CONFIG_COMPLETE
+  related_requirements:
+    depends_on:
+      - REQ-CONFIG_DRIVEN_FILE_MANAGER
+    related_to:
+      - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+    supersedes: []
+  detail_file: requirements/REQ-FILES_CONFIG_COMPLETE.md
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation - expansion of REQ-CONFIG_DRIVEN_FILE_MANAGER"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+REQ-FILES_PERFORMANCE:
+  name: File Manager Performance Optimization
+  category: Non-Functional
+  priority: P1
+  status: "Planned"
+  rationale:
+    why: "Large directories must remain responsive and efficient"
+    problems_solved:
+      - "Slow rendering with 1000+ files"
+      - "Excessive memory usage"
+      - "Laggy scrolling"
+    benefits:
+      - "Virtual scrolling for large lists"
+      - "Lazy loading of file metadata"
+      - "Debounced comparison updates"
+      - "Optimized sort algorithms"
+  satisfaction_criteria:
+    - criterion: "Render 1000 files in < 1 second"
+    - criterion: "Smooth scrolling with 5000+ files via virtual scrolling"
+    - criterion: "Lazy load metadata (only visible files stat'd)"
+    - criterion: "Debounced comparison index updates (300ms)"
+    - criterion: "Memory usage scales sub-linearly with file count"
+  validation_criteria:
+    - method: "Performance tests"
+      coverage: "1000+ file directory rendering"
+    - method: "Performance tests"
+      coverage: "Scrolling performance with virtual scrolling"
+    - method: "Memory tests"
+      coverage: "Memory usage profiling"
+  traceability:
+    architecture:
+      - ARCH-PERFORMANCE_OPT
+    implementation:
+      - IMPL-PERFORMANCE_OPT
+    tests:
+      - testPerformance_REQ_FILES_PERFORMANCE
+    code_annotations:
+      - REQ-FILES_PERFORMANCE
+  related_requirements:
+    depends_on:
+      - REQ-FILE_LISTING
+    related_to:
+      - REQ-FILE_COMPARISON_VISUAL
+    supersedes: []
+  detail_file: requirements/REQ-FILES_PERFORMANCE.md
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation - web-specific performance requirement"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+REQ-REACT_SSR_STABILITY:
+  name: React SSR Stability and Correctness
+  category: Non-Functional
+  priority: P0
+  status: "Implemented"
+  rationale:
+    why: "Next.js server-side rendering requires stable components with unique keys and SSR-safe code"
+    problems_solved:
+      - "React duplicate key warnings breaking component rendering"
+      - "localStorage access causing SSR errors"
+      - "Module initialization timing issues"
+    benefits:
+      - "Stable component rendering without warnings"
+      - "Clean SSR without browser API errors"
+      - "Predictable module initialization"
+  satisfaction_criteria:
+    - criterion: "No React console warnings about duplicate keys"
+    - criterion: "No SSR errors from browser API access"
+    - criterion: "Keybinding registry initialized before first component render"
+    - criterion: "LocalStorage accessed only in browser context"
+  validation_criteria:
+    - method: "Console inspection"
+      coverage: "No React warnings or errors during page load"
+    - method: "Production build"
+      coverage: "Build succeeds without errors"
+  traceability:
+    architecture:
+      - ARCH-REACT_VERSION
+      - ARCH-SERVER_COMPONENTS
+    implementation:
+      - IMPL-WORKSPACE_VIEW
+      - IMPL-FILE_SEARCH
+      - IMPL-KEYBINDS
+    tests:
+      - SSR stability verification
+    code_annotations:
+      - REQ-REACT_SSR_STABILITY
+  related_requirements:
+    depends_on:
+      - REQ-APP_STRUCTURE
+    related_to:
+      - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+      - REQ-FILE_SEARCH
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Documented fixes for duplicate keys, SSR localStorage errors, and keybinding timing"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
 # ---
 # Template Record - Copy this block to create new requirements
 # ---

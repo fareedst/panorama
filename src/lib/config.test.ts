@@ -12,6 +12,8 @@ import {
   getOverride,
   getJobsOverride,
   getStatusBadgeClass,
+  getFilesConfig,
+  getFileTypeConfig,
   _resetConfigCache,
   _deepMerge,
   _DEFAULT_SITE_CONFIG,
@@ -386,3 +388,136 @@ describe("getStatusBadgeClass [REQ-CONFIG_DRIVEN_APPEARANCE]", () => {
     expect(typeof cls).toBe("string");
   });
 });
+
+// ---------------------------------------------------------------------------
+// Files Configuration Tests [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE]
+// ---------------------------------------------------------------------------
+
+describe("getFilesConfig [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE]", () => {
+  it("returns complete FilesConfig object", () => {
+    const config = getFilesConfig();
+    expect(config).toBeDefined();
+    expect(config.copy).toBeDefined();
+    expect(config.keybindings).toBeDefined();
+    expect(config.layout).toBeDefined();
+    expect(config.startup).toBeDefined();
+  });
+
+  it("loads copy section with all UI text", () => {
+    const config = getFilesConfig();
+    expect(config.copy?.title).toBe("File Manager");
+    expect(config.copy?.subtitle).toBe("Browse and manage server files");
+    expect(config.copy?.marking?.markedCount).toBe("{count} marked");
+    expect(config.copy?.help?.title).toBe("Keyboard Shortcuts");
+    expect(config.copy?.commandPalette?.title).toBe("Command Palette");
+  });
+
+  it("loads layout config with defaults", () => {
+    const config = getFilesConfig();
+    expect(config.layout?.default).toBe("tile");
+    expect(config.layout?.defaultPaneCount).toBe(2);
+    expect(config.layout?.allowPaneManagement).toBe(true);
+    expect(config.layout?.maxPanes).toBe(4);
+  });
+
+  it("loads startup config with defaults", () => {
+    const config = getFilesConfig();
+    expect(config.startup?.mode).toBe("home");
+    expect(config.startup?.paths).toBeDefined();
+    expect(config.startup?.paths?.pane1).toBe("~");
+    expect(config.startup?.rememberLastLocations).toBe(false);
+  });
+
+  it("loads keybindings from config", () => {
+    const config = getFilesConfig();
+    expect(Array.isArray(config.keybindings)).toBe(true);
+    // Should have keybindings loaded from files.yaml
+    expect(config.keybindings!.length).toBeGreaterThan(0);
+  });
+});
+
+describe("getFileTypeConfig [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE]", () => {
+  it("returns directory config for directories", () => {
+    const theme = getThemeConfig();
+    const result = getFileTypeConfig(theme, "folder", true);
+    expect(result.icon).toBe("📁");
+    expect(result.iconClass).toContain("blue");
+  });
+
+  it("returns file config for generic files", () => {
+    const theme = getThemeConfig();
+    const result = getFileTypeConfig(theme, "unknown.xyz", false);
+    expect(result.icon).toBe("📄");
+    expect(result.iconClass).toContain("gray");
+  });
+
+  it("matches TypeScript files to code type", () => {
+    const theme = getThemeConfig();
+    const result = getFileTypeConfig(theme, "test.ts", false);
+    expect(result.icon).toBe("💻");
+    expect(result.iconClass).toContain("purple");
+  });
+
+  it("matches image files to image type", () => {
+    const theme = getThemeConfig();
+    const result = getFileTypeConfig(theme, "photo.jpg", false);
+    expect(result.icon).toBe("🖼️");
+    expect(result.iconClass).toContain("green");
+  });
+
+  it("matches archive files to archive type", () => {
+    const theme = getThemeConfig();
+    const result = getFileTypeConfig(theme, "data.zip", false);
+    expect(result.icon).toBe("📦");
+    expect(result.iconClass).toContain("orange");
+  });
+
+  it("handles case-insensitive pattern matching", () => {
+    const theme = getThemeConfig();
+    const result = getFileTypeConfig(theme, "TEST.TS", false);
+    expect(result.icon).toBe("💻");
+  });
+
+  it("returns first matching type for multiple pattern matches", () => {
+    const theme = getThemeConfig();
+    // .json could match config type
+    const result = getFileTypeConfig(theme, "package.json", false);
+    expect(result.icon).toBeDefined();
+    expect(result.iconClass).toBeDefined();
+  });
+
+  it("handles files with no extension", () => {
+    const theme = getThemeConfig();
+    const result = getFileTypeConfig(theme, "README", false);
+    expect(result.icon).toBe("📄");
+  });
+});
+
+describe("Pane Management Config [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE]", () => {
+  it("loads pane management copy text", () => {
+    const config = getFilesConfig();
+    expect(config.copy?.paneManagement?.addPane).toBe("Add Pane");
+    expect(config.copy?.paneManagement?.removePane).toBe("Remove Pane");
+    expect(config.copy?.paneManagement?.maxPanesReached).toBe("Maximum number of panes reached");
+    expect(config.copy?.paneManagement?.minPanesReached).toBe("At least one pane must remain");
+    expect(config.copy?.paneManagement?.paneManagementDisabled).toBe("Pane management is disabled");
+  });
+
+  it("includes pane management keybindings", () => {
+    const config = getFilesConfig();
+    const paneAddBinding = config.keybindings?.find(kb => kb.action === "pane.add");
+    const paneRemoveBinding = config.keybindings?.find(kb => kb.action === "pane.remove");
+    
+    expect(paneAddBinding).toBeDefined();
+    expect(paneAddBinding?.category).toBe("pane-management");
+    expect(paneRemoveBinding).toBeDefined();
+    expect(paneRemoveBinding?.category).toBe("pane-management");
+  });
+
+  it("layout config supports pane management", () => {
+    const config = getFilesConfig();
+    expect(config.layout?.allowPaneManagement).toBe(true);
+    expect(config.layout?.maxPanes).toBeGreaterThan(1);
+  });
+});
+

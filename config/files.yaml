@@ -1,0 +1,330 @@
+# [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
+# File Manager Configuration
+
+copy:
+  title: "File Manager"
+  subtitle: "Browse and manage server files"
+  backToHome: "Back to Home"
+  layoutLabel: "Layout:"
+  emptyDirectory: "Empty directory"
+  
+  # Keyboard shortcuts
+  shortcuts:
+    navigate: "↑↓: Navigate"
+    open: "Enter: Open"
+    parent: "Backspace: Parent"
+    nextPane: "Tab: Next Pane"
+    mark: "M: Mark"
+    markDown: "Space: Mark+Down"
+  
+  # Layout types
+  layouts:
+    tile: "Tile"
+    oneRow: "One Row"
+    oneColumn: "One Column"
+    fullscreen: "Fullscreen"
+  
+  # File operations
+  operations:
+    copy: "Copy"
+    move: "Move"
+    delete: "Delete"
+    rename: "Rename"
+  
+  # Confirmation messages
+  confirmation:
+    deleteMessage: "Delete {count} file(s)?"
+    deleteButton: "Delete"
+    cancelButton: "Cancel"
+  
+  # [REQ-FILE_SEARCH] Search dialog copy
+  search:
+    finderTitle: "Find Files"
+    finderPlaceholder: "Type to filter files..."
+    finderNoResults: "No matching files"
+    finderResultsCount: "{count} file(s) found"
+    searchTitle: "Search File Contents"
+    searchPlaceholder: "Search pattern..."
+    searchButton: "Search"
+    searchNoResults: "No matches found"
+    searchResultsCount: "{count} match(es) in {files} file(s)"
+    searchOptions: "Options"
+    searchRecursive: "Recursive"
+    searchCaseSensitive: "Case Sensitive"
+    searchRegex: "Regular Expression"
+    searchFilePattern: "File Pattern (glob)"
+    searchInProgress: "Searching..."
+  
+  # [REQ-FILES_CONFIG_COMPLETE] Marking operations
+  marking:
+    markedCount: "{count} marked"
+    clearMarks: "Clear marks"
+    markAll: "Mark all"
+    invertMarks: "Invert marks"
+  
+  # [REQ-FILES_CONFIG_COMPLETE] Help dialog
+  help:
+    title: "Keyboard Shortcuts"
+    close: "Close"
+  
+  # [REQ-FILES_CONFIG_COMPLETE] Command palette
+  commandPalette:
+    title: "Command Palette"
+    placeholder: "Type to search commands..."
+    noResults: "No matching commands"
+    executeButton: "Execute"
+  
+  # [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] Pane management
+  paneManagement:
+    addPane: "Add Pane"
+    removePane: "Remove Pane"
+    maxPanesReached: "Maximum number of panes reached"
+    minPanesReached: "At least one pane must remain"
+    paneManagementDisabled: "Pane management is disabled"
+
+# [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
+# Keyboard shortcut definitions
+keybindings:
+  # System
+  - key: "?"
+    action: "help.show"
+    description: "Show keyboard shortcuts"
+    category: "system"
+    modifiers:
+      shift: true
+  
+  - key: "p"
+    modifiers:
+      ctrl: true
+    action: "command.palette"
+    description: "Open command palette"
+    category: "system"
+  
+  # Navigation
+  - key: "ArrowUp"
+    action: "navigate.up"
+    description: "Move cursor up"
+    category: "navigation"
+  
+  - key: "ArrowDown"
+    action: "navigate.down"
+    description: "Move cursor down"
+    category: "navigation"
+  
+  - key: "Enter"
+    action: "navigate.enter"
+    description: "Enter directory or open file"
+    category: "navigation"
+  
+  - key: "Backspace"
+    action: "navigate.parent"
+    description: "Go to parent directory"
+    category: "navigation"
+  
+  - key: "Tab"
+    action: "navigate.tab"
+    description: "Switch pane focus"
+    category: "navigation"
+  
+  - key: "Home"
+    action: "navigate.first"
+    description: "Jump to first file"
+    category: "navigation"
+  
+  - key: "End"
+    action: "navigate.last"
+    description: "Jump to last file"
+    category: "navigation"
+  
+  # File Operations
+  - key: "c"
+    action: "file.copy"
+    description: "Copy marked files (or current file)"
+    category: "file-operations"
+  
+  - key: "v"
+    action: "file.move"
+    description: "Move marked files (or current file)"
+    category: "file-operations"
+  
+  - key: "d"
+    action: "file.delete"
+    description: "Delete marked files (or current file)"
+    category: "file-operations"
+  
+  - key: "r"
+    action: "file.rename"
+    description: "Rename file"
+    category: "file-operations"
+  
+  # Marking
+  - key: " "
+    action: "mark.toggle"
+    description: "Toggle mark on current file and move down"
+    category: "marking"
+  
+  - key: "m"
+    action: "mark.toggle-cursor"
+    description: "Toggle mark on current file (no move)"
+    category: "marking"
+  
+  - key: "m"
+    modifiers:
+      shift: true
+    action: "mark.all"
+    description: "Mark all files"
+    category: "marking"
+  
+  - key: "m"
+    modifiers:
+      ctrl: true
+    action: "mark.invert"
+    description: "Invert marks"
+    category: "marking"
+  
+  - key: "Escape"
+    action: "mark.clear"
+    description: "Clear all marks"
+    category: "marking"
+  
+  # View & Sort
+  - key: "s"
+    action: "view.sort"
+    description: "Open sort menu"
+    category: "view-sort"
+  
+  - key: "`"
+    action: "view.comparison"
+    description: "Toggle comparison mode (name/size/time)"
+    category: "view-sort"
+  
+  # [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Linked pane navigation
+  - key: "l"
+    action: "link.toggle"
+    description: "Toggle linked pane navigation"
+    category: "view-sort"
+  
+  - key: "."
+    action: "view.hidden"
+    description: "Toggle hidden files"
+    category: "view-sort"
+  
+  # Preview
+  - key: "i"
+    action: "preview.info"
+    description: "Show file info panel"
+    category: "preview"
+  
+  - key: "q"
+    action: "preview.content"
+    description: "Show file preview"
+    category: "preview"
+  
+  # Search [REQ-FILE_SEARCH]
+  - key: "f"
+    modifiers:
+      ctrl: true
+    action: "search.finder"
+    description: "Find files (incremental search)"
+    category: "system"
+  
+  - key: "f"
+    modifiers:
+      ctrl: true
+      shift: true
+    action: "search.content"
+    description: "Search file contents"
+    category: "system"
+  
+  # Advanced
+  - key: "g"
+    action: "bookmark.goto"
+    description: "Goto directory (path entry)"
+    category: "advanced"
+  
+  - key: "b"
+    action: "bookmark.add"
+    description: "Add bookmark for current directory"
+    category: "advanced"
+  
+  - key: "b"
+    modifiers:
+      ctrl: true
+    action: "bookmark.list"
+    description: "List bookmarks"
+    category: "advanced"
+  
+  - key: "~"
+    action: "navigate.home"
+    description: "Go to home directory"
+    category: "advanced"
+  
+  - key: "ArrowLeft"
+    modifiers:
+      alt: true
+    action: "history.back"
+    description: "Navigate back in history"
+    category: "advanced"
+  
+  - key: "ArrowRight"
+    modifiers:
+      alt: true
+    action: "history.forward"
+    description: "Navigate forward in history"
+    category: "advanced"
+  
+  # [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] Pane management
+  - key: "="
+    action: "pane.add"
+    description: "Add new pane"
+    category: "pane-management"
+  
+  - key: "-"
+    action: "pane.remove"
+    description: "Remove focused pane"
+    category: "pane-management"
+  
+  - key: "r"
+    modifiers:
+      ctrl: true
+    action: "pane.refresh"
+    description: "Refresh current pane"
+    category: "pane-management"
+  
+  - key: "r"
+    modifiers:
+      ctrl: true
+      shift: true
+    action: "pane.refresh-all"
+    description: "Refresh all panes"
+    category: "pane-management"
+
+# [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE] Layout preferences
+layout:
+  # Default layout type on startup
+  default: "tile"  # tile | oneRow | oneColumn | fullscreen
+  # Default number of panes
+  defaultPaneCount: 2
+  # Allow users to add/remove panes
+  allowPaneManagement: true
+  # Maximum number of panes
+  maxPanes: 4
+  # [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Enable linked navigation mode by default
+  defaultLinkedMode: true
+
+# [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE] Startup directory configuration
+startup:
+  # Startup mode: configured | last | home
+  # - configured: Use paths defined below
+  # - last: Remember last visited paths (requires localStorage)
+  # - home: Always start at home directory
+  mode: "home"
+  # Configured startup paths per pane (when mode = "configured")
+  # Supports: absolute paths, ~ for home, environment variables
+  paths:
+    pane1: "~"
+    pane2: "~/Documents"
+    pane3: "~/Downloads"
+  # Remember last locations across sessions (requires localStorage)
+  rememberLastLocations: false
+

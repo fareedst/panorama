@@ -21,9 +21,6 @@
 #   related_decisions: Lists of depends_on, informs, see_also (YAML lists or [])
 #   detail_file: Path to the detailed .md file in architecture-decisions/ directory
 #   metadata: Structured metadata with created, last_updated, last_validated info
-
----
-
 ARCH-STDD_STRUCTURE:
   name: STDD Project Structure
   status: Active
@@ -92,7 +89,6 @@ ARCH-STDD_STRUCTURE:
       date: 2025-12-18
       validator: "AI Agent"
       result: "pass"
-
 ARCH-MODULE_VALIDATION:
   name: Module Validation Strategy
   status: Active
@@ -174,7 +170,6 @@ ARCH-MODULE_VALIDATION:
       date: 2025-12-18
       validator: "AI Agent"
       result: "pass"
-
 ARCH-NEXTJS_FRAMEWORK:
   name: Next.js 16.1 Framework Choice
   status: Active
@@ -245,7 +240,6 @@ ARCH-NEXTJS_FRAMEWORK:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 ARCH-REACT_VERSION:
   name: React 19.2 with Server Components
   status: Active
@@ -295,7 +289,6 @@ ARCH-REACT_VERSION:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 ARCH-TYPESCRIPT_LANG:
   name: TypeScript for Type Safety
   status: Active
@@ -352,7 +345,6 @@ ARCH-TYPESCRIPT_LANG:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 ARCH-TAILWIND_V4:
   name: Tailwind CSS v4 Styling System
   status: Active
@@ -411,7 +403,6 @@ ARCH-TAILWIND_V4:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 ARCH-APP_ROUTER:
   name: Next.js App Router Pattern
   status: Active
@@ -468,7 +459,6 @@ ARCH-APP_ROUTER:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 ARCH-LAYOUT_PATTERN:
   name: Root Layout Pattern
   status: Active
@@ -519,7 +509,6 @@ ARCH-LAYOUT_PATTERN:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 ARCH-SERVER_COMPONENTS:
   name: Server Components as Default
   status: Active
@@ -567,7 +556,6 @@ ARCH-SERVER_COMPONENTS:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 ARCH-CSS_VARIABLES:
   name: CSS Variables for Dark Mode Theming
   status: Active
@@ -619,7 +607,6 @@ ARCH-CSS_VARIABLES:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 ARCH-RESPONSIVE_FIRST:
   name: Mobile-First Responsive Design
   status: Active
@@ -669,7 +656,6 @@ ARCH-RESPONSIVE_FIRST:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 ARCH-GOOGLE_FONTS:
   name: Google Fonts Optimization with next/font
   status: Active
@@ -719,7 +705,6 @@ ARCH-GOOGLE_FONTS:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 ARCH-CSS_VARIABLES_FONTS:
   name: CSS Variables for Font Assignment
   status: Active
@@ -768,7 +753,6 @@ ARCH-CSS_VARIABLES_FONTS:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 ARCH-TEST_FRAMEWORK:
   name: Vitest Testing Framework
   status: Active
@@ -826,7 +810,6 @@ ARCH-TEST_FRAMEWORK:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 ARCH-CONFIG_DRIVEN_UI:
   name: YAML Configuration-Driven UI Architecture
   status: Active
@@ -887,7 +870,6 @@ ARCH-CONFIG_DRIVEN_UI:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 ARCH-THEME_INJECTION:
   name: CSS Variable Injection from Theme Config
   status: Active
@@ -937,7 +919,6 @@ ARCH-THEME_INJECTION:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 ARCH-CLASS_OVERRIDES:
   name: Tailwind Class Override System via Config
   status: Active
@@ -987,7 +968,6 @@ ARCH-CLASS_OVERRIDES:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 ARCH-CONFIG_DRIVEN_APPEARANCE:
   name: Config-Driven Appearance for All Pages
   status: Active
@@ -1037,7 +1017,6 @@ ARCH-CONFIG_DRIVEN_APPEARANCE:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 ARCH-JOB_TRACKER_STORAGE:
   name: Job Tracker YAML Storage Architecture
   status: Active
@@ -1095,7 +1074,6 @@ ARCH-JOB_TRACKER_STORAGE:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 ARCH-JOB_TRACKER_UI:
   name: Job Tracker UI Page Architecture
   status: Active
@@ -1147,7 +1125,6 @@ ARCH-JOB_TRACKER_UI:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 ARCH-JOB_TRACKER_API:
   name: Job Tracker API Route Architecture
   status: Active
@@ -1197,7 +1174,6 @@ ARCH-JOB_TRACKER_API:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 ARCH-CALENDAR_VIEW:
   name: Calendar View Architecture
   status: Active
@@ -1250,7 +1226,6 @@ ARCH-CALENDAR_VIEW:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 ARCH-YAML_DATA_STORAGE:
   name: YAML Data Storage Pattern
   status: Active
@@ -1301,7 +1276,6 @@ ARCH-YAML_DATA_STORAGE:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
-
 ARCH-CONFIG_DRIVEN_CRUD:
   name: Config-Driven CRUD Architecture
   status: Active
@@ -1351,7 +1325,1364 @@ ARCH-CONFIG_DRIVEN_CRUD:
       date: 2026-02-06
       validator: "AI Agent"
       result: "pass"
+ARCH-FILE_MANAGER_HIERARCHY:
+  name: File Manager Component Hierarchy
+  status: Active
+  cross_references:
+    - REQ-FILE_MANAGER_PAGE
+    - REQ-MULTI_PANE_LAYOUT
+  rationale:
+    why: "Three-tier hierarchy (Page → Workspace → Pane) separates concerns and follows existing project patterns"
+    problems_solved:
+      - "Monolithic file manager component"
+      - "Difficult state management"
+      - "Poor testability"
+    benefits:
+      - "Clear separation of concerns"
+      - "Server/client component split"
+      - "Independent testing of layers"
+      - "Reusable pane components"
+  alternatives_considered:
+    - name: "Single-component approach"
+      pros:
+        - "Simpler initial implementation"
+      cons:
+        - "Poor testability"
+        - "Difficult state management"
+      rejected_reason: "Doesn't scale to multi-pane complexity"
+  implementation_approach:
+    summary: "Server page loads data, client workspace manages panes, file pane displays content"
+    details:
+      - "FilesPage (server component) - loads initial directory data and config"
+      - "WorkspaceView (client component) - manages pane state, layout, focus"
+      - "FilePane (client component) - displays files, handles pane-level interactions"
+      - "Follow calendar view pattern from existing codebase"
+  traceability:
+    requirements:
+      - REQ-FILE_MANAGER_PAGE
+      - REQ-MULTI_PANE_LAYOUT
+    implementation:
+      - IMPL-FILE_MANAGER_PAGE
+      - IMPL-WORKSPACE_VIEW
+      - IMPL-FILE_PANE
+    tests:
+      - File manager hierarchy tests
+    code_annotations:
+      - ARCH-FILE_MANAGER_HIERARCHY
+  related_decisions:
+    depends_on:
+      - ARCH-SERVER_COMPONENTS
+      - ARCH-NEXTJS_FRAMEWORK
+    informs:
+      - IMPL-FILE_MANAGER_PAGE
+      - IMPL-WORKSPACE_VIEW
+    see_also:
+      - ARCH-CALENDAR_VIEW
+  detail_file: ""
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+ARCH-LAYOUT_ALGORITHMS:
+  name: Multi-Pane Layout Algorithms
+  status: Active
+  cross_references:
+    - REQ-MULTI_PANE_LAYOUT
+  rationale:
+    why: "Geometric layout calculations optimize screen space for different file management tasks"
+    problems_solved:
+      - "Manual pane positioning"
+      - "Inconsistent layouts"
+      - "Inefficient screen space usage"
+    benefits:
+      - "Automatic pane allocation"
+      - "Consistent layouts"
+      - "Optimal space utilization"
+  alternatives_considered:
+    - name: "CSS Grid/Flexbox only"
+      pros:
+        - "Native CSS solution"
+      cons:
+        - "Limited layout flexibility"
+        - "Difficult dynamic layouts"
+      rejected_reason: "Cannot support all Goful layout types"
+  implementation_approach:
+    summary: "Pure TypeScript functions calculate absolute pane bounds based on layout type"
+    details:
+      - "Tile: First pane left 50%, others stacked vertically right 50%"
+      - "OneRow: All panes equal width horizontally"
+      - "OneColumn: All panes equal height vertically"
+      - "Fullscreen: All panes overlap, only focused visible"
+      - "Return PaneBounds[] with x, y, width, height for each pane"
+  traceability:
+    requirements:
+      - REQ-MULTI_PANE_LAYOUT
+    implementation:
+      - IMPL-LAYOUT_CALCULATOR
+    tests:
+      - Layout algorithm tests
+    code_annotations:
+      - ARCH-LAYOUT_ALGORITHMS
+  related_decisions:
+    depends_on:
+      - REQ-MULTI_PANE_LAYOUT
+    informs:
+      - IMPL-LAYOUT_CALCULATOR
+    see_also:
+      - ARCH-FILE_MANAGER_HIERARCHY
+  detail_file: ""
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+ARCH-COMPARISON_INDEX:
+  name: Cross-Pane File Comparison Index
+  status: Active
+  cross_references:
+    - REQ-CROSS_PANE_COMPARISON
+  rationale:
+    why: "Centralized index enables efficient cross-pane file comparison and state tracking"
+    problems_solved:
+      - "Inefficient pairwise comparisons"
+      - "Scattered comparison logic"
+      - "Difficult to maintain comparison state"
+    benefits:
+      - "O(1) lookup for comparison state"
+      - "Single source of truth"
+      - "Easy to rebuild on pane changes"
+  alternatives_considered:
+    - name: "On-demand comparison"
+      pros:
+        - "No pre-computation"
+      cons:
+        - "Slow for large directories"
+        - "Repeated calculations"
+      rejected_reason: "Performance issues with large file lists"
+  implementation_approach:
+    summary: "Build Map<filename, CompareState[]> index from all pane contents"
+    details:
+      - "CompareState tracks which panes have the file, sizes, mtimes"
+      - "Build index when panes change (navigate, reload)"
+      - "Pane components query index for each file"
+      - "Color coding: yellow (same name), red/green (size/time diff)"
+  traceability:
+    requirements:
+      - REQ-CROSS_PANE_COMPARISON
+    implementation:
+      - IMPL-COMPARISON_INDEX
+    tests:
+      - Comparison index tests
+    code_annotations:
+      - ARCH-COMPARISON_INDEX
+  related_decisions:
+    depends_on:
+      - REQ-CROSS_PANE_COMPARISON
+    informs:
+      - IMPL-COMPARISON_INDEX
+    see_also:
+      - ARCH-FILE_MANAGER_HIERARCHY
+  detail_file: ""
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+ARCH-FILESYSTEM_ABSTRACTION:
+  name: Server-Side Filesystem Abstraction
+  status: Active
+  cross_references:
+    - REQ-DIRECTORY_NAVIGATION
+    - REQ-FILE_OPERATIONS
+  rationale:
+    why: "Server-side filesystem access via data layer ensures security and follows Next.js best practices"
+    problems_solved:
+      - "Client-side filesystem access impossible"
+      - "Security vulnerabilities from direct fs access"
+      - "Difficult testing"
+    benefits:
+      - "Secure server-side access"
+      - "Testable with mocks"
+      - "Consistent API"
+  alternatives_considered:
+    - name: "Client-side File System Access API"
+      pros:
+        - "Native browser support"
+      cons:
+        - "Limited to user's local files"
+        - "Not server filesystem"
+      rejected_reason: "Requirement is server filesystem browsing"
+  implementation_approach:
+    summary: "Data layer module (files.data.ts) wraps Node.js fs/promises API"
+    details:
+      - "Use fs/promises for async operations"
+      - "Server-only module (not imported by client components)"
+      - "Path validation to prevent directory traversal"
+      - "Error handling for permissions, non-existent paths"
+  traceability:
+    requirements:
+      - REQ-DIRECTORY_NAVIGATION
+      - REQ-FILE_OPERATIONS
+    implementation:
+      - IMPL-FILES_DATA
+    tests:
+      - Filesystem data layer tests
+    code_annotations:
+      - ARCH-FILESYSTEM_ABSTRACTION
+  related_decisions:
+    depends_on:
+      - ARCH-NEXTJS_FRAMEWORK
+    informs:
+      - IMPL-FILES_DATA
+    see_also:
+      - ARCH-JOB_TRACKER_STORAGE
+  detail_file: ""
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+ARCH-FILE_OPERATIONS_API:
+  name: File Operations API Routes
+  status: Active
+  cross_references:
+    - REQ-FILE_OPERATIONS
+  rationale:
+    why: "API routes provide secure server-side file operations accessible from client"
+    problems_solved:
+      - "Client cannot perform filesystem operations"
+      - "Security vulnerabilities from client-side access"
+      - "No centralized error handling"
+    benefits:
+      - "Secure server-side operations"
+      - "Centralized validation and error handling"
+      - "RESTful interface"
+  alternatives_considered:
+    - name: "Server actions"
+      pros:
+        - "Simpler than API routes"
+      cons:
+        - "Tied to forms"
+        - "Less flexible for programmatic calls"
+      rejected_reason: "API routes more flexible for file operations"
+  implementation_approach:
+    summary: "POST /api/files endpoint handles copy, move, delete, rename operations"
+    details:
+      - "Request body: { operation, src, dest }"
+      - "Switch on operation type"
+      - "Call data layer functions"
+      - "Return success/error responses"
+  traceability:
+    requirements:
+      - REQ-FILE_OPERATIONS
+    implementation:
+      - IMPL-FILES_API
+    tests:
+      - File operations API tests
+    code_annotations:
+      - ARCH-FILE_OPERATIONS_API
+  related_decisions:
+    depends_on:
+      - ARCH-FILESYSTEM_ABSTRACTION
+    informs:
+      - IMPL-FILES_API
+    see_also:
+      - ARCH-JOB_TRACKER_API
+  detail_file: ""
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+ARCH-SERVER_CLIENT_BOUNDARY:
+  name: Server-Client Code Boundary Separation
+  status: Active
+  cross_references:
+    - REQ-FILE_MANAGER_PAGE
+    - REQ-DIRECTORY_NAVIGATION
+  rationale:
+    why: "Prevent Node.js modules from being bundled into client JavaScript and maintain correct API route paths"
+    problems_solved:
+      - "Build errors from fs/promises in client bundle"
+      - "Unclear boundaries between server and client code"
+      - "Accidental server code imports in client components"
+      - "404 errors from mismatched API routes and client calls"
+    benefits:
+      - "Clear architectural boundary"
+      - "Prevents build-time errors"
+      - "Easier to reason about code dependencies"
+      - "Follows Next.js best practices"
+      - "Correct API route URLs aligned with file structure"
+  alternatives_considered:
+    - name: "Mark files as server-only with 'server-only' package"
+      pros:
+        - "Explicit marker"
+        - "Build-time enforcement"
+      cons:
+        - "Still need separate utility files"
+        - "Extra dependency"
+      rejected_reason: "Adds dependency without solving the utility sharing problem"
+    - name: "Use dynamic imports in client code"
+      pros:
+        - "Can import server code conditionally"
+      cons:
+        - "Doesn't work for server-only modules like fs"
+        - "Adds runtime complexity"
+      rejected_reason: "Cannot dynamically import Node.js built-in modules in browser"
+  implementation_approach:
+    summary: "Separate server-only code and client-safe utilities into different files; align API routes with Next.js App Router conventions"
+    details:
+      - "files.data.ts: Server-only, imports fs/promises, path, os"
+      - "files.utils.ts: Client-safe, pure TypeScript with no Node.js dependencies"
+      - "files.types.ts: Shared types, no runtime code"
+      - "Server components and API routes import from files.data.ts"
+      - "Client components import only from files.utils.ts"
+      - "files.data.ts can re-export utilities from files.utils.ts for convenience"
+      - "Import traces in build errors reveal exactly where server code leaks into client"
+      - "API routes follow Next.js convention: src/app/api/files/route.ts creates /api/files endpoint (not /api/files/list)"
+      - "Client code must call exact API route URLs matching file structure"
+  traceability:
+    requirements:
+      - REQ-FILE_MANAGER_PAGE
+      - REQ-DIRECTORY_NAVIGATION
+    implementation:
+      - IMPL-FILES_DATA
+      - IMPL-FILES_UTILS
+      - IMPL-FILE_PANE
+      - IMPL-WORKSPACE_VIEW
+      - IMPL-FILES_API
+    tests:
+      - Production build verification
+      - API route integration tests
+    code_annotations:
+      - ARCH-SERVER_CLIENT_BOUNDARY
+  related_decisions:
+    depends_on: []
+    informs:
+      - IMPL-FILES_DATA
+      - IMPL-FILES_UTILS
+      - IMPL-FILES_API
+      - IMPL-WORKSPACE_VIEW
+    see_also:
+      - ARCH-FILESYSTEM_ABSTRACTION
+      - ARCH-FILE_MANAGER_HIERARCHY
+      - ARCH-FILE_OPERATIONS_API
+  detail_file: ""
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Added API route URL alignment lesson; fixed 404 error from /api/files/list vs /api/files mismatch"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+ARCH-LOGGING_SYSTEM:
+  name: Session-Based File Logging Architecture
+  status: Active
+  cross_references:
+    - REQ-LOGGING_SYSTEM
+  rationale:
+    why: "Persistent file-based logging enables debugging across sessions and temporal analysis"
+    problems_solved:
+      - "Ephemeral console logs"
+      - "No historical debugging data"
+      - "Difficult to trace issues in production"
+    benefits:
+      - "Persistent logs survive restarts"
+      - "Session-based files enable temporal analysis"
+      - "OS temp directory automatic cleanup"
+  alternatives_considered:
+    - name: "Console-only logging"
+      pros:
+        - "Simple to implement"
+        - "No file management"
+      cons:
+        - "Ephemeral, lost after session"
+        - "Cannot analyze historical data"
+      rejected_reason: "Does not meet requirement for debugging facilitation"
+    - name: "Database logging"
+      pros:
+        - "Queryable logs"
+        - "Structured data"
+      cons:
+        - "Requires database setup"
+        - "Performance overhead"
+        - "Overkill for simple debugging"
+      rejected_reason: "Too complex for initial implementation"
+    - name: "External logging service"
+      pros:
+        - "Professional solution"
+        - "Advanced features"
+      cons:
+        - "External dependency"
+        - "Cost"
+        - "Privacy concerns"
+      rejected_reason: "Prefer self-contained solution"
+  implementation_approach:
+    summary: "Write timestamped log files to OS temp directory with six log levels"
+    details:
+      - "Use Node.js os.tmpdir() for temporary directory"
+      - "Filename format: nx1-log-YYYY-MM-DD-HH-mm-ss-SSS.log"
+      - "Log levels: FATAL (0), ERROR (1), WARN (2), INFO (3), DEBUG (4), TRACE (5)"
+      - "Format: [TIMESTAMP] [LEVEL] [TOKENS] message"
+      - "Synchronous writes for reliability (fatal errors)"
+      - "Buffered writes for performance (non-fatal)"
+  traceability:
+    requirements:
+      - REQ-LOGGING_SYSTEM
+    implementation:
+      - IMPL-LOGGER_MODULE
+    tests:
+      - Logger system tests
+    code_annotations:
+      - ARCH-LOGGING_SYSTEM
+  related_decisions:
+    depends_on: []
+    informs:
+      - IMPL-LOGGER_MODULE
+    see_also:
+      - ARCH-LOGGING_CONFIG
+  detail_file: ""
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+ARCH-LOGGING_CONFIG:
+  name: Environment-Based Logging Configuration
+  status: Active
+  cross_references:
+    - REQ-LOGGING_CONFIG
+  rationale:
+    why: "Environment variables enable runtime configuration without code changes"
+    problems_solved:
+      - "Hard-coded logging behavior"
+      - "Cannot adjust logging in production"
+      - "Different needs for dev vs prod"
+    benefits:
+      - "Runtime configuration"
+      - "Environment-specific behavior"
+      - "No code changes needed"
+  alternatives_considered:
+    - name: "YAML config file"
+      pros:
+        - "Structured configuration"
+        - "Consistent with project patterns"
+      cons:
+        - "Requires file deployment"
+        - "Cannot change without restart"
+      rejected_reason: "Less flexible than environment variables"
+    - name: "Hard-coded with build-time flags"
+      pros:
+        - "No runtime overhead"
+      cons:
+        - "Requires rebuild to change"
+        - "Not suitable for debugging"
+      rejected_reason: "Too inflexible for debugging use case"
+  implementation_approach:
+    summary: "Read environment variables with sensible defaults at module initialization"
+    details:
+      - "ENABLE_LOGGING: 'true' | 'false' (default: 'true')"
+      - "LOG_LEVEL: 'FATAL' | 'ERROR' | 'WARN' | 'INFO' | 'DEBUG' | 'TRACE' (default: 'INFO')"
+      - "LOG_DIR: custom directory path (default: os.tmpdir())"
+      - "CONSOLE_ERRORS: 'true' | 'false' (default: 'true') - Mirror ERROR/FATAL to console"
+      - "Initialize once at module load"
+      - "Validate environment variables with fallbacks"
+      - "Output log file path to console on initialization"
+      - "Mirror ERROR and FATAL logs to console.error() by default"
+  traceability:
+    requirements:
+      - REQ-LOGGING_CONFIG
+    implementation:
+      - IMPL-LOGGER_CONFIG
+    tests:
+      - Logger config tests
+    code_annotations:
+      - ARCH-LOGGING_CONFIG
+  related_decisions:
+    depends_on:
+      - ARCH-LOGGING_SYSTEM
+    informs:
+      - IMPL-LOGGER_CONFIG
+    see_also: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+ARCH-LOGGING_SEMANTIC_TOKENS:
+  name: Semantic Token Integration in Logging
+  status: Active
+  cross_references:
+    - REQ-LOGGING_SEMANTIC_TOKENS
+  rationale:
+    why: "Semantic tokens in logs enable complete traceability from runtime to requirements"
+    problems_solved:
+      - "Cannot trace logs to feature requirements"
+      - "Unclear which module generated log"
+      - "No connection to STDD documentation"
+    benefits:
+      - "Complete end-to-end traceability"
+      - "Easy grep/search by token"
+      - "Connects runtime behavior to design docs"
+  alternatives_considered:
+    - name: "Module name only (no tokens)"
+      pros:
+        - "Simpler API"
+        - "Less verbose"
+      cons:
+        - "No requirement traceability"
+        - "Cannot track feature-level activity"
+      rejected_reason: "Does not meet STDD traceability requirements"
+    - name: "Optional tokens"
+      pros:
+        - "Flexible"
+      cons:
+        - "Easy to forget"
+        - "Inconsistent usage"
+      rejected_reason: "Tokens must be mandatory for STDD compliance"
+  implementation_approach:
+    summary: "Logger API requires tokens parameter as string or array of strings"
+    details:
+      - "tokens: string | string[] - required parameter"
+      - "Format tokens as space-separated in log output"
+      - "Validate token format [REQ-*], [ARCH-*], [IMPL-*]"
+      - "TypeScript types enforce token presence at compile time"
+      - "Log format: [TIMESTAMP] [LEVEL] [TOKEN1] [TOKEN2] message"
+  traceability:
+    requirements:
+      - REQ-LOGGING_SEMANTIC_TOKENS
+    implementation:
+      - IMPL-LOGGER_TOKENS
+    tests:
+      - Semantic token tests
+    code_annotations:
+      - ARCH-LOGGING_SEMANTIC_TOKENS
+  related_decisions:
+    depends_on:
+      - ARCH-LOGGING_SYSTEM
+    informs:
+      - IMPL-LOGGER_TOKENS
+    see_also:
+      - ARCH-STDD_STRUCTURE
+  detail_file: ""
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+ARCH-MARKING_STATE:
+  name: Client-Side Mark State Management
+  status: Active
+  cross_references:
+    - REQ-FILE_MARKING_WEB
+  rationale:
+    why: "Web file marking requires client-side state for instant feedback with name-based persistence"
+    problems_solved:
+      - "Server-side mark storage adds latency"
+      - "Mark state lost on page refresh"
+      - "Complex synchronization between client and server"
+    benefits:
+      - "Instant mark toggle feedback"
+      - "Simple Set<string> storage in React state"
+      - "Name-based persistence survives re-sorts"
+      - "Independent mark sets per pane"
+  alternatives_considered:
+    - name: "Server-side mark storage in session"
+      pros:
+        - "Persists across page refresh"
+      cons:
+        - "Network latency on every mark toggle"
+        - "Complex session management"
+      rejected_reason: "Latency unacceptable for interactive marking"
+    - name: "Index-based marking"
+      pros:
+        - "Simple integer storage"
+      cons:
+        - "Breaks when files re-sorted"
+      rejected_reason: "Name-based survives sort changes"
+  implementation_approach:
+    summary: "React state with Set<string> per pane, name-based persistence"
+    details:
+      - "PaneState interface includes marks: Set<string> field"
+      - "Mark operations: toggle, markAll, invertMarks, clearMarks"
+      - "Visual feedback: checkbox icon + background color from theme.yaml"
+      - "Footer display: [marked/total] format"
+      - "Batch operations check marks.size > 0"
+  traceability:
+    requirements:
+      - REQ-FILE_MARKING_WEB
+    implementation:
+      - IMPL-FILE_MARKING
+    tests:
+      - testMarkingState_ARCH_MARKING_STATE
+    code_annotations:
+      - ARCH-MARKING_STATE
+  related_decisions:
+    depends_on:
+      - REQ-FILE_MARKING_WEB
+    informs:
+      - IMPL-FILE_MARKING
+    see_also:
+      - ARCH-BATCH_OPERATIONS
+  detail_file: architecture-decisions/ARCH-MARKING_STATE.md
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation - translated from Goful for web"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+ARCH-BATCH_OPERATIONS:
+  name: Async Batch File Operations Architecture
+  status: Active
+  cross_references:
+    - REQ-BULK_FILE_OPS
+  rationale:
+    why: "Batch operations need async execution with progress tracking and error handling"
+    problems_solved:
+      - "Blocking UI during long operations"
+      - "No progress visibility"
+      - "Poor error recovery"
+    benefits:
+      - "Non-blocking UI with Promise.all"
+      - "Real-time progress callbacks"
+      - "Graceful error handling with partial success"
+      - "Cross-pane operation support"
+  alternatives_considered:
+    - name: "Sequential operations"
+      pros:
+        - "Simpler implementation"
+      cons:
+        - "Slower for large file sets"
+      rejected_reason: "Parallel operations significantly faster"
+    - name: "Server-side job queue"
+      pros:
+        - "Survives page refresh"
+      cons:
+        - "Complex job management infrastructure"
+      rejected_reason: "Over-engineered for current needs"
+  implementation_approach:
+    summary: "Promise.all with progress callbacks, fallback to cursor file"
+    details:
+      - "Check marks.size > 0, use marked files; else use cursor file"
+      - "POST /api/files with operation: bulk-copy/bulk-move/bulk-delete"
+      - "Server streams progress updates via callbacks"
+      - "Progress dialog shows: percentage, file count, current file"
+      - "Error collection: continue on error, report at end"
+  traceability:
+    requirements:
+      - REQ-BULK_FILE_OPS
+    implementation:
+      - IMPL-BULK_OPS
+    tests:
+      - testBatchOps_ARCH_BATCH_OPERATIONS
+    code_annotations:
+      - ARCH-BATCH_OPERATIONS
+  related_decisions:
+    depends_on:
+      - ARCH-MARKING_STATE
+    informs:
+      - IMPL-BULK_OPS
+    see_also:
+      - ARCH-SERVER_CLIENT_BOUNDARY
+  detail_file: architecture-decisions/ARCH-BATCH_OPERATIONS.md
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation - adapted from Goful ARCH-ASYNC_FILE_OPERATIONS"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+ARCH-DIRECTORY_HISTORY:
+  name: Per-Directory Cursor Position History
+  status: Implemented
+  cross_references:
+    - REQ-ADVANCED_NAV
+  rationale:
+    why: "Maintain user context when navigating directory trees"
+    problems_solved:
+      - "Lost cursor position when revisiting directories"
+      - "No breadcrumb on parent navigation"
+      - "Disorientation in deep directory trees"
+    benefits:
+      - "Filename-based restoration survives file changes"
+      - "Parent navigation shows previous subdirectory"
+      - "Session-scoped history (simple Map storage)"
+      - "Separate history per pane"
+  alternatives_considered:
+    - name: "Index-based history"
+      pros:
+        - "Simpler storage (just number)"
+      cons:
+        - "Breaks when files added/removed"
+      rejected_reason: "Filename-based more robust"
+    - name: "localStorage persistence"
+      pros:
+        - "Survives page refresh"
+      cons:
+        - "Complexity, stale data issues"
+      rejected_reason: "Session-only sufficient"
+  implementation_approach:
+    summary: "Map<pane_id, Map<path, {cursor, scrollTop}>> in React state"
+    details:
+      - "Save cursor position before directory change"
+      - "Restore cursor position on revisit by filename match"
+      - "Parent navigation: search for previous dir name in parent list"
+      - "LRU cache for recent directories (last 20)"
+  traceability:
+    requirements:
+      - REQ-ADVANCED_NAV
+    implementation:
+      - IMPL-DIR_HISTORY
+    tests:
+      - testDirHistory_ARCH_DIRECTORY_HISTORY
+    code_annotations:
+      - ARCH-DIRECTORY_HISTORY
+  related_decisions:
+    depends_on:
+      - REQ-ADVANCED_NAV
+    informs:
+      - IMPL-DIR_HISTORY
+    see_also:
+      - ARCH-MARKING_STATE
+  detail_file: architecture-decisions/ARCH-DIRECTORY_HISTORY.md
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation - adapted from Goful ARCH-DIRECTORY_HISTORY"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+ARCH-COMPARISON_COLORING:
+  name: Enhanced Cross-Pane Comparison Coloring
+  status: Implemented
+  cross_references:
+    - REQ-FILE_COMPARISON_VISUAL
+  rationale:
+    why: "Visual size/time comparison enables instant file relationship identification"
+    problems_solved:
+      - "Existing comparison only shows presence/absence"
+      - "Cannot identify newest or largest versions"
+      - "Manual size/time comparison required"
+    benefits:
+      - "Instant visual size comparison (equal/smallest/largest)"
+      - "Instant visual time comparison (equal/earliest/latest)"
+      - "Configurable color scheme in theme.yaml"
+      - "Automatic rebuild on pane changes"
+  alternatives_considered:
+    - name: "Server-side comparison"
+      pros:
+        - "Less client computation"
+      cons:
+        - "Network latency on every pane change"
+      rejected_reason: "Client-side faster for typical file counts"
+    - name: "On-demand comparison (button click)"
+      pros:
+        - "No automatic overhead"
+      cons:
+        - "Extra user action required"
+      rejected_reason: "Automatic comparison is core feature"
+  implementation_approach:
+    summary: "Extend ComparisonIndex with size/time analysis, apply CSS classes"
+    details:
+      - "buildEnhancedComparisonIndex: For each filename in multiple panes, compute sizeClass and timeClass"
+      - "sizeClass: 'equal' | 'smallest' | 'largest' | null"
+      - "timeClass: 'equal' | 'earliest' | 'latest' | null"
+      - "Apply CSS classes to file rows based on comparison state"
+      - "Theme colors: comparison-equal, comparison-smallest, comparison-largest, etc."
+  traceability:
+    requirements:
+      - REQ-FILE_COMPARISON_VISUAL
+    implementation:
+      - IMPL-COMPARISON_COLORS
+    tests:
+      - testComparisonColoring_ARCH_COMPARISON_COLORING
+    code_annotations:
+      - ARCH-COMPARISON_COLORING
+  related_decisions:
+    depends_on:
+      - REQ-CROSS_PANE_COMPARISON
+    informs:
+      - IMPL-COMPARISON_COLORS
+    see_also:
+      - ARCH-CONFIG_DRIVEN_UI
+  detail_file: architecture-decisions/ARCH-COMPARISON_COLORING.md
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation - adapted from Goful ARCH-FILE_COMPARISON_ENGINE"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+ARCH-SEARCH_ENGINE:
+  name: Dual-Mode Search Engine (Incremental + Content)
+  status: Implemented
+  cross_references:
+    - REQ-FILE_SEARCH
+  rationale:
+    why: "Different search modes for different use cases: quick filename filtering vs deep content search"
+    problems_solved:
+      - "Filename search too slow if searching content"
+      - "Content search too heavy for simple filtering"
+      - "No unified search interface"
+    benefits:
+      - "Incremental finder: client-side, instant feedback"
+      - "Content search: server-side, comprehensive"
+      - "Regex support in both modes"
+      - "Search history for repeated patterns"
+  alternatives_considered:
+    - name: "All client-side search"
+      pros:
+        - "No API calls, instant results"
+      cons:
+        - "Cannot load file contents in browser"
+      rejected_reason: "Cannot search file contents safely"
+    - name: "All server-side search"
+      pros:
+        - "Consistent architecture"
+      cons:
+        - "Network latency for simple filtering"
+      rejected_reason: "Incremental finder needs instant feedback"
+  implementation_approach:
+    summary: "Hybrid: client-side file finder + server-side content search"
+    components:
+      - name: "File Finder (Client)"
+        description: "Fuzzy matches against visible file list"
+        file: "src/app/files/components/FinderDialog.tsx"
+      - name: "Content Search (Server)"
+        description: "Reads files and searches contents with pattern"
+        file: "src/app/api/files/search/route.ts"
+      - name: "Search History"
+        description: "LocalStorage persistence for recent searches"
+        file: "src/lib/files.search.ts (SearchHistory class)"
+  key_design_decisions:
+    - decision: "Search algorithm"
+      choice: "Fuzzy substring matching for files, regex for content"
+    - decision: "History storage"
+      choice: "LocalStorage with LRU cache (max 20)"
+    - decision: "Security"
+      choice: "Server-side path validation and regex DoS prevention"
+  traceability:
+    requirements:
+      - REQ-FILE_SEARCH
+    implementation:
+      - IMPL-FILE_SEARCH
+    tests:
+      - src/lib/files.search.test.ts
+      - src/app/api/files/search/route.test.ts
+      - src/app/files/components/FinderDialog.test.tsx
+      - src/app/files/components/SearchDialog.test.tsx
+    code_annotations:
+      - ARCH-SEARCH_ENGINE
+  related_decisions:
+    depends_on:
+      - REQ-FILE_SEARCH
+    informs:
+      - IMPL-FILE_SEARCH
+    see_also:
+      - ARCH-SERVER_CLIENT_BOUNDARY
+  detail_file: architecture-decisions/ARCH-SEARCH_ENGINE.md
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Phase 8 completed - all components implemented and tested (124 tests)"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass - 523 total tests passing"
+  alternatives_considered:
+    - name: "Single unified search"
+      pros:
+        - "Simpler UI"
+      cons:
+        - "Performance trade-offs unclear"
+      rejected_reason: "Different use cases need different strategies"
+    - name: "Client-side content search"
+      pros:
+        - "No server round-trip"
+      cons:
+        - "Must download all file contents"
+      rejected_reason: "Bandwidth prohibitive"
+  implementation_approach:
+    summary: "Client-side incremental finder + server-side content search API"
+    details:
+      - "Incremental finder: Ctrl+F, client-side fuzzy/regex match on visible files"
+      - "Content search: Ctrl+Shift+F, POST /api/files/search with pattern"
+      - "Both support regex with auto case-insensitive"
+      - "Search history: localStorage, last 20 patterns"
+      - "Results: filename, line number, context snippet"
+  traceability:
+    requirements:
+      - REQ-FILE_SEARCH
+    implementation:
+      - IMPL-FILE_SEARCH
+    tests:
+      - testSearchEngine_ARCH_SEARCH_ENGINE
+    code_annotations:
+      - ARCH-SEARCH_ENGINE
+  related_decisions:
+    depends_on:
+      - REQ-FILE_SEARCH
+    informs:
+      - IMPL-FILE_SEARCH
+    see_also:
+      - ARCH-SERVER_CLIENT_BOUNDARY
+  detail_file: architecture-decisions/ARCH-SEARCH_ENGINE.md
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation - adapted from Goful ARCH-FINDER_OVERLAY"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+ARCH-PREVIEW_SYSTEM:
+  name: Server-Side File Preview Rendering
+  status: Active
+  cross_references:
+    - REQ-FILE_PREVIEW
+  rationale:
+    why: "File preview requires server-side content access and security checks"
+    problems_solved:
+      - "Cannot access file contents from client"
+      - "No security validation of file types"
+      - "Large files overwhelm browser memory"
+    benefits:
+      - "Server controls file access and security"
+      - "Content sanitization before sending to client"
+      - "Efficient streaming for large files"
+      - "Support for text, image, archive types"
+  alternatives_considered:
+    - name: "Client-side preview"
+      pros:
+        - "No server round-trip"
+      cons:
+        - "Cannot access server filesystem"
+      rejected_reason: "Impossible in web environment"
+    - name: "Full file download"
+      pros:
+        - "Simple implementation"
+      cons:
+        - "Wasteful for large files"
+      rejected_reason: "Preview needs only subset of content"
+  implementation_approach:
+    summary: "API routes for preview/info with type detection and content sanitization"
+    details:
+      - "GET /api/files/preview?path=...&type=text|image|archive"
+      - "GET /api/files/info?path=... for detailed metadata"
+      - "File type detection: extension + magic bytes"
+      - "Text preview: first 100KB with encoding detection"
+      - "Image preview: serve via Next.js Image optimization"
+      - "Archive preview: list entries without extracting"
+  traceability:
+    requirements:
+      - REQ-FILE_PREVIEW
+    implementation:
+      - IMPL-FILE_PREVIEW
+    tests:
+      - testPreviewSystem_ARCH_PREVIEW_SYSTEM
+    code_annotations:
+      - ARCH-PREVIEW_SYSTEM
+  related_decisions:
+    depends_on:
+      - REQ-FILE_PREVIEW
+    informs:
+      - IMPL-FILE_PREVIEW
+    see_also:
+      - ARCH-SERVER_CLIENT_BOUNDARY
+  detail_file: architecture-decisions/ARCH-PREVIEW_SYSTEM.md
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation - web-specific architecture"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+ARCH-KEYBIND_SYSTEM:
+  name: Configurable Keyboard Binding Registry
+  status: Implemented
+  cross_references:
+    - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+  rationale:
+    why: "Comprehensive keyboard shortcuts need centralized registry with config-driven bindings"
+    problems_solved:
+      - "Scattered keyboard handlers across components"
+      - "Hard-coded keybindings"
+      - "No discoverability of shortcuts"
+    benefits:
+      - "Centralized keybind registry"
+      - "Configurable via files.yaml"
+      - "Help overlay auto-generated from registry"
+      - "Command palette with fuzzy search"
+  alternatives_considered:
+    - name: "Component-level event handlers"
+      pros:
+        - "Simple, no abstraction"
+      cons:
+        - "Duplicate code, hard to configure"
+      rejected_reason: "Doesn't scale to comprehensive system"
+    - name: "Browser hotkeys library"
+      pros:
+        - "Mature implementation"
+      cons:
+        - "Extra dependency, limited customization"
+      rejected_reason: "Custom solution more flexible"
+  implementation_approach:
+    summary: "Keybinding registry with action dispatch and config loading"
+    components:
+      - name: "Keybinding Registry"
+        description: "Central registry of all keybindings loaded from YAML"
+      - name: "Event Matcher"
+        description: "Matches KeyboardEvent to action names"
+      - name: "Action Handlers"
+        description: "Map of action names to handler functions"
+      - name: "Help Overlay"
+        description: "Modal displaying all shortcuts by category"
+      - name: "Command Palette"
+        description: "Fuzzy search for actions"
+  key_design_decisions:
+    - decision: "Configuration format"
+      choice: "YAML with key, modifiers, action, description, category"
+    - decision: "Action naming"
+      choice: "category.verb pattern (e.g., file.copy, navigate.up)"
+    - decision: "Modifier handling"
+      choice: "Support Ctrl, Shift, Alt, Meta with exact matching"
+    - decision: "Category organization"
+      choice: "7 fixed categories: navigation, file-operations, marking, view-sort, preview, advanced, system"
+    - decision: "Server-client split"
+      choice: "Config loaded on server, passed as props to client for registry initialization"
+  detail_file: architecture-decisions/ARCH-KEYBIND_SYSTEM.md
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Phase 7 completed - all components implemented and tested"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+    details:
+      - "Keybinding interface: key (string), action (string), description, category"
+      - "Load keybindings from files.yaml at mount"
+      - "Global keydown handler checks registry, dispatches actions"
+      - "Help overlay renders from registry (grouped by category)"
+      - "Command palette: fuzzy search by action/description"
+  traceability:
+    requirements:
+      - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+    implementation:
+      - IMPL-KEYBINDS
+    tests:
+      - testKeybindSystem_ARCH_KEYBIND_SYSTEM
+    code_annotations:
+      - ARCH-KEYBIND_SYSTEM
+  related_decisions:
+    depends_on:
+      - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+      - REQ-CONFIG_DRIVEN_FILE_MANAGER
+    informs:
+      - IMPL-KEYBINDS
+    see_also:
+      - ARCH-CONFIG_DRIVEN_UI
+  detail_file: architecture-decisions/ARCH-KEYBIND_SYSTEM.md
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation - web-specific architecture"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass"
+ARCH-SORT_PIPELINE:
+  name: Multi-Criteria Sort Pipeline Architecture
+  status: Active
+  cross_references:
+    - REQ-FILE_SORTING_ADVANCED
+  decision:
+    summary: Client-side multi-criteria sort pipeline with comparator composition
+    context: File manager needs flexible sorting by name, size, time, extension with ascending/descending order and directory prioritization
+    decision: Implement composable sort pipeline with pluggable comparators
+    consequences:
+      positive:
+        - Instant sort without server round-trip
+        - Easy to add new sort criteria
+        - Cursor preservation via filename tracking
+        - Directory-first option for better navigation
+      negative:
+        - Client must handle all sorting logic
+        - Memory overhead for large directories
+      mitigations:
+        - Efficient comparison functions
+        - Consider virtualization for 1000+ files (Phase 12)
+  alternatives_considered:
+    - option: Server-side sorting
+      pros:
+        - Handles very large directories
+        - Reduces client bundle size
+      cons:
+        - Network latency on every sort
+        - More complex state management
+      rejected_reason: User expects instant sort feedback; latency breaks UX
+  traceability:
+    requirements:
+      - REQ-FILE_SORTING_ADVANCED
+    implementation:
+      - IMPL-SORT_FILTER
+    tests:
+      - testSorting_ARCH_SORT_PIPELINE
+  detail_file: architecture-decisions/ARCH-SORT_PIPELINE.md
+  metadata:
+    created:
+      date: "2026-02-07"
+      author: AI Agent
+    last_updated:
+      date: "2026-02-07"
+      author: AI Agent
+      reason: Initial creation for Phase 5
 
+ARCH-FILES_CONFIG_COMPLETE:
+  name: Complete File Manager Configuration Architecture
+  status: Active
+  cross_references:
+    - REQ-FILES_CONFIG_COMPLETE
+    - REQ-CONFIG_DRIVEN_FILE_MANAGER
+  rationale:
+    why: "Complete configuration system enables full template customization without code changes"
+    problems_solved:
+      - "Hard-coded UI text and styling"
+      - "Fixed layout and startup behavior"
+      - "Non-customizable file type indicators"
+      - "Incomplete configurability"
+    benefits:
+      - "Zero code changes for customization"
+      - "Future internationalization ready"
+      - "Easy A/B testing of configurations"
+      - "Complete visual and behavioral control"
+  alternatives_considered:
+    - name: "Component-level configuration"
+      pros:
+        - "More granular control"
+      cons:
+        - "Complex to maintain"
+        - "Scattered configuration"
+      rejected_reason: "Centralized YAML config more maintainable"
+    - name: "Database-driven configuration"
+      pros:
+        - "Runtime updates possible"
+      cons:
+        - "Requires database infrastructure"
+        - "More complex setup"
+      rejected_reason: "YAML file config simpler for template use case"
+  implementation_approach:
+    summary: "Extend existing YAML configuration with layout/startup/fileTypes sections and pattern-based matching"
+    details:
+      - "Extended config/files.yaml with layout and startup configuration"
+      - "Extended config/theme.yaml with fileTypes (icon, color, patterns)"
+      - "Added TypeScript interfaces for new sections"
+      - "Implemented glob-to-regex pattern matching for file types"
+      - "Extended defaults to handle missing configuration gracefully"
+  traceability:
+    requirements:
+      - REQ-FILES_CONFIG_COMPLETE
+      - REQ-CONFIG_DRIVEN_FILE_MANAGER
+    implementation:
+      - IMPL-FILES_CONFIG_COMPLETE
+    tests:
+      - testFilesConfig_ARCH_FILES_CONFIG_COMPLETE
+    code_annotations:
+      - ARCH-FILES_CONFIG_COMPLETE
+  related_decisions:
+    depends_on:
+      - ARCH-CONFIG_DRIVEN_UI
+    informs:
+      - IMPL-FILES_CONFIG_COMPLETE
+    see_also:
+      - ARCH-KEYBIND_SYSTEM
+      - ARCH-COMPARISON_COLORING
+  detail_file: ""
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Phase 11 architecture complete"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass - 567 tests passing"
+
+ARCH-MOUSE_SUPPORT:
+  name: Mouse and Touch Interaction Architecture
+  status: Active
+  cross_references:
+    - REQ-MOUSE_INTERACTION
+  rationale:
+    why: "Web users expect mouse and touch interactions for accessibility and familiar UX"
+    problems_solved:
+      - "Keyboard-only interface not accessible to all users"
+      - "No context menu for operation discoverability"
+      - "Cannot drag-drop files between panes"
+    benefits:
+      - "Right-click context menu provides operation discoverability"
+      - "Drag-and-drop provides intuitive cross-pane file operations"
+      - "Click to select matches desktop file manager UX"
+      - "Touch-friendly for tablet users"
+  alternatives_considered:
+    - name: "Third-party drag-drop library"
+      pros:
+        - "Polished DX, handles edge cases"
+      cons:
+        - "Extra dependency, bundle size"
+      rejected_reason: "HTML5 API sufficient"
+    - name: "Custom context menu library"
+      pros:
+        - "Advanced features (submenus, icons)"
+      cons:
+        - "Dependency, configuration overhead"
+      rejected_reason: "Simple portal component meets requirements"
+  implementation_approach:
+    summary: "Portal-based context menu, HTML5 drag-drop, existing click handlers"
+    details:
+      - "ContextMenu: Portal to document.body, position calculation, outside click dismiss"
+      - "Drag-drop: HTML5 API with custom drag image and modifier key detection"
+      - "Click: Existing onClick handlers (already implemented)"
+      - "Double-click: Existing onDoubleClick handlers (already implemented)"
+      - "Scroll: Native browser overflow-y-auto"
+  traceability:
+    requirements:
+      - REQ-MOUSE_INTERACTION
+    implementation:
+      - IMPL-MOUSE_SUPPORT
+    tests:
+      - testMouseSupport_ARCH_MOUSE_SUPPORT
+    code_annotations:
+      - ARCH-MOUSE_SUPPORT
+  related_decisions:
+    depends_on:
+      - ARCH-FILE_MANAGER_HIERARCHY
+      - ARCH-FILE_OPERATIONS_API
+    informs:
+      - IMPL-MOUSE_SUPPORT
+    see_also:
+      - ARCH-KEYBIND_SYSTEM
+  detail_file: architecture-decisions/ARCH-MOUSE_SUPPORT.md
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Phase 10 implementation complete"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass - 554 tests passing"
 # ---
 # Template Record - Copy this block to create new architecture decisions
 # ---
@@ -1414,3 +2745,281 @@ ARCH-CONFIG_DRIVEN_CRUD:
 #       date: YYYY-MM-DD
 #       validator: "agent/contributor"
 #       result: "pass"
+
+ARCH-PANE_LIFECYCLE:
+  name: Multi-Pane Initialization and Management
+  status: Active
+  cross_references:
+    - REQ-MULTI_PANE_LAYOUT
+    - REQ-FILES_CONFIG_COMPLETE
+  rationale:
+    why: "Defines how multiple file panes are initialized from configuration and managed at runtime to enable productive multi-panel file management workflows"
+    problems_solved:
+      - "File manager only initialized with single pane despite config specifying defaultPaneCount"
+      - "No mechanism to add/remove panes dynamically at runtime"
+      - "Startup paths configuration not respected"
+      - "Users forced to work with single pane even when multi-panel layout configured"
+    benefits:
+      - "Configuration-driven pane initialization matching user preferences"
+      - "Dynamic pane management for flexible workflows"
+      - "Multiple startup modes (home, configured, last)"
+      - "Respects layout constraints (maxPanes, allowPaneManagement)"
+  alternatives_considered:
+    - name: "Client-side initialization only"
+      pros:
+        - "Simpler server code"
+        - "All logic in one place"
+      cons:
+        - "Requires multiple API calls to initialize each pane"
+        - "Slower initial page load"
+        - "Duplicated directory reading logic"
+      rejected_reason: "Server-side initialization provides better performance and cleaner separation of concerns"
+    - name: "Fixed pane count without runtime management"
+      pros:
+        - "Simpler state management"
+        - "No need for add/remove logic"
+      cons:
+        - "Users cannot adjust layout to current task"
+        - "Configuration changes require page reload"
+      rejected_reason: "Runtime management enables flexible workflows without page reloads"
+  implementation_approach:
+    summary: "Server-side multi-pane initialization based on config, client-side pane management with keyboard shortcuts and config validation"
+    details:
+      - "Server page reads layout.defaultPaneCount and startup.mode from config"
+      - "Server initializes array of PaneState objects with appropriate directories"
+      - "Startup mode 'home': all panes start at user home directory"
+      - "Startup mode 'configured': each pane starts at paths.pane1, pane2, etc."
+      - "Startup mode 'last': future enhancement using localStorage"
+      - "Client WorkspaceView receives initialPanes array instead of single path/files"
+      - "Add pane: clones focused pane state or creates new pane at home directory"
+      - "Remove pane: removes pane from array, adjusts focusIndex if necessary"
+      - "Keyboard shortcuts (+ to add, - to remove) integrated with keybinding system"
+      - "Config validation prevents adding beyond maxPanes or removing last pane"
+  traceability:
+    requirements:
+      - REQ-MULTI_PANE_LAYOUT
+      - REQ-FILES_CONFIG_COMPLETE
+    implementation:
+      - IMPL-PANE_MANAGEMENT
+      - IMPL-WORKSPACE_VIEW
+      - IMPL-FILE_MANAGER_PAGE
+    tests:
+      - testPaneInitialization_REQ_MULTI_PANE_LAYOUT
+      - testPaneManagement_REQ_MULTI_PANE_LAYOUT
+    code_annotations:
+      - IMPL-PANE_MANAGEMENT
+      - ARCH-PANE_LIFECYCLE
+      - REQ-MULTI_PANE_LAYOUT
+  related_decisions:
+    depends_on:
+      - ARCH-FILE_MANAGER_HIERARCHY
+      - ARCH-CONFIG_DRIVEN_UI
+    informs:
+      - IMPL-PANE_MANAGEMENT
+      - IMPL-FILE_MANAGER_PAGE
+    see_also:
+      - ARCH-LAYOUT_ALGORITHMS
+  detail_file: architecture-decisions/ARCH-PANE_LIFECYCLE.md
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-07
+      author: "AI Agent"
+      reason: "Initial creation with type synchronization fix"
+    last_validated:
+      date: 2026-02-07
+      validator: "AI Agent"
+      result: "pass - build succeeds, 570 tests passing"
+
+ARCH-PANE_REFRESH:
+  name: Pane Refresh Architecture
+  status: Active
+  cross_references:
+    - REQ-PANE_REFRESH
+    - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+    - REQ-MULTI_PANE_LAYOUT
+  rationale:
+    why: "Reuse existing handleNavigate mechanism to refresh panes by re-fetching current directory, providing consistent state management and minimal code duplication"
+    problems_solved:
+      - "Stale directory listings from external file system changes"
+      - "No dedicated refresh mechanism in original design"
+      - "Need for both single-pane and all-pane refresh operations"
+      - "Browser default refresh would reload entire page"
+    benefits:
+      - "Leverages existing, battle-tested handleNavigate logic"
+      - "Preserves cursor position and sort settings automatically"
+      - "Prevents browser default refresh with e.preventDefault()"
+      - "Parallel refresh for all panes using Promise.all"
+      - "Consistent with existing post-operation refresh pattern"
+  alternatives_considered:
+    - name: "Dedicated refresh API endpoint"
+      pros:
+        - "Explicit refresh semantics"
+        - "Could implement optimized refresh logic"
+      cons:
+        - "Code duplication with navigation logic"
+        - "Additional API endpoint to maintain"
+        - "Would require separate state management"
+      rejected_reason: "handleNavigate already provides all needed functionality"
+    - name: "Auto-refresh with file system watchers"
+      pros:
+        - "Automatic updates without user intervention"
+        - "Real-time file system synchronization"
+      cons:
+        - "Complex server-side implementation"
+        - "Potential performance issues with large directories"
+        - "Websocket or polling overhead"
+        - "Unpredictable UI updates"
+      rejected_reason: "Manual refresh is simpler and gives users control"
+    - name: "F5 key for refresh"
+      pros:
+        - "Traditional browser refresh key"
+      cons:
+        - "Conflicts with browser default (full page reload)"
+        - "Harder to prevent default behavior reliably"
+        - "Less familiar in terminal-like interfaces"
+      rejected_reason: "Ctrl+R is safer and more terminal-like"
+  implementation_approach:
+    summary: "Add pane.refresh and pane.refresh-all actions to keybinding system; handlers call handleNavigate with current path"
+    details:
+      - "Add two keybinding definitions to config/files.yaml (Ctrl+R, Ctrl+Shift+R)"
+      - "Register actions in pane-management category"
+      - "Single pane refresh: handleNavigate(focusIndex, currentPane.path)"
+      - "All panes refresh: Promise.all(panes.map((p, idx) => handleNavigate(idx, p.path)))"
+      - "Use void operator to handle async without blocking"
+      - "handleNavigate already handles: API fetch, sort application, cursor restoration"
+      - "Browser default prevented by existing e.preventDefault() in keyboard handler"
+  traceability:
+    requirements:
+      - REQ-PANE_REFRESH
+      - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+    implementation:
+      - IMPL-PANE_REFRESH
+      - IMPL-KEYBINDS
+    tests:
+      - Manual keystroke testing
+    code_annotations:
+      - ARCH-PANE_REFRESH
+      - REQ-PANE_REFRESH
+  related_decisions:
+    depends_on:
+      - ARCH-KEYBIND_SYSTEM
+      - ARCH-PANE_LIFECYCLE
+      - ARCH-FILE_MANAGER_HIERARCHY
+    informs:
+      - IMPL-PANE_REFRESH
+    see_also:
+      - ARCH-FILE_OPERATIONS_API
+  detail_file: architecture-decisions/ARCH-PANE_REFRESH.md
+  metadata:
+    created:
+      date: 2026-02-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-08
+      author: "AI Agent"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-08
+      validator: "AI Agent"
+      result: "pass"
+
+ARCH-LINKED_NAV:
+  name: Linked Pane Navigation Architecture
+  status: Implemented
+  cross_references:
+    - REQ-LINKED_PANES
+  rationale:
+    why: "Synchronized directory navigation, cursor position, and sort order eliminates manual coordination overhead for comparison tasks while preserving independent pane state"
+    problems_solved:
+      - "Manual synchronization of multiple panes to same subdirectory"
+      - "State complexity managing linked mode without interfering with existing pane state"
+      - "Synchronization timing ensuring linked panes update together"
+      - "Asymmetric directory handling when target doesn't exist in linked pane"
+      - "Visual feedback indicating linked state"
+      - "Cursor position synchronization for visual comparison"
+      - "Sort order consistency across comparison panes"
+      - "Auto-disable preventing broken sync state on divergence"
+    benefits:
+      - "Simple boolean toggle model (linkedMode state)"
+      - "Automatic propagation via handleNavigate, handleCursorMove, handleSortChange"
+      - "Minimal state overhead (single boolean + sync ref)"
+      - "Clear visual indicators in footer (🔗 L: Linked)"
+      - "Backward compatible (disabled by default)"
+      - "Graceful degradation on partial failures"
+      - "Complete feature parity with Goful implementation"
+  alternatives_considered:
+    - name: "Server-side link state"
+      pros:
+        - "Persists across page refreshes"
+        - "Centralized state management"
+      cons:
+        - "Network latency on toggle"
+        - "Requires session storage"
+      rejected_reason: "Client-side state sufficient; session persistence not required"
+    - name: "Link groups with UI configuration"
+      pros:
+        - "Maximum flexibility for advanced workflows"
+      cons:
+        - "Complex UI for group management"
+        - "Unclear use case for most users"
+      rejected_reason: "Defer to future enhancement; simple global toggle covers 90% of use cases"
+    - name: "Automatic link detection"
+      pros:
+        - "No manual toggle needed"
+      cons:
+        - "Unpredictable behavior"
+        - "Difficult to disable"
+      rejected_reason: "Explicit user control provides predictability"
+  implementation_approach:
+    summary: "Boolean linkedMode state in WorkspaceView with L key toggle; handleNavigate propagates navigation, handleCursorMove syncs by filename, handleSortChange applies to all panes; auto-disable on divergence"
+    details:
+      - "Add linkedMode: boolean state to WorkspaceView"
+      - "Add syncingRef: useRef<Set<number>> to track panes currently syncing"
+      - "Modify handleNavigate to track success/failure counts and auto-disable on partial failure"
+      - "Modify handleCursorMove to sync cursor by filename across all panes when linked"
+      - "Modify handleSortChange to apply sort settings to all panes when linked"
+      - "Relative path resolution: extract target directory name, append to each linked pane's current path"
+      - "Existence check before navigating linked pane (graceful degradation on failure)"
+      - "Link indicator badge in footer: 🔗 L: Linked (shows only with 2+ panes)"
+      - "L key toggle action in keybinding registry"
+      - "Support subdirectory navigation, parent navigation, cursor sync, sort sync"
+      - "Auto-disable with warning message on navigation divergence"
+  traceability:
+    requirements:
+      - REQ-LINKED_PANES
+      - REQ-MULTI_PANE_LAYOUT
+      - REQ-DIRECTORY_NAVIGATION
+    implementation:
+      - IMPL-LINKED_NAV
+    tests:
+      - TEST-LINKED_PANES
+    code_annotations:
+      - ARCH-LINKED_NAV
+      - REQ-LINKED_PANES
+      - IMPL-LINKED_NAV
+  related_decisions:
+    depends_on:
+      - ARCH-FILE_MANAGER_HIERARCHY
+      - ARCH-KEYBIND_SYSTEM
+      - ARCH-SORT_PIPELINE
+    informs:
+      - IMPL-LINKED_NAV
+    see_also:
+      - ARCH-COMPARISON_INDEX
+      - ARCH-DIRECTORY_HISTORY
+  detail_file: architecture-decisions/ARCH-LINKED_NAV.md
+  metadata:
+    created:
+      date: 2026-02-07
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-08
+      author: "AI Agent"
+      reason: "Complete implementation with cursor sync, sort sync, and auto-disable on divergence"
+    last_validated:
+      date: 2026-02-08
+      validator: "AI Agent"
+      result: "pass"

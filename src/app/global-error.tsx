@@ -113,6 +113,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
           <h1>Something went wrong</h1>
           <p>
             An unexpected error occurred. You can try again, or return to the{" "}
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
             <a href="/">home page</a>.
           </p>
           

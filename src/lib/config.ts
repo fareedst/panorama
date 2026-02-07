@@ -7,12 +7,15 @@
 import fs from "fs";
 import path from "path";
 import yaml from "js-yaml";
+import { logger } from "./logger";
 import type {
   SiteConfig,
   ThemeConfig,
   ClassOverrides,
   JobsConfig,
   JobsThemeOverrides,
+  FilesConfig,
+  FilesThemeOverrides,
 } from "./config.types";
 
 // ---------------------------------------------------------------------------
@@ -243,16 +246,20 @@ function deepMerge<T>(target: T, source: Record<string, any>): T {
  */
 // [IMPL-CONFIG_LOADER] File reader with graceful fallback
 function readYamlFile(filePath: string): Record<string, unknown> {
+  logger.debug(["IMPL-CONFIG_LOADER", "REQ-CONFIG_DRIVEN_UI"], `Reading YAML file: ${filePath}`);
+  
   try {
     const absolutePath = path.resolve(process.cwd(), filePath);
     const raw = fs.readFileSync(absolutePath, "utf-8");
     const parsed = yaml.load(raw);
     if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+      logger.trace(["IMPL-CONFIG_LOADER", "REQ-CONFIG_DRIVEN_UI"], `Successfully loaded ${filePath}`);
       return parsed as Record<string, unknown>;
     }
+    logger.warn(["IMPL-CONFIG_LOADER", "REQ-CONFIG_DRIVEN_UI"], `Invalid YAML format in ${filePath}, using defaults`);
     return {};
-  } catch {
-    // DEBUG: Config file not found or unreadable – using defaults
+  } catch (error) {
+    logger.warn(["IMPL-CONFIG_LOADER", "REQ-CONFIG_DRIVEN_UI"], `Config file not found: ${filePath}, using defaults`, { error: String(error) });
     return {};
   }
 }
@@ -373,6 +380,175 @@ export function getStatusBadgeClass(
 }
 
 // ---------------------------------------------------------------------------
+// Files configuration
+// ---------------------------------------------------------------------------
+
+/**
+ * Default files configuration.
+ * [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
+ * [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE]
+ */
+const DEFAULT_FILES_CONFIG: FilesConfig = {
+  copy: {
+    title: "File Manager",
+    subtitle: "Browse and manage server files",
+    backToHome: "Back to Home",
+    layoutLabel: "Layout:",
+    emptyDirectory: "Empty directory",
+    shortcuts: {
+      navigate: "↑↓: Navigate",
+      open: "Enter: Open",
+      parent: "Backspace: Parent",
+      nextPane: "Tab: Next Pane",
+      mark: "M: Mark",
+      markDown: "Space: Mark+Down",
+    },
+    layouts: {
+      tile: "Tile",
+      oneRow: "One Row",
+      oneColumn: "One Column",
+      fullscreen: "Fullscreen",
+    },
+    operations: {
+      copy: "Copy",
+      move: "Move",
+      delete: "Delete",
+      rename: "Rename",
+    },
+    confirmation: {
+      deleteMessage: "Delete {count} file(s)?",
+      deleteButton: "Delete",
+      cancelButton: "Cancel",
+    },
+    search: {
+      finderTitle: "Find Files",
+      finderPlaceholder: "Type to filter files...",
+      finderNoResults: "No matching files",
+      finderResultsCount: "{count} file(s) found",
+      searchTitle: "Search File Contents",
+      searchPlaceholder: "Search pattern...",
+      searchButton: "Search",
+      searchNoResults: "No matches found",
+      searchResultsCount: "{count} match(es) in {files} file(s)",
+      searchOptions: "Options",
+      searchRecursive: "Recursive",
+      searchCaseSensitive: "Case Sensitive",
+      searchRegex: "Regular Expression",
+      searchFilePattern: "File Pattern (glob)",
+      searchInProgress: "Searching...",
+    },
+    marking: {
+      markedCount: "{count} marked",
+      clearMarks: "Clear marks",
+      markAll: "Mark all",
+      invertMarks: "Invert marks",
+    },
+    help: {
+      title: "Keyboard Shortcuts",
+      close: "Close",
+    },
+    commandPalette: {
+      title: "Command Palette",
+      placeholder: "Type to search commands...",
+      noResults: "No matching commands",
+      executeButton: "Execute",
+    },
+  },
+  layout: {
+    default: "tile",
+    defaultPaneCount: 2,
+    allowPaneManagement: true,
+    maxPanes: 4,
+    defaultLinkedMode: true, // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Enabled by default
+  },
+  startup: {
+    mode: "home",
+    paths: {
+      pane1: "~",
+      pane2: "~/Documents",
+      pane3: "~/Downloads",
+    },
+    rememberLastLocations: false,
+  },
+  keybindings: [], // Loaded from YAML; empty default
+};
+
+let _filesConfig: FilesConfig | null = null;
+
+/**
+ * Returns the files configuration, with defaults merged.
+ * [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
+ */
+export function getFilesConfig(): FilesConfig {
+  if (_filesConfig) return _filesConfig;
+  const loaded = readYamlFile("config/files.yaml") as FilesConfig;
+  _filesConfig = deepMerge(DEFAULT_FILES_CONFIG, loaded);
+  return _filesConfig;
+}
+
+/**
+ * Returns the class string for a files theme override key, or empty string if not set.
+ * [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
+ */
+export function getFilesOverride(
+  overrides: FilesThemeOverrides | undefined,
+  key: keyof FilesThemeOverrides,
+): string {
+  return (overrides?.[key] ?? "").trim();
+}
+
+/**
+ * Returns the file type configuration for a given filename.
+ * Matches against file type patterns in theme.files.fileTypes.
+ * [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE]
+ */
+export function getFileTypeConfig(
+  theme: ThemeConfig,
+  filename: string,
+  isDirectory: boolean,
+): { icon: string; iconClass: string } {
+  const fileTypes = theme.files?.fileTypes;
+  const defaultFile = {
+    icon: "📄",
+    iconClass: "text-gray-500 dark:text-gray-400",
+  };
+  const defaultDir = {
+    icon: "📁",
+    iconClass: "text-blue-500 dark:text-blue-400",
+  };
+
+  // Directories always use directory type
+  if (isDirectory) {
+    return fileTypes?.directory ?? defaultDir;
+  }
+
+  // No file types configured
+  if (!fileTypes) return defaultFile;
+
+  // Check each file type's patterns
+  for (const [typeName, typeConfig] of Object.entries(fileTypes)) {
+    if (typeName === "directory" || typeName === "file") continue;
+    if (!typeConfig.patterns || typeConfig.patterns.length === 0) continue;
+
+    // Match against patterns (simple glob matching)
+    for (const pattern of typeConfig.patterns) {
+      const regex = pattern
+        .replace(/\./g, "\\.")
+        .replace(/\*/g, ".*");
+      if (new RegExp(`^${regex}$`, "i").test(filename)) {
+        return {
+          icon: typeConfig.icon,
+          iconClass: typeConfig.iconClass,
+        };
+      }
+    }
+  }
+
+  // Default to generic file type
+  return fileTypes.file ?? defaultFile;
+}
+
+// ---------------------------------------------------------------------------
 // Exports for testing – allow cache reset
 // ---------------------------------------------------------------------------
 
@@ -381,6 +557,7 @@ export function _resetConfigCache(): void {
   _siteConfig = null;
   _themeConfig = null;
   _jobsConfig = null;
+  _filesConfig = null;
 }
 
 /** @internal Exposed for unit tests */

@@ -80,3 +80,82 @@ jobs:
     interested: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
     to_apply: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
     none: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
+
+# [REQ-CONFIG_DRIVEN_FILE_MANAGER] File manager layout and style classes.
+# Override these to customize file manager appearance without editing code.
+files:
+  overrides:
+    pageContainer: ""
+    paneContainer: ""
+    paneFocused: ""
+    paneHeader: ""
+    fileRow: ""
+    fileCursor: ""
+    fileMarked: ""
+    directoryIndicator: ""
+    footer: ""
+  # Comparison colors for cross-pane file comparison
+  # [REQ-FILE_COMPARISON_VISUAL] [IMPL-COMPARISON_COLORS]
+  compareColors:
+    # Filename comparison (existing)
+    same: "bg-zinc-100 dark:bg-zinc-800"
+    different: "bg-red-100 dark:bg-red-900"
+    unique: "bg-yellow-100 dark:bg-yellow-900"
+    # Size comparison (new)
+    sizeEqual: "bg-green-50 dark:bg-green-950 border-l-2 border-green-500"
+    sizeSmallest: "bg-blue-50 dark:bg-blue-950 border-l-2 border-blue-500"
+    sizeLargest: "bg-red-50 dark:bg-red-950 border-l-2 border-red-500"
+    # Time comparison (new)
+    timeEqual: "bg-green-50 dark:bg-green-950 border-l-2 border-green-500"
+    timeEarliest: "bg-blue-50 dark:bg-blue-950 border-l-2 border-blue-500"
+    timeLatest: "bg-red-50 dark:bg-red-950 border-l-2 border-red-500"
+  # [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE] File type indicators
+  # Configure icons and colors for different file types
+  fileTypes:
+    # Default for all files
+    file:
+      icon: "📄"
+      iconClass: "text-gray-500 dark:text-gray-400"
+    # Directories
+    directory:
+      icon: "📁"
+      iconClass: "text-blue-500 dark:text-blue-400"
+    # Images
+    image:
+      icon: "🖼️"
+      iconClass: "text-green-500 dark:text-green-400"
+      patterns: ["*.jpg", "*.jpeg", "*.png", "*.gif", "*.webp", "*.svg", "*.bmp"]
+    # Code files
+    code:
+      icon: "💻"
+      iconClass: "text-purple-500 dark:text-purple-400"
+      patterns: ["*.ts", "*.tsx", "*.js", "*.jsx", "*.py", "*.rb", "*.go", "*.rs", "*.java", "*.c", "*.cpp", "*.h"]
+    # Archives
+    archive:
+      icon: "📦"
+      iconClass: "text-orange-500 dark:text-orange-400"
+      patterns: ["*.zip", "*.tar", "*.gz", "*.7z", "*.rar", "*.bz2"]
+    # Documents
+    document:
+      icon: "📝"
+      iconClass: "text-blue-600 dark:text-blue-300"
+      patterns: ["*.pdf", "*.doc", "*.docx", "*.txt", "*.md", "*.rtf"]
+    # Spreadsheets
+    spreadsheet:
+      icon: "📊"
+      iconClass: "text-green-600 dark:text-green-300"
+      patterns: ["*.xls", "*.xlsx", "*.csv"]
+    # Media
+    video:
+      icon: "🎬"
+      iconClass: "text-red-500 dark:text-red-400"
+      patterns: ["*.mp4", "*.avi", "*.mov", "*.mkv", "*.webm"]
+    audio:
+      icon: "🎵"
+      iconClass: "text-pink-500 dark:text-pink-400"
+      patterns: ["*.mp3", "*.wav", "*.flac", "*.ogg", "*.m4a"]
+    # Config files
+    config:
+      icon: "⚙️"
+      iconClass: "text-gray-600 dark:text-gray-300"
+      patterns: ["*.json", "*.yaml", "*.yml", "*.toml", "*.ini", "*.conf"]

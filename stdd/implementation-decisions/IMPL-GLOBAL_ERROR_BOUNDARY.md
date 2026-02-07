@@ -31,7 +31,7 @@ src/app/
 
 ### Key Design Decisions
 
-1. **Full HTML Document**: Must render `<html>` and `<body>` tags because it replaces the entire root layout when activated (unlike segment-level `error.tsx` files).
+1. **Full HTML Document**: Must render `<html>` and `<body>` tags because it replaces the entire root layout when activated (unlike segment-level `error.tsx` files). There is no Next.js routing context, so the home link uses a plain `<a href="/">` with an inline eslint-disable for `@next/next/no-html-link-for-pages`.
 
 2. **Client Component**: Uses `"use client"` directive because it needs interactive UI (reset button) and event handlers.
 

@@ -81,6 +81,8 @@ export default defineConfig({
 - Larger memory footprint
 - More accurate DOM simulation (benefit)
 
+**Known ignorable warning**: When running tests in Node.js, jsdom may print `--localstorage-file was provided without a valid path`. This is harmless and does not affect test results; it can be safely ignored.
+
 ### 2. Global Test APIs
 
 **Decision**: Enable `globals: true`

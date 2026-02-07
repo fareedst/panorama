@@ -1,0 +1,453 @@
+// [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] [REQ-MULTI_PANE_LAYOUT]
+// Tests for WorkspaceView pane management functionality
+
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import WorkspaceView from "./WorkspaceView";
+import type { FileStat } from "@/lib/files.types";
+import type { FilesLayoutConfig } from "@/lib/config.types";
+
+// Mock fetch for API calls
+global.fetch = vi.fn();
+
+// Mock keybindings including pane management
+const mockKeybindings = [
+  { key: "=", action: "pane.add", description: "Add pane", category: "pane-management" as const },
+  { key: "-", action: "pane.remove", description: "Remove pane", category: "pane-management" as const },
+  { key: "Tab", action: "navigate.tab", description: "Next pane", category: "navigation" as const },
+  { key: "ArrowUp", action: "navigate.up", description: "Move up", category: "navigation" as const },
+  { key: "ArrowDown", action: "navigate.down", description: "Move down", category: "navigation" as const },
+];
+
+// Mock copy config
+const mockCopy = {
+  title: "File Manager",
+  subtitle: "Browse and manage server files",
+  paneManagement: {
+    addPane: "Add Pane",
+    removePane: "Remove Pane",
+    maxPanesReached: "Maximum number of panes reached",
+    minPanesReached: "At least one pane must remain",
+    paneManagementDisabled: "Pane management is disabled",
+  },
+};
+
+describe("WorkspaceView - Pane Management [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE]", () => {
+  const mockFiles: FileStat[] = [
+    {
+      name: "file1.txt",
+      path: "/test/file1.txt",
+      isDirectory: false,
+      size: 1024,
+      mtime: new Date("2024-01-01"),
+      extension: "txt",
+    },
+    {
+      name: "file2.js",
+      path: "/test/file2.js",
+      isDirectory: false,
+      size: 2048,
+      mtime: new Date("2024-01-02"),
+      extension: "js",
+    },
+  ];
+
+  const mockFiles2: FileStat[] = [
+    {
+      name: "docs",
+      path: "/home/docs",
+      isDirectory: true,
+      size: 0,
+      mtime: new Date("2024-01-05"),
+      extension: "",
+    },
+  ];
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    // Mock successful API response
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+      ok: true,
+      json: async () => mockFiles,
+    } as Response);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  describe("Multi-Pane Initialization [REQ-MULTI_PANE_LAYOUT]", () => {
+    it("should initialize with 2 panes when defaultPaneCount is 2", () => {
+      const initialPanes = [
+        { path: "/test", files: mockFiles },
+        { path: "/home", files: mockFiles2 },
+      ];
+      
+      const layout: FilesLayoutConfig = {
+        default: "tile",
+        defaultPaneCount: 2,
+        allowPaneManagement: true,
+        maxPanes: 4,
+      };
+
+      render(
+        <WorkspaceView
+          initialPanes={initialPanes}
+          keybindings={mockKeybindings}
+          copy={mockCopy}
+          layout={layout}
+        />
+      );
+
+      // Should show 2 panes
+      const panes = screen.getAllByText(/\/test|\/home/);
+      expect(panes.length).toBeGreaterThanOrEqual(2);
+    });
+
+    it("should initialize with 1 pane when defaultPaneCount is 1", () => {
+      const initialPanes = [{ path: "/test", files: mockFiles }];
+      
+      const layout: FilesLayoutConfig = {
+        default: "tile",
+        defaultPaneCount: 1,
+        allowPaneManagement: true,
+        maxPanes: 4,
+      };
+
+      render(
+        <WorkspaceView
+          initialPanes={initialPanes}
+          keybindings={mockKeybindings}
+          copy={mockCopy}
+          layout={layout}
+        />
+      );
+
+      // Should show 1 pane
+      const panes = screen.getAllByText(/\/test/);
+      expect(panes).toHaveLength(1);
+    });
+
+    it("should respect configured layout type", () => {
+      const initialPanes = [
+        { path: "/test", files: mockFiles },
+        { path: "/home", files: mockFiles2 },
+      ];
+      
+      const layout: FilesLayoutConfig = {
+        default: "oneRow",
+        defaultPaneCount: 2,
+        allowPaneManagement: true,
+        maxPanes: 4,
+      };
+
+      render(
+        <WorkspaceView
+          initialPanes={initialPanes}
+          keybindings={mockKeybindings}
+          copy={mockCopy}
+          layout={layout}
+        />
+      );
+
+      // Should show layout selector with oneRow selected
+      expect(screen.getByText(/One Row/)).toBeInTheDocument();
+    });
+  });
+
+  describe("Add Pane [IMPL-PANE_MANAGEMENT]", () => {
+    it("should add new pane when '=' key pressed", async () => {
+      const initialPanes = [{ path: "/test", files: mockFiles }];
+      
+      const layout: FilesLayoutConfig = {
+        default: "tile",
+        defaultPaneCount: 1,
+        allowPaneManagement: true,
+        maxPanes: 4,
+      };
+
+      render(
+        <WorkspaceView
+          initialPanes={initialPanes}
+          keybindings={mockKeybindings}
+          copy={mockCopy}
+          layout={layout}
+        />
+      );
+
+      // Initially 1 pane
+      let panes = screen.getAllByRole("region");
+      expect(panes).toHaveLength(1);
+
+      // Press '=' to add pane
+      fireEvent.keyDown(window, { key: "=" });
+
+      // Wait for new pane to appear
+      await waitFor(() => {
+        panes = screen.getAllByRole("region");
+        expect(panes).toHaveLength(2);
+      });
+    });
+
+    it("should not add pane when maxPanes reached", async () => {
+      const initialPanes = [
+        { path: "/test", files: mockFiles },
+        { path: "/home", files: mockFiles2 },
+      ];
+      
+      const layout: FilesLayoutConfig = {
+        default: "tile",
+        defaultPaneCount: 2,
+        allowPaneManagement: true,
+        maxPanes: 2,
+      };
+
+      // Spy on console.warn
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      render(
+        <WorkspaceView
+          initialPanes={initialPanes}
+          keybindings={mockKeybindings}
+          copy={mockCopy}
+          layout={layout}
+        />
+      );
+
+      // Initially 2 panes (at max)
+      let panes = screen.getAllByRole("region");
+      expect(panes).toHaveLength(2);
+
+      // Press '=' to attempt add pane
+      fireEvent.keyDown(window, { key: "=" });
+
+      // Should not add pane, should warn
+      await waitFor(() => {
+        expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("maximum"));
+      });
+
+      panes = screen.getAllByRole("region");
+      expect(panes).toHaveLength(2);
+
+      warnSpy.mockRestore();
+    });
+
+    it("should not add pane when allowPaneManagement is false", async () => {
+      const initialPanes = [{ path: "/test", files: mockFiles }];
+      
+      const layout: FilesLayoutConfig = {
+        default: "tile",
+        defaultPaneCount: 1,
+        allowPaneManagement: false,
+        maxPanes: 4,
+      };
+
+      // Spy on console.warn
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      render(
+        <WorkspaceView
+          initialPanes={initialPanes}
+          keybindings={mockKeybindings}
+          copy={mockCopy}
+          layout={layout}
+        />
+      );
+
+      // Press '=' to attempt add pane
+      fireEvent.keyDown(window, { key: "=" });
+
+      // Should not add pane, should warn
+      await waitFor(() => {
+        expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("disabled"));
+      });
+
+      const panes = screen.getAllByRole("region");
+      expect(panes).toHaveLength(1);
+
+      warnSpy.mockRestore();
+    });
+  });
+
+  describe("Remove Pane [IMPL-PANE_MANAGEMENT]", () => {
+    it("should remove pane when '-' key pressed", async () => {
+      const initialPanes = [
+        { path: "/test", files: mockFiles },
+        { path: "/home", files: mockFiles2 },
+      ];
+      
+      const layout: FilesLayoutConfig = {
+        default: "tile",
+        defaultPaneCount: 2,
+        allowPaneManagement: true,
+        maxPanes: 4,
+      };
+
+      render(
+        <WorkspaceView
+          initialPanes={initialPanes}
+          keybindings={mockKeybindings}
+          copy={mockCopy}
+          layout={layout}
+        />
+      );
+
+      // Initially 2 panes
+      let panes = screen.getAllByRole("region");
+      expect(panes).toHaveLength(2);
+
+      // Press '-' to remove pane
+      fireEvent.keyDown(window, { key: "-" });
+
+      // Wait for pane to be removed
+      await waitFor(() => {
+        panes = screen.getAllByRole("region");
+        expect(panes).toHaveLength(1);
+      });
+    });
+
+    it("should not remove pane when only 1 pane left", async () => {
+      const initialPanes = [{ path: "/test", files: mockFiles }];
+      
+      const layout: FilesLayoutConfig = {
+        default: "tile",
+        defaultPaneCount: 1,
+        allowPaneManagement: true,
+        maxPanes: 4,
+      };
+
+      // Spy on console.warn
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      render(
+        <WorkspaceView
+          initialPanes={initialPanes}
+          keybindings={mockKeybindings}
+          copy={mockCopy}
+          layout={layout}
+        />
+      );
+
+      // Press '-' to attempt remove pane
+      fireEvent.keyDown(window, { key: "-" });
+
+      // Should not remove pane, should warn
+      await waitFor(() => {
+        expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("at least one pane"));
+      });
+
+      const panes = screen.getAllByRole("region");
+      expect(panes).toHaveLength(1);
+
+      warnSpy.mockRestore();
+    });
+
+    it("should not remove pane when allowPaneManagement is false", async () => {
+      const initialPanes = [
+        { path: "/test", files: mockFiles },
+        { path: "/home", files: mockFiles2 },
+      ];
+      
+      const layout: FilesLayoutConfig = {
+        default: "tile",
+        defaultPaneCount: 2,
+        allowPaneManagement: false,
+        maxPanes: 4,
+      };
+
+      // Spy on console.warn
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      render(
+        <WorkspaceView
+          initialPanes={initialPanes}
+          keybindings={mockKeybindings}
+          copy={mockCopy}
+          layout={layout}
+        />
+      );
+
+      // Press '-' to attempt remove pane
+      fireEvent.keyDown(window, { key: "-" });
+
+      // Should not remove pane, should warn
+      await waitFor(() => {
+        expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("disabled"));
+      });
+
+      const panes = screen.getAllByRole("region");
+      expect(panes).toHaveLength(2);
+
+      warnSpy.mockRestore();
+    });
+  });
+
+  describe("Focus Management After Pane Operations [IMPL-PANE_MANAGEMENT]", () => {
+    it("should focus new pane after adding", async () => {
+      const initialPanes = [{ path: "/test", files: mockFiles }];
+      
+      const layout: FilesLayoutConfig = {
+        default: "tile",
+        defaultPaneCount: 1,
+        allowPaneManagement: true,
+        maxPanes: 4,
+      };
+
+      render(
+        <WorkspaceView
+          initialPanes={initialPanes}
+          keybindings={mockKeybindings}
+          copy={mockCopy}
+          layout={layout}
+        />
+      );
+
+      // Add pane
+      fireEvent.keyDown(window, { key: "=" });
+
+      await waitFor(() => {
+        const panes = screen.getAllByRole("region");
+        expect(panes).toHaveLength(2);
+        // Second pane should have focus class
+        expect(panes[1]).toHaveClass("focused");
+      });
+    });
+
+    it("should adjust focus after removing focused pane", async () => {
+      const initialPanes = [
+        { path: "/test", files: mockFiles },
+        { path: "/home", files: mockFiles2 },
+      ];
+      
+      const layout: FilesLayoutConfig = {
+        default: "tile",
+        defaultPaneCount: 2,
+        allowPaneManagement: true,
+        maxPanes: 4,
+      };
+
+      render(
+        <WorkspaceView
+          initialPanes={initialPanes}
+          keybindings={mockKeybindings}
+          copy={mockCopy}
+          layout={layout}
+        />
+      );
+
+      // Initially pane 0 is focused
+      let panes = screen.getAllByRole("region");
+      expect(panes[0]).toHaveClass("focused");
+
+      // Remove focused pane
+      fireEvent.keyDown(window, { key: "-" });
+
+      await waitFor(() => {
+        panes = screen.getAllByRole("region");
+        expect(panes).toHaveLength(1);
+        // Remaining pane should have focus
+        expect(panes[0]).toHaveClass("focused");
+      });
+    });
+  });
+});

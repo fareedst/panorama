@@ -21,6 +21,7 @@ All page content, appearance, and layout are driven by YAML configuration files 
 - **Optimized Fonts** using next/font with Geist Sans and Geist Mono
 - **STDD Documentation** with full requirements traceability
 - **Comprehensive Testing** with Vitest and React Testing Library (120 tests)
+- **Multi-Pane File Manager** with keyboard-driven navigation, file operations, comparison, search, and manual refresh (Ctrl+R)
 
 ## Quick Start: Customizing the Template
 

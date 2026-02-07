@@ -106,6 +106,41 @@ When referencing other tokens:
 
 ## Requirements Tokens Registry
 
+### Logging System
+
+| Token | Description | Status | Document |
+|-------|-------------|--------|----------|
+| `[REQ-LOGGING_SYSTEM]` | Session-based logging system | Implemented | [requirements.yaml](requirements.yaml) |
+| `[REQ-LOGGING_CONFIG]` | Configurable logging behavior | Implemented | [requirements.yaml](requirements.yaml) |
+| `[REQ-LOGGING_SEMANTIC_TOKENS]` | Semantic token integration in logs | Implemented | [requirements.yaml](requirements.yaml) |
+
+### File Manager
+
+| Token | Description | Status | Document |
+|-------|-------------|--------|----------|
+| `[REQ-FILE_MANAGER_PAGE]` | Multi-pane file manager page | Implemented | [requirements.yaml](requirements.yaml) |
+| `[REQ-MULTI_PANE_LAYOUT]` | Multiple pane layout algorithms | Implemented | [requirements.yaml](requirements.yaml) |
+| `[REQ-DIRECTORY_NAVIGATION]` | Server filesystem directory navigation | Implemented | [requirements.yaml](requirements.yaml) |
+| `[REQ-FILE_LISTING]` | File listing display with metadata | Implemented | [requirements.yaml](requirements.yaml) |
+| `[REQ-FILE_OPERATIONS]` | Copy, move, rename, delete operations | Implemented | [requirements.yaml](requirements.yaml) |
+| `[REQ-CROSS_PANE_COMPARISON]` | Cross-pane file comparison | Implemented | [requirements.yaml](requirements.yaml) |
+| `[REQ-KEYBOARD_NAVIGATION]` | Keyboard-driven navigation | Implemented | [requirements.yaml](requirements.yaml) |
+| `[REQ-CONFIG_DRIVEN_FILE_MANAGER]` | Configuration-driven file manager UI | Implemented | [requirements.yaml](requirements.yaml) |
+| `[REQ-GOFUL_FEATURE_TRANSFER]` | Transfer complete UX from Goful | Planned | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
+| `[REQ-FILE_MARKING_WEB]` | File marking for batch operations | Implemented | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
+| `[REQ-BULK_FILE_OPS]` | Bulk copy, move, delete operations | Implemented | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
+| `[REQ-ADVANCED_NAV]` | Directory history, bookmarks, goto | Implemented | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
+| `[REQ-FILE_COMPARISON_VISUAL]` | Visual file comparison with colors | Implemented | [requirements/REQ-FILE_COMPARISON_VISUAL.md](../stdd/requirements/REQ-FILE_COMPARISON_VISUAL.md) |
+| `[REQ-FILE_SORTING_ADVANCED]` | Advanced sorting and filtering | Implemented | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
+| `[REQ-FILE_PREVIEW]` | File preview and info panels | Implemented | [requirements/REQ-FILE_PREVIEW.md](../stdd/requirements/REQ-FILE_PREVIEW.md) |
+| `[REQ-KEYBOARD_SHORTCUTS_COMPLETE]` | Complete keyboard shortcut system | Implemented | [requirements/REQ-KEYBOARD_SHORTCUTS_COMPLETE.md](../stdd/requirements/REQ-KEYBOARD_SHORTCUTS_COMPLETE.md) |
+| `[REQ-FILE_SEARCH]` | File and content search | Implemented | [requirements/REQ-FILE_SEARCH.md](../stdd/requirements/REQ-FILE_SEARCH.md) |
+| `[REQ-LINKED_PANES]` | Linked pane navigation | Implemented | [requirements/REQ-LINKED_PANES.md](../stdd/requirements/REQ-LINKED_PANES.md) |
+| `[REQ-PANE_REFRESH]` | Manual pane refresh keystrokes | Implemented | [requirements.yaml](requirements.yaml) |
+| `[REQ-MOUSE_INTERACTION]` | Mouse and context menu support | Implemented | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
+| `[REQ-FILES_CONFIG_COMPLETE]` | Complete file manager configuration | Implemented | [requirements/REQ-FILES_CONFIG_COMPLETE.md](../stdd/requirements/REQ-FILES_CONFIG_COMPLETE.md) |
+| `[REQ-FILES_PERFORMANCE]` | Performance optimization for large dirs | Planned | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
+
 ### Job Search Tracking
 
 | Token | Description | Status | Document |
@@ -150,6 +185,37 @@ When referencing other tokens:
 
 ## Architecture Tokens Registry
 
+### Logging System
+
+| Token | Description | Status | Document |
+|-------|-------------|--------|----------|
+| `[ARCH-LOGGING_SYSTEM]` | Session-based file logging architecture | Active | [architecture-decisions.yaml](architecture-decisions.yaml) |
+| `[ARCH-LOGGING_CONFIG]` | Environment-based logging configuration | Active | [architecture-decisions.yaml](architecture-decisions.yaml) |
+| `[ARCH-LOGGING_SEMANTIC_TOKENS]` | Semantic token integration in logging | Active | [architecture-decisions.yaml](architecture-decisions.yaml) |
+
+### File Manager
+
+| Token | Description | Status | Document |
+|-------|-------------|--------|----------|
+| `[ARCH-FILE_MANAGER_HIERARCHY]` | File manager component hierarchy | Active | [architecture-decisions.yaml](architecture-decisions.yaml) |
+| `[ARCH-LAYOUT_ALGORITHMS]` | Multi-pane layout algorithms | Active | [architecture-decisions.yaml](architecture-decisions.yaml) |
+| `[ARCH-COMPARISON_INDEX]` | Cross-pane file comparison index | Active | [architecture-decisions.yaml](architecture-decisions.yaml) |
+| `[ARCH-FILESYSTEM_ABSTRACTION]` | Server-side filesystem abstraction | Active | [architecture-decisions.yaml](architecture-decisions.yaml) |
+| `[ARCH-FILE_OPERATIONS_API]` | File operations API routes | Active | [architecture-decisions.yaml](architecture-decisions.yaml) |
+| `[ARCH-SERVER_CLIENT_BOUNDARY]` | Server-client code separation (lesson learned) | Active | [architecture-decisions.yaml](architecture-decisions.yaml) |
+| `[ARCH-GOFUL_UX_PATTERNS]` | UX patterns from Goful file manager | Planned | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
+| `[ARCH-MARKING_STATE]` | File marking state management | Implemented | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
+| `[ARCH-BATCH_OPERATIONS]` | Batch file operation architecture | Implemented | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
+| `[ARCH-DIRECTORY_HISTORY]` | Per-directory cursor persistence | Planned | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
+| `[ARCH-COMPARISON_COLORING]` | File comparison color-coding system | Planned | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
+| `[ARCH-SORT_PIPELINE]` | Multi-criteria sort pipeline | Implemented | [architecture-decisions/ARCH-SORT_PIPELINE.md](../stdd/architecture-decisions/ARCH-SORT_PIPELINE.md) |
+| `[ARCH-PREVIEW_SYSTEM]` | File preview architecture | Planned | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
+| `[ARCH-KEYBIND_SYSTEM]` | Keyboard shortcut system | Implemented | [architecture-decisions/ARCH-KEYBIND_SYSTEM.md](../stdd/architecture-decisions/ARCH-KEYBIND_SYSTEM.md) |
+| `[ARCH-SEARCH_ENGINE]` | File search architecture | Implemented | [architecture-decisions/ARCH-SEARCH_ENGINE.md](../stdd/architecture-decisions/ARCH-SEARCH_ENGINE.md) |
+|| `[ARCH-PANE_LIFECYCLE]` | Multi-pane initialization and management | Implemented | [architecture-decisions.yaml](architecture-decisions.yaml) |
+| `[ARCH-PANE_REFRESH]` | Manual pane refresh architecture | Implemented | [architecture-decisions.yaml](architecture-decisions.yaml) |
+|| `[ARCH-LINKED_NAV]` | Linked pane navigation architecture | Active | [architecture-decisions.yaml](architecture-decisions.yaml) |
+
 ### Job Search Tracking
 
 | Token | Description | Status | Document |
@@ -185,6 +251,44 @@ When referencing other tokens:
 - `[ARCH-CALENDAR_VIEW]` - Calendar view architecture for month grid display [REQ-JOB_TRACKER_CALENDAR]
 
 ## Implementation Tokens Registry
+
+### Logging System
+
+| Token | Description | Status | Document |
+|-------|-------------|--------|----------|
+| `[IMPL-LOGGER_MODULE]` | Main logger module implementation | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
+| `[IMPL-LOGGER_CONFIG]` | Logger configuration implementation | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
+| `[IMPL-LOGGER_TOKENS]` | Semantic token integration | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
+
+### File Manager
+
+| Token | Description | Status | Document |
+|-------|-------------|--------|----------|
+| `[IMPL-FILE_MANAGER_PAGE]` | File manager server page | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
+| `[IMPL-WORKSPACE_VIEW]` | Workspace view client component | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
+| `[IMPL-FILE_PANE]` | File pane component | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
+| `[IMPL-FILES_DATA]` | Filesystem data layer | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
+| `[IMPL-FILES_UTILS]` | Client-safe utilities | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
+| `[IMPL-LAYOUT_CALCULATOR]` | Layout calculation algorithms | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
+| `[IMPL-COMPARISON_INDEX]` | Comparison index implementation | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
+| `[IMPL-FILES_API]` | File operations API routes | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
+| `[IMPL-FILES_CONFIG]` | Files configuration loader | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
+| `[IMPL-GOFUL_FEATURES]` | Goful feature implementations | Planned | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
+| `[IMPL-FILE_MARKING]` | File marking for selections | Implemented | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
+| `[IMPL-BULK_OPS]` | Bulk file operations | Implemented | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
+| `[IMPL-DIR_HISTORY]` | Directory navigation history | Planned | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
+| `[IMPL-COMPARISON_COLORS]` | Comparison color-coding | Planned | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
+| `[IMPL-SORT_FILTER]` | Advanced sorting and filtering | Implemented | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
+| `[IMPL-FILE_PREVIEW]` | File preview API routes and components | Implemented | [implementation-decisions/IMPL-FILE_PREVIEW.md](../stdd/implementation-decisions/IMPL-FILE_PREVIEW.md) |
+| `[IMPL-KEYBINDS]` | Keyboard shortcut system | Implemented | [implementation-decisions/IMPL-KEYBINDS.md](../stdd/implementation-decisions/IMPL-KEYBINDS.md) |
+| `[IMPL-FILE_SEARCH]` | File and content search | Implemented | [implementation-decisions/IMPL-FILE_SEARCH.md](../stdd/implementation-decisions/IMPL-FILE_SEARCH.md) |
+| `[IMPL-LINKED_NAV]` | Linked pane navigation | Implemented | [implementation-decisions/IMPL-LINKED_NAV.md](../stdd/implementation-decisions/IMPL-LINKED_NAV.md) |
+| `[IMPL-MOUSE_SUPPORT]` | Mouse and context menu | Implemented | [implementation-decisions/IMPL-MOUSE_SUPPORT.md](../stdd/implementation-decisions/IMPL-MOUSE_SUPPORT.md) |
+| `[IMPL-FILES_CONFIG_COMPLETE]` | Complete configuration | Implemented | [implementation-decisions/IMPL-FILES_CONFIG_COMPLETE.md](../stdd/implementation-decisions/IMPL-FILES_CONFIG_COMPLETE.md) |
+| `[IMPL-PERFORMANCE_OPT]` | Performance optimizations | Planned | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
+| `[IMPL-LINKED_NAV]` | Linked pane navigation | Implemented | [implementation-decisions/IMPL-LINKED_NAV.md](../stdd/implementation-decisions/IMPL-LINKED_NAV.md) |
+|| `[IMPL-PANE_MANAGEMENT]` | Runtime pane management controls | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
+| `[IMPL-PANE_REFRESH]` | Manual pane refresh implementation | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
 
 ### Job Search Tracking
 
@@ -227,6 +331,31 @@ When referencing other tokens:
 - `[IMPL-CALENDAR_GRID]` - Calendar grid client component with month view and detail panel [ARCH-CALENDAR_VIEW] [REQ-JOB_TRACKER_CALENDAR]
 - `[IMPL-EDIT_PAGE_RETURN_SOURCE]` - Edit page return button destination and label from query param (calendar vs list) [ARCH-JOB_TRACKER_UI] [ARCH-CALENDAR_VIEW] [REQ-JOB_TRACKER_EDIT] [REQ-JOB_TRACKER_CALENDAR]
 - `[IMPL-GLOBAL_ERROR_BOUNDARY]` - Global error boundary component with full HTML document for root-level error recovery [ARCH-NEXTJS_FRAMEWORK] [REQ-ERROR_HANDLING]
+
+## Test Tokens Registry
+
+**Purpose**: Test specification tokens (`[TEST-*]`) validate requirements and ensure code quality through comprehensive test coverage.
+
+**📖 Full details**: Test tokens are referenced in test files and should align with their corresponding `[REQ-*]` tokens.
+
+### File Manager Features
+
+| Token | Description | Status | Test File |
+|-------|-------------|--------|-----------|
+| `[TEST-FILE_MARKING]` | File marking and selection tests | Implemented | [src/app/files/WorkspaceView.test.tsx](../src/app/files/WorkspaceView.test.tsx) |
+| `[TEST-LINKED_PANES]` | Linked navigation tests | Implemented | [src/app/files/WorkspaceView.test.tsx](../src/app/files/WorkspaceView.test.tsx) |
+| `[TEST-BULK_FILE_OPS]` | Bulk file operation tests | Implemented | [src/app/files/BulkOperations.test.tsx](../src/app/files/BulkOperations.test.tsx) |
+| `[TEST-FILE_PREVIEW]` | File preview and info panel tests | Implemented | [src/app/api/files/info/route.test.ts](../src/app/api/files/info/route.test.ts), [src/app/api/files/preview/route.test.ts](../src/app/api/files/preview/route.test.ts) |
+| `[TEST-KEYBOARD_SHORTCUTS]` | Keyboard shortcut system tests | Implemented | [src/lib/files.keybinds.test.ts](../src/lib/files.keybinds.test.ts) |
+| `[TEST-FILE_SEARCH]` | File and content search tests | In Progress | [src/lib/files.search.test.ts](../src/lib/files.search.test.ts) |
+
+### Job Search Tracking
+
+| Token | Description | Status | Test File |
+|-------|-------------|--------|-----------|
+| (Add test tokens here as needed) | | | |
+
+**Note**: While test tokens are optional, they help track test coverage and ensure comprehensive validation of requirements.
 
 ## Token Relationships
 

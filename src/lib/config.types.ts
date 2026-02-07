@@ -166,6 +166,8 @@ export interface ThemeConfig {
   overrides: ClassOverrides;
   /** Jobs app layout and status badge classes (optional). [REQ-CONFIG_DRIVEN_APPEARANCE] */
   jobs?: JobsThemeConfig;
+  /** Files app layout and style classes (optional). [REQ-CONFIG_DRIVEN_FILE_MANAGER] */
+  files?: FilesThemeConfig;
 }
 
 // ---------------------------------------------------------------------------
@@ -273,4 +275,196 @@ export interface JobsConfig {
   fields: JobsFieldConfig[];
   table: JobsTableConfig;
   copy?: JobsCopyConfig;
+}
+
+// [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
+/** Files configuration types */
+
+// [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
+/** Keybinding category */
+export type KeybindingCategory =
+  | "navigation"
+  | "file-operations"
+  | "marking"
+  | "view-sort"
+  | "preview"
+  | "advanced"
+  | "pane-management"
+  | "system";
+
+/** Keyboard modifiers */
+export interface KeyModifiers {
+  ctrl?: boolean;
+  shift?: boolean;
+  alt?: boolean;
+  meta?: boolean;
+}
+
+/** Keybinding definition from configuration */
+export interface KeybindingConfig {
+  key: string;
+  modifiers?: KeyModifiers;
+  action: string;
+  description: string;
+  category: KeybindingCategory;
+}
+
+/** Copy strings for file manager UI (all user-facing text from config). */
+export interface FilesCopyConfig {
+  title?: string;
+  subtitle?: string;
+  backToHome?: string;
+  layoutLabel?: string;
+  emptyDirectory?: string;
+  shortcuts?: {
+    navigate?: string;
+    open?: string;
+    parent?: string;
+    nextPane?: string;
+    mark?: string;
+    markDown?: string;
+  };
+  layouts?: {
+    tile?: string;
+    oneRow?: string;
+    oneColumn?: string;
+    fullscreen?: string;
+  };
+  operations?: {
+    copy?: string;
+    move?: string;
+    delete?: string;
+    rename?: string;
+  };
+  confirmation?: {
+    deleteMessage?: string;
+    deleteButton?: string;
+    cancelButton?: string;
+  };
+  // [REQ-FILE_SEARCH] Search dialog copy
+  search?: {
+    finderTitle?: string;
+    finderPlaceholder?: string;
+    finderNoResults?: string;
+    finderResultsCount?: string;
+    searchTitle?: string;
+    searchPlaceholder?: string;
+    searchButton?: string;
+    searchNoResults?: string;
+    searchResultsCount?: string;
+    searchOptions?: string;
+    searchRecursive?: string;
+    searchCaseSensitive?: string;
+    searchRegex?: string;
+    searchFilePattern?: string;
+    searchInProgress?: string;
+  };
+  // [REQ-FILES_CONFIG_COMPLETE] Marking operations copy
+  marking?: {
+    markedCount?: string;
+    clearMarks?: string;
+    markAll?: string;
+    invertMarks?: string;
+  };
+  // [REQ-FILES_CONFIG_COMPLETE] Help dialog copy
+  help?: {
+    title?: string;
+    close?: string;
+  };
+  // [REQ-FILES_CONFIG_COMPLETE] Command palette copy
+  commandPalette?: {
+    title?: string;
+    placeholder?: string;
+    noResults?: string;
+    executeButton?: string;
+  };
+  // [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] Pane management copy
+  paneManagement?: {
+    addPane?: string;
+    removePane?: string;
+    maxPanesReached?: string;
+    minPanesReached?: string;
+    paneManagementDisabled?: string;
+  };
+}
+
+/** Theme overrides for file manager. */
+export interface FilesThemeOverrides {
+  pageContainer?: string;
+  paneContainer?: string;
+  paneFocused?: string;
+  paneHeader?: string;
+  fileRow?: string;
+  fileCursor?: string;
+  fileMarked?: string;
+  directoryIndicator?: string;
+  footer?: string;
+}
+
+/** Comparison colors for cross-pane file comparison. */
+export interface FilesCompareColors {
+  same?: string;
+  different?: string;
+  unique?: string;
+  // [REQ-FILES_CONFIG_COMPLETE] Size comparison colors
+  sizeEqual?: string;
+  sizeSmallest?: string;
+  sizeLargest?: string;
+  // [REQ-FILES_CONFIG_COMPLETE] Time comparison colors
+  timeEqual?: string;
+  timeEarliest?: string;
+  timeLatest?: string;
+}
+
+/** File type configuration for icons and colors. */
+// [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE]
+export interface FileTypeConfig {
+  /** Icon character (emoji or text) */
+  icon: string;
+  /** Tailwind classes for icon color */
+  iconClass: string;
+  /** File name patterns (globs) matching this type */
+  patterns?: string[];
+}
+
+/** Layout preferences configuration. */
+// [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE]
+export interface FilesLayoutConfig {
+  /** Default layout type on startup */
+  default: "tile" | "oneRow" | "oneColumn" | "fullscreen";
+  /** Default number of panes */
+  defaultPaneCount: number;
+  /** Allow users to add/remove panes */
+  allowPaneManagement?: boolean;
+  /** Maximum number of panes */
+  maxPanes?: number;
+  /** Default linked navigation mode - [REQ-LINKED_PANES] [IMPL-LINKED_NAV] */
+  defaultLinkedMode?: boolean;
+}
+
+/** Startup directory configuration. */
+// [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE]
+export interface FilesStartupConfig {
+  /** Startup mode */
+  mode: "configured" | "last" | "home";
+  /** Configured startup paths per pane (when mode = "configured") */
+  paths?: Record<string, string>;
+  /** Remember last locations across sessions */
+  rememberLastLocations?: boolean;
+}
+
+/** Files theme configuration. */
+export interface FilesThemeConfig {
+  overrides?: FilesThemeOverrides;
+  compareColors?: FilesCompareColors;
+  /** File type icon and color configuration [REQ-FILES_CONFIG_COMPLETE] */
+  fileTypes?: Record<string, FileTypeConfig>;
+}
+
+/** Top-level files configuration schema (config/files.yaml). */
+export interface FilesConfig {
+  copy?: FilesCopyConfig;
+  keybindings?: KeybindingConfig[]; // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [IMPL-KEYBINDS]
+  layout?: FilesLayoutConfig; // [REQ-FILES_CONFIG_COMPLETE]
+  startup?: FilesStartupConfig; // [REQ-FILES_CONFIG_COMPLETE]
 }
