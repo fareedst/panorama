@@ -1,84 +1,166 @@
 # Requirements Directory
 
-**STDD Methodology Version**: 1.3.0
+**STDD Methodology Version**: 1.5.0
 
 ## Overview
-This document serves as the **central listing/registry** for all requirements in this project. Each requirement has a unique semantic token `[REQ-IDENTIFIER]` for traceability.
+This document serves as the **guide** for all requirements in this project. Each requirement is stored in its own file within the `requirements/` directory for scalability. Each requirement has a unique semantic token `[REQ-IDENTIFIER]` for traceability.
 
-**For detailed information about how requirements are fulfilled, see:**
-- **Architecture decisions**: See `architecture-decisions.md` for high-level design choices that fulfill requirements
-- **Implementation decisions**: See `implementation-decisions.md` for detailed implementation approaches, APIs, and algorithms
+**For detailed information about requirements, see:**
+- **Requirements index**: See `requirements.yaml` - YAML database with all requirement records
+- **Architecture decisions**: See `architecture-decisions.yaml` for high-level design choices that fulfill requirements
+- **Implementation decisions**: See `implementation-decisions.yaml` for detailed implementation approaches, APIs, and algorithms
 - **Semantic tokens**: See `semantic-tokens.md` for the complete token registry
 
-### Requirement Structure
+## Directory Structure
 
-Each requirement includes:
-- **Description**: What the requirement specifies (WHAT)
-- **Rationale**: Why the requirement exists (WHY)
-- **Satisfaction Criteria**: How we know the requirement is satisfied (acceptance criteria, success conditions)
-- **Validation Criteria**: How we verify/validate the requirement is met (testing approach, verification methods, success metrics)
+```
+stdd/
+├── requirements.md              # This guide file (you are here)
+├── requirements.yaml            # YAML index/database of all requirements
+├── requirements/                # Detail files directory
+│   ├── REQ-STDD_SETUP.md
+│   ├── REQ-MODULE_VALIDATION.md
+│   └── ...
+```
 
-**Note**: 
-- Satisfaction and validation criteria that involve architectural or implementation details reference the appropriate layers
-- Architecture decisions in `architecture-decisions.md` explain HOW requirements are fulfilled at a high level
-- Implementation decisions in `implementation-decisions.md` explain HOW requirements are fulfilled at a detailed level
+## Filename Convention
 
-## Requirements Registry
+Token names use the same format in text and filenames:
 
-### Functional Requirements
+| Token Format | Filename Format |
+|--------------|-----------------|
+| `[REQ-USER_AUTH]` | `REQ-USER_AUTH.md` |
+| `[REQ-MODULE_VALIDATION]` | `REQ-MODULE_VALIDATION.md` |
 
-| Token | Requirement | Priority | Status | Architecture | Implementation |
-|-------|------------|----------|--------|--------------|----------------|
-| [REQ-APP_STRUCTURE] | Next.js App Router application structure | P0 | ✅ | [ARCH-NEXTJS_FRAMEWORK], [ARCH-APP_ROUTER] | [IMPL-ROOT_LAYOUT], [IMPL-HOME_PAGE] |
-| [REQ-ROOT_LAYOUT] | Root layout with HTML structure and body | P0 | ✅ | [ARCH-LAYOUT_PATTERN] | [IMPL-ROOT_LAYOUT] |
-| [REQ-HOME_PAGE] | Home page with welcome content and links | P0 | ✅ | [ARCH-SERVER_COMPONENTS] | [IMPL-HOME_PAGE] |
-| [REQ-NAVIGATION_LINKS] | External navigation links | P1 | ✅ | [ARCH-APP_ROUTER] | [IMPL-EXTERNAL_LINKS] |
-| [REQ-BRANDING] | Next.js branding (logo, title) | P1 | ✅ | [ARCH-NEXTJS_FRAMEWORK] | [IMPL-IMAGE_OPTIMIZATION] |
+**Rule**: Remove brackets, keep hyphen, append `.md`
 
-### Non-Functional Requirements
+## Notes
 
-| Token | Requirement | Priority | Status | Architecture | Implementation |
-|-------|------------|----------|--------|--------------|----------------|
-| [REQ-RESPONSIVE_DESIGN] | Responsive layout that adapts to mobile/desktop | P0 | ✅ | [ARCH-RESPONSIVE_FIRST] | [IMPL-RESPONSIVE_CLASSES] |
-| [REQ-DARK_MODE] | Dark mode support with automatic theme detection | P0 | ✅ | [ARCH-CSS_VARIABLES] | [IMPL-DARK_MODE] |
-| [REQ-FONT_SYSTEM] | Custom font loading (Geist Sans & Geist Mono) | P1 | ✅ | [ARCH-GOOGLE_FONTS], [ARCH-CSS_VARIABLES_FONTS] | [IMPL-FONT_LOADING] |
-| [REQ-TAILWIND_STYLING] | Tailwind CSS v4 for styling system | P0 | ✅ | [ARCH-TAILWIND_V4] | [IMPL-FLEX_LAYOUT] |
-| [REQ-GLOBAL_STYLES] | Global CSS with CSS variables for theming | P1 | ✅ | [ARCH-CSS_VARIABLES] | [IMPL-DARK_MODE] |
-| [REQ-ACCESSIBILITY] | Semantic HTML and accessible image alt text | P1 | ✅ | [ARCH-SERVER_COMPONENTS] | [IMPL-IMAGE_OPTIMIZATION] |
-| [REQ-METADATA] | Page metadata (title, description) | P1 | ✅ | [ARCH-NEXTJS_FRAMEWORK] | [IMPL-METADATA] |
-| [REQ-TYPESCRIPT] | TypeScript type safety throughout | P0 | ✅ | [ARCH-TYPESCRIPT_LANG] | Multiple implementations |
-| [REQ-BUILD_SYSTEM] | Next.js build, development, and testing scripts | P0 | ✅ | [ARCH-NEXTJS_FRAMEWORK], [ARCH-TEST_FRAMEWORK] | [IMPL-BUILD_SCRIPTS], [IMPL-TEST_CONFIG] |
+- All requirements MUST be documented here with `[REQ-*]` tokens
+- Requirements describe WHAT the system should do and WHY, not HOW
+- Requirements MUST NOT describe bugs or implementation details
+- **Language-Agnostic Requirements**: Requirements MUST be language-agnostic. Language selection, runtime choices, and language-specific implementation details belong in architecture decisions (`architecture-decisions.yaml`) or implementation decisions (`implementation-decisions.yaml`), NOT in requirements. The ONLY exception is when language selection is itself a specific requirement (e.g., `[REQ-USE_PYTHON]` for a Python-specific project requirement).
 
-### Configurability Requirements
+## How to Add a New Requirement
 
-| Token | Requirement | Priority | Status | Architecture | Implementation |
-|-------|------------|----------|--------|--------------|----------------|
-| [REQ-CONFIG_DRIVEN_UI] | Configuration-driven UI via YAML files | P0 | ✅ | [ARCH-CONFIG_DRIVEN_UI], [ARCH-THEME_INJECTION], [ARCH-CLASS_OVERRIDES] | [IMPL-YAML_CONFIG], [IMPL-CONFIG_LOADER], [IMPL-THEME_INJECTION], [IMPL-CLASS_OVERRIDES] |
-| [REQ-CONFIG_DRIVEN_APPEARANCE] | All page elements appearance and layout from config (template scope) | P0 | ✅ | [ARCH-CONFIG_DRIVEN_UI], [ARCH-CONFIG_DRIVEN_APPEARANCE] | [IMPL-CONFIG_LOADER], [IMPL-CONFIG_DRIVEN_APPEARANCE] |
+1. **Create a new detail file** in `requirements/` using the naming convention above
+2. **Use the detail file template** (see below)
+3. **Add an entry to the index YAML file** (`requirements.yaml`)
+4. **Update `semantic-tokens.md`** registry with the new `[REQ-*]` token
 
-### Job Search Tracking Requirements
+## Requirements Index
 
-| Token | Requirement | Priority | Status | Architecture | Implementation |
-|-------|------------|----------|--------|--------------|----------------|
-| [REQ-JOB_TRACKER_DATA] | Job position data storage and retrieval | P0 | ⏳ | [ARCH-JOB_TRACKER_STORAGE] | [IMPL-JOBS_CONFIG] |
-| [REQ-JOB_TRACKER_LIST] | View all job positions in a table | P0 | ⏳ | [ARCH-JOB_TRACKER_UI] | [IMPL-JOBS_LIST_PAGE] |
-| [REQ-JOB_TRACKER_EDIT] | Edit job position records | P0 | ⏳ | [ARCH-JOB_TRACKER_UI] | [IMPL-JOBS_EDIT_PAGE] |
-| [REQ-JOB_TRACKER_STATUS] | Track application status with dates and notes | P1 | ⏳ | [ARCH-JOB_TRACKER_STORAGE] | [IMPL-JOBS_CONFIG] |
-| [REQ-JOB_TRACKER_CRUD] | Create, update, and delete job positions | P0 | ⏳ | [ARCH-JOB_TRACKER_API] | [IMPL-JOBS_API] |
-| [REQ-JOB_TRACKER_CALENDAR] | Calendar month view for positions and applications | P1 | ⏳ | [ARCH-CALENDAR_VIEW] | [IMPL-CALENDAR_PAGE], [IMPL-CALENDAR_GRID] |
+**The requirements index is maintained in `requirements.yaml`**, a YAML database file that contains all requirement records with their metadata, cross-references, and status.
 
-### Immutable Requirements (Major Version Change Required)
+To view the index:
 
-| Token | Requirement | Priority | Status | Architecture | Implementation |
-|-------|------------|----------|--------|--------------|----------------|
+```bash
+# View entire index
+cat stdd/requirements.yaml
 
-### Incomplete Requirements
+# View specific requirement
+yq '.REQ-STDD_SETUP' stdd/requirements.yaml
 
-| Token | Requirement | Priority | Status | Architecture | Implementation |
-|-------|------------|----------|--------|--------------|----------------|
+# Get satisfaction criteria for a requirement
+yq '.REQ-STDD_SETUP.satisfaction_criteria[].criterion' stdd/requirements.yaml
+
+# Get validation methods for a requirement
+yq '.REQ-STDD_SETUP.validation_criteria[].method' stdd/requirements.yaml
+
+# Get architecture dependencies for a requirement
+yq '.REQ-STDD_SETUP.traceability.architecture[]' stdd/requirements.yaml
+
+# List all requirements by status
+yq 'to_entries | map(select(.value.status == "Implemented")) | from_entries' stdd/requirements.yaml
+
+# Quick grep search
+grep -A 30 '^REQ-STDD_SETUP:' stdd/requirements.yaml
+```
+
+### How to Append a New Requirement
+
+1. Open `requirements.yaml` in your editor
+2. Copy the template block at the bottom of the file (REQ-IDENTIFIER)
+3. Paste it at the end with a blank line before it
+4. Replace `REQ-IDENTIFIER` with your new semantic token
+5. Fill in all fields (name, category, priority, status, rationale, etc.)
+6. Update the `detail_file` path to match your new `.md` file in `requirements/` directory
+7. Save the file
+
+Example append operation:
+
+```bash
+cat >> stdd/requirements.yaml << 'EOF'
+
+REQ-NEW_FEATURE:
+  name: New Feature Name
+  category: Functional
+  priority: P1
+  status: "Planned"
+  rationale:
+    why: "Primary reason for this requirement"
+    problems_solved:
+      - "Problem 1"
+      - "Problem 2"
+    benefits:
+      - "Benefit 1"
+      - "Benefit 2"
+  satisfaction_criteria:
+    - criterion: "Criterion description 1"
+      metric: "Measurable target (optional)"
+    - criterion: "Criterion description 2"
+  validation_criteria:
+    - method: "Unit tests"
+      coverage: "All core functions"
+    - method: "Integration tests"
+      coverage: "End-to-end flows"
+  traceability:
+    architecture:
+      - ARCH-NEW_FEATURE
+    implementation:
+      - IMPL-NEW_FEATURE
+    tests:
+      - testNewFeature_REQ_NEW_FEATURE
+    code_annotations:
+      - REQ-NEW_FEATURE
+  related_requirements:
+    depends_on: []
+    related_to: []
+    supersedes: []
+  detail_file: requirements/REQ-NEW_FEATURE.md
+  metadata:
+    created:
+      date: 2026-02-06
+      author: "Your Name"
+    last_updated:
+      date: 2026-02-06
+      author: "Your Name"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-06
+      validator: "Your Name"
+      result: "pass"
+EOF
+```
+
+### Status Values
+
+- **✅ Implemented**: Requirement is fully implemented and validated
+- **⏳ Planned**: Requirement is documented but not yet implemented
+- **Template**: Example/template entry for reference
+
+**Note**: The requirements index has been migrated to `requirements.yaml` (YAML database format) as of STDD v1.5.0. The legacy Markdown table format is preserved below for reference but is no longer the source of truth.
+
+**To view the current requirements index**, use:
+```bash
+cat stdd/requirements.yaml
+# or query specific requirements:
+yq '.REQ-STDD_SETUP' stdd/requirements.yaml
+```
+
 ---
 
-## Detailed Requirements
+## Detailed Requirements (Legacy Format)
 
 ### Application Structure
 

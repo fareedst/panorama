@@ -1,14 +1,15 @@
 # Semantic Tokens Directory
 
-**STDD Methodology Version**: 1.3.0
+**STDD Methodology Version**: 1.5.0
 
 ## Overview
 This document serves as the **central directory/registry** for all semantic tokens used in the project. Semantic tokens (`[REQ-*]`, `[ARCH-*]`, `[IMPL-*]`) provide a consistent vocabulary and traceability mechanism that ties together all documentation, code, and tests.
 
 **For detailed information about tokens, see:**
-- **Requirements tokens**: See `requirements.md` for full descriptions, rationale, satisfaction criteria, and validation criteria
-- **Architecture tokens**: See `architecture-decisions.md` for architectural decisions, rationale, and alternatives considered
-- **Implementation tokens**: See `implementation-decisions.md` for implementation details, code structures, and algorithms
+- **Requirements tokens**: See `requirements.yaml` (YAML database) for full details including descriptions, rationale, satisfaction criteria, and validation criteria
+- **Architecture tokens**: See `architecture-decisions.yaml` (YAML database) for architectural decisions, rationale, and alternatives considered
+- **Implementation tokens**: See `implementation-decisions.yaml` (YAML database) for implementation details, code structures, and algorithms
+- **Guide files**: See `requirements.md`, `architecture-decisions.md`, `implementation-decisions.md` for usage instructions and yq query examples
 - **Code vs docs audit**: See `STDD-AUDIT-CODE-VS-DOCS.md` for whether code and semantic tokens are correctly represented for agent recreatability
 
 ## AI Assistant Integration Guidelines [REQ-DOC_016]
@@ -36,17 +37,23 @@ grep -r "\[ARCH-FEATURE_NAME\]" --include="*.md" .
 
 # Find implementation details
 grep -r "\[IMPL-FEATURE_NAME\]" --include="*.tsx" --include="*.ts" --include="*.css" .
+
+# Query YAML indexes (STDD v1.5.0+)
+yq '.REQ-FEATURE_NAME' stdd/requirements.yaml
+yq '.ARCH-FEATURE_NAME' stdd/architecture-decisions.yaml
+yq '.IMPL-FEATURE_NAME' stdd/implementation-decisions.yaml
 ```
 
 ### Token Creation Requirements
 
 When implementing features:
-1. **ALWAYS** create `[REQ-*]` token in `requirements.md` first
-2. **ALWAYS** create `[ARCH-*]` token in `architecture-decisions.md` for design decisions
-3. **ALWAYS** add `[IMPL-*]` tokens to code comments
-4. **ALWAYS** reference `[REQ-*]` tokens in test names/comments
-5. **ALWAYS** update `semantic-tokens.md` registry when creating new tokens
-6. **ALWAYS** document any `[PROC-*]` process tokens in `processes.md` when defining operational workflows
+1. **ALWAYS** create `[REQ-*]` token in `requirements.yaml` and optionally create a detail file in `requirements/` directory
+2. **ALWAYS** create `[ARCH-*]` token in `architecture-decisions.yaml` for design decisions and optionally create a detail file in `architecture-decisions/` directory
+3. **ALWAYS** create `[IMPL-*]` token in `implementation-decisions.yaml` and optionally create a detail file in `implementation-decisions/` directory
+4. **ALWAYS** add `[IMPL-*]` tokens to code comments
+5. **ALWAYS** reference `[REQ-*]` tokens in test names/comments
+6. **ALWAYS** update `semantic-tokens.md` registry when creating new tokens
+7. **ALWAYS** document any `[PROC-*]` process tokens in `processes.md` when defining operational workflows
 
 ### Token Audit Workflow `[PROC-TOKEN_AUDIT]`
 

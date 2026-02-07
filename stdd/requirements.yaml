@@ -1,0 +1,1465 @@
+# Requirements Index (YAML Database)
+#
+# This YAML file serves as the central index/registry for all requirements in the project.
+# Each top-level key is a semantic token (e.g., REQ-STDD_SETUP).
+#
+# To append a new requirement:
+# 1. Copy the template block at the bottom of this file (REQ-IDENTIFIER)
+# 2. Paste it at the end with a blank line before it
+# 3. Replace REQ-IDENTIFIER with your new token
+# 4. Fill in all fields
+# 5. Update the detail_file path to match your new .md file in requirements/ directory
+#
+# Field descriptions:
+#   name: Short descriptive name of the requirement
+#   category: Functional | Non-Functional | Immutable
+#   priority: P0 (Critical) | P1 (Important) | P2 (Nice-to-have) | P3 (Future)
+#   status: "Implemented" | "Planned" | "Template"
+#   rationale: Structured explanation with why, problems_solved, benefits
+#   satisfaction_criteria: List of criterion items with optional metrics
+#   validation_criteria: List of validation method items with coverage details
+#   traceability: Structured links to architecture, implementation, tests, code_annotations
+#   related_requirements: Lists of depends_on, related_to, supersedes (YAML lists or [])
+#   detail_file: Path to the detailed .md file in requirements/ directory
+#   metadata: Structured metadata with created, last_updated, last_validated info
+
+---
+
+REQ-STDD_SETUP:
+  name: STDD Methodology Setup
+  category: Functional
+  priority: P0
+  status: "Implemented"
+  rationale:
+    why: "To ensure traceability of intent from requirements to code and to maintain a consistent development process"
+    problems_solved:
+      - "Loss of intent during development lifecycle"
+      - "Difficulty tracking requirements through architecture to implementation"
+      - "Inconsistent documentation practices across projects"
+    benefits:
+      - "Complete traceability from requirements to code"
+      - "Consistent development methodology"
+      - "AI-friendly documentation structure"
+  satisfaction_criteria:
+    - criterion: "stdd/ directory exists with proper structure"
+    - criterion: "All required documentation files exist and are populated from templates"
+    - criterion: ".cursorrules contains the STDD rules"
+  validation_criteria:
+    - method: "Manual verification"
+      coverage: "File existence checks"
+    - method: "AI agent acknowledgment"
+      coverage: "Agent responds with 'Observing AI principles!'"
+  traceability:
+    architecture:
+      - ARCH-STDD_STRUCTURE
+    implementation:
+      - IMPL-STDD_FILES
+    tests:
+      - Manual verification checklists
+    code_annotations:
+      - REQ-STDD_SETUP
+  related_requirements:
+    depends_on: []
+    related_to: []
+    supersedes: []
+  detail_file: requirements/REQ-STDD_SETUP.md
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+REQ-MODULE_VALIDATION:
+  name: Independent Module Validation Before Integration
+  category: Functional
+  priority: P0
+  status: "Implemented"
+  rationale:
+    why: "To eliminate bugs related to code complexity by ensuring each module works correctly in isolation before combining with other modules"
+    problems_solved:
+      - "Integration complexity causing difficult-to-debug issues"
+      - "Bugs discovered too late in the development cycle"
+      - "Module contracts not properly validated before integration"
+    benefits:
+      - "Bugs caught early before integration"
+      - "Reduced integration complexity"
+      - "Clear module boundaries and contracts"
+      - "Easier debugging by isolating issues to specific modules"
+  satisfaction_criteria:
+    - criterion: "All logical modules are identified and documented with clear boundaries before development"
+    - criterion: "Module interfaces and contracts are defined and documented"
+    - criterion: "Module validation criteria are specified"
+      metric: "What 'validated' means is explicitly defined for each module"
+    - criterion: "Each module passes independent validation before integration"
+      metric: "Unit tests with mocks, integration tests with test doubles, contract validation, edge case testing, error handling validation all passing"
+  validation_criteria:
+    - method: "Manual verification"
+      coverage: "Modules identified and documented before development starts"
+    - method: "Automated testing"
+      coverage: "Module validation tests exist and pass before integration"
+    - method: "Code review"
+      coverage: "Integration code references validated modules"
+  traceability:
+    architecture:
+      - ARCH-MODULE_VALIDATION
+    implementation:
+      - IMPL-MODULE_VALIDATION
+    tests:
+      - testModuleName_IndependentValidation_REQ_MODULE_VALIDATION
+    code_annotations:
+      - REQ-MODULE_VALIDATION
+  related_requirements:
+    depends_on:
+      - REQ-STDD_SETUP
+    related_to: []
+    supersedes: []
+  detail_file: requirements/REQ-MODULE_VALIDATION.md
+  metadata:
+    created:
+      date: 2025-01-27
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+REQ-APP_STRUCTURE:
+  name: Next.js App Router Application Structure
+  category: Functional
+  priority: P0
+  status: "Implemented"
+  rationale:
+    why: "App Router provides better performance through server components, improved data fetching patterns, and simplified routing"
+    problems_solved:
+      - "Complex client-side routing and data fetching patterns"
+      - "Performance overhead of client-side rendering for all content"
+    benefits:
+      - "Better performance through server components"
+      - "Simplified routing with file-based system"
+      - "Modern React features support"
+      - "Future scalability"
+  satisfaction_criteria:
+    - criterion: "Next.js 16.1+ is installed and configured"
+    - criterion: "App Router directory structure (src/app/) exists"
+    - criterion: "File-based routing works correctly"
+    - criterion: "Server components render by default"
+    - criterion: "Build and development scripts execute successfully"
+  validation_criteria:
+    - method: "Manual testing"
+      coverage: "Application starts without errors using npm run dev"
+    - method: "Build validation"
+      coverage: "Application builds successfully using npm run build"
+    - method: "Route testing"
+      coverage: "Routes defined in src/app/ are accessible"
+  traceability:
+    architecture:
+      - ARCH-NEXTJS_FRAMEWORK
+      - ARCH-APP_ROUTER
+    implementation:
+      - IMPL-ROOT_LAYOUT
+      - IMPL-HOME_PAGE
+    tests:
+      - Integration tests for routes
+    code_annotations:
+      - REQ-APP_STRUCTURE
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-BUILD_SYSTEM
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+REQ-ROOT_LAYOUT:
+  name: Root Layout with HTML Structure
+  category: Functional
+  priority: P0
+  status: "Implemented"
+  rationale:
+    why: "Root layouts in Next.js App Router enable shared UI across all routes, consistent font loading, and metadata management"
+    problems_solved:
+      - "Code duplication across pages"
+      - "Inconsistent styling and behavior"
+      - "Complex font loading management"
+    benefits:
+      - "Shared UI across all routes"
+      - "Consistent font loading"
+      - "Centralized metadata management"
+      - "Reduced code duplication"
+  satisfaction_criteria:
+    - criterion: "Root layout exists at src/app/layout.tsx"
+    - criterion: "Layout exports default function matching Next.js RootLayout type"
+    - criterion: "Layout includes <html> tag with lang attribute"
+    - criterion: "Layout includes <body> tag with appropriate styling"
+    - criterion: "Layout renders children prop correctly"
+    - criterion: "Font variables are applied to body element"
+  validation_criteria:
+    - method: "Component testing"
+      coverage: "Layout component renders without errors"
+    - method: "Integration testing"
+      coverage: "All pages are wrapped by the layout automatically"
+    - method: "TypeScript validation"
+      coverage: "TypeScript compilation passes without layout-related errors"
+  traceability:
+    architecture:
+      - ARCH-LAYOUT_PATTERN
+    implementation:
+      - IMPL-ROOT_LAYOUT
+    tests:
+      - Layout component tests
+    code_annotations:
+      - REQ-ROOT_LAYOUT
+  related_requirements:
+    depends_on:
+      - REQ-APP_STRUCTURE
+    related_to:
+      - REQ-FONT_SYSTEM
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+REQ-HOME_PAGE:
+  name: Home Page with Welcome Content
+  category: Functional
+  priority: P0
+  status: "Implemented"
+  rationale:
+    why: "A welcoming home page provides immediate value to users, guides them to next steps, and demonstrates the application's capabilities"
+    problems_solved:
+      - "Lack of clear entry point for users"
+      - "Missing guidance for next steps"
+    benefits:
+      - "Clear entry point for users"
+      - "Guidance to learning resources"
+      - "Template for future page development"
+  satisfaction_criteria:
+    - criterion: "Home page exists at src/app/page.tsx"
+    - criterion: "Page displays Next.js logo using Next.js Image component"
+    - criterion: "Page includes welcome content and links"
+    - criterion: "All links open in new tabs with security attributes"
+  validation_criteria:
+    - method: "Page rendering"
+      coverage: "Home page renders at root URL (/)"
+    - method: "Content validation"
+      coverage: "All text content is visible and readable"
+    - method: "Link validation"
+      coverage: "All links are clickable and include proper security attributes"
+  traceability:
+    architecture:
+      - ARCH-SERVER_COMPONENTS
+    implementation:
+      - IMPL-HOME_PAGE
+    tests:
+      - Home page component tests
+    code_annotations:
+      - REQ-HOME_PAGE
+  related_requirements:
+    depends_on:
+      - REQ-APP_STRUCTURE
+    related_to:
+      - REQ-BRANDING
+      - REQ-NAVIGATION_LINKS
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+REQ-NAVIGATION_LINKS:
+  name: External Navigation Links
+  category: Functional
+  priority: P1
+  status: "Implemented"
+  rationale:
+    why: "External links guide users to additional resources for learning and deployment"
+    problems_solved:
+      - "Lack of guidance to external resources"
+      - "Security vulnerabilities from improper link handling"
+    benefits:
+      - "Easy access to learning resources"
+      - "Secure external link handling"
+      - "Preserved application state when opening new tabs"
+  satisfaction_criteria:
+    - criterion: "Links to Templates, Learning Center, Deploy, and Documentation are present"
+    - criterion: "Links have target='_blank' to open in new tabs"
+    - criterion: "Links have rel='noopener noreferrer' for security"
+  validation_criteria:
+    - method: "Link testing"
+      coverage: "All links are clickable and navigate correctly"
+    - method: "Security validation"
+      coverage: "Security attributes are present in DOM"
+  traceability:
+    architecture:
+      - ARCH-APP_ROUTER
+    implementation:
+      - IMPL-EXTERNAL_LINKS
+    tests:
+      - Link component tests
+    code_annotations:
+      - REQ-NAVIGATION_LINKS
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-HOME_PAGE
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+REQ-BRANDING:
+  name: Next.js Branding Elements
+  category: Functional
+  priority: P1
+  status: "Implemented"
+  rationale:
+    why: "Branding elements provide visual identity and attribution"
+    problems_solved:
+      - "Lack of visual identity"
+      - "Suboptimal image loading performance"
+    benefits:
+      - "Clear visual identity"
+      - "Optimal loading performance with Next.js Image"
+      - "Automatic responsive sizing and modern formats"
+  satisfaction_criteria:
+    - criterion: "Next.js logo displays at top of home page"
+    - criterion: "Logos use Next.js Image component"
+    - criterion: "Logos have appropriate alt text for accessibility"
+    - criterion: "Logos invert in dark mode"
+  validation_criteria:
+    - method: "Visual inspection"
+      coverage: "Logos render without errors"
+    - method: "Performance testing"
+      coverage: "Images are optimized (responsive, modern formats)"
+    - method: "Accessibility testing"
+      coverage: "Alt text is present and descriptive"
+  traceability:
+    architecture:
+      - ARCH-NEXTJS_FRAMEWORK
+    implementation:
+      - IMPL-IMAGE_OPTIMIZATION
+    tests:
+      - Image component tests
+    code_annotations:
+      - REQ-BRANDING
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-HOME_PAGE
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+REQ-RESPONSIVE_DESIGN:
+  name: Responsive Layout Design
+  category: Non-Functional
+  priority: P0
+  status: "Implemented"
+  rationale:
+    why: "Modern web applications must work on all device types with a mobile-first approach"
+    problems_solved:
+      - "Poor mobile experience"
+      - "Inconsistent layout across device sizes"
+    benefits:
+      - "Good performance on smaller devices"
+      - "Progressive enhancement for larger screens"
+      - "Meets web best practices and user expectations"
+  satisfaction_criteria:
+    - criterion: "Layout adjusts based on viewport width"
+    - criterion: "Mobile-first breakpoints are used"
+    - criterion: "Content is readable on mobile devices (320px+)"
+    - criterion: "No horizontal scrolling on any screen size"
+  validation_criteria:
+    - method: "Visual inspection"
+      coverage: "Various viewport sizes (320px, 768px, 1024px, 1920px)"
+    - method: "Responsive testing"
+      coverage: "Content flows properly without overflow"
+  traceability:
+    architecture:
+      - ARCH-RESPONSIVE_FIRST
+    implementation:
+      - IMPL-RESPONSIVE_CLASSES
+    tests:
+      - Responsive layout tests
+    code_annotations:
+      - REQ-RESPONSIVE_DESIGN
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-TAILWIND_STYLING
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+REQ-DARK_MODE:
+  name: Dark Mode Theme Support
+  category: Non-Functional
+  priority: P0
+  status: "Implemented"
+  rationale:
+    why: "Dark mode is a modern UI expectation that improves user experience in low-light conditions"
+    problems_solved:
+      - "Eye strain in low-light environments"
+      - "Battery drain on OLED displays"
+      - "Lack of user preference respect"
+    benefits:
+      - "Improved user experience in low-light conditions"
+      - "Reduced eye strain"
+      - "Battery savings on OLED displays"
+      - "Automatic system preference detection"
+  satisfaction_criteria:
+    - criterion: "Application detects system dark mode preference automatically"
+    - criterion: "Color scheme switches between light and dark modes"
+    - criterion: "All UI elements have appropriate dark mode variants"
+    - criterion: "Text remains readable in both modes"
+  validation_criteria:
+    - method: "System preference testing"
+      coverage: "Application switches theme when system preference changes"
+    - method: "Contrast testing"
+      coverage: "All text has sufficient contrast in both modes (WCAG AA minimum)"
+  traceability:
+    architecture:
+      - ARCH-CSS_VARIABLES
+    implementation:
+      - IMPL-DARK_MODE
+    tests:
+      - Dark mode tests
+    code_annotations:
+      - REQ-DARK_MODE
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-GLOBAL_STYLES
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+REQ-FONT_SYSTEM:
+  name: Custom Font Loading System
+  category: Non-Functional
+  priority: P1
+  status: "Implemented"
+  rationale:
+    why: "Custom fonts improve brand consistency and visual appeal with efficient loading"
+    problems_solved:
+      - "Inconsistent typography"
+      - "Layout shift during font loading"
+      - "Large font file sizes"
+    benefits:
+      - "Brand consistency"
+      - "No layout shift (CLS)"
+      - "Automatic subsetting and preloading"
+      - "Flexible font application via CSS variables"
+  satisfaction_criteria:
+    - criterion: "Geist Sans font loads for body text"
+    - criterion: "Geist Mono font loads for monospace text"
+    - criterion: "Fonts use next/font/google for optimization"
+    - criterion: "Font loading doesn't cause layout shift"
+    - criterion: "CSS variables are created for font families"
+  validation_criteria:
+    - method: "Visual testing"
+      coverage: "Fonts are visible and correctly applied"
+    - method: "Performance testing"
+      coverage: "No Flash of Unstyled Text (FOUT), Lighthouse audit shows no layout shift"
+  traceability:
+    architecture:
+      - ARCH-GOOGLE_FONTS
+      - ARCH-CSS_VARIABLES_FONTS
+    implementation:
+      - IMPL-FONT_LOADING
+    tests:
+      - Font loading tests
+    code_annotations:
+      - REQ-FONT_SYSTEM
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-ROOT_LAYOUT
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+REQ-TAILWIND_STYLING:
+  name: Tailwind CSS Styling System
+  category: Non-Functional
+  priority: P0
+  status: "Implemented"
+  rationale:
+    why: "Tailwind CSS enables rapid UI development with utility classes and reduces CSS bundle size"
+    problems_solved:
+      - "CSS naming complexity"
+      - "Large CSS bundle sizes"
+      - "Inconsistent design tokens"
+    benefits:
+      - "Rapid UI development with utility classes"
+      - "Reduced CSS bundle size through purging"
+      - "Consistent design tokens"
+      - "Improved performance"
+  satisfaction_criteria:
+    - criterion: "Tailwind CSS v4 is installed and configured"
+    - criterion: "PostCSS configuration includes Tailwind plugin"
+    - criterion: "Utility classes work in all components"
+    - criterion: "CSS is optimized/purged in production builds"
+  validation_criteria:
+    - method: "Class testing"
+      coverage: "Tailwind classes apply correctly in browser"
+    - method: "Build testing"
+      coverage: "Production CSS bundle is optimized (unused styles removed)"
+  traceability:
+    architecture:
+      - ARCH-TAILWIND_V4
+    implementation:
+      - IMPL-FLEX_LAYOUT
+    tests:
+      - Tailwind styling tests
+    code_annotations:
+      - REQ-TAILWIND_STYLING
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-RESPONSIVE_DESIGN
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+REQ-GLOBAL_STYLES:
+  name: Global CSS with Theme Variables
+  category: Non-Functional
+  priority: P1
+  status: "Implemented"
+  rationale:
+    why: "CSS custom properties enable dynamic theming and consistent color usage"
+    problems_solved:
+      - "Inconsistent color usage"
+      - "Difficulty changing themes"
+      - "Style duplication"
+    benefits:
+      - "Dynamic theming capability"
+      - "Consistent color usage"
+      - "Reduced duplication"
+      - "Runtime theme switching support"
+  satisfaction_criteria:
+    - criterion: "globals.css file exists and is imported in layout"
+    - criterion: "CSS variables defined for --background and --foreground colors"
+    - criterion: "Variables have different values for light and dark modes"
+    - criterion: "Base body styles are applied globally"
+  validation_criteria:
+    - method: "CSS inspection"
+      coverage: "CSS variables are defined in :root"
+    - method: "Dark mode testing"
+      coverage: "Variables change when dark mode is active"
+  traceability:
+    architecture:
+      - ARCH-CSS_VARIABLES
+    implementation:
+      - IMPL-DARK_MODE
+    tests:
+      - Global styles tests
+    code_annotations:
+      - REQ-GLOBAL_STYLES
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-DARK_MODE
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+REQ-ACCESSIBILITY:
+  name: Semantic HTML and Accessibility
+  category: Non-Functional
+  priority: P1
+  status: "Implemented"
+  rationale:
+    why: "Accessibility ensures the application is usable by everyone, including people with disabilities"
+    problems_solved:
+      - "Barriers for users with disabilities"
+      - "Poor SEO and screen reader compatibility"
+      - "Legal compliance issues"
+    benefits:
+      - "Usable by everyone"
+      - "Improved SEO"
+      - "Legal compliance"
+      - "Better screen reader compatibility"
+  satisfaction_criteria:
+    - criterion: "HTML uses semantic elements (main, nav, header, etc.)"
+    - criterion: "Images have descriptive alt attributes"
+    - criterion: "Heading hierarchy is logical"
+    - criterion: "Links are keyboard accessible"
+    - criterion: "Color contrast meets WCAG AA standards"
+  validation_criteria:
+    - method: "Lighthouse audit"
+      coverage: "Accessibility audit passes with 90+ score"
+    - method: "Screen reader testing"
+      coverage: "Screen reader shows proper element identification"
+    - method: "Keyboard testing"
+      coverage: "Keyboard navigation works for all interactive elements"
+  traceability:
+    architecture:
+      - ARCH-SERVER_COMPONENTS
+    implementation:
+      - IMPL-IMAGE_OPTIMIZATION
+    tests:
+      - Accessibility tests
+    code_annotations:
+      - REQ-ACCESSIBILITY
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-BRANDING
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+REQ-METADATA:
+  name: Page Metadata Configuration
+  category: Non-Functional
+  priority: P1
+  status: "Implemented"
+  rationale:
+    why: "Proper metadata improves SEO and enables social media sharing with appropriate previews"
+    problems_solved:
+      - "Poor SEO performance"
+      - "Missing social media previews"
+      - "Lack of context for search engines"
+    benefits:
+      - "Improved SEO"
+      - "Social media sharing support"
+      - "Type-safe metadata with Next.js API"
+  satisfaction_criteria:
+    - criterion: "Root layout exports metadata object"
+    - criterion: "Metadata includes title and description fields"
+    - criterion: "Metadata appears in HTML <head> when rendered"
+  validation_criteria:
+    - method: "View source"
+      coverage: "<title> and <meta description> tags are present"
+    - method: "TypeScript validation"
+      coverage: "TypeScript compilation validates metadata structure"
+  traceability:
+    architecture:
+      - ARCH-NEXTJS_FRAMEWORK
+    implementation:
+      - IMPL-METADATA
+    tests:
+      - Metadata tests
+    code_annotations:
+      - REQ-METADATA
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-ROOT_LAYOUT
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+REQ-TYPESCRIPT:
+  name: TypeScript Type Safety
+  category: Non-Functional
+  priority: P0
+  status: "Implemented"
+  rationale:
+    why: "TypeScript prevents runtime errors through compile-time type checking and improves code maintainability"
+    problems_solved:
+      - "Runtime type errors"
+      - "Poor code maintainability"
+      - "Lack of IDE intelligence"
+    benefits:
+      - "Compile-time error prevention"
+      - "Improved code maintainability"
+      - "Enhanced IDE intelligence"
+      - "Living documentation of data structures"
+  satisfaction_criteria:
+    - criterion: "All .tsx and .ts files use TypeScript"
+    - criterion: "tsconfig.json exists with strict mode enabled"
+    - criterion: "No TypeScript errors in compilation"
+    - criterion: "Component props are typed"
+  validation_criteria:
+    - method: "Build testing"
+      coverage: "npm run build completes without TypeScript errors"
+    - method: "IDE testing"
+      coverage: "IDE shows proper type hints and autocomplete"
+  traceability:
+    architecture:
+      - ARCH-TYPESCRIPT_LANG
+    implementation:
+      - Multiple implementations
+    tests:
+      - TypeScript compilation tests
+    code_annotations:
+      - REQ-TYPESCRIPT
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-BUILD_SYSTEM
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+REQ-BUILD_SYSTEM:
+  name: Next.js Build, Development, and Testing Scripts
+  category: Non-Functional
+  priority: P0
+  status: "Implemented"
+  rationale:
+    why: "Standardized build and test scripts ensure consistent development environments and enable CI/CD integration"
+    problems_solved:
+      - "Inconsistent development environments"
+      - "Lack of CI/CD integration"
+      - "Code quality issues"
+    benefits:
+      - "Consistent development environments"
+      - "CI/CD integration"
+      - "Automated code quality checks"
+      - "Fast test execution"
+  satisfaction_criteria:
+    - criterion: "npm run dev starts development server with hot reload"
+    - criterion: "npm run build creates optimized production build"
+    - criterion: "npm run start runs production server"
+    - criterion: "npm run lint runs ESLint for code quality"
+    - criterion: "npm test runs all tests"
+    - criterion: "npm run test:coverage generates coverage report with 80%+ coverage"
+  validation_criteria:
+    - method: "Script testing"
+      coverage: "All npm scripts execute successfully"
+    - method: "Coverage testing"
+      coverage: "Test coverage meets 80% threshold"
+  traceability:
+    architecture:
+      - ARCH-NEXTJS_FRAMEWORK
+      - ARCH-TEST_FRAMEWORK
+    implementation:
+      - IMPL-BUILD_SCRIPTS
+      - IMPL-TEST_CONFIG
+    tests:
+      - Build and test script validation
+    code_annotations:
+      - REQ-BUILD_SYSTEM
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-APP_STRUCTURE
+      - REQ-TYPESCRIPT
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+REQ-ERROR_HANDLING:
+  name: Root-Level Error Boundary
+  category: Non-Functional
+  priority: P1
+  status: "Implemented"
+  rationale:
+    why: "Root-level error boundaries provide graceful error recovery and prevent full application crashes"
+    problems_solved:
+      - "Application crashes on errors"
+      - "Poor error user experience"
+      - "Lack of error recovery"
+    benefits:
+      - "Graceful error recovery"
+      - "Better user experience on errors"
+      - "Production error handling"
+  satisfaction_criteria:
+    - criterion: "Global error boundary exists"
+    - criterion: "Error boundary catches root-level errors"
+    - criterion: "Error UI provides recovery options"
+  validation_criteria:
+    - method: "Error testing"
+      coverage: "Error boundary catches and displays errors gracefully"
+    - method: "User experience testing"
+      coverage: "Users can recover from errors"
+  traceability:
+    architecture:
+      - ARCH-NEXTJS_FRAMEWORK
+    implementation:
+      - IMPL-GLOBAL_ERROR_BOUNDARY
+    tests:
+      - Error boundary tests
+    code_annotations:
+      - REQ-ERROR_HANDLING
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-APP_STRUCTURE
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+REQ-CONFIG_DRIVEN_UI:
+  name: Configuration-Driven UI
+  category: Functional
+  priority: P0
+  status: "Implemented"
+  rationale:
+    why: "Configuration-driven UI makes the project a highly-configurable template that users can customize without code changes"
+    problems_solved:
+      - "Hard-coded UI values requiring code changes"
+      - "Difficult customization for template users"
+      - "Lack of separation between content and code"
+    benefits:
+      - "Easy customization via YAML files"
+      - "No code changes needed for appearance/content"
+      - "Separation of concerns"
+      - "Template reusability"
+  satisfaction_criteria:
+    - criterion: "Two YAML config files exist (config/site.yaml, config/theme.yaml)"
+    - criterion: "All page text content comes from config"
+    - criterion: "All navigation links come from config"
+    - criterion: "All theme colors come from config"
+    - criterion: "Partial config files work (missing values use defaults)"
+  validation_criteria:
+    - method: "Config loader testing"
+      coverage: "Config loader unit tests pass (31 tests)"
+    - method: "Integration testing"
+      coverage: "Changing config values changes rendered output"
+  traceability:
+    architecture:
+      - ARCH-CONFIG_DRIVEN_UI
+      - ARCH-THEME_INJECTION
+      - ARCH-CLASS_OVERRIDES
+    implementation:
+      - IMPL-YAML_CONFIG
+      - IMPL-CONFIG_LOADER
+      - IMPL-THEME_INJECTION
+      - IMPL-CLASS_OVERRIDES
+    tests:
+      - Config loader tests
+      - Integration tests
+    code_annotations:
+      - REQ-CONFIG_DRIVEN_UI
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-CONFIG_DRIVEN_APPEARANCE
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+REQ-CONFIG_DRIVEN_APPEARANCE:
+  name: All Page Elements Appearance and Layout from Config
+  category: Functional
+  priority: P0
+  status: "Implemented"
+  rationale:
+    why: "For the project to serve as a truly configurable template, ALL page elements must be dictated by configuration"
+    problems_solved:
+      - "Hard-coded classes and copy in components"
+      - "Incomplete template configurability"
+      - "Code changes required for customization"
+    benefits:
+      - "Complete configurability"
+      - "True template reusability"
+      - "No code changes for customization"
+  satisfaction_criteria:
+    - criterion: "Home and root layout use config for all appearance and layout"
+    - criterion: "Jobs pages use config for all appearance and layout"
+    - criterion: "Status badge colors defined in config"
+    - criterion: "Single source of truth: config files"
+  validation_criteria:
+    - method: "Config testing"
+      coverage: "Changing config changes appearance without code changes"
+    - method: "Code inspection"
+      coverage: "No hard-coded user-facing text or layout classes in TSX"
+  traceability:
+    architecture:
+      - ARCH-CONFIG_DRIVEN_UI
+      - ARCH-CONFIG_DRIVEN_APPEARANCE
+    implementation:
+      - IMPL-CONFIG_LOADER
+      - IMPL-CONFIG_DRIVEN_APPEARANCE
+    tests:
+      - Config-driven appearance tests
+    code_annotations:
+      - REQ-CONFIG_DRIVEN_APPEARANCE
+  related_requirements:
+    depends_on:
+      - REQ-CONFIG_DRIVEN_UI
+    related_to: []
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+REQ-JOB_TRACKER_DATA:
+  name: Job Position Data Storage and Retrieval
+  category: Functional
+  priority: P0
+  status: "Implemented"
+  rationale:
+    why: "Users need to track job opportunities throughout their job search process with persistent storage"
+    problems_solved:
+      - "No way to track job search progress"
+      - "Data loss across sessions"
+      - "Complex database setup"
+    benefits:
+      - "Persistent job tracking"
+      - "Human-readable YAML storage"
+      - "Version-controllable data"
+      - "No database required"
+  satisfaction_criteria:
+    - criterion: "Job position data stored in YAML format"
+    - criterion: "Each position has unique ID and required fields"
+    - criterion: "Data persists across application restarts"
+    - criterion: "YAML format is valid and parseable"
+  validation_criteria:
+    - method: "Data persistence testing"
+      coverage: "Data persists after server restart"
+    - method: "YAML validation"
+      coverage: "Config loader successfully reads and parses YAML"
+  traceability:
+    architecture:
+      - ARCH-JOB_TRACKER_STORAGE
+    implementation:
+      - IMPL-JOBS_DATA
+    tests:
+      - Job data persistence tests
+    code_annotations:
+      - REQ-JOB_TRACKER_DATA
+  related_requirements:
+    depends_on:
+      - REQ-CONFIG_DRIVEN_UI
+    related_to:
+      - REQ-JOB_TRACKER_LIST
+      - REQ-JOB_TRACKER_EDIT
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+REQ-JOB_TRACKER_LIST:
+  name: View All Job Positions in Table
+  category: Functional
+  priority: P0
+  status: "Implemented"
+  rationale:
+    why: "Users need to see an overview of all job positions at a glance to track their job search progress"
+    problems_solved:
+      - "No overview of job search pipeline"
+      - "Difficulty tracking multiple positions"
+    benefits:
+      - "Clear overview of all positions"
+      - "Easy identification of opportunities"
+      - "Pipeline management"
+  satisfaction_criteria:
+    - criterion: "Page accessible at /jobs route"
+    - criterion: "Table displays key information (title, date, status, actions)"
+    - criterion: "Application status is color-coded"
+    - criterion: "Table is responsive"
+    - criterion: "Empty state message when no positions exist"
+  validation_criteria:
+    - method: "Page testing"
+      coverage: "Page renders without errors"
+    - method: "Data display testing"
+      coverage: "All position data displays correctly"
+    - method: "Responsive testing"
+      coverage: "Table is usable on mobile viewport"
+  traceability:
+    architecture:
+      - ARCH-JOB_TRACKER_UI
+    implementation:
+      - IMPL-JOBS_LIST_PAGE
+    tests:
+      - Jobs list page tests
+    code_annotations:
+      - REQ-JOB_TRACKER_LIST
+  related_requirements:
+    depends_on:
+      - REQ-JOB_TRACKER_DATA
+    related_to:
+      - REQ-JOB_TRACKER_EDIT
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+REQ-JOB_TRACKER_EDIT:
+  name: Edit Job Position Records
+  category: Functional
+  priority: P0
+  status: "Implemented"
+  rationale:
+    why: "Users need to capture detailed information about job opportunities and update records as they progress"
+    problems_solved:
+      - "No way to add new positions"
+      - "Cannot update existing records"
+      - "Missing detailed information capture"
+    benefits:
+      - "Complete information capture"
+      - "Progress tracking through updates"
+      - "Detailed record management"
+  satisfaction_criteria:
+    - criterion: "Page accessible at /jobs/edit/[id] route"
+    - criterion: "Form includes all required fields"
+    - criterion: "Form validates required fields"
+    - criterion: "Form submits data via API route"
+    - criterion: "Support for creating new and editing existing positions"
+  validation_criteria:
+    - method: "Form testing"
+      coverage: "Form renders with correct fields and validation"
+    - method: "Data persistence testing"
+      coverage: "Successful submission saves data to YAML file"
+  traceability:
+    architecture:
+      - ARCH-JOB_TRACKER_UI
+    implementation:
+      - IMPL-JOBS_EDIT_PAGE
+    tests:
+      - Jobs edit page tests
+    code_annotations:
+      - REQ-JOB_TRACKER_EDIT
+  related_requirements:
+    depends_on:
+      - REQ-JOB_TRACKER_DATA
+    related_to:
+      - REQ-JOB_TRACKER_LIST
+      - REQ-JOB_TRACKER_CRUD
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+REQ-JOB_TRACKER_STATUS:
+  name: Track Application Status with Dates and Notes
+  category: Functional
+  priority: P1
+  status: "Implemented"
+  rationale:
+    why: "Tracking application status helps users manage their job search pipeline and follow up at appropriate times"
+    problems_solved:
+      - "Lost track of application progress"
+      - "Missed follow-up opportunities"
+      - "Lack of search activity records"
+    benefits:
+      - "Clear pipeline management"
+      - "Timely follow-ups"
+      - "Complete activity records"
+  satisfaction_criteria:
+    - criterion: "Five status types available (none, interested, to apply, applied, rejected)"
+    - criterion: "Status includes optional date and notes fields"
+    - criterion: "Status displays with color coding in list view"
+    - criterion: "Status can be updated via edit form"
+  validation_criteria:
+    - method: "Status tracking testing"
+      coverage: "Status changes persist to YAML storage"
+    - method: "Display testing"
+      coverage: "Status colors display correctly in list view"
+  traceability:
+    architecture:
+      - ARCH-JOB_TRACKER_STORAGE
+    implementation:
+      - IMPL-JOBS_DATA
+    tests:
+      - Status tracking tests
+    code_annotations:
+      - REQ-JOB_TRACKER_STATUS
+  related_requirements:
+    depends_on:
+      - REQ-JOB_TRACKER_DATA
+    related_to:
+      - REQ-JOB_TRACKER_EDIT
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+REQ-JOB_TRACKER_CRUD:
+  name: Create, Update, and Delete Job Positions
+  category: Functional
+  priority: P0
+  status: "Implemented"
+  rationale:
+    why: "Users need full control over their job position data to manage their job search effectively"
+    problems_solved:
+      - "Cannot add new positions"
+      - "Cannot update existing positions"
+      - "Cannot remove irrelevant positions"
+    benefits:
+      - "Full data control"
+      - "Effective job search management"
+      - "Data integrity"
+  satisfaction_criteria:
+    - criterion: "API endpoint accepts POST requests to create/update positions"
+    - criterion: "API endpoint accepts DELETE requests to remove positions"
+    - criterion: "Create operation generates unique ID"
+    - criterion: "All operations write to YAML file and maintain file validity"
+  validation_criteria:
+    - method: "API testing"
+      coverage: "POST successfully creates and updates, DELETE successfully removes"
+    - method: "Data integrity testing"
+      coverage: "YAML file remains valid after all operations"
+  traceability:
+    architecture:
+      - ARCH-JOB_TRACKER_API
+    implementation:
+      - IMPL-JOBS_API
+    tests:
+      - CRUD API tests
+    code_annotations:
+      - REQ-JOB_TRACKER_CRUD
+  related_requirements:
+    depends_on:
+      - REQ-JOB_TRACKER_DATA
+    related_to:
+      - REQ-JOB_TRACKER_EDIT
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+REQ-JOB_TRACKER_CALENDAR:
+  name: Calendar Month View for Positions and Applications
+  category: Functional
+  priority: P1
+  status: "Implemented"
+  rationale:
+    why: "A calendar view provides users with a visual timeline of their job search activity for pattern identification and follow-up planning"
+    problems_solved:
+      - "No visual timeline of activity"
+      - "Difficulty seeing temporal patterns"
+      - "Hard to plan follow-ups"
+    benefits:
+      - "Visual timeline of activity"
+      - "Pattern identification"
+      - "Month-at-a-glance view"
+      - "Complements table view"
+  satisfaction_criteria:
+    - criterion: "Page accessible at /jobs/calendar route"
+    - criterion: "Calendar displays one month at a time in 7-column grid"
+    - criterion: "Positions appear on posting date, applications on application date"
+    - criterion: "Month navigation controls work (Previous, Next, Today)"
+    - criterion: "Clicking items displays details in panel above grid"
+    - criterion: "All UI elements are config-driven"
+  validation_criteria:
+    - method: "Page testing"
+      coverage: "Page renders without errors at /jobs/calendar"
+    - method: "Calendar testing"
+      coverage: "Items appear on correct dates, navigation updates month"
+    - method: "Config testing"
+      coverage: "All text comes from config (no hard-coded labels)"
+  traceability:
+    architecture:
+      - ARCH-CALENDAR_VIEW
+    implementation:
+      - IMPL-CALENDAR_PAGE
+      - IMPL-CALENDAR_GRID
+    tests:
+      - Calendar view tests
+    code_annotations:
+      - REQ-JOB_TRACKER_CALENDAR
+  related_requirements:
+    depends_on:
+      - REQ-JOB_TRACKER_DATA
+      - REQ-CONFIG_DRIVEN_APPEARANCE
+    related_to:
+      - REQ-JOB_TRACKER_LIST
+    supersedes: []
+  detail_file: ""
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+# ---
+# Template Record - Copy this block to create new requirements
+# ---
+#
+# REQ-IDENTIFIER:
+#   name: Requirement Name
+#   category: Functional
+#   priority: P1
+#   status: "Planned"
+#   rationale:
+#     why: "Primary reason for this requirement"
+#     problems_solved:
+#       - "Problem 1"
+#       - "Problem 2"
+#     benefits:
+#       - "Benefit 1"
+#       - "Benefit 2"
+#   satisfaction_criteria:
+#     - criterion: "Criterion description 1"
+#       metric: "Measurable target (optional)"
+#     - criterion: "Criterion description 2"
+#   validation_criteria:
+#     - method: "Unit tests"
+#       coverage: "All core functions"
+#     - method: "Integration tests"
+#       coverage: "End-to-end flows"
+#     - method: "Manual testing"
+#       coverage: "QA checklist"
+#   traceability:
+#     architecture:
+#       - ARCH-IDENTIFIER
+#     implementation:
+#       - IMPL-IDENTIFIER
+#     tests:
+#       - testFeatureName_REQ_IDENTIFIER
+#     code_annotations:
+#       - REQ-IDENTIFIER
+#   related_requirements:
+#     depends_on: []
+#     related_to: []
+#     supersedes: []
+#   detail_file: requirements/REQ-IDENTIFIER.md
+#   metadata:
+#     created:
+#       date: YYYY-MM-DD
+#       author: "agent/contributor"
+#     last_updated:
+#       date: YYYY-MM-DD
+#       author: "agent/contributor"
+#       reason: "Initial creation"
+#     last_validated:
+#       date: YYYY-MM-DD
+#       validator: "agent/contributor"
+#       result: "pass"

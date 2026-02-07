@@ -1,0 +1,1416 @@
+# Architecture Decisions Index (YAML Database)
+#
+# This YAML file serves as the central index/registry for all architecture decisions in the project.
+# Each top-level key is a semantic token (e.g., ARCH-STDD_STRUCTURE).
+#
+# To append a new architecture decision:
+# 1. Copy the template block at the bottom of this file (ARCH-IDENTIFIER)
+# 2. Paste it at the end with a blank line before it
+# 3. Replace ARCH-IDENTIFIER with your new token
+# 4. Fill in all fields
+# 5. Update the detail_file path to match your new .md file in architecture-decisions/ directory
+#
+# Field descriptions:
+#   name: Short descriptive name of the decision
+#   status: Active | Deprecated | Template | Superseded
+#   cross_references: List of REQ-* tokens this decision fulfills
+#   rationale: Structured explanation with why, problems_solved, benefits
+#   alternatives_considered: List of alternative items with pros, cons, rejected_reason
+#   implementation_approach: Structured approach with summary and details
+#   traceability: Structured links to requirements, implementation, tests, code_annotations
+#   related_decisions: Lists of depends_on, informs, see_also (YAML lists or [])
+#   detail_file: Path to the detailed .md file in architecture-decisions/ directory
+#   metadata: Structured metadata with created, last_updated, last_validated info
+
+---
+
+ARCH-STDD_STRUCTURE:
+  name: STDD Project Structure
+  status: Active
+  cross_references:
+    - REQ-STDD_SETUP
+  rationale:
+    why: "Keeps documentation close to code but organized in a dedicated namespace"
+    problems_solved:
+      - "Documentation scattered across project"
+      - "Difficulty finding all context in one place"
+      - "Meta-documentation mixed with source code"
+    benefits:
+      - "Clear separation of concerns"
+      - "Standard project layout for AI agents"
+      - "Easy discovery of all STDD documentation"
+      - "Testable and maintainable structure"
+  alternatives_considered:
+    - name: "Root-level files"
+      pros:
+        - "Immediately visible in repository root"
+      cons:
+        - "Clutters the root directory"
+        - "No clear organization"
+      rejected_reason: "Creates too much clutter at project root"
+    - name: ".github or .docs folder"
+      pros:
+        - "Common convention for documentation"
+      cons:
+        - "Too generic for methodology-specific files"
+        - ".github is typically for GitHub workflows"
+      rejected_reason: "stdd/ is more specific to the methodology"
+  implementation_approach:
+    summary: "Create dedicated stdd/ directory with YAML indexes and detail subdirectories"
+    details:
+      - "Create stdd/ directory at project root"
+      - "Populate with YAML index files: requirements.yaml, architecture-decisions.yaml, implementation-decisions.yaml"
+      - "Create detail subdirectories: requirements/, architecture-decisions/, implementation-decisions/"
+      - "Add guide files: semantic-tokens.md, tasks.md, processes.md"
+  traceability:
+    requirements:
+      - REQ-STDD_SETUP
+    implementation:
+      - IMPL-STDD_FILES
+    tests:
+      - TestSTDDSetup_REQ_STDD_SETUP
+    code_annotations:
+      - IMPL-STDD_FILES
+      - ARCH-STDD_STRUCTURE
+      - REQ-STDD_SETUP
+  related_decisions:
+    depends_on:
+      - REQ-STDD_SETUP
+    informs:
+      - IMPL-STDD_FILES
+    see_also: []
+  detail_file: architecture-decisions/ARCH-STDD_STRUCTURE.md
+  metadata:
+    created:
+      date: 2025-12-18
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2025-12-18
+      validator: "AI Agent"
+      result: "pass"
+
+ARCH-MODULE_VALIDATION:
+  name: Module Validation Strategy
+  status: Active
+  cross_references:
+    - REQ-MODULE_VALIDATION
+  rationale:
+    why: "To eliminate bugs related to code complexity by ensuring each module works correctly in isolation"
+    problems_solved:
+      - "Integration complexity causing difficult-to-debug issues"
+      - "Bugs discovered too late in development cycle"
+      - "Module contracts not properly validated"
+    benefits:
+      - "Bugs caught early before integration"
+      - "Reduced integration complexity"
+      - "Easier debugging by isolating issues"
+      - "Enables parallel module development"
+      - "Clear module boundaries and contracts"
+  alternatives_considered:
+    - name: "Big Bang Integration"
+      pros:
+        - "Faster initial integration"
+      cons:
+        - "Too complex to debug"
+        - "Bugs compound during integration"
+        - "Difficult to isolate issues"
+      rejected_reason: "Makes debugging too difficult and bugs compound"
+    - name: "Minimal Validation"
+      pros:
+        - "Faster development cycle"
+      cons:
+        - "Insufficient to catch complexity bugs"
+        - "Doesn't validate contracts properly"
+      rejected_reason: "Insufficient validation leads to integration issues"
+    - name: "Post-Integration Validation Only"
+      pros:
+        - "All validation done at once"
+      cons:
+        - "Doesn't catch module-level bugs early"
+        - "Increases debugging complexity"
+      rejected_reason: "Bugs discovered too late, making fixes expensive"
+  implementation_approach:
+    summary: "Independent module validation before integration with comprehensive testing strategy"
+    details:
+      - "Identify modules and document boundaries before development"
+      - "Define module interfaces and contracts explicitly"
+      - "Specify validation criteria for each module"
+      - "Unit test modules with mocked dependencies"
+      - "Integration test with test doubles (mocks, stubs, fakes)"
+      - "Validate contracts (input/output validation)"
+      - "Test edge cases and error handling"
+      - "Document validation results before integration"
+      - "Only integrate after validation passes"
+  traceability:
+    requirements:
+      - REQ-MODULE_VALIDATION
+    implementation:
+      - IMPL-MODULE_VALIDATION
+    tests:
+      - testModuleName_IndependentValidation_REQ_MODULE_VALIDATION
+    code_annotations:
+      - IMPL-MODULE_VALIDATION
+      - REQ-MODULE_VALIDATION
+  related_decisions:
+    depends_on:
+      - REQ-MODULE_VALIDATION
+    informs:
+      - IMPL-MODULE_VALIDATION
+    see_also: []
+  detail_file: architecture-decisions/ARCH-MODULE_VALIDATION.md
+  metadata:
+    created:
+      date: 2025-12-18
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2025-12-18
+      validator: "AI Agent"
+      result: "pass"
+
+ARCH-NEXTJS_FRAMEWORK:
+  name: Next.js 16.1 Framework Choice
+  status: Active
+  cross_references:
+    - REQ-APP_STRUCTURE
+    - REQ-BUILD_SYSTEM
+  rationale:
+    why: "Next.js provides best-in-class React framework with server components, optimized builds, and excellent developer experience"
+    problems_solved:
+      - "Complex React setup and configuration"
+      - "Manual routing implementation"
+      - "Server-side rendering complexity"
+    benefits:
+      - "File-based routing system"
+      - "Server components by default"
+      - "Excellent performance optimizations"
+      - "Strong TypeScript support"
+  alternatives_considered:
+    - name: "Create React App"
+      pros:
+        - "Simple setup"
+      cons:
+        - "No SSR support"
+        - "Limited optimization"
+      rejected_reason: "Lacks server-side rendering and modern features"
+    - name: "Remix"
+      pros:
+        - "Good SSR support"
+      cons:
+        - "Smaller ecosystem"
+      rejected_reason: "Next.js has larger ecosystem and better tooling"
+  implementation_approach:
+    summary: "Use Next.js 16.1+ with App Router pattern"
+    details:
+      - "Install Next.js 16.1+ with React 19"
+      - "Use App Router (src/app/ directory)"
+      - "Enable server components by default"
+      - "Configure TypeScript strict mode"
+  traceability:
+    requirements:
+      - REQ-APP_STRUCTURE
+      - REQ-BUILD_SYSTEM
+    implementation:
+      - IMPL-ROOT_LAYOUT
+      - IMPL-HOME_PAGE
+      - IMPL-BUILD_SCRIPTS
+    tests:
+      - Integration tests
+    code_annotations:
+      - REQ-APP_STRUCTURE
+  related_decisions:
+    depends_on:
+      - REQ-APP_STRUCTURE
+    informs:
+      - ARCH-APP_ROUTER
+      - ARCH-REACT_VERSION
+    see_also: []
+  detail_file: architecture-decisions/ARCH-NEXTJS_FRAMEWORK.md
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+ARCH-REACT_VERSION:
+  name: React 19.2 with Server Components
+  status: Active
+  cross_references:
+    - REQ-APP_STRUCTURE
+  rationale:
+    why: "React 19 provides server components, improved performance, and modern features"
+    problems_solved:
+      - "Client-side rendering overhead"
+      - "Waterfall data fetching"
+    benefits:
+      - "Server components reduce bundle size"
+      - "Better performance"
+      - "Modern React features"
+  alternatives_considered: []
+  implementation_approach:
+    summary: "Use React 19.2 with Next.js App Router"
+    details:
+      - "Install React 19.2"
+      - "Use server components by default"
+      - "Client components only when needed"
+  traceability:
+    requirements:
+      - REQ-APP_STRUCTURE
+    implementation:
+      - IMPL-HOME_PAGE
+    tests:
+      - Component tests
+    code_annotations:
+      - REQ-APP_STRUCTURE
+  related_decisions:
+    depends_on:
+      - ARCH-NEXTJS_FRAMEWORK
+    informs:
+      - ARCH-SERVER_COMPONENTS
+    see_also: []
+  detail_file: architecture-decisions/ARCH-REACT_VERSION.md
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+ARCH-TYPESCRIPT_LANG:
+  name: TypeScript for Type Safety
+  status: Active
+  cross_references:
+    - REQ-TYPESCRIPT
+  rationale:
+    why: "TypeScript provides compile-time type checking and improved developer experience"
+    problems_solved:
+      - "Runtime type errors"
+      - "Poor IDE support"
+      - "Lack of type safety"
+    benefits:
+      - "Compile-time error detection"
+      - "Better IDE intelligence"
+      - "Self-documenting code"
+      - "Easier refactoring"
+  alternatives_considered:
+    - name: "JavaScript with JSDoc"
+      pros:
+        - "No compilation step"
+      cons:
+        - "Weaker type checking"
+      rejected_reason: "TypeScript provides stronger guarantees"
+  implementation_approach:
+    summary: "Use TypeScript with strict mode enabled"
+    details:
+      - "Enable strict mode in tsconfig.json"
+      - "Type all components and functions"
+      - "Use Next.js types"
+  traceability:
+    requirements:
+      - REQ-TYPESCRIPT
+    implementation:
+      - All TypeScript files
+    tests:
+      - TypeScript compilation
+    code_annotations:
+      - REQ-TYPESCRIPT
+  related_decisions:
+    depends_on:
+      - REQ-TYPESCRIPT
+    informs: []
+    see_also: []
+  detail_file: architecture-decisions/ARCH-TYPESCRIPT_LANG.md
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+ARCH-TAILWIND_V4:
+  name: Tailwind CSS v4 Styling System
+  status: Active
+  cross_references:
+    - REQ-TAILWIND_STYLING
+  rationale:
+    why: "Tailwind v4 provides utility-first CSS with excellent performance and developer experience"
+    problems_solved:
+      - "CSS naming complexity"
+      - "Large CSS bundles"
+      - "Inconsistent styling"
+    benefits:
+      - "Rapid development"
+      - "Small CSS bundles"
+      - "Consistent design tokens"
+      - "Excellent purging"
+  alternatives_considered:
+    - name: "CSS Modules"
+      pros:
+        - "Component-scoped styles"
+      cons:
+        - "More boilerplate"
+      rejected_reason: "Tailwind is more efficient for utility-first approach"
+  implementation_approach:
+    summary: "Use Tailwind CSS v4 with PostCSS"
+    details:
+      - "Install Tailwind CSS v4"
+      - "Configure PostCSS"
+      - "Use @theme directive for custom tokens"
+      - "Enable purging for production"
+  traceability:
+    requirements:
+      - REQ-TAILWIND_STYLING
+    implementation:
+      - IMPL-FLEX_LAYOUT
+    tests:
+      - Styling tests
+    code_annotations:
+      - REQ-TAILWIND_STYLING
+  related_decisions:
+    depends_on:
+      - REQ-TAILWIND_STYLING
+    informs:
+      - ARCH-RESPONSIVE_FIRST
+    see_also: []
+  detail_file: architecture-decisions/ARCH-TAILWIND_V4.md
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+ARCH-APP_ROUTER:
+  name: Next.js App Router Pattern
+  status: Active
+  cross_references:
+    - REQ-APP_STRUCTURE
+  rationale:
+    why: "App Router provides modern routing with server components and improved data fetching"
+    problems_solved:
+      - "Complex Pages Router patterns"
+      - "Client-side routing overhead"
+    benefits:
+      - "File-based routing"
+      - "Server components by default"
+      - "Improved data fetching"
+  alternatives_considered:
+    - name: "Pages Router"
+      pros:
+        - "More stable"
+      cons:
+        - "Older pattern"
+      rejected_reason: "App Router is the future of Next.js"
+  implementation_approach:
+    summary: "Use App Router with src/app/ directory"
+    details:
+      - "Create src/app/ directory"
+      - "Use layout.tsx for layouts"
+      - "Use page.tsx for routes"
+  traceability:
+    requirements:
+      - REQ-APP_STRUCTURE
+    implementation:
+      - IMPL-ROOT_LAYOUT
+      - IMPL-HOME_PAGE
+    tests:
+      - Route tests
+    code_annotations:
+      - REQ-APP_STRUCTURE
+  related_decisions:
+    depends_on:
+      - ARCH-NEXTJS_FRAMEWORK
+    informs:
+      - ARCH-SERVER_COMPONENTS
+    see_also: []
+  detail_file: architecture-decisions/ARCH-APP_ROUTER.md
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+ARCH-LAYOUT_PATTERN:
+  name: Root Layout Pattern
+  status: Active
+  cross_references:
+    - REQ-ROOT_LAYOUT
+  rationale:
+    why: "Root layouts enable shared UI, consistent styling, and centralized metadata"
+    problems_solved:
+      - "Code duplication across pages"
+      - "Inconsistent styling"
+    benefits:
+      - "Shared UI across routes"
+      - "Centralized font loading"
+      - "Consistent metadata"
+  alternatives_considered: []
+  implementation_approach:
+    summary: "Create root layout at src/app/layout.tsx"
+    details:
+      - "Export default RootLayout function"
+      - "Include html and body tags"
+      - "Apply font variables"
+      - "Export metadata"
+  traceability:
+    requirements:
+      - REQ-ROOT_LAYOUT
+    implementation:
+      - IMPL-ROOT_LAYOUT
+    tests:
+      - Layout tests
+    code_annotations:
+      - REQ-ROOT_LAYOUT
+  related_decisions:
+    depends_on:
+      - ARCH-APP_ROUTER
+    informs:
+      - IMPL-ROOT_LAYOUT
+    see_also: []
+  detail_file: architecture-decisions/ARCH-LAYOUT_PATTERN.md
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+ARCH-SERVER_COMPONENTS:
+  name: Server Components as Default
+  status: Active
+  cross_references:
+    - REQ-APP_STRUCTURE
+  rationale:
+    why: "Server components reduce bundle size and improve performance"
+    problems_solved:
+      - "Large client bundles"
+      - "Slow initial page loads"
+    benefits:
+      - "Smaller bundles"
+      - "Faster page loads"
+      - "Better SEO"
+  alternatives_considered: []
+  implementation_approach:
+    summary: "Use server components by default, client components only when needed"
+    details:
+      - "All components are server components by default"
+      - "Add 'use client' directive only for interactivity"
+  traceability:
+    requirements:
+      - REQ-APP_STRUCTURE
+    implementation:
+      - IMPL-HOME_PAGE
+    tests:
+      - Component tests
+    code_annotations:
+      - REQ-APP_STRUCTURE
+  related_decisions:
+    depends_on:
+      - ARCH-REACT_VERSION
+    informs: []
+    see_also: []
+  detail_file: architecture-decisions/ARCH-SERVER_COMPONENTS.md
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+ARCH-CSS_VARIABLES:
+  name: CSS Variables for Dark Mode Theming
+  status: Active
+  cross_references:
+    - REQ-DARK_MODE
+    - REQ-GLOBAL_STYLES
+  rationale:
+    why: "CSS variables enable dynamic theming and runtime color changes"
+    problems_solved:
+      - "Static color definitions"
+      - "Difficult theme switching"
+    benefits:
+      - "Runtime theme changes"
+      - "Consistent color usage"
+      - "Simple dark mode implementation"
+  alternatives_considered: []
+  implementation_approach:
+    summary: "Define CSS variables in globals.css with prefers-color-scheme"
+    details:
+      - "Define --background and --foreground variables"
+      - "Use prefers-color-scheme media query"
+      - "Apply variables to body element"
+  traceability:
+    requirements:
+      - REQ-DARK_MODE
+      - REQ-GLOBAL_STYLES
+    implementation:
+      - IMPL-DARK_MODE
+    tests:
+      - Dark mode tests
+    code_annotations:
+      - REQ-DARK_MODE
+  related_decisions:
+    depends_on:
+      - REQ-DARK_MODE
+    informs:
+      - IMPL-DARK_MODE
+    see_also: []
+  detail_file: architecture-decisions/ARCH-CSS_VARIABLES.md
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+ARCH-RESPONSIVE_FIRST:
+  name: Mobile-First Responsive Design
+  status: Active
+  cross_references:
+    - REQ-RESPONSIVE_DESIGN
+  rationale:
+    why: "Mobile-first ensures good performance on smaller devices with progressive enhancement"
+    problems_solved:
+      - "Poor mobile experience"
+      - "Desktop-first performance issues"
+    benefits:
+      - "Better mobile performance"
+      - "Progressive enhancement"
+      - "Meets user expectations"
+  alternatives_considered: []
+  implementation_approach:
+    summary: "Use Tailwind breakpoints with mobile-first approach"
+    details:
+      - "Default styles for mobile"
+      - "Use sm:, md:, lg: for larger screens"
+      - "Test at 320px, 768px, 1024px"
+  traceability:
+    requirements:
+      - REQ-RESPONSIVE_DESIGN
+    implementation:
+      - IMPL-RESPONSIVE_CLASSES
+    tests:
+      - Responsive tests
+    code_annotations:
+      - REQ-RESPONSIVE_DESIGN
+  related_decisions:
+    depends_on:
+      - ARCH-TAILWIND_V4
+    informs:
+      - IMPL-RESPONSIVE_CLASSES
+    see_also: []
+  detail_file: architecture-decisions/ARCH-RESPONSIVE_FIRST.md
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+ARCH-GOOGLE_FONTS:
+  name: Google Fonts Optimization with next/font
+  status: Active
+  cross_references:
+    - REQ-FONT_SYSTEM
+  rationale:
+    why: "next/font provides automatic font optimization without layout shift"
+    problems_solved:
+      - "Font loading causing layout shift"
+      - "Large font files"
+    benefits:
+      - "No layout shift"
+      - "Automatic subsetting"
+      - "Preloading"
+  alternatives_considered: []
+  implementation_approach:
+    summary: "Use next/font/google for Geist fonts"
+    details:
+      - "Import fonts with next/font/google"
+      - "Enable subsetting (latin)"
+      - "Create CSS variables"
+  traceability:
+    requirements:
+      - REQ-FONT_SYSTEM
+    implementation:
+      - IMPL-FONT_LOADING
+    tests:
+      - Font loading tests
+    code_annotations:
+      - REQ-FONT_SYSTEM
+  related_decisions:
+    depends_on:
+      - REQ-FONT_SYSTEM
+    informs:
+      - IMPL-FONT_LOADING
+    see_also: []
+  detail_file: architecture-decisions/ARCH-GOOGLE_FONTS.md
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+ARCH-CSS_VARIABLES_FONTS:
+  name: CSS Variables for Font Assignment
+  status: Active
+  cross_references:
+    - REQ-FONT_SYSTEM
+  rationale:
+    why: "CSS variables enable flexible font application throughout the application"
+    problems_solved:
+      - "Direct font name references"
+      - "Difficult font changes"
+    benefits:
+      - "Flexible font application"
+      - "Easy font swapping"
+  alternatives_considered: []
+  implementation_approach:
+    summary: "Create CSS variables for font families"
+    details:
+      - "Create --font-geist-sans variable"
+      - "Create --font-geist-mono variable"
+      - "Apply to body element"
+  traceability:
+    requirements:
+      - REQ-FONT_SYSTEM
+    implementation:
+      - IMPL-FONT_LOADING
+    tests:
+      - Font tests
+    code_annotations:
+      - REQ-FONT_SYSTEM
+  related_decisions:
+    depends_on:
+      - ARCH-GOOGLE_FONTS
+    informs:
+      - IMPL-FONT_LOADING
+    see_also: []
+  detail_file: architecture-decisions/ARCH-CSS_VARIABLES_FONTS.md
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+ARCH-TEST_FRAMEWORK:
+  name: Vitest Testing Framework
+  status: Active
+  cross_references:
+    - REQ-BUILD_SYSTEM
+  rationale:
+    why: "Vitest provides fast test execution with excellent developer experience"
+    problems_solved:
+      - "Slow test execution"
+      - "Complex test setup"
+    benefits:
+      - "Fast test runs"
+      - "Great developer experience"
+      - "Vite integration"
+  alternatives_considered:
+    - name: "Jest"
+      pros:
+        - "More mature"
+      cons:
+        - "Slower"
+      rejected_reason: "Vitest is faster and has better DX"
+  implementation_approach:
+    summary: "Use Vitest with React Testing Library"
+    details:
+      - "Install Vitest and @testing-library/react"
+      - "Configure vitest.config.ts"
+      - "Set up test utilities"
+      - "Enable coverage with 80% threshold"
+  traceability:
+    requirements:
+      - REQ-BUILD_SYSTEM
+    implementation:
+      - IMPL-TEST_CONFIG
+      - IMPL-TEST_SETUP
+    tests:
+      - All test files
+    code_annotations:
+      - REQ-BUILD_SYSTEM
+  related_decisions:
+    depends_on:
+      - REQ-BUILD_SYSTEM
+    informs:
+      - IMPL-TEST_CONFIG
+    see_also: []
+  detail_file: architecture-decisions/ARCH-TEST_FRAMEWORK.md
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+ARCH-CONFIG_DRIVEN_UI:
+  name: YAML Configuration-Driven UI Architecture
+  status: Active
+  cross_references:
+    - REQ-CONFIG_DRIVEN_UI
+  rationale:
+    why: "Configuration-driven UI makes the project a highly-configurable template"
+    problems_solved:
+      - "Hard-coded UI values"
+      - "Difficult customization"
+      - "Code changes for appearance"
+    benefits:
+      - "Easy customization via YAML"
+      - "Separation of concerns"
+      - "Template reusability"
+      - "No code changes needed"
+  alternatives_considered:
+    - name: "Environment variables"
+      pros:
+        - "Simple"
+      cons:
+        - "Limited structure"
+      rejected_reason: "YAML provides better structure and readability"
+  implementation_approach:
+    summary: "Two YAML config files (site.yaml, theme.yaml) with typed loader and deep merge"
+    details:
+      - "Create config/site.yaml for content"
+      - "Create config/theme.yaml for styling"
+      - "Build typed config loader with deep merge"
+      - "Support partial configs with defaults"
+  traceability:
+    requirements:
+      - REQ-CONFIG_DRIVEN_UI
+    implementation:
+      - IMPL-YAML_CONFIG
+      - IMPL-CONFIG_LOADER
+    tests:
+      - Config loader tests
+    code_annotations:
+      - REQ-CONFIG_DRIVEN_UI
+  related_decisions:
+    depends_on:
+      - REQ-CONFIG_DRIVEN_UI
+    informs:
+      - ARCH-THEME_INJECTION
+      - ARCH-CLASS_OVERRIDES
+    see_also: []
+  detail_file: architecture-decisions/ARCH-CONFIG_DRIVEN_UI.md
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+ARCH-THEME_INJECTION:
+  name: CSS Variable Injection from Theme Config
+  status: Active
+  cross_references:
+    - REQ-CONFIG_DRIVEN_UI
+  rationale:
+    why: "Inject CSS variables from theme config to enable runtime theming"
+    problems_solved:
+      - "Static theme colors"
+      - "Hard-coded CSS variables"
+    benefits:
+      - "Runtime theming"
+      - "Config-driven colors"
+  alternatives_considered: []
+  implementation_approach:
+    summary: "Inject CSS variables in root layout from theme config"
+    details:
+      - "Read theme config in layout"
+      - "Generate CSS variable string"
+      - "Inject via style attribute"
+  traceability:
+    requirements:
+      - REQ-CONFIG_DRIVEN_UI
+    implementation:
+      - IMPL-THEME_INJECTION
+    tests:
+      - Theme injection tests
+    code_annotations:
+      - REQ-CONFIG_DRIVEN_UI
+  related_decisions:
+    depends_on:
+      - ARCH-CONFIG_DRIVEN_UI
+    informs:
+      - IMPL-THEME_INJECTION
+    see_also:
+      - ARCH-CSS_VARIABLES
+  detail_file: architecture-decisions/ARCH-THEME_INJECTION.md
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+ARCH-CLASS_OVERRIDES:
+  name: Tailwind Class Override System via Config
+  status: Active
+  cross_references:
+    - REQ-CONFIG_DRIVEN_UI
+  rationale:
+    why: "Allow per-element Tailwind class overrides through configuration"
+    problems_solved:
+      - "Hard-coded component classes"
+      - "Difficult styling customization"
+    benefits:
+      - "Flexible styling"
+      - "No code changes for styling"
+  alternatives_considered: []
+  implementation_approach:
+    summary: "Use tailwind-merge to apply config-driven class overrides"
+    details:
+      - "Define class overrides in theme config"
+      - "Use tailwind-merge to merge classes"
+      - "Apply to components"
+  traceability:
+    requirements:
+      - REQ-CONFIG_DRIVEN_UI
+    implementation:
+      - IMPL-CLASS_OVERRIDES
+    tests:
+      - Class override tests
+    code_annotations:
+      - REQ-CONFIG_DRIVEN_UI
+  related_decisions:
+    depends_on:
+      - ARCH-CONFIG_DRIVEN_UI
+    informs:
+      - IMPL-CLASS_OVERRIDES
+    see_also:
+      - ARCH-TAILWIND_V4
+  detail_file: architecture-decisions/ARCH-CLASS_OVERRIDES.md
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+ARCH-CONFIG_DRIVEN_APPEARANCE:
+  name: Config-Driven Appearance for All Pages
+  status: Active
+  cross_references:
+    - REQ-CONFIG_DRIVEN_APPEARANCE
+    - REQ-CONFIG_DRIVEN_UI
+  rationale:
+    why: "Extend config-driven architecture to all pages for complete template configurability"
+    problems_solved:
+      - "Incomplete template configurability"
+      - "Hard-coded classes in some components"
+    benefits:
+      - "Complete template configurability"
+      - "Consistent config-driven approach"
+  alternatives_considered: []
+  implementation_approach:
+    summary: "Extend config system to jobs pages with dedicated jobs config and theme overrides"
+    details:
+      - "Add jobs config loader"
+      - "Extend theme with jobs overrides"
+      - "Refactor jobs components to use config"
+  traceability:
+    requirements:
+      - REQ-CONFIG_DRIVEN_APPEARANCE
+    implementation:
+      - IMPL-CONFIG_DRIVEN_APPEARANCE
+    tests:
+      - Config-driven appearance tests
+    code_annotations:
+      - REQ-CONFIG_DRIVEN_APPEARANCE
+  related_decisions:
+    depends_on:
+      - ARCH-CONFIG_DRIVEN_UI
+    informs:
+      - IMPL-CONFIG_DRIVEN_APPEARANCE
+    see_also: []
+  detail_file: architecture-decisions/ARCH-CONFIG_DRIVEN_APPEARANCE.md
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+ARCH-JOB_TRACKER_STORAGE:
+  name: Job Tracker YAML Storage Architecture
+  status: Active
+  cross_references:
+    - REQ-JOB_TRACKER_DATA
+    - REQ-JOB_TRACKER_STATUS
+  rationale:
+    why: "YAML storage maintains consistency with config architecture and provides version-controllable data"
+    problems_solved:
+      - "Database complexity"
+      - "Data not version-controllable"
+    benefits:
+      - "Simple storage"
+      - "Human-readable"
+      - "Version-controllable"
+  alternatives_considered:
+    - name: "JSON files"
+      pros:
+        - "JavaScript native"
+      cons:
+        - "Less readable"
+      rejected_reason: "YAML is more readable and consistent with config files"
+  implementation_approach:
+    summary: "Store job data in data/jobs.yaml with config-driven schema"
+    details:
+      - "Define schema in config/jobs.yaml"
+      - "Store data in data/jobs.yaml"
+      - "Provide typed data layer"
+  traceability:
+    requirements:
+      - REQ-JOB_TRACKER_DATA
+    implementation:
+      - IMPL-JOBS_DATA
+    tests:
+      - Job data tests
+    code_annotations:
+      - REQ-JOB_TRACKER_DATA
+  related_decisions:
+    depends_on:
+      - REQ-JOB_TRACKER_DATA
+    informs:
+      - IMPL-JOBS_DATA
+    see_also:
+      - ARCH-CONFIG_DRIVEN_UI
+  detail_file: architecture-decisions/ARCH-JOB_TRACKER_STORAGE.md
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+ARCH-JOB_TRACKER_UI:
+  name: Job Tracker UI Page Architecture
+  status: Active
+  cross_references:
+    - REQ-JOB_TRACKER_LIST
+    - REQ-JOB_TRACKER_EDIT
+  rationale:
+    why: "Server components for list/edit pages with config-driven UI"
+    problems_solved:
+      - "Client-side data fetching"
+      - "Hard-coded UI"
+    benefits:
+      - "Server-side rendering"
+      - "Config-driven UI"
+  alternatives_considered: []
+  implementation_approach:
+    summary: "Server component pages with config-driven components"
+    details:
+      - "List page at /jobs"
+      - "Edit page at /jobs/[id]/edit"
+      - "Use config for all UI elements"
+  traceability:
+    requirements:
+      - REQ-JOB_TRACKER_LIST
+      - REQ-JOB_TRACKER_EDIT
+    implementation:
+      - IMPL-JOBS_LIST_PAGE
+      - IMPL-JOBS_EDIT_PAGE
+    tests:
+      - Page tests
+    code_annotations:
+      - REQ-JOB_TRACKER_LIST
+  related_decisions:
+    depends_on:
+      - ARCH-CONFIG_DRIVEN_APPEARANCE
+    informs:
+      - IMPL-JOBS_LIST_PAGE
+    see_also: []
+  detail_file: architecture-decisions/ARCH-JOB_TRACKER_UI.md
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+ARCH-JOB_TRACKER_API:
+  name: Job Tracker API Route Architecture
+  status: Active
+  cross_references:
+    - REQ-JOB_TRACKER_CRUD
+  rationale:
+    why: "API routes provide RESTful interface for CRUD operations"
+    problems_solved:
+      - "Direct file manipulation from client"
+      - "No centralized data operations"
+    benefits:
+      - "Centralized CRUD logic"
+      - "RESTful interface"
+      - "Data validation"
+  alternatives_considered: []
+  implementation_approach:
+    summary: "API routes at /api/jobs with GET/POST/PUT/DELETE support"
+    details:
+      - "Create API routes in app/api/jobs/"
+      - "Support CRUD operations"
+      - "Use jobs data layer"
+  traceability:
+    requirements:
+      - REQ-JOB_TRACKER_CRUD
+    implementation:
+      - IMPL-JOBS_API
+    tests:
+      - API tests
+    code_annotations:
+      - REQ-JOB_TRACKER_CRUD
+  related_decisions:
+    depends_on:
+      - ARCH-JOB_TRACKER_STORAGE
+    informs:
+      - IMPL-JOBS_API
+    see_also: []
+  detail_file: architecture-decisions/ARCH-JOB_TRACKER_API.md
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+ARCH-CALENDAR_VIEW:
+  name: Calendar View Architecture
+  status: Active
+  cross_references:
+    - REQ-JOB_TRACKER_CALENDAR
+  rationale:
+    why: "Provide visual timeline of job search activity with month-at-a-glance view"
+    problems_solved:
+      - "No visual timeline"
+      - "Difficulty seeing patterns"
+    benefits:
+      - "Visual timeline"
+      - "Pattern identification"
+      - "Complements table view"
+  alternatives_considered: []
+  implementation_approach:
+    summary: "Server component page with client component calendar grid"
+    details:
+      - "Page at /jobs/calendar"
+      - "Server component loads data"
+      - "Client component for interactivity"
+      - "Config-driven UI elements"
+  traceability:
+    requirements:
+      - REQ-JOB_TRACKER_CALENDAR
+    implementation:
+      - IMPL-CALENDAR_PAGE
+      - IMPL-CALENDAR_GRID
+    tests:
+      - Calendar tests
+    code_annotations:
+      - REQ-JOB_TRACKER_CALENDAR
+  related_decisions:
+    depends_on:
+      - ARCH-JOB_TRACKER_STORAGE
+      - ARCH-CONFIG_DRIVEN_APPEARANCE
+    informs:
+      - IMPL-CALENDAR_PAGE
+    see_also: []
+  detail_file: architecture-decisions/ARCH-CALENDAR_VIEW.md
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+ARCH-YAML_DATA_STORAGE:
+  name: YAML Data Storage Pattern
+  status: Active
+  cross_references:
+    - REQ-JOB_TRACKER_DATA
+  rationale:
+    why: "YAML provides human-readable, version-controllable data storage"
+    problems_solved:
+      - "Database complexity"
+      - "Binary data formats"
+    benefits:
+      - "Human-readable"
+      - "Version-controllable"
+      - "Simple to use"
+  alternatives_considered: []
+  implementation_approach:
+    summary: "Store data in YAML files in data/ directory"
+    details:
+      - "Create data/ directory"
+      - "Store records in YAML format"
+      - "Use YAML parser for read/write"
+  traceability:
+    requirements:
+      - REQ-JOB_TRACKER_DATA
+    implementation:
+      - IMPL-JOBS_DATA
+    tests:
+      - Data storage tests
+    code_annotations:
+      - REQ-JOB_TRACKER_DATA
+  related_decisions:
+    depends_on:
+      - REQ-JOB_TRACKER_DATA
+    informs:
+      - ARCH-JOB_TRACKER_STORAGE
+    see_also:
+      - ARCH-CONFIG_DRIVEN_UI
+  detail_file: architecture-decisions/ARCH-YAML_DATA_STORAGE.md
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+ARCH-CONFIG_DRIVEN_CRUD:
+  name: Config-Driven CRUD Architecture
+  status: Active
+  cross_references:
+    - REQ-JOB_TRACKER_DATA
+  rationale:
+    why: "Extends config-driven architecture to CRUD features with schema-driven forms and tables"
+    problems_solved:
+      - "Hard-coded form fields"
+      - "Hard-coded table columns"
+    benefits:
+      - "Schema-driven UI"
+      - "Flexible data models"
+  alternatives_considered: []
+  implementation_approach:
+    summary: "Define schema in config, generate forms and tables dynamically"
+    details:
+      - "Schema in config/jobs.yaml"
+      - "Dynamic form generation"
+      - "Dynamic table generation"
+  traceability:
+    requirements:
+      - REQ-JOB_TRACKER_DATA
+    implementation:
+      - IMPL-JOBS_DATA
+    tests:
+      - CRUD tests
+    code_annotations:
+      - REQ-JOB_TRACKER_DATA
+  related_decisions:
+    depends_on:
+      - ARCH-CONFIG_DRIVEN_UI
+    informs:
+      - IMPL-JOBS_DATA
+    see_also:
+      - ARCH-JOB_TRACKER_STORAGE
+  detail_file: architecture-decisions/ARCH-CONFIG_DRIVEN_CRUD.md
+  metadata:
+    created:
+      date: 2025-11-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-06
+      author: "AI Agent"
+      reason: "Migration to v1.5.0"
+    last_validated:
+      date: 2026-02-06
+      validator: "AI Agent"
+      result: "pass"
+
+# ---
+# Template Record - Copy this block to create new architecture decisions
+# ---
+#
+# ARCH-IDENTIFIER:
+#   name: Architecture Decision Title
+#   status: Active
+#   cross_references:
+#     - REQ-RELATED_REQUIREMENT
+#   rationale:
+#     why: "Primary reason for this decision"
+#     problems_solved:
+#       - "Problem 1"
+#       - "Problem 2"
+#     benefits:
+#       - "Benefit 1"
+#       - "Benefit 2"
+#   alternatives_considered:
+#     - name: "Alternative 1"
+#       pros:
+#         - "Pro 1"
+#       cons:
+#         - "Con 1"
+#       rejected_reason: "Why it was rejected"
+#     - name: "Alternative 2"
+#       pros:
+#         - "Pro 1"
+#       cons:
+#         - "Con 1"
+#       rejected_reason: "Why it was rejected"
+#   implementation_approach:
+#     summary: "High-level description of the approach"
+#     details:
+#       - "Key component 1"
+#       - "Key component 2"
+#       - "Integration point 1"
+#   traceability:
+#     requirements:
+#       - REQ-IDENTIFIER
+#     implementation:
+#       - IMPL-IDENTIFIER
+#     tests:
+#       - testFeatureName_ARCH_IDENTIFIER
+#     code_annotations:
+#       - ARCH-IDENTIFIER
+#   related_decisions:
+#     depends_on: []
+#     informs: []
+#     see_also: []
+#   detail_file: architecture-decisions/ARCH-IDENTIFIER.md
+#   metadata:
+#     created:
+#       date: YYYY-MM-DD
+#       author: "agent/contributor"
+#     last_updated:
+#       date: YYYY-MM-DD
+#       author: "agent/contributor"
+#       reason: "Initial creation"
+#     last_validated:
+#       date: YYYY-MM-DD
+#       validator: "agent/contributor"
+#       result: "pass"

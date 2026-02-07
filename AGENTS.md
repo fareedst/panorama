@@ -2,7 +2,7 @@
 
 **Scope**: Entire repository (root unless overridden by nested `AGENTS.md` files)
 
-**STDD Methodology Version**: 1.3.0
+**STDD Methodology Version**: 1.5.0
 
 This document centralizes every instruction AI coding assistants must follow while working in STDD repositories. It supersedes reminders in `.ai-agent-instructions`, `.cursorrules`, and README snippets. Treat it as the canonical reference when configuring prompts, IDE rules, or agent workflows.
 
@@ -30,8 +30,8 @@ This document centralizes every instruction AI coding assistants must follow whi
   - Update `semantic-tokens.md` immediately when introducing new tokens.
 - **Documentation-First Flow**
   - Expand requirements into pseudo-code and decisions before any code changes.
-  - Record architecture decisions (`architecture-decisions.md`) with `[ARCH-*]` tokens cross-referencing requirements.
-  - Record implementation decisions (`implementation-decisions.md`) with `[IMPL-*]` tokens cross-referencing `[ARCH-*]` and `[REQ-*]` tokens.
+  - Record architecture decisions in `architecture-decisions.yaml` (YAML database) with `[ARCH-*]` tokens cross-referencing requirements.
+  - Record implementation decisions in `implementation-decisions.yaml` (YAML database) with `[IMPL-*]` tokens cross-referencing `[ARCH-*]` and `[REQ-*]` tokens.
   - Never defer documentation; update as you think, design, and implement.
 - **Task Management**
   - Plan work in `tasks.md` before implementing.
@@ -91,9 +91,12 @@ This document centralizes every instruction AI coding assistants must follow whi
 | --- | --- |
 | `ai-principles.md` | Master principles and process guide (read fully every session) |
 | `semantic-tokens.md` | Canonical registry of all semantic tokens |
-| `requirements.md` | Requirements with `[REQ-*]` tokens (copy from template per project) |
-| `architecture-decisions.md` | `[ARCH-*]` records tied to requirements |
-| `implementation-decisions.md` | `[IMPL-*]` records tied to requirements + architecture |
+| `requirements.yaml` | YAML database of requirements with `[REQ-*]` tokens |
+| `requirements.md` | Guide for using requirements.yaml index |
+| `architecture-decisions.yaml` | YAML database of `[ARCH-*]` records tied to requirements |
+| `architecture-decisions.md` | Guide for using architecture-decisions.yaml index |
+| `implementation-decisions.yaml` | YAML database of `[IMPL-*]` records tied to requirements + architecture |
+| `implementation-decisions.md` | Guide for using implementation-decisions.yaml index |
 | `tasks.md` | Task tracking with priorities and semantic token references |
 | `.cursorrules` | IDE loader that points back to this document |
 | `.ai-agent-instructions` | Quick reminder pointing to this document |
@@ -107,7 +110,7 @@ You can apply these rules in several ways:
 1. **System Prompt Snippet**
    ```
    MANDATORY: Preface every response with "Observing AI principles!"
-   Then follow the AGENTS.md checklists (read ai-principles.md, review semantic tokens, tasks, architecture, implementation decisions, maintain semantic traceability, module validation, documentation, and priority order).
+   Then follow the AGENTS.md checklists (read ai-principles.md, review semantic tokens, tasks, architecture-decisions.yaml, implementation-decisions.yaml, requirements.yaml, maintain semantic traceability, module validation, documentation, and priority order).
    ```
 2. **IDE Integration (`.cursorrules`)** – keep a lightweight loader that links directly to `AGENTS.md` so Cursor automatically enforces the rules.
 3. **README / Onboarding** – reference `AGENTS.md` in project READMEs or onboarding docs to remind contributors where the canonical rules live.

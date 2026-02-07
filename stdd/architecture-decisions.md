@@ -1,10 +1,10 @@
 # Architecture Decisions
 
-**STDD Methodology Version**: 1.3.0
+**STDD Methodology Version**: 1.5.0
 
 ## Overview
 
-This document serves as the **index** for all architecture decisions in this project. Each architecture decision is stored in its own file within the `architecture-decisions/` directory for scalability.
+This document serves as the **guide** for all architecture decisions in this project. Each architecture decision is stored in its own file within the `architecture-decisions/` directory for scalability.
 
 All decisions are cross-referenced with requirements using `[REQ-*]` tokens for traceability.
 
@@ -12,7 +12,8 @@ All decisions are cross-referenced with requirements using `[REQ-*]` tokens for 
 
 ```
 stdd/
-├── architecture-decisions.md              # This index file
+├── architecture-decisions.md              # This guide file (you are here)
+├── architecture-decisions.yaml            # YAML index/database of all architecture decisions
 ├── architecture-decisions/                # Detail files directory
 │   ├── ARCH-STDD_STRUCTURE.md
 │   ├── ARCH-MODULE_VALIDATION.md
@@ -45,37 +46,120 @@ Token names use the same format in text and filenames:
 
 1. **Create a new detail file** in `architecture-decisions/` using the naming convention above
 2. **Use the detail file template** (see below)
-3. **Add an entry to the index table** below
+3. **Add an entry to the index YAML file** (`architecture-decisions.yaml`)
 4. **Update `semantic-tokens.md`** registry with the new `[ARCH-*]` token
 
 ---
 
 ## Architecture Decisions Index
 
-| Token | Title | Status | Cross-References | Detail File |
-|-------|-------|--------|------------------|-------------|
-| `[ARCH-STDD_STRUCTURE]` | STDD Project Structure | Active | [REQ-STDD_SETUP] | [Detail](architecture-decisions/ARCH-STDD_STRUCTURE.md) |
-| `[ARCH-MODULE_VALIDATION]` | Module Validation Strategy | Active | [REQ-MODULE_VALIDATION] | [Detail](architecture-decisions/ARCH-MODULE_VALIDATION.md) |
-| `[ARCH-NEXTJS_FRAMEWORK]` | Next.js Framework Selection | Active | [REQ-APP_STRUCTURE], [REQ-BUILD_SYSTEM] | [Detail](architecture-decisions/ARCH-NEXTJS_FRAMEWORK.md) |
-| `[ARCH-REACT_VERSION]` | React 19 with Server Components | Active | [REQ-APP_STRUCTURE] | [Detail](architecture-decisions/ARCH-REACT_VERSION.md) |
-| `[ARCH-TYPESCRIPT_LANG]` | TypeScript for Type Safety | Active | [REQ-TYPESCRIPT] | [Detail](architecture-decisions/ARCH-TYPESCRIPT_LANG.md) |
-| `[ARCH-TAILWIND_V4]` | Tailwind CSS v4 Styling System | Active | [REQ-TAILWIND_STYLING] | [Detail](architecture-decisions/ARCH-TAILWIND_V4.md) |
-| `[ARCH-APP_ROUTER]` | Next.js App Router Pattern | Active | [REQ-APP_STRUCTURE] | [Detail](architecture-decisions/ARCH-APP_ROUTER.md) |
-| `[ARCH-LAYOUT_PATTERN]` | Root Layout Pattern | Active | [REQ-ROOT_LAYOUT] | [Detail](architecture-decisions/ARCH-LAYOUT_PATTERN.md) |
-| `[ARCH-SERVER_COMPONENTS]` | Server Components as Default | Active | [REQ-APP_STRUCTURE] | [Detail](architecture-decisions/ARCH-SERVER_COMPONENTS.md) |
-| `[ARCH-CSS_VARIABLES]` | CSS Variables for Dark Mode | Active | [REQ-DARK_MODE], [REQ-GLOBAL_STYLES] | [Detail](architecture-decisions/ARCH-CSS_VARIABLES.md) |
-| `[ARCH-RESPONSIVE_FIRST]` | Mobile-First Responsive Design | Active | [REQ-RESPONSIVE_DESIGN] | [Detail](architecture-decisions/ARCH-RESPONSIVE_FIRST.md) |
-| `[ARCH-GOOGLE_FONTS]` | Google Fonts Optimization | Active | [REQ-FONT_SYSTEM] | [Detail](architecture-decisions/ARCH-GOOGLE_FONTS.md) |
-| `[ARCH-CSS_VARIABLES_FONTS]` | CSS Variables for Fonts | Active | [REQ-FONT_SYSTEM] | [Detail](architecture-decisions/ARCH-CSS_VARIABLES_FONTS.md) |
-| `[ARCH-TEST_FRAMEWORK]` | Vitest Testing Framework | Active | [REQ-BUILD_SYSTEM] | [Detail](architecture-decisions/ARCH-TEST_FRAMEWORK.md) |
-| `[ARCH-CONFIG_DRIVEN_UI]` | Configuration-Driven UI Architecture | Active | [REQ-CONFIG_DRIVEN_UI] | [Detail](architecture-decisions/ARCH-CONFIG_DRIVEN_UI.md) |
-| `[ARCH-THEME_INJECTION]` | Theme CSS Variable Injection | Active | [REQ-CONFIG_DRIVEN_UI], [ARCH-CSS_VARIABLES] | [Detail](architecture-decisions/ARCH-THEME_INJECTION.md) |
-| `[ARCH-CLASS_OVERRIDES]` | Tailwind Class Override System | Active | [REQ-CONFIG_DRIVEN_UI], [ARCH-TAILWIND_V4] | [Detail](architecture-decisions/ARCH-CLASS_OVERRIDES.md) |
-| `[ARCH-CONFIG_DRIVEN_APPEARANCE]` | Config-Driven Appearance for All Pages | Active | [REQ-CONFIG_DRIVEN_APPEARANCE], [REQ-CONFIG_DRIVEN_UI] | [Detail](architecture-decisions/ARCH-CONFIG_DRIVEN_APPEARANCE.md) |
-| `[ARCH-JOB_TRACKER_STORAGE]` | Job Tracker Storage Architecture | Planned | [REQ-JOB_TRACKER_DATA], [REQ-JOB_TRACKER_STATUS] | [Detail](architecture-decisions/ARCH-JOB_TRACKER_STORAGE.md) |
-| `[ARCH-JOB_TRACKER_UI]` | Job Tracker UI Architecture | Planned | [REQ-JOB_TRACKER_LIST], [REQ-JOB_TRACKER_EDIT] | [Detail](architecture-decisions/ARCH-JOB_TRACKER_UI.md) |
-| `[ARCH-JOB_TRACKER_API]` | Job Tracker API Architecture | Planned | [REQ-JOB_TRACKER_CRUD] | [Detail](architecture-decisions/ARCH-JOB_TRACKER_API.md) |
-| `[ARCH-CALENDAR_VIEW]` | Calendar Month View Architecture | Planned | [REQ-JOB_TRACKER_CALENDAR] | [Detail](architecture-decisions/ARCH-CALENDAR_VIEW.md) |
+**The architecture decisions index is maintained in `architecture-decisions.yaml`**, a YAML database file that contains all architecture decision records with their metadata, cross-references, and status.
+
+To view the index:
+
+```bash
+# View entire index
+cat stdd/architecture-decisions.yaml
+
+# View specific decision
+yq '.ARCH-STDD_STRUCTURE' stdd/architecture-decisions.yaml
+
+# Get rationale for a decision
+yq '.ARCH-STDD_STRUCTURE.rationale.why' stdd/architecture-decisions.yaml
+
+# Get alternatives considered
+yq '.ARCH-STDD_STRUCTURE.alternatives_considered[].name' stdd/architecture-decisions.yaml
+
+# Get implementation approach summary
+yq '.ARCH-STDD_STRUCTURE.implementation_approach.summary' stdd/architecture-decisions.yaml
+
+# Get requirement dependencies
+yq '.ARCH-STDD_STRUCTURE.traceability.requirements[]' stdd/architecture-decisions.yaml
+
+# List all active decisions
+yq 'to_entries | map(select(.value.status == "Active")) | from_entries' stdd/architecture-decisions.yaml
+
+# Quick grep search
+grep -A 30 '^ARCH-STDD_STRUCTURE:' stdd/architecture-decisions.yaml
+```
+
+### How to Append a New Architecture Decision
+
+1. Open `architecture-decisions.yaml` in your editor
+2. Copy the template block at the bottom of the file (ARCH-IDENTIFIER)
+3. Paste it at the end with a blank line before it
+4. Replace `ARCH-IDENTIFIER` with your new semantic token
+5. Fill in all fields (name, status, cross_references, rationale, alternatives, etc.)
+6. Update the `detail_file` path to match your new `.md` file in `architecture-decisions/` directory
+7. Save the file
+
+Example append operation:
+
+```bash
+cat >> stdd/architecture-decisions.yaml << 'EOF'
+
+ARCH-NEW_DECISION:
+  name: New Architecture Decision
+  status: Active
+  cross_references:
+    - REQ-RELATED_REQUIREMENT
+  rationale:
+    why: "Primary reason for this decision"
+    problems_solved:
+      - "Problem 1"
+      - "Problem 2"
+    benefits:
+      - "Benefit 1"
+      - "Benefit 2"
+  alternatives_considered:
+    - name: "Alternative 1"
+      pros:
+        - "Pro 1"
+      cons:
+        - "Con 1"
+      rejected_reason: "Why it was rejected"
+    - name: "Alternative 2"
+      pros:
+        - "Pro 1"
+      cons:
+        - "Con 1"
+      rejected_reason: "Why it was rejected"
+  implementation_approach:
+    summary: "High-level description of the approach"
+    details:
+      - "Key component 1"
+      - "Key component 2"
+      - "Integration point 1"
+  traceability:
+    requirements:
+      - REQ-RELATED_REQUIREMENT
+    implementation:
+      - IMPL-NEW_DECISION
+    tests:
+      - testFeatureName_ARCH_NEW_DECISION
+    code_annotations:
+      - ARCH-NEW_DECISION
+  related_decisions:
+    depends_on:
+      - REQ-RELATED_REQUIREMENT
+    informs:
+      - IMPL-NEW_DECISION
+    see_also: []
+  detail_file: architecture-decisions/ARCH-NEW_DECISION.md
+  metadata:
+    created:
+      date: 2026-02-06
+      author: "Your Name"
+    last_updated:
+      date: 2026-02-06
+      author: "Your Name"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-06
+      validator: "Your Name"
+      result: "pass"
+EOF
+```
 
 ### Status Values
 

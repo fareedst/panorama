@@ -1,10 +1,10 @@
 # Implementation Decisions
 
-**STDD Methodology Version**: 1.3.0
+**STDD Methodology Version**: 1.5.0
 
 ## Overview
 
-This document serves as the **index** for all implementation decisions in this project. Each implementation decision is stored in its own file within the `implementation-decisions/` directory for scalability.
+This document serves as the **guide** for all implementation decisions in this project. Each implementation decision is stored in its own file within the `implementation-decisions/` directory for scalability.
 
 All decisions are cross-referenced with architecture decisions using `[ARCH-*]` tokens and requirements using `[REQ-*]` tokens for traceability.
 
@@ -12,7 +12,8 @@ All decisions are cross-referenced with architecture decisions using `[ARCH-*]` 
 
 ```
 stdd/
-├── implementation-decisions.md              # This index file
+├── implementation-decisions.md              # This guide file (you are here)
+├── implementation-decisions.yaml            # YAML index/database of all implementation decisions
 ├── implementation-decisions/                # Detail files directory
 │   ├── IMPL-CONFIG_STRUCT.md
 │   ├── IMPL-STDD_FILES.md
@@ -45,43 +46,115 @@ Token names contain `:` which is invalid in filenames on many operating systems.
 
 1. **Create a new detail file** in `implementation-decisions/` using the naming convention above
 2. **Use the detail file template** (see below)
-3. **Add an entry to the index table** below
+3. **Add an entry to the index YAML file** (`implementation-decisions.yaml`)
 4. **Update `semantic-tokens.md`** registry with the new `[IMPL-*]` token
 
 ---
 
 ## Implementation Decisions Index
 
-| Token | Title | Status | Cross-References | Detail File |
-|-------|-------|--------|------------------|-------------|
-| `[IMPL-MODULE_VALIDATION]` | Module Validation | Active | [ARCH-MODULE_VALIDATION] [REQ-MODULE_VALIDATION] | [Detail](implementation-decisions/IMPL-MODULE_VALIDATION.md) |
-| `[IMPL-ROOT_LAYOUT]` | Root Layout Component | Active | [ARCH-LAYOUT_PATTERN] [REQ-ROOT_LAYOUT] | [Detail](implementation-decisions/IMPL-ROOT_LAYOUT.md) |
-| `[IMPL-HOME_PAGE]` | Home Page Component | Active | [ARCH-SERVER_COMPONENTS] [REQ-HOME_PAGE] | [Detail](implementation-decisions/IMPL-HOME_PAGE.md) |
-| `[IMPL-DARK_MODE]` | Dark Mode Implementation | Active | [ARCH-CSS_VARIABLES] [REQ-DARK_MODE] | [Detail](implementation-decisions/IMPL-DARK_MODE.md) |
-| `[IMPL-FONT_LOADING]` | Font Loading Configuration | Active | [ARCH-GOOGLE_FONTS] [REQ-FONT_SYSTEM] | [Detail](implementation-decisions/IMPL-FONT_LOADING.md) |
-| `[IMPL-IMAGE_OPTIMIZATION]` | Image Optimization | Active | [ARCH-NEXTJS_FRAMEWORK] [REQ-BRANDING] | [Detail](implementation-decisions/IMPL-IMAGE_OPTIMIZATION.md) |
-| `[IMPL-EXTERNAL_LINKS]` | External Link Security | Active | [ARCH-APP_ROUTER] [REQ-NAVIGATION_LINKS] | [Detail](implementation-decisions/IMPL-EXTERNAL_LINKS.md) |
-| `[IMPL-METADATA]` | Metadata Configuration | Active | [ARCH-NEXTJS_FRAMEWORK] [REQ-METADATA] | [Detail](implementation-decisions/IMPL-METADATA.md) |
-| `[IMPL-RESPONSIVE_CLASSES]` | Responsive Utility Classes | Active | [ARCH-RESPONSIVE_FIRST] [REQ-RESPONSIVE_DESIGN] | [Detail](implementation-decisions/IMPL-RESPONSIVE_CLASSES.md) |
-| `[IMPL-FLEX_LAYOUT]` | Flexbox Layout Patterns | Active | [ARCH-TAILWIND_V4] [REQ-ROOT_LAYOUT] | [Detail](implementation-decisions/IMPL-FLEX_LAYOUT.md) |
-| `[IMPL-TEST_CONFIG]` | Vitest Test Configuration | Active | [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM] | [Detail](implementation-decisions/IMPL-TEST_CONFIG.md) |
-| `[IMPL-BUILD_SCRIPTS]` | Build and Test Scripts | Active | [ARCH-NEXTJS_FRAMEWORK] [REQ-BUILD_SYSTEM] | [Detail](implementation-decisions/IMPL-BUILD_SCRIPTS.md) |
-| `[IMPL-TEST_SETUP]` | Test Setup and Utilities | Active | [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM] | [Detail](implementation-decisions/IMPL-TEST_SETUP.md) |
-| `[IMPL-STDD_FILES]` | STDD Methodology Files | Active | [ARCH-STDD_STRUCTURE] [REQ-STDD_SETUP] | [Detail](implementation-decisions/IMPL-STDD_FILES.md) |
-| `[IMPL-YAML_CONFIG]` | YAML Configuration File Structure | Active | [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI] | [Detail](implementation-decisions/IMPL-YAML_CONFIG.md) |
-| `[IMPL-CONFIG_LOADER]` | Configuration Loader Module | Active | [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI] | [Detail](implementation-decisions/IMPL-CONFIG_LOADER.md) |
-| `[IMPL-THEME_INJECTION]` | Theme CSS Variable Injection | Active | [ARCH-THEME_INJECTION] [REQ-CONFIG_DRIVEN_UI] | [Detail](implementation-decisions/IMPL-THEME_INJECTION.md) |
-| `[IMPL-CLASS_OVERRIDES]` | Tailwind Class Override Implementation | Active | [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI] | [Detail](implementation-decisions/IMPL-CLASS_OVERRIDES.md) |
-| `[IMPL-CONFIG_DRIVEN_APPEARANCE]` | Config-Driven Appearance for All Pages | Active | [ARCH-CONFIG_DRIVEN_APPEARANCE] [REQ-CONFIG_DRIVEN_APPEARANCE] | [Detail](implementation-decisions/IMPL-CONFIG_DRIVEN_APPEARANCE.md) |
-| `[IMPL-JOBS_DATA]` | Jobs Data Layer Implementation | Active | [ARCH-JOB_TRACKER_STORAGE] [REQ-JOB_TRACKER_DATA] | [Detail](implementation-decisions/IMPL-JOBS_DATA.md) |
-| `[IMPL-JOBS_ACTIONS]` | Jobs Server Actions Implementation | Active | [ARCH-JOB_TRACKER_UI] [REQ-JOB_TRACKER_CRUD] | [Detail](implementation-decisions/IMPL-JOBS_ACTIONS.md) |
-| `[IMPL-JOBS_LIST_PAGE]` | Jobs List Page Implementation | Active | [ARCH-JOB_TRACKER_UI] [REQ-JOB_TRACKER_LIST] | [Detail](implementation-decisions/IMPL-JOBS_LIST_PAGE.md) |
-| `[IMPL-JOBS_EDIT_PAGE]` | Jobs Edit Page Implementation | Active | [ARCH-JOB_TRACKER_UI] [REQ-JOB_TRACKER_EDIT] | [Detail](implementation-decisions/IMPL-JOBS_EDIT_PAGE.md) |
-| `[IMPL-JOBS_API]` | Jobs API Implementation | Active | [ARCH-JOB_TRACKER_API] [REQ-JOB_TRACKER_CRUD] | [Detail](implementation-decisions/IMPL-JOBS_API.md) |
-| `[IMPL-CALENDAR_PAGE]` | Calendar Page Server Component | Planned | [ARCH-CALENDAR_VIEW] [REQ-JOB_TRACKER_CALENDAR] | [Detail](implementation-decisions/IMPL-CALENDAR_PAGE.md) |
-| `[IMPL-CALENDAR_GRID]` | Calendar Grid Client Component | Planned | [ARCH-CALENDAR_VIEW] [REQ-JOB_TRACKER_CALENDAR] | [Detail](implementation-decisions/IMPL-CALENDAR_GRID.md) |
-| `[IMPL-EDIT_PAGE_RETURN_SOURCE]` | Edit Position Return to Source View | Active | [ARCH-JOB_TRACKER_UI] [ARCH-CALENDAR_VIEW] [REQ-JOB_TRACKER_EDIT] [REQ-JOB_TRACKER_CALENDAR] | [Detail](implementation-decisions/IMPL-EDIT_PAGE_RETURN_SOURCE.md) |
-| `[IMPL-GLOBAL_ERROR_BOUNDARY]` | Global Error Boundary Component | Active | [ARCH-NEXTJS_FRAMEWORK] [REQ-ERROR_HANDLING] | [Detail](implementation-decisions/IMPL-GLOBAL_ERROR_BOUNDARY.md) |
+**The implementation decisions index is maintained in `implementation-decisions.yaml`**, a YAML database file that contains all implementation decision records with their metadata, cross-references, and status.
+
+To view the index:
+
+```bash
+# View entire index
+cat stdd/implementation-decisions.yaml
+
+# View specific decision
+yq '.IMPL-MODULE_VALIDATION' stdd/implementation-decisions.yaml
+
+# Get implementation approach summary
+yq '.IMPL-MODULE_VALIDATION.implementation_approach.summary' stdd/implementation-decisions.yaml
+
+# Get code file locations
+yq '.IMPL-STDD_FILES.code_locations.files[].path' stdd/implementation-decisions.yaml
+
+# Get function locations
+yq '.IMPL-MODULE_VALIDATION.code_locations.functions[].name' stdd/implementation-decisions.yaml
+
+# Get architecture dependencies
+yq '.IMPL-MODULE_VALIDATION.traceability.architecture[]' stdd/implementation-decisions.yaml
+
+# List all active decisions
+yq 'to_entries | map(select(.value.status == "Active")) | from_entries' stdd/implementation-decisions.yaml
+
+# Quick grep search
+grep -A 30 '^IMPL-MODULE_VALIDATION:' stdd/implementation-decisions.yaml
+```
+
+### How to Append a New Implementation Decision
+
+1. Open `implementation-decisions.yaml` in your editor
+2. Copy the template block at the bottom of the file (IMPL-IDENTIFIER)
+3. Paste it at the end with a blank line before it
+4. Replace `IMPL-IDENTIFIER` with your new semantic token
+5. Fill in all fields (name, status, cross_references, rationale, implementation_approach, etc.)
+6. Update the `detail_file` path to match your new `.md` file in `implementation-decisions/` directory
+7. Save the file
+
+Example append operation:
+
+```bash
+cat >> stdd/implementation-decisions.yaml << 'EOF'
+
+IMPL-NEW_IMPLEMENTATION:
+  name: New Implementation
+  status: Active
+  cross_references:
+    - ARCH-RELATED_ARCHITECTURE
+    - REQ-RELATED_REQUIREMENT
+  rationale:
+    why: "Primary reason for this implementation approach"
+    problems_solved:
+      - "Problem 1"
+      - "Problem 2"
+    benefits:
+      - "Benefit 1"
+      - "Benefit 2"
+  implementation_approach:
+    summary: "High-level description of implementation"
+    details:
+      - "Specific technical detail 1"
+      - "Code structure or pattern"
+      - "API design decision"
+  code_locations:
+    files:
+      - path: "path/to/file.ext"
+        description: "What's implemented there"
+        lines: [10, 50]
+    functions:
+      - name: "exampleFunction"
+        file: "path/to/file.ext"
+        description: "What it does"
+  traceability:
+    architecture:
+      - ARCH-RELATED_ARCHITECTURE
+    requirements:
+      - REQ-RELATED_REQUIREMENT
+    tests:
+      - testFeatureName_REQ_RELATED_REQUIREMENT
+    code_annotations:
+      - IMPL-NEW_IMPLEMENTATION
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also: []
+  detail_file: implementation-decisions/IMPL-NEW_IMPLEMENTATION.md
+  metadata:
+    created:
+      date: 2026-02-06
+      author: "Your Name"
+    last_updated:
+      date: 2026-02-06
+      author: "Your Name"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-06
+      validator: "Your Name"
+      result: "pass"
+EOF
+```
 
 ### Status Values
 
