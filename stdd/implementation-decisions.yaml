@@ -3704,3 +3704,102 @@ IMPL-PANE_REFRESH:
       validator: "AI Agent"
       result: "pass - build succeeds, 36 keybindings loaded"
 
+IMPL-FILE_COLUMN_CONFIG:
+  name: Configurable File Column Display
+  status: Active
+  cross_references:
+    - REQ-CONFIG_DRIVEN_FILE_MANAGER
+    - ARCH-CONFIG_DRIVEN_UI
+    - IMPL-FILES_CONFIG
+    - IMPL-FILE_PANE
+    - REQ-FILE_LISTING
+  rationale:
+    why: "Implements configurable column display for file panes to meet user requirement for customizable file metadata display order and format"
+    problems_solved:
+      - "Hard-coded column order (checkbox, icon, name, size, mtime) cannot be changed"
+      - "Time format was simplified (toLocaleDateString) instead of full timestamp"
+      - "No way to hide/show specific columns based on user preference"
+      - "Column display not integrated with existing YAML configuration system"
+    benefits:
+      - "Users can configure column order via config/files.yaml"
+      - "Users can hide unwanted columns (visible: false)"
+      - "Consistent YYYY-MM-DD HH:MM:SS time format"
+      - "Default order optimized for most recent changes: mtime, size, name"
+      - "Full integration with existing config-driven architecture"
+  implementation_approach:
+    summary: "Extended config system with FilesColumnConfig type, added formatDateTime utility, and refactored FilePane to render columns dynamically based on configuration"
+    details:
+      - "Added FileColumnId type and FilesColumnConfig interface to config.types.ts"
+      - "Extended FilesConfig interface with optional columns array"
+      - "Added default columns configuration (mtime, size, name) to DEFAULT_FILES_CONFIG"
+      - "Added columns section to config/files.yaml with visibility control"
+      - "Created formatDateTime utility function for YYYY-MM-DD HH:MM:SS formatting"
+      - "Threaded columns prop through page.tsx → WorkspaceView.tsx → FilePane.tsx"
+      - "Refactored FilePane rendering to use dynamic column generation via renderColumn helper"
+      - "Checkbox and directory icon remain fixed, columns render in config order"
+      - "Columns with visible:false are filtered out"
+  code_locations:
+    files:
+      - path: "src/lib/config.types.ts"
+        description: "Added FileColumnId type, FilesColumnConfig interface, columns to FilesConfig"
+        lines: [464, 471]
+      - path: "src/lib/config.ts"
+        description: "Added default columns array to DEFAULT_FILES_CONFIG"
+        lines: [473, 479]
+      - path: "config/files.yaml"
+        description: "Added columns configuration section"
+        lines: [332, 341]
+      - path: "src/lib/files.utils.ts"
+        description: "Added formatDateTime function for YYYY-MM-DD HH:MM:SS format"
+        lines: [42, 57]
+      - path: "src/app/files/page.tsx"
+        description: "Extract and pass columns config to WorkspaceView"
+        lines: [28, 36, 72]
+      - path: "src/app/files/WorkspaceView.tsx"
+        description: "Accept columns prop and forward to FilePane"
+        lines: [60, 74, 1296]
+      - path: "src/app/files/components/FilePane.tsx"
+        description: "Accept columns prop, added renderColumn helper, dynamic column rendering"
+        lines: [6, 13, 63, 93, 280, 323, 369]
+    functions:
+      - name: "formatDateTime"
+        file: "src/lib/files.utils.ts"
+        description: "Formats Date or ISO string to YYYY-MM-DD HH:MM:SS with zero-padding"
+      - name: "renderColumn"
+        file: "src/app/files/components/FilePane.tsx"
+        description: "Helper function that renders a single column based on FileColumnId"
+  traceability:
+    architecture:
+      - ARCH-CONFIG_DRIVEN_UI
+    requirements:
+      - REQ-CONFIG_DRIVEN_FILE_MANAGER
+      - REQ-FILE_LISTING
+    tests:
+      - "src/lib/files.utils.test.ts - formatDateTime unit tests"
+      - "src/app/files/WorkspaceView.test.tsx - updated with columns prop"
+      - "src/app/files/components/FilePane.test.tsx - updated with columns prop"
+    code_annotations:
+      - IMPL-FILE_COLUMN_CONFIG
+      - REQ-CONFIG_DRIVEN_FILE_MANAGER
+  related_decisions:
+    depends_on:
+      - IMPL-FILES_CONFIG
+      - IMPL-FILE_PANE
+      - ARCH-CONFIG_DRIVEN_UI
+    supersedes: []
+    see_also:
+      - IMPL-FILES_CONFIG_COMPLETE
+  detail_file: implementation-decisions/IMPL-FILE_COLUMN_CONFIG.md
+  metadata:
+    created:
+      date: 2026-02-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-08
+      author: "AI Agent"
+      reason: "Initial implementation of configurable file columns"
+    last_validated:
+      date: 2026-02-08
+      validator: "AI Agent"
+      result: "pass - all tests passing (593 passed), formatDateTime unit tests pass, column rendering works correctly"
+

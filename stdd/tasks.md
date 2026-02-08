@@ -52,6 +52,11 @@ This document tracks active tasks. Completed work is recorded in **requirements*
   - Phase 10: Mouse support [REQ-MOUSE_INTERACTION] — Complete
   - Phase 11: Configuration [REQ-FILES_CONFIG_COMPLETE] — Complete
   - See requirements/decisions for details
+- **P1: Configurable File Columns** [REQ-CONFIG_DRIVEN_FILE_MANAGER] [IMPL-FILE_COLUMN_CONFIG] — ✅ Complete (2026-02-08)
+  - Implemented dynamic column configuration with order and visibility control
+  - Added YYYY-MM-DD HH:MM:SS time format
+  - Default order: mtime, size, name
+  - See implementation-decisions/IMPL-FILE_COLUMN_CONFIG.md for details
 
 ---
 

@@ -28,6 +28,13 @@ const mockLayout: FilesLayoutConfig = {
   maxPanes: 4,
 };
 
+// [IMPL-FILE_COLUMN_CONFIG] [IMPL-FILE_AGE_DISPLAY] Mock column config
+const mockColumns = [
+  { id: "mtime" as const, visible: true, format: "age" as const },
+  { id: "size" as const, visible: true },
+  { id: "name" as const, visible: true },
+];
+
 // Mock copy config
 const mockCopy = {
   title: "File Manager",
@@ -127,6 +134,7 @@ describe("WorkspaceView Bulk Operations [REQ-BULK_FILE_OPS]", () => {
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
     );
     
@@ -161,6 +169,7 @@ describe("WorkspaceView Bulk Operations [REQ-BULK_FILE_OPS]", () => {
         keybindings={mockKeybindings}
         copy={mockCopy}
         layout={mockLayout}
+        columns={mockColumns}
       />
     );
     
@@ -187,6 +196,7 @@ describe("WorkspaceView Bulk Operations [REQ-BULK_FILE_OPS]", () => {
         keybindings={mockKeybindings}
         copy={mockCopy}
         layout={mockLayout}
+        columns={mockColumns}
       />
     );
     
@@ -222,6 +232,7 @@ describe("WorkspaceView Bulk Operations [REQ-BULK_FILE_OPS]", () => {
         keybindings={mockKeybindings}
         copy={mockCopy}
         layout={mockLayout}
+        columns={mockColumns}
       />
     );
     
@@ -257,6 +268,7 @@ describe("WorkspaceView Bulk Operations [REQ-BULK_FILE_OPS]", () => {
         keybindings={mockKeybindings}
         copy={mockCopy}
         layout={mockLayout}
+        columns={mockColumns}
       />
     );
     
@@ -277,6 +289,7 @@ describe("WorkspaceView Bulk Operations [REQ-BULK_FILE_OPS]", () => {
         keybindings={mockKeybindings}
         copy={mockCopy}
         layout={mockLayout}
+        columns={mockColumns}
       />
     );
     
@@ -330,6 +343,7 @@ describe("WorkspaceView Bulk Operations [REQ-BULK_FILE_OPS]", () => {
         keybindings={mockKeybindings}
         copy={mockCopy}
         layout={mockLayout}
+        columns={mockColumns}
       />
     );
     
@@ -363,6 +377,7 @@ describe("WorkspaceView Bulk Operations [REQ-BULK_FILE_OPS]", () => {
         keybindings={mockKeybindings}
         copy={mockCopy}
         layout={mockLayout}
+        columns={mockColumns}
       />
     );
     
@@ -403,6 +418,7 @@ describe("WorkspaceView Bulk Operations [REQ-BULK_FILE_OPS]", () => {
         keybindings={mockKeybindings}
         copy={mockCopy}
         layout={mockLayout}
+        columns={mockColumns}
       />
     );
     
@@ -456,6 +472,7 @@ describe("WorkspaceView Bulk Operations [REQ-BULK_FILE_OPS]", () => {
         keybindings={mockKeybindings}
         copy={mockCopy}
         layout={mockLayout}
+        columns={mockColumns}
       />
     );
     
@@ -493,6 +510,7 @@ describe("ConfirmDialog [IMPL-BULK_OPS]", () => {
         keybindings={mockKeybindings}
         copy={mockCopy}
         layout={mockLayout}
+        columns={mockColumns}
       />
     );
     
@@ -522,6 +540,7 @@ describe("ConfirmDialog [IMPL-BULK_OPS]", () => {
         keybindings={mockKeybindings}
         copy={mockCopy}
         layout={mockLayout}
+        columns={mockColumns}
       />
     );
     
@@ -554,6 +573,7 @@ describe("Integration Tests [TEST-BULK_FILE_OPS]", () => {
         keybindings={mockKeybindings}
         copy={mockCopy}
         layout={mockLayout}
+        columns={mockColumns}
       />
     );
     

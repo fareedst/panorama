@@ -471,6 +471,14 @@ const DEFAULT_FILES_CONFIG: FilesConfig = {
     rememberLastLocations: false,
   },
   keybindings: [], // Loaded from YAML; empty default
+  columns: [
+    // [IMPL-FILE_COLUMN_CONFIG] [IMPL-FILE_AGE_DISPLAY] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
+    // Default column order: mtime, size, name
+    // Default format: "age" for relative time display (e.g., "4 day 23 hr")
+    { id: "mtime", visible: true, format: "age" },
+    { id: "size", visible: true },
+    { id: "name", visible: true },
+  ],
 };
 
 let _filesConfig: FilesConfig | null = null;

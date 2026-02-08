@@ -57,6 +57,8 @@ interface WorkspaceViewProps {
   copy: FilesCopyConfig;
   /** Layout configuration from server */
   layout: FilesLayoutConfig;
+  /** Column configuration from server [IMPL-FILE_COLUMN_CONFIG] */
+  columns: import("@/lib/config.types").FilesColumnConfig[];
 }
 
 /**
@@ -69,6 +71,7 @@ export default function WorkspaceView({
   keybindings,
   copy,
   layout: layoutConfig,
+  columns,
 }: WorkspaceViewProps) {
   // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
   // Initialize keybinding registry synchronously before first render
@@ -97,6 +100,8 @@ export default function WorkspaceView({
   const [focusIndex, setFocusIndex] = useState(0);
   const [containerWidth, setContainerWidth] = useState(800);
   const [containerHeight, setContainerHeight] = useState(600);
+  // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Track scroll triggers for linked pane synchronization
+  const [scrollTriggers, setScrollTriggers] = useState<Map<number, number>>(new Map());
   
   // [IMPL-DIR_HISTORY] [REQ-ADVANCED_NAV] Goto dialog state
   const [gotoDialog, setGotoDialog] = useState<{
@@ -385,7 +390,7 @@ export default function WorkspaceView({
 
   
   // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] [ARCH-LINKED_NAV]
-  // Handle cursor movement with linked pane synchronization
+  // Handle cursor movement with linked pane synchronization and scroll-to-center
   const handleCursorMove = useCallback((paneIndex: number, newCursor: number) => {
     setPanes((prev) => {
       const updated = [...prev];
@@ -401,6 +406,9 @@ export default function WorkspaceView({
       if (linkedMode && panes.length > 1 && clampedCursor < pane.files.length) {
         const cursorFilename = pane.files[clampedCursor].name;
         
+        // Track which panes need scrolling (Map of paneIndex → cursor)
+        const triggers = new Map<number, number>();
+        
         // Sync cursor to matching filename in all other panes
         for (let i = 0; i < updated.length; i++) {
           if (i === paneIndex) continue; // Skip source pane
@@ -415,9 +423,20 @@ export default function WorkspaceView({
               ...linkedPane,
               cursor: matchIndex,
             };
+            // Track this pane for scrolling
+            triggers.set(i, matchIndex);
+          } else {
+            // File doesn't exist in this pane, clear selection
+            updated[i] = {
+              ...linkedPane,
+              cursor: -1,
+            };
+            // No scroll trigger for cleared selection
           }
-          // If no match found, leave cursor unchanged (graceful degradation)
         }
+        
+        // Trigger scroll effects in other panes (after state update)
+        setScrollTriggers(triggers);
       }
       
       return updated;
@@ -1274,7 +1293,9 @@ export default function WorkspaceView({
             sortDirection={pane.sortDirection}
             sortDirsFirst={pane.sortDirsFirst}
             linked={linkedMode && panes.length > 1} // [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
+            scrollTrigger={scrollTriggers.get(index)} // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Scroll sync
             onFocusRequest={() => setFocusIndex(index)}
+            columns={columns} // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
           />
         ))}
       </div>

@@ -40,6 +40,92 @@ export function formatSize(bytes: number): string {
 }
 
 /**
+ * Format date and time for display in YYYY-MM-DD HH:MM:SS format
+ * [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
+ * 
+ * Client-safe utility - no Node.js dependencies
+ * 
+ * @param date - Date object or ISO string
+ * @returns Formatted string (e.g., "2024-01-15 14:30:45")
+ */
+export function formatDateTime(date: Date | string): string {
+  const d = typeof date === "string" ? new Date(date) : date;
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  const hh = String(d.getHours()).padStart(2, "0");
+  const min = String(d.getMinutes()).padStart(2, "0");
+  const ss = String(d.getSeconds()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
+}
+
+/**
+ * Format date as relative age with two significant units
+ * [IMPL-FILE_AGE_DISPLAY] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
+ * 
+ * Client-safe utility - no Node.js dependencies
+ * 
+ * Examples:
+ *   - 4 days 23 hours old → "4 day 23 hr"
+ *   - 2 years 3 months old → "2 yr 3 mo"
+ *   - 45 minutes 30 seconds old → "45 min 30 sec"
+ * 
+ * @param date - Date object or ISO string
+ * @returns Formatted age string with two significant units
+ */
+export function formatAge(date: Date | string): string {
+  const d = typeof date === "string" ? new Date(date) : date;
+  const now = new Date();
+  const diffMs = now.getTime() - d.getTime();
+  const diffSec = Math.floor(diffMs / 1000);
+  
+  // Handle future dates (show as 0 sec)
+  if (diffSec < 0) return "0 sec";
+  
+  // Time unit thresholds (in seconds)
+  const units = [
+    { name: "yr", seconds: 31536000 },   // 365 days
+    { name: "mo", seconds: 2592000 },    // 30 days
+    { name: "wk", seconds: 604800 },     // 7 days
+    { name: "day", seconds: 86400 },     // 1 day
+    { name: "hr", seconds: 3600 },       // 1 hour
+    { name: "min", seconds: 60 },        // 1 minute
+    { name: "sec", seconds: 1 },         // 1 second
+  ];
+  
+  // Find first two significant units
+  let remaining = diffSec;
+  const parts: string[] = [];
+  
+  for (let i = 0; i < units.length; i++) {
+    const unit = units[i];
+    if (remaining >= unit.seconds) {
+      const value = Math.floor(remaining / unit.seconds);
+      parts.push(`${value} ${unit.name}`);
+      remaining -= value * unit.seconds;
+      
+      // If we have one unit and there's remaining time, try to find the next unit
+      if (parts.length === 1 && remaining > 0 && i < units.length - 1) {
+        // Look for next significant unit
+        for (let j = i + 1; j < units.length; j++) {
+          const nextUnit = units[j];
+          if (remaining >= nextUnit.seconds) {
+            const nextValue = Math.floor(remaining / nextUnit.seconds);
+            parts.push(`${nextValue} ${nextUnit.name}`);
+            break;
+          }
+        }
+      }
+      
+      // Stop once we have two units
+      if (parts.length === 2) break;
+    }
+  }
+  
+  return parts.length > 0 ? parts.join(" ") : "0 sec";
+}
+
+/**
  * Sort files by multiple criteria
  * [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED]
  * 

@@ -3,18 +3,21 @@
 **Cross-References**: [ARCH-LINKED_NAV] [REQ-LINKED_PANES]  
 **Status**: Implemented  
 **Date**: 2026-02-08  
-**Last Updated**: 2026-02-08 (Config-driven default, pane state preservation)
+**Last Updated**: 2026-02-08 (Config-driven default, pane state preservation, scroll-to-center, empty selection)
 
 ---
 
 ## Overview
 
-Complete implementation of linked pane navigation including subdirectory/parent navigation sync, cursor synchronization, sort synchronization, auto-disable on divergence, and config-driven default state.
+Complete implementation of linked pane navigation including subdirectory/parent navigation sync, cursor synchronization with scroll-to-center, empty selection handling, sort synchronization, auto-disable on divergence, and config-driven default state.
 
 **Recent Updates (2026-02-08)**:
 - Fixed handleParentNavigation to call handleNavigate instead of directly calling setPanes, ensuring Backspace key triggers linked synchronization.
 - Added config-driven initialization: `layout.defaultLinkedMode` controls startup state (defaults to `true`).
 - Verified state preservation when adding new panes (component-level state, not pane-level).
+- **Scroll-to-center**: Added automatic scrolling to center highlighted files in linked panes when cursor syncs.
+- **Empty selection**: Cursor set to -1 when file doesn't exist in linked panes (no file highlighted, footer shows "- / N").
+- **Scroll triggers**: State mechanism to trigger scroll effects in FilePane components after cursor sync.
 
 ## Architecture Cross-Reference
 
@@ -38,6 +41,8 @@ const [linkedMode, setLinkedMode] = useState<boolean>(
   layoutConfig.defaultLinkedMode ?? true
 );
 const syncingRef = useRef<Set<number>>(new Set());
+// [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Track scroll triggers for linked pane synchronization
+const [scrollTriggers, setScrollTriggers] = useState<Map<number, number>>(new Map());
 ```
 
 **Toggle Handler**:
@@ -114,7 +119,7 @@ if (isUpward) {
 
 **Module Boundary**: Coordinate navigation across panes, no direct state mutation
 
-### Module 3: Cursor Synchronization
+### Module 3: Cursor Synchronization with Scroll-to-Center
 
 **File**: `src/app/files/WorkspaceView.tsx` - `handleCursorMove` callback
 
@@ -122,9 +127,11 @@ if (isUpward) {
 1. Update cursor for active pane
 2. If linked mode ON and multiple panes:
    - Get filename at cursor position
+   - Track which panes need scrolling (Map of paneIndex → cursor)
    - Find matching filename in each other pane
-   - Update cursor to matching position
-   - Graceful degradation if no match
+   - If match found: Update cursor to matching position, add to scroll triggers
+   - If no match: Set cursor to -1 (empty selection), no scroll trigger
+3. Set scrollTriggers state to trigger scroll effects in FilePane components
 
 **Implementation**:
 ```typescript
@@ -139,16 +146,29 @@ const handleCursorMove = useCallback((paneIndex: number, newCursor: number) => {
     if (linkedMode && panes.length > 1 && clampedCursor < pane.files.length) {
       const cursorFilename = pane.files[clampedCursor].name;
       
+      // Track which panes need scrolling (Map of paneIndex → cursor)
+      const triggers = new Map<number, number>();
+      
       for (let i = 0; i < updated.length; i++) {
-        if (i === paneIndex) continue;
+        if (i === paneIndex) continue; // Skip source pane
         
         const linkedPane = updated[i];
         const matchIndex = linkedPane.files.findIndex((f) => f.name === cursorFilename);
         
         if (matchIndex !== -1) {
+          // Found matching file, update cursor
           updated[i] = { ...linkedPane, cursor: matchIndex };
+          // Track this pane for scrolling
+          triggers.set(i, matchIndex);
+        } else {
+          // File doesn't exist in this pane, clear selection
+          updated[i] = { ...linkedPane, cursor: -1 };
+          // No scroll trigger for cleared selection
         }
       }
+      
+      // Trigger scroll effects in other panes (after state update)
+      setScrollTriggers(triggers);
     }
     
     return updated;
@@ -156,7 +176,72 @@ const handleCursorMove = useCallback((paneIndex: number, newCursor: number) => {
 }, [linkedMode, panes.length]);
 ```
 
-**Module Boundary**: Pure cursor position management, no navigation
+**Cursor=-1 Convention**: When cursor is set to -1, it indicates "no selection". FilePane components check `cursor >= 0 && index === cursor` for highlighting, so -1 results in no file being highlighted. Footer displays "- / N" instead of "1 / N".
+
+**Scroll Trigger Mechanism**: The scrollTriggers Map is passed to FilePane components as props. When a FilePane receives a scrollTrigger update, it uses useEffect to call scrollIntoView on the target file element.
+
+**Module Boundary**: Pure cursor position management with scroll coordination, no navigation
+
+### Module 4: FilePane Scroll-to-Center
+
+**File**: `src/app/files/components/FilePane.tsx`
+
+**Props Interface**:
+```typescript
+interface FilePaneProps {
+  // ... existing props
+  /** [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Cursor index to scroll to (undefined means no scroll) */
+  scrollTrigger?: number;
+}
+```
+
+**State and Refs**:
+```typescript
+// [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Ref for file list container
+const fileListRef = useRef<HTMLDivElement>(null);
+```
+
+**Scroll Effect**:
+```typescript
+// [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Scroll to cursor when triggered by linked navigation
+useEffect(() => {
+  // Only scroll if scrollTrigger is defined and valid
+  if (scrollTrigger === undefined || scrollTrigger < 0) {
+    return;
+  }
+
+  // Scroll to the triggered cursor position
+  if (fileListRef.current && files.length > 0 && scrollTrigger < files.length) {
+    const targetElement = fileListRef.current.children[0]?.children[scrollTrigger] as HTMLElement;
+    if (targetElement) {
+      targetElement.scrollIntoView({
+        block: "center",
+        behavior: "smooth",
+      });
+    }
+  }
+}, [scrollTrigger, files.length]);
+```
+
+**Cursor Highlighting**:
+```typescript
+// Handle cursor=-1 (no selection)
+const isCursor = cursor >= 0 && index === cursor;
+```
+
+**Footer Display**:
+```typescript
+<span>
+  {files.length > 0 
+    ? cursor >= 0 
+      ? `${cursor + 1} / ${files.length}` 
+      : `- / ${files.length}` // Show dash for no selection
+    : "Empty"
+  }
+</span>
+```
+
+**Module Boundary**: React component with scroll effect, no business logic
 
 ### Module 5: Parent Navigation Handler (Fixed 2026-02-08)
 
@@ -301,9 +386,11 @@ All linked navigation code includes semantic token annotations:
 1. Link toggle state management
 2. Cursor sync with linked mode ON
 3. Cursor independent with linked mode OFF
-4. Sort sync with linked mode ON
-5. Sort independent with linked mode OFF
-6. Auto-disable on navigation divergence
+4. Cursor clearing (cursor=-1) when file doesn't exist in linked pane
+5. Scroll triggering when cursor syncs across panes
+6. Sort sync with linked mode ON
+7. Sort independent with linked mode OFF
+8. Auto-disable on navigation divergence
 
 ### Integration Tests
 
@@ -313,7 +400,9 @@ All linked navigation code includes semantic token annotations:
 3. Asymmetric directory structures
 4. Cursor sync with keyboard navigation
 5. Cursor sync with mouse clicks
-6. Sort changes propagating
+6. Scroll-to-center behavior in non-source panes
+7. Empty selection display (footer shows "- / N")
+8. Sort changes propagating
 
 ### Manual Tests
 
@@ -399,27 +488,31 @@ All linked navigation code includes semantic token annotations:
 - ✅ Subdirectory navigation sync
 - ✅ Parent navigation sync (Enter into subdir, Backspace to parent)
 - ✅ Cursor synchronization
+- ✅ Scroll-to-center in linked panes
+- ✅ Empty selection (cursor=-1) when file doesn't exist
 - ✅ Sort synchronization
 - ✅ Auto-disable on divergence
 
 **Bug Fixes**:
 - ✅ 2026-02-08: Fixed Backspace not syncing linked panes to parent
 
-**Test Status**: All tests passing (36/36)
+**Test Status**: All tests passing (40/40)
 
 **Test Coverage Details**:
-- Total: 36 tests (26 existing + 10 linked navigation tests including config tests)
-- New test suites: 9 describes covering:
+- Total: 40 tests (38 existing + 2 new scroll/cursor=-1 tests)
+- New test suites: 11 describes covering:
   1. Link toggle functionality
   2. Cursor synchronization with linked mode ON
   3. Cursor independence with linked mode OFF
   4. Graceful degradation when filenames don't match
-  5. Sort synchronization
-  6. Auto-disable on divergence
-  7. Visual indicator behavior
-  8. Parent navigation sync
-  9. Single pane mode behavior
-  10. Config-driven initialization (new 2026-02-08)
+  5. Cursor clearing when file doesn't exist (NEW)
+  6. Scroll triggering in linked panes (NEW)
+  7. Sort synchronization
+  8. Auto-disable on divergence
+  9. Visual indicator behavior
+  10. Parent navigation sync
+  11. Single pane mode behavior
+  12. Config-driven initialization
 
 ---
 
@@ -432,4 +525,4 @@ All linked navigation code includes semantic token annotations:
 ---
 
 *Last validated: 2026-02-08 by AI agent*  
-*Last updated: 2026-02-08 - Added config-driven initialization, verified pane state preservation*
+*Last updated: 2026-02-08 - Added scroll-to-center, empty selection (cursor=-1), scroll triggers state*

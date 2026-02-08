@@ -461,10 +461,26 @@ export interface FilesThemeConfig {
   fileTypes?: Record<string, FileTypeConfig>;
 }
 
+/** Available column identifiers for file pane display */
+// [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
+export type FileColumnId = "name" | "size" | "mtime";
+
+/** Single column configuration */
+// [IMPL-FILE_COLUMN_CONFIG] [IMPL-FILE_AGE_DISPLAY] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
+export interface FilesColumnConfig {
+  /** Column identifier */
+  id: FileColumnId;
+  /** Whether this column is visible (default: true) */
+  visible?: boolean;
+  /** Time display format for mtime column: "age" shows relative time, "absolute" shows YYYY-MM-DD HH:MM:SS (default: "age") */
+  format?: "age" | "absolute";
+}
+
 /** Top-level files configuration schema (config/files.yaml). */
 export interface FilesConfig {
   copy?: FilesCopyConfig;
   keybindings?: KeybindingConfig[]; // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [IMPL-KEYBINDS]
   layout?: FilesLayoutConfig; // [REQ-FILES_CONFIG_COMPLETE]
   startup?: FilesStartupConfig; // [REQ-FILES_CONFIG_COMPLETE]
+  columns?: FilesColumnConfig[]; // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
 }

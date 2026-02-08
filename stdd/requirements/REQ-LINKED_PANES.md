@@ -26,6 +26,8 @@ Users comparing similar directory structures (e.g., syncing folder hierarchies, 
 - When enabled, changing sort order applies the same sort settings (criterion, direction, dirs-first) to all panes.
 - When enabled, mouse single-click file selection syncs cursor to same filename in all panes.
 - When enabled, keyboard cursor movement (up/down/page/home/end) syncs cursor to same filename in all panes.
+- **Scroll-to-center**: When cursor syncs to other panes, those panes automatically scroll to center the highlighted file (smooth scrolling, `block: "center"`).
+- **Empty selection**: When a file is selected in one pane but doesn't exist in other panes, those panes clear their selection (cursor set to -1, no file highlighted, footer shows "- / N").
 - When disabled, both mouse and keyboard cursor movements only affect the focused pane.
 - A visual indicator (🔗 badge in footer) shows when linked mode is ON.
 - The mode state is per-session and does not persist across page refreshes.
@@ -35,10 +37,13 @@ Users comparing similar directory structures (e.g., syncing folder hierarchies, 
 ## Validation Criteria
 
 - Unit tests cover cursor synchronization with linked mode ON and OFF.
+- Unit tests verify scroll triggering when cursor syncs across panes.
+- Unit tests verify empty selection (cursor=-1) when file doesn't exist in linked panes.
 - Unit tests verify sort synchronization across all panes when linked.
 - Integration tests prove the toggle state affects navigation behavior correctly.
 - Integration tests verify auto-disable behavior when subdirectory navigation partially fails.
 - Manual verification confirms the visual indicator displays correctly and navigation propagates as expected.
+- Manual verification confirms scrolling centers the highlighted file smoothly in linked panes.
 - All existing tests still pass (no regressions).
 
 ## Traceability
@@ -56,12 +61,15 @@ Users comparing similar directory structures (e.g., syncing folder hierarchies, 
 ---
 
 *Validation Evidence (2026-02-08)*:
-- **All 36 tests passing** (26 existing + 10 linked navigation tests including config tests)
+- **All 40 tests passing** (38 existing + 2 new scroll/cursor tests)
 - **Linter**: 0 errors
 - **Type Safety**: Full TypeScript typing
 - Config-driven initialization: ✅ Reads `layout.defaultLinkedMode` from config (defaults to true)
 - State preservation: ✅ Linked mode state retained when adding new panes
 - Cursor synchronization: ✅ Implemented in `WorkspaceView.tsx` `handleCursorMove`
+- **Scroll-to-center**: ✅ Implemented with `scrollIntoView({ block: "center", behavior: "smooth" })` in `FilePane.tsx`
+- **Empty selection**: ✅ Cursor set to -1 when file doesn't exist, footer shows "- / N"
+- **Scroll triggering**: ✅ scrollTriggers state tracks which panes need scrolling
 - Parent navigation: ✅ Implemented in `WorkspaceView.tsx` `handleNavigate` 
 - Auto-disable on divergence: ✅ Implemented with success/failure tracking
 - Sort synchronization: ✅ Implemented in `WorkspaceView.tsx` `handleSortChange`

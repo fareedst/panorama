@@ -30,6 +30,12 @@ export default async function FilesPage() {
   const copy = config.copy || {};
   const layout = config.layout || { default: "tile", defaultPaneCount: 2, allowPaneManagement: true, maxPanes: 4 };
   const startup = config.startup || { mode: "home", paths: {} };
+  // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER] Load column configuration
+  const columns = config.columns || [
+    { id: "mtime", visible: true },
+    { id: "size", visible: true },
+    { id: "name", visible: true },
+  ];
   
   // [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] Initialize panes based on startup mode and defaultPaneCount
   const initialPanes: PaneInitialState[] = [];
@@ -69,6 +75,7 @@ export default async function FilesPage() {
       keybindings={keybindings}
       copy={copy}
       layout={layout}
+      columns={columns}
     />
   );
 }

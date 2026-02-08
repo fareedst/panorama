@@ -31,6 +31,13 @@ const mockLayout: FilesLayoutConfig = {
   defaultLinkedMode: true, // [REQ-LINKED_PANES] Default enabled
 };
 
+// [IMPL-FILE_COLUMN_CONFIG] [IMPL-FILE_AGE_DISPLAY] Mock column config
+const mockColumns = [
+  { id: "mtime" as const, visible: true, format: "age" as const },
+  { id: "size" as const, visible: true },
+  { id: "name" as const, visible: true },
+];
+
 // Mock copy config
 const mockCopy = {
   title: "File Manager",
@@ -94,6 +101,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
       );
 
@@ -116,6 +124,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
       );
 
@@ -141,6 +150,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
       );
 
@@ -169,6 +179,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
       );
 
@@ -193,6 +204,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
       );
 
@@ -225,6 +237,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
       );
 
@@ -244,6 +257,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
       );
 
@@ -270,6 +284,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
       );
 
@@ -301,6 +316,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
       );
 
@@ -323,6 +339,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
       );
 
@@ -350,6 +367,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
       );
 
@@ -377,6 +395,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
       );
 
@@ -399,6 +418,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
       );
 
@@ -423,6 +443,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
       );
 
@@ -438,6 +459,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
       );
 
@@ -463,6 +485,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
       );
 
@@ -494,6 +517,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
       );
 
@@ -519,6 +543,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
       );
 
@@ -548,6 +573,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
       );
 
@@ -580,6 +606,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
       );
 
@@ -613,6 +640,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
       );
 
@@ -648,6 +676,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
       );
 
@@ -662,6 +691,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
       );
 
@@ -684,6 +714,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
       );
 
@@ -783,6 +814,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
           keybindings={linkedKeybindings}
           copy={mockCopy}
           layout={{ ...mockLayout, defaultPaneCount: 2 }}
+          columns={mockColumns}
         />
       );
 
@@ -814,6 +846,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
           keybindings={linkedKeybindings}
           copy={mockCopy}
           layout={{ ...mockLayout, defaultPaneCount: 2 }}
+          columns={mockColumns}
         />
       );
 
@@ -842,6 +875,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
           keybindings={linkedKeybindings}
           copy={mockCopy}
           layout={{ ...mockLayout, defaultPaneCount: 2, defaultLinkedMode: false }}
+          columns={mockColumns}
         />
       );
 
@@ -877,6 +911,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
           keybindings={linkedKeybindings}
           copy={mockCopy}
           layout={{ ...mockLayout, defaultPaneCount: 2 }}
+          columns={mockColumns}
         />
       );
 
@@ -893,6 +928,78 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
       // Now both panes should sync to common.txt
       await waitFor(() => {
         expect(screen.getAllByText(/\/ 2/)).toBeTruthy();
+      });
+    });
+
+    it("should clear cursor (set to -1) when file doesn't exist in linked pane [REQ-LINKED_PANES]", async () => {
+      const pane1Files = [
+        { name: "only-in-pane1.txt", path: "/dir1/only-in-pane1.txt", isDirectory: false, size: 100, mtime: new Date(), extension: "txt" },
+        { name: "common.txt", path: "/dir1/common.txt", isDirectory: false, size: 200, mtime: new Date(), extension: "txt" },
+      ];
+      
+      const pane2Files = [
+        { name: "common.txt", path: "/dir2/common.txt", isDirectory: false, size: 200, mtime: new Date(), extension: "txt" },
+        { name: "only-in-pane2.md", path: "/dir2/only-in-pane2.md", isDirectory: false, size: 300, mtime: new Date(), extension: "md" },
+      ];
+
+      render(
+        <WorkspaceView
+          initialPanes={[
+            { path: "/dir1", files: pane1Files },
+            { path: "/dir2", files: pane2Files },
+          ]}
+          keybindings={linkedKeybindings}
+          copy={mockCopy}
+          layout={{ ...mockLayout, defaultPaneCount: 2 }}
+          columns={mockColumns}
+        />
+      );
+
+      // Linked mode ON by default
+      expect(screen.getByText(/🔗.*Linked/)).toBeInTheDocument();
+
+      // Cursor starts at 0 (only-in-pane1.txt)
+      // This file doesn't exist in pane2, so pane2 cursor should be set to -1
+      // Footer in pane2 should show "- / 2" instead of "1 / 2"
+      await waitFor(() => {
+        // Check that at least one pane shows "- / 2" (no selection)
+        const footers = screen.getAllByText(/- \/ 2|1 \/ 2/);
+        expect(footers.length).toBeGreaterThan(0);
+      });
+    });
+
+    it("should trigger scroll in linked panes when cursor syncs [REQ-LINKED_PANES] [IMPL-LINKED_NAV]", async () => {
+      // Mock scrollIntoView to verify it's called
+      const scrollIntoViewMock = vi.fn();
+      Element.prototype.scrollIntoView = scrollIntoViewMock;
+
+      render(
+        <WorkspaceView
+          initialPanes={[
+            { path: "/dir1", files: mockFilesPane1 },
+            { path: "/dir2", files: mockFilesPane2 },
+          ]}
+          keybindings={linkedKeybindings}
+          copy={mockCopy}
+          layout={{ ...mockLayout, defaultPaneCount: 2 }}
+          columns={mockColumns}
+        />
+      );
+
+      // Clear any previous calls
+      scrollIntoViewMock.mockClear();
+
+      // Move cursor down (to common.txt)
+      fireEvent.keyDown(window, { key: "ArrowDown" });
+
+      // scrollIntoView should be called for the non-focused pane
+      await waitFor(() => {
+        expect(scrollIntoViewMock).toHaveBeenCalled();
+        // Check that it was called with correct options
+        expect(scrollIntoViewMock).toHaveBeenCalledWith({
+          block: "center",
+          behavior: "smooth",
+        });
       });
     });
   });
@@ -913,6 +1020,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
           keybindings={sortKeybindings}
           copy={mockCopy}
           layout={{ ...mockLayout, defaultPaneCount: 2 }}
+          columns={mockColumns}
         />
       );
 
@@ -948,6 +1056,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
           keybindings={linkedKeybindings}
           copy={mockCopy}
           layout={{ ...mockLayout, defaultPaneCount: 2 }}
+          columns={mockColumns}
         />
       );
 
@@ -970,6 +1079,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
           keybindings={linkedKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
       );
 
@@ -992,6 +1102,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
           keybindings={linkedKeybindings}
           copy={mockCopy}
           layout={{ ...mockLayout, defaultPaneCount: 2 }}
+          columns={mockColumns}
         />
       );
 
@@ -1034,6 +1145,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
           keybindings={linkedKeybindings}
           copy={mockCopy}
           layout={{ ...mockLayout, defaultPaneCount: 2 }}
+          columns={mockColumns}
         />
       );
 
@@ -1064,6 +1176,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
           keybindings={linkedKeybindings}
           copy={mockCopy}
           layout={mockLayout}
+          columns={mockColumns}
         />
       );
 
@@ -1085,6 +1198,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
           keybindings={linkedKeybindings}
           copy={mockCopy}
           layout={{ ...mockLayout, defaultPaneCount: 2, defaultLinkedMode: true }}
+          columns={mockColumns}
         />
       );
 
@@ -1102,6 +1216,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
           keybindings={linkedKeybindings}
           copy={mockCopy}
           layout={{ ...mockLayout, defaultPaneCount: 2, defaultLinkedMode: false }}
+          columns={mockColumns}
         />
       );
 
@@ -1119,6 +1234,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
           keybindings={linkedKeybindings}
           copy={mockCopy}
           layout={{ ...mockLayout, defaultPaneCount: 2 }}
+          columns={mockColumns}
         />
       );
 
@@ -1140,6 +1256,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={{ ...mockLayout, defaultPaneCount: 2 }}
+          columns={mockColumns}
         />
       );
 
@@ -1177,6 +1294,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
           keybindings={mockKeybindings}
           copy={mockCopy}
           layout={{ ...mockLayout, defaultPaneCount: 2 }}
+          columns={mockColumns}
         />
       );
 

@@ -6,6 +6,10 @@
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 
+// [IMPL-TEST_SETUP] Mock scrollIntoView for FilePane scroll tests
+// scrollIntoView is not available in jsdom test environment
+Element.prototype.scrollIntoView = vi.fn();
+
 // [IMPL-TEST_SETUP] Mock next/font/google to work in test environment
 // next/font requires Next.js webpack context which isn't available in Vitest.
 // This mock returns simple objects with the same structure as real font objects.

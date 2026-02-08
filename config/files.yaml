@@ -328,3 +328,15 @@ startup:
   # Remember last locations across sessions (requires localStorage)
   rememberLastLocations: false
 
+# [IMPL-FILE_COLUMN_CONFIG] [IMPL-FILE_AGE_DISPLAY] Column display configuration
+# Order determines display order; set visible: false to hide
+# format: "age" displays relative time (e.g., "4 day 23 hr"), "absolute" shows YYYY-MM-DD HH:MM:SS
+columns:
+  - id: "mtime"
+    visible: true
+    format: "age"  # Default: show age instead of absolute timestamp
+  - id: "size"
+    visible: true
+  - id: "name"
+    visible: true
+

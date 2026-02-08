@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+---
+
+## [0.4.3] - 2026-02-08
+
+### Added
+
+#### File manager: configurable time display (age vs absolute) [IMPL-FILE_AGE_DISPLAY]
+- **Time column format option** in the file pane: the modification time column can show either **relative age** (default) or **absolute** timestamp.
+- **Age format** (default): Displays two significant units, e.g. `4 day 23 hr`, `2 yr 3 mo`, `45 min 30 sec`. Unit labels: yr, mo, wk, day, hr, min, sec.
+- **Absolute format**: Displays full timestamp `YYYY-MM-DD HH:MM:SS` (previous behavior).
+- **Configuration**: In `config/files.yaml`, the mtime column supports `format: "age"` or `format: "absolute"`. Omitted `format` defaults to `"age"`.
+- **Utility**: New `formatAge(date)` in `src/lib/files.utils.ts`; FilePane uses the column’s `format` when rendering the mtime cell (`formatAge` vs `formatDateTime`).
+- **Types**: `FilesColumnConfig` in `src/lib/config.types.ts` extended with optional `format?: "age" | "absolute"`.
+- **Tests**: Unit tests for `formatAge` (two-unit ranges, edge cases); FilePane, WorkspaceView, and BulkOperations tests updated to pass column config with `format`.
+
+### Technical details
+- **Modified**: `src/lib/files.utils.ts` — added `formatAge()`; `src/lib/config.types.ts` — `format` on `FilesColumnConfig`; `src/lib/config.ts` — default columns include `format: "age"` for mtime; `config/files.yaml` — mtime column `format: "age"` and comment; `src/app/files/components/FilePane.tsx` — mtime branch uses `formatAge` or `formatDateTime` from column config.
+- **Tests**: `src/lib/files.utils.test.ts` — new `formatAge` describe block; `FilePane.test.tsx`, `WorkspaceView.test.tsx`, `BulkOperations.test.tsx` — mock columns include `format: "age"`.
+- **Docs**: `stdd/implementation-decisions/IMPL-FILE_COLUMN_CONFIG.md` updated with time display options; `stdd/semantic-tokens.yaml` — `IMPL-FILE_AGE_DISPLAY` token added.
+
+---
+
 ## [0.4.2] - 2026-02-06
 
 ### Added
@@ -562,6 +584,8 @@ This baseline establishes a solid foundation for feature development:
 
 **Note**: This version represents the initial STDD documentation baseline. All existing functionality has been documented with requirements, architecture decisions, implementation decisions, and comprehensive tests. The application is ready for feature development with full traceability.
 
+[0.4.3]: https://github.com/yourusername/nx1/releases/tag/v0.4.3
+[0.4.2]: https://github.com/yourusername/nx1/releases/tag/v0.4.2
 [0.4.0]: https://github.com/yourusername/nx1/releases/tag/v0.4.0
 [0.3.0]: https://github.com/yourusername/nx1/releases/tag/v0.3.0
 [0.2.0]: https://github.com/yourusername/nx1/releases/tag/v0.2.0

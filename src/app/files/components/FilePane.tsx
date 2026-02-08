@@ -6,10 +6,11 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import type { FileStat, ComparisonMode, EnhancedCompareState } from "@/lib/files.types";
 import type { PaneBounds } from "@/lib/files.layout";
-import { formatSize, getSortLabel, getSortDirectionSymbol, type SortCriterion, type SortDirection } from "@/lib/files.utils";
+import type { FilesColumnConfig, FileColumnId } from "@/lib/config.types";
+import { formatSize, getSortLabel, getSortDirectionSymbol, formatDateTime, formatAge, type SortCriterion, type SortDirection } from "@/lib/files.utils";
 import ContextMenu from "./ContextMenu";
 
 interface FilePaneProps {
@@ -55,8 +56,12 @@ interface FilePaneProps {
   onDrop?: (files: string[], targetPath: string, operation: "copy" | "move") => void;
   /** [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Whether this pane is in linked mode */
   linked?: boolean;
+  /** [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Cursor index to scroll to (undefined means no scroll) */
+  scrollTrigger?: number;
   /** [IMPL-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] Handler to request focus for this pane */
   onFocusRequest?: () => void;
+  /** [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER] Column configuration */
+  columns: FilesColumnConfig[];
 }
 
 /**
@@ -85,7 +90,9 @@ export default function FilePane({
   onRename,
   onDrop,
   linked = false, // [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
+  scrollTrigger, // [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
   onFocusRequest,
+  columns, // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
 }: FilePaneProps) {
   // [IMPL-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] Context menu state
   const [contextMenu, setContextMenu] = useState<{
@@ -96,6 +103,28 @@ export default function FilePane({
 
   // [IMPL-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] Drag-drop state
   const [dragOver, setDragOver] = useState(false);
+
+  // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Ref for file list container
+  const fileListRef = useRef<HTMLDivElement>(null);
+
+  // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Scroll to cursor when triggered by linked navigation
+  useEffect(() => {
+    // Only scroll if scrollTrigger is defined and valid
+    if (scrollTrigger === undefined || scrollTrigger < 0) {
+      return;
+    }
+
+    // Scroll to the triggered cursor position
+    if (fileListRef.current && files.length > 0 && scrollTrigger < files.length) {
+      const targetElement = fileListRef.current.children[0]?.children[scrollTrigger] as HTMLElement;
+      if (targetElement) {
+        targetElement.scrollIntoView({
+          block: "center",
+          behavior: "smooth",
+        });
+      }
+    }
+  }, [scrollTrigger, files.length]);
 
   const handleFileClick = (index: number) => {
     if (index !== cursor) {
@@ -252,6 +281,56 @@ export default function FilePane({
         return "";
     }
   };
+
+  // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
+  // Render a single column based on column ID
+  const renderColumn = (columnId: FileColumnId, file: FileStat) => {
+    switch (columnId) {
+      case "name":
+        return (
+          <span
+            key="name"
+            className={`
+              flex-1 truncate
+              ${file.isDirectory
+                ? "text-blue-600 dark:text-blue-400 font-semibold"
+                : "text-zinc-900 dark:text-zinc-100"
+              }
+            `}
+          >
+            {file.name}
+          </span>
+        );
+      
+      case "size":
+        // Hide size for directories
+        if (file.isDirectory) return null;
+        return (
+          <span key="size" className="text-zinc-500 dark:text-zinc-400 text-xs">
+            {formatSize(file.size)}
+          </span>
+        );
+      
+      case "mtime": {
+        // [IMPL-FILE_AGE_DISPLAY] [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
+        // Support both "age" (relative time) and "absolute" (YYYY-MM-DD HH:MM:SS) formats
+        const column = columns.find(c => c.id === "mtime");
+        const format = column?.format || "age";  // Default to age
+        const displayTime = format === "age" 
+          ? formatAge(file.mtime) 
+          : formatDateTime(file.mtime);
+        
+        return (
+          <span key="mtime" className="text-zinc-500 dark:text-zinc-400 text-xs">
+            {displayTime}
+          </span>
+        );
+      }
+      
+      default:
+        return null;
+    }
+  };
   
   return (
     <div
@@ -290,7 +369,7 @@ export default function FilePane({
       </div>
       
       {/* File list */}
-      <div className="flex-1 overflow-y-auto">
+      <div ref={fileListRef} className="flex-1 overflow-y-auto">
         {files.length === 0 ? (
           <div className="p-4 text-center text-zinc-500 dark:text-zinc-400">
             Empty directory
@@ -298,7 +377,7 @@ export default function FilePane({
         ) : (
           <div className="font-mono text-sm">
             {files.map((file, index) => {
-              const isCursor = index === cursor;
+              const isCursor = cursor >= 0 && index === cursor; // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Handle cursor=-1
               const isMarked = marks.has(file.name);
               const comparisonClass = getComparisonClass(file.name);
               
@@ -338,28 +417,10 @@ export default function FilePane({
                     </span>
                   )}
                   
-                  {/* Filename */}
-                  <span className={`
-                    flex-1 truncate
-                    ${file.isDirectory
-                      ? "text-blue-600 dark:text-blue-400 font-semibold"
-                      : "text-zinc-900 dark:text-zinc-100"
-                    }
-                  `}>
-                    {file.name}
-                  </span>
-                  
-                  {/* File size */}
-                  {!file.isDirectory && (
-                    <span className="text-zinc-500 dark:text-zinc-400 text-xs">
-                      {formatSize(file.size)}
-                    </span>
-                  )}
-                  
-                  {/* Modification time */}
-                  <span className="text-zinc-500 dark:text-zinc-400 text-xs">
-                    {new Date(file.mtime).toLocaleDateString()}
-                  </span>
+                  {/* [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER] Dynamic columns */}
+                  {columns
+                    .filter(col => col.visible !== false)
+                    .map(col => renderColumn(col.id, file))}
                 </div>
               );
             })}
@@ -374,7 +435,14 @@ export default function FilePane({
         font-mono text-xs text-zinc-600 dark:text-zinc-400
         flex items-center justify-between gap-2
       `}>
-        <span>{files.length > 0 ? `${cursor + 1} / ${files.length}` : "Empty"}</span>
+        <span>
+          {files.length > 0 
+            ? cursor >= 0 
+              ? `${cursor + 1} / ${files.length}` 
+              : `- / ${files.length}` // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Show dash for no selection
+            : "Empty"
+          }
+        </span>
         
         {/* [IMPL-SORT_FILTER] [REQ-FILE_SORTING_ADVANCED] Sort indicator */}
         <span className="text-zinc-500 dark:text-zinc-500 text-[10px]">

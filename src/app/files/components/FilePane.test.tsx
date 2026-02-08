@@ -34,6 +34,13 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
     },
   ];
   
+  // [IMPL-FILE_COLUMN_CONFIG] [IMPL-FILE_AGE_DISPLAY] Mock column config
+  const mockColumns = [
+    { id: "mtime" as const, visible: true, format: "age" as const },
+    { id: "size" as const, visible: true },
+    { id: "name" as const, visible: true },
+  ];
+  
   const mockBounds = { x: 0, y: 0, width: 400, height: 600 };
   const mockOnNavigate = vi.fn();
   const mockOnCursorMove = vi.fn();
@@ -50,6 +57,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         focused={true}
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
       />
     );
     
@@ -69,6 +77,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         focused={true}
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
       />
     );
     
@@ -86,6 +95,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         focused={true}
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
       />
     );
     
@@ -104,6 +114,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         focused={true}
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
       />
     );
     
@@ -122,6 +133,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         focused={true}
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
       />
     );
     
@@ -140,6 +152,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         focused={true}
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
       />
     );
     
@@ -157,6 +170,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         focused={false}
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
       />
     );
     
@@ -174,6 +188,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         focused={true}
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
       />
     );
     
@@ -194,6 +209,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         focused={true}
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
       />
     );
     
@@ -214,6 +230,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         focused={true}
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
         onToggleMark={mockOnToggleMark}
       />
     );
@@ -235,6 +252,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         focused={true}
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
       />
     );
     
@@ -252,6 +270,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         focused={true}
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
       />
     );
     
@@ -271,6 +290,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         focused={true}
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
       />
     );
     
@@ -292,6 +312,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         focused={true}
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
       />
     );
     
@@ -317,6 +338,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         focused={false}
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
         onFocusRequest={mockOnFocusRequest}
       />
     );
@@ -340,6 +362,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         focused={false}
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
         onFocusRequest={mockOnFocusRequest}
       />
     );

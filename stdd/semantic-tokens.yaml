@@ -922,6 +922,37 @@ IMPL-FILES_CONFIG_COMPLETE:
   metadata:
     registered: "2026-02-07"
     last_updated: "2026-02-07"
+IMPL-FILE_COLUMN_CONFIG:
+  type: IMPL
+  name: Configurable File Column Display
+  status: Active
+  description: "Dynamic column configuration for file pane display with configurable order, visibility, and time formatting (YYYY-MM-DD HH:MM:SS)"
+  cross_references:
+    - REQ-CONFIG_DRIVEN_FILE_MANAGER
+    - ARCH-CONFIG_DRIVEN_UI
+    - IMPL-FILES_CONFIG
+    - IMPL-FILE_PANE
+    - REQ-FILE_LISTING
+    - IMPL-FILE_AGE_DISPLAY
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-FILE_COLUMN_CONFIG.md
+  metadata:
+    registered: "2026-02-08"
+    last_updated: "2026-02-08"
+IMPL-FILE_AGE_DISPLAY:
+  type: IMPL
+  name: Configurable File Age Display
+  status: Active
+  description: "Relative age display for file modification times with two significant units (e.g., '4 day 23 hr') as alternative to absolute timestamps"
+  cross_references:
+    - REQ-CONFIG_DRIVEN_FILE_MANAGER
+    - IMPL-FILE_COLUMN_CONFIG
+    - REQ-FILE_LISTING
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-FILE_COLUMN_CONFIG.md
+  metadata:
+    registered: "2026-02-08"
+    last_updated: "2026-02-08"
 IMPL-FILES_DATA:
   type: IMPL
   name: Filesystem Data Layer

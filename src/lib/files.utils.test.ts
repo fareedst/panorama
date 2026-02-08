@@ -2,7 +2,7 @@
 // Tests for client-safe file utilities
 
 import { describe, test, expect } from "vitest";
-import { formatSize, sortFiles, getSortLabel, getSortDirectionSymbol } from "./files.utils";
+import { formatSize, sortFiles, getSortLabel, getSortDirectionSymbol, formatDateTime, formatAge } from "./files.utils";
 import type { FileStat } from "./files.types";
 
 // Test [REQ-FILE_LISTING] formatSize function
@@ -307,5 +307,148 @@ describe("getSortDirectionSymbol - REQ_FILE_SORTING_ADVANCED", () => {
   test("returns correct symbols", () => {
     expect(getSortDirectionSymbol("asc")).toBe("↑");
     expect(getSortDirectionSymbol("desc")).toBe("↓");
+  });
+});
+
+// Test [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER] formatDateTime function
+describe("formatDateTime - IMPL_FILE_COLUMN_CONFIG", () => {
+  test("formats Date object correctly", () => {
+    const date = new Date("2024-01-15T14:30:45");
+    const formatted = formatDateTime(date);
+    expect(formatted).toMatch(/2024-01-15 \d{2}:\d{2}:\d{2}/);
+  });
+
+  test("formats ISO string correctly", () => {
+    const isoString = "2024-03-20T09:15:30Z";
+    const formatted = formatDateTime(isoString);
+    expect(formatted).toMatch(/2024-03-20 \d{2}:\d{2}:\d{2}/);
+  });
+
+  test("pads single digits correctly", () => {
+    const date = new Date("2024-01-05T08:03:09");
+    const formatted = formatDateTime(date);
+    expect(formatted).toMatch(/2024-01-05 \d{2}:03:09/);
+  });
+
+  test("handles midnight correctly", () => {
+    const date = new Date("2024-06-15T00:00:00");
+    const formatted = formatDateTime(date);
+    expect(formatted).toMatch(/2024-06-15 00:00:00/);
+  });
+
+  test("handles end of day correctly", () => {
+    const date = new Date("2024-12-31T23:59:59");
+    const formatted = formatDateTime(date);
+    expect(formatted).toMatch(/2024-12-31 23:59:59/);
+  });
+});
+
+// Test [IMPL-FILE_AGE_DISPLAY] [REQ-CONFIG_DRIVEN_FILE_MANAGER] formatAge function
+describe("formatAge - IMPL_FILE_AGE_DISPLAY", () => {
+  test("formats years and months", () => {
+    const now = new Date();
+    const date = new Date(now.getTime() - (365 * 86400 * 1000) - (30 * 86400 * 1000) * 2.5);
+    const formatted = formatAge(date);
+    expect(formatted).toMatch(/^1 yr \d+ mo$/);
+  });
+
+  test("formats months and weeks", () => {
+    const now = new Date();
+    const date = new Date(now.getTime() - (30 * 86400 * 1000) * 3.5);
+    const formatted = formatAge(date);
+    expect(formatted).toMatch(/^3 mo \d+ (wk|day)$/);
+  });
+
+  test("formats weeks and days", () => {
+    const now = new Date();
+    const date = new Date(now.getTime() - (7 * 86400 * 1000) * 2.5);
+    const formatted = formatAge(date);
+    expect(formatted).toMatch(/^2 wk \d+ day$/);
+  });
+
+  test("formats days and hours", () => {
+    const now = new Date();
+    const date = new Date(now.getTime() - (86400 * 1000) * 4.95);
+    const formatted = formatAge(date);
+    expect(formatted).toMatch(/^4 day \d+ hr$/);
+  });
+
+  test("formats hours and minutes", () => {
+    const now = new Date();
+    const date = new Date(now.getTime() - (3600 * 1000) * 5.5);
+    const formatted = formatAge(date);
+    expect(formatted).toMatch(/^5 hr \d+ min$/);
+  });
+
+  test("formats minutes and seconds", () => {
+    const now = new Date();
+    const date = new Date(now.getTime() - (60 * 1000) * 10.5);
+    const formatted = formatAge(date);
+    expect(formatted).toMatch(/^10 min \d+ sec$/);
+  });
+
+  test("formats seconds only for very recent files", () => {
+    const now = new Date();
+    const date = new Date(now.getTime() - 30 * 1000);
+    const formatted = formatAge(date);
+    expect(formatted).toBe("30 sec");
+  });
+
+  test("handles exactly 1 unit values", () => {
+    const now = new Date();
+    const date = new Date(now.getTime() - 86400 * 1000);
+    const formatted = formatAge(date);
+    expect(formatted).toBe("1 day");
+  });
+
+  test("handles future dates (returns 0 sec)", () => {
+    const now = new Date();
+    const future = new Date(now.getTime() + 3600 * 1000);
+    const formatted = formatAge(future);
+    expect(formatted).toBe("0 sec");
+  });
+
+  test("handles ISO string dates", () => {
+    const now = new Date();
+    const isoDate = new Date(now.getTime() - (86400 * 1000) * 3).toISOString();
+    const formatted = formatAge(isoDate);
+    expect(formatted).toMatch(/^3 day/);
+  });
+
+  test("handles Date objects", () => {
+    const now = new Date();
+    const date = new Date(now.getTime() - (3600 * 1000) * 2);
+    const formatted = formatAge(date);
+    expect(formatted).toBe("2 hr");
+  });
+
+  test("formats large ages (years)", () => {
+    const now = new Date();
+    const date = new Date(now.getTime() - (365 * 86400 * 1000) * 5.2);
+    const formatted = formatAge(date);
+    expect(formatted).toMatch(/^5 yr \d+ mo$/);
+  });
+
+  test("handles zero seconds edge case", () => {
+    const now = new Date();
+    const date = new Date(now.getTime() - 100); // 0.1 seconds
+    const formatted = formatAge(date);
+    expect(formatted).toBe("0 sec");
+  });
+
+  test("shows two significant units when available", () => {
+    const now = new Date();
+    // 4 days, 23 hours
+    const date = new Date(now.getTime() - (86400 * 1000 * 4) - (3600 * 1000 * 23));
+    const formatted = formatAge(date);
+    expect(formatted).toMatch(/^4 day 23 hr$/);
+  });
+
+  test("shows only one unit when second unit is zero", () => {
+    const now = new Date();
+    // Exactly 2 hours
+    const date = new Date(now.getTime() - (3600 * 1000 * 2));
+    const formatted = formatAge(date);
+    expect(formatted).toBe("2 hr");
   });
 });
