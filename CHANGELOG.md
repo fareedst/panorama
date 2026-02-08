@@ -7,6 +7,61 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.4.4] - 2026-02-08
+
+### Added
+
+#### File manager: overwrite confirmation with file comparison [IMPL-OVERWRITE_PROMPT]
+- **Enhanced copy/move confirmation dialogs** that detect file conflicts and display detailed comparison information before overwriting files
+- **Conflict detection** before confirmation: When copying or moving files to a directory that already contains files with matching names, the system automatically detects conflicts using existing pane file lists (no additional API calls)
+- **Rich comparison display**:
+  - **Warning section** with yellow/amber styling and ⚠️ icon indicating files will be overwritten
+  - **Scrollable conflict list** (up to 6 rows visible) showing each conflicting file with:
+    - Filename in bold
+    - **Existing (target)**: formatted size and timestamp (e.g., "400 B, 2024-01-15 10:00:00")
+    - **Selected (source)**: formatted size and timestamp (e.g., "500 B, 2024-02-01 10:00:00")
+    - **Comparison**: descriptive text showing differences (e.g., "Source larger (by 100 B), source newer")
+- **Size comparison logic**: Reports "Same size", "Source larger (by X)", or "Source smaller (by X)"
+- **Time comparison logic**: Reports "same date" (within 1 second), "source newer", or "source older"
+- **Works for both operations**: Copy (C key) and Move (V key) both use the same conflict detection and comparison display
+- **Browser-compatible**: Uses `path-browserify` for basename extraction in browser environment
+- **Utility function**: New `describeFileComparison(source, existing)` in `src/lib/files.utils.ts` provides reusable comparison logic
+
+### Changed
+- **ConfirmDialog component** (`src/app/files/components/ConfirmDialog.tsx`):
+  - Extended with optional `conflicts` prop for overwrite details
+  - Dialog width increases from `max-w-md` to `max-w-2xl` when conflicts present
+  - Added `FileConflict` interface export for type safety
+- **Copy/Move handlers** (`src/app/files/WorkspaceView.tsx`):
+  - `handleBulkCopy` and `handleBulkMove` now detect conflicts before opening confirmation
+  - Message includes conflict count when files will be overwritten
+  - Conflicts array passed to ConfirmDialog for detailed display
+
+### Technical details
+- **New dependency**: `path-browserify` ^1.0.1 for browser-compatible path operations
+- **Modified**: 
+  - `src/lib/files.utils.ts` — added `describeFileComparison()` utility
+  - `src/app/files/components/ConfirmDialog.tsx` — added `FileConflict` interface and conflict rendering section
+  - `src/app/files/WorkspaceView.tsx` — added conflict detection logic in copy/move handlers
+- **Tests**: 4 new tests in `src/app/files/BulkOperations.test.tsx`:
+  - Copy with single conflict shows comparison
+  - Move with single conflict shows comparison
+  - Copy with no conflicts shows no overwrite section
+  - Copy with multiple conflicts shows all comparisons
+  - **Test results**: 15 passed, 3 skipped (18 total)
+- **Docs**: 
+  - `stdd/requirements/REQ-BULK_FILE_OPS.md` — marked overwrite confirmation as implemented
+  - `stdd/implementation-decisions/IMPL-OVERWRITE_PROMPT.md` — new implementation decision document
+  - `stdd/implementation-decisions.yaml` — added IMPL-OVERWRITE_PROMPT entry with full metadata
+
+### Design decisions
+- **Option chosen**: Rich overwrite section with structured conflict data (over simple string-only message)
+- **Rationale**: Better readability for multiple conflicts, consistent formatting, scrollable for many files
+- **File stat source**: Uses existing pane file lists loaded in WorkspaceView (no backend changes needed)
+- **Comparison granularity**: Size differences shown to the byte; time differences within 1 second considered equal (filesystem precision)
+
+---
+
 ## [0.4.3] - 2026-02-08
 
 ### Added
@@ -584,6 +639,7 @@ This baseline establishes a solid foundation for feature development:
 
 **Note**: This version represents the initial STDD documentation baseline. All existing functionality has been documented with requirements, architecture decisions, implementation decisions, and comprehensive tests. The application is ready for feature development with full traceability.
 
+[0.4.4]: https://github.com/yourusername/nx1/releases/tag/v0.4.4
 [0.4.3]: https://github.com/yourusername/nx1/releases/tag/v0.4.3
 [0.4.2]: https://github.com/yourusername/nx1/releases/tag/v0.4.2
 [0.4.0]: https://github.com/yourusername/nx1/releases/tag/v0.4.0

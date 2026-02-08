@@ -1,9 +1,24 @@
-// [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]
+// [IMPL-BULK_OPS] [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]
 // Confirmation dialog for destructive operations
 
 "use client";
 
 import { useEffect } from "react";
+
+/**
+ * File conflict detail for overwrite confirmation
+ * [IMPL-OVERWRITE_PROMPT] [REQ-BULK_FILE_OPS]
+ */
+export interface FileConflict {
+  /** Filename that conflicts */
+  name: string;
+  /** Formatted summary of existing file (target) */
+  existingSummary: string;
+  /** Formatted summary of source file */
+  sourceSummary: string;
+  /** Comparison text (e.g., "Source larger, source newer") */
+  comparison: string;
+}
 
 interface ConfirmDialogProps {
   /** Dialog title */
@@ -18,6 +33,8 @@ interface ConfirmDialogProps {
   destructive?: boolean;
   /** Whether dialog is open */
   isOpen: boolean;
+  /** Optional file conflicts to display for overwrite operations */
+  conflicts?: FileConflict[];
   /** Callback when user confirms */
   onConfirm: () => void;
   /** Callback when user cancels or closes */
@@ -26,7 +43,7 @@ interface ConfirmDialogProps {
 
 /**
  * ConfirmDialog - Modal dialog for confirming operations
- * [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]
+ * [IMPL-BULK_OPS] [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]
  */
 export default function ConfirmDialog({
   title,
@@ -35,6 +52,7 @@ export default function ConfirmDialog({
   cancelText = "Cancel",
   destructive = false,
   isOpen,
+  conflicts,
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
@@ -67,7 +85,7 @@ export default function ConfirmDialog({
       />
       
       {/* Dialog */}
-      <div className="relative bg-white dark:bg-zinc-800 rounded-lg shadow-xl max-w-md w-full mx-4 p-6">
+      <div className="relative bg-white dark:bg-zinc-800 rounded-lg shadow-xl max-w-2xl w-full mx-4 p-6">
         {/* Title */}
         <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 mb-4">
           {title}
@@ -77,6 +95,40 @@ export default function ConfirmDialog({
         <p className="text-zinc-700 dark:text-zinc-300 mb-6 whitespace-pre-line">
           {message}
         </p>
+        
+        {/* Conflict Details [IMPL-OVERWRITE_PROMPT] */}
+        {conflicts && conflicts.length > 0 && (
+          <div className="mb-6 border border-yellow-300 dark:border-yellow-700 rounded-md bg-yellow-50 dark:bg-yellow-900/20 p-4">
+            <h3 className="text-sm font-semibold text-yellow-900 dark:text-yellow-100 mb-3">
+              ⚠️ The following file(s) will be overwritten:
+            </h3>
+            <div className="max-h-48 overflow-y-auto space-y-3">
+              {conflicts.map((conflict, index) => (
+                <div
+                  key={index}
+                  className="text-xs bg-white dark:bg-zinc-800 rounded border border-yellow-200 dark:border-yellow-800 p-3"
+                >
+                  <div className="font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
+                    {conflict.name}
+                  </div>
+                  <div className="space-y-1 text-zinc-600 dark:text-zinc-400">
+                    <div>
+                      <span className="font-medium text-zinc-700 dark:text-zinc-300">Existing (target):</span>{" "}
+                      {conflict.existingSummary}
+                    </div>
+                    <div>
+                      <span className="font-medium text-zinc-700 dark:text-zinc-300">Selected (source):</span>{" "}
+                      {conflict.sourceSummary}
+                    </div>
+                    <div className="text-zinc-500 dark:text-zinc-500 italic">
+                      {conflict.comparison}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
         
         {/* Actions */}
         <div className="flex gap-3 justify-end">

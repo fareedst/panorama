@@ -254,3 +254,64 @@ export function getSortLabel(sortBy: SortCriterion): string {
 export function getSortDirectionSymbol(direction: SortDirection): string {
   return direction === "asc" ? "↑" : "↓";
 }
+
+/**
+ * Compare two files and describe their size and time differences
+ * [IMPL-OVERWRITE_PROMPT] [REQ-BULK_FILE_OPS]
+ * 
+ * Used to inform user about overwrite consequences in copy/move operations.
+ * 
+ * @param source - Source file stat
+ * @param existing - Existing file stat (in target directory)
+ * @returns Object with formatted summaries and comparison text
+ */
+export function describeFileComparison(
+  source: FileStat,
+  existing: FileStat
+): {
+  sourceSummary: string;
+  existingSummary: string;
+  comparison: string;
+} {
+  // Format source file
+  const sourceSummary = `${formatSize(source.size)}, ${formatDateTime(source.mtime)}`;
+  
+  // Format existing file
+  const existingSummary = `${formatSize(existing.size)}, ${formatDateTime(existing.mtime)}`;
+  
+  // Compare size
+  let sizeComparison: string;
+  if (source.size === existing.size) {
+    sizeComparison = "Same size";
+  } else if (source.size > existing.size) {
+    const diff = source.size - existing.size;
+    sizeComparison = `Source larger (by ${formatSize(diff)})`;
+  } else {
+    const diff = existing.size - source.size;
+    sizeComparison = `Source smaller (by ${formatSize(diff)})`;
+  }
+  
+  // Compare time
+  const sourceTime = typeof source.mtime === "string" ? new Date(source.mtime).getTime() : source.mtime.getTime();
+  const existingTime = typeof existing.mtime === "string" ? new Date(existing.mtime).getTime() : existing.mtime.getTime();
+  
+  let timeComparison: string;
+  const timeDiff = Math.abs(sourceTime - existingTime);
+  // Consider times equal if within 1 second (filesystem precision)
+  if (timeDiff < 1000) {
+    timeComparison = "same date";
+  } else if (sourceTime > existingTime) {
+    timeComparison = "source newer";
+  } else {
+    timeComparison = "source older";
+  }
+  
+  // Combine comparisons
+  const comparison = `${sizeComparison}, ${timeComparison}`;
+  
+  return {
+    sourceSummary,
+    existingSummary,
+    comparison,
+  };
+}

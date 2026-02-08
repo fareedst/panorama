@@ -602,3 +602,224 @@ describe("Integration Tests [TEST-BULK_FILE_OPS]", () => {
     expect(true).toBe(true);
   });
 });
+
+describe("Overwrite Prompt [TEST-BULK_FILE_OPS] [IMPL-OVERWRITE_PROMPT]", () => {
+  const mockSourceFiles: FileStat[] = [
+    {
+      name: "file1.txt",
+      path: "/source/file1.txt",
+      isDirectory: false,
+      size: 500,
+      mtime: new Date("2024-02-01T10:00:00"),
+      extension: ".txt",
+    },
+    {
+      name: "file2.txt",
+      path: "/source/file2.txt",
+      isDirectory: false,
+      size: 300,
+      mtime: new Date("2024-02-01T11:00:00"),
+      extension: ".txt",
+    },
+  ];
+  
+  const mockDestFiles: FileStat[] = [
+    {
+      name: "file1.txt",
+      path: "/dest/file1.txt",
+      isDirectory: false,
+      size: 400,
+      mtime: new Date("2024-01-15T10:00:00"),
+      extension: ".txt",
+    },
+    {
+      name: "other.txt",
+      path: "/dest/other.txt",
+      isDirectory: false,
+      size: 100,
+      mtime: new Date("2024-01-20T10:00:00"),
+      extension: ".txt",
+    },
+  ];
+  
+  it("should show conflict details when copying to existing file [REQ-BULK_FILE_OPS]", async () => {
+    render(
+      <WorkspaceView
+        initialPanes={[
+          { path: "/source", files: mockSourceFiles },
+          { path: "/dest", files: mockDestFiles },
+        ]}
+        keybindings={mockKeybindings}
+        copy={mockCopy}
+        layout={mockLayout}
+        columns={mockColumns}
+      />
+    );
+    
+    // Mark file1.txt (which exists in both panes)
+    fireEvent.keyDown(window, { key: "m" });
+    await waitFor(() => screen.queryByText(/marked/), { timeout: 2000 });
+    
+    // Trigger copy
+    fireEvent.keyDown(window, { key: "c" });
+    
+    await waitFor(() => {
+      expect(screen.getByText("Copy Files")).toBeInTheDocument();
+    }, { timeout: 2000 });
+    
+    // Should show overwrite warning
+    expect(screen.getByText(/1 file\(s\) will be overwritten/)).toBeInTheDocument();
+    
+    // Should show conflict details with warning indicator
+    expect(screen.getByText(/following file\(s\) will be overwritten/)).toBeInTheDocument();
+    
+    // Should show conflicting filename (appears in both panes and conflict section, so use getAllByText)
+    const filenamMatches = screen.getAllByText("file1.txt");
+    expect(filenamMatches.length).toBeGreaterThan(0);
+    
+    // Should show existing and source labels
+    expect(screen.getByText(/Existing \(target\):/)).toBeInTheDocument();
+    expect(screen.getByText(/Selected \(source\):/)).toBeInTheDocument();
+    
+    // Should show comparison (source is larger and newer)
+    expect(screen.getByText(/Source larger/)).toBeInTheDocument();
+    expect(screen.getByText(/source newer/)).toBeInTheDocument();
+  });
+  
+  it("should show conflict details when moving to existing file [REQ-BULK_FILE_OPS]", async () => {
+    render(
+      <WorkspaceView
+        initialPanes={[
+          { path: "/source", files: mockSourceFiles },
+          { path: "/dest", files: mockDestFiles },
+        ]}
+        keybindings={mockKeybindings}
+        copy={mockCopy}
+        layout={mockLayout}
+        columns={mockColumns}
+      />
+    );
+    
+    // Mark file1.txt
+    fireEvent.keyDown(window, { key: "m" });
+    await waitFor(() => screen.queryByText(/marked/), { timeout: 2000 });
+    
+    // Trigger move
+    fireEvent.keyDown(window, { key: "v" });
+    
+    await waitFor(() => {
+      expect(screen.getByText("Move Files")).toBeInTheDocument();
+    }, { timeout: 2000 });
+    
+    // Should show overwrite warning
+    expect(screen.getByText(/1 file\(s\) will be overwritten/)).toBeInTheDocument();
+    
+    // Should show conflict details (appears in multiple places)
+    const filenameMatches = screen.getAllByText("file1.txt");
+    expect(filenameMatches.length).toBeGreaterThan(0);
+    
+    expect(screen.getByText(/Existing \(target\):/)).toBeInTheDocument();
+    expect(screen.getByText(/Selected \(source\):/)).toBeInTheDocument();
+  });
+  
+  it("should not show conflicts when no files exist in target [REQ-BULK_FILE_OPS]", async () => {
+    render(
+      <WorkspaceView
+        initialPanes={[
+          { path: "/source", files: mockSourceFiles },
+          { path: "/dest", files: mockDestFiles },
+        ]}
+        keybindings={mockKeybindings}
+        copy={mockCopy}
+        layout={mockLayout}
+        columns={mockColumns}
+      />
+    );
+    
+    // Move cursor to file2.txt (doesn't exist in dest)
+    fireEvent.keyDown(window, { key: "ArrowDown" });
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    
+    // Mark file2.txt
+    fireEvent.keyDown(window, { key: "m" });
+    await waitFor(() => screen.queryByText(/marked/), { timeout: 2000 });
+    
+    // Trigger copy
+    fireEvent.keyDown(window, { key: "c" });
+    
+    await waitFor(() => {
+      expect(screen.getByText("Copy Files")).toBeInTheDocument();
+    }, { timeout: 2000 });
+    
+    // Should NOT show overwrite warning
+    expect(screen.queryByText(/will be overwritten/)).not.toBeInTheDocument();
+    
+    // Should NOT show conflict details section
+    expect(screen.queryByText(/following file\(s\) will be overwritten/)).not.toBeInTheDocument();
+  });
+  
+  it("should show multiple conflicts when copying multiple existing files [REQ-BULK_FILE_OPS]", async () => {
+    const multipleConflictDest: FileStat[] = [
+      {
+        name: "file1.txt",
+        path: "/dest/file1.txt",
+        isDirectory: false,
+        size: 400,
+        mtime: new Date("2024-01-15T10:00:00"),
+        extension: ".txt",
+      },
+      {
+        name: "file2.txt",
+        path: "/dest/file2.txt",
+        isDirectory: false,
+        size: 200,
+        mtime: new Date("2024-01-20T10:00:00"),
+        extension: ".txt",
+      },
+    ];
+    
+    render(
+      <WorkspaceView
+        initialPanes={[
+          { path: "/source", files: mockSourceFiles },
+          { path: "/dest", files: multipleConflictDest },
+        ]}
+        keybindings={mockKeybindings}
+        copy={mockCopy}
+        layout={mockLayout}
+        columns={mockColumns}
+      />
+    );
+    
+    // Mark file1
+    fireEvent.keyDown(window, { key: "m" });
+    await waitFor(() => screen.queryByText(/marked/), { timeout: 2000 });
+    
+    // Mark file2
+    fireEvent.keyDown(window, { key: "ArrowDown" });
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    fireEvent.keyDown(window, { key: "m" });
+    await waitFor(() => screen.queryByText(/2 marked/), { timeout: 2000 });
+    
+    // Trigger copy
+    fireEvent.keyDown(window, { key: "c" });
+    
+    await waitFor(() => {
+      expect(screen.getByText("Copy Files")).toBeInTheDocument();
+    }, { timeout: 2000 });
+    
+    // Should show 2 files will be overwritten
+    expect(screen.getByText(/2 file.*will be overwritten/)).toBeInTheDocument();
+    
+    // Should show conflict warning section
+    expect(screen.getByText(/following file.*will be overwritten/i)).toBeInTheDocument();
+    
+    // Should show both filenames in conflict list
+    const file1Elements = screen.getAllByText("file1.txt");
+    const file2Elements = screen.getAllByText("file2.txt");
+    
+    // Each should appear at least once in the conflict section
+    expect(file1Elements.length).toBeGreaterThan(0);
+    expect(file2Elements.length).toBeGreaterThan(0);
+  });
+});

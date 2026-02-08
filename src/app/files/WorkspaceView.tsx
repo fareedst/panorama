@@ -9,17 +9,18 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import path from "path-browserify";
 import type { FileStat, OperationResult, ComparisonMode } from "@/lib/files.types";
 import type { LayoutType } from "@/lib/files.layout";
 import { calculateLayout } from "@/lib/files.layout";
 import { buildEnhancedComparisonIndex } from "@/lib/files.comparison";
 import { globalDirectoryHistory } from "@/lib/files.history";
 import { globalBookmarkManager } from "@/lib/files.bookmarks";
-import { sortFiles, type SortCriterion, type SortDirection } from "@/lib/files.utils";
+import { sortFiles, describeFileComparison, type SortCriterion, type SortDirection } from "@/lib/files.utils";
 import { initializeKeybindingRegistry, matchKeybinding } from "@/lib/files.keybinds";
 import type { KeybindingConfig, FilesCopyConfig, FilesLayoutConfig } from "@/lib/config.types";
 import FilePane from "./components/FilePane";
-import ConfirmDialog from "./components/ConfirmDialog";
+import ConfirmDialog, { type FileConflict } from "./components/ConfirmDialog";
 import ProgressDialog from "./components/ProgressDialog";
 import GotoDialog from "./components/GotoDialog";
 import BookmarkDialog from "./components/BookmarkDialog";
@@ -161,11 +162,12 @@ export default function WorkspaceView({
   const [showFinderDialog, setShowFinderDialog] = useState(false);
   const [showSearchDialog, setShowSearchDialog] = useState(false);
   
-  // [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS] Dialog state
+  // [IMPL-BULK_OPS] [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS] Dialog state
   const [confirmDialog, setConfirmDialog] = useState<{
     isOpen: boolean;
     title: string;
     message: string;
+    conflicts?: FileConflict[];
     onConfirm: () => void;
   }>({
     isOpen: false,
@@ -694,6 +696,7 @@ export default function WorkspaceView({
   
   /**
    * Execute bulk copy operation
+   * [IMPL-BULK_OPS] [IMPL-OVERWRITE_PROMPT] [REQ-BULK_FILE_OPS]
    */
   const handleBulkCopy = useCallback(async () => {
     // Need at least 2 panes for cross-pane copy
@@ -711,11 +714,42 @@ export default function WorkspaceView({
     const destPaneIndex = focusIndex === 0 ? 1 : 0;
     const destDir = panes[destPaneIndex].path;
     
+    // [IMPL-OVERWRITE_PROMPT] Detect file conflicts
+    const conflicts: FileConflict[] = [];
+    for (const sourcePath of sources) {
+      const basename = path.basename(sourcePath);
+      const existingFile = panes[destPaneIndex].files.find(f => f.name === basename);
+      
+      if (existingFile) {
+        // Find source file stat
+        const sourceFile = panes[focusIndex].files.find(f => f.path === sourcePath);
+        if (sourceFile) {
+          const { sourceSummary, existingSummary, comparison } = describeFileComparison(
+            sourceFile,
+            existingFile
+          );
+          conflicts.push({
+            name: basename,
+            sourceSummary,
+            existingSummary,
+            comparison,
+          });
+        }
+      }
+    }
+    
+    // Build message
+    let message = `Copy ${sources.length} file(s) to:\n${destDir}`;
+    if (conflicts.length > 0) {
+      message += `\n\n${conflicts.length} file(s) will be overwritten.`;
+    }
+    
     // Show confirmation
     setConfirmDialog({
       isOpen: true,
       title: "Copy Files",
-      message: `Copy ${sources.length} file(s) to:\n${destDir}`,
+      message,
+      conflicts: conflicts.length > 0 ? conflicts : undefined,
       onConfirm: async () => {
         setConfirmDialog({ ...confirmDialog, isOpen: false });
         
@@ -772,6 +806,7 @@ export default function WorkspaceView({
   
   /**
    * Execute bulk move operation
+   * [IMPL-BULK_OPS] [IMPL-OVERWRITE_PROMPT] [REQ-BULK_FILE_OPS]
    */
   const handleBulkMove = useCallback(async () => {
     // Need at least 2 panes for cross-pane move
@@ -789,11 +824,42 @@ export default function WorkspaceView({
     const destPaneIndex = focusIndex === 0 ? 1 : 0;
     const destDir = panes[destPaneIndex].path;
     
+    // [IMPL-OVERWRITE_PROMPT] Detect file conflicts
+    const conflicts: FileConflict[] = [];
+    for (const sourcePath of sources) {
+      const basename = path.basename(sourcePath);
+      const existingFile = panes[destPaneIndex].files.find(f => f.name === basename);
+      
+      if (existingFile) {
+        // Find source file stat
+        const sourceFile = panes[focusIndex].files.find(f => f.path === sourcePath);
+        if (sourceFile) {
+          const { sourceSummary, existingSummary, comparison } = describeFileComparison(
+            sourceFile,
+            existingFile
+          );
+          conflicts.push({
+            name: basename,
+            sourceSummary,
+            existingSummary,
+            comparison,
+          });
+        }
+      }
+    }
+    
+    // Build message
+    let message = `Move ${sources.length} file(s) to:\n${destDir}`;
+    if (conflicts.length > 0) {
+      message += `\n\n${conflicts.length} file(s) will be overwritten.`;
+    }
+    
     // Show confirmation
     setConfirmDialog({
       isOpen: true,
       title: "Move Files",
-      message: `Move ${sources.length} file(s) to:\n${destDir}`,
+      message,
+      conflicts: conflicts.length > 0 ? conflicts : undefined,
       onConfirm: async () => {
         setConfirmDialog({ ...confirmDialog, isOpen: false });
         
@@ -1336,12 +1402,13 @@ export default function WorkspaceView({
         </div>
       </footer>
       
-      {/* [IMPL-BULK_OPS] [REQ-BULK_FILE_OPS] Dialogs */}
+      {/* [IMPL-BULK_OPS] [IMPL-OVERWRITE_PROMPT] [REQ-BULK_FILE_OPS] Dialogs */}
       <ConfirmDialog
         title={confirmDialog.title}
         message={confirmDialog.message}
         isOpen={confirmDialog.isOpen}
         destructive={confirmDialog.title.includes("Delete")}
+        conflicts={confirmDialog.conflicts}
         onConfirm={confirmDialog.onConfirm}
         onCancel={() => setConfirmDialog({ ...confirmDialog, isOpen: false })}
       />

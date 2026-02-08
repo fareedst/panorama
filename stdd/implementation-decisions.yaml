@@ -2622,17 +2622,93 @@ IMPL-BULK_OPS:
     supersedes: []
     see_also:
       - IMPL-FILES_API
+      - IMPL-OVERWRITE_PROMPT
   detail_file: implementation-decisions/IMPL-BULK_OPS.md
   metadata:
     created:
       date: 2026-02-07
       author: "AI Agent"
     last_updated:
-      date: 2026-02-07
+      date: 2026-02-08
+      author: "AI Agent"
+      reason: "Added overwrite prompt enhancement"
+    last_validated:
+      date: 2026-02-08
+      validator: "AI Agent"
+      result: "pass"
+IMPL-OVERWRITE_PROMPT:
+  name: Overwrite Confirmation with File Comparison
+  status: Active
+  cross_references:
+    - ARCH-BATCH_OPERATIONS
+    - REQ-BULK_FILE_OPS
+    - IMPL-BULK_OPS
+  rationale:
+    why: "Users need to see existing file attributes and comparison before overwriting"
+    problems_solved:
+      - "Silent overwriting without user awareness"
+      - "No visibility into what will be replaced"
+      - "Risk of overwriting newer/larger files"
+    benefits:
+      - "Clear comparison of source vs existing files"
+      - "Shows size and time differences"
+      - "No additional API calls (uses existing pane data)"
+  implementation_approach:
+    summary: "Detect file conflicts before confirmation, display comparison details in ConfirmDialog"
+    details:
+      - "Before opening confirm dialog, check destination pane files for matching names"
+      - "Build FileConflict array with formatted summaries and comparison text"
+      - "describeFileComparison() utility provides size/time comparison logic"
+      - "ConfirmDialog extended with optional conflicts prop and scrollable detail section"
+      - "Uses path-browserify for basename extraction in browser"
+  code_locations:
+    files:
+      - path: "src/app/files/WorkspaceView.tsx"
+        description: "Conflict detection in handleBulkCopy and handleBulkMove"
+        lines: []
+      - path: "src/app/files/components/ConfirmDialog.tsx"
+        description: "FileConflict interface and rendering"
+        lines: []
+      - path: "src/lib/files.utils.ts"
+        description: "describeFileComparison utility"
+        lines: []
+    functions:
+      - name: "describeFileComparison"
+        file: "src/lib/files.utils.ts"
+        description: "Compare two files and describe size/time differences"
+      - name: "handleBulkCopy"
+        file: "src/app/files/WorkspaceView.tsx"
+        description: "Copy with conflict detection"
+      - name: "handleBulkMove"
+        file: "src/app/files/WorkspaceView.tsx"
+        description: "Move with conflict detection"
+  traceability:
+    architecture:
+      - ARCH-BATCH_OPERATIONS
+    requirements:
+      - REQ-BULK_FILE_OPS
+    tests:
+      - testOverwritePrompt_IMPL_OVERWRITE_PROMPT
+    code_annotations:
+      - IMPL-OVERWRITE_PROMPT
+  related_decisions:
+    depends_on:
+      - IMPL-BULK_OPS
+      - IMPL-FILES_DATA
+    supersedes: []
+    see_also:
+      - IMPL-COMPARISON_COLORS
+  detail_file: implementation-decisions/IMPL-OVERWRITE_PROMPT.md
+  metadata:
+    created:
+      date: 2026-02-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-08
       author: "AI Agent"
       reason: "Initial creation"
     last_validated:
-      date: 2026-02-07
+      date: 2026-02-08
       validator: "AI Agent"
       result: "pass"
 IMPL-SORT_FILTER:

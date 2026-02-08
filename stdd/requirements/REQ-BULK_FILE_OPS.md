@@ -36,6 +36,7 @@ Web-specific considerations:
 - ✅ Operations are asynchronous (UI remains responsive during operations)
 - ✅ Error handling with user-friendly messages (permissions, disk full, etc.)
 - ✅ Confirmation dialogs before destructive operations (delete, overwrite)
+- ✅ **Overwrite confirmation with file comparison** (shows existing file attributes, source file attributes, and comparison) - Implemented 2026-02-08
 - ✅ Cross-pane operations use focused pane as source, other pane as destination
 - ✅ Operations report final status (success count, error count)
 
@@ -45,24 +46,26 @@ Web-specific considerations:
 - ✅ Unit tests verify bulk move on marked files
 - ✅ Unit tests verify bulk delete on marked files
 - ✅ Unit tests verify fallback to cursor file when no marks
+- ✅ Unit tests verify overwrite prompt shows existing file info and comparison
 - ✅ Integration tests verify cross-pane operations
 - ✅ Integration tests verify progress tracking updates
 - ✅ Error tests verify permission errors handled gracefully
 - ✅ Error tests verify API errors handled gracefully
 - ✅ Tests reference `[REQ-BULK_FILE_OPS]` token
-- **Test Results**: 295/299 tests passing (4 async timing issues in test environment only)
+- **Test Results**: 15/18 tests passing (3 skipped integration tests)
 
 ## Traceability
 
 - **Architecture**: See `architecture-decisions.md` § Batch Operations [ARCH-BATCH_OPERATIONS]
-- **Implementation**: See `implementation-decisions.md` § Bulk Operations [IMPL-BULK_OPS]
-- **Tests**: `src/app/files/BulkOperations.test.tsx` (14 test cases, 295/299 passing)
+- **Implementation**: See `implementation-decisions.md` § Bulk Operations [IMPL-BULK_OPS], Overwrite Prompt [IMPL-OVERWRITE_PROMPT]
+- **Tests**: `src/app/files/BulkOperations.test.tsx` (18 test cases, 15 passing, 3 skipped)
 - **Code**: 
-  - `src/app/files/WorkspaceView.tsx` - Bulk operation handlers and keyboard shortcuts
+  - `src/app/files/WorkspaceView.tsx` - Bulk operation handlers with conflict detection and keyboard shortcuts
   - `src/app/api/files/route.ts` - API routes for bulk-copy, bulk-move, bulk-delete
   - `src/lib/files.data.ts` - bulkCopy(), bulkMove(), bulkDelete() functions
   - `src/lib/files.types.ts` - OperationProgress and OperationResult interfaces
-  - `src/app/files/components/ConfirmDialog.tsx` - Confirmation dialog component
+  - `src/lib/files.utils.ts` - describeFileComparison() for overwrite prompts
+  - `src/app/files/components/ConfirmDialog.tsx` - Confirmation dialog with conflict details
   - `src/app/files/components/ProgressDialog.tsx` - Progress tracking dialog
 
 ## Implementation Summary
@@ -134,7 +137,19 @@ Web-specific considerations:
 - `POST /api/files` with `{ operation: 'bulk-move', sources: string[], dest: string }`
 - `POST /api/files` with `{ operation: 'bulk-delete', sources: string[] }`
 
-**Future enhancements** (deferred): Bulk rename dialog (R key); overwrite confirmation for copy/move; drag-and-drop support for marking; multi-pane setup improvements.
+**Future enhancements** (deferred): Bulk rename dialog (R key); drag-and-drop support for marking; multi-pane setup improvements.
+
+**Overwrite Confirmation Enhancement** (Implemented 2026-02-08):
+- Copy and move operations now detect file conflicts before showing confirmation dialog
+- When target directory contains files with matching names:
+  - Dialog shows count of files that will be overwritten
+  - Scrollable conflict section displays each conflicting file with:
+    - **Existing (target)**: size and modification time
+    - **Selected (source)**: size and modification time
+    - **Comparison**: descriptive text (e.g., "Source larger (by 100 B), source newer")
+- Utilizes existing file stats from panes (no additional API calls)
+- Uses `path-browserify` for basename extraction in browser environment
+- See `[IMPL-OVERWRITE_PROMPT]` for implementation details
 
 **Progress Callback Interface**:
 ```typescript
