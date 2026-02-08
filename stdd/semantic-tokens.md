@@ -1,16 +1,14 @@
 # Semantic Tokens Directory
 
-**STDD Methodology Version**: 1.5.0
+**STDD Methodology Version**: 1.6.0
 
 ## Overview
 This document serves as the **central directory/registry** for all semantic tokens used in the project. Semantic tokens (`[REQ-*]`, `[ARCH-*]`, `[IMPL-*]`) provide a consistent vocabulary and traceability mechanism that ties together all documentation, code, and tests.
 
 **For detailed information about tokens, see:**
-- **Requirements tokens**: See `requirements.yaml` (YAML database) for full details including descriptions, rationale, satisfaction criteria, and validation criteria
-- **Architecture tokens**: See `architecture-decisions.yaml` (YAML database) for architectural decisions, rationale, and alternatives considered
-- **Implementation tokens**: See `implementation-decisions.yaml` (YAML database) for implementation details, code structures, and algorithms
-- **Guide files**: See `requirements.md`, `architecture-decisions.md`, `implementation-decisions.md` for usage instructions and yq query examples
-- **Code vs docs audit**: See `STDD-AUDIT-CODE-VS-DOCS.md` for whether code and semantic tokens are correctly represented for agent recreatability
+- **Requirements tokens**: See `requirements.md` (guide) and `requirements.yaml` (YAML index) for full descriptions, rationale, satisfaction criteria, and validation criteria
+- **Architecture tokens**: See `architecture-decisions.md` (guide) and `architecture-decisions.yaml` (YAML index) for architectural decisions, rationale, and alternatives considered
+- **Implementation tokens**: See `implementation-decisions.md` (guide) and `implementation-decisions.yaml` (YAML index) for implementation details, code structures, and algorithms
 
 ## AI Assistant Integration Guidelines [REQ-DOC_016]
 
@@ -27,33 +25,27 @@ AI assistants should use semantic tokens for:
 
 ```bash
 # Find all implementations of a requirement
-grep -r "\[REQ-FEATURE_NAME\]" --include="*.tsx" --include="*.ts" --include="*.css" .
+grep -r "\[REQ-FEATURE_NAME\]" --include="*.go" .
 
 # Find all tests for a requirement
-grep -r "REQ_FEATURE_NAME" --include="*.test.tsx" --include="*.test.ts" .
+grep -r "REQ_FEATURE_NAME" --include="*_test.go" .
 
 # Find architecture decisions for a feature
 grep -r "\[ARCH-FEATURE_NAME\]" --include="*.md" .
 
 # Find implementation details
-grep -r "\[IMPL-FEATURE_NAME\]" --include="*.tsx" --include="*.ts" --include="*.css" .
-
-# Query YAML indexes (STDD v1.5.0+)
-yq '.REQ-FEATURE_NAME' stdd/requirements.yaml
-yq '.ARCH-FEATURE_NAME' stdd/architecture-decisions.yaml
-yq '.IMPL-FEATURE_NAME' stdd/implementation-decisions.yaml
+grep -r "\[IMPL-FEATURE_NAME\]" --include="*.go" .
 ```
 
 ### Token Creation Requirements
 
 When implementing features:
-1. **ALWAYS** create `[REQ-*]` token in `requirements.yaml` and optionally create a detail file in `requirements/` directory
-2. **ALWAYS** create `[ARCH-*]` token in `architecture-decisions.yaml` for design decisions and optionally create a detail file in `architecture-decisions/` directory
-3. **ALWAYS** create `[IMPL-*]` token in `implementation-decisions.yaml` and optionally create a detail file in `implementation-decisions/` directory
-4. **ALWAYS** add `[IMPL-*]` tokens to code comments
-5. **ALWAYS** reference `[REQ-*]` tokens in test names/comments
-6. **ALWAYS** update `semantic-tokens.md` registry when creating new tokens
-7. **ALWAYS** document any `[PROC-*]` process tokens in `processes.md` when defining operational workflows
+1. **ALWAYS** create `[REQ-*]` token in `requirements.md` first
+2. **ALWAYS** create `[ARCH-*]` token in `architecture-decisions.md` for design decisions
+3. **ALWAYS** add `[IMPL-*]` tokens to code comments
+4. **ALWAYS** reference `[REQ-*]` tokens in test names/comments
+5. **ALWAYS** update `semantic-tokens.yaml` registry when creating new tokens
+6. **ALWAYS** document any `[PROC-*]` process tokens in `processes.md` when defining operational workflows
 
 ### Token Audit Workflow `[PROC-TOKEN_AUDIT]`
 
@@ -104,258 +96,23 @@ When referencing other tokens:
 [IMPL-EXAMPLE] Description [ARCH-DESIGN] [REQ-REQUIREMENT]
 ```
 
-## Requirements Tokens Registry
+## Token Registry
 
-### Logging System
+**📖 The canonical registry of all tokens lives in `semantic-tokens.yaml`.**
 
-| Token | Description | Status | Document |
-|-------|-------------|--------|----------|
-| `[REQ-LOGGING_SYSTEM]` | Session-based logging system | Implemented | [requirements.yaml](requirements.yaml) |
-| `[REQ-LOGGING_CONFIG]` | Configurable logging behavior | Implemented | [requirements.yaml](requirements.yaml) |
-| `[REQ-LOGGING_SEMANTIC_TOKENS]` | Semantic token integration in logs | Implemented | [requirements.yaml](requirements.yaml) |
+This YAML index serves as the single source of truth for "does this token exist?" and provides structured metadata for all semantic tokens across all types (REQ, ARCH, IMPL, TEST, PROC).
 
-### File Manager
+**Quick lookup commands:**
+- List all tokens: `yq 'keys' stdd/semantic-tokens.yaml`
+- Filter by type: `yq 'to_entries | map(select(.value.type == "REQ")) | from_entries' stdd/semantic-tokens.yaml`
+- Check existence: `yq '.["REQ-STDD_SETUP"]' stdd/semantic-tokens.yaml`
+- Get token details: `yq '.REQ-STDD_SETUP' stdd/semantic-tokens.yaml`
 
-| Token | Description | Status | Document |
-|-------|-------------|--------|----------|
-| `[REQ-FILE_MANAGER_PAGE]` | Multi-pane file manager page | Implemented | [requirements.yaml](requirements.yaml) |
-| `[REQ-MULTI_PANE_LAYOUT]` | Multiple pane layout algorithms | Implemented | [requirements.yaml](requirements.yaml) |
-| `[REQ-DIRECTORY_NAVIGATION]` | Server filesystem directory navigation | Implemented | [requirements.yaml](requirements.yaml) |
-| `[REQ-FILE_LISTING]` | File listing display with metadata | Implemented | [requirements.yaml](requirements.yaml) |
-| `[REQ-FILE_OPERATIONS]` | Copy, move, rename, delete operations | Implemented | [requirements.yaml](requirements.yaml) |
-| `[REQ-CROSS_PANE_COMPARISON]` | Cross-pane file comparison | Implemented | [requirements.yaml](requirements.yaml) |
-| `[REQ-KEYBOARD_NAVIGATION]` | Keyboard-driven navigation | Implemented | [requirements.yaml](requirements.yaml) |
-| `[REQ-CONFIG_DRIVEN_FILE_MANAGER]` | Configuration-driven file manager UI | Implemented | [requirements.yaml](requirements.yaml) |
-| `[REQ-GOFUL_FEATURE_TRANSFER]` | Transfer complete UX from Goful | Planned | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
-| `[REQ-FILE_MARKING_WEB]` | File marking for batch operations | Implemented | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
-| `[REQ-BULK_FILE_OPS]` | Bulk copy, move, delete operations | Implemented | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
-| `[REQ-ADVANCED_NAV]` | Directory history, bookmarks, goto | Implemented | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
-| `[REQ-FILE_COMPARISON_VISUAL]` | Visual file comparison with colors | Implemented | [requirements/REQ-FILE_COMPARISON_VISUAL.md](../stdd/requirements/REQ-FILE_COMPARISON_VISUAL.md) |
-| `[REQ-FILE_SORTING_ADVANCED]` | Advanced sorting and filtering | Implemented | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
-| `[REQ-FILE_PREVIEW]` | File preview and info panels | Implemented | [requirements/REQ-FILE_PREVIEW.md](../stdd/requirements/REQ-FILE_PREVIEW.md) |
-| `[REQ-KEYBOARD_SHORTCUTS_COMPLETE]` | Complete keyboard shortcut system | Implemented | [requirements/REQ-KEYBOARD_SHORTCUTS_COMPLETE.md](../stdd/requirements/REQ-KEYBOARD_SHORTCUTS_COMPLETE.md) |
-| `[REQ-FILE_SEARCH]` | File and content search | Implemented | [requirements/REQ-FILE_SEARCH.md](../stdd/requirements/REQ-FILE_SEARCH.md) |
-| `[REQ-LINKED_PANES]` | Linked pane navigation | Implemented | [requirements/REQ-LINKED_PANES.md](../stdd/requirements/REQ-LINKED_PANES.md) |
-| `[REQ-PANE_REFRESH]` | Manual pane refresh keystrokes | Implemented | [requirements.yaml](requirements.yaml) |
-| `[REQ-MOUSE_INTERACTION]` | Mouse and context menu support | Implemented | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
-| `[REQ-FILES_CONFIG_COMPLETE]` | Complete file manager configuration | Implemented | [requirements/REQ-FILES_CONFIG_COMPLETE.md](../stdd/requirements/REQ-FILES_CONFIG_COMPLETE.md) |
-| `[REQ-FILES_PERFORMANCE]` | Performance optimization for large dirs | Planned | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
-
-### Job Search Tracking
-
-| Token | Description | Status | Document |
-|-------|-------------|--------|----------|
-| `[REQ-JOB_TRACKER_DATA]` | Job position data storage and retrieval | Planned | [requirements.md](requirements.md) |
-| `[REQ-JOB_TRACKER_LIST]` | View all job positions in table | Planned | [requirements.md](requirements.md) |
-| `[REQ-JOB_TRACKER_EDIT]` | Edit job position records | Planned | [requirements.md](requirements.md) |
-| `[REQ-JOB_TRACKER_STATUS]` | Track application status with dates/notes | Planned | [requirements.md](requirements.md) |
-| `[REQ-JOB_TRACKER_CRUD]` | Create, update, and delete job positions | Planned | [requirements.md](requirements.md) |
-| `[REQ-JOB_TRACKER_CALENDAR]` | Calendar month view for positions and applications | Planned | [requirements.md](requirements.md) |
-
-
-
-**📖 Full details**: See `requirements.md`
-
-### Immutable Requirements
-
-### Core Functional Requirements
-- `[REQ-STDD_SETUP]` - STDD methodology setup
-- `[REQ-MODULE_VALIDATION]` - Independent module validation before integration
-- `[REQ-APP_STRUCTURE]` - Next.js App Router application structure
-- `[REQ-ROOT_LAYOUT]` - Root layout with HTML structure and body
-- `[REQ-HOME_PAGE]` - Home page with welcome content and links
-- `[REQ-NAVIGATION_LINKS]` - External navigation links (Templates, Learning, Deploy, Docs)
-- `[REQ-BRANDING]` - Next.js branding (logo, title)
-- `[REQ-METADATA]` - Page metadata (title, description)
-
-### Non-Functional Requirements
-- `[REQ-RESPONSIVE_DESIGN]` - Responsive layout that adapts to mobile/desktop
-- `[REQ-DARK_MODE]` - Dark mode support with automatic theme detection
-- `[REQ-FONT_SYSTEM]` - Custom font loading (Geist Sans & Geist Mono)
-- `[REQ-TAILWIND_STYLING]` - Tailwind CSS v4 for styling system
-- `[REQ-GLOBAL_STYLES]` - Global CSS with CSS variables for theming
-- `[REQ-ACCESSIBILITY]` - Semantic HTML and accessible image alt text
-- `[REQ-TYPESCRIPT]` - TypeScript type safety throughout
-- `[REQ-BUILD_SYSTEM]` - Next.js build and development scripts
-- `[REQ-ERROR_HANDLING]` - Root-level error boundary for production error recovery
-
-### Configurability Requirements
-- `[REQ-CONFIG_DRIVEN_UI]` - Configuration-driven UI via YAML files for all page elements
-- `[REQ-CONFIG_DRIVEN_APPEARANCE]` - All page elements appearance and layout from config (template scope)
-
-## Architecture Tokens Registry
-
-### Logging System
-
-| Token | Description | Status | Document |
-|-------|-------------|--------|----------|
-| `[ARCH-LOGGING_SYSTEM]` | Session-based file logging architecture | Active | [architecture-decisions.yaml](architecture-decisions.yaml) |
-| `[ARCH-LOGGING_CONFIG]` | Environment-based logging configuration | Active | [architecture-decisions.yaml](architecture-decisions.yaml) |
-| `[ARCH-LOGGING_SEMANTIC_TOKENS]` | Semantic token integration in logging | Active | [architecture-decisions.yaml](architecture-decisions.yaml) |
-
-### File Manager
-
-| Token | Description | Status | Document |
-|-------|-------------|--------|----------|
-| `[ARCH-FILE_MANAGER_HIERARCHY]` | File manager component hierarchy | Active | [architecture-decisions.yaml](architecture-decisions.yaml) |
-| `[ARCH-LAYOUT_ALGORITHMS]` | Multi-pane layout algorithms | Active | [architecture-decisions.yaml](architecture-decisions.yaml) |
-| `[ARCH-COMPARISON_INDEX]` | Cross-pane file comparison index | Active | [architecture-decisions.yaml](architecture-decisions.yaml) |
-| `[ARCH-FILESYSTEM_ABSTRACTION]` | Server-side filesystem abstraction | Active | [architecture-decisions.yaml](architecture-decisions.yaml) |
-| `[ARCH-FILE_OPERATIONS_API]` | File operations API routes | Active | [architecture-decisions.yaml](architecture-decisions.yaml) |
-| `[ARCH-SERVER_CLIENT_BOUNDARY]` | Server-client code separation (lesson learned) | Active | [architecture-decisions.yaml](architecture-decisions.yaml) |
-| `[ARCH-GOFUL_UX_PATTERNS]` | UX patterns from Goful file manager | Planned | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
-| `[ARCH-MARKING_STATE]` | File marking state management | Implemented | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
-| `[ARCH-BATCH_OPERATIONS]` | Batch file operation architecture | Implemented | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
-| `[ARCH-DIRECTORY_HISTORY]` | Per-directory cursor persistence | Planned | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
-| `[ARCH-COMPARISON_COLORING]` | File comparison color-coding system | Planned | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
-| `[ARCH-SORT_PIPELINE]` | Multi-criteria sort pipeline | Implemented | [architecture-decisions/ARCH-SORT_PIPELINE.md](../stdd/architecture-decisions/ARCH-SORT_PIPELINE.md) |
-| `[ARCH-PREVIEW_SYSTEM]` | File preview architecture | Planned | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
-| `[ARCH-KEYBIND_SYSTEM]` | Keyboard shortcut system | Implemented | [architecture-decisions/ARCH-KEYBIND_SYSTEM.md](../stdd/architecture-decisions/ARCH-KEYBIND_SYSTEM.md) |
-| `[ARCH-SEARCH_ENGINE]` | File search architecture | Implemented | [architecture-decisions/ARCH-SEARCH_ENGINE.md](../stdd/architecture-decisions/ARCH-SEARCH_ENGINE.md) |
-|| `[ARCH-PANE_LIFECYCLE]` | Multi-pane initialization and management | Implemented | [architecture-decisions.yaml](architecture-decisions.yaml) |
-| `[ARCH-PANE_REFRESH]` | Manual pane refresh architecture | Implemented | [architecture-decisions.yaml](architecture-decisions.yaml) |
-|| `[ARCH-LINKED_NAV]` | Linked pane navigation architecture | Active | [architecture-decisions.yaml](architecture-decisions.yaml) |
-
-### Job Search Tracking
-
-| Token | Description | Status | Document |
-|-------|-------------|--------|----------|
-| `[ARCH-JOB_TRACKER_STORAGE]` | Job tracker YAML storage architecture | Planned | [architecture-decisions/ARCH-JOB_TRACKER_STORAGE.md](architecture-decisions/ARCH-JOB_TRACKER_STORAGE.md) |
-| `[ARCH-JOB_TRACKER_UI]` | Job tracker UI page architecture | Planned | [architecture-decisions/ARCH-JOB_TRACKER_UI.md](architecture-decisions/ARCH-JOB_TRACKER_UI.md) |
-| `[ARCH-JOB_TRACKER_API]` | Job tracker API route architecture | Planned | [architecture-decisions/ARCH-JOB_TRACKER_API.md](architecture-decisions/ARCH-JOB_TRACKER_API.md) |
-| `[ARCH-CALENDAR_VIEW]` | Calendar view architecture for month grid display | Planned | [architecture-decisions/ARCH-CALENDAR_VIEW.md](architecture-decisions/ARCH-CALENDAR_VIEW.md) |
-
-**📖 Full details**: See `architecture-decisions.md` (index) and `architecture-decisions/` (detail files)
-
-- `[ARCH-STDD_STRUCTURE]` - STDD project structure [REQ-STDD_SETUP]
-- `[ARCH-MODULE_VALIDATION]` - Module validation strategy [REQ-MODULE_VALIDATION]
-- `[ARCH-NEXTJS_FRAMEWORK]` - Next.js 16.1 with App Router [REQ-APP_STRUCTURE] [REQ-BUILD_SYSTEM]
-- `[ARCH-REACT_VERSION]` - React 19.2 with Server Components [REQ-APP_STRUCTURE]
-- `[ARCH-TYPESCRIPT_LANG]` - TypeScript for type safety [REQ-TYPESCRIPT]
-- `[ARCH-TAILWIND_V4]` - Tailwind CSS v4 styling system [REQ-TAILWIND_STYLING]
-- `[ARCH-APP_ROUTER]` - Next.js App Router pattern [REQ-APP_STRUCTURE]
-- `[ARCH-LAYOUT_PATTERN]` - Root layout pattern for shared UI [REQ-ROOT_LAYOUT]
-- `[ARCH-SERVER_COMPONENTS]` - Server Components as default [REQ-APP_STRUCTURE]
-- `[ARCH-CSS_VARIABLES]` - CSS Variables for dark mode theming [REQ-DARK_MODE] [REQ-GLOBAL_STYLES]
-- `[ARCH-RESPONSIVE_FIRST]` - Mobile-first responsive design [REQ-RESPONSIVE_DESIGN]
-- `[ARCH-GOOGLE_FONTS]` - Google Fonts optimization with next/font [REQ-FONT_SYSTEM]
-- `[ARCH-CSS_VARIABLES_FONTS]` - CSS Variables for font assignment [REQ-FONT_SYSTEM]
-- `[ARCH-TEST_FRAMEWORK]` - Vitest testing framework with React Testing Library [REQ-BUILD_SYSTEM]
-- `[ARCH-CONFIG_DRIVEN_UI]` - YAML configuration-driven UI architecture [REQ-CONFIG_DRIVEN_UI]
-- `[ARCH-THEME_INJECTION]` - CSS variable injection from theme config [REQ-CONFIG_DRIVEN_UI] [ARCH-CSS_VARIABLES]
-- `[ARCH-CLASS_OVERRIDES]` - Tailwind class override system via config [REQ-CONFIG_DRIVEN_UI] [ARCH-TAILWIND_V4]
-- `[ARCH-CONFIG_DRIVEN_APPEARANCE]` - Config-driven appearance for all pages [REQ-CONFIG_DRIVEN_APPEARANCE] [REQ-CONFIG_DRIVEN_UI]
-- `[ARCH-JOB_TRACKER_STORAGE]` - Job tracker YAML storage architecture [REQ-JOB_TRACKER_DATA] [REQ-JOB_TRACKER_STATUS]
-- `[ARCH-JOB_TRACKER_UI]` - Job tracker UI page architecture [REQ-JOB_TRACKER_LIST] [REQ-JOB_TRACKER_EDIT]
-- `[ARCH-JOB_TRACKER_API]` - Job tracker API route architecture [REQ-JOB_TRACKER_CRUD]
-- `[ARCH-CALENDAR_VIEW]` - Calendar view architecture for month grid display [REQ-JOB_TRACKER_CALENDAR]
-
-## Implementation Tokens Registry
-
-### Logging System
-
-| Token | Description | Status | Document |
-|-------|-------------|--------|----------|
-| `[IMPL-LOGGER_MODULE]` | Main logger module implementation | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
-| `[IMPL-LOGGER_CONFIG]` | Logger configuration implementation | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
-| `[IMPL-LOGGER_TOKENS]` | Semantic token integration | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
-
-### File Manager
-
-| Token | Description | Status | Document |
-|-------|-------------|--------|----------|
-| `[IMPL-FILE_MANAGER_PAGE]` | File manager server page | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
-| `[IMPL-WORKSPACE_VIEW]` | Workspace view client component | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
-| `[IMPL-FILE_PANE]` | File pane component | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
-| `[IMPL-FILES_DATA]` | Filesystem data layer | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
-| `[IMPL-FILES_UTILS]` | Client-safe utilities | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
-| `[IMPL-LAYOUT_CALCULATOR]` | Layout calculation algorithms | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
-| `[IMPL-COMPARISON_INDEX]` | Comparison index implementation | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
-| `[IMPL-FILES_API]` | File operations API routes | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
-| `[IMPL-FILES_CONFIG]` | Files configuration loader | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
-| `[IMPL-GOFUL_FEATURES]` | Goful feature implementations | Planned | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
-| `[IMPL-FILE_MARKING]` | File marking for selections | Implemented | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
-| `[IMPL-BULK_OPS]` | Bulk file operations | Implemented | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
-| `[IMPL-DIR_HISTORY]` | Directory navigation history | Planned | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
-| `[IMPL-COMPARISON_COLORS]` | Comparison color-coding | Planned | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
-| `[IMPL-SORT_FILTER]` | Advanced sorting and filtering | Implemented | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
-| `[IMPL-FILE_PREVIEW]` | File preview API routes and components | Implemented | [implementation-decisions/IMPL-FILE_PREVIEW.md](../stdd/implementation-decisions/IMPL-FILE_PREVIEW.md) |
-| `[IMPL-KEYBINDS]` | Keyboard shortcut system | Implemented | [implementation-decisions/IMPL-KEYBINDS.md](../stdd/implementation-decisions/IMPL-KEYBINDS.md) |
-| `[IMPL-FILE_SEARCH]` | File and content search | Implemented | [implementation-decisions/IMPL-FILE_SEARCH.md](../stdd/implementation-decisions/IMPL-FILE_SEARCH.md) |
-| `[IMPL-LINKED_NAV]` | Linked pane navigation | Implemented | [implementation-decisions/IMPL-LINKED_NAV.md](../stdd/implementation-decisions/IMPL-LINKED_NAV.md) |
-| `[IMPL-MOUSE_SUPPORT]` | Mouse and context menu | Implemented | [implementation-decisions/IMPL-MOUSE_SUPPORT.md](../stdd/implementation-decisions/IMPL-MOUSE_SUPPORT.md) |
-| `[IMPL-FILES_CONFIG_COMPLETE]` | Complete configuration | Implemented | [implementation-decisions/IMPL-FILES_CONFIG_COMPLETE.md](../stdd/implementation-decisions/IMPL-FILES_CONFIG_COMPLETE.md) |
-| `[IMPL-PERFORMANCE_OPT]` | Performance optimizations | Planned | [docs/GOFUL_FEATURE_TRANSFER.md](../docs/GOFUL_FEATURE_TRANSFER.md) |
-| `[IMPL-LINKED_NAV]` | Linked pane navigation | Implemented | [implementation-decisions/IMPL-LINKED_NAV.md](../stdd/implementation-decisions/IMPL-LINKED_NAV.md) |
-|| `[IMPL-PANE_MANAGEMENT]` | Runtime pane management controls | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
-| `[IMPL-PANE_REFRESH]` | Manual pane refresh implementation | Implemented | [implementation-decisions.yaml](implementation-decisions.yaml) |
-
-### Job Search Tracking
-
-| Token | Description | Status | Document |
-|-------|-------------|--------|----------|
-| `[IMPL-JOBS_CONFIG]` | Jobs configuration loader and types | Planned | [implementation-decisions/IMPL-JOBS_CONFIG.md](implementation-decisions/IMPL-JOBS_CONFIG.md) |
-| `[IMPL-JOBS_LIST_PAGE]` | Jobs list page with table view | Planned | [implementation-decisions/IMPL-JOBS_LIST_PAGE.md](implementation-decisions/IMPL-JOBS_LIST_PAGE.md) |
-| `[IMPL-JOBS_EDIT_PAGE]` | Jobs edit page with form | Planned | [implementation-decisions/IMPL-JOBS_EDIT_PAGE.md](implementation-decisions/IMPL-JOBS_EDIT_PAGE.md) |
-| `[IMPL-JOBS_API]` | Jobs API route handlers | Planned | [implementation-decisions/IMPL-JOBS_API.md](implementation-decisions/IMPL-JOBS_API.md) |
-| `[IMPL-CALENDAR_PAGE]` | Calendar page server component implementation | Planned | [implementation-decisions/IMPL-CALENDAR_PAGE.md](implementation-decisions/IMPL-CALENDAR_PAGE.md) |
-| `[IMPL-CALENDAR_GRID]` | Calendar grid client component with month view and detail panel | Planned | [implementation-decisions/IMPL-CALENDAR_GRID.md](implementation-decisions/IMPL-CALENDAR_GRID.md) |
-
-**📖 Full details**: See `implementation-decisions.md` (index) and `implementation-decisions/` (detail files)
-
-- `[IMPL-MODULE_VALIDATION]` - Module validation implementation [ARCH-MODULE_VALIDATION] [REQ-MODULE_VALIDATION]
-- `[IMPL-ROOT_LAYOUT]` - Root layout component with fonts and metadata [ARCH-LAYOUT_PATTERN] [REQ-ROOT_LAYOUT]
-- `[IMPL-HOME_PAGE]` - Home page component structure [ARCH-SERVER_COMPONENTS] [REQ-HOME_PAGE]
-- `[IMPL-DARK_MODE]` - Dark mode CSS variables and classes [ARCH-CSS_VARIABLES] [REQ-DARK_MODE]
-- `[IMPL-FONT_LOADING]` - Geist font configuration with next/font [ARCH-GOOGLE_FONTS] [REQ-FONT_SYSTEM]
-- `[IMPL-IMAGE_OPTIMIZATION]` - Next.js Image component usage [ARCH-NEXTJS_FRAMEWORK] [REQ-BRANDING]
-- `[IMPL-EXTERNAL_LINKS]` - External link security attributes [ARCH-APP_ROUTER] [REQ-NAVIGATION_LINKS]
-- `[IMPL-METADATA]` - Static metadata export [ARCH-NEXTJS_FRAMEWORK] [REQ-METADATA]
-- `[IMPL-RESPONSIVE_CLASSES]` - Mobile-first responsive utilities [ARCH-RESPONSIVE_FIRST] [REQ-RESPONSIVE_DESIGN]
-- `[IMPL-FLEX_LAYOUT]` - Flexbox layout patterns [ARCH-TAILWIND_V4] [REQ-ROOT_LAYOUT]
-- `[IMPL-TEST_CONFIG]` - Vitest configuration with coverage settings [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]
-- `[IMPL-BUILD_SCRIPTS]` - NPM scripts for build, dev, and test [ARCH-NEXTJS_FRAMEWORK] [REQ-BUILD_SYSTEM]
-- `[IMPL-TEST_SETUP]` - Test setup with mocks and utilities [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]
-- `[IMPL-STDD_FILES]` - STDD methodology file creation and structure [ARCH-STDD_STRUCTURE] [REQ-STDD_SETUP]
-- `[IMPL-YAML_CONFIG]` - YAML configuration file structure [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]
-- `[IMPL-CONFIG_LOADER]` - Config loader module with YAML parsing and caching [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]
-- `[IMPL-THEME_INJECTION]` - CSS variable injection from theme config in layout [ARCH-THEME_INJECTION] [REQ-CONFIG_DRIVEN_UI]
-- `[IMPL-CLASS_OVERRIDES]` - tailwind-merge class override implementation [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI]
-- `[IMPL-CONFIG_DRIVEN_APPEARANCE]` - Config-driven appearance for all pages (jobs config loader, theme extension, jobs UI refactor) [ARCH-CONFIG_DRIVEN_APPEARANCE] [REQ-CONFIG_DRIVEN_APPEARANCE]
-- `[IMPL-JOBS_DATA]` - Jobs data layer (jobs.data.ts, jobs.types.ts) for Position/Application entities [ARCH-JOB_TRACKER_STORAGE] [REQ-JOB_TRACKER_DATA]
-- `[IMPL-JOBS_ACTIONS]` - Server actions for CRUD operations [ARCH-JOB_TRACKER_UI] [REQ-JOB_TRACKER_CRUD]
-- `[IMPL-JOBS_LIST_PAGE]` - Jobs list page with table view (page.tsx, JobsTable.tsx) [ARCH-JOB_TRACKER_UI] [REQ-JOB_TRACKER_LIST]
-- `[IMPL-JOBS_EDIT_PAGE]` - Jobs edit/create pages and forms (PositionForm, ApplicationForm) [ARCH-JOB_TRACKER_UI] [REQ-JOB_TRACKER_EDIT]
-- `[IMPL-JOBS_API]` - Jobs API route handlers using jobs.data.ts [ARCH-JOB_TRACKER_API] [REQ-JOB_TRACKER_CRUD]
-- `[IMPL-CALENDAR_PAGE]` - Calendar page server component implementation [ARCH-CALENDAR_VIEW] [REQ-JOB_TRACKER_CALENDAR]
-- `[IMPL-CALENDAR_GRID]` - Calendar grid client component with month view and detail panel [ARCH-CALENDAR_VIEW] [REQ-JOB_TRACKER_CALENDAR]
-- `[IMPL-EDIT_PAGE_RETURN_SOURCE]` - Edit page return button destination and label from query param (calendar vs list) [ARCH-JOB_TRACKER_UI] [ARCH-CALENDAR_VIEW] [REQ-JOB_TRACKER_EDIT] [REQ-JOB_TRACKER_CALENDAR]
-- `[IMPL-GLOBAL_ERROR_BOUNDARY]` - Global error boundary component with full HTML document for root-level error recovery [ARCH-NEXTJS_FRAMEWORK] [REQ-ERROR_HANDLING]
-
-## Test Tokens Registry
-
-**Purpose**: Test specification tokens (`[TEST-*]`) validate requirements and ensure code quality through comprehensive test coverage.
-
-**📖 Full details**: Test tokens are referenced in test files and should align with their corresponding `[REQ-*]` tokens.
-
-### File Manager Features
-
-| Token | Description | Status | Test File |
-|-------|-------------|--------|-----------|
-| `[TEST-FILE_MARKING]` | File marking and selection tests | Implemented | [src/app/files/WorkspaceView.test.tsx](../src/app/files/WorkspaceView.test.tsx) |
-| `[TEST-LINKED_PANES]` | Linked navigation tests | Implemented | [src/app/files/WorkspaceView.test.tsx](../src/app/files/WorkspaceView.test.tsx) |
-| `[TEST-BULK_FILE_OPS]` | Bulk file operation tests | Implemented | [src/app/files/BulkOperations.test.tsx](../src/app/files/BulkOperations.test.tsx) |
-| `[TEST-FILE_PREVIEW]` | File preview and info panel tests | Implemented | [src/app/api/files/info/route.test.ts](../src/app/api/files/info/route.test.ts), [src/app/api/files/preview/route.test.ts](../src/app/api/files/preview/route.test.ts) |
-| `[TEST-KEYBOARD_SHORTCUTS]` | Keyboard shortcut system tests | Implemented | [src/lib/files.keybinds.test.ts](../src/lib/files.keybinds.test.ts) |
-| `[TEST-FILE_SEARCH]` | File and content search tests | In Progress | [src/lib/files.search.test.ts](../src/lib/files.search.test.ts) |
-
-### Job Search Tracking
-
-| Token | Description | Status | Test File |
-|-------|-------------|--------|-----------|
-| (Add test tokens here as needed) | | | |
-
-**Note**: While test tokens are optional, they help track test coverage and ensure comprehensive validation of requirements.
+**For full details on each token:**
+- **Requirements tokens**: See `requirements.yaml` (YAML index) and `requirements/` (detail files)
+- **Architecture tokens**: See `architecture-decisions.yaml` (YAML index) and `architecture-decisions/` (detail files)
+- **Implementation tokens**: See `implementation-decisions.yaml` (YAML index) and `implementation-decisions/` (detail files)
+- **Process tokens**: See `processes.md`
 
 ## Token Relationships
 
@@ -369,16 +126,6 @@ When referencing other tokens:
 ### Dependency Relationships
 - `[IMPL-FEATURE]` depends on `[ARCH-DESIGN]` and `[REQ-FEATURE]`
 - `[ARCH-DESIGN]` depends on `[REQ-FEATURE]`
-
-## Process Tokens Registry
-
-**📖 Full details**: See `processes.md`
-
-- `[PROC-PROJECT_SURVEY_AND_SETUP]` - Survey and readiness process supporting `[REQ-STDD_SETUP]` and `[ARCH-STDD_STRUCTURE]`
-- `[PROC-BUILD_PIPELINE_VALIDATION]` - Build/deploy validation tied to `[REQ-MODULE_VALIDATION]`
-- `[PROC-TOKEN_AUDIT]` - Mandatory checklist ensuring every requirement → architecture → implementation → code/test path is annotated and documented
-- `[PROC-TOKEN_VALIDATION]` - Automated validation workflow (e.g., `./scripts/validate_tokens.sh`) that proves all referenced tokens exist in the registry
-- Add your process tokens here
 
 ## Usage Examples
 
@@ -439,6 +186,6 @@ When implementing features:
 2. **ALWAYS** create `[ARCH-*]` token in `architecture-decisions.md` for design decisions
 3. **ALWAYS** add `[IMPL-*]` tokens to code comments
 4. **ALWAYS** reference `[REQ-*]` tokens in test names/comments
-5. **ALWAYS** update `semantic-tokens.md` registry when creating new tokens
+5. **ALWAYS** update `semantic-tokens.yaml` registry when creating new tokens
 6. **ALWAYS** document any `[PROC-*]` process tokens in `processes.md` when defining operational workflows
 
