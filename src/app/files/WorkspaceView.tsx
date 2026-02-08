@@ -25,6 +25,7 @@ import ProgressDialog from "./components/ProgressDialog";
 import GotoDialog from "./components/GotoDialog";
 import BookmarkDialog from "./components/BookmarkDialog";
 import SortDialog from "./components/SortDialog";
+import RenameDialog from "./components/RenameDialog";
 import { InfoPanel } from "./components/InfoPanel";
 import { PreviewPanel } from "./components/PreviewPanel";
 import { HelpOverlay } from "./components/HelpOverlay";
@@ -122,6 +123,19 @@ export default function WorkspaceView({
     isOpen: false,
     mode: "list",
     currentPath: "",
+  });
+
+  // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [IMPL-MOUSE_SUPPORT] Rename dialog state
+  const [renameDialog, setRenameDialog] = useState<{
+    isOpen: boolean;
+    filePath: string;
+    fileName: string;
+    paneIndex: number;
+  }>({
+    isOpen: false,
+    filePath: "",
+    fileName: "",
+    paneIndex: 0,
   });
   
   // [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL] Comparison mode state
@@ -979,7 +993,31 @@ export default function WorkspaceView({
       },
     });
   }, [panes, focusIndex, getOperationFiles, confirmDialog, progressDialog, handleNavigate, handleClearMarks]);
-  
+
+  // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [IMPL-MOUSE_SUPPORT] Rename single file (keyboard r or context menu)
+  const handleRenameConfirm = useCallback(
+    (filePath: string, paneIndex: number, newName: string) => {
+      const dir = path.dirname(filePath);
+      const newPath = path.join(dir, newName);
+      setRenameDialog((prev) => ({ ...prev, isOpen: false }));
+      fetch("/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ operation: "rename", src: filePath, dest: newPath }),
+      })
+        .then((res) => {
+          if (!res.ok) return res.json().then((j: { error?: string }) => { throw new Error(j.error || res.statusText); });
+          return res;
+        })
+        .then(() => handleNavigate(paneIndex, dir))
+        .catch((e) => {
+          console.error("Rename failed:", e);
+          alert(`Rename failed: ${String(e)}`);
+        });
+    },
+    [handleNavigate]
+  );
+
   // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
   // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] [ARCH-LINKED_NAV]
   // Helper: Navigate to parent directory with cursor positioning
@@ -1093,8 +1131,15 @@ export default function WorkspaceView({
     });
     
     handlers.set("file.rename", () => {
-      // TODO: Implement rename dialog
-      console.info("[IMPL-KEYBINDS] Rename action not yet implemented");
+      const file = pane.files[pane.cursor];
+      if (file) {
+        setRenameDialog({
+          isOpen: true,
+          filePath: file.path,
+          fileName: file.name,
+          paneIndex: focusIndex,
+        });
+      }
     });
     
     // Marking
@@ -1362,6 +1407,7 @@ export default function WorkspaceView({
             scrollTrigger={scrollTriggers.get(index)} // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Scroll sync
             onFocusRequest={() => setFocusIndex(index)}
             columns={columns} // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
+            onRename={(file) => setRenameDialog({ isOpen: true, filePath: file.path, fileName: file.name, paneIndex: index })}
           />
         ))}
       </div>
@@ -1381,6 +1427,7 @@ export default function WorkspaceView({
           <span className="text-blue-600 dark:text-blue-400">C: Copy</span>
           <span className="text-blue-600 dark:text-blue-400">V: Move</span>
           <span className="text-red-600 dark:text-red-400">D: Delete</span>
+          <span className="text-blue-600 dark:text-blue-400">R: Rename</span>
           <span className="text-green-600 dark:text-green-400">G: Goto</span>
           <span className="text-green-600 dark:text-green-400">B: Bookmark</span>
           <span className="text-green-600 dark:text-green-400">Ctrl+B: List</span>
@@ -1431,6 +1478,14 @@ export default function WorkspaceView({
         initialPath={gotoDialog.path}
         onClose={() => setGotoDialog({ ...gotoDialog, isOpen: false })}
         onNavigate={(path) => handleNavigate(focusIndex, path)}
+      />
+
+      {/* [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [IMPL-MOUSE_SUPPORT] Rename dialog */}
+      <RenameDialog
+        isOpen={renameDialog.isOpen}
+        initialName={renameDialog.fileName}
+        onConfirm={(newName) => handleRenameConfirm(renameDialog.filePath, renameDialog.paneIndex, newName)}
+        onClose={() => setRenameDialog((prev) => ({ ...prev, isOpen: false }))}
       />
       
       <BookmarkDialog

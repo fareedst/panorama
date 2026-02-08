@@ -1357,6 +1357,23 @@ IMPL-PANE_REFRESH:
   metadata:
     registered: "2026-02-08"
     last_updated: "2026-02-08"
+IMPL-RENAME_DIALOG:
+  type: IMPL
+  name: Rename File Dialog and R-Key Handler
+  status: Active
+  description: "Rename modal and wiring for R key and context menu Rename; implements file.rename action"
+  cross_references:
+    - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+    - REQ-FILE_OPERATIONS
+    - REQ-MOUSE_INTERACTION
+    - ARCH-KEYBIND_SYSTEM
+    - IMPL-KEYBINDS
+    - IMPL-MOUSE_SUPPORT
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-RENAME_DIALOG.md
+  metadata:
+    registered: "2026-02-08"
+    last_updated: "2026-02-08"
 IMPL-PERFORMANCE_OPT:
   type: IMPL
   name: IMPL PERFORMANCE_OPT

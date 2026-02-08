@@ -50,8 +50,8 @@ interface FilePaneProps {
   onMove?: () => void;
   /** [IMPL-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] Handler for delete operation */
   onDelete?: () => void;
-  /** [IMPL-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] Handler for rename operation */
-  onRename?: () => void;
+  /** [IMPL-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] Handler for rename operation (receives file to rename) */
+  onRename?: (file: FileStat) => void;
   /** [IMPL-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] Handler for drag-drop operation */
   onDrop?: (files: string[], targetPath: string, operation: "copy" | "move") => void;
   /** [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Whether this pane is in linked mode */

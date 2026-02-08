@@ -72,7 +72,7 @@ Power users need efficient keyboard-driven workflows to maximize productivity in
 
 **Acceptance**:
 - ✅ Navigation: arrows, Enter, Backspace, Tab, Home, End
-- ✅ File ops: copy (c), move (v), delete (d), rename (future)
+- ✅ File ops: copy (c), move (v), delete (d), rename (r)
 - ✅ Marking: Space, m, Shift+M, Ctrl+M, Escape
 - ✅ View: sort (s), comparison (`), info (i), preview (q)
 - ✅ Advanced: goto (g), bookmarks (b, Ctrl+B), home (~), history (Alt+Left/Right)

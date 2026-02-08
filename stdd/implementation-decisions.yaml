@@ -3151,6 +3151,10 @@ IMPL-KEYBINDS:
       solution: "Added modal state check in WorkspaceView keydown handler (line ~1169) to skip keybinding processing when any modal overlay is open (showHelp, showCommandPalette, showFinderDialog, showSearchDialog). Added these states to useEffect dependency array"
       impact: "Modal overlays now exclusively handle their own keyboard events without interference. Escape closes help overlay on first press. Fix applies to all modal dialogs"
       debug_evidence: "Runtime logs showed WorkspaceView received Escape first (~2ms before HelpOverlay), matched it to mark.clear, then HelpOverlay processed same event. After fix, WorkspaceView skips processing when modals are open"
+    - bug: "Keystroke 'r' to rename did nothing"
+      root_cause: "file.rename action handler was a TODO/no-op (console.info only, no UI)"
+      solution: "Implemented rename flow in IMPL-RENAME_DIALOG: RenameDialog component, rename state, file.rename opens dialog for cursor file, onRename(file) for context menu; handleRenameConfirm calls POST /api/files rename then refresh"
+      impact: "R key and context menu Rename open rename dialog and perform rename; footer shows 'R: Rename'"
   key_algorithms:
     - name: "Keybinding matching"
       complexity: "O(n) over keybindings per keypress"
@@ -3878,4 +3882,87 @@ IMPL-FILE_COLUMN_CONFIG:
       date: 2026-02-08
       validator: "AI Agent"
       result: "pass - all tests passing (593 passed), formatDateTime unit tests pass, column rendering works correctly"
+
+IMPL-RENAME_DIALOG:
+  name: Rename File Dialog and R-Key Handler
+  status: Active
+  cross_references:
+    - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+    - REQ-FILE_OPERATIONS
+    - REQ-MOUSE_INTERACTION
+    - ARCH-KEYBIND_SYSTEM
+    - IMPL-KEYBINDS
+    - IMPL-MOUSE_SUPPORT
+  rationale:
+    why: "Implements the file.rename action so that keystroke R and context menu Rename open a modal and perform rename via existing API"
+    problems_solved:
+      - "Keystroke 'r' to rename did nothing (handler was TODO/no-op)"
+      - "Context menu Rename had no wired handler from WorkspaceView"
+      - "No UI for single-file rename despite POST /api/files operation: rename already existing"
+    benefits:
+      - "R key opens rename dialog for cursor file; context menu Rename opens dialog for right-clicked file"
+      - "Single RenameDialog component; same API flow for both entry points"
+      - "Pane refresh after rename via handleNavigate; footer shows 'R: Rename' hint"
+  implementation_approach:
+    summary: "RenameDialog component, rename state in WorkspaceView, file.rename handler and onRename(file) callback; handleRenameConfirm calls POST /api/files rename then refreshes pane"
+    details:
+      - "RenameDialog.tsx: modal with initialName input, onConfirm(newName), onClose; ESC to cancel"
+      - "WorkspaceView: renameDialog state { isOpen, filePath, fileName, paneIndex }; handleRenameConfirm(filePath, paneIndex, newName) builds dest path, POST operation rename, handleNavigate(paneIndex, dir)"
+      - "file.rename action handler: get pane.files[pane.cursor]; if file, setRenameDialog with file.path, file.name, focusIndex"
+      - "FilePane onRename: (file: FileStat) => void; pass onRename={(file) => setRenameDialog(...)} so context menu opens dialog for that file"
+      - "ContextMenu: call onRename(file) instead of onRename(); ContextMenu.test updated to expect onRename(mockFile)"
+      - "Footer: added 'R: Rename' hint"
+  code_locations:
+    files:
+      - path: "src/app/files/components/RenameDialog.tsx"
+        description: "Rename modal component"
+        lines: [1, 100]
+      - path: "src/app/files/WorkspaceView.tsx"
+        description: "renameDialog state, handleRenameConfirm, file.rename handler, RenameDialog render, onRename to FilePane"
+        lines: []
+      - path: "src/app/files/components/FilePane.tsx"
+        description: "onRename prop type (file: FileStat) => void"
+        lines: [54, 55]
+      - path: "src/app/files/components/ContextMenu.tsx"
+        description: "onRename(file) call and type"
+        lines: [28, 161]
+    functions:
+      - name: "handleRenameConfirm"
+        file: "src/app/files/WorkspaceView.tsx"
+        description: "POST /api/files rename then handleNavigate to refresh pane"
+  traceability:
+    architecture:
+      - ARCH-KEYBIND_SYSTEM
+    requirements:
+      - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+      - REQ-FILE_OPERATIONS
+      - REQ-MOUSE_INTERACTION
+    tests:
+      - "ContextMenu.test.tsx: onRename called with mockFile when Rename clicked"
+    code_annotations:
+      - IMPL-RENAME_DIALOG
+      - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+      - IMPL-MOUSE_SUPPORT
+  related_decisions:
+    depends_on:
+      - IMPL-KEYBINDS
+      - IMPL-FILES_API
+      - IMPL-WORKSPACE_VIEW
+    supersedes: []
+    see_also:
+      - IMPL-MOUSE_SUPPORT
+      - IMPL-KEYBINDS
+  detail_file: implementation-decisions/IMPL-RENAME_DIALOG.md
+  metadata:
+    created:
+      date: 2026-02-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-08
+      author: "AI Agent"
+      reason: "STDD decision for rename fix (R key + context menu)"
+    last_validated:
+      date: 2026-02-08
+      validator: "AI Agent"
+      result: "pass - R opens dialog, context menu Rename opens dialog, rename API and refresh work"
 

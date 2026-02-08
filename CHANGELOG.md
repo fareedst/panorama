@@ -9,7 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.4.4] - 2026-02-08
 
+### Fixed
+
+#### File manager: keystroke R to rename did nothing [IMPL-RENAME_DIALOG]
+- **R key had no effect**: The `file.rename` action was bound to the R key and the handler was invoked correctly, but the handler was a TODO/no-op (console message only), so nothing visible happened.
+- **Fix**: Implemented rename flow: R (or context menu “Rename”) now opens a **RenameDialog** modal; user edits the name and confirms; client calls `POST /api/files` with `operation: "rename"`, then refreshes the pane. Footer shows “R: Rename” hint.
+
 ### Added
+
+#### File manager: rename dialog and context menu wiring [IMPL-RENAME_DIALOG]
+- **RenameDialog** (`src/app/files/components/RenameDialog.tsx`): Modal with initial name input, Rename/Cancel, ESC to cancel. Used for both keyboard and context menu rename.
+- **WorkspaceView**: `renameDialog` state and `handleRenameConfirm(filePath, paneIndex, newName)`; `file.rename` handler opens dialog for cursor file; `onRename={(file) => …}` passed to FilePane so context menu opens dialog for the right-clicked file.
+- **Context menu**: Rename now invokes `onRename(file)` so the correct file is passed; `ContextMenu.test.tsx` updated to expect `onRename(mockFile)`.
 
 #### File manager: overwrite confirmation with file comparison [IMPL-OVERWRITE_PROMPT]
 - **Enhanced copy/move confirmation dialogs** that detect file conflicts and display detailed comparison information before overwriting files

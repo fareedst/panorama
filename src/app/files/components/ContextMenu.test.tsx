@@ -112,12 +112,13 @@ describe("[TEST-MOUSE_INTERACTION] ContextMenu Component", () => {
     expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
   });
 
-  it("calls onRename and onClose when rename clicked", () => {
+  it("calls onRename with file and onClose when rename clicked", () => {
     render(<ContextMenu {...defaultProps} />);
     
     fireEvent.click(screen.getByText(/Rename/));
     
     expect(defaultProps.onRename).toHaveBeenCalledTimes(1);
+    expect(defaultProps.onRename).toHaveBeenCalledWith(mockFile);
     expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
   });
 

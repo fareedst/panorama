@@ -24,8 +24,8 @@ interface ContextMenuProps {
   onMove?: () => void;
   /** Handler for delete operation */
   onDelete?: () => void;
-  /** Handler for rename operation */
-  onRename?: () => void;
+  /** Handler for rename operation (receives the file to rename) */
+  onRename?: (file: FileStat) => void;
 }
 
 /**
@@ -155,10 +155,10 @@ export default function ContextMenu({
       )}
 
       {/* Rename (only for single file, not marked) */}
-      {marks.size === 0 && onRename && (
+      {marks.size === 0 && onRename && file && (
         <button
           className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
-          onClick={() => handleAction(onRename)}
+          onClick={() => handleAction(() => onRename(file))}
           role="menuitem"
         >
           <span className="text-sm">✏️</span>
