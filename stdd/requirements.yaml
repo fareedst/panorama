@@ -2946,3 +2946,138 @@ REQ-REACT_SSR_STABILITY:
 #       date: YYYY-MM-DD
 #       validator: "agent/contributor"
 #       result: "pass"
+
+REQ-TOOLBAR_SYSTEM:
+  name: File Manager Toolbar System
+  category: Functional
+  priority: P1
+  status: "Implemented"
+  rationale:
+    why: "To improve discoverability and accessibility of file manager operations by providing a visual, mouse-accessible interface alongside keyboard shortcuts"
+    problems_solved:
+      - "Steep learning curve: new users must memorize 36+ keyboard shortcuts"
+      - "Limited accessibility: keyboard-only interface excludes mouse users"
+      - "Poor discoverability: no visual indication of available operations"
+      - "Context confusion: users cannot see which operations are available"
+    benefits:
+      - "Improved onboarding: visual operation exploration"
+      - "Accessibility compliance: mouse and keyboard support"
+      - "Discoverability: buttons show names, icons, and shortcuts"
+      - "Context awareness: active/disabled states reflect workspace"
+      - "Configuration flexibility: customizable via YAML"
+  satisfaction_criteria:
+    - criterion: "All 36+ keybinding actions represented in configurable toolbars"
+    - criterion: "Each button displays icon (when available) + keyboard shortcut in compact format; label text only shown as fallback when no icon exists"
+    - criterion: "Toolbar visibility, position, and button selection configurable via config/files.yaml"
+    - criterion: "Toolbar styling follows existing theme system in config/theme.yaml"
+    - criterion: "Button states (active/disabled) reflect current workspace state"
+    - criterion: "Toolbar button actions dispatch to same handlers as keyboard shortcuts"
+    - criterion: "Toolbars adapt to mobile, tablet, and desktop viewports"
+    - criterion: "Toolbar rendering does not impact file manager responsiveness"
+    - criterion: "Buttons sized to prevent overflow even with 12+ actions per toolbar"
+  validation_criteria:
+    - method: "Component tests"
+      coverage: "Button rendering, group layout, keystroke display"
+    - method: "Integration tests"
+      coverage: "Action dispatch, state updates, configuration changes"
+    - method: "Accessibility tests"
+      coverage: "ARIA labels, keyboard navigation, focus management"
+    - method: "Manual testing"
+      coverage: "Visual inspection, interaction testing, responsive testing"
+  traceability:
+    architecture:
+      - ARCH-TOOLBAR_LAYOUT
+      - ARCH-TOOLBAR_ACTIONS
+    implementation:
+      - IMPL-TOOLBAR_COMPONENT
+      - IMPL-TOOLBAR_CONFIG
+    tests:
+      - src/app/files/components/Toolbar.test.tsx
+      - src/app/files/components/WorkspaceToolbar.test.tsx
+    code_annotations:
+      - REQ-TOOLBAR_SYSTEM
+  related_requirements:
+    depends_on:
+      - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+      - REQ-CONFIG_DRIVEN_FILE_MANAGER
+    related_to:
+      - REQ-MOUSE_INTERACTION
+      - REQ-TOOLBAR_CONFIG
+    supersedes: []
+  detail_file: requirements/REQ-TOOLBAR_SYSTEM.md
+  metadata:
+    created:
+      date: 2026-02-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-08
+      author: "AI Agent"
+      reason: "Updated satisfaction criteria to reflect compact icon-only button design"
+    last_validated:
+      date: 2026-02-08
+      validator: "AI Agent"
+      result: "planned"
+
+REQ-TOOLBAR_CONFIG:
+  name: Configuration-Driven Toolbar Customization
+  category: Functional
+  priority: P1
+  status: "Planned"
+  rationale:
+    why: "To maintain consistency with configuration-driven UI architecture and enable toolbar customization without code changes"
+    problems_solved:
+      - "Hard-coded toolbar layout"
+      - "Fixed button selection"
+      - "Inflexible styling"
+      - "Template rigidity"
+    benefits:
+      - "Zero code changes for customization"
+      - "Template flexibility"
+      - "Easy experimentation and A/B testing"
+      - "Internationalization ready"
+  satisfaction_criteria:
+    - criterion: "Toolbar visibility, position, button selection, grouping, and styling all configurable"
+    - criterion: "Well-defined YAML schema in config/files.yaml and config/theme.yaml"
+    - criterion: "TypeScript interfaces for all configuration structures"
+    - criterion: "Sensible default configuration when custom config omitted"
+    - criterion: "Configuration validation with helpful error messages"
+  validation_criteria:
+    - method: "Schema validation tests"
+      coverage: "Configuration structure validation"
+    - method: "Runtime validation tests"
+      coverage: "Invalid config handling, fallbacks"
+    - method: "Integration tests"
+      coverage: "Configuration application to UI"
+  traceability:
+    architecture:
+      - ARCH-TOOLBAR_LAYOUT
+      - ARCH-CONFIG_DRIVEN_UI
+    implementation:
+      - IMPL-TOOLBAR_CONFIG
+      - IMPL-CONFIG_LOADER
+    tests:
+      - src/lib/config.test.ts
+      - src/app/files/components/Toolbar.test.tsx
+    code_annotations:
+      - REQ-TOOLBAR_CONFIG
+  related_requirements:
+    depends_on:
+      - REQ-TOOLBAR_SYSTEM
+      - REQ-CONFIG_DRIVEN_UI
+    related_to:
+      - REQ-CONFIG_DRIVEN_FILE_MANAGER
+    supersedes: []
+  detail_file: requirements/REQ-TOOLBAR_CONFIG.md
+  metadata:
+    created:
+      date: 2026-02-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-08
+      author: "AI Agent"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-08
+      validator: "AI Agent"
+      result: "planned"
+

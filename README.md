@@ -1,7 +1,7 @@
 # Next.js Application with STDD Methodology
 
-**Version**: 0.4.0  
-**Last Updated**: 2026-02-06
+**Version**: 0.4.5  
+**Last Updated**: 2026-02-08
 
 A modern, **highly configurable** Next.js template built with React 19, TypeScript, and Tailwind CSS v4, following **Semantic Token-Driven Development (STDD)** methodology for complete traceability from requirements through implementation.
 
@@ -21,7 +21,12 @@ All page content, appearance, and layout are driven by YAML configuration files 
 - **Optimized Fonts** using next/font with Geist Sans and Geist Mono
 - **STDD Documentation** with full requirements traceability
 - **Comprehensive Testing** with Vitest and React Testing Library (120 tests)
-- **Multi-Pane File Manager** with keyboard-driven navigation, file operations, comparison, search, and manual refresh (Ctrl+R)
+- **Multi-Pane File Manager** with keyboard-driven navigation, file operations, comparison, search, manual refresh (Ctrl+R), and **visual toolbar system** with 36+ discoverable operations:
+  - **Three Toolbar Types**: Workspace (global actions), Pane (file operations), System (help/search)
+  - **Compact Icon Design**: Icon + keystroke badges for maximum density (no overflow with 12+ buttons)
+  - **Context Awareness**: Active/disabled states reflect workspace context
+  - **Configuration-Driven**: Complete customization via `config/files.yaml` and `config/theme.yaml`
+  - **Keyboard Consistency**: Toolbar actions dispatch to same handlers as keyboard shortcuts
 
 ## Quick Start: Customizing the Template
 
@@ -629,9 +634,9 @@ STDD creates a traceable chain of intent from requirements to code:
 
 All STDD documentation is in the `stdd/` directory:
 
-- **[Requirements](stdd/requirements.md)** - 17 documented requirements
-- **[Architecture Decisions](stdd/architecture-decisions.md)** - 20 decision files
-- **[Implementation Decisions](stdd/implementation-decisions.md)** - 25 implementation files (including edit-page return-to-source)
+- **[Requirements](stdd/requirements.md)** - 19 documented requirements (including toolbar system)
+- **[Architecture Decisions](stdd/architecture-decisions.md)** - 22 decision files (including toolbar layout and actions)
+- **[Implementation Decisions](stdd/implementation-decisions.md)** - 27 implementation files (including toolbar components and compact design)
 - **[Semantic Tokens](stdd/semantic-tokens.md)** - token registry (REQ/ARCH/IMPL)
 - **[Tasks](stdd/tasks.md)** - Task tracking with priorities
 
@@ -778,4 +783,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 **Built with Next.js, React, and STDD Methodology**
 
-*Version 0.4.2 - Global Error Boundary*
+*Version 0.4.5 - File Manager Toolbar System*

@@ -2406,3 +2406,93 @@ PROC-YAML_DB_OPERATIONS:
     registered: 2025-11-08
     last_updated: 2026-02-08
 
+
+REQ-TOOLBAR_SYSTEM:
+  type: REQ
+  name: File Manager Toolbar System
+  category: Core Functional
+  status: Planned
+  description: "Visual toolbar system providing discoverable access to all file manager operations"
+  cross_references:
+    - ARCH-TOOLBAR_LAYOUT
+    - ARCH-TOOLBAR_ACTIONS
+    - IMPL-TOOLBAR_COMPONENT
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-TOOLBAR_SYSTEM.md
+  metadata:
+    registered: 2026-02-08
+    last_updated: 2026-02-08
+
+REQ-TOOLBAR_CONFIG:
+  type: REQ
+  name: Configuration-Driven Toolbar Customization
+  category: Core Functional
+  status: Planned
+  description: "YAML-based configuration system for toolbar behavior, appearance, and content"
+  cross_references:
+    - REQ-TOOLBAR_SYSTEM
+    - ARCH-TOOLBAR_LAYOUT
+    - IMPL-TOOLBAR_CONFIG
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-TOOLBAR_CONFIG.md
+  metadata:
+    registered: 2026-02-08
+    last_updated: 2026-02-08
+
+ARCH-TOOLBAR_LAYOUT:
+  type: ARCH
+  name: Toolbar Positioning and Layout Architecture
+  status: Implemented
+  description: "Three-tier toolbar system with configurable positioning and button grouping"
+  cross_references:
+    - REQ-TOOLBAR_SYSTEM
+    - IMPL-TOOLBAR_COMPONENT
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-TOOLBAR_LAYOUT.md
+  metadata:
+    registered: 2026-02-08
+    last_updated: 2026-02-08
+
+ARCH-TOOLBAR_ACTIONS:
+  type: ARCH
+  name: Action-to-Button Mapping Architecture
+  status: Implemented
+  description: "Derive toolbar button metadata from keybinding registry for consistency"
+  cross_references:
+    - REQ-TOOLBAR_SYSTEM
+    - ARCH-KEYBIND_SYSTEM
+    - IMPL-TOOLBAR_COMPONENT
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-TOOLBAR_ACTIONS.md
+  metadata:
+    registered: 2026-02-08
+    last_updated: 2026-02-08
+
+IMPL-TOOLBAR_COMPONENT:
+  type: IMPL
+  name: Toolbar React Component Implementation
+  status: Implemented
+  description: "React components for toolbar system including base and specialized toolbars with compact icon-only button design"
+  cross_references:
+    - REQ-TOOLBAR_SYSTEM
+    - ARCH-TOOLBAR_LAYOUT
+    - ARCH-TOOLBAR_ACTIONS
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-TOOLBAR_COMPONENT.md
+  metadata:
+    registered: 2026-02-08
+    last_updated: 2026-02-08
+
+IMPL-TOOLBAR_CONFIG:
+  type: IMPL
+  name: Toolbar Configuration Loading
+  status: Planned
+  description: "Configuration types and loading utilities for toolbar system"
+  cross_references:
+    - REQ-TOOLBAR_CONFIG
+    - ARCH-TOOLBAR_LAYOUT
+  source_index: implementation-decisions.yaml
+  detail_file: null
+  metadata:
+    registered: 2026-02-08
+    last_updated: 2026-02-08

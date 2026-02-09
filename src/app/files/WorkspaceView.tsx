@@ -5,6 +5,7 @@
 // [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] [REQ-MULTI_PANE_LAYOUT]
 // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] [ARCH-LINKED_NAV]
 // Workspace client component managing multiple file panes with directory history and sorting
+// [REQ-TOOLBAR_SYSTEM] [IMPL-TOOLBAR_COMPONENT] Toolbar integration for visual operation access
 
 "use client";
 
@@ -18,7 +19,7 @@ import { globalDirectoryHistory } from "@/lib/files.history";
 import { globalBookmarkManager } from "@/lib/files.bookmarks";
 import { sortFiles, describeFileComparison, type SortCriterion, type SortDirection } from "@/lib/files.utils";
 import { initializeKeybindingRegistry, matchKeybinding } from "@/lib/files.keybinds";
-import type { KeybindingConfig, FilesCopyConfig, FilesLayoutConfig } from "@/lib/config.types";
+import type { KeybindingConfig, FilesCopyConfig, FilesLayoutConfig, ToolbarsConfig } from "@/lib/config.types";
 import FilePane from "./components/FilePane";
 import ConfirmDialog, { type FileConflict } from "./components/ConfirmDialog";
 import ProgressDialog from "./components/ProgressDialog";
@@ -32,6 +33,10 @@ import { HelpOverlay } from "./components/HelpOverlay";
 import { CommandPalette } from "./components/CommandPalette";
 import { FinderDialog } from "./components/FinderDialog";
 import { SearchDialog } from "./components/SearchDialog";
+// [REQ-TOOLBAR_SYSTEM] [IMPL-TOOLBAR_COMPONENT] Toolbar components
+import { WorkspaceToolbar } from "./components/WorkspaceToolbar";
+import { PaneToolbar } from "./components/PaneToolbar";
+import { SystemToolbar } from "./components/SystemToolbar";
 
 interface PaneState {
   path: string;
@@ -61,12 +66,15 @@ interface WorkspaceViewProps {
   layout: FilesLayoutConfig;
   /** Column configuration from server [IMPL-FILE_COLUMN_CONFIG] */
   columns: import("@/lib/config.types").FilesColumnConfig[];
+  /** Toolbar configuration from server [REQ-TOOLBAR_SYSTEM] [IMPL-TOOLBAR_COMPONENT] */
+  toolbars?: ToolbarsConfig;
 }
 
 /**
  * WorkspaceView component - manages multiple file panes with keyboard navigation
  * [IMPL-WORKSPACE_VIEW] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-MULTI_PANE_LAYOUT] [REQ-KEYBOARD_NAVIGATION]
  * [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] [REQ-MULTI_PANE_LAYOUT]
+ * [REQ-TOOLBAR_SYSTEM] [IMPL-TOOLBAR_COMPONENT] Toolbar integration
  */
 export default function WorkspaceView({
   initialPanes,
@@ -74,6 +82,7 @@ export default function WorkspaceView({
   copy,
   layout: layoutConfig,
   columns,
+  toolbars,
 }: WorkspaceViewProps) {
   // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
   // Initialize keybinding registry synchronously before first render
@@ -1344,6 +1353,57 @@ export default function WorkspaceView({
     }
   };
   
+  // [REQ-TOOLBAR_SYSTEM] [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_ACTIONS]
+  // Track active/disabled actions for toolbar buttons
+  const activeActions = useMemo(() => {
+    const active = new Set<string>();
+    if (linkedMode) active.add('link.toggle');
+    // showHidden not yet implemented - TODO: add when view.hidden is implemented
+    if (comparisonMode !== "off") active.add('view.comparison');
+    return active;
+  }, [linkedMode, comparisonMode]);
+  
+  const disabledActions = useMemo(() => {
+    const disabled = new Set<string>();
+    const focusedPane = panes[focusIndex];
+    
+    if (!focusedPane || focusedPane.files.length === 0) {
+      // Disable file operations when no files
+      disabled.add('file.copy');
+      disabled.add('file.move');
+      disabled.add('file.delete');
+      disabled.add('file.rename');
+      disabled.add('preview.info');
+      disabled.add('preview.content');
+    }
+    
+    // Disable marking actions when no marks
+    if (!focusedPane || focusedPane.marks.size === 0) {
+      disabled.add('mark.clear');
+      disabled.add('mark.invert');
+    }
+    
+    // Disable navigation at boundaries
+    if (focusedPane && focusedPane.cursor === 0) {
+      disabled.add('navigate.up');
+      disabled.add('navigate.first');
+    }
+    if (focusedPane && focusedPane.cursor === focusedPane.files.length - 1) {
+      disabled.add('navigate.down');
+      disabled.add('navigate.last');
+    }
+    
+    // Disable pane management at limits
+    if (panes.length >= (layoutConfig.maxPanes || 4)) {
+      disabled.add('pane.add');
+    }
+    if (panes.length <= 1) {
+      disabled.add('pane.remove');
+    }
+    
+    return disabled;
+  }, [panes, focusIndex, layoutConfig]);
+  
   return (
     <div className="h-screen flex flex-col bg-zinc-100 dark:bg-zinc-950">
       {/* Header */}
@@ -1376,6 +1436,41 @@ export default function WorkspaceView({
           </div>
         </div>
       </header>
+      
+      {/* [REQ-TOOLBAR_SYSTEM] [IMPL-TOOLBAR_COMPONENT] Toolbars */}
+      {toolbars && toolbars.enabled && (
+        <>
+          {/* Workspace toolbar */}
+          {toolbars.workspace.enabled && toolbars.workspace.position === 'top' && (
+            <WorkspaceToolbar
+              config={toolbars.workspace}
+              onAction={handleExecuteAction}
+              activeActions={activeActions}
+              disabledActions={disabledActions}
+            />
+          )}
+          
+          {/* Pane toolbar */}
+          {toolbars.pane.enabled && toolbars.pane.position === 'top' && (
+            <PaneToolbar
+              config={toolbars.pane}
+              onAction={handleExecuteAction}
+              activeActions={activeActions}
+              disabledActions={disabledActions}
+            />
+          )}
+          
+          {/* System toolbar */}
+          {toolbars.system.enabled && toolbars.system.position === 'top' && (
+            <SystemToolbar
+              config={toolbars.system}
+              onAction={handleExecuteAction}
+              activeActions={activeActions}
+              disabledActions={disabledActions}
+            />
+          )}
+        </>
+      )}
       
       {/* Workspace area */}
       <div

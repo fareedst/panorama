@@ -37,6 +37,9 @@ export default async function FilesPage() {
     { id: "name", visible: true },
   ];
   
+  // [REQ-TOOLBAR_SYSTEM] [IMPL-TOOLBAR_CONFIG] [ARCH-TOOLBAR_LAYOUT] Load toolbar configuration
+  const toolbars = config.toolbars;
+  
   // [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] Initialize panes based on startup mode and defaultPaneCount
   const initialPanes: PaneInitialState[] = [];
   const homeDir = getUserHomeDirectory();
@@ -76,6 +79,7 @@ export default async function FilesPage() {
       copy={copy}
       layout={layout}
       columns={columns}
+      toolbars={toolbars}
     />
   );
 }

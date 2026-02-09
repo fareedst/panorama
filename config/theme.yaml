@@ -159,3 +159,13 @@ files:
       icon: "⚙️"
       iconClass: "text-gray-600 dark:text-gray-300"
       patterns: ["*.json", "*.yaml", "*.yml", "*.toml", "*.ini", "*.conf"]
+  
+  # [REQ-TOOLBAR_CONFIG] [IMPL-TOOLBAR_CONFIG] Toolbar theme configuration
+  toolbar:
+    background: "bg-gray-100 dark:bg-gray-900"
+    border: "border-b border-gray-300 dark:border-gray-700"
+    buttonBase: "px-3 py-2 text-sm rounded hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors duration-150"
+    buttonActive: "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200"
+    buttonDisabled: "opacity-50 cursor-not-allowed"
+    groupSeparator: "border-l border-gray-300 dark:border-gray-700"
+

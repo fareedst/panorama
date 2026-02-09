@@ -459,6 +459,8 @@ export interface FilesThemeConfig {
   compareColors?: FilesCompareColors;
   /** File type icon and color configuration [REQ-FILES_CONFIG_COMPLETE] */
   fileTypes?: Record<string, FileTypeConfig>;
+  /** Toolbar theme configuration [REQ-TOOLBAR_CONFIG] */
+  toolbar?: ToolbarThemeConfig;
 }
 
 /** Available column identifiers for file pane display */
@@ -483,4 +485,50 @@ export interface FilesConfig {
   layout?: FilesLayoutConfig; // [REQ-FILES_CONFIG_COMPLETE]
   startup?: FilesStartupConfig; // [REQ-FILES_CONFIG_COMPLETE]
   columns?: FilesColumnConfig[]; // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
+  toolbars?: ToolbarsConfig; // [REQ-TOOLBAR_CONFIG] [IMPL-TOOLBAR_CONFIG]
 }
+
+// [IMPL-TOOLBAR_CONFIG] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_CONFIG]
+/** Toolbar position options */
+export type ToolbarPosition = 'top' | 'bottom' | 'hidden' | 'per-pane';
+
+/** Button override configuration */
+export interface ToolbarButtonOverride {
+  action: string;
+  icon?: string;
+  label?: string;
+  showKeystroke?: boolean;
+}
+
+/** Toolbar group configuration */
+export interface ToolbarGroupConfig {
+  name: string;
+  actions: string[];
+}
+
+/** Single toolbar configuration (workspace, pane, or system) */
+export interface ToolbarConfig {
+  enabled: boolean;
+  position: ToolbarPosition;
+  groups: ToolbarGroupConfig[];
+  buttons?: ToolbarButtonOverride[];
+}
+
+/** Top-level toolbars configuration */
+export interface ToolbarsConfig {
+  enabled: boolean;
+  workspace: ToolbarConfig;
+  pane: ToolbarConfig;
+  system: ToolbarConfig;
+}
+
+/** Toolbar theme configuration */
+export interface ToolbarThemeConfig {
+  background?: string;
+  border?: string;
+  buttonBase?: string;
+  buttonActive?: string;
+  buttonDisabled?: string;
+  groupSeparator?: string;
+}
+

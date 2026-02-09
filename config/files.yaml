@@ -340,3 +340,62 @@ columns:
   - id: "name"
     visible: true
 
+# [REQ-TOOLBAR_CONFIG] [IMPL-TOOLBAR_CONFIG] [ARCH-TOOLBAR_LAYOUT]
+# Toolbar configuration - visual access to all file manager operations
+toolbars:
+  # Global enable/disable
+  enabled: true
+  
+  # Workspace toolbar - actions affecting all panes
+  workspace:
+    enabled: true
+    position: "top"  # top | bottom | hidden
+    groups:
+      - name: "Layout"
+        actions:
+          - "view.sort"
+          - "view.comparison"
+          - "link.toggle"
+      - name: "Pane Management"
+        actions:
+          - "pane.add"
+          - "pane.remove"
+          - "pane.refresh-all"
+  
+  # Pane toolbar - actions on focused pane
+  pane:
+    enabled: true
+    position: "top"  # top | bottom | hidden | per-pane
+    groups:
+      - name: "File Operations"
+        actions:
+          - "file.copy"
+          - "file.move"
+          - "file.delete"
+          - "file.rename"
+      - name: "Navigation"
+        actions:
+          - "navigate.parent"
+          - "navigate.home"
+          - "history.back"
+          - "history.forward"
+      - name: "Marking"
+        actions:
+          - "mark.toggle"
+          - "mark.all"
+          - "mark.invert"
+          - "mark.clear"
+  
+  # System toolbar - independent actions
+  system:
+    enabled: true
+    position: "top"
+    groups:
+      - name: "System"
+        actions:
+          - "help.show"
+          - "command.palette"
+          - "search.finder"
+          - "search.content"
+
+

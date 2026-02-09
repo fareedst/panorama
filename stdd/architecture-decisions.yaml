@@ -3023,3 +3023,122 @@ ARCH-LINKED_NAV:
       date: 2026-02-08
       validator: "AI Agent"
       result: "pass"
+
+ARCH-TOOLBAR_LAYOUT:
+  name: Toolbar Positioning and Layout Architecture
+  status: Implemented
+  cross_references:
+    - REQ-TOOLBAR_SYSTEM
+    - REQ-TOOLBAR_CONFIG
+  rationale:
+    why: "Three-tier toolbar system with configurable positioning optimizes discoverability while preserving keyboard-first design"
+    problems_solved:
+      - "36+ operations overwhelming in single toolbar"
+      - "No visual separation of action scopes"
+      - "Fixed layout unsuitable for all use cases"
+    benefits:
+      - "Clear scope separation (workspace vs pane vs system)"
+      - "Configuration-driven positioning"
+      - "Responsive design for mobile/tablet/desktop"
+      - "Minimal screen space consumption"
+  alternatives_considered:
+    - name: "Single unified toolbar"
+      pros:
+        - "Simpler implementation"
+      cons:
+        - "36+ buttons overwhelming"
+        - "No scope separation"
+      rejected_reason: "Visual separation critical for usability"
+  implementation_approach:
+    summary: "Three toolbar types (workspace, pane, system) with configurable position and button groups"
+    details:
+      - "WorkspaceToolbar: actions affecting all panes"
+      - "PaneToolbar: actions on focused pane"
+      - "SystemToolbar: independent actions"
+      - "Configurable position: top, bottom, hidden, per-pane"
+  traceability:
+    requirements:
+      - REQ-TOOLBAR_SYSTEM
+      - REQ-TOOLBAR_CONFIG
+    implementation:
+      - IMPL-TOOLBAR_COMPONENT
+    tests:
+      - src/app/files/components/Toolbar.test.tsx
+    code_annotations:
+      - ARCH-TOOLBAR_LAYOUT
+  related_decisions:
+    depends_on:
+      - ARCH-KEYBIND_SYSTEM
+      - ARCH-CONFIG_DRIVEN_UI
+    informs:
+      - IMPL-TOOLBAR_COMPONENT
+    see_also: []
+  detail_file: architecture-decisions/ARCH-TOOLBAR_LAYOUT.md
+  metadata:
+    created:
+      date: 2026-02-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-08
+      author: "AI Agent"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-08
+      validator: "AI Agent"
+      result: "planned"
+
+ARCH-TOOLBAR_ACTIONS:
+  name: Action-to-Button Mapping Architecture
+  status: Implemented
+  cross_references:
+    - REQ-TOOLBAR_SYSTEM
+    - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+  rationale:
+    why: "Derive button metadata from keybinding registry to ensure consistency"
+    problems_solved:
+      - "Potential inconsistency between toolbar and keyboard"
+      - "Code duplication of action handlers"
+    benefits:
+      - "Single source of truth"
+      - "Zero duplication"
+      - "Consistent behavior guaranteed"
+  alternatives_considered:
+    - name: "Separate button configuration"
+      pros:
+        - "Explicit control"
+      cons:
+        - "Duplication"
+      rejected_reason: "Single source of truth critical"
+  implementation_approach:
+    summary: "Derive icon, label, keystroke from keybinding registry"
+    details:
+      - "ACTION_ICON_MAP for icon mapping"
+      - "handleToolbarAction dispatch to existing handlers"
+  traceability:
+    requirements:
+      - REQ-TOOLBAR_SYSTEM
+    implementation:
+      - IMPL-TOOLBAR_COMPONENT
+    tests:
+      - src/lib/toolbar.utils.test.ts
+    code_annotations:
+      - ARCH-TOOLBAR_ACTIONS
+  related_decisions:
+    depends_on:
+      - ARCH-KEYBIND_SYSTEM
+    informs:
+      - IMPL-TOOLBAR_COMPONENT
+    see_also: []
+  detail_file: architecture-decisions/ARCH-TOOLBAR_ACTIONS.md
+  metadata:
+    created:
+      date: 2026-02-08
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-08
+      author: "AI Agent"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-08
+      validator: "AI Agent"
+      result: "planned"
