@@ -3081,3 +3081,313 @@ REQ-TOOLBAR_CONFIG:
       validator: "AI Agent"
       result: "planned"
 
+REQ-NSYNC_MULTI_TARGET:
+  name: Multi-Destination File Synchronization
+  category: Functional
+  priority: P1
+  status: "Implemented"
+  rationale:
+    why: "Enable efficient copying/moving of files from source to multiple destinations in parallel, inspired by Goful's nsync usage"
+    problems_solved:
+      - "Sequential copy to multiple destinations is slow and inefficient"
+      - "No built-in way to sync files to all visible panes"
+      - "Difficult to verify that all destinations received files correctly"
+    benefits:
+      - "Parallel sync to multiple destinations for speed"
+      - "CopyAll/MoveAll keyboard shortcuts for productivity"
+      - "Progress tracking and error reporting per destination"
+      - "Safe move semantics (delete source only after ALL succeed)"
+  satisfaction_criteria:
+    - criterion: "Sync files to 2+ destinations in parallel"
+    - criterion: "Observer pattern for progress callbacks"
+    - criterion: "Move semantics: delete source only after all destinations succeed"
+    - criterion: "Cancellation support via AbortSignal"
+  validation_criteria:
+    - method: "Unit tests"
+      coverage: "Multi-destination sync, move semantics, observer callbacks"
+    - method: "Integration tests"
+      coverage: "CopyAll/MoveAll from React UI"
+  traceability:
+    architecture:
+      - ARCH-NSYNC_INTEGRATION
+    implementation:
+      - IMPL-NSYNC_ENGINE
+      - IMPL-NSYNC_OPERATIONS
+    tests:
+      - src/lib/sync/engine.test.ts
+    code_annotations:
+      - REQ-NSYNC_MULTI_TARGET
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-BULK_FILE_OPS
+      - REQ-MOVE_SEMANTICS
+    supersedes: []
+  detail_file: null
+  metadata:
+    created:
+      date: 2026-02-09
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-09
+      author: "AI Agent"
+      reason: "Initial creation after nsync implementation"
+    last_validated:
+      date: 2026-02-09
+      validator: "AI Agent"
+      result: "implemented"
+
+REQ-HASH_COMPUTATION:
+  name: Hash Computation for File Verification
+  category: Functional
+  priority: P2
+  status: "Implemented"
+  rationale:
+    why: "Support optional hash-based file comparison and verification for critical sync operations"
+    problems_solved:
+      - "Size+mtime comparison insufficient for detecting file corruption"
+      - "Need cryptographic verification for critical backups"
+      - "Multiple hash algorithms needed for different use cases"
+    benefits:
+      - "Detect file corruption or incomplete copies"
+      - "Support BLAKE3 (fast), SHA-256 (standard), XXH3 (fastest non-crypto)"
+      - "Streaming hash computation for large files"
+  satisfaction_criteria:
+    - criterion: "Support BLAKE3, SHA-256, XXH3 algorithms"
+    - criterion: "Streaming hash computation for files > 1MB"
+    - criterion: "Buffer-based hash for small files"
+  validation_criteria:
+    - method: "Unit tests"
+      coverage: "Hash computation correctness"
+    - method: "Performance tests"
+      coverage: "Streaming vs buffer performance"
+  traceability:
+    architecture:
+      - ARCH-HASH_VERIFICATION
+    implementation:
+      - IMPL-NSYNC_HASH
+    tests:
+      - src/lib/sync/engine.test.ts
+    code_annotations:
+      - REQ-HASH_COMPUTATION
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-VERIFY_DEST
+      - REQ-COMPARE_METHODS
+    supersedes: []
+  detail_file: null
+  metadata:
+    created:
+      date: 2026-02-09
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-09
+      author: "AI Agent"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-09
+      validator: "AI Agent"
+      result: "implemented"
+
+REQ-VERIFY_DEST:
+  name: Destination Verification by Hash
+  category: Functional
+  priority: P2
+  status: "Implemented"
+  rationale:
+    why: "Optional verification that destination files match source after copy to detect corruption"
+    problems_solved:
+      - "Silent data corruption during copy"
+      - "Network interruptions causing incomplete copies"
+      - "Unreliable external drives"
+    benefits:
+      - "Guarantee destination integrity"
+      - "Detect corrupted copies immediately"
+      - "Optional feature (off by default for speed)"
+  satisfaction_criteria:
+    - criterion: "Recompute hash on destination after copy"
+    - criterion: "Compare destination hash to source hash"
+    - criterion: "Report verification failure with clear error"
+  validation_criteria:
+    - method: "Unit tests"
+      coverage: "Verification success and failure cases"
+  traceability:
+    architecture:
+      - ARCH-HASH_VERIFICATION
+    implementation:
+      - IMPL-NSYNC_VERIFY
+    tests:
+      - src/lib/sync/engine.test.ts
+    code_annotations:
+      - REQ-VERIFY_DEST
+  related_requirements:
+    depends_on:
+      - REQ-HASH_COMPUTATION
+    related_to:
+      - REQ-NSYNC_MULTI_TARGET
+    supersedes: []
+  detail_file: null
+  metadata:
+    created:
+      date: 2026-02-09
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-09
+      author: "AI Agent"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-09
+      validator: "AI Agent"
+      result: "implemented"
+
+REQ-STORE_FAILURE_DETECT:
+  name: Store Failure Detection
+  category: Non-Functional
+  priority: P2
+  status: "Implemented"
+  rationale:
+    why: "Detect when external drives or network shares become unavailable to avoid wasteful retries"
+    problems_solved:
+      - "Sync continues retrying when drive detached"
+      - "No detection of network share disconnection"
+      - "Wasted time on unavailable destinations"
+    benefits:
+      - "Early abort on store failure"
+      - "Clear error classification"
+      - "Simplified implementation (error streaks vs device IDs)"
+  satisfaction_criteria:
+    - criterion: "Track error streaks per destination"
+    - criterion: "Mark store unavailable after 3+ sequential errors"
+    - criterion: "Abort sync if store becomes unavailable"
+  validation_criteria:
+    - method: "Unit tests"
+      coverage: "Error streak tracking, abort logic"
+  traceability:
+    architecture:
+      - ARCH-STORE_MONITORING
+    implementation:
+      - IMPL-NSYNC_STORE
+    tests:
+      - src/lib/sync/engine.test.ts
+    code_annotations:
+      - REQ-STORE_FAILURE_DETECT
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-NSYNC_MULTI_TARGET
+    supersedes: []
+  detail_file: null
+  metadata:
+    created:
+      date: 2026-02-09
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-09
+      author: "AI Agent"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-09
+      validator: "AI Agent"
+      result: "implemented"
+
+REQ-COMPARE_METHODS:
+  name: File Comparison Methods
+  category: Functional
+  priority: P1
+  status: "Implemented"
+  rationale:
+    why: "Skip unchanged files during sync to save time and bandwidth"
+    problems_solved:
+      - "Unnecessary copying of identical files"
+      - "Slow sync when most files unchanged"
+      - "Need different comparison methods for different scenarios"
+    benefits:
+      - "Fast size-based comparison (default)"
+      - "Accurate hash-based comparison (optional)"
+      - "Flexible comparison methods for different use cases"
+  satisfaction_criteria:
+    - criterion: "Support none, size, mtime, size-mtime, hash comparison"
+    - criterion: "Default to size-mtime for speed"
+    - criterion: "Allow per-operation comparison method selection"
+  validation_criteria:
+    - method: "Unit tests"
+      coverage: "All comparison methods, edge cases"
+  traceability:
+    architecture: []
+    implementation:
+      - IMPL-NSYNC_COMPARE
+    tests:
+      - src/lib/sync/engine.test.ts
+    code_annotations:
+      - REQ-COMPARE_METHODS
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-HASH_COMPUTATION
+      - REQ-NSYNC_MULTI_TARGET
+    supersedes: []
+  detail_file: null
+  metadata:
+    created:
+      date: 2026-02-09
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-09
+      author: "AI Agent"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-09
+      validator: "AI Agent"
+      result: "implemented"
+
+REQ-MOVE_SEMANTICS:
+  name: Safe Move Semantics
+  category: Functional
+  priority: P0
+  status: "Implemented"
+  rationale:
+    why: "Ensure source files only deleted after ALL destinations succeed to prevent data loss"
+    problems_solved:
+      - "Source deleted even when some destinations failed"
+      - "Data loss on partial move failure"
+      - "Inconsistent state across destinations"
+    benefits:
+      - "Data safety guarantee"
+      - "Clear failure recovery (source preserved)"
+      - "Predictable move behavior"
+  satisfaction_criteria:
+    - criterion: "Source deleted only after ALL destinations succeed"
+    - criterion: "Source preserved if ANY destination fails"
+    - criterion: "Clear error reporting for partial failures"
+  validation_criteria:
+    - method: "Unit tests"
+      coverage: "Move success, partial failure, full failure"
+  traceability:
+    architecture: []
+    implementation:
+      - IMPL-NSYNC_ENGINE
+      - IMPL-NSYNC_OPERATIONS
+    tests:
+      - src/lib/sync/engine.test.ts
+    code_annotations:
+      - REQ-MOVE_SEMANTICS
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-NSYNC_MULTI_TARGET
+    supersedes: []
+  detail_file: null
+  metadata:
+    created:
+      date: 2026-02-09
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-09
+      author: "AI Agent"
+      reason: "Initial creation"
+    last_validated:
+      date: 2026-02-09
+      validator: "AI Agent"
+      result: "implemented"
+

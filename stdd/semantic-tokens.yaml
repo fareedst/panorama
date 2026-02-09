@@ -2322,6 +2322,21 @@ TEST-LINKED_PANES:
   metadata:
     registered: 2026-02-08
     last_updated: 2026-02-08
+TEST-FILES_API:
+  type: TEST
+  name: Files API Route Tests
+  status: Active
+  description: "Tests for POST /api/files validation and operations (sync-all, operation-specific validation)"
+  cross_references:
+    - IMPL-FILES_API
+    - IMPL-NSYNC_ENGINE
+    - REQ-FILE_OPERATIONS
+    - REQ-NSYNC_MULTI_TARGET
+  source_index: null
+  detail_file: null
+  metadata:
+    registered: 2026-02-09
+    last_updated: 2026-02-09
 # ---
 # Template Record - Copy this block to create new tokens
 # ---
@@ -2496,3 +2511,245 @@ IMPL-TOOLBAR_CONFIG:
   metadata:
     registered: 2026-02-08
     last_updated: 2026-02-08
+
+REQ-NSYNC_MULTI_TARGET:
+  type: REQ
+  name: Multi-Destination File Synchronization
+  category: Core Functional
+  status: Active
+  description: "Sync files from source(s) to multiple destinations in parallel with progress tracking and error handling"
+  cross_references:
+    - ARCH-NSYNC_INTEGRATION
+    - IMPL-NSYNC_ENGINE
+  source_index: requirements.yaml
+  detail_file: null
+  metadata:
+    registered: 2026-02-09
+    last_updated: 2026-02-09
+
+REQ-HASH_COMPUTATION:
+  type: REQ
+  name: Hash Computation for File Verification
+  category: Core Functional
+  status: Active
+  description: "Compute file hashes using BLAKE3, SHA-256, or XXH3 algorithms for comparison and verification"
+  cross_references:
+    - IMPL-NSYNC_HASH
+    - REQ-VERIFY_DEST
+  source_index: requirements.yaml
+  detail_file: null
+  metadata:
+    registered: 2026-02-09
+    last_updated: 2026-02-09
+
+REQ-VERIFY_DEST:
+  type: REQ
+  name: Destination Verification by Hash
+  category: Core Functional
+  status: Active
+  description: "Optional verification of copied files by recomputing destination hash and comparing to source"
+  cross_references:
+    - REQ-HASH_COMPUTATION
+    - IMPL-NSYNC_VERIFY
+  source_index: requirements.yaml
+  detail_file: null
+  metadata:
+    registered: 2026-02-09
+    last_updated: 2026-02-09
+
+REQ-STORE_FAILURE_DETECT:
+  type: REQ
+  name: Store Failure Detection
+  category: Non-Functional
+  status: Active
+  description: "Detect external drive or network share failures through error streak tracking"
+  cross_references:
+    - IMPL-NSYNC_STORE
+  source_index: requirements.yaml
+  detail_file: null
+  metadata:
+    registered: 2026-02-09
+    last_updated: 2026-02-09
+
+REQ-COMPARE_METHODS:
+  type: REQ
+  name: File Comparison Methods
+  category: Core Functional
+  status: Active
+  description: "Support multiple comparison methods (size, mtime, hash) to skip unchanged files during sync"
+  cross_references:
+    - IMPL-NSYNC_COMPARE
+  source_index: requirements.yaml
+  detail_file: null
+  metadata:
+    registered: 2026-02-09
+    last_updated: 2026-02-09
+
+REQ-MOVE_SEMANTICS:
+  type: REQ
+  name: Safe Move Semantics
+  category: Core Functional
+  status: Active
+  description: "Move files safely by deleting source only after ALL destinations succeed"
+  cross_references:
+    - IMPL-NSYNC_ENGINE
+  source_index: requirements.yaml
+  detail_file: null
+  metadata:
+    registered: 2026-02-09
+    last_updated: 2026-02-09
+
+ARCH-NSYNC_INTEGRATION:
+  type: ARCH
+  name: Nsync Integration Architecture
+  status: Active
+  description: "Architecture for integrating multi-destination sync engine into nx1 file manager"
+  cross_references:
+    - REQ-NSYNC_MULTI_TARGET
+    - IMPL-NSYNC_ENGINE
+  source_index: architecture-decisions.yaml
+  detail_file: null
+  metadata:
+    registered: 2026-02-09
+    last_updated: 2026-02-09
+
+ARCH-HASH_VERIFICATION:
+  type: ARCH
+  name: Hash Verification Design
+  status: Active
+  description: "Design for optional hash-based file verification using multiple algorithms"
+  cross_references:
+    - REQ-HASH_COMPUTATION
+    - REQ-VERIFY_DEST
+    - IMPL-NSYNC_HASH
+  source_index: architecture-decisions.yaml
+  detail_file: null
+  metadata:
+    registered: 2026-02-09
+    last_updated: 2026-02-09
+
+ARCH-STORE_MONITORING:
+  type: ARCH
+  name: Store Monitoring Design
+  status: Active
+  description: "Simplified store monitoring using error streak tracking instead of device IDs"
+  cross_references:
+    - REQ-STORE_FAILURE_DETECT
+    - IMPL-NSYNC_STORE
+  source_index: architecture-decisions.yaml
+  detail_file: null
+  metadata:
+    registered: 2026-02-09
+    last_updated: 2026-02-09
+
+IMPL-NSYNC_ENGINE:
+  type: IMPL
+  name: Sync Engine Core Implementation
+  status: Active
+  description: "Core sync engine orchestrating multi-destination file synchronization with observer pattern"
+  cross_references:
+    - REQ-NSYNC_MULTI_TARGET
+    - REQ-MOVE_SEMANTICS
+    - ARCH-NSYNC_INTEGRATION
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-NSYNC_ENGINE.md
+  metadata:
+    registered: 2026-02-09
+    last_updated: 2026-02-09
+
+IMPL-NSYNC_HASH:
+  type: IMPL
+  name: Hash Computation Implementation
+  status: Active
+  description: "Hash computation with BLAKE3, SHA-256, XXH3 support and streaming for large files"
+  cross_references:
+    - REQ-HASH_COMPUTATION
+    - ARCH-HASH_VERIFICATION
+  source_index: implementation-decisions.yaml
+  detail_file: null
+  metadata:
+    registered: 2026-02-09
+    last_updated: 2026-02-09
+
+IMPL-NSYNC_VERIFY:
+  type: IMPL
+  name: Destination Verification Implementation
+  status: Active
+  description: "Destination file verification by recomputing hash and comparing to source"
+  cross_references:
+    - REQ-VERIFY_DEST
+    - ARCH-HASH_VERIFICATION
+  source_index: implementation-decisions.yaml
+  detail_file: null
+  metadata:
+    registered: 2026-02-09
+    last_updated: 2026-02-09
+
+IMPL-NSYNC_STORE:
+  type: IMPL
+  name: Store Monitoring Implementation
+  status: Active
+  description: "Simplified store failure detection using error streak tracking per destination"
+  cross_references:
+    - REQ-STORE_FAILURE_DETECT
+    - ARCH-STORE_MONITORING
+  source_index: implementation-decisions.yaml
+  detail_file: null
+  metadata:
+    registered: 2026-02-09
+    last_updated: 2026-02-09
+
+IMPL-NSYNC_COMPARE:
+  type: IMPL
+  name: File Comparison Implementation
+  status: Active
+  description: "File comparison using size, mtime, hash methods to skip unchanged files"
+  cross_references:
+    - REQ-COMPARE_METHODS
+  source_index: implementation-decisions.yaml
+  detail_file: null
+  metadata:
+    registered: 2026-02-09
+    last_updated: 2026-02-09
+
+IMPL-NSYNC_OPERATIONS:
+  type: IMPL
+  name: File Operations Wrappers
+  status: Active
+  description: "Copy, move, delete operation wrappers ensuring destination directories exist"
+  cross_references:
+    - REQ-NSYNC_MULTI_TARGET
+    - REQ-MOVE_SEMANTICS
+  source_index: implementation-decisions.yaml
+  detail_file: null
+  metadata:
+    registered: 2026-02-09
+    last_updated: 2026-02-09
+
+IMPL-NSYNC_TYPE_SAFETY:
+  type: IMPL
+  name: TypeScript Type Safety for Node.js Types
+  status: Active
+  description: "Type guards and conversions to handle Node.js bigint file sizes and stream types"
+  cross_references:
+    - IMPL-NSYNC_ENGINE
+    - IMPL-NSYNC_HASH
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-NSYNC_TYPE_SAFETY.md
+  metadata:
+    registered: 2026-02-09
+    last_updated: 2026-02-09
+
+IMPL-CURSOR_BOUNDS_CHECK:
+  type: IMPL
+  name: Cursor Bounds Validation Fix
+  status: Active
+  description: "Fix guard condition in handleNavigate to validate cursor is non-negative before array access"
+  cross_references:
+    - IMPL-WORKSPACE_VIEW
+    - IMPL-DIR_HISTORY
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-CURSOR_BOUNDS_CHECK.md
+  metadata:
+    registered: 2026-02-09
+    last_updated: 2026-02-09

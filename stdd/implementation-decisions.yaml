@@ -2095,15 +2095,15 @@ IMPL-FILES_API:
       - "RESTful interface"
       - "Complete error logging with semantic tokens"
   implementation_approach:
-    summary: "GET /api/files for directory listing, POST /api/files for operations, integrated with session logger"
+    summary: "GET /api/files for directory listing, POST /api/files for operations (copy, move, delete, rename, bulk-*, sync-all), operation-specific validation, integrated with session logger"
     details:
       - "Created src/app/api/files/route.ts"
       - "GET handler at /api/files (not /api/files/list): accepts path query param, returns sorted directory listing"
       - "POST handler: extract operation, src, dest from body"
-      - "Switch on operation type (copy, move, delete, rename)"
-      - "Call files.data functions"
-      - "Return JSON success/error responses"
-      - "Path validation to prevent directory traversal"
+      - "Operation-specific validation: only copy, move, delete, rename require src; sync-all and bulk-delete use sources array (no src)"
+      - "Switch on operation type (copy, move, delete, rename, bulk-copy, bulk-move, bulk-delete, sync-all)"
+      - "Call files.data or SyncEngine (sync-all); return JSON success/error responses"
+      - "Path validation (..) only when src/dest present"
       - "Dynamic import of operation functions to optimize bundle"
       - "Integrated logger module for debug, info, warn, error logging"
       - "All log entries include semantic tokens for traceability"
@@ -2111,15 +2111,15 @@ IMPL-FILES_API:
   code_locations:
     files:
       - path: "src/app/api/files/route.ts"
-        description: "File operations API route with logging"
-        lines: [1, 132]
+        description: "File operations API route with logging and operation-specific validation"
+        lines: [1, 240]
     functions:
       - name: "GET"
         file: "src/app/api/files/route.ts"
         description: "Handle directory listing requests with logging"
       - name: "POST"
         file: "src/app/api/files/route.ts"
-        description: "Handle file operations with comprehensive logging"
+        description: "Handle file operations with operation-specific validation and comprehensive logging"
   traceability:
     architecture:
       - ARCH-FILE_OPERATIONS_API
@@ -2129,7 +2129,7 @@ IMPL-FILES_API:
       - REQ-DIRECTORY_NAVIGATION
       - REQ-LOGGING_SYSTEM
     tests:
-      - File operations API tests
+      - src/app/api/files/route.test.ts
     code_annotations:
       - IMPL-FILES_API
       - IMPL-LOGGER_MODULE
@@ -2147,13 +2147,13 @@ IMPL-FILES_API:
       date: 2026-02-07
       author: "AI Agent"
     last_updated:
-      date: 2026-02-07
+      date: 2026-02-09
       author: "AI Agent"
-      reason: "Added comprehensive logging integration and fixed API route URL"
+      reason: "Operation-specific validation (sync-all/bulk-delete do not require src); added route.test.ts"
     last_validated:
-      date: 2026-02-07
+      date: 2026-02-09
       validator: "AI Agent"
-      result: "pass"
+      result: "pass - 6/6 route tests, sync-all accepts request without src"
 IMPL-FILES_CONFIG:
   name: Files Configuration Loader
   status: Implemented
@@ -3965,4 +3965,216 @@ IMPL-RENAME_DIALOG:
       date: 2026-02-08
       validator: "AI Agent"
       result: "pass - R opens dialog, context menu Rename opens dialog, rename API and refresh work"
+
+IMPL-NSYNC_ENGINE:
+  name: Sync Engine Core Implementation
+  status: Active
+  cross_references:
+    - REQ-NSYNC_MULTI_TARGET
+    - REQ-MOVE_SEMANTICS
+    - ARCH-NSYNC_INTEGRATION
+  rationale:
+    why: "Implements multi-destination file synchronization engine orchestrating parallel sync with observer pattern, move semantics, and store monitoring"
+    problems_solved:
+      - "Sequential sync to multiple destinations is slow"
+      - "No progress tracking during long operations"
+      - "Source deleted before all destinations verified"
+    benefits:
+      - "Parallel sync to all destinations"
+      - "Real-time progress callbacks via observer"
+      - "Safe move semantics (delete source only after ALL succeed)"
+      - "Store failure detection and abort"
+  implementation_approach:
+    summary: "SyncEngine class orchestrates sync loop iterating over sources, syncing each to all destinations in parallel, tracking results, and handling move deletion"
+    details:
+      - "SyncEngine constructor accepts optional SyncObserver"
+      - "sync() method: validate inputs, build plan, iterate sources"
+      - "For each source: syncItem() syncs to all destinations via Promise.all"
+      - "syncToDestination() handles single source->dest copy with compare, hash, verify"
+      - "StoreMonitor tracks error streaks, marks stores unavailable"
+      - "Move semantics: track sourcesToDelete, delete only after ALL destinations succeed"
+      - "Observer callbacks: onStart, onItemStart, onItemProgress, onItemComplete, onProgress, onFinish"
+  code_locations:
+    files:
+      - path: "src/lib/sync/engine.ts"
+        description: "SyncEngine class with sync(), syncItem(), syncToDestination() methods"
+        lines: []
+      - path: "src/app/api/files/route.ts"
+        description: "API route handler for sync-all operation"
+        lines: []
+      - path: "src/app/files/WorkspaceView.tsx"
+        description: "handleCopyAll(), handleMoveAll() React handlers"
+        lines: []
+    functions:
+      - name: "sync"
+        file: "src/lib/sync/engine.ts"
+        description: "Main entry point for multi-destination sync"
+      - name: "syncItem"
+        file: "src/lib/sync/engine.ts"
+        description: "Sync single source to all destinations in parallel"
+      - name: "syncToDestination"
+        file: "src/lib/sync/engine.ts"
+        description: "Sync source to single destination with compare/verify"
+  traceability:
+    architecture:
+      - ARCH-NSYNC_INTEGRATION
+    requirements:
+      - REQ-NSYNC_MULTI_TARGET
+      - REQ-MOVE_SEMANTICS
+    tests:
+      - src/lib/sync/engine.test.ts
+      - src/app/api/files/route.test.ts
+    code_annotations:
+      - IMPL-NSYNC_ENGINE
+      - REQ-NSYNC_MULTI_TARGET
+      - REQ-MOVE_SEMANTICS
+  related_decisions:
+    depends_on:
+      - IMPL-NSYNC_HASH
+      - IMPL-NSYNC_VERIFY
+      - IMPL-NSYNC_COMPARE
+      - IMPL-NSYNC_OPERATIONS
+      - IMPL-NSYNC_STORE
+    supersedes: []
+    see_also:
+      - IMPL-BULK_OPS
+      - IMPL-FILES_API
+  detail_file: implementation-decisions/IMPL-NSYNC_ENGINE.md
+  metadata:
+    created:
+      date: 2026-02-09
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-09
+      author: "AI Agent"
+      reason: "API validation fix (sync-all without src); route tests and STDD docs"
+    last_validated:
+      date: 2026-02-09
+      validator: "AI Agent"
+      result: "pass - 4/4 engine tests, 6/6 route tests, Copy to All Panes verified"
+
+IMPL-NSYNC_TYPE_SAFETY:
+  name: TypeScript Type Safety for Node.js Types
+  status: Active
+  cross_references:
+    - IMPL-NSYNC_ENGINE
+    - IMPL-NSYNC_HASH
+  rationale:
+    why: "Handle Node.js type incompatibilities (bigint file sizes, stream types, import type restrictions) to pass TypeScript strict mode compilation"
+    problems_solved:
+      - "stat.size is number | bigint but code expected only number"
+      - "Stream 'data' event emits string | Buffer but code expected only Buffer"
+      - "ErrorClass imported as type but used as value (enum access)"
+    benefits:
+      - "Production-ready TypeScript build"
+      - "Type-safe handling of large files (bigint support)"
+      - "Correct stream type handling"
+      - "Zero TypeScript compilation errors"
+  implementation_approach:
+    summary: "Add type guards and conversions to handle Node.js bigint sizes and stream types; fix import statements to allow value usage"
+    details:
+      - "Convert stat.size bigint to number: typeof stat.size === 'bigint' ? Number(stat.size) : stat.size"
+      - "Apply conversion in 3 locations: plan.totalBytes, result.bytesCopied, ItemInfo.size"
+      - "Handle stream chunk types: typeof chunk === 'string' ? Buffer.from(chunk) : chunk"
+      - "Fix ErrorClass import: move from 'import type' to regular import"
+      - "Fix NoopObserver import: move from separate import to regular import"
+  code_locations:
+    files:
+      - path: "src/lib/sync/engine.ts"
+        description: "Type conversions for stat.size (3 locations), ErrorClass import fix"
+        lines: [7, 89, 169, 261]
+      - path: "src/lib/sync/hash.ts"
+        description: "Stream chunk type handling"
+        lines: [111, 114]
+    functions: []
+  traceability:
+    architecture: []
+    requirements: []
+    tests:
+      - "npm run build - passes with zero TypeScript errors"
+    code_annotations:
+      - IMPL-NSYNC_TYPE_SAFETY
+  related_decisions:
+    depends_on:
+      - IMPL-NSYNC_ENGINE
+      - IMPL-NSYNC_HASH
+    supersedes: []
+    see_also:
+      - IMPL-TEST_SETUP
+  detail_file: implementation-decisions/IMPL-NSYNC_TYPE_SAFETY.md
+  metadata:
+    created:
+      date: 2026-02-09
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-09
+      author: "AI Agent"
+      reason: "Initial creation after TypeScript build fixes"
+    last_validated:
+      date: 2026-02-09
+      validator: "AI Agent"
+      result: "pass - npm run build succeeds with zero errors"
+
+IMPL-CURSOR_BOUNDS_CHECK:
+  name: Cursor Bounds Validation Fix
+  status: Active
+  cross_references:
+    - IMPL-WORKSPACE_VIEW
+    - IMPL-DIR_HISTORY
+  rationale:
+    why: "Fix runtime crash in handleNavigate when cursor is negative by adding proper bounds validation"
+    problems_solved:
+      - "Crash when pane.cursor is -1 (invalid state)"
+      - "Guard condition only checked upper bound, not lower bound"
+      - "Accessing pane.files[-1] returns undefined, causing crash on .name access"
+    benefits:
+      - "CopyAll/MoveAll operations complete without crashes"
+      - "Proper validation of cursor before array access"
+      - "Handles edge cases where cursor becomes negative"
+  implementation_approach:
+    summary: "Add cursor >= 0 check to guard condition before accessing pane.files[pane.cursor]"
+    details:
+      - "Root cause: Guard checked 'cursor < files.length' but not 'cursor >= 0'"
+      - "When cursor = -1: -1 < 8 evaluates to true, guard passes but pane.files[-1] = undefined"
+      - "Solution: Add 'cursor >= 0' to guard condition"
+      - "Ensures cursor is in valid range [0, files.length-1] before array access"
+  code_locations:
+    files:
+      - path: "src/app/files/WorkspaceView.tsx"
+        description: "handleNavigate function guard condition for saving cursor position"
+        lines: [265]
+    functions:
+      - name: "handleNavigate"
+        file: "src/app/files/WorkspaceView.tsx"
+        description: "Added cursor >= 0 check to guard condition before accessing pane.files[pane.cursor]"
+  traceability:
+    architecture: []
+    requirements:
+      - REQ-KEYBOARD_NAVIGATION
+      - REQ-MULTI_PANE_LAYOUT
+    tests:
+      - "Manual testing: CopyAll with 3+ panes completes without error"
+    code_annotations:
+      - IMPL-CURSOR_BOUNDS_CHECK
+      - IMPL-WORKSPACE_VIEW
+  related_decisions:
+    depends_on:
+      - IMPL-WORKSPACE_VIEW
+      - IMPL-DIR_HISTORY
+    supersedes: []
+    see_also:
+      - IMPL-NSYNC_ENGINE
+  detail_file: implementation-decisions/IMPL-CURSOR_BOUNDS_CHECK.md
+  metadata:
+    created:
+      date: 2026-02-09
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-09
+      author: "AI Agent"
+      reason: "Bug fix after discovering crash in CopyAll operation"
+    last_validated:
+      date: 2026-02-09
+      validator: "AI Agent"
+      result: "pass - CopyAll completes without crash, verified with runtime logs"
 

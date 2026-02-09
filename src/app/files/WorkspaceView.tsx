@@ -262,7 +262,7 @@ export default function WorkspaceView({
       const pane = panes[paneIndex];
       
       // Save current cursor position before navigating
-      if (pane.files.length > 0 && pane.cursor < pane.files.length) {
+      if (pane.files.length > 0 && pane.cursor >= 0 && pane.cursor < pane.files.length) {
         const currentFile = pane.files[pane.cursor];
         globalDirectoryHistory.saveCursorPosition(
           paneIndex,
@@ -1003,6 +1003,183 @@ export default function WorkspaceView({
     });
   }, [panes, focusIndex, getOperationFiles, confirmDialog, progressDialog, handleNavigate, handleClearMarks]);
 
+  // [IMPL-NSYNC_ENGINE] [REQ-NSYNC_MULTI_TARGET] Helper to get other visible pane directories
+  /**
+   * Get all pane directories except the focused pane
+   * [IMPL-NSYNC_ENGINE]
+   */
+  const getOtherPaneDirs = useCallback((): string[] => {
+    return panes
+      .map((pane, idx) => (idx !== focusIndex ? pane.path : null))
+      .filter((p): p is string => p !== null);
+  }, [panes, focusIndex]);
+
+  // [IMPL-NSYNC_ENGINE] [REQ-NSYNC_MULTI_TARGET] Copy to all other panes
+  /**
+   * Execute CopyAll operation - copy sources to ALL other visible panes
+   * [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET]
+   */
+  const handleCopyAll = useCallback(async () => {
+    const destinations = getOtherPaneDirs();
+    
+    // Need at least 2 panes (1 source + 1+ destinations)
+    if (destinations.length === 0) {
+      alert("CopyAll requires at least 2 panes. Use regular copy (c) instead.");
+      return;
+    }
+    
+    const sources = getOperationFiles(focusIndex);
+    if (sources.length === 0) {
+      return;
+    }
+    
+    // Build message
+    const message = `Copy ${sources.length} file(s) to ${destinations.length} pane(s):\n${destinations.join("\n")}`;
+    
+    // Show confirmation
+    setConfirmDialog({
+      isOpen: true,
+      title: "Copy to All Panes",
+      message,
+      onConfirm: async () => {
+        setConfirmDialog({ ...confirmDialog, isOpen: false });
+        
+        // Show progress dialog
+        setProgressDialog({
+          isOpen: true,
+          title: "Copying to All Panes",
+          total: sources.length * destinations.length,
+          completed: 0,
+          currentFile: "",
+          errors: [],
+          isComplete: false,
+        });
+        
+        try {
+          const response = await fetch("/api/files", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              operation: "sync-all",
+              sources,
+              destinations,
+              move: false,
+              compareMethod: "size-mtime",
+              verify: false,
+            }),
+          });
+          
+          const result = await response.json();
+          
+          // Update progress dialog with result
+          setProgressDialog({
+            isOpen: true,
+            title: "Copy Complete",
+            total: sources.length * destinations.length,
+            completed: result.itemsCompleted,
+            currentFile: "",
+            errors: result.errors,
+            isComplete: true,
+            result,
+          });
+          
+          // Refresh all panes
+          await Promise.all(panes.map((pane, idx) => handleNavigate(idx, pane.path)));
+          
+          // Clear marks in source pane
+          handleClearMarks(focusIndex);
+        } catch (error) {
+          console.error("CopyAll failed:", error);
+          alert(`CopyAll failed: ${String(error)}`);
+          setProgressDialog({ ...progressDialog, isOpen: false });
+        }
+      },
+    });
+  }, [panes, focusIndex, getOperationFiles, getOtherPaneDirs, confirmDialog, progressDialog, handleNavigate, handleClearMarks]);
+
+  // [IMPL-NSYNC_ENGINE] [REQ-NSYNC_MULTI_TARGET] Move to all other panes
+  /**
+   * Execute MoveAll operation - move sources to ALL other visible panes
+   * [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]
+   */
+  const handleMoveAll = useCallback(async () => {
+    const destinations = getOtherPaneDirs();
+    
+    // Need at least 2 panes (1 source + 1+ destinations)
+    if (destinations.length === 0) {
+      alert("MoveAll requires at least 2 panes. Use regular move (m) instead.");
+      return;
+    }
+    
+    const sources = getOperationFiles(focusIndex);
+    if (sources.length === 0) {
+      return;
+    }
+    
+    // Build message
+    const message = `Move ${sources.length} file(s) to ${destinations.length} pane(s):\n${destinations.join("\n")}\n\nSource files will be deleted after successful sync to ALL destinations.`;
+    
+    // Show confirmation
+    setConfirmDialog({
+      isOpen: true,
+      title: "Move to All Panes",
+      message,
+      onConfirm: async () => {
+        setConfirmDialog({ ...confirmDialog, isOpen: false });
+        
+        // Show progress dialog
+        setProgressDialog({
+          isOpen: true,
+          title: "Moving to All Panes",
+          total: sources.length * destinations.length,
+          completed: 0,
+          currentFile: "",
+          errors: [],
+          isComplete: false,
+        });
+        
+        try {
+          const response = await fetch("/api/files", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              operation: "sync-all",
+              sources,
+              destinations,
+              move: true,
+              compareMethod: "size-mtime",
+              verify: false,
+            }),
+          });
+          
+          const result = await response.json();
+          
+          // Update progress dialog with result
+          setProgressDialog({
+            isOpen: true,
+            title: "Move Complete",
+            total: sources.length * destinations.length,
+            completed: result.itemsCompleted,
+            currentFile: "",
+            errors: result.errors,
+            isComplete: true,
+            result,
+          });
+          
+          // Refresh all panes
+          await Promise.all(panes.map((pane, idx) => handleNavigate(idx, pane.path)));
+          
+          // Clear marks in source pane
+          handleClearMarks(focusIndex);
+        } catch (error) {
+          console.error("MoveAll failed:", error);
+          alert(`MoveAll failed: ${String(error)}`);
+          setProgressDialog({ ...progressDialog, isOpen: false });
+        }
+      },
+    });
+  }, [panes, focusIndex, getOperationFiles, getOtherPaneDirs, confirmDialog, progressDialog, handleNavigate, handleClearMarks]);
+
   // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [IMPL-MOUSE_SUPPORT] Rename single file (keyboard r or context menu)
   const handleRenameConfirm = useCallback(
     (filePath: string, paneIndex: number, newName: string) => {
@@ -1133,6 +1310,15 @@ export default function WorkspaceView({
     
     handlers.set("file.move", () => {
       handleBulkMove();
+    });
+
+    // [IMPL-NSYNC_ENGINE] [REQ-NSYNC_MULTI_TARGET] Multi-destination operations
+    handlers.set("file.copyAll", () => {
+      handleCopyAll();
+    });
+    
+    handlers.set("file.moveAll", () => {
+      handleMoveAll();
     });
     
     handlers.set("file.delete", () => {

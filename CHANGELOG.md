@@ -7,6 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.4.6] - 2026-02-09
+
+### Added
+
+#### Multi-Destination File Sync [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS] [REQ-COMPARE_METHODS] [REQ-HASH_COMPUTATION] [REQ-VERIFY_DEST] [REQ-STORE_FAILURE_DETECT]
+- **Copy to All Panes / Move to All Panes**: Sync files from the focused pane to all other visible panes in one action (keyboard: Shift+C, Shift+V; toolbar: CopyAll/MoveAll). Inspired by Goful's use of the nsync library.
+- **Sync engine** (`src/lib/sync/`): Multi-destination orchestration with parallel copy per source, observer pattern for progress, and integration via `POST /api/files` with operation `sync-all`.
+- **Safe move semantics** [REQ-MOVE_SEMANTICS]: Source files are deleted only after ALL destinations succeed; partial failure leaves the source intact.
+- **Comparison methods** [REQ-COMPARE_METHODS]: Skip unchanged files via `none`, `size`, `mtime`, `size-mtime`, or `hash` (default: `size-mtime`).
+- **Hash computation** [REQ-HASH_COMPUTATION]: BLAKE3, SHA-256, and XXH3 with streaming for large files; used for hash-based comparison and optional verification.
+- **Destination verification** [REQ-VERIFY_DEST]: Optional recompute of destination hash after copy to detect corruption (off by default).
+- **Store failure detection** [REQ-STORE_FAILURE_DETECT]: Error streak tracking per destination; sync aborts when a store is marked unavailable (e.g. detached drive) after 3+ sequential errors.
+
+#### STDD Documentation
+- New requirements in `stdd/requirements.yaml`:
+  - `[REQ-NSYNC_MULTI_TARGET]` — Multi-destination file synchronization (parallel sync, CopyAll/MoveAll, observer, cancellation)
+  - `[REQ-MOVE_SEMANTICS]` — Safe move semantics (delete source only after all destinations succeed)
+  - `[REQ-COMPARE_METHODS]` — File comparison methods (none, size, mtime, size-mtime, hash)
+  - `[REQ-HASH_COMPUTATION]` — Hash computation for verification (BLAKE3, SHA-256, XXH3, streaming)
+  - `[REQ-VERIFY_DEST]` — Optional destination verification by hash after copy
+  - `[REQ-STORE_FAILURE_DETECT]` — Store failure detection and early abort
+- Implementation decisions and semantic tokens updated for sync engine, API validation, and route tests.
+
+#### API and Tests
+- **POST /api/files** operation-specific validation: `sync-all` and bulk operations no longer require `src`; only `copy`, `move`, `delete`, `rename` require `src`. Fixes Copy to All Panes returning 400 when only `sources` and `destinations` are sent.
+- **Route tests** (`src/app/api/files/route.test.ts`): Validation and sync-all acceptance (sync-all without `src` succeeds when `sources` and `destinations` provided; missing sources/destinations return 400).
+- **Sync engine unit tests** (`src/lib/sync/engine.test.ts`): Multi-destination sync, skip unchanged, observer callbacks, move semantics.
+
+### Technical Details
+
+#### New / Modified Files
+- **Sync module**: `src/lib/sync/engine.ts`, `src/lib/sync/operations.ts`, `src/lib/sync/compare.ts`, `src/lib/sync/hash.ts`, `src/lib/sync/verify.ts`, `src/lib/sync/store.ts`, `src/lib/sync.types.ts`, `src/lib/sync/index.ts`
+- **API**: `src/app/api/files/route.ts` — operation-specific validation, `sync-all` branch; `src/app/api/files/route.test.ts` — new
+- **UI**: `src/app/files/WorkspaceView.tsx` — `handleCopyAll`, `handleMoveAll`, `getOtherPaneDirs`; keybindings and toolbar for CopyAll/MoveAll in `config/files.yaml`
+- **STDD**: `stdd/implementation-decisions/IMPL-NSYNC_ENGINE.md`, `stdd/requirements.yaml`, `stdd/implementation-decisions.yaml`, `stdd/semantic-tokens.yaml` (TEST-FILES_API, nsync-related tokens)
+
+---
+
 ## [0.4.5] - 2026-02-08
 
 ### Added
@@ -851,6 +889,7 @@ This baseline establishes a solid foundation for feature development:
 
 **Note**: This version represents the initial STDD documentation baseline. All existing functionality has been documented with requirements, architecture decisions, implementation decisions, and comprehensive tests. The application is ready for feature development with full traceability.
 
+[0.4.6]: https://github.com/yourusername/nx1/releases/tag/v0.4.6
 [0.4.5]: https://github.com/yourusername/nx1/releases/tag/v0.4.5
 [0.4.4]: https://github.com/yourusername/nx1/releases/tag/v0.4.4
 [0.4.3]: https://github.com/yourusername/nx1/releases/tag/v0.4.3

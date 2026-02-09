@@ -147,6 +147,19 @@ keybindings:
     description: "Move marked files (or current file)"
     category: "file-operations"
   
+  # [IMPL-NSYNC_ENGINE] [REQ-NSYNC_MULTI_TARGET] Multi-destination operations
+  - key: "C"
+    shift: true
+    action: "file.copyAll"
+    description: "Copy marked files to ALL other panes"
+    category: "file-operations"
+  
+  - key: "V"
+    shift: true
+    action: "file.moveAll"
+    description: "Move marked files to ALL other panes"
+    category: "file-operations"
+  
   - key: "d"
     action: "file.delete"
     description: "Delete marked files (or current file)"
@@ -371,6 +384,8 @@ toolbars:
         actions:
           - "file.copy"
           - "file.move"
+          - "file.copyAll"
+          - "file.moveAll"
           - "file.delete"
           - "file.rename"
       - name: "Navigation"
