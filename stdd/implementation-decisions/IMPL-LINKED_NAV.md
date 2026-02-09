@@ -3,13 +3,16 @@
 **Cross-References**: [ARCH-LINKED_NAV] [REQ-LINKED_PANES]  
 **Status**: Implemented  
 **Date**: 2026-02-08  
-**Last Updated**: 2026-02-08 (Config-driven default, pane state preservation, scroll-to-center, empty selection)
+**Last Updated**: 2026-02-09 (Root path edge cases: navigate to root = upward, root→subdir = downward, relativePath at root)
 
 ---
 
 ## Overview
 
 Complete implementation of linked pane navigation including subdirectory/parent navigation sync, cursor synchronization with scroll-to-center, empty selection handling, sort synchronization, auto-disable on divergence, and config-driven default state.
+
+**Recent Updates (2026-02-09)**:
+- **Root path edge cases**: When at root (`/`), `oldPath + '/'` is `"//"`, so `newPath.startsWith("//")` is false for paths like `/Users` or `/private`. Fixed by: (1) Treating "navigate to root" as upward when `newPath === '/'` so Backspace from e.g. `/Users` syncs all panes to `/`. (2) Treating "from root to subdir" as downward when `normalizedOld === '/'` and `newPath.startsWith('/') && newPath.length > 1` so Enter on a subdir at root syncs all panes. (3) When at root, `relativePath` must strip only the leading slash: use `newPath.slice(1)` instead of `newPath.slice(oldPath.length + 1)` (which would be `slice(2)` and drop the first character of the segment, e.g. "private" → "rivate").
 
 **Recent Updates (2026-02-08)**:
 - Fixed handleParentNavigation to call handleNavigate instead of directly calling setPanes, ensuring Backspace key triggers linked synchronization.
@@ -65,26 +68,28 @@ handlers.set("link.toggle", () => {
 **Logic**:
 1. Check if initiating navigation (not in sync operation)
 2. Determine navigation direction (downward into subdir or upward to parent)
-3. For subdirectory navigation:
-   - Extract relative path
+3. **Root edge cases**: When at root, `oldPath + '/'` is `"//"` so standard checks fail. Treat "navigate to root" as upward; treat "from root to subdir" as downward; when at root use `relativePath = newPath.slice(1)` (strip leading slash only).
+4. For subdirectory navigation:
+   - Extract relative path (at root: `newPath.slice(1)`; else: `newPath.slice(oldPath.length + 1)`)
    - Track success/failure count
    - Navigate other panes to matching subdirectory
    - Auto-disable if partial failure
-4. For parent navigation:
+5. For parent navigation:
    - Calculate steps up
-   - Navigate all panes up by same number of steps
+   - Navigate all panes up by same number of steps (including to `/` when newPath is root)
 
 **Subdirectory Sync**:
 ```typescript
 if (isDownward) {
-  const relativePath = newPath.slice(oldPath.length + 1);
+  const normalizedOld = (oldPath === '' ? '/' : oldPath);
+  const relativePath = normalizedOld === '/' ? newPath.slice(1) : newPath.slice(oldPath.length + 1);
   let successCount = 1, failureCount = 0;
   
   for (let i = 0; i < panes.length; i++) {
     if (i === paneIndex) continue;
     syncingRef.current.add(i);
     
-    const linkedTargetPath = `${linkedPane.path}/${relativePath}`;
+    const linkedTargetPath = `${linkedPane.path}/${relativePath}`.replace(/\/+/g, '/');
     // Check existence, navigate, track success/failure
     
     if (successCount > 0 && failureCount > 0) {
@@ -495,6 +500,7 @@ All linked navigation code includes semantic token annotations:
 
 **Bug Fixes**:
 - ✅ 2026-02-08: Fixed Backspace not syncing linked panes to parent
+- ✅ 2026-02-09: Fixed linked nav at root: (1) Backspace from one level below root (e.g. `/Users`) now syncs all panes to `/`; (2) Enter on subdir at root now syncs all panes into that subdir; (3) relativePath at root uses `slice(1)` so linked pane gets e.g. `/private` not `/rivate`
 
 **Test Status**: All tests passing (40/40)
 
@@ -511,8 +517,10 @@ All linked navigation code includes semantic token annotations:
   8. Auto-disable on divergence
   9. Visual indicator behavior
   10. Parent navigation sync
-  11. Single pane mode behavior
-  12. Config-driven initialization
+  11. Sync to root when Backspace from one level below root (root edge case)
+  12. Sync from root into subdir with correct relativePath (no dropped leading character)
+  13. Single pane mode behavior
+  14. Config-driven initialization
 
 ---
 
@@ -524,5 +532,5 @@ All linked navigation code includes semantic token annotations:
 
 ---
 
-*Last validated: 2026-02-08 by AI agent*  
-*Last updated: 2026-02-08 - Added scroll-to-center, empty selection (cursor=-1), scroll triggers state*
+*Last validated: 2026-02-09 by AI agent*  
+*Last updated: 2026-02-09 - Root path edge cases (navigate to root, from root to subdir, relativePath at root)*

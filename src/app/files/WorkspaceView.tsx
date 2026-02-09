@@ -319,12 +319,20 @@ export default function WorkspaceView({
         const oldPath = pane.path;
         
         // Determine if this is a downward or upward navigation
-        const isDownward = newPath.startsWith(oldPath + '/');
-        const isUpward = oldPath.startsWith(newPath + '/');
+        // [IMPL-LINKED_NAV] When at root, oldPath+'/' is "//" so newPath.startsWith("//") is false for e.g. /Users; treat from-root-to-subdir as downward
+        const normalizedOld = (oldPath === '' ? '/' : oldPath);
+        const isDownward = newPath.startsWith(oldPath + '/') ||
+          (normalizedOld === '/' && newPath.startsWith('/') && newPath.length > 1);
+        // [IMPL-LINKED_NAV] Treat "navigate to root" as upward: newPath+'/' is "//" so oldPath.startsWith("//") is false for e.g. /Users
+        const normalizedNew = (newPath === '' ? '/' : newPath);
+        const isUpward = normalizedNew === '/'
+          ? (oldPath !== '/' && oldPath.length > 1)
+          : oldPath.startsWith(normalizedNew + '/');
         
         if (isDownward) {
           // Navigating into subdirectory
-          const relativePath = newPath.slice(oldPath.length + 1);
+          // [IMPL-LINKED_NAV] When at root, oldPath.length+1 is 2 so slice(2) drops "/p"; strip only leading slash.
+          const relativePath = normalizedOld === '/' ? newPath.slice(1) : newPath.slice(oldPath.length + 1);
           
           // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Track success for auto-disable
           let successCount = 1; // Source pane always succeeds

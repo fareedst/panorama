@@ -91,8 +91,10 @@ if (isInitiatingNavigation && linkedMode && panes.length > 1) {
 ```
 
 **Key Design Points**:
-- Relative path resolution for subdirectories
-- Parent navigation by step count
+- Relative path resolution for subdirectories (when at root `/`, use `newPath.slice(1)` so the segment name is preserved, e.g. "private" not "rivate")
+- Treat "navigate to root" as upward (newPath `"/"` → isUpward when oldPath is not root)
+- Treat "from root to subdir" as downward (oldPath `"/"` → isDownward when newPath is e.g. `/private`)
+- Parent navigation by step count (including to root)
 - Existence check before navigation
 - Success/failure tracking for auto-disable
 - Sync ref prevents infinite recursion

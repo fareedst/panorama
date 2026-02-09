@@ -1166,6 +1166,100 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
         expect(parentCalls.length).toBeGreaterThan(0);
       }, { timeout: 3000 });
     });
+
+    it("should sync all panes to root when Backspace from one level below root [REQ-LINKED_PANES] [IMPL-LINKED_NAV]", async () => {
+      const rootFiles: FileStat[] = [
+        { name: "Users", path: "/Users", isDirectory: true, size: 0, mtime: new Date(), extension: "" },
+        { name: "private", path: "/private", isDirectory: true, size: 0, mtime: new Date(), extension: "" },
+      ];
+      const filesAtUsers: FileStat[] = [
+        { name: "fareed", path: "/Users/fareed", isDirectory: true, size: 0, mtime: new Date(), extension: "" },
+      ];
+
+      (global.fetch as ReturnType<typeof vi.fn>).mockImplementation(async (url: string) => {
+        const urlStr = url.toString();
+        if (urlStr.includes("path=%2F%2F") || (urlStr.includes("path=%2F") && !urlStr.includes("%2FUsers") && !urlStr.includes("%2Ffareed"))) {
+          return { ok: true, json: async () => rootFiles } as Response;
+        }
+        if (urlStr.includes("path=%2FUsers")) {
+          return { ok: true, json: async () => filesAtUsers } as Response;
+        }
+        return { ok: true, json: async () => [] } as Response;
+      });
+
+      render(
+        <WorkspaceView
+          initialPanes={[
+            { path: "/Users", files: filesAtUsers },
+            { path: "/Users", files: filesAtUsers },
+          ]}
+          keybindings={linkedKeybindings}
+          copy={mockCopy}
+          layout={{ ...mockLayout, defaultPaneCount: 2 }}
+          columns={mockColumns}
+        />
+      );
+
+      expect(screen.getByText(/🔗.*Linked/)).toBeInTheDocument();
+      fireEvent.keyDown(window, { key: "Backspace" });
+
+      await waitFor(() => {
+        const calls = (global.fetch as ReturnType<typeof vi.fn>).mock.calls;
+        const rootCalls = calls.filter((call) => {
+          const u = call[0].toString();
+          return u.includes("path=%2F") && !u.includes("%2FUsers") && !u.includes("%2Ffareed");
+        });
+        expect(rootCalls.length).toBeGreaterThanOrEqual(2);
+      }, { timeout: 3000 });
+    });
+
+    it("should sync all panes from root into subdir with correct path [REQ-LINKED_PANES] [IMPL-LINKED_NAV]", async () => {
+      const rootFiles: FileStat[] = [
+        { name: "private", path: "/private", isDirectory: true, size: 0, mtime: new Date(), extension: "" },
+        { name: "Users", path: "/Users", isDirectory: true, size: 0, mtime: new Date(), extension: "" },
+      ];
+      const privateDirFiles: FileStat[] = [
+        { name: "tmp", path: "/private/tmp", isDirectory: true, size: 0, mtime: new Date(), extension: "" },
+      ];
+
+      (global.fetch as ReturnType<typeof vi.fn>).mockImplementation(async (url: string) => {
+        const urlStr = url.toString();
+        if (urlStr.includes("path=%2Fprivate")) {
+          return { ok: true, json: async () => privateDirFiles } as Response;
+        }
+        if (urlStr.includes("path=%2F") && !urlStr.includes("%2Fprivate")) {
+          return { ok: true, json: async () => rootFiles } as Response;
+        }
+        return { ok: true, json: async () => [] } as Response;
+      });
+
+      render(
+        <WorkspaceView
+          initialPanes={[
+            { path: "/", files: rootFiles },
+            { path: "/", files: rootFiles },
+          ]}
+          keybindings={linkedKeybindings}
+          copy={mockCopy}
+          layout={{ ...mockLayout, defaultPaneCount: 2 }}
+          columns={mockColumns}
+        />
+      );
+
+      expect(screen.getByText(/🔗.*Linked/)).toBeInTheDocument();
+      fireEvent.keyDown(window, { key: "Enter" });
+
+      await waitFor(() => {
+        const calls = (global.fetch as ReturnType<typeof vi.fn>).mock.calls;
+        const privateCalls = calls.filter((call) => {
+          const u = call[0].toString();
+          return u.includes("path=%2Fprivate");
+        });
+        expect(privateCalls.length).toBeGreaterThanOrEqual(2);
+        const hasRivate = calls.some((call) => call[0].toString().includes("path=%2Frivate"));
+        expect(hasRivate).toBe(false);
+      }, { timeout: 3000 });
+    });
   });
 
   describe("Single Pane Mode [IMPL-LINKED_NAV]", () => {
