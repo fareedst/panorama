@@ -4178,3 +4178,49 @@ IMPL-CURSOR_BOUNDS_CHECK:
       validator: "AI Agent"
       result: "pass - CopyAll completes without crash, verified with runtime logs"
 
+IMPL-COPY_ATTRS:
+  name: Copy Preserve File Attributes
+  status: Active
+  cross_references:
+    - REQ-COPY_OPERATIONS
+    - REQ-FILE_OPERATIONS
+    - IMPL-NSYNC_OPERATIONS
+    - IMPL-FILES_DATA
+  rationale:
+    why: "Copying a file with nsync or simpler methods must maintain attributes (mode, timestamps) where possible"
+    benefits:
+      - "Preserves mtime/atime for comparison and backup semantics"
+      - "Preserves mode (permissions) on Unix"
+      - "Best-effort: copy still succeeds if chmod/utimes fail"
+  implementation_approach:
+    summary: "Shared preserveCopyAttributes() after fs.copyFile; stat source then chmod + utimes on dest; each step try/catch so unsupported or denied ops do not fail the copy"
+  code_locations:
+    files:
+      - path: "src/lib/copyAttributes.ts"
+        description: "preserveCopyAttributes() helper"
+      - path: "src/lib/sync/operations.ts"
+        description: "Called after copyFile"
+      - path: "src/lib/files.data.ts"
+        description: "Called after copyFile"
+  traceability:
+    requirements:
+      - REQ-COPY_OPERATIONS
+      - REQ-FILE_OPERATIONS
+    tests:
+      - "src/lib/sync/engine.test.ts - should preserve file attributes (mtime, mode) where possible [IMPL-COPY_ATTRS]"
+    code_annotations:
+      - IMPL-COPY_ATTRS
+  related_decisions:
+    depends_on:
+      - IMPL-NSYNC_OPERATIONS
+      - IMPL-FILES_DATA
+    see_also: []
+  detail_file: null
+  metadata:
+    created:
+      date: 2026-02-09
+      author: "AI Agent"
+    last_updated:
+      date: 2026-02-09
+      author: "AI Agent"
+      reason: "Copy must maintain attributes where possible (TODO)"

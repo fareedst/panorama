@@ -2726,6 +2726,22 @@ IMPL-NSYNC_OPERATIONS:
     registered: 2026-02-09
     last_updated: 2026-02-09
 
+IMPL-COPY_ATTRS:
+  type: IMPL
+  name: Copy Preserve File Attributes
+  status: Active
+  description: "Preserve mode and atime/mtime on destination after copy where possible (best-effort)"
+  cross_references:
+    - REQ-COPY_OPERATIONS
+    - REQ-FILE_OPERATIONS
+    - IMPL-NSYNC_OPERATIONS
+    - IMPL-FILES_DATA
+  source_index: implementation-decisions.yaml
+  detail_file: null
+  metadata:
+    registered: 2026-02-09
+    last_updated: 2026-02-09
+
 IMPL-NSYNC_TYPE_SAFETY:
   type: IMPL
   name: TypeScript Type Safety for Node.js Types

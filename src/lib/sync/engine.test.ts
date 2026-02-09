@@ -63,6 +63,23 @@ describe("SyncEngine", () => {
     expect(dest2Content).toBe("test content");
   });
 
+  it("should preserve file attributes (mtime, mode) where possible [IMPL-COPY_ATTRS]", async () => {
+    const sourceFile = path.join(sourceDir, "attrs.txt");
+    await fs.writeFile(sourceFile, "content");
+    const past = new Date(Date.now() - 86400_000);
+    await fs.utimes(sourceFile, past, past);
+    const sourceStat = await fs.stat(sourceFile);
+
+    const engine = new SyncEngine();
+    await engine.sync([sourceFile], [dest1Dir], {});
+
+    const destFile = path.join(dest1Dir, "attrs.txt");
+    const destStat = await fs.stat(destFile);
+    expect(destStat.mtime.getTime()).toBe(sourceStat.mtime.getTime());
+    expect(destStat.atime.getTime()).toBe(sourceStat.atime.getTime());
+    expect(destStat.mode).toBe(sourceStat.mode);
+  });
+
   it("should skip unchanged files [REQ-COMPARE_METHODS]", async () => {
     // Create source file
     const sourceFile = path.join(sourceDir, "test.txt");

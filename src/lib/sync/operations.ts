@@ -4,6 +4,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { logger } from "../logger";
+import { preserveCopyAttributes } from "../copyAttributes";
 
 /**
  * Copy a file from source to destination
@@ -23,7 +24,9 @@ export async function copyFile(sourcePath: string, destPath: string): Promise<vo
     
     // Copy the file
     await fs.copyFile(sourcePath, destPath);
-    
+    // [IMPL-COPY_ATTRS] Preserve mode and timestamps where possible
+    await preserveCopyAttributes(sourcePath, destPath);
+
     logger.trace(["IMPL-NSYNC_OPERATIONS"], `Copy completed: ${destPath}`);
   } catch (error) {
     logger.error(["IMPL-NSYNC_OPERATIONS"], `Copy failed: ${sourcePath} -> ${destPath}`, 

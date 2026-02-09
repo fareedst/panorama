@@ -7,6 +7,7 @@ import os from "os";
 import type { FileStat, SortType, CompareState, ComparisonIndex } from "./files.types";
 import { formatSize } from "./files.utils";
 import { logger } from "./logger";
+import { preserveCopyAttributes } from "./copyAttributes";
 
 // Re-export formatSize for backward compatibility
 export { formatSize };
@@ -129,6 +130,8 @@ export async function copyFile(src: string, dest: string): Promise<void> {
   logger.info(["IMPL-FILES_DATA", "REQ-FILE_OPERATIONS"], `Copying file: ${src} -> ${dest}`);
   try {
     await fs.copyFile(src, dest);
+    // [IMPL-COPY_ATTRS] Preserve mode and timestamps where possible
+    await preserveCopyAttributes(src, dest);
     logger.info(["IMPL-FILES_DATA", "REQ-FILE_OPERATIONS"], `Successfully copied file: ${src} -> ${dest}`);
   } catch (error) {
     logger.error(["IMPL-FILES_DATA", "REQ-FILE_OPERATIONS"], `Failed to copy file: ${src} -> ${dest}`, { error: String(error) });
