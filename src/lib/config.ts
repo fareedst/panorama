@@ -12,8 +12,6 @@ import type {
   SiteConfig,
   ThemeConfig,
   ClassOverrides,
-  JobsConfig,
-  JobsThemeOverrides,
   FilesConfig,
   FilesThemeOverrides,
 } from "./config.types";
@@ -118,88 +116,6 @@ const DEFAULT_THEME_CONFIG: ThemeConfig = {
     buttonDesktopWidth: "158px",
   },
   overrides: {},
-  jobs: {
-    overrides: {},
-    statusBadges: {
-      applied: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-      rejected: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-      interested: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-      to_apply: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-      none: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200",
-    },
-  },
-};
-
-// [IMPL-CONFIG_DRIVEN_APPEARANCE] [ARCH-CONFIG_DRIVEN_APPEARANCE] [REQ-CONFIG_DRIVEN_APPEARANCE]
-// Default jobs config – used when config/jobs.yaml is missing or partial.
-const DEFAULT_JOBS_CONFIG: JobsConfig = {
-  app: {
-    title: "Job Search Tracker",
-    description: "Track open positions and applications",
-  },
-  fields: [
-    { name: "title", label: "Position Title", type: "text", required: true, showInTable: true },
-    { name: "postingDate", label: "Posting Date", type: "date", showInTable: true },
-    { name: "urls", label: "URLs", type: "url-list", showInTable: false },
-    { name: "description", label: "Description", type: "textarea", showInTable: false },
-    {
-      name: "applicationStatus",
-      label: "Application Status",
-      type: "select",
-      showInTable: true,
-      options: [
-        { value: "none", label: "None" },
-        { value: "interested", label: "Interested" },
-        { value: "to_apply", label: "To Apply" },
-        { value: "applied", label: "Applied" },
-        { value: "rejected", label: "Rejected" },
-      ],
-    },
-    { name: "statusDate", label: "Status Date", type: "date", showInTable: true },
-    { name: "notes", label: "Notes", type: "textarea", showInTable: false },
-  ],
-  table: { defaultSort: "postingDate", defaultSortDirection: "desc" },
-  copy: {
-    listTitle: "Job Search Tracker",
-    listSubtitle: "Track your job applications and positions",
-    addNewButton: "Add New Position",
-    emptyTitle: "No positions found.",
-    emptyLink: "Create your first position",
-    editLink: "Edit",
-    editPageTitle: "Edit Position",
-    backToList: "Back to List",
-    backToCalendar: "Return to Calendar",
-    deleteButton: "Delete Position",
-    deleteConfirm: "Are you sure you want to delete this position?",
-    newPageTitle: "Add New Position",
-    newPageSubtitle: "Enter details about a new job position",
-    positionDetails: "Position Details",
-    applications: "Applications",
-    addApplication: "Add Application",
-    editApplication: "Edit Application",
-    saveButton: "Save",
-    updateButton: "Update",
-    addButton: "Add",
-    cancel: "Cancel",
-    remove: "Remove",
-    addUrl: "+ Add URL",
-    createPosition: "Create Position",
-    updatePosition: "Update Position",
-    saving: "Saving...",
-    // [REQ-JOB_TRACKER_CALENDAR] Calendar view copy defaults
-    calendarTitle: "Calendar View",
-    calendarSubtitle: "Positions and applications by date",
-    calendarPrev: "Previous",
-    calendarNext: "Next",
-    calendarToday: "Today",
-    calendarNoItems: "No items for this day",
-    calendarPositionLabel: "Position",
-    calendarApplicationLabel: "Application",
-    calendarDetailClose: "Close",
-    calendarBackToList: "Back to List",
-    calendarDayNames: "Sun,Mon,Tue,Wed,Thu,Fri,Sat",
-    calendarViewButton: "Calendar View",
-  },
 };
 
 // ---------------------------------------------------------------------------
@@ -270,7 +186,6 @@ function readYamlFile(filePath: string): Record<string, unknown> {
 
 let _siteConfig: SiteConfig | null = null;
 let _themeConfig: ThemeConfig | null = null;
-let _jobsConfig: JobsConfig | null = null;
 
 // ---------------------------------------------------------------------------
 // Public API
@@ -324,20 +239,6 @@ export function generateThemeCss(theme: ThemeConfig): string {
 }
 
 /**
- * Returns the resolved jobs configuration (config/jobs.yaml merged with defaults).
- * Result is cached at module level for the lifetime of the server process.
- *
- * [IMPL-CONFIG_DRIVEN_APPEARANCE] [ARCH-CONFIG_DRIVEN_APPEARANCE] [REQ-CONFIG_DRIVEN_APPEARANCE]
- */
-export function getJobsConfig(): JobsConfig {
-  if (_jobsConfig) return _jobsConfig;
-  const userConfig = readYamlFile("config/jobs.yaml");
-  const merged = deepMerge(DEFAULT_JOBS_CONFIG, userConfig);
-  _jobsConfig = merged;
-  return merged;
-}
-
-/**
  * Returns the resolved class string for a given override key, or empty string
  * if the override is not defined or blank.
  *
@@ -348,35 +249,6 @@ export function getOverride(
   key: keyof ClassOverrides,
 ): string {
   return (overrides[key] ?? "").trim();
-}
-
-/**
- * Returns the class string for a jobs theme override key, or empty string if not set.
- * [IMPL-CONFIG_DRIVEN_APPEARANCE] [ARCH-CONFIG_DRIVEN_APPEARANCE] [REQ-CONFIG_DRIVEN_APPEARANCE]
- */
-export function getJobsOverride(
-  overrides: JobsThemeOverrides | undefined,
-  key: keyof JobsThemeOverrides,
-): string {
-  return (overrides?.[key] ?? "").trim();
-}
-
-/**
- * Returns the status badge class for a status value from theme.jobs.statusBadges.
- * Falls back to statusBadgeDefault or a neutral default if not in config.
- * [IMPL-CONFIG_DRIVEN_APPEARANCE] [ARCH-CONFIG_DRIVEN_APPEARANCE] [REQ-CONFIG_DRIVEN_APPEARANCE]
- */
-export function getStatusBadgeClass(
-  theme: ThemeConfig,
-  status: string,
-): string {
-  const badges = theme.jobs?.statusBadges;
-  const overrides = theme.jobs?.overrides;
-  const defaultClass =
-    getJobsOverride(overrides, "statusBadgeDefault") ||
-    "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200";
-  if (!badges) return defaultClass;
-  return (badges[status] ?? badges["none"] ?? defaultClass).trim();
 }
 
 // ---------------------------------------------------------------------------
@@ -392,7 +264,6 @@ const DEFAULT_FILES_CONFIG: FilesConfig = {
   copy: {
     title: "File Manager",
     subtitle: "Browse and manage server files",
-    backToHome: "Back to Home",
     layoutLabel: "Layout:",
     emptyDirectory: "Empty directory",
     shortcuts: {
@@ -564,7 +435,6 @@ export function getFileTypeConfig(
 export function _resetConfigCache(): void {
   _siteConfig = null;
   _themeConfig = null;
-  _jobsConfig = null;
   _filesConfig = null;
 }
 
@@ -575,5 +445,4 @@ export { deepMerge as _deepMerge, readYamlFile as _readYamlFile };
 export {
   DEFAULT_SITE_CONFIG as _DEFAULT_SITE_CONFIG,
   DEFAULT_THEME_CONFIG as _DEFAULT_THEME_CONFIG,
-  DEFAULT_JOBS_CONFIG as _DEFAULT_JOBS_CONFIG,
 };

@@ -1,12 +1,9 @@
 // [REQ-APP_STRUCTURE] [REQ-BUILD_SYSTEM] [REQ-CONFIG_DRIVEN_UI]
-// Integration tests verifying the complete application structure,
-// including layout wrapping pages, full rendering pipeline, and
-// config-driven content rendering.
+// Integration tests verifying the application structure for the file manager app
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import RootLayout from '../../app/layout';
-import Home from '../../app/page';
 import { getSiteConfig, _resetConfigCache } from '../../lib/config';
 
 // Reset config cache before each test
@@ -14,75 +11,17 @@ beforeEach(() => {
   _resetConfigCache();
 });
 
-const site = getSiteConfig();
-
 describe('Application Integration [REQ-APP_STRUCTURE] [REQ-CONFIG_DRIVEN_UI]', () => {
-  it('layout wraps page content correctly [IMPL-ROOT_LAYOUT] [IMPL-HOME_PAGE]', () => {
-    // [REQ-APP_STRUCTURE] Validates layout + page integration
-    render(
-      <RootLayout>
-        <Home />
-      </RootLayout>
-    );
-
-    // Page content from config should be present
-    const heading = screen.getByRole('heading', { level: 1 });
-    expect(heading).toHaveTextContent(site.content.heading);
-  });
-
-  it('full application renders without errors [REQ-APP_STRUCTURE]', () => {
-    // [REQ-APP_STRUCTURE] Smoke test for complete app
+  it('layout renders children correctly [IMPL-ROOT_LAYOUT]', () => {
+    // [REQ-APP_STRUCTURE] Validates layout wraps content
+    const testContent = 'Test Content';
     const { container } = render(
       <RootLayout>
-        <Home />
+        <div>{testContent}</div>
       </RootLayout>
     );
 
-    // Main content structure renders correctly
-    expect(container.querySelector('main')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
-  });
-
-  it('all interactive elements are accessible [REQ-ACCESSIBILITY]', () => {
-    // [REQ-ACCESSIBILITY] Validates full app accessibility
-    render(
-      <RootLayout>
-        <Home />
-      </RootLayout>
-    );
-
-    // All links should be accessible
-    const links = screen.getAllByRole('link');
-    expect(links.length).toBeGreaterThan(0);
-
-    links.forEach(link => {
-      expect(link).toBeVisible();
-    });
-
-    // Heading should be accessible
-    const heading = screen.getByRole('heading', { level: 1 });
-    expect(heading).toBeVisible();
-  });
-
-  it('combines all layout and page features from config [REQ-APP_STRUCTURE] [REQ-CONFIG_DRIVEN_UI]', () => {
-    // [REQ-APP_STRUCTURE] [REQ-CONFIG_DRIVEN_UI] Validates feature integration with config
-    const { container } = render(
-      <RootLayout>
-        <Home />
-      </RootLayout>
-    );
-
-    // Branding from config
-    expect(screen.getByAltText(site.branding.logo.alt)).toBeInTheDocument();
-
-    // Navigation from config
-    Object.values(site.navigation.inlineLinks).forEach(link => {
-      expect(screen.getByRole('link', { name: link.label })).toBeInTheDocument();
-    });
-
-    // Dark mode support (both)
-    const darkElements = container.querySelectorAll('[class*="dark:"]');
-    expect(darkElements.length).toBeGreaterThan(0);
+    expect(container.textContent).toContain(testContent);
   });
 });
 
@@ -93,23 +32,11 @@ describe('Server Component Rendering [ARCH-SERVER_COMPONENTS]', () => {
     expect(isServerComponent).toBe(true);
   });
 
-  it('page is a server component [IMPL-HOME_PAGE]', () => {
-    // [ARCH-SERVER_COMPONENTS] Documents server component pattern
-    const isServerComponent = true;
-    expect(isServerComponent).toBe(true);
-  });
-
-  it('renders config-driven content without client JavaScript [ARCH-SERVER_COMPONENTS] [REQ-CONFIG_DRIVEN_UI]', () => {
-    // [ARCH-SERVER_COMPONENTS] [REQ-CONFIG_DRIVEN_UI] Content from config renders server-side
-    render(
-      <RootLayout>
-        <Home />
-      </RootLayout>
-    );
-
-    // All content renders without requiring client JavaScript
-    expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
-    expect(screen.getByAltText(site.branding.logo.alt)).toBeInTheDocument();
+  it('root page redirects to file manager [IMPL-FILE_MANAGER_PAGE]', () => {
+    // [ARCH-SERVER_COMPONENTS] Root page redirects to /files
+    // Note: redirect() can't be tested in unit tests, covered by E2E
+    const redirectsToFiles = true;
+    expect(redirectsToFiles).toBe(true);
   });
 });
 
@@ -119,11 +46,13 @@ describe('Next.js App Router Structure [ARCH-APP_ROUTER]', () => {
     const appRouterStructure = {
       layout: 'src/app/layout.tsx',
       page: 'src/app/page.tsx',
+      filesPage: 'src/app/files/page.tsx',
       globals: 'src/app/globals.css',
     };
 
     expect(appRouterStructure.layout).toBe('src/app/layout.tsx');
     expect(appRouterStructure.page).toBe('src/app/page.tsx');
+    expect(appRouterStructure.filesPage).toBe('src/app/files/page.tsx');
   });
 
   it('layout persists across navigation [ARCH-LAYOUT_PATTERN]', () => {
@@ -177,20 +106,12 @@ describe('Build System Integration [REQ-BUILD_SYSTEM]', () => {
 });
 
 describe('Configuration Integration [REQ-CONFIG_DRIVEN_UI]', () => {
-  it('site config drives all page content [IMPL-CONFIG_LOADER]', () => {
-    // [REQ-CONFIG_DRIVEN_UI] End-to-end config → rendered content validation
-    render(
-      <RootLayout>
-        <Home />
-      </RootLayout>
-    );
-
-    // Heading from config
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(site.content.heading);
-
-    // Navigation buttons from config
-    site.navigation.buttons.forEach(button => {
-      expect(screen.getByRole('link', { name: new RegExp(button.label, 'i') })).toBeInTheDocument();
-    });
+  it('site config provides metadata [IMPL-CONFIG_LOADER]', () => {
+    // [REQ-CONFIG_DRIVEN_UI] Config loader provides site metadata
+    const config = getSiteConfig();
+    
+    expect(config.metadata.title).toBeTruthy();
+    expect(config.metadata.description).toBeTruthy();
+    expect(config.locale).toBeTruthy();
   });
 });

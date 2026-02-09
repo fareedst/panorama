@@ -7,6 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.5.0] - 2026-02-09
+
+### Changed
+
+#### File Manager as Sole Purpose [IMPL-FILE_MANAGER_PAGE]
+- **Removed landing page**: Root page (`/`) now redirects to `/files` - file manager is the only user-facing feature
+- **Removed job tracking**: Eliminated all job-tracking functionality (pages, API, lib, config, data, tests) to streamline the application
+- **Simplified configuration**: Updated `config/site.yaml` to minimal metadata for file manager; removed all navigation buttons
+- **Removed config types**: Cleaned up `config.ts` and `config.types.ts` by removing all jobs-related types, functions, and defaults
+- **Removed theme config**: Deleted jobs section from `config/theme.yaml`
+- **Updated tests**: Removed or updated tests for home page and jobs; all 576 tests passing
+
+#### Removed Files and Directories
+- `src/app/jobs/` (entire directory: pages, actions, components)
+- `src/app/api/jobs/` (entire directory: API routes)
+- `src/lib/jobs.data.ts`, `src/lib/jobs.types.ts`
+- `config/jobs.yaml`, `data/positions.yaml`, `data/applications.yaml`
+- `src/app/page.test.tsx`, `src/test/responsive.test.tsx` (home-page-specific tests)
+
+#### Modified Files
+- `src/app/page.tsx` — Now redirects to `/files` (sole purpose)
+- `config/site.yaml` — Simplified to metadata and minimal navigation
+- `config/theme.yaml` — Removed jobs section
+- `src/lib/config.ts` — Removed jobs config, `getJobsConfig()`, `getJobsOverride()`, `getStatusBadgeClass()`, and `backToHome` from files config
+- `src/lib/config.types.ts` — Removed all jobs-related types (`JobsConfig`, `JobsThemeConfig`, etc.) and `backToHome` from `FilesCopyConfig`
+- `src/lib/config.test.ts` — Removed jobs-related tests; updated assertions for new config structure
+- `src/app/layout.test.tsx` — Updated metadata assertions to match "File Manager" title
+- `src/test/integration/app.test.tsx` — Simplified integration tests, removed home-page-specific checks
+
+#### Notes
+- **STDD documentation** (semantic-tokens.yaml, requirements.yaml, architecture-decisions.yaml, implementation-decisions.yaml) contains references to removed job-tracking and home-page features that should be reviewed and archived/removed in a future cleanup task
+- File manager functionality remains unchanged; only navigation entry point and config simplified
+
+---
+
 ## [0.4.7] - 2026-02-09
 
 ### Added
