@@ -372,4 +372,110 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
     
     expect(mockOnFocusRequest).toHaveBeenCalledTimes(1);
   });
+
+  // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Parent button tests
+  it("should show Parent button when not at root [REQ-LINKED_PANES] [IMPL-LINKED_NAV]", () => {
+    const mockOnNavigateParent = vi.fn();
+    
+    render(
+      <FilePane
+        path="/home/user"
+        files={mockFiles}
+        cursor={0}
+        marks={new Set()}
+        bounds={mockBounds}
+        focused={true}
+        onNavigate={mockOnNavigate}
+        onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
+        onNavigateParent={mockOnNavigateParent}
+      />
+    );
+    
+    expect(screen.getByLabelText("Parent directory")).toBeInTheDocument();
+    expect(screen.getByText("..")).toBeInTheDocument();
+  });
+
+  it("should hide Parent button when at root [REQ-LINKED_PANES] [IMPL-LINKED_NAV]", () => {
+    const mockOnNavigateParent = vi.fn();
+    
+    render(
+      <FilePane
+        path="/"
+        files={mockFiles}
+        cursor={0}
+        marks={new Set()}
+        bounds={mockBounds}
+        focused={true}
+        onNavigate={mockOnNavigate}
+        onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
+        onNavigateParent={mockOnNavigateParent}
+      />
+    );
+    
+    expect(screen.queryByLabelText("Parent directory")).not.toBeInTheDocument();
+  });
+
+  it("should call onNavigateParent when Parent button is clicked [REQ-LINKED_PANES] [IMPL-LINKED_NAV]", () => {
+    const mockOnNavigateParent = vi.fn();
+    
+    render(
+      <FilePane
+        path="/home/user"
+        files={mockFiles}
+        cursor={0}
+        marks={new Set()}
+        bounds={mockBounds}
+        focused={true}
+        onNavigate={mockOnNavigate}
+        onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
+        onNavigateParent={mockOnNavigateParent}
+      />
+    );
+    
+    const parentButton = screen.getByLabelText("Parent directory");
+    fireEvent.click(parentButton);
+    
+    expect(mockOnNavigateParent).toHaveBeenCalledTimes(1);
+  });
+
+  it("should show linked indicator when linked prop is true [REQ-LINKED_PANES] [IMPL-LINKED_NAV]", () => {
+    render(
+      <FilePane
+        path="/home/user"
+        files={mockFiles}
+        cursor={0}
+        marks={new Set()}
+        bounds={mockBounds}
+        focused={true}
+        onNavigate={mockOnNavigate}
+        onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
+        linked={true}
+      />
+    );
+    
+    expect(screen.getByText("🔗")).toBeInTheDocument();
+  });
+
+  it("should hide linked indicator when linked prop is false [REQ-LINKED_PANES] [IMPL-LINKED_NAV]", () => {
+    render(
+      <FilePane
+        path="/home/user"
+        files={mockFiles}
+        cursor={0}
+        marks={new Set()}
+        bounds={mockBounds}
+        focused={true}
+        onNavigate={mockOnNavigate}
+        onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
+        linked={false}
+      />
+    );
+    
+    expect(screen.queryByText("🔗")).not.toBeInTheDocument();
+  });
 });

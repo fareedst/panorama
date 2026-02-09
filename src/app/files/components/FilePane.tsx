@@ -60,6 +60,8 @@ interface FilePaneProps {
   scrollTrigger?: number;
   /** [IMPL-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] Handler to request focus for this pane */
   onFocusRequest?: () => void;
+  /** [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Handler to navigate to parent directory */
+  onNavigateParent?: () => void;
   /** [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER] Column configuration */
   columns: FilesColumnConfig[];
 }
@@ -92,6 +94,7 @@ export default function FilePane({
   linked = false, // [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
   scrollTrigger, // [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
   onFocusRequest,
+  onNavigateParent, // [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
   columns, // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
 }: FilePaneProps) {
   // [IMPL-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] Context menu state
@@ -365,6 +368,20 @@ export default function FilePane({
           <span className="ml-2 px-2 py-0.5 text-xs bg-blue-500 dark:bg-blue-400 text-white dark:text-zinc-900 rounded-full font-medium flex-shrink-0">
             🔗
           </span>
+        )}
+        {/* [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Parent navigation button */}
+        {path !== '/' && path.split('/').filter(Boolean).length > 0 && onNavigateParent && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onNavigateParent();
+            }}
+            title="Parent directory"
+            aria-label="Parent directory"
+            className="ml-2 px-2 py-0.5 text-xs bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded hover:bg-zinc-300 dark:hover:bg-zinc-600 font-medium flex-shrink-0 transition-colors"
+          >
+            ..
+          </button>
         )}
       </div>
       

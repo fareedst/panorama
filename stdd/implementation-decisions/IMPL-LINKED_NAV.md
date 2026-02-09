@@ -3,7 +3,7 @@
 **Cross-References**: [ARCH-LINKED_NAV] [REQ-LINKED_PANES]  
 **Status**: Implemented  
 **Date**: 2026-02-08  
-**Last Updated**: 2026-02-09 (Root path edge cases: navigate to root = upward, root→subdir = downward, relativePath at root)
+**Last Updated**: 2026-02-09 (Parent button UI, Root path edge cases)
 
 ---
 
@@ -12,6 +12,7 @@
 Complete implementation of linked pane navigation including subdirectory/parent navigation sync, cursor synchronization with scroll-to-center, empty selection handling, sort synchronization, auto-disable on divergence, and config-driven default state.
 
 **Recent Updates (2026-02-09)**:
+- **Parent button**: Added `..` button in each pane header (next to Linked indicator) for mouse-based parent navigation. Visible only when not at root. Clicking triggers `navigateToParent(paneIndex)` which respects linked mode automatically via existing `handleNavigate` logic.
 - **Root path edge cases**: When at root (`/`), `oldPath + '/'` is `"//"`, so `newPath.startsWith("//")` is false for paths like `/Users` or `/private`. Fixed by: (1) Treating "navigate to root" as upward when `newPath === '/'` so Backspace from e.g. `/Users` syncs all panes to `/`. (2) Treating "from root to subdir" as downward when `normalizedOld === '/'` and `newPath.startsWith('/') && newPath.length > 1` so Enter on a subdir at root syncs all panes. (3) When at root, `relativePath` must strip only the leading slash: use `newPath.slice(1)` instead of `newPath.slice(oldPath.length + 1)` (which would be `slice(2)` and drop the first character of the segment, e.g. "private" → "rivate").
 
 **Recent Updates (2026-02-08)**:
@@ -123,6 +124,55 @@ if (isUpward) {
 ```
 
 **Module Boundary**: Coordinate navigation across panes, no direct state mutation
+
+### Module 2.5: Parent Button UI
+
+**File**: `src/app/files/components/FilePane.tsx`
+
+**Purpose**: Provide mouse-based parent navigation that respects linked mode
+
+**Implementation**:
+1. **Prop**: `onNavigateParent?: () => void` callback passed from WorkspaceView
+2. **Visibility**: Button shown when `path !== '/' && path.split('/').filter(Boolean).length > 0`
+3. **Placement**: In pane header after path and Linked indicator: `[path] [Linked?] [..]`
+4. **Behavior**: On click, calls `onNavigateParent()` which triggers `navigateToParent(paneIndex)`
+5. **Styling**: Subtle gray button with hover effect, accessible with `aria-label="Parent directory"`
+
+**WorkspaceView Integration**:
+```typescript
+// Refactored parent navigation to accept any pane index
+const navigateToParent = useCallback(async (paneIndex: number) => {
+  const pane = panes[paneIndex];
+  if (!pane) return;
+  
+  const currentPath = pane.path;
+  const parentPath = currentPath.split("/").slice(0, -1).join("/") || "/";
+  if (parentPath === currentPath) return; // Already at root
+  
+  // Save cursor position for history
+  const subdirName = currentPath.split("/").filter(Boolean).pop() || "";
+  if (subdirName) {
+    globalDirectoryHistory.saveCursorPosition(paneIndex, parentPath, subdirName, 0, 0);
+  }
+  
+  // Use handleNavigate to trigger linked sync
+  await handleNavigate(paneIndex, parentPath);
+}, [panes, handleNavigate]);
+
+// Pass per-pane callback when rendering FilePane
+<FilePane
+  onNavigateParent={() => navigateToParent(index)}
+  // ... other props
+/>
+```
+
+**Benefits**:
+- Mouse users can navigate up without keyboard (Backspace)
+- Clear visual affordance for parent navigation
+- Automatically respects linked mode (no special logic needed)
+- Consistent with Backspace behavior (same code path)
+
+**Module Boundary**: Pure UI component with callback, no navigation logic
 
 ### Module 3: Cursor Synchronization with Scroll-to-Center
 

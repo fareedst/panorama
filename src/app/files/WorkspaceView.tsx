@@ -1215,8 +1215,8 @@ export default function WorkspaceView({
   // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
   // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] [ARCH-LINKED_NAV]
   // Helper: Navigate to parent directory with cursor positioning
-  const handleParentNavigation = useCallback(async () => {
-    const pane = panes[focusIndex];
+  const navigateToParent = useCallback(async (paneIndex: number) => {
+    const pane = panes[paneIndex];
     if (!pane) return;
     
     const currentPath = pane.path;
@@ -1229,7 +1229,7 @@ export default function WorkspaceView({
     const subdirName = currentPath.split("/").filter(Boolean).pop() || "";
     if (subdirName) {
       globalDirectoryHistory.saveCursorPosition(
-        focusIndex,
+        paneIndex,
         parentPath,
         subdirName,
         0, // Will be recalculated by findIndex in restoreCursorPosition
@@ -1238,8 +1238,8 @@ export default function WorkspaceView({
     }
     
     // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Use handleNavigate to trigger linked sync
-    await handleNavigate(focusIndex, parentPath);
-  }, [panes, focusIndex, handleNavigate]);
+    await handleNavigate(paneIndex, parentPath);
+  }, [panes, handleNavigate]);
   
   // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
   // Action handlers registry (maps action names to handler functions)
@@ -1287,7 +1287,7 @@ export default function WorkspaceView({
     });
     
     handlers.set("navigate.parent", () => {
-      void handleParentNavigation();
+      void navigateToParent(focusIndex);
     });
     
     handlers.set("navigate.tab", () => {
@@ -1499,7 +1499,7 @@ export default function WorkspaceView({
     });
     
     return handlers;
-  }, [panes, focusIndex, handleParentNavigation, handleNavigate, handleBulkCopy, handleBulkMove, handleBulkDelete, handleAddPane, handleRemovePane, handleClearMarks, handleCursorMove, handleToggleMark, handleMarkAll, handleInvertMarks]);
+  }, [panes, focusIndex, navigateToParent, handleNavigate, handleBulkCopy, handleBulkMove, handleBulkDelete, handleAddPane, handleRemovePane, handleClearMarks, handleCursorMove, handleToggleMark, handleMarkAll, handleInvertMarks]);
   
   // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
   // Keyboard event handler using keybinding registry
@@ -1695,6 +1695,7 @@ export default function WorkspaceView({
             linked={linkedMode && panes.length > 1} // [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
             scrollTrigger={scrollTriggers.get(index)} // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Scroll sync
             onFocusRequest={() => setFocusIndex(index)}
+            onNavigateParent={() => navigateToParent(index)} // [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
             columns={columns} // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
             onRename={(file) => setRenameDialog({ isOpen: true, filePath: file.path, fileName: file.name, paneIndex: index })}
           />

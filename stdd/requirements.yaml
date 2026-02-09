@@ -2198,9 +2198,10 @@ REQ-LINKED_PANES:
       - "Auto-disable on divergence prevents confusion"
   satisfaction_criteria:
     - criterion: "L key toggles linked navigation mode ON/OFF"
-    - criterion: "Visual indicator (🔗 badge) shows when linked mode is ON"
+    - criterion: "Visual indicator (🔗 badge in footer and pane headers) shows when linked mode is ON"
     - criterion: "Subdirectory navigation propagates to all panes with matching subdirectory"
-    - criterion: "Parent directory navigation (Backspace) navigates all panes to respective parents"
+    - criterion: "Parent directory navigation (Backspace or Parent .. button) navigates all panes to respective parents"
+    - criterion: "Parent .. button in pane header (next to Linked indicator) visible when not at root, triggers parent navigation respecting linked mode"
     - criterion: "Cursor movements sync to same filename in all panes when linked"
     - criterion: "Sort changes apply to all panes when linked"
     - criterion: "Auto-disable with warning message when navigation diverges"
@@ -2235,9 +2236,9 @@ REQ-LINKED_PANES:
       date: 2026-02-08
       author: "AI Agent"
     last_updated:
-      date: 2026-02-08
+      date: 2026-02-09
       author: "AI Agent"
-      reason: "Complete linked navigation implementation with cursor sync, parent nav, auto-disable, sort sync"
+      reason: "Added Parent .. button in pane header for mouse-based parent navigation with linked mode support"
     last_validated:
       date: 2026-02-08
       validator: "AI Agent"

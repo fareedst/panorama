@@ -1260,6 +1260,156 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
         expect(hasRivate).toBe(false);
       }, { timeout: 3000 });
     });
+
+    it("should show Parent button when not at root [REQ-LINKED_PANES] [IMPL-LINKED_NAV]", async () => {
+      render(
+        <WorkspaceView
+          initialPanes={[
+            { path: "/dir1", files: mockFilesPane1 },
+            { path: "/dir2", files: mockFilesPane2 },
+          ]}
+          keybindings={linkedKeybindings}
+          copy={mockCopy}
+          layout={{ ...mockLayout, defaultPaneCount: 2 }}
+          columns={mockColumns}
+        />
+      );
+
+      // Parent button should be visible when not at root
+      await waitFor(() => {
+        const parentButtons = screen.getAllByLabelText("Parent directory");
+        expect(parentButtons).toHaveLength(2);
+      });
+    });
+
+    it("should hide Parent button when at root [REQ-LINKED_PANES] [IMPL-LINKED_NAV]", async () => {
+      const rootFiles: FileStat[] = [
+        { name: "Users", path: "/Users", isDirectory: true, size: 0, mtime: new Date(), extension: "" },
+        { name: "private", path: "/private", isDirectory: true, size: 0, mtime: new Date(), extension: "" },
+      ];
+
+      render(
+        <WorkspaceView
+          initialPanes={[
+            { path: "/", files: rootFiles },
+            { path: "/", files: rootFiles },
+          ]}
+          keybindings={linkedKeybindings}
+          copy={mockCopy}
+          layout={{ ...mockLayout, defaultPaneCount: 2 }}
+          columns={mockColumns}
+        />
+      );
+
+      // Parent button should NOT be visible at root
+      await waitFor(() => {
+        const parentButtons = screen.queryAllByLabelText("Parent directory");
+        expect(parentButtons).toHaveLength(0);
+      });
+    });
+
+    it("should navigate to parent when Parent button is clicked [REQ-LINKED_PANES] [IMPL-LINKED_NAV]", async () => {
+      const parentFiles: FileStat[] = [
+        { name: "parent-file.txt", path: "/parent-file.txt", isDirectory: false, size: 100, mtime: new Date(), extension: "txt" },
+      ];
+
+      (global.fetch as ReturnType<typeof vi.fn>).mockImplementation(async (url: string) => {
+        const urlStr = url.toString();
+        
+        // Parent directory API calls
+        if (urlStr.includes("path=%2F") && !urlStr.includes("%2Fdir")) {
+          return {
+            ok: true,
+            json: async () => parentFiles,
+          } as Response;
+        }
+        
+        return {
+          ok: true,
+          json: async () => mockFilesPane1,
+        } as Response;
+      });
+
+      render(
+        <WorkspaceView
+          initialPanes={[
+            { path: "/dir1", files: mockFilesPane1 },
+          ]}
+          keybindings={linkedKeybindings}
+          copy={mockCopy}
+          layout={{ ...mockLayout, defaultPaneCount: 1 }}
+          columns={mockColumns}
+        />
+      );
+
+      // Click the Parent button
+      const parentButton = await screen.findByLabelText("Parent directory");
+      fireEvent.click(parentButton);
+
+      // Verify navigation to parent
+      await waitFor(() => {
+        const calls = (global.fetch as ReturnType<typeof vi.fn>).mock.calls;
+        const parentCalls = calls.filter((call) => {
+          const url = call[0].toString();
+          return url.includes("path=%2F") && !url.includes("%2Fdir");
+        });
+        expect(parentCalls.length).toBeGreaterThan(0);
+      }, { timeout: 3000 });
+    });
+
+    it("should navigate all panes to parent when Parent button is clicked with linked mode [REQ-LINKED_PANES] [IMPL-LINKED_NAV]", async () => {
+      const parentFiles: FileStat[] = [
+        { name: "parent-file.txt", path: "/parent-file.txt", isDirectory: false, size: 100, mtime: new Date(), extension: "txt" },
+      ];
+
+      (global.fetch as ReturnType<typeof vi.fn>).mockImplementation(async (url: string) => {
+        const urlStr = url.toString();
+        
+        // Parent directory API calls
+        if (urlStr.includes("path=%2F") && !urlStr.includes("%2Fdir")) {
+          return {
+            ok: true,
+            json: async () => parentFiles,
+          } as Response;
+        }
+        
+        return {
+          ok: true,
+          json: async () => mockFilesPane1,
+        } as Response;
+      });
+
+      render(
+        <WorkspaceView
+          initialPanes={[
+            { path: "/dir1", files: mockFilesPane1 },
+            { path: "/dir2", files: mockFilesPane2 },
+          ]}
+          keybindings={linkedKeybindings}
+          copy={mockCopy}
+          layout={{ ...mockLayout, defaultPaneCount: 2 }}
+          columns={mockColumns}
+        />
+      );
+
+      // Linked mode ON by default
+      expect(screen.getByText(/🔗.*Linked/)).toBeInTheDocument();
+
+      // Click the Parent button on first pane
+      const parentButtons = await screen.findAllByLabelText("Parent directory");
+      fireEvent.click(parentButtons[0]);
+
+      // Both panes should navigate to parent
+      await waitFor(() => {
+        const calls = (global.fetch as ReturnType<typeof vi.fn>).mock.calls;
+        const parentCalls = calls.filter((call) => {
+          const url = call[0].toString();
+          return url.includes("path=%2F") && !url.includes("%2Fdir");
+        });
+        // Should have multiple parent calls (one for each pane)
+        expect(parentCalls.length).toBeGreaterThan(0);
+      }, { timeout: 3000 });
+    });
   });
 
   describe("Single Pane Mode [IMPL-LINKED_NAV]", () => {

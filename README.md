@@ -1,6 +1,6 @@
 # Next.js Application with STDD Methodology
 
-**Version**: 0.4.6  
+**Version**: 0.4.7  
 **Last Updated**: 2026-02-09
 
 A modern, **highly configurable** Next.js template built with React 19, TypeScript, and Tailwind CSS v4, following **Semantic Token-Driven Development (STDD)** methodology for complete traceability from requirements through implementation.
@@ -27,6 +27,8 @@ All page content, appearance, and layout are driven by YAML configuration files 
   - **Context Awareness**: Active/disabled states reflect workspace context
   - **Configuration-Driven**: Complete customization via `config/files.yaml` and `config/theme.yaml`
   - **Keyboard Consistency**: Toolbar actions dispatch to same handlers as keyboard shortcuts
+  - **Parent Navigation Button**: Mouse-accessible `..` button in each pane header for navigating to parent directory (visible when not at root)
+  - **Linked Navigation** [REQ-LINKED_PANES]: Toggleable mode (L key) synchronizes directory changes, cursor position, and sort settings across all panes; Parent button respects linked mode automatically
 - **Multi-Destination Sync** [REQ-NSYNC_MULTI_TARGET]: Copy or move files to **all other visible panes** in one action (Copy to All Panes / Move to All Panes), inspired by Goful's nsync usage. Parallel sync to multiple destinations, optional hash verification [REQ-HASH_COMPUTATION] [REQ-VERIFY_DEST], configurable comparison methods to skip unchanged files [REQ-COMPARE_METHODS], safe move semantics (source deleted only after all destinations succeed) [REQ-MOVE_SEMANTICS], and store failure detection to abort when a destination becomes unavailable [REQ-STORE_FAILURE_DETECT]
 
 ## Quick Start: Customizing the Template
@@ -784,4 +786,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 **Built with Next.js, React, and STDD Methodology**
 
-*Version 0.4.6 - Multi-Destination Sync (Copy/Move to All Panes)*
+*Version 0.4.7 - Parent Navigation Button with Linked Mode Support*

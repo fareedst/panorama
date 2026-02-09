@@ -3437,12 +3437,14 @@ IMPL-LINKED_NAV:
     problems_solved:
       - "State management: Clean integration of link state with existing pane state"
       - "Sync implementation: Reliable propagation of navigation, cursor, and sort changes to linked panes"
-      - "UI feedback: Clear visual indication of linked state in footer"
+      - "UI feedback: Clear visual indication of linked state in footer and pane headers"
       - "Configuration: Integration with existing keybinding system"
       - "Cursor synchronization: Filename-based cursor matching across panes"
       - "Sort synchronization: Consistent ordering for comparison tasks"
       - "Auto-disable: Preventing broken sync state on divergent navigation"
       - "Parent navigation bypass: Fixed handleParentNavigation to call handleNavigate instead of direct setPanes, ensuring linked sync on Backspace"
+      - "Mouse-based parent navigation: Added Parent .. button in pane header for mouse users, respecting linked mode automatically"
+      - "Per-pane parent navigation: Refactored parent navigation to support any pane index, not just focused pane"
     benefits:
       - "Minimal code changes: Localized modifications to existing handlers"
       - "Type-safe: Full TypeScript typing for link state and sync logic"
@@ -3452,7 +3454,7 @@ IMPL-LINKED_NAV:
       - "Graceful degradation: Handles missing files/directories without breaking"
       - "Consistent architecture: All navigation paths use handleNavigate for unified linked sync behavior"
   implementation_approach:
-    summary: "Add linkedMode boolean state to WorkspaceView, modify handleNavigate to sync with auto-disable, modify handleCursorMove for filename sync, modify handleSortChange for all-pane sync, modify handleParentNavigation to use handleNavigate, add visual indicator in footer, register link.toggle keybinding"
+    summary: "Add linkedMode boolean state to WorkspaceView, modify handleNavigate to sync with auto-disable, modify handleCursorMove for filename sync, modify handleSortChange for all-pane sync, refactor parent navigation to navigateToParent(paneIndex), add Parent .. button in FilePane header, add visual indicators in footer and pane headers, register link.toggle keybinding"
     details:
       - "State: linkedMode: boolean in WorkspaceView (default false)"
       - "State: syncingRef: useRef<Set<number>> to track panes in sync operation"
@@ -3462,19 +3464,21 @@ IMPL-LINKED_NAV:
       - "Auto-disable: Disable linkedMode and show warning if partial navigation failure"
       - "handleCursorMove: Find matching filename in all panes and sync cursor position"
       - "handleSortChange: Apply sort settings to all panes when linked"
-      - "handleParentNavigation: Pre-save subdirectory name for cursor positioning, call handleNavigate to trigger linked sync (fixed 2026-02-08)"
+      - "navigateToParent(paneIndex): Refactored parent navigation to accept any pane index (not just focusIndex), pre-saves subdirectory name for cursor positioning, calls handleNavigate to trigger linked sync (2026-02-09)"
+      - "Parent .. button: Added in FilePane header next to Linked indicator, visible when not at root, calls onNavigateParent callback (2026-02-09)"
+      - "onNavigateParent prop: FilePane receives callback from WorkspaceView: () => navigateToParent(paneIndex) for per-pane parent navigation"
       - "Existence check: Verify target directory exists before navigating linked pane"
       - "Graceful degradation: Log warning and continue if target not found"
-      - "Footer indicator: Show 🔗 L: Linked badge when linkedMode enabled and 2+ panes"
-      - "Keybinding: L key maps to link.toggle action"
+      - "Visual indicators: Show 🔗 badge in footer (L: Linked) and in each pane header when linkedMode enabled"
+      - "Keybinding: L key maps to link.toggle action, Backspace uses navigateToParent(focusIndex)"
   code_locations:
     files:
       - path: "src/app/files/WorkspaceView.tsx"
         description: "Link state management and synchronization logic"
         lines: [125-129, 283-366, 369-407, 521-559, 897-922, 1095-1101, 1315-1323]
       - path: "src/app/files/components/FilePane.tsx"
-        description: "Link prop interface"
-        lines: [56-57, 85]
+        description: "Link prop interface, Parent .. button UI, onNavigateParent callback"
+        lines: [56-65, 85, 364-378]
       - path: "src/app/files/WorkspaceView.test.tsx"
         description: "Comprehensive test coverage"
         lines: [707-1101]
@@ -3491,10 +3495,10 @@ IMPL-LINKED_NAV:
         file: "src/app/files/WorkspaceView.tsx"
         description: "Modified to apply sort to all panes when linked"
         lines: [521-559]
-      - name: "handleParentNavigation"
+      - name: "navigateToParent"
         file: "src/app/files/WorkspaceView.tsx"
-        description: "Fixed to call handleNavigate for linked sync (2026-02-08); pre-saves subdirectory cursor position"
-        lines: [897-922]
+        description: "Refactored parent navigation (2026-02-09) to accept paneIndex parameter; pre-saves subdirectory cursor position, calls handleNavigate for linked sync"
+        lines: [1218-1242]
       - name: "link.toggle action handler"
         file: "src/app/files/WorkspaceView.tsx"
         description: "Toggles linkedMode state"
@@ -3533,9 +3537,9 @@ IMPL-LINKED_NAV:
       date: 2026-02-07
       author: "AI Agent"
     last_updated:
-      date: 2026-02-08
+      date: 2026-02-09
       author: "AI Agent"
-      reason: "Fixed handleParentNavigation to call handleNavigate instead of direct setPanes, ensuring Backspace triggers linked sync"
+      reason: "Added Parent .. button in FilePane header with onNavigateParent callback; refactored parent navigation to navigateToParent(paneIndex) supporting any pane index"
     last_validated:
       date: 2026-02-08
       validator: "AI Agent"

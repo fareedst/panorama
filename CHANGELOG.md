@@ -7,6 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.4.7] - 2026-02-09
+
+### Added
+
+#### Parent Navigation Button [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
+- **Parent `..` button** in each file pane header (next to Linked indicator) for mouse-based parent directory navigation
+- **Visibility**: Button shown only when not at root directory (`path !== '/'`)
+- **Linked mode integration**: Automatically respects linked navigation mode — clicking Parent in one pane navigates all linked panes to their respective parent directories
+- **Accessibility**: Full keyboard support with `aria-label="Parent directory"` for screen readers
+- **Refactored navigation**: Extracted `navigateToParent(paneIndex)` function supporting parent navigation for any pane (not just focused pane)
+- **Consistent behavior**: Parent button uses same navigation logic as Backspace key — preserves cursor position history and triggers linked sync automatically
+
+#### Tests
+- **WorkspaceView.test.tsx** (5 new tests):
+  - Parent button visibility when not at root / hidden at root
+  - Parent button click triggers navigation (single pane and linked mode)
+- **FilePane.test.tsx** (5 new tests):
+  - Parent button rendering and click behavior
+  - Linked indicator visibility based on prop
+- **All 634 tests passing** with zero linter errors
+
+#### STDD Documentation
+- Updated `[REQ-LINKED_PANES]` satisfaction criteria to include Parent button
+- Updated `[IMPL-LINKED_NAV]` with new Module 2.5: Parent Button UI section
+- Documented refactored `navigateToParent(paneIndex)` function and WorkspaceView integration
+- Updated last modified dates to 2026-02-09
+
+### Technical Details
+
+#### Modified Files
+- **UI**: `src/app/files/components/FilePane.tsx` — Parent `..` button in header with conditional rendering
+- **Logic**: `src/app/files/WorkspaceView.tsx` — Refactored `handleParentNavigation()` → `navigateToParent(paneIndex)`, added `onNavigateParent` prop to FilePane
+- **Tests**: `src/app/files/WorkspaceView.test.tsx`, `src/app/files/components/FilePane.test.tsx` — 10 new tests
+- **STDD**: `stdd/requirements/REQ-LINKED_PANES.md`, `stdd/implementation-decisions/IMPL-LINKED_NAV.md` — Updated with Parent button details
+
+---
+
 ## [0.4.6] - 2026-02-09
 
 ### Added

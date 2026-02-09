@@ -2946,7 +2946,8 @@ ARCH-LINKED_NAV:
       - "Simple boolean toggle model (linkedMode state)"
       - "Automatic propagation via handleNavigate, handleCursorMove, handleSortChange"
       - "Minimal state overhead (single boolean + sync ref)"
-      - "Clear visual indicators in footer (🔗 L: Linked)"
+      - "Clear visual indicators in footer and pane headers (🔗 badge)"
+      - "Mouse-accessible parent navigation via .. button in pane header"
       - "Backward compatible (disabled by default)"
       - "Graceful degradation on partial failures"
       - "Complete feature parity with Goful implementation"
@@ -2984,8 +2985,10 @@ ARCH-LINKED_NAV:
       - "Relative path resolution: extract target directory name, append to each linked pane's current path"
       - "Existence check before navigating linked pane (graceful degradation on failure)"
       - "Link indicator badge in footer: 🔗 L: Linked (shows only with 2+ panes)"
+      - "Link indicator badge in each pane header (🔗 shows when linked)"
+      - "Parent .. button in each pane header (visible when not at root, respects linked mode)"
       - "L key toggle action in keybinding registry"
-      - "Support subdirectory navigation, parent navigation, cursor sync, sort sync"
+      - "Support subdirectory navigation, parent navigation (keyboard + mouse), cursor sync, sort sync"
       - "Auto-disable with warning message on navigation divergence"
   traceability:
     requirements:
@@ -3016,9 +3019,9 @@ ARCH-LINKED_NAV:
       date: 2026-02-07
       author: "AI Agent"
     last_updated:
-      date: 2026-02-08
+      date: 2026-02-09
       author: "AI Agent"
-      reason: "Complete implementation with cursor sync, sort sync, and auto-disable on divergence"
+      reason: "Added Parent .. button in pane header for mouse-based parent navigation with automatic linked mode support"
     last_validated:
       date: 2026-02-08
       validator: "AI Agent"

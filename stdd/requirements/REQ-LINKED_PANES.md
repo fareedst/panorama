@@ -4,7 +4,7 @@
 **Priority**: P2 (Nice-to-Have)  
 **Status**: ✅ Implemented  
 **Created**: 2026-02-08  
-**Last Updated**: 2026-02-08
+**Last Updated**: 2026-02-09
 
 ---
 
@@ -22,14 +22,15 @@ Users comparing similar directory structures (e.g., syncing folder hierarchies, 
 - **Default state**: Linked mode is enabled by default when the file manager starts (configurable via `layout.defaultLinkedMode` in `config/files.yaml`).
 - When disabled, navigation in the focused pane affects only that pane.
 - When enabled, entering a subdirectory attempts to navigate all other panes to a matching subdirectory (by name) if it exists in each pane's current path.
-- When enabled, navigating to parent directory (backspace) causes all panes to navigate to their respective parent directories.
+- When enabled, navigating to parent directory (backspace or Parent `..` button) causes all panes to navigate to their respective parent directories.
+- **Parent button**: Each pane header displays a `..` button (next to the Linked indicator) when not at root, allowing mouse-based parent navigation; the button respects linked mode.
 - When enabled, changing sort order applies the same sort settings (criterion, direction, dirs-first) to all panes.
 - When enabled, mouse single-click file selection syncs cursor to same filename in all panes.
 - When enabled, keyboard cursor movement (up/down/page/home/end) syncs cursor to same filename in all panes.
 - **Scroll-to-center**: When cursor syncs to other panes, those panes automatically scroll to center the highlighted file (smooth scrolling, `block: "center"`).
 - **Empty selection**: When a file is selected in one pane but doesn't exist in other panes, those panes clear their selection (cursor set to -1, no file highlighted, footer shows "- / N").
 - When disabled, both mouse and keyboard cursor movements only affect the focused pane.
-- A visual indicator (🔗 badge in footer) shows when linked mode is ON.
+- A visual indicator (🔗 badge in footer and in each pane header) shows when linked mode is ON.
 - The mode state is per-session and does not persist across page refreshes.
 - When enabled and subdirectory navigation cannot complete in one or more panes (subdirectory missing) but succeeds in at least one pane, linked navigation is automatically disabled with a warning message informing the user of the divergent directory structures.
 - The default state is retained when new panes are added (component-level state, not pane-level).
