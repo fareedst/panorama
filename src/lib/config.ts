@@ -46,7 +46,7 @@ const DEFAULT_SITE_CONFIG: SiteConfig = {
     inlineLinks: {
       templates: {
         label: "Templates",
-        href: "https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app",
+        href: "https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app",
       },
       learning: {
         label: "Learning",
@@ -54,18 +54,6 @@ const DEFAULT_SITE_CONFIG: SiteConfig = {
       },
     },
     buttons: [
-      {
-        label: "Deploy Now",
-        href: "https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app",
-        variant: "primary",
-        icon: {
-          src: "/vercel.svg",
-          alt: "Vercel logomark",
-          width: 16,
-          height: 16,
-          darkInvert: true,
-        },
-      },
       {
         label: "Documentation",
         href: "https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app",

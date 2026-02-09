@@ -128,7 +128,7 @@
 - Verifying optimizations work
 - Before deploying
 
-**Not for deployment**: Use Vercel, Docker, or Node.js process manager
+**Not for deployment**: Use Docker or Node.js process manager
 
 ### Testing Scripts
 

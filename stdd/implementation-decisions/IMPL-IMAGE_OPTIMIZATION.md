@@ -27,15 +27,6 @@ import Image from "next/image";
   height={20}
   priority
 />
-
-// Vercel logo (with dark mode inversion)
-<Image
-  className="dark:invert"
-  src="/vercel.svg"
-  alt="Vercel logomark"
-  width={16}
-  height={16}
-/>
 ```
 
 ## Key Features
@@ -83,14 +74,6 @@ import Image from "next/image";
 - **Usage**: Header logo
 - **Dark Mode**: Inverted
 
-### Vercel Logo
-
-- **File**: `/public/vercel.svg`
-- **Type**: SVG vector
-- **Dimensions**: 16×16px
-- **Usage**: Deploy button icon
-- **Dark Mode**: Inverted
-
 ## Performance Benefits
 
 ### Automatic Optimizations
@@ -114,7 +97,6 @@ import Image from "next/image";
 
 All images have descriptive alt text:
 - "Next.js logo" - Describes the image content
-- "Vercel logomark" - Describes the logo type
 
 ### Semantic Meaning
 

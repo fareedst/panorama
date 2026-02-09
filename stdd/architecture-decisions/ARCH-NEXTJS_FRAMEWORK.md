@@ -36,7 +36,7 @@ Next.js provides the best combination of:
 - **Zero Configuration**: Works out of the box with sensible defaults
 - **Performance**: Server-side rendering, static generation, and streaming
 - **Developer Experience**: Fast Refresh, TypeScript support, integrated CSS
-- **Production Ready**: Battle-tested at scale (Vercel, Nike, Uber, etc.)
+- **Production Ready**: Battle-tested at scale (Nike, Uber, etc.)
 - **Documentation**: Excellent docs and large community
 
 ### Positive Consequences
@@ -46,7 +46,7 @@ Next.js provides the best combination of:
 - Built-in optimizations (images, fonts, scripts)
 - Excellent developer experience with Fast Refresh
 - Type-safe routing with TypeScript
-- Easy deployment to Vercel or other platforms
+- Easy deployment to Docker or other platforms
 - Regular updates and active maintenance
 
 ### Negative Consequences

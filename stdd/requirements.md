@@ -363,11 +363,10 @@ yq '.REQ-STDD_SETUP' stdd/requirements.yaml
 
 **Priority: P1 (Important)**
 
-- **Description**: The application must display Next.js branding elements including the Next.js logo and Vercel logo, properly optimized using Next.js Image component. Logos invert colors in dark mode for proper visibility.
+- **Description**: The application must display Next.js branding elements including the Next.js logo, properly optimized using Next.js Image component. Logos invert colors in dark mode for proper visibility.
 - **Rationale**: Branding elements provide visual identity and attribution. Using Next.js Image component ensures optimal loading performance, automatic responsive sizing, and modern image format support (WebP, AVIF).
 - **Satisfaction Criteria**:
   - Next.js logo displays at top of home page
-  - Vercel logo displays in deploy button
   - Logos use Next.js Image component
   - Logos have appropriate alt text for accessibility
   - Logos invert in dark mode (dark:invert class)
@@ -388,10 +387,10 @@ yq '.REQ-STDD_SETUP' stdd/requirements.yaml
 
 **Priority: P1 (Important)**
 
-- **Description**: The application must provide navigation links to external resources including Vercel Templates, Next.js Learning Center, Vercel Deployment, and Next.js Documentation. Links open in new tabs with proper security attributes.
-- **Rationale**: External links guide users to additional resources for learning and deployment. Opening in new tabs preserves the application state. Security attributes (rel="noopener noreferrer") prevent security vulnerabilities and maintain referrer privacy.
+- **Description**: The application must provide navigation links to external resources including Templates (Next.js), Next.js Learning Center, and Next.js Documentation. Links open in new tabs with proper security attributes.
+- **Rationale**: External links guide users to additional resources for learning. Opening in new tabs preserves the application state. Security attributes (rel="noopener noreferrer") prevent security vulnerabilities and maintain referrer privacy.
 - **Satisfaction Criteria**:
-  - Links to Templates, Learning Center, Deploy, and Documentation are present
+  - Links to Templates, Learning Center, and Documentation are present
   - Links include correct URLs with UTM parameters for tracking
   - Links have `target="_blank"` to open in new tabs
   - Links have `rel="noopener noreferrer"` for security

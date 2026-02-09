@@ -94,8 +94,8 @@ Duration:    ~1.2s
 
 **Tests Validate**:
 - [REQ-HOME_PAGE] Rendering, heading, paragraph
-- [REQ-BRANDING] Next.js logo, Vercel logo, dark mode inversion
-- [REQ-NAVIGATION_LINKS] Templates, Learning, Deploy, Documentation links
+- [REQ-BRANDING] Next.js logo, dark mode inversion
+- [REQ-NAVIGATION_LINKS] Templates, Learning, Documentation links
 - [REQ-NAVIGATION_LINKS] Security attributes, UTM parameters
 - [REQ-ACCESSIBILITY] Heading hierarchy, alt text, semantic HTML, keyboard access
 - [REQ-RESPONSIVE_DESIGN] Responsive classes, button layout

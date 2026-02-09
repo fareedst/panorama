@@ -775,9 +775,9 @@ getThemeConfig() --> layout.tsx (CSS variable injection)             |
 - Automatic font subsetting (Latin characters only)
 
 #### Content & Navigation [REQ-BRANDING] [REQ-NAVIGATION_LINKS]
-- Next.js and Vercel logo branding with dark mode inversion
+- Next.js logo branding with dark mode inversion
 - External navigation links with security attributes (rel="noopener noreferrer")
-- Call-to-action buttons (Deploy Now, Documentation)
+- Call-to-action button (Documentation)
 - Inline links to Templates and Learning resources
 
 #### Accessibility [REQ-ACCESSIBILITY]

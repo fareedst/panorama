@@ -332,18 +332,6 @@ nx1/
 
 ## Deployment
 
-### Vercel (Recommended)
-
-Deploy with one click:
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/nx1)
-
-Or via CLI:
-```bash
-npm install -g vercel
-vercel
-```
-
 ### Docker
 
 Build and run:

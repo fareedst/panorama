@@ -467,20 +467,11 @@ describe('Branding [REQ-BRANDING]', () => {
     expect(logo).toBeInTheDocument();
   });
 
-  it('renders Vercel logo in deploy button [IMPL-IMAGE_OPTIMIZATION]', () => {
-    // [REQ-BRANDING] Validates Vercel logo in button
-    render(<Home />);
-    const vercelLogo = screen.getByAltText('Vercel logomark');
-    expect(vercelLogo).toBeInTheDocument();
-  });
-
   it('logos have dark mode inversion class [IMPL-IMAGE_OPTIMIZATION] [REQ-DARK_MODE]', () => {
     // [REQ-DARK_MODE] Validates dark mode support for images
     render(<Home />);
     const nextLogo = screen.getByAltText('Next.js logo');
-    const vercelLogo = screen.getByAltText('Vercel logomark');
     expect(nextLogo).toHaveClass('dark:invert');
-    expect(vercelLogo).toHaveClass('dark:invert');
   });
 });
 
@@ -490,7 +481,7 @@ describe('Navigation Links [REQ-NAVIGATION_LINKS]', () => {
     render(<Home />);
     const templatesLink = screen.getByRole('link', { name: 'Templates' });
     expect(templatesLink).toBeInTheDocument();
-    expect(templatesLink).toHaveAttribute('href', expect.stringContaining('vercel.com/templates'));
+    expect(templatesLink).toHaveAttribute('href', expect.stringContaining('nextjs.org/docs'));
   });
 
   it('contains Learning Center link [IMPL-EXTERNAL_LINKS]', () => {
@@ -499,14 +490,6 @@ describe('Navigation Links [REQ-NAVIGATION_LINKS]', () => {
     const learningLink = screen.getByRole('link', { name: 'Learning' });
     expect(learningLink).toBeInTheDocument();
     expect(learningLink).toHaveAttribute('href', expect.stringContaining('nextjs.org/learn'));
-  });
-
-  it('contains Deploy Now button [IMPL-EXTERNAL_LINKS]', () => {
-    // [REQ-NAVIGATION_LINKS] Validates Deploy button
-    render(<Home />);
-    const deployButton = screen.getByRole('link', { name: /Deploy Now/i });
-    expect(deployButton).toBeInTheDocument();
-    expect(deployButton).toHaveAttribute('href', expect.stringContaining('vercel.com/new'));
   });
 
   it('contains Documentation button [IMPL-EXTERNAL_LINKS]', () => {
@@ -570,9 +553,7 @@ describe('Accessibility [REQ-ACCESSIBILITY]', () => {
     // [REQ-ACCESSIBILITY] Validates alt text for screen readers
     render(<Home />);
     const nextLogo = screen.getByAltText('Next.js logo');
-    const vercelLogo = screen.getByAltText('Vercel logomark');
     expect(nextLogo).toBeInTheDocument();
-    expect(vercelLogo).toBeInTheDocument();
   });
 
   it('uses semantic main element [REQ-ACCESSIBILITY]', () => {
