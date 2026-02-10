@@ -1,16 +1,29 @@
-# Server-Side File Manager with Multi-Pane Interface
+# Panorama - Multi-Target File Manager with Visual Sync
 
-**Version**: 0.5.0  
-**Last Updated**: 2026-02-09
+**Version**: 0.5.1  
+**Last Updated**: 2026-02-10
 
-A modern **multi-pane file manager** built with Next.js, React 19, TypeScript, and Tailwind CSS v4, following **Semantic Token-Driven Development (STDD)** methodology for complete traceability from requirements through implementation.
+**Panorama** is a modern **multi-pane file manager** built for **visual multi-destination sync with verification** — see all targets at once and confirm every copy. Built with Next.js, React 19, TypeScript, and Tailwind CSS v4, following **Semantic Token-Driven Development (STDD)** methodology for complete traceability from requirements through implementation.
 
-Browse and manage server files with keyboard-driven navigation, dual-pane (or more) layouts, file operations, visual comparison, content search, and a comprehensive toolbar system with 36+ discoverable operations.
+Browse and manage server files with keyboard-driven navigation, **1 pane or more** (no upper limit; 3 panes by default), file operations, visual comparison across panes, content search, and a comprehensive toolbar system with 36+ discoverable operations.
+
+## Why Panorama?
+
+**The Problem**: Traditional file managers only show two panes. When syncing files to multiple destinations (backup drives, cloud storage, network shares), you can't see all targets simultaneously, making it hard to verify what went where.
+
+**The Solution**: Panorama's multi-pane layout shows **all** your destinations at once. Copy or move files to every visible pane in a single operation, with visual comparison to verify results instantly.
+
+**Use Cases**:
+- **Multi-Target Backup**: Copy important files to 2-3 backup drives simultaneously and verify each destination
+- **Directory Comparison**: Open 3-5 versions of a project and see differences across all at once with color-coded indicators
+- **Parallel Deployment**: Sync files to multiple servers and visually confirm each deployment
+- **USB Drive Sync**: Copy media to multiple devices in one operation, see all targets' contents side-by-side
+- **Archive Distribution**: Distribute files to multiple locations and verify nothing was missed
 
 ## Features
 
 ### Core File Manager
-- **Multi-Pane Layout** – Dual-pane or more (up to 4 panes) with configurable startup paths and automatic layout calculation
+- **Multi-Pane Layout** – 1 pane or more, no upper limit; 3 panes by default. Add or remove panes via the Layout toolbar; configurable startup paths and automatic layout calculation
 - **Keyboard Navigation** – Vim-inspired keybindings with hjkl movement, Enter to open directories, Backspace for parent, Tab to switch panes
 - **File Operations** – Copy, move, delete, rename with visual confirmation dialogs and progress feedback
 - **Linked Navigation** [REQ-LINKED_PANES] – Toggleable mode (L key) synchronizes directory changes, cursor position, and sort settings across all panes; Parent button respects linked mode automatically
@@ -31,14 +44,31 @@ Browse and manage server files with keyboard-driven navigation, dual-pane (or mo
 - **Configuration-Driven**: Complete customization via `config/files.yaml` and `config/theme.yaml`
 - **Keyboard Consistency**: Toolbar actions dispatch to the same handlers as keyboard shortcuts
 
-### Multi-Destination Sync [REQ-NSYNC_MULTI_TARGET]
+### Multi-Destination Sync [REQ-NSYNC_MULTI_TARGET] - Panorama's Signature Feature
+
+**The Core Value**: See all destinations while syncing. Mark files in one pane, press Shift+C, and watch them copy to **every other visible pane** simultaneously. No switching between destinations, no uncertainty about what went where.
+
+**How It Works**:
+1. **Open multiple panes** – Your source + all destinations (e.g., source drive + 3 backup drives = 4 panes)
+2. **Mark files** in the source pane (Space key to mark each file, or Shift+M for all)
+3. **Press Shift+C** (Copy to All Panes) or **Shift+V** (Move to All Panes)
+4. **Confirm once** – Dialog shows exactly which panes will receive the files
+5. **Visual verification** – Watch files appear in all destination panes; color-coded comparison confirms success
+
+**Key Features**:
 - **Copy to All Panes / Move to All Panes** – Sync files from the focused pane to all other visible panes in one action (Shift+C, Shift+V)
 - **Parallel Sync** – Multi-destination orchestration with parallel copy per source and observer pattern for progress
 - **Safe Move Semantics** [REQ-MOVE_SEMANTICS] – Source files deleted only after ALL destinations succeed; partial failure leaves source intact
-- **Comparison Methods** [REQ-COMPARE_METHODS] – Skip unchanged files via `none`, `size`, `mtime`, `size-mtime`, or `hash` (default: `size-mtime`)
-- **Hash Computation** [REQ-HASH_COMPUTATION] – BLAKE3, SHA-256, and XXH3 with streaming for large files
+- **Smart Skip** [REQ-COMPARE_METHODS] – Skip unchanged files via `none`, `size`, `mtime`, `size-mtime`, or `hash` (default: `size-mtime`)
+- **Hash Verification** [REQ-HASH_COMPUTATION] – BLAKE3, SHA-256, and XXH3 with streaming for large files; optional post-copy verification
 - **Destination Verification** [REQ-VERIFY_DEST] – Optional recompute of destination hash after copy to detect corruption
-- **Store Failure Detection** [REQ-STORE_FAILURE_DETECT] – Error streak tracking per destination; sync aborts when a store is marked unavailable
+- **Store Failure Detection** [REQ-STORE_FAILURE_DETECT] – Error streak tracking per destination; sync aborts when a store is marked unavailable (e.g., ejected USB drive)
+
+**Why This Matters**: 
+- **Speed**: One operation syncs to N destinations (not N separate operations)
+- **Safety**: Move deletes source only after ALL destinations succeed
+- **Confidence**: Visual comparison confirms every file reached every destination
+- **Efficiency**: Skips files that are already up-to-date using fast comparisons
 
 ### Configuration System
 - **YAML Configuration** – All file manager settings (keybindings, layout, columns, toolbars, startup paths) in `config/files.yaml`
@@ -78,7 +108,83 @@ Browse and manage server files with keyboard-driven navigation, dual-pane (or mo
 
 4. **Open the file manager**:
    - Navigate to http://localhost:3000 (redirects to `/files`)
-   - The file manager opens with your home directory in dual-pane mode
+   - The file manager opens with your home directory in **3-pane mode** (use the Layout toolbar to add or remove panes; 1 pane minimum, no upper limit)
+
+### Screenshots & Demo (3-pane default; 1 pane or more, no limit)
+
+The file manager **defaults to 3 panes** and supports **1 pane or more with no upper limit**. Visual demos for the README should show **3-pane layout** as the primary experience.
+
+| Layout   | Use case |
+|----------|----------|
+| **3 panes (default)** | Recommended: compare directories, sync to multiple targets, keep source and two destinations visible. |
+| **More panes**        | Add via Layout toolbar for extra targets or comparison; no fixed maximum. |
+| **2 or 1 pane**       | Remove panes via Layout toolbar for simpler side-by-side or single-pane use. |
+
+**Demo directory for screenshots / GIFs:** `/tmp/test-5dirs/` has a good structure for demos (subdirs `alpha`, `beta`, `delta`, `epsilon`, `gamma` with deliberate differences). Create it with the script `scripts/setup_test_dirs.sh` from the [Goful](https://github.com/nickshanks/goful) repo. Point panes at subdirs of `/tmp/test-5dirs/` for consistent, comparable content.
+
+**3-pane workspace (default layout):**
+
+![3-pane file manager](docs/screenshots/3-pane-workspace.png)
+
+**Visual comparison mode** (color-coded indicators across panes):
+
+![3-pane comparison](docs/screenshots/3-pane-comparison.png)
+
+**Copy to All Panes in action** (mark files → Shift+C → sync to all targets):
+
+![CopyAll demo](docs/screenshots/copyall-demo.gif)
+
+The GIF demonstrates Panorama's signature feature: mark files in one pane, press Shift+C, and copy them to **all** other visible panes simultaneously. Visual confirmation shows files appearing in each destination instantly.
+
+### Automated Demo Recording
+
+The CopyAll demo GIF above was generated using **fully automated browser testing** with Playwright. No human clicking required!
+
+**One-Command Demo**:
+```bash
+npm run demo:record
+```
+
+This command:
+1. **Resets test directories** (`/tmp/test-dirs/alpha`, `beta`, `gamma` with sample files)
+2. **Starts the dev server** automatically
+3. **Launches browser** with pre-configured panes via URL (see URL Deep Linking below)
+4. **Performs the demo** – marks files, triggers CopyAll, confirms dialog
+5. **Captures screenshots** at each step (4 PNG files)
+6. **Records video** of the entire workflow
+7. **Converts to GIF** (optimized with ffmpeg + gifsicle)
+
+**Output**: 4 professional screenshots + 1 optimized GIF (1.9 MB) in `docs/screenshots/`
+
+**Individual Commands**:
+```bash
+npm run demo:setup     # Reset test directories only
+npm run test:e2e       # Run E2E test (headless)
+npm run demo:convert   # Convert video to GIF
+npm run test:e2e:headed # Run with visible browser (debugging)
+```
+
+See `DEMO_AUTOMATION_README.md` for full details on the automation infrastructure.
+
+### URL Deep Linking
+
+**New Feature**: Pre-configure panes via URL query parameters for instant setup:
+
+```
+http://localhost:3000/files?pane0=/path1&pane1=/path2&pane2=/path3
+```
+
+**Example**:
+```bash
+npm run dev
+open "http://localhost:3000/files?pane0=/tmp/test-dirs/alpha&pane1=/tmp/test-dirs/beta&pane2=/tmp/test-dirs/gamma"
+```
+
+Panes instantly load with the specified directories—perfect for:
+- **Bookmarkable workflows**: Save complex multi-pane setups as browser bookmarks
+- **Testing**: E2E tests use URL params to set up scenarios instantly (no UI navigation)
+- **Documentation**: Share exact file manager states via shareable links
+- **Reproducibility**: Demo scripts can create consistent starting states
 
 ### Keyboard Shortcuts
 
@@ -126,9 +232,9 @@ The file manager is keyboard-driven for efficiency:
 ```yaml
 layout:
   default: "tile"              # tile | oneRow | oneColumn | fullscreen
-  defaultPaneCount: 2          # Number of panes on startup
+  defaultPaneCount: 3          # Number of panes on startup (3 recommended)
   allowPaneManagement: true    # Allow adding/removing panes
-  maxPanes: 4                  # Maximum number of panes
+  maxPanes: 0                  # 0 = no upper limit; set a number to cap panes
   defaultLinkedMode: true      # Start with linked navigation enabled
 
 startup:
@@ -383,7 +489,7 @@ See `AGENTS.md` and `ai-principles.md` for complete guidelines.
 
 ### Multi-Pane Layout
 
-The file manager supports up to 4 simultaneous panes with automatic layout calculation based on available space. Panes can be arranged in:
+The file manager defaults to **3 panes** and supports **1 pane or more with no upper limit**. Layout is calculated automatically from available space. Use the Layout toolbar to add or remove panes (pane management can be disabled in config). Panes can be arranged in:
 - **Tile** – Equal-size grid layout
 - **One Row** – All panes in a horizontal row
 - **One Column** – All panes in a vertical column
@@ -398,15 +504,29 @@ When enabled (L key), all panes navigate together:
 - Parent navigation (`..` button or Backspace) navigates all panes to their parents
 - Automatically disables if directory structures diverge
 
-### Multi-Destination Sync
+### Multi-Destination Sync (Panorama's Core Feature)
 
-Inspired by Goful's nsync integration:
-- Copy or move marked files to **all other visible panes** simultaneously
-- Parallel copy operations for speed
-- Safe move: source deleted only after all destinations succeed
-- Skip unchanged files based on size, time, or hash
-- Optional verification by recomputing hash after copy
-- Detects unavailable stores and aborts to prevent data loss
+Inspired by Goful's nsync integration, this is what makes Panorama unique:
+
+**The Workflow**:
+1. **Set up your view**: Open panes for your source + all destinations (3-5 panes recommended)
+2. **Mark files**: Space to mark individual files, Shift+M for all
+3. **Sync**: Shift+C (copy to all) or Shift+V (move to all)
+4. **Verify visually**: All panes show the synced files; comparison mode color-codes the results
+
+**Why It's Better Than Traditional Approaches**:
+- **Traditional**: Copy to drive 1 → verify → copy to drive 2 → verify → copy to drive 3 → verify (3× the time)
+- **Panorama**: Mark files once → Shift+C → all 3 drives receive files in parallel → visual confirmation shows all destinations
+
+**Technical Advantages**:
+- **Parallel copy operations** for speed (copies to all destinations concurrently per source file)
+- **Safe move semantics**: source deleted only after ALL destinations succeed (prevents data loss on partial failure)
+- **Smart skip**: unchanged files detected via size, timestamp, or hash (saves time on incremental syncs)
+- **Optional hash verification**: recompute hash after copy to detect silent corruption
+- **Store failure detection**: aborts sync if a destination becomes unavailable (detects ejected USB drives, network failures)
+
+**Real-World Example**:
+You have important project files on your laptop and three backup drives (USB, NAS, cloud mount). Traditional workflow: copy to USB, verify, copy to NAS, verify, copy to cloud, verify. **Panorama workflow**: Open 4 panes (laptop + 3 destinations), mark files in laptop pane, Shift+C, done. Visual comparison confirms all three backups instantly.
 
 ### Content Search
 

@@ -316,12 +316,12 @@ keybindings:
 layout:
   # Default layout type on startup
   default: "tile"  # tile | oneRow | oneColumn | fullscreen
-  # Default number of panes
-  defaultPaneCount: 2
+  # Default number of panes (minimum 3 recommended for typical use)
+  defaultPaneCount: 3
   # Allow users to add/remove panes
   allowPaneManagement: true
-  # Maximum number of panes
-  maxPanes: 4
+  # Maximum number of panes (0 = no upper limit)
+  maxPanes: 0
   # [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Enable linked navigation mode by default
   defaultLinkedMode: true
 

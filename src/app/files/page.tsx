@@ -28,7 +28,7 @@ export default async function FilesPage() {
   const config = getFilesConfig();
   const keybindings = config.keybindings || [];
   const copy = config.copy || {};
-  const layout = config.layout || { default: "tile", defaultPaneCount: 2, allowPaneManagement: true, maxPanes: 4 };
+  const layout = config.layout || { default: "tile", defaultPaneCount: 3, allowPaneManagement: true, maxPanes: 0 };
   const startup = config.startup || { mode: "home", paths: {} };
   // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER] Load column configuration
   const columns = config.columns || [

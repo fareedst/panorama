@@ -231,6 +231,32 @@ export default function WorkspaceView({
     
     return () => window.removeEventListener("resize", updateDimensions);
   }, []);
+
+  // Initialize panes from URL query parameters (for E2E testing and deep linking)
+  // Query params: ?pane0=/path/to/dir&pane1=/another/path&pane2=/third/path
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const panePathsFromUrl: string[] = [];
+    
+    // Collect pane paths from query parameters
+    for (let i = 0; i < panes.length; i++) {
+      const panePath = searchParams.get(`pane${i}`);
+      if (panePath) {
+        panePathsFromUrl.push(panePath);
+      }
+    }
+    
+    // Navigate panes to URL-specified paths
+    if (panePathsFromUrl.length > 0) {
+      panePathsFromUrl.forEach((panePath, index) => {
+        // Small delay to avoid overwhelming the server
+        setTimeout(() => {
+          handleNavigate(index, panePath);
+        }, index * 100);
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Run only once on mount
   
   // Calculate pane bounds
   const bounds = calculateLayout(
@@ -626,9 +652,9 @@ export default function WorkspaceView({
       return;
     }
     
-    // Check if we've reached the maximum number of panes
-    const maxPanes = layoutConfig.maxPanes || 4;
-    if (panes.length >= maxPanes) {
+    // Check if we've reached the maximum number of panes (0 = no limit)
+    const maxPanes = layoutConfig.maxPanes ?? 0;
+    if (maxPanes > 0 && panes.length >= maxPanes) {
       console.warn(`Cannot add pane: maximum of ${maxPanes} panes reached`);
       return;
     }
@@ -1587,8 +1613,9 @@ export default function WorkspaceView({
       disabled.add('navigate.last');
     }
     
-    // Disable pane management at limits
-    if (panes.length >= (layoutConfig.maxPanes || 4)) {
+    // Disable pane management at limits (maxPanes 0 = no limit)
+    const maxPanes = layoutConfig.maxPanes ?? 0;
+    if (maxPanes > 0 && panes.length >= maxPanes) {
       disabled.add('pane.add');
     }
     if (panes.length <= 1) {
@@ -1677,6 +1704,7 @@ export default function WorkspaceView({
         {panes.map((pane, index) => (
           <FilePane
             key={index}
+            data-testid={`pane-${index}`}
             path={pane.path}
             files={pane.files}
             cursor={pane.cursor}

@@ -18,6 +18,13 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     // [IMPL-TEST_CONFIG] Process CSS imports for Tailwind classes
     css: true,
+    // [IMPL-TEST_CONFIG] Exclude E2E tests (Playwright) from Vitest
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/e2e/**',  // Playwright E2E tests
+      '**/.{idea,git,cache,output,temp}/**',
+    ],
     // [IMPL-TEST_CONFIG] [REQ-BUILD_SYSTEM] Coverage configuration
     coverage: {
       // [IMPL-TEST_CONFIG] Use v8 for fast coverage (no instrumentation)

@@ -64,6 +64,8 @@ interface FilePaneProps {
   onNavigateParent?: () => void;
   /** [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER] Column configuration */
   columns: FilesColumnConfig[];
+  /** Test ID for automation */
+  "data-testid"?: string;
 }
 
 /**
@@ -96,6 +98,7 @@ export default function FilePane({
   onFocusRequest,
   onNavigateParent, // [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
   columns, // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
+  "data-testid": dataTestId,
 }: FilePaneProps) {
   // [IMPL-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] Context menu state
   const [contextMenu, setContextMenu] = useState<{
@@ -337,6 +340,7 @@ export default function FilePane({
   
   return (
     <div
+      data-testid={dataTestId}
       className={`
         absolute overflow-hidden flex flex-col
         bg-white dark:bg-zinc-900

@@ -333,9 +333,9 @@ describe("getFilesConfig [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE
   it("loads layout config with defaults", () => {
     const config = getFilesConfig();
     expect(config.layout?.default).toBe("tile");
-    expect(config.layout?.defaultPaneCount).toBe(2);
+    expect(config.layout?.defaultPaneCount).toBe(3);
     expect(config.layout?.allowPaneManagement).toBe(true);
-    expect(config.layout?.maxPanes).toBe(4);
+    expect(config.layout?.maxPanes).toBe(0); // 0 = no upper limit
   });
 
   it("loads startup config with defaults", () => {
@@ -435,7 +435,8 @@ describe("Pane Management Config [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE]", 
   it("layout config supports pane management", () => {
     const config = getFilesConfig();
     expect(config.layout?.allowPaneManagement).toBe(true);
-    expect(config.layout?.maxPanes).toBeGreaterThan(1);
+    expect(typeof config.layout?.maxPanes).toBe("number");
+    expect(config.layout?.maxPanes).toBeGreaterThanOrEqual(0); // 0 = no limit
   });
 });
 

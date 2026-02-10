@@ -9,7 +9,14 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "demo:record": "npm run demo:setup && npm run test:e2e && npm run demo:convert",
+    "demo:setup": "./scripts/setup_copyall_demo.sh --clean",
+    "demo:convert": "./scripts/convert_demo_to_gif.sh",
+    "demo:verify": "./scripts/verify_demo_screenshots.sh"
   },
   "dependencies": {
     "@noble/hashes": "^2.0.1",
@@ -22,6 +29,7 @@
     "xxhash-wasm": "^1.1.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",

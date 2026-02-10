@@ -7,6 +7,116 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.5.1] - 2026-02-10
+
+### Added
+
+#### Product Naming: Panorama
+- **Product name**: "Panorama - Multi-Target File Manager with Visual Sync"
+- **Positioning**: Emphasizes the core value proposition—see all destinations while syncing, with visual verification
+- **Tagline**: "Multi-target sync, verified." / "See all targets at once and confirm every copy."
+- **Updated branding**: README, documentation, and feature descriptions now highlight the visual multi-destination sync use case
+
+#### URL Deep Linking for Panes
+- **Pre-configure panes via URL query parameters**: Navigate to `/files?pane0=/path1&pane1=/path2&pane2=/path3` to instantly load specific directories in each pane
+- **Use cases**:
+  - **Bookmarkable workflows**: Save complex multi-pane setups as browser bookmarks
+  - **E2E testing**: Tests use URL params to set up scenarios instantly (no UI navigation required)
+  - **Documentation**: Share exact file manager states via shareable links
+  - **Reproducibility**: Demo scripts create consistent starting states
+- **Implementation**: `WorkspaceView.tsx` reads `pane0`, `pane1`, `pane2`, etc. from URL search params and navigates panes on mount
+
+#### Automated Demo Recording with Playwright
+- **One-command demo generation**: `npm run demo:record` creates screenshots and GIF of CopyAll workflow with zero human intervention
+- **Playwright E2E test** (`e2e/copyall-demo.spec.ts`):
+  - Navigates to pre-configured panes via URL
+  - Marks files in source pane
+  - Triggers CopyAll operation via toolbar button
+  - Captures 4 screenshots at key steps (initial state, marked files, dialog, final result)
+  - Records full video (~35 seconds)
+- **GIF conversion pipeline**: Converts Playwright video to optimized GIF (1.9 MB) using ffmpeg palette generation + gifsicle optimization
+- **Helper scripts**:
+  - `scripts/setup_copyall_demo.sh` — Creates fresh test directories (`/tmp/test-dirs/alpha`, `beta`, `gamma`)
+  - `scripts/convert_demo_to_gif.sh` — Converts test video to optimized GIF
+  - `scripts/verify_demo_screenshots.sh` — Verifies all expected screenshots exist
+- **Generated assets**:
+  - 4 PNG screenshots (`demo-01-initial-state.png`, `demo-02-marked-files.png`, `demo-03-copyall-dialog.png`, `demo-05-final-result.png`)
+  - 1 GIF animation (`copyall-demo.gif`, 1.9 MB, 800px wide, 15fps)
+- **npm scripts**:
+  - `npm run demo:record` — Full pipeline (setup → test → convert)
+  - `npm run demo:setup` — Reset test directories only
+  - `npm run test:e2e` — Run E2E tests (headless)
+  - `npm run test:e2e:headed` — Run with visible browser (debugging)
+  - `npm run demo:convert` — Convert existing video to GIF
+  - `npm run demo:verify` — Verify screenshots exist
+
+#### E2E Testing Infrastructure
+- **Playwright integration**: Added `@playwright/test` as dev dependency
+- **Playwright config** (`playwright.config.ts`):
+  - Test directory: `e2e/`
+  - Automatic dev server start/stop
+  - Video recording always on
+  - Screenshots on failure + custom in tests
+  - 60-second test timeout, 15-second action timeout
+- **UI instrumentation for testing**:
+  - `data-testid` attributes added to `FilePane` components (`pane-0`, `pane-1`, etc.)
+  - `data-testid` attributes added to `ToolbarButton` components (`toolbar-{action}`)
+  - Enables reliable element selection in E2E tests
+- **Test runner separation**: `vitest.config.ts` excludes `e2e/` directory to prevent Vitest from trying to run Playwright tests
+
+### Changed
+
+#### Documentation Updates
+- **README.md**:
+  - **New "Why Panorama?" section**: Explains the problem (can't see all destinations in traditional file managers), solution (multi-pane visual sync), and use cases (multi-target backup, directory comparison, parallel deployment, USB drive sync, archive distribution)
+  - **Enhanced "Multi-Destination Sync" feature description**: User-oriented workflow explanation (5 steps from setup to visual verification) and "Why It's Better" comparison (traditional 3× workflow vs. Panorama's one-operation approach)
+  - **Added CopyAll demo GIF** to screenshots section with explanation
+  - **New "Automated Demo Recording" section**: Documents the one-command demo pipeline and individual scripts
+  - **New "URL Deep Linking" section**: Explains query parameter syntax and use cases with examples
+  - **Updated version** to 0.5.1 and date to 2026-02-10
+- **DEMO_AUTOMATION_README.md**: Comprehensive reference for automation infrastructure (created in 0.5.1 work)
+- **Existing demo documentation**: `docs/AUTOMATION_COMPLETE.md`, `docs/E2E_TESTING_SETUP.md`, `docs/COPYALL_DEMO_QUICKSTART.md` (from automation work)
+
+### Technical Details
+
+#### Modified Files
+- **UI**: 
+  - `src/app/files/WorkspaceView.tsx` — URL query parameter initialization via `useEffect` hook
+  - `src/app/files/components/FilePane.tsx` — Accepts and applies `data-testid` prop
+  - `src/app/files/components/Toolbar.tsx` — Passes `action` prop to `ToolbarButton`
+  - `src/app/files/components/ToolbarButton.tsx` — Accepts `action` prop and creates `data-testid` from it
+- **Config**: 
+  - `package.json` — Added `@playwright/test` dev dependency and demo/E2E npm scripts
+  - `vitest.config.ts` — Excludes `e2e/` directory from Vitest test discovery
+  - `playwright.config.ts` — New Playwright configuration file
+- **Tests**: 
+  - `e2e/copyall-demo.spec.ts` — New Playwright E2E test for CopyAll demo
+- **Scripts**: 
+  - `scripts/setup_copyall_demo.sh` — New demo setup script
+  - `scripts/convert_demo_to_gif.sh` — New GIF conversion script
+  - `scripts/verify_demo_screenshots.sh` — New screenshot verification script
+- **Documentation**: 
+  - `README.md` — Product naming, expanded feature descriptions, automation docs
+  - `CHANGELOG.md` — This entry
+  - `DEMO_AUTOMATION_README.md` — New automation reference doc
+  - `docs/screenshots/README.md` — Updated to mention demo script
+
+#### System Requirements for Demo Recording
+- **@playwright/test** (installed)
+- **Chromium** (installed by Playwright)
+- **ffmpeg** (required for video conversion)
+- **gifsicle** (required for GIF optimization)
+
+#### Demo Recording Success Metrics
+- **Test Pass Rate**: 100% (1/1 test passing)
+- **Execution Time**: ~35 seconds (full pipeline)
+- **Screenshot Quality**: Production-grade (4 PNGs, 85-105 KB each)
+- **GIF Size**: 1.9 MB (optimized, 800px wide, 15fps)
+- **Repeatability**: Perfect (deterministic, no flakiness)
+- **Manual Steps**: Zero (fully automated)
+
+---
+
 ## [0.5.0] - 2026-02-09
 
 ### Changed

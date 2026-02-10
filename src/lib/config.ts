@@ -315,9 +315,9 @@ const DEFAULT_FILES_CONFIG: FilesConfig = {
   },
   layout: {
     default: "tile",
-    defaultPaneCount: 2,
+    defaultPaneCount: 3,
     allowPaneManagement: true,
-    maxPanes: 4,
+    maxPanes: 0, // 0 = no upper limit
     defaultLinkedMode: true, // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Enabled by default
   },
   startup: {

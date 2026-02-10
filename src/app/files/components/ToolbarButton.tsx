@@ -23,6 +23,7 @@ export interface ToolbarButtonProps {
  * [IMPL-TOOLBAR_COMPONENT] [REQ-TOOLBAR_SYSTEM]
  */
 export function ToolbarButton({
+  action,
   icon,
   label,
   keystroke,
@@ -37,6 +38,7 @@ export function ToolbarButton({
   
   return (
     <button
+      data-testid={`toolbar-${action}`}
       onClick={onClick}
       disabled={disabled}
       title={`${description} (${keystroke})`}
