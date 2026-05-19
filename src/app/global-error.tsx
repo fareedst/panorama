@@ -1,4 +1,4 @@
-// [IMPL-GLOBAL_ERROR_BOUNDARY] [ARCH-NEXTJS_FRAMEWORK] [REQ-ERROR_HANDLING]
+// [IMPL-GLOBAL_ERROR_BOUNDARY] [ARCH-NEXTJS_FRAMEWORK] [REQ-ERROR_HANDLING]: Top-level Global Error Boundary Implementation: Create global-error.tsx with full HTML document for root-level errors
 // Global error boundary component that catches errors at the root layout level.
 // This component renders a full HTML document (including <html> and <body>) to
 // replace the root layout when an unexpected error occurs in production.

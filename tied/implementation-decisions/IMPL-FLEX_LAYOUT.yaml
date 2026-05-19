@@ -1,0 +1,51 @@
+IMPL-FLEX_LAYOUT:
+  name: Flexbox Layout Implementation
+  status: Active
+  cross_references:
+    - ARCH-TAILWIND_V4
+    - REQ-ROOT_LAYOUT
+  decision: Use Tailwind flex utilities throughout
+  rationale:
+    why: Use Tailwind flexbox utilities for layouts
+    problems_solved:
+      - Complex CSS layouts
+      - Alignment issues
+    benefits:
+      - Simple flexbox layouts
+      - Consistent alignment
+  implementation_approach:
+    summary: Use Tailwind flex utilities throughout
+    details:
+      - Use flex, flex-col, flex-row
+      - Use gap for spacing
+      - Use justify and align utilities
+  code_locations:
+    files:
+      - path: src/app/page.tsx
+        description: Flexbox layouts in home page
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-TAILWIND_V4
+    requirements:
+      - REQ-ROOT_LAYOUT
+    tests: []
+    code_annotations:
+      - REQ-ROOT_LAYOUT
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-RESPONSIVE_CLASSES
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T16:06:42.636Z"
+      author: AI Agent
+      reason: IMPL essence_pseudocode retrofit all 58
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass

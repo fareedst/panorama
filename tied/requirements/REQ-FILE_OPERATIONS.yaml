@@ -1,0 +1,58 @@
+# REQ detail — REQ-FILE_OPERATIONS
+REQ-FILE_OPERATIONS:
+  name: File Copy, Move, Rename, Delete Operations
+  category: Functional
+  priority: P1
+  status: Implemented
+  description: Users need to perform common file management operations
+  rationale:
+    why: Users need to perform common file management operations
+    problems_solved:
+      - Difficulty moving/copying files between directories
+      - Manual command-line operations required
+      - No file manipulation interface
+    benefits:
+      - Batch operations on marked files
+      - Cross-pane copy/move support
+      - Visual file operations
+  satisfaction_criteria:
+    - criterion: Can copy files (keyboard shortcut or button)
+    - criterion: Can delete files (keyboard shortcut with confirmation)
+    - criterion: Can move files (keyboard shortcut or button)
+    - criterion: Can rename files (keyboard shortcut or inline edit)
+    - criterion: Error handling for failed operations
+    - criterion: Operations work on single and marked files
+  validation_criteria:
+    - method: Operation testing
+      coverage: All CRUD operations work correctly
+    - method: Error testing
+      coverage: Errors handled gracefully (permissions, non-existent files)
+  traceability:
+    architecture:
+      - ARCH-FILE_OPERATIONS_API
+      - ARCH-FILESYSTEM_ABSTRACTION
+    implementation:
+      - IMPL-FILES_API
+      - IMPL-FILES_DATA
+    tests: []
+    code_annotations:
+      - REQ-FILE_OPERATIONS
+  related_requirements:
+    depends_on:
+      - REQ-FILE_LISTING
+      - REQ-KEYBOARD_NAVIGATION
+    related_to:
+      - REQ-CROSS_PANE_COMPARISON
+    supersedes: []
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

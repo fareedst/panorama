@@ -374,6 +374,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
   });
 
   // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Parent button tests
+  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: linkedMode boolean and syncingRef Set prevent recursive sync during handleNavigate
   it("should show Parent button when not at root [REQ-LINKED_PANES] [IMPL-LINKED_NAV]", () => {
     const mockOnNavigateParent = vi.fn();
     
@@ -396,6 +397,8 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
     expect(screen.getByText("..")).toBeInTheDocument();
   });
 
+  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: linkedMode boolean and syncingRef Set prevent recursive sync during handleNavigate
+
   it("should hide Parent button when at root [REQ-LINKED_PANES] [IMPL-LINKED_NAV]", () => {
     const mockOnNavigateParent = vi.fn();
     
@@ -416,6 +419,8 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
     
     expect(screen.queryByLabelText("Parent directory")).not.toBeInTheDocument();
   });
+
+  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: linkedMode boolean and syncingRef Set prevent recursive sync during handleNavigate
 
   it("should call onNavigateParent when Parent button is clicked [REQ-LINKED_PANES] [IMPL-LINKED_NAV]", () => {
     const mockOnNavigateParent = vi.fn();
@@ -441,6 +446,8 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
     expect(mockOnNavigateParent).toHaveBeenCalledTimes(1);
   });
 
+  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: linkedMode boolean and syncingRef Set prevent recursive sync during handleNavigate
+
   it("should show linked indicator when linked prop is true [REQ-LINKED_PANES] [IMPL-LINKED_NAV]", () => {
     render(
       <FilePane
@@ -459,6 +466,8 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
     
     expect(screen.getByText("🔗")).toBeInTheDocument();
   });
+
+  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: linkedMode boolean and syncingRef Set prevent recursive sync during handleNavigate
 
   it("should hide linked indicator when linked prop is false [REQ-LINKED_PANES] [IMPL-LINKED_NAV]", () => {
     render(

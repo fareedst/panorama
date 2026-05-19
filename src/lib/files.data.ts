@@ -1,4 +1,4 @@
-// [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-DIRECTORY_NAVIGATION] [REQ-FILE_OPERATIONS]
+// [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-DIRECTORY_NAVIGATION] [REQ-FILE_OPERATIONS]: Top-level Filesystem Data Layer: Server-only module wraps Node.js fs/promises API with validation
 // Server-side filesystem data layer using Node.js fs/promises API
 
 import fs from "fs/promises";

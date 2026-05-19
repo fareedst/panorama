@@ -1,0 +1,49 @@
+# ARCH detail — ARCH-THEME_INJECTION
+ARCH-THEME_INJECTION:
+  name: CSS Variable Injection from Theme Config
+  status: Active
+  cross_references:
+    - REQ-CONFIG_DRIVEN_UI
+  decision: 'Theme color values are injected into the document via a `<style>` tag rendered by the root layout component, replacing the previously hard-coded CSS custom property values in `globals.css`. The style tag contains `:root` declarations for light mode and `@media (prefers-color-scheme: dark)` declarations for dark mode, all sourced from `config/theme.yaml`.'
+  rationale:
+    why: Inject CSS variables from theme config to enable runtime theming
+    problems_solved:
+      - Static theme colors
+      - Hard-coded CSS variables
+    benefits:
+      - Runtime theming
+      - Config-driven colors
+  alternatives_considered: []
+  implementation_approach:
+    summary: Inject CSS variables in root layout from theme config
+    details:
+      - Generate CSS variable string
+      - Inject via style attribute
+      - Read theme config in layout
+  traceability:
+    requirements:
+      - REQ-CONFIG_DRIVEN_UI
+    implementation:
+      - IMPL-THEME_INJECTION
+    tests: []
+    code_annotations:
+      - REQ-CONFIG_DRIVEN_UI
+  related_decisions:
+    depends_on:
+      - ARCH-CONFIG_DRIVEN_UI
+    informs:
+      - IMPL-THEME_INJECTION
+    see_also:
+      - ARCH-CSS_VARIABLES
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass

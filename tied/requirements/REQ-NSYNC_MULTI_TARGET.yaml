@@ -1,0 +1,55 @@
+# REQ detail — REQ-NSYNC_MULTI_TARGET
+REQ-NSYNC_MULTI_TARGET:
+  name: Multi-Destination File Synchronization
+  category: Functional
+  priority: P1
+  status: Implemented
+  description: Enable efficient copying/moving of files from source to multiple destinations in parallel, inspired by Goful's nsync usage
+  rationale:
+    why: Enable efficient copying/moving of files from source to multiple destinations in parallel, inspired by Goful's nsync usage
+    problems_solved:
+      - Difficult to verify that all destinations received files correctly
+      - No built-in way to sync files to all visible panes
+      - Sequential copy to multiple destinations is slow and inefficient
+    benefits:
+      - CopyAll/MoveAll keyboard shortcuts for productivity
+      - Parallel sync to multiple destinations for speed
+      - Progress tracking and error reporting per destination
+      - Safe move semantics (delete source only after ALL succeed)
+  satisfaction_criteria:
+    - criterion: 'Move semantics: delete source only after all destinations succeed'
+    - criterion: Cancellation support via AbortSignal
+    - criterion: Observer pattern for progress callbacks
+    - criterion: Sync files to 2+ destinations in parallel
+  validation_criteria:
+    - method: Unit tests
+      coverage: Multi-destination sync, move semantics, observer callbacks
+    - method: Integration tests
+      coverage: CopyAll/MoveAll from React UI
+  traceability:
+    architecture:
+      - ARCH-NSYNC_INTEGRATION
+    implementation:
+      - IMPL-NSYNC_ENGINE
+      - IMPL-NSYNC_OPERATIONS
+    tests: []
+    code_annotations:
+      - REQ-NSYNC_MULTI_TARGET
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-BULK_FILE_OPS
+      - REQ-MOVE_SEMANTICS
+    supersedes: []
+  metadata:
+    created:
+      date: 2026-02-09T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-09T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation after nsync implementation
+    last_validated:
+      date: 2026-02-09T00:00:00.000Z
+      validator: AI Agent
+      result: implemented

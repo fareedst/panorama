@@ -1,0 +1,40 @@
+ARCH-KEYBIND_SYSTEM:
+  name: KEYBIND SYSTEM
+  status: Active
+  cross_references:
+    - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+    - REQ-KEYBOARD_NAVIGATION
+  decision: |-
+    Implement a **configuration-driven keyboard shortcut system** with a centralized registry, event-driven architecture, and declarative keybinding definitions in YAML configuration.
+
+    ---
+  rationale:
+    why: |-
+      Implement a **configuration-driven keyboard shortcut system** with a centralized registry, event-driven architecture, and declarative keybinding definitions in YAML configuration.
+
+      ---
+    problems_solved: []
+    benefits: []
+  alternatives_considered: []
+  implementation_approach:
+    summary: |-
+      Implement a **configuration-driven keyboard shortcut system** with a centralized registry, event-driven architecture, and declarative keybinding definitions in YAML configuration.
+
+      ---
+    details: []
+  traceability:
+    requirements:
+      - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+      - REQ-KEYBOARD_NAVIGATION
+    implementation: []
+    tests: []
+    code_annotations:
+      - ARCH-KEYBIND_SYSTEM
+  related_decisions:
+    depends_on: []
+    informs: []
+    see_also: []
+  metadata:
+    created:
+      date: "2026-02-07"
+      author: migration

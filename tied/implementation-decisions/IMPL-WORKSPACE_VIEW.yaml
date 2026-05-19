@@ -1,0 +1,81 @@
+IMPL-WORKSPACE_VIEW:
+  name: Workspace View Client Component with Stable React Keys
+  status: Implemented
+  cross_references:
+    - ARCH-FILE_MANAGER_HIERARCHY
+    - IMPL-FILES_API
+    - REQ-KEYBOARD_NAVIGATION
+    - REQ-MULTI_PANE_LAYOUT
+    - REQ-REACT_SSR_STABILITY
+  decision: Client component with unique dialog keys, useMemo keybinding initialization, and API integration
+  rationale:
+    why: Client component manages pane state, layout, focus, and keyboard handling with unique React keys
+    problems_solved:
+      - Complex state management
+      - Focus management
+      - Layout coordination
+      - React duplicate key warnings from dialog components
+    benefits:
+      - Centralized state management
+      - Event handling hub
+      - Layout coordination
+      - Stable component rendering without warnings
+  implementation_approach:
+    summary: Client component with unique dialog keys, useMemo keybinding initialization, and API integration
+    details:
+      - 'API integration: Calls GET /api/files?path=... (not /api/files/list)'
+      - 'Critical fix: Removed sortFiles import to prevent client-side fs dependency'
+      - 'Dialog keys: finder-open/finder-closed and search-open/search-closed (not shared ''open''/''closed'')'
+      - 'Fixed 2026-02-07: Unique keys prevent React duplicate key warnings'
+      - 'Keybinding initialization: useMemo (not useEffect) for synchronous setup'
+      - 'State: panes[] (path, files, cursor, marks), layout, focusIndex'
+      - Calculate pane bounds using layout algorithms
+      - Created src/app/files/WorkspaceView.tsx with 'use client'
+      - Render header (title, layout selector) and panes
+      - Sorting handled server-side (page.tsx and API route)
+      - useEffect for keyboard event listeners
+  code_locations:
+    files:
+      - path: src/app/files/WorkspaceView.tsx
+        description: Workspace client component with fixed dialog keys
+        lines:
+          - 1129
+          - 1145
+    functions:
+      - name: WorkspaceView
+        file: src/app/files/WorkspaceView.tsx
+        description: Main workspace component with unique dialog keys
+      - name: handleNavigate
+        file: src/app/files/WorkspaceView.tsx
+        description: Navigate to directory via API call
+  traceability:
+    architecture:
+      - ARCH-FILE_MANAGER_HIERARCHY
+    requirements:
+      - REQ-DIRECTORY_NAVIGATION
+      - REQ-KEYBOARD_NAVIGATION
+      - REQ-MULTI_PANE_LAYOUT
+      - REQ-REACT_SSR_STABILITY
+    tests: []
+    code_annotations:
+      - IMPL-WORKSPACE_VIEW
+  related_decisions:
+    depends_on:
+      - IMPL-FILES_API
+    supersedes: []
+    see_also:
+      - IMPL-FILE_PANE
+      - IMPL-KEYBINDS
+      - IMPL-LAYOUT_CALCULATOR
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T16:06:42.636Z"
+      author: AI Agent
+      reason: IMPL essence_pseudocode retrofit all 58
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass - no React warnings, 523 tests passing

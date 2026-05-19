@@ -1,0 +1,66 @@
+# ARCH detail — ARCH-COMPARISON_COLORING
+ARCH-COMPARISON_COLORING:
+  name: Enhanced Cross-Pane Comparison Coloring
+  status: Implemented
+  cross_references:
+    - REQ-FILE_COMPARISON_VISUAL
+  decision: Enhance the existing comparison index with size and time comparison logic, applying theme-configurable CSS classes for visual differentiation of files across panes.
+  rationale:
+    why: Visual size/time comparison enables instant file relationship identification
+    problems_solved:
+      - Cannot identify newest or largest versions
+      - Existing comparison only shows presence/absence
+      - Manual size/time comparison required
+    benefits:
+      - Automatic rebuild on pane changes
+      - Configurable color scheme in theme.yaml
+      - Instant visual size comparison (equal/smallest/largest)
+      - Instant visual time comparison (equal/earliest/latest)
+  alternatives_considered:
+    - name: Server-side comparison
+      pros:
+        - Less client computation
+      cons:
+        - Network latency on every pane change
+      rejected_reason: Client-side faster for typical file counts
+    - name: On-demand comparison (button click)
+      pros:
+        - No automatic overhead
+      cons:
+        - Extra user action required
+      rejected_reason: Automatic comparison is core feature
+  implementation_approach:
+    summary: Extend ComparisonIndex with size/time analysis, apply CSS classes
+    details:
+      - 'buildEnhancedComparisonIndex: For each filename in multiple panes, compute sizeClass and timeClass'
+      - 'sizeClass: ''equal'' | ''smallest'' | ''largest'' | null'
+      - 'Theme colors: comparison-equal, comparison-smallest, comparison-largest, etc.'
+      - 'timeClass: ''equal'' | ''earliest'' | ''latest'' | null'
+      - Apply CSS classes to file rows based on comparison state
+  traceability:
+    requirements:
+      - REQ-FILE_COMPARISON_VISUAL
+    implementation:
+      - IMPL-COMPARISON_COLORS
+    tests: []
+    code_annotations:
+      - ARCH-COMPARISON_COLORING
+  related_decisions:
+    depends_on:
+      - REQ-CROSS_PANE_COMPARISON
+    informs:
+      - IMPL-COMPARISON_COLORS
+    see_also:
+      - ARCH-CONFIG_DRIVEN_UI
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation - adapted from Goful ARCH-FILE_COMPARISON_ENGINE
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

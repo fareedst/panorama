@@ -1,0 +1,67 @@
+# ARCH detail — ARCH-MARKING_STATE
+ARCH-MARKING_STATE:
+  name: Client-Side Mark State Management
+  status: Active
+  cross_references:
+    - REQ-FILE_MARKING_WEB
+  decision: Store file marking state in client-side React state using Set<string> for marked filenames per pane. Marks persist across sorting and filtering via name-based matching, with no server-side storage.
+  rationale:
+    why: Web file marking requires client-side state for instant feedback with name-based persistence
+    problems_solved:
+      - Complex synchronization between client and server
+      - Mark state lost on page refresh
+      - Server-side mark storage adds latency
+    benefits:
+      - Independent mark sets per pane
+      - Instant mark toggle feedback
+      - Name-based persistence survives re-sorts
+      - Simple Set<string> storage in React state
+  alternatives_considered:
+    - name: Server-side mark storage in session
+      pros:
+        - Persists across page refresh
+      cons:
+        - Network latency on every mark toggle
+        - Complex session management
+      rejected_reason: Latency unacceptable for interactive marking
+    - name: Index-based marking
+      pros:
+        - Simple integer storage
+      cons:
+        - Breaks when files re-sorted
+      rejected_reason: Name-based survives sort changes
+  implementation_approach:
+    summary: React state with Set<string> per pane, name-based persistence
+    details:
+      - 'Footer display: [marked/total] format'
+      - 'Mark operations: toggle, markAll, invertMarks, clearMarks'
+      - 'PaneState interface includes marks: Set<string> field'
+      - 'Visual feedback: checkbox icon + background color from theme.yaml'
+      - Batch operations check marks.size > 0
+  traceability:
+    requirements:
+      - REQ-FILE_MARKING_WEB
+    implementation:
+      - IMPL-FILE_MARKING
+    tests: []
+    code_annotations:
+      - ARCH-MARKING_STATE
+  related_decisions:
+    depends_on:
+      - REQ-FILE_MARKING_WEB
+    informs:
+      - IMPL-FILE_MARKING
+    see_also:
+      - ARCH-BATCH_OPERATIONS
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation - translated from Goful for web
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

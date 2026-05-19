@@ -38,6 +38,8 @@ describe("BookmarkManager [REQ-ADVANCED_NAV]", () => {
     vi.restoreAllMocks();
   });
 
+  // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]: {id, path, label, created}[]
+
   describe("addBookmark [IMPL-DIR_HISTORY]", () => {
     it("should add new bookmark", () => {
       const bookmark = manager.addBookmark("/home/user", "Home Directory");
@@ -67,6 +69,8 @@ describe("BookmarkManager [REQ-ADVANCED_NAV]", () => {
     });
   });
 
+  // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]: {id, path, label, created}[]
+
   describe("removeBookmark [IMPL-DIR_HISTORY]", () => {
     it("should remove bookmark by ID", () => {
       const bookmark = manager.addBookmark("/test", "Test");
@@ -93,6 +97,8 @@ describe("BookmarkManager [REQ-ADVANCED_NAV]", () => {
       expect(bookmarks[0].path).toBe("/path2");
     });
   });
+
+  // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]: {id, path, label, created}[]
 
   describe("updateBookmark [IMPL-DIR_HISTORY]", () => {
     it("should update bookmark label", () => {

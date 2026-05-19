@@ -1,0 +1,70 @@
+# REQ detail — REQ-FILE_SORTING_ADVANCED
+REQ-FILE_SORTING_ADVANCED:
+  name: Advanced Multi-Criteria File Sorting
+  category: Functional
+  priority: P1
+  status: Implemented
+  description: |-
+    The file manager must support advanced multi-criteria sorting to enable efficient file organization and navigation. Users need to sort files by different attributes (name, size, modification time, extension) with control over sort direction and directory prioritization.
+
+    Different file management tasks require different sort orders:
+    • Finding large files requires size sorting
+    • Identifying recent changes needs time sorting
+    • Grouping by file type uses extension sorting
+    • Quick alphabetical navigation uses name sorting
+
+    The system must provide instant sorting feedback without network latency, maintain cursor position on the same file after sorting, and persist sort settings per pane.
+  rationale:
+    why: Different file management tasks require different sort orders for efficiency
+    problems_solved:
+      - Cannot prioritize directories
+      - Limited to simple name sorting
+      - No ascending/descending toggle
+    benefits:
+      - Ascending and descending order for each criterion
+      - Cursor position preservation across sorts
+      - Optional directory-first sorting
+      - Sort by name, size, time, extension
+  satisfaction_criteria:
+    - criterion: Current sort displayed in pane footer
+    - criterion: Cursor remains on same file after sorting
+    - criterion: Each criterion supports ascending/descending
+    - criterion: Optional directories-first toggle
+    - criterion: Sort by extension (alphabetical)
+    - criterion: Sort by modification time (chronological)
+    - criterion: Sort by name (alphabetical)
+    - criterion: Sort by size (bytes)
+    - criterion: Sort menu accessible via S key
+  validation_criteria:
+    - method: Unit tests
+      coverage: All sort criteria and directions
+    - method: Unit tests
+      coverage: Directory prioritization behavior
+    - method: Integration tests
+      coverage: Cursor preservation after sort
+  traceability:
+    architecture:
+      - ARCH-SORT_PIPELINE
+    implementation:
+      - IMPL-SORT_FILTER
+    tests: []
+    code_annotations:
+      - REQ-FILE_SORTING_ADVANCED
+  related_requirements:
+    depends_on:
+      - REQ-FILE_LISTING
+    related_to:
+      - REQ-FILE_MARKING_WEB
+    supersedes: []
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation - adapted from Goful REQ-FILE_SORTING for web
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

@@ -1,4 +1,4 @@
-// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]
+// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: Top-level Test Setup Implementation: Create test setup file with utilities and mocks
 // Test setup configuration for Vitest. Loaded before any tests run.
 // Configures @testing-library/jest-dom custom matchers and mocks
 // next/font/google which requires Next.js build context.

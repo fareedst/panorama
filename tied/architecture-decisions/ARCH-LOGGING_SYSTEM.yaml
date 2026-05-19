@@ -1,0 +1,79 @@
+# ARCH detail — ARCH-LOGGING_SYSTEM
+ARCH-LOGGING_SYSTEM:
+  name: Session-Based File Logging Architecture
+  status: Active
+  cross_references:
+    - REQ-LOGGING_SYSTEM
+  decision: Write timestamped log files to OS temp directory with six log levels
+  rationale:
+    why: Persistent file-based logging enables debugging across sessions and temporal analysis
+    problems_solved:
+      - Difficult to trace issues in production
+      - Ephemeral console logs
+      - No historical debugging data
+    benefits:
+      - OS temp directory automatic cleanup
+      - Persistent logs survive restarts
+      - Session-based files enable temporal analysis
+  alternatives_considered:
+    - name: Console-only logging
+      pros:
+        - Simple to implement
+        - No file management
+      cons:
+        - Ephemeral, lost after session
+        - Cannot analyze historical data
+      rejected_reason: Does not meet requirement for debugging facilitation
+    - name: Database logging
+      pros:
+        - Queryable logs
+        - Structured data
+      cons:
+        - Overkill for simple debugging
+        - Performance overhead
+        - Requires database setup
+      rejected_reason: Too complex for initial implementation
+    - name: External logging service
+      pros:
+        - Professional solution
+        - Advanced features
+      cons:
+        - Cost
+        - External dependency
+        - Privacy concerns
+      rejected_reason: Prefer self-contained solution
+  implementation_approach:
+    summary: Write timestamped log files to OS temp directory with six log levels
+    details:
+      - 'Filename format: nx1-log-YYYY-MM-DD-HH-mm-ss-SSS.log'
+      - 'Format: [TIMESTAMP] [LEVEL] [TOKENS] message'
+      - 'Log levels: FATAL (0), ERROR (1), WARN (2), INFO (3), DEBUG (4), TRACE (5)'
+      - Buffered writes for performance (non-fatal)
+      - Synchronous writes for reliability (fatal errors)
+      - Use Node.js os.tmpdir() for temporary directory
+  traceability:
+    requirements:
+      - REQ-LOGGING_SYSTEM
+    implementation:
+      - IMPL-LOGGER_MODULE
+    tests: []
+    code_annotations:
+      - ARCH-LOGGING_SYSTEM
+  related_decisions:
+    depends_on: []
+    informs:
+      - IMPL-LOGGER_MODULE
+    see_also:
+      - ARCH-LOGGING_CONFIG
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

@@ -1,0 +1,85 @@
+# ARCH detail — ARCH-PANE_LIFECYCLE
+ARCH-PANE_LIFECYCLE:
+  name: Multi-Pane Initialization and Management
+  status: Active
+  cross_references:
+    - REQ-MULTI_PANE_LAYOUT
+    - REQ-FILES_CONFIG_COMPLETE
+  decision: Server-side multi-pane initialization based on config, client-side pane management with keyboard shortcuts and config validation
+  rationale:
+    why: Defines how multiple file panes are initialized from configuration and managed at runtime to enable productive multi-panel file management workflows
+    problems_solved:
+      - File manager only initialized with single pane despite config specifying defaultPaneCount
+      - No mechanism to add/remove panes dynamically at runtime
+      - Startup paths configuration not respected
+      - Users forced to work with single pane even when multi-panel layout configured
+    benefits:
+      - Configuration-driven pane initialization matching user preferences
+      - Dynamic pane management for flexible workflows
+      - Multiple startup modes (home, configured, last)
+      - Respects layout constraints (maxPanes, allowPaneManagement)
+  alternatives_considered:
+    - name: Client-side initialization only
+      pros:
+        - Simpler server code
+        - All logic in one place
+      cons:
+        - Duplicated directory reading logic
+        - Requires multiple API calls to initialize each pane
+        - Slower initial page load
+      rejected_reason: Server-side initialization provides better performance and cleaner separation of concerns
+    - name: Fixed pane count without runtime management
+      pros:
+        - Simpler state management
+        - No need for add/remove logic
+      cons:
+        - Users cannot adjust layout to current task
+        - Configuration changes require page reload
+      rejected_reason: Runtime management enables flexible workflows without page reloads
+  implementation_approach:
+    summary: Server-side multi-pane initialization based on config, client-side pane management with keyboard shortcuts and config validation
+    details:
+      - 'Add pane: clones focused pane state or creates new pane at home directory'
+      - 'Remove pane: removes pane from array, adjusts focusIndex if necessary'
+      - 'Startup mode ''configured'': each pane starts at paths.pane1, pane2, etc.'
+      - 'Startup mode ''home'': all panes start at user home directory'
+      - 'Startup mode ''last'': future enhancement using localStorage'
+      - Client WorkspaceView receives initialPanes array instead of single path/files
+      - Config validation prevents adding beyond maxPanes or removing last pane
+      - Keyboard shortcuts (+ to add, - to remove) integrated with keybinding system
+      - Server initializes array of PaneState objects with appropriate directories
+      - Server page reads layout.defaultPaneCount and startup.mode from config
+  traceability:
+    requirements:
+      - REQ-MULTI_PANE_LAYOUT
+      - REQ-FILES_CONFIG_COMPLETE
+    implementation:
+      - IMPL-FILE_MANAGER_PAGE
+      - IMPL-PANE_MANAGEMENT
+      - IMPL-WORKSPACE_VIEW
+    tests: []
+    code_annotations:
+      - ARCH-PANE_LIFECYCLE
+      - IMPL-PANE_MANAGEMENT
+      - REQ-MULTI_PANE_LAYOUT
+  related_decisions:
+    depends_on:
+      - ARCH-FILE_MANAGER_HIERARCHY
+      - ARCH-CONFIG_DRIVEN_UI
+    informs:
+      - IMPL-PANE_MANAGEMENT
+      - IMPL-FILE_MANAGER_PAGE
+    see_also:
+      - ARCH-LAYOUT_ALGORITHMS
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation with type synchronization fix
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass - build succeeds, 570 tests passing

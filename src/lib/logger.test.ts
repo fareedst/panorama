@@ -34,6 +34,8 @@ describe("[TEST-LOGGER_MODULE] Logger Module", () => {
     vi.clearAllMocks();
   });
 
+  // [IMPL-LOGGER_CONFIG] [ARCH-LOGGING_CONFIG] [REQ-LOGGING_CONFIG]: 'true')
+
   describe("Configuration [IMPL-LOGGER_CONFIG] [REQ-LOGGING_CONFIG]", () => {
     it("should use default configuration when no environment variables set", async () => {
       // Re-import to get fresh config
@@ -194,6 +196,8 @@ describe("[TEST-LOGGER_MODULE] Logger Module", () => {
       expect(mockedFs.appendFileSync).toHaveBeenCalled();
     });
   });
+
+  // [IMPL-LOGGER_TOKENS] [ARCH-LOGGING_SEMANTIC_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS]: (tokens: string | string[], message: string, metadata?: object)
 
   describe("Semantic Tokens [IMPL-LOGGER_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS]", () => {
     beforeEach(async () => {

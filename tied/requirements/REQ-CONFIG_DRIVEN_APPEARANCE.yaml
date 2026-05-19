@@ -1,0 +1,54 @@
+# REQ detail — REQ-CONFIG_DRIVEN_APPEARANCE
+REQ-CONFIG_DRIVEN_APPEARANCE:
+  name: All Page Elements Appearance and Layout from Config
+  category: Functional
+  priority: P0
+  status: Implemented
+  description: For the project to serve as a truly configurable template, ALL page elements must be dictated by configuration
+  rationale:
+    why: For the project to serve as a truly configurable template, ALL page elements must be dictated by configuration
+    problems_solved:
+      - Code changes required for customization
+      - Hard-coded classes and copy in components
+      - Incomplete template configurability
+    benefits:
+      - Complete configurability
+      - No code changes for customization
+      - True template reusability
+  satisfaction_criteria:
+    - criterion: 'Single source of truth: config files'
+    - criterion: Home and root layout use config for all appearance and layout
+    - criterion: Jobs pages use config for all appearance and layout
+    - criterion: Status badge colors defined in config
+  validation_criteria:
+    - method: Config testing
+      coverage: Changing config changes appearance without code changes
+    - method: Code inspection
+      coverage: No hard-coded user-facing text or layout classes in TSX
+  traceability:
+    architecture:
+      - ARCH-CONFIG_DRIVEN_UI
+      - ARCH-CONFIG_DRIVEN_APPEARANCE
+    implementation:
+      - IMPL-CONFIG_LOADER
+      - IMPL-CONFIG_DRIVEN_APPEARANCE
+    tests: []
+    code_annotations:
+      - REQ-CONFIG_DRIVEN_APPEARANCE
+  related_requirements:
+    depends_on:
+      - REQ-CONFIG_DRIVEN_UI
+    related_to: []
+    supersedes: []
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass

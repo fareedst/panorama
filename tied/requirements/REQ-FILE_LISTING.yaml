@@ -1,0 +1,55 @@
+# REQ detail — REQ-FILE_LISTING
+REQ-FILE_LISTING:
+  name: File Listing Display
+  category: Functional
+  priority: P0
+  status: Implemented
+  description: Users need to see file details to identify and select files for operations
+  rationale:
+    why: Users need to see file details to identify and select files for operations
+    problems_solved:
+      - Difficulty identifying file types
+      - Lack of sorting options
+      - No file metadata visibility
+    benefits:
+      - Complete file metadata display
+      - Multiple sorting options
+      - Visual file type indicators
+  satisfaction_criteria:
+    - criterion: Cursor highlights current file
+    - criterion: Display file name, size, modification time
+    - criterion: Distinguish directories from regular files
+    - criterion: Marked files visually distinguished
+    - criterion: Support sorting by name, size, mtime, extension (ascending/descending)
+  validation_criteria:
+    - method: Display testing
+      coverage: All file metadata renders correctly
+    - method: Sorting testing
+      coverage: All sort types work correctly
+  traceability:
+    architecture:
+      - ARCH-FILE_MANAGER_HIERARCHY
+    implementation:
+      - IMPL-FILE_PANE
+      - IMPL-FILES_DATA
+    tests: []
+    code_annotations:
+      - REQ-FILE_LISTING
+  related_requirements:
+    depends_on:
+      - REQ-DIRECTORY_NAVIGATION
+    related_to:
+      - REQ-KEYBOARD_NAVIGATION
+    supersedes: []
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

@@ -1,0 +1,2179 @@
+REQ-APP_STRUCTURE:
+  type: REQ
+  name: Next.js App Router Application Structure
+  category: Functional
+  status: Implemented
+  description: Next.js App Router Application Structure
+  cross_references:
+    - ARCH-APP_ROUTER
+    - ARCH-NEXTJS_FRAMEWORK
+    - IMPL-HOME_PAGE
+    - IMPL-ROOT_LAYOUT
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-APP_STRUCTURE.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+REQ-ROOT_LAYOUT:
+  type: REQ
+  name: Root Layout with HTML Structure
+  category: Functional
+  status: Implemented
+  description: Root Layout with HTML Structure
+  cross_references:
+    - ARCH-LAYOUT_PATTERN
+    - IMPL-ROOT_LAYOUT
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-ROOT_LAYOUT.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+REQ-HOME_PAGE:
+  type: REQ
+  name: Home Page with Welcome Content
+  category: Functional
+  status: Implemented
+  description: Home Page with Welcome Content
+  cross_references:
+    - ARCH-SERVER_COMPONENTS
+    - IMPL-HOME_PAGE
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-HOME_PAGE.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+REQ-NAVIGATION_LINKS:
+  type: REQ
+  name: External Navigation Links
+  category: Functional
+  status: Implemented
+  description: External Navigation Links
+  cross_references:
+    - ARCH-APP_ROUTER
+    - IMPL-EXTERNAL_LINKS
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-NAVIGATION_LINKS.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+REQ-BRANDING:
+  type: REQ
+  name: Next.js Branding Elements
+  category: Functional
+  status: Implemented
+  description: Next.js Branding Elements
+  cross_references:
+    - ARCH-NEXTJS_FRAMEWORK
+    - IMPL-IMAGE_OPTIMIZATION
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-BRANDING.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+REQ-RESPONSIVE_DESIGN:
+  type: REQ
+  name: Responsive Layout Design
+  category: Non-Functional
+  status: Implemented
+  description: Responsive Layout Design
+  cross_references:
+    - ARCH-RESPONSIVE_FIRST
+    - IMPL-RESPONSIVE_CLASSES
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-RESPONSIVE_DESIGN.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+REQ-DARK_MODE:
+  type: REQ
+  name: Dark Mode Theme Support
+  category: Non-Functional
+  status: Implemented
+  description: Dark Mode Theme Support
+  cross_references:
+    - ARCH-CSS_VARIABLES
+    - IMPL-DARK_MODE
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-DARK_MODE.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+REQ-FONT_SYSTEM:
+  type: REQ
+  name: Custom Font Loading System
+  category: Non-Functional
+  status: Implemented
+  description: Custom Font Loading System
+  cross_references:
+    - ARCH-CSS_VARIABLES_FONTS
+    - ARCH-GOOGLE_FONTS
+    - IMPL-FONT_LOADING
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-FONT_SYSTEM.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+REQ-TAILWIND_STYLING:
+  type: REQ
+  name: Tailwind CSS Styling System
+  category: Non-Functional
+  status: Implemented
+  description: Tailwind CSS Styling System
+  cross_references:
+    - ARCH-TAILWIND_V4
+    - IMPL-FLEX_LAYOUT
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-TAILWIND_STYLING.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+REQ-GLOBAL_STYLES:
+  type: REQ
+  name: Global CSS with Theme Variables
+  category: Non-Functional
+  status: Implemented
+  description: Global CSS with Theme Variables
+  cross_references:
+    - ARCH-CSS_VARIABLES
+    - IMPL-DARK_MODE
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-GLOBAL_STYLES.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+REQ-ACCESSIBILITY:
+  type: REQ
+  name: Semantic HTML and Accessibility
+  category: Non-Functional
+  status: Implemented
+  description: Semantic HTML and Accessibility
+  cross_references:
+    - ARCH-SERVER_COMPONENTS
+    - IMPL-IMAGE_OPTIMIZATION
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-ACCESSIBILITY.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+REQ-METADATA:
+  type: REQ
+  name: Page Metadata Configuration
+  category: Non-Functional
+  status: Implemented
+  description: Page Metadata Configuration
+  cross_references:
+    - ARCH-NEXTJS_FRAMEWORK
+    - IMPL-METADATA
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-METADATA.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+REQ-TYPESCRIPT:
+  type: REQ
+  name: TypeScript Type Safety
+  category: Non-Functional
+  status: Implemented
+  description: TypeScript Type Safety
+  cross_references:
+    - ARCH-TYPESCRIPT_LANG
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-TYPESCRIPT.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+REQ-BUILD_SYSTEM:
+  type: REQ
+  name: Next.js Build, Development, and Testing Scripts
+  category: Non-Functional
+  status: Implemented
+  description: Next.js Build, Development, and Testing Scripts
+  cross_references:
+    - ARCH-NEXTJS_FRAMEWORK
+    - ARCH-TEST_FRAMEWORK
+    - IMPL-BUILD_SCRIPTS
+    - IMPL-TEST_CONFIG
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-BUILD_SYSTEM.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+REQ-ERROR_HANDLING:
+  type: REQ
+  name: Root-Level Error Boundary
+  category: Non-Functional
+  status: Implemented
+  description: Root-Level Error Boundary
+  cross_references:
+    - ARCH-NEXTJS_FRAMEWORK
+    - IMPL-GLOBAL_ERROR_BOUNDARY
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-ERROR_HANDLING.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+REQ-CONFIG_DRIVEN_UI:
+  type: REQ
+  name: Configuration-Driven UI
+  category: Functional
+  status: Implemented
+  description: Configuration-Driven UI
+  cross_references:
+    - ARCH-CLASS_OVERRIDES
+    - ARCH-CONFIG_DRIVEN_UI
+    - ARCH-THEME_INJECTION
+    - IMPL-CLASS_OVERRIDES
+    - IMPL-CONFIG_LOADER
+    - IMPL-THEME_INJECTION
+    - IMPL-YAML_CONFIG
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-CONFIG_DRIVEN_UI.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+REQ-CONFIG_DRIVEN_APPEARANCE:
+  type: REQ
+  name: All Page Elements Appearance and Layout from Config
+  category: Functional
+  status: Implemented
+  description: All Page Elements Appearance and Layout from Config
+  cross_references:
+    - ARCH-CONFIG_DRIVEN_APPEARANCE
+    - ARCH-CONFIG_DRIVEN_UI
+    - IMPL-CONFIG_DRIVEN_APPEARANCE
+    - IMPL-CONFIG_LOADER
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-CONFIG_DRIVEN_APPEARANCE.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+REQ-FILE_MANAGER_PAGE:
+  type: REQ
+  name: Multi-Pane File Manager Page
+  category: Functional
+  status: Implemented
+  description: Multi-Pane File Manager Page
+  cross_references:
+    - ARCH-FILE_MANAGER_HIERARCHY
+    - IMPL-FILE_MANAGER_PAGE
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-FILE_MANAGER_PAGE.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+REQ-MULTI_PANE_LAYOUT:
+  type: REQ
+  name: Multiple Pane Layout Algorithms
+  category: Functional
+  status: Implemented
+  description: Multiple Pane Layout Algorithms
+  cross_references:
+    - ARCH-LAYOUT_ALGORITHMS
+    - IMPL-LAYOUT_CALCULATOR
+    - IMPL-WORKSPACE_VIEW
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-MULTI_PANE_LAYOUT.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+REQ-DIRECTORY_NAVIGATION:
+  type: REQ
+  name: Server Filesystem Directory Navigation
+  category: Functional
+  status: Implemented
+  description: Server Filesystem Directory Navigation
+  cross_references:
+    - ARCH-FILESYSTEM_ABSTRACTION
+    - IMPL-FILE_PANE
+    - IMPL-FILES_DATA
+    - IMPL-FILES_UTILS
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-DIRECTORY_NAVIGATION.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+REQ-PANE_REFRESH:
+  type: REQ
+  name: Manual Pane Refresh
+  category: Functional
+  status: Implemented
+  description: Manual Pane Refresh
+  cross_references:
+    - ARCH-PANE_REFRESH
+    - IMPL-PANE_REFRESH
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-PANE_REFRESH.yaml
+  metadata:
+    registered: "2026-02-08"
+    last_updated: "2026-02-08"
+REQ-FILE_LISTING:
+  type: REQ
+  name: File Listing Display
+  category: Functional
+  status: Implemented
+  description: File Listing Display
+  cross_references:
+    - ARCH-FILE_MANAGER_HIERARCHY
+    - IMPL-FILE_PANE
+    - IMPL-FILES_DATA
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-FILE_LISTING.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+REQ-FILE_OPERATIONS:
+  type: REQ
+  name: File Copy, Move, Rename, Delete Operations
+  category: Functional
+  status: Implemented
+  description: File Copy, Move, Rename, Delete Operations
+  cross_references:
+    - ARCH-FILE_OPERATIONS_API
+    - ARCH-FILESYSTEM_ABSTRACTION
+    - IMPL-FILES_API
+    - IMPL-FILES_DATA
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-FILE_OPERATIONS.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+REQ-CROSS_PANE_COMPARISON:
+  type: REQ
+  name: Cross-Pane File Comparison
+  category: Functional
+  status: Implemented
+  description: Cross-Pane File Comparison
+  cross_references:
+    - ARCH-COMPARISON_INDEX
+    - IMPL-COMPARISON_INDEX
+    - IMPL-FILE_PANE
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-CROSS_PANE_COMPARISON.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+REQ-KEYBOARD_NAVIGATION:
+  type: REQ
+  name: Keyboard-Driven Navigation
+  category: Functional
+  status: Implemented
+  description: Keyboard-Driven Navigation
+  cross_references:
+    - ARCH-FILE_MANAGER_HIERARCHY
+    - IMPL-FILE_PANE
+    - IMPL-WORKSPACE_VIEW
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-KEYBOARD_NAVIGATION.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+REQ-CONFIG_DRIVEN_FILE_MANAGER:
+  type: REQ
+  name: Configuration-Driven File Manager UI
+  category: Functional
+  status: Implemented
+  description: Configuration-Driven File Manager UI
+  cross_references:
+    - ARCH-CONFIG_DRIVEN_UI
+    - IMPL-FILE_MANAGER_PAGE
+    - IMPL-FILES_CONFIG
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-CONFIG_DRIVEN_FILE_MANAGER.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+REQ-LOGGING_SYSTEM:
+  type: REQ
+  name: Session-Based Logging System
+  category: Functional
+  status: Implemented
+  description: Session-Based Logging System
+  cross_references:
+    - ARCH-LOGGING_SYSTEM
+    - IMPL-LOGGER_MODULE
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-LOGGING_SYSTEM.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+REQ-LOGGING_CONFIG:
+  type: REQ
+  name: Configurable Logging Behavior
+  category: Functional
+  status: Implemented
+  description: Configurable Logging Behavior
+  cross_references:
+    - ARCH-LOGGING_CONFIG
+    - IMPL-LOGGER_CONFIG
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-LOGGING_CONFIG.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+REQ-LOGGING_SEMANTIC_TOKENS:
+  type: REQ
+  name: Semantic Token Integration in Logs
+  category: Functional
+  status: Implemented
+  description: Semantic Token Integration in Logs
+  cross_references:
+    - ARCH-LOGGING_SEMANTIC_TOKENS
+    - IMPL-LOGGER_TOKENS
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-LOGGING_SEMANTIC_TOKENS.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+REQ-FILE_MARKING_WEB:
+  type: REQ
+  name: Web-Based File Marking for Batch Operations
+  category: Functional
+  status: Active
+  description: Web-Based File Marking for Batch Operations
+  cross_references:
+    - ARCH-MARKING_STATE
+    - IMPL-FILE_MARKING
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-FILE_MARKING_WEB.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+REQ-BULK_FILE_OPS:
+  type: REQ
+  name: Bulk File Operations on Marked Files
+  category: Functional
+  status: Active
+  description: Bulk File Operations on Marked Files
+  cross_references:
+    - ARCH-BATCH_OPERATIONS
+    - IMPL-BULK_OPS
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-BULK_FILE_OPS.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+REQ-LINKED_PANES:
+  type: REQ
+  name: Linked Pane Navigation
+  category: Functional
+  status: Implemented
+  description: Linked Pane Navigation
+  cross_references:
+    - ARCH-LINKED_NAV
+    - IMPL-LINKED_NAV
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-LINKED_PANES.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+REQ-ADVANCED_NAV:
+  type: REQ
+  name: Advanced Navigation Features
+  category: Functional
+  status: Implemented
+  description: Advanced Navigation Features
+  cross_references:
+    - ARCH-DIRECTORY_HISTORY
+    - IMPL-DIR_HISTORY
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-ADVANCED_NAV.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+REQ-FILE_COMPARISON_VISUAL:
+  type: REQ
+  name: Visual Cross-Pane File Comparison
+  category: Functional
+  status: Implemented
+  description: Visual Cross-Pane File Comparison
+  cross_references:
+    - ARCH-COMPARISON_COLORING
+    - IMPL-COMPARISON_COLORS
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-FILE_COMPARISON_VISUAL.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+REQ-FILE_SORTING_ADVANCED:
+  type: REQ
+  name: Advanced Multi-Criteria File Sorting
+  category: Functional
+  status: Implemented
+  description: Advanced Multi-Criteria File Sorting
+  cross_references:
+    - ARCH-SORT_PIPELINE
+    - IMPL-SORT_FILTER
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-FILE_SORTING_ADVANCED.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+REQ-FILE_SEARCH:
+  type: REQ
+  name: File Search and Filtering
+  category: Functional
+  status: Implemented
+  description: File Search and Filtering
+  cross_references:
+    - ARCH-SEARCH_ENGINE
+    - IMPL-FILE_SEARCH
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-FILE_SEARCH.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+REQ-FILE_PREVIEW:
+  type: REQ
+  name: File Preview Panel
+  category: Functional
+  status: Implemented
+  description: File Preview Panel
+  cross_references:
+    - ARCH-PREVIEW_SYSTEM
+    - IMPL-FILE_PREVIEW
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-FILE_PREVIEW.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+REQ-KEYBOARD_SHORTCUTS_COMPLETE:
+  type: REQ
+  name: Comprehensive Keyboard Shortcut System
+  category: Functional
+  status: Implemented
+  description: Comprehensive Keyboard Shortcut System
+  cross_references:
+    - ARCH-KEYBIND_SYSTEM
+    - IMPL-KEYBINDS
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-KEYBOARD_SHORTCUTS_COMPLETE.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+REQ-MOUSE_INTERACTION:
+  type: REQ
+  name: Mouse and Touch Interaction
+  category: Functional
+  status: Implemented
+  description: Mouse and Touch Interaction
+  cross_references:
+    - ARCH-MOUSE_SUPPORT
+    - IMPL-MOUSE_SUPPORT
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-MOUSE_INTERACTION.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+REQ-FILES_CONFIG_COMPLETE:
+  type: REQ
+  name: Complete File Manager Configuration
+  category: Functional
+  status: Implemented
+  description: Complete File Manager Configuration
+  cross_references:
+    - ARCH-CONFIG_DRIVEN_UI
+    - IMPL-FILES_CONFIG_COMPLETE
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-FILES_CONFIG_COMPLETE.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+REQ-FILES_PERFORMANCE:
+  type: REQ
+  name: File Manager Performance Optimization
+  category: Non-Functional
+  status: Planned
+  description: File Manager Performance Optimization
+  cross_references:
+    - ARCH-PERFORMANCE_OPT
+    - IMPL-PERFORMANCE_OPT
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-FILES_PERFORMANCE.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+REQ-REACT_SSR_STABILITY:
+  type: REQ
+  name: React SSR Stability and Correctness
+  category: Non-Functional
+  status: Implemented
+  description: Next.js server-side rendering requires stable components with unique keys and SSR-safe code
+  cross_references: []
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-REACT_SSR_STABILITY.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Documented fixes for duplicate keys, SSR localStorage errors, and keybinding timing
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+REQ-TOOLBAR_SYSTEM:
+  type: REQ
+  name: File Manager Toolbar System
+  category: Core Functional
+  status: Implemented
+  description: Visual toolbar system providing discoverable access to all file manager operations
+  cross_references:
+    - ARCH-TOOLBAR_ACTIONS
+    - ARCH-TOOLBAR_LAYOUT
+    - IMPL-TOOLBAR_COMPONENT
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-TOOLBAR_SYSTEM.yaml
+  metadata:
+    registered: 2026-02-08T00:00:00.000Z
+    last_updated: 2026-02-08T00:00:00.000Z
+REQ-TOOLBAR_CONFIG:
+  type: REQ
+  name: Configuration-Driven Toolbar Customization
+  category: Core Functional
+  status: Planned
+  description: YAML-based configuration system for toolbar behavior, appearance, and content
+  cross_references:
+    - ARCH-TOOLBAR_LAYOUT
+    - IMPL-TOOLBAR_CONFIG
+    - REQ-TOOLBAR_SYSTEM
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-TOOLBAR_CONFIG.yaml
+  metadata:
+    registered: 2026-02-08T00:00:00.000Z
+    last_updated: 2026-02-08T00:00:00.000Z
+REQ-NSYNC_MULTI_TARGET:
+  type: REQ
+  name: Multi-Destination File Synchronization
+  category: Core Functional
+  status: Implemented
+  description: Sync files from source(s) to multiple destinations in parallel with progress tracking and error handling
+  cross_references:
+    - ARCH-NSYNC_INTEGRATION
+    - IMPL-NSYNC_ENGINE
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-NSYNC_MULTI_TARGET.yaml
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated: 2026-02-09T00:00:00.000Z
+REQ-HASH_COMPUTATION:
+  type: REQ
+  name: Hash Computation for File Verification
+  category: Core Functional
+  status: Implemented
+  description: Compute file hashes using BLAKE3, SHA-256, or XXH3 algorithms for comparison and verification
+  cross_references:
+    - IMPL-NSYNC_HASH
+    - REQ-VERIFY_DEST
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-HASH_COMPUTATION.yaml
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated: 2026-02-09T00:00:00.000Z
+REQ-VERIFY_DEST:
+  type: REQ
+  name: Destination Verification by Hash
+  category: Core Functional
+  status: Implemented
+  description: Optional verification of copied files by recomputing destination hash and comparing to source
+  cross_references:
+    - REQ-HASH_COMPUTATION
+    - IMPL-NSYNC_VERIFY
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-VERIFY_DEST.yaml
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated: 2026-02-09T00:00:00.000Z
+REQ-STORE_FAILURE_DETECT:
+  type: REQ
+  name: Store Failure Detection
+  category: Non-Functional
+  status: Implemented
+  description: Detect external drive or network share failures through error streak tracking
+  cross_references:
+    - IMPL-NSYNC_STORE
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-STORE_FAILURE_DETECT.yaml
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated: 2026-02-09T00:00:00.000Z
+REQ-COMPARE_METHODS:
+  type: REQ
+  name: File Comparison Methods
+  category: Core Functional
+  status: Implemented
+  description: Support multiple comparison methods (size, mtime, hash) to skip unchanged files during sync
+  cross_references:
+    - IMPL-NSYNC_COMPARE
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-COMPARE_METHODS.yaml
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated: 2026-02-09T00:00:00.000Z
+REQ-MOVE_SEMANTICS:
+  type: REQ
+  name: Safe Move Semantics
+  category: Core Functional
+  status: Implemented
+  description: Move files safely by deleting source only after ALL destinations succeed
+  cross_references:
+    - IMPL-NSYNC_ENGINE
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-MOVE_SEMANTICS.yaml
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated: 2026-02-09T00:00:00.000Z
+ARCH-NEXTJS_FRAMEWORK:
+  type: ARCH
+  name: Next.js 16.1 Framework Choice
+  status: Active
+  description: Next.js 16.1 Framework Choice
+  cross_references:
+    - IMPL-BUILD_SCRIPTS
+    - IMPL-HOME_PAGE
+    - IMPL-ROOT_LAYOUT
+    - REQ-APP_STRUCTURE
+    - REQ-BUILD_SYSTEM
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-NEXTJS_FRAMEWORK.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+ARCH-REACT_VERSION:
+  type: ARCH
+  name: React 19.2 with Server Components
+  status: Active
+  description: React 19.2 with Server Components
+  cross_references:
+    - IMPL-HOME_PAGE
+    - REQ-APP_STRUCTURE
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-REACT_VERSION.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+ARCH-TYPESCRIPT_LANG:
+  type: ARCH
+  name: TypeScript for Type Safety
+  status: Active
+  description: TypeScript for Type Safety
+  cross_references:
+    - REQ-TYPESCRIPT
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-TYPESCRIPT_LANG.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+ARCH-TAILWIND_V4:
+  type: ARCH
+  name: Tailwind CSS v4 Styling System
+  status: Active
+  description: Tailwind v4 provides utility-first CSS with excellent performance and developer experience
+  cross_references:
+    - REQ-TAILWIND_STYLING
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-TAILWIND_V4.yaml
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+ARCH-APP_ROUTER:
+  type: ARCH
+  name: Next.js App Router Pattern
+  status: Active
+  description: Next.js App Router Pattern
+  cross_references:
+    - IMPL-HOME_PAGE
+    - IMPL-ROOT_LAYOUT
+    - REQ-APP_STRUCTURE
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-APP_ROUTER.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+ARCH-LAYOUT_PATTERN:
+  type: ARCH
+  name: Root Layout Pattern
+  status: Active
+  description: Root Layout Pattern
+  cross_references:
+    - IMPL-ROOT_LAYOUT
+    - REQ-ROOT_LAYOUT
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-LAYOUT_PATTERN.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+ARCH-SERVER_COMPONENTS:
+  type: ARCH
+  name: Server Components as Default
+  status: Active
+  description: Server Components as Default
+  cross_references:
+    - IMPL-HOME_PAGE
+    - REQ-APP_STRUCTURE
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-SERVER_COMPONENTS.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+ARCH-CSS_VARIABLES:
+  type: ARCH
+  name: CSS Variables for Dark Mode Theming
+  status: Active
+  description: CSS Variables for Dark Mode Theming
+  cross_references:
+    - IMPL-DARK_MODE
+    - REQ-DARK_MODE
+    - REQ-GLOBAL_STYLES
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-CSS_VARIABLES.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+ARCH-RESPONSIVE_FIRST:
+  type: ARCH
+  name: Mobile-First Responsive Design
+  status: Active
+  description: Mobile-First Responsive Design
+  cross_references:
+    - IMPL-RESPONSIVE_CLASSES
+    - REQ-RESPONSIVE_DESIGN
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-RESPONSIVE_FIRST.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+ARCH-GOOGLE_FONTS:
+  type: ARCH
+  name: Google Fonts Optimization with next/font
+  status: Active
+  description: Google Fonts Optimization with next/font
+  cross_references:
+    - IMPL-FONT_LOADING
+    - REQ-FONT_SYSTEM
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-GOOGLE_FONTS.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+ARCH-CSS_VARIABLES_FONTS:
+  type: ARCH
+  name: CSS Variables for Font Assignment
+  status: Active
+  description: CSS Variables for Font Assignment
+  cross_references:
+    - IMPL-FONT_LOADING
+    - REQ-FONT_SYSTEM
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-CSS_VARIABLES_FONTS.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+ARCH-TEST_FRAMEWORK:
+  type: ARCH
+  name: Vitest Testing Framework
+  status: Active
+  description: Vitest Testing Framework
+  cross_references:
+    - IMPL-TEST_CONFIG
+    - IMPL-TEST_SETUP
+    - REQ-BUILD_SYSTEM
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-TEST_FRAMEWORK.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+ARCH-CONFIG_DRIVEN_UI:
+  type: ARCH
+  name: YAML Configuration-Driven UI Architecture
+  status: Active
+  description: YAML Configuration-Driven UI Architecture
+  cross_references:
+    - IMPL-CONFIG_LOADER
+    - IMPL-YAML_CONFIG
+    - REQ-CONFIG_DRIVEN_UI
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-CONFIG_DRIVEN_UI.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+ARCH-THEME_INJECTION:
+  type: ARCH
+  name: CSS Variable Injection from Theme Config
+  status: Active
+  description: CSS Variable Injection from Theme Config
+  cross_references:
+    - IMPL-THEME_INJECTION
+    - REQ-CONFIG_DRIVEN_UI
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-THEME_INJECTION.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+ARCH-CLASS_OVERRIDES:
+  type: ARCH
+  name: Tailwind Class Override System via Config
+  status: Active
+  description: Tailwind Class Override System via Config
+  cross_references:
+    - IMPL-CLASS_OVERRIDES
+    - REQ-CONFIG_DRIVEN_UI
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-CLASS_OVERRIDES.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+ARCH-CONFIG_DRIVEN_APPEARANCE:
+  type: ARCH
+  name: Config-Driven Appearance for All Pages
+  status: Active
+  description: Config-Driven Appearance for All Pages
+  cross_references:
+    - IMPL-CONFIG_DRIVEN_APPEARANCE
+    - REQ-CONFIG_DRIVEN_APPEARANCE
+    - REQ-CONFIG_DRIVEN_UI
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-CONFIG_DRIVEN_APPEARANCE.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+ARCH-YAML_DATA_STORAGE:
+  type: ARCH
+  name: YAML Data Storage Pattern
+  status: Active
+  description: YAML provides human-readable, version-controllable data storage
+  cross_references: []
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-YAML_DATA_STORAGE.yaml
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+ARCH-FILE_MANAGER_HIERARCHY:
+  type: ARCH
+  name: File Manager Component Hierarchy
+  status: Active
+  description: File Manager Component Hierarchy
+  cross_references:
+    - IMPL-FILE_MANAGER_PAGE
+    - IMPL-FILE_PANE
+    - IMPL-WORKSPACE_VIEW
+    - REQ-FILE_MANAGER_PAGE
+    - REQ-MULTI_PANE_LAYOUT
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-FILE_MANAGER_HIERARCHY.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+ARCH-LAYOUT_ALGORITHMS:
+  type: ARCH
+  name: Multi-Pane Layout Algorithms
+  status: Active
+  description: Multi-Pane Layout Algorithms
+  cross_references:
+    - IMPL-LAYOUT_CALCULATOR
+    - REQ-MULTI_PANE_LAYOUT
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-LAYOUT_ALGORITHMS.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+ARCH-COMPARISON_INDEX:
+  type: ARCH
+  name: Cross-Pane File Comparison Index
+  status: Active
+  description: Cross-Pane File Comparison Index
+  cross_references:
+    - IMPL-COMPARISON_INDEX
+    - REQ-CROSS_PANE_COMPARISON
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-COMPARISON_INDEX.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+ARCH-FILESYSTEM_ABSTRACTION:
+  type: ARCH
+  name: Server-Side Filesystem Abstraction
+  status: Active
+  description: Server-Side Filesystem Abstraction
+  cross_references:
+    - IMPL-FILES_DATA
+    - REQ-DIRECTORY_NAVIGATION
+    - REQ-FILE_OPERATIONS
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-FILESYSTEM_ABSTRACTION.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+ARCH-FILE_OPERATIONS_API:
+  type: ARCH
+  name: File Operations API Routes
+  status: Active
+  description: File Operations API Routes
+  cross_references:
+    - IMPL-FILES_API
+    - REQ-FILE_OPERATIONS
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-FILE_OPERATIONS_API.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+ARCH-SERVER_CLIENT_BOUNDARY:
+  type: ARCH
+  name: Server-Client Code Boundary Separation
+  status: Active
+  description: Server-Client Code Boundary Separation
+  cross_references:
+    - IMPL-FILE_PANE
+    - IMPL-FILES_API
+    - IMPL-FILES_DATA
+    - IMPL-FILES_UTILS
+    - IMPL-WORKSPACE_VIEW
+    - REQ-DIRECTORY_NAVIGATION
+    - REQ-FILE_MANAGER_PAGE
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-SERVER_CLIENT_BOUNDARY.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+ARCH-LOGGING_SYSTEM:
+  type: ARCH
+  name: Session-Based File Logging Architecture
+  status: Active
+  description: Session-Based File Logging Architecture
+  cross_references:
+    - IMPL-LOGGER_MODULE
+    - REQ-LOGGING_SYSTEM
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-LOGGING_SYSTEM.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+ARCH-LOGGING_CONFIG:
+  type: ARCH
+  name: Environment-Based Logging Configuration
+  status: Active
+  description: Environment-Based Logging Configuration
+  cross_references:
+    - IMPL-LOGGER_CONFIG
+    - REQ-LOGGING_CONFIG
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-LOGGING_CONFIG.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+ARCH-LOGGING_SEMANTIC_TOKENS:
+  type: ARCH
+  name: Semantic Token Integration in Logging
+  status: Active
+  description: Semantic Token Integration in Logging
+  cross_references:
+    - IMPL-LOGGER_TOKENS
+    - REQ-LOGGING_SEMANTIC_TOKENS
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-LOGGING_SEMANTIC_TOKENS.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+ARCH-MARKING_STATE:
+  type: ARCH
+  name: Client-Side Mark State Management
+  status: Active
+  description: Client-Side Mark State Management
+  cross_references:
+    - IMPL-FILE_MARKING
+    - REQ-FILE_MARKING_WEB
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-MARKING_STATE.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+ARCH-BATCH_OPERATIONS:
+  type: ARCH
+  name: Async Batch File Operations Architecture
+  status: Active
+  description: Async Batch File Operations Architecture
+  cross_references:
+    - IMPL-BULK_OPS
+    - REQ-BULK_FILE_OPS
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-BATCH_OPERATIONS.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+ARCH-DIRECTORY_HISTORY:
+  type: ARCH
+  name: Per-Directory Cursor Position History
+  status: Implemented
+  description: Per-Directory Cursor Position History
+  cross_references:
+    - IMPL-DIR_HISTORY
+    - REQ-ADVANCED_NAV
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-DIRECTORY_HISTORY.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+ARCH-COMPARISON_COLORING:
+  type: ARCH
+  name: Enhanced Cross-Pane Comparison Coloring
+  status: Implemented
+  description: Enhanced Cross-Pane Comparison Coloring
+  cross_references:
+    - IMPL-COMPARISON_COLORS
+    - REQ-FILE_COMPARISON_VISUAL
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-COMPARISON_COLORING.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+ARCH-PREVIEW_SYSTEM:
+  type: ARCH
+  name: Server-Side File Preview Rendering
+  status: Active
+  description: Server-Side File Preview Rendering
+  cross_references:
+    - IMPL-FILE_PREVIEW
+    - REQ-FILE_PREVIEW
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-PREVIEW_SYSTEM.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+ARCH-SORT_PIPELINE:
+  type: ARCH
+  name: Multi-Criteria Sort Pipeline Architecture
+  status: Active
+  description: Multi-Criteria Sort Pipeline Architecture
+  cross_references:
+    - IMPL-SORT_FILTER
+    - REQ-FILE_SORTING_ADVANCED
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-SORT_PIPELINE.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+ARCH-FILES_CONFIG_COMPLETE:
+  type: ARCH
+  name: Complete File Manager Configuration Architecture
+  status: Active
+  description: Complete configuration system enables full template customization without code changes
+  cross_references:
+    - REQ-FILES_CONFIG_COMPLETE
+    - REQ-CONFIG_DRIVEN_FILE_MANAGER
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-FILES_CONFIG_COMPLETE.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Phase 11 architecture complete
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass - 567 tests passing
+ARCH-MOUSE_SUPPORT:
+  type: ARCH
+  name: Mouse and Touch Interaction Architecture
+  status: Active
+  description: Web users expect mouse and touch interactions for accessibility and familiar UX
+  cross_references:
+    - REQ-MOUSE_INTERACTION
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-MOUSE_SUPPORT.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Phase 10 implementation complete
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass - 554 tests passing
+ARCH-PANE_LIFECYCLE:
+  type: ARCH
+  name: Multi-Pane Initialization and Management
+  status: Active
+  description: Multi-Pane Initialization and Management
+  cross_references:
+    - IMPL-FILE_MANAGER_PAGE
+    - IMPL-PANE_MANAGEMENT
+    - IMPL-WORKSPACE_VIEW
+    - REQ-FILES_CONFIG_COMPLETE
+    - REQ-MULTI_PANE_LAYOUT
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-PANE_LIFECYCLE.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+ARCH-PANE_REFRESH:
+  type: ARCH
+  name: Pane Refresh Architecture
+  status: Active
+  description: Pane Refresh Architecture
+  cross_references:
+    - IMPL-KEYBINDS
+    - IMPL-PANE_REFRESH
+    - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+    - REQ-MULTI_PANE_LAYOUT
+    - REQ-PANE_REFRESH
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-PANE_REFRESH.yaml
+  metadata:
+    registered: "2026-02-08"
+    last_updated: "2026-02-08"
+ARCH-LINKED_NAV:
+  type: ARCH
+  name: Linked Pane Navigation Architecture
+  status: Implemented
+  description: Linked Pane Navigation Architecture
+  cross_references:
+    - IMPL-LINKED_NAV
+    - REQ-LINKED_PANES
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-LINKED_NAV.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-08"
+ARCH-TOOLBAR_LAYOUT:
+  type: ARCH
+  name: Toolbar Positioning and Layout Architecture
+  status: Implemented
+  description: Three-tier toolbar system with configurable positioning and button grouping
+  cross_references:
+    - REQ-TOOLBAR_SYSTEM
+    - IMPL-TOOLBAR_COMPONENT
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-TOOLBAR_LAYOUT.yaml
+  metadata:
+    registered: 2026-02-08T00:00:00.000Z
+    last_updated: 2026-02-08T00:00:00.000Z
+ARCH-TOOLBAR_ACTIONS:
+  type: ARCH
+  name: Action-to-Button Mapping Architecture
+  status: Implemented
+  description: Derive toolbar button metadata from keybinding registry for consistency
+  cross_references:
+    - ARCH-KEYBIND_SYSTEM
+    - IMPL-TOOLBAR_COMPONENT
+    - REQ-TOOLBAR_SYSTEM
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-TOOLBAR_ACTIONS.yaml
+  metadata:
+    registered: 2026-02-08T00:00:00.000Z
+    last_updated: 2026-02-08T00:00:00.000Z
+IMPL-ROOT_LAYOUT:
+  type: IMPL
+  name: Root Layout Implementation
+  status: Active
+  description: Root Layout Implementation
+  cross_references:
+    - ARCH-LAYOUT_PATTERN
+    - REQ-ROOT_LAYOUT
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-ROOT_LAYOUT.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+IMPL-HOME_PAGE:
+  type: IMPL
+  name: Home Page Implementation
+  status: Active
+  description: Home Page Implementation
+  cross_references:
+    - ARCH-SERVER_COMPONENTS
+    - REQ-HOME_PAGE
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-HOME_PAGE.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+IMPL-DARK_MODE:
+  type: IMPL
+  name: Dark Mode Implementation
+  status: Active
+  description: Dark Mode Implementation
+  cross_references:
+    - ARCH-CSS_VARIABLES
+    - REQ-DARK_MODE
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-DARK_MODE.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+IMPL-FONT_LOADING:
+  type: IMPL
+  name: Font Loading Implementation
+  status: Active
+  description: Font Loading Implementation
+  cross_references:
+    - ARCH-CSS_VARIABLES_FONTS
+    - ARCH-GOOGLE_FONTS
+    - REQ-FONT_SYSTEM
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-FONT_LOADING.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+IMPL-IMAGE_OPTIMIZATION:
+  type: IMPL
+  name: Image Optimization Implementation
+  status: Active
+  description: Image Optimization Implementation
+  cross_references:
+    - ARCH-NEXTJS_FRAMEWORK
+    - REQ-BRANDING
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-IMAGE_OPTIMIZATION.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+IMPL-EXTERNAL_LINKS:
+  type: IMPL
+  name: External Links Implementation
+  status: Active
+  description: External Links Implementation
+  cross_references:
+    - ARCH-APP_ROUTER
+    - REQ-NAVIGATION_LINKS
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-EXTERNAL_LINKS.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+IMPL-METADATA:
+  type: IMPL
+  name: Metadata Implementation
+  status: Active
+  description: Metadata Implementation
+  cross_references:
+    - ARCH-NEXTJS_FRAMEWORK
+    - REQ-METADATA
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-METADATA.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+IMPL-RESPONSIVE_CLASSES:
+  type: IMPL
+  name: Responsive Classes Implementation
+  status: Active
+  description: Responsive Classes Implementation
+  cross_references:
+    - ARCH-RESPONSIVE_FIRST
+    - REQ-RESPONSIVE_DESIGN
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-RESPONSIVE_CLASSES.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+IMPL-FLEX_LAYOUT:
+  type: IMPL
+  name: Flexbox Layout Implementation
+  status: Active
+  description: Flexbox Layout Implementation
+  cross_references:
+    - ARCH-TAILWIND_V4
+    - REQ-ROOT_LAYOUT
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-FLEX_LAYOUT.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+IMPL-TEST_CONFIG:
+  type: IMPL
+  name: Vitest Configuration
+  status: Active
+  description: Vitest Configuration
+  cross_references:
+    - ARCH-TEST_FRAMEWORK
+    - REQ-BUILD_SYSTEM
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-TEST_CONFIG.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+IMPL-BUILD_SCRIPTS:
+  type: IMPL
+  name: Build Scripts Implementation
+  status: Active
+  description: Build Scripts Implementation
+  cross_references:
+    - ARCH-NEXTJS_FRAMEWORK
+    - REQ-BUILD_SYSTEM
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-BUILD_SCRIPTS.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+IMPL-TEST_SETUP:
+  type: IMPL
+  name: Test Setup Implementation
+  status: Active
+  description: Test Setup Implementation
+  cross_references:
+    - ARCH-TEST_FRAMEWORK
+    - REQ-BUILD_SYSTEM
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-TEST_SETUP.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+IMPL-YAML_CONFIG:
+  type: IMPL
+  name: YAML Configuration Structure
+  status: Active
+  description: YAML Configuration Structure
+  cross_references:
+    - ARCH-CONFIG_DRIVEN_UI
+    - REQ-CONFIG_DRIVEN_UI
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-YAML_CONFIG.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+IMPL-CONFIG_LOADER:
+  type: IMPL
+  name: Configuration Loader Module
+  status: Active
+  description: Configuration Loader Module
+  cross_references:
+    - ARCH-CONFIG_DRIVEN_UI
+    - REQ-CONFIG_DRIVEN_UI
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-CONFIG_LOADER.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+IMPL-THEME_INJECTION:
+  type: IMPL
+  name: Theme Injection Implementation
+  status: Active
+  description: Theme Injection Implementation
+  cross_references:
+    - ARCH-THEME_INJECTION
+    - REQ-CONFIG_DRIVEN_UI
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-THEME_INJECTION.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+IMPL-CLASS_OVERRIDES:
+  type: IMPL
+  name: Class Overrides Implementation
+  status: Active
+  description: Class Overrides Implementation
+  cross_references:
+    - ARCH-CLASS_OVERRIDES
+    - REQ-CONFIG_DRIVEN_UI
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-CLASS_OVERRIDES.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+IMPL-CONFIG_DRIVEN_APPEARANCE:
+  type: IMPL
+  name: Config-Driven Appearance Implementation
+  status: Active
+  description: Config-Driven Appearance Implementation
+  cross_references:
+    - ARCH-CONFIG_DRIVEN_APPEARANCE
+    - REQ-CONFIG_DRIVEN_APPEARANCE
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-CONFIG_DRIVEN_APPEARANCE.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+IMPL-GLOBAL_ERROR_BOUNDARY:
+  type: IMPL
+  name: Global Error Boundary Implementation
+  status: Active
+  description: Global Error Boundary Implementation
+  cross_references:
+    - ARCH-NEXTJS_FRAMEWORK
+    - REQ-ERROR_HANDLING
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-GLOBAL_ERROR_BOUNDARY.yaml
+  metadata:
+    registered: "2025-11-08"
+    last_updated: "2026-02-06"
+IMPL-FILE_MANAGER_PAGE:
+  type: IMPL
+  name: File Manager Page Implementation
+  status: Implemented
+  description: File Manager Page Implementation
+  cross_references:
+    - ARCH-FILE_MANAGER_HIERARCHY
+    - REQ-FILE_MANAGER_PAGE
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-FILE_MANAGER_PAGE.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+IMPL-WORKSPACE_VIEW:
+  type: IMPL
+  name: Workspace View Client Component with Stable React Keys
+  status: Implemented
+  description: Workspace View Client Component with Stable React Keys
+  cross_references:
+    - ARCH-FILE_MANAGER_HIERARCHY
+    - IMPL-FILES_API
+    - REQ-KEYBOARD_NAVIGATION
+    - REQ-MULTI_PANE_LAYOUT
+    - REQ-REACT_SSR_STABILITY
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-WORKSPACE_VIEW.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+IMPL-FILE_PANE:
+  type: IMPL
+  name: File Pane Component
+  status: Implemented
+  description: File Pane Component
+  cross_references:
+    - ARCH-FILE_MANAGER_HIERARCHY
+    - REQ-DIRECTORY_NAVIGATION
+    - REQ-FILE_LISTING
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-FILE_PANE.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+IMPL-FILES_DATA:
+  type: IMPL
+  name: Filesystem Data Layer
+  status: Implemented
+  description: Filesystem Data Layer
+  cross_references:
+    - ARCH-FILESYSTEM_ABSTRACTION
+    - REQ-DIRECTORY_NAVIGATION
+    - REQ-FILE_OPERATIONS
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-FILES_DATA.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+IMPL-LAYOUT_CALCULATOR:
+  type: IMPL
+  name: Layout Calculation Algorithms
+  status: Implemented
+  description: Layout Calculation Algorithms
+  cross_references:
+    - ARCH-LAYOUT_ALGORITHMS
+    - REQ-MULTI_PANE_LAYOUT
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-LAYOUT_CALCULATOR.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+IMPL-COMPARISON_INDEX:
+  type: IMPL
+  name: Comparison Index Implementation
+  status: Implemented
+  description: Comparison Index Implementation
+  cross_references:
+    - ARCH-COMPARISON_INDEX
+    - REQ-CROSS_PANE_COMPARISON
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-COMPARISON_INDEX.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+IMPL-FILES_API:
+  type: IMPL
+  name: File Operations API Routes
+  status: Implemented
+  description: File Operations API Routes
+  cross_references:
+    - ARCH-FILE_OPERATIONS_API
+    - IMPL-LOGGER_MODULE
+    - REQ-DIRECTORY_NAVIGATION
+    - REQ-FILE_OPERATIONS
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-FILES_API.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+IMPL-FILES_CONFIG:
+  type: IMPL
+  name: Files Configuration Loader
+  status: Implemented
+  description: Files Configuration Loader
+  cross_references:
+    - ARCH-CONFIG_DRIVEN_UI
+    - REQ-CONFIG_DRIVEN_FILE_MANAGER
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-FILES_CONFIG.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+IMPL-FILES_UTILS:
+  type: IMPL
+  name: Client-Safe File Utilities
+  status: Implemented
+  description: Client-Safe File Utilities
+  cross_references:
+    - ARCH-FILESYSTEM_ABSTRACTION
+    - REQ-FILE_LISTING
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-FILES_UTILS.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+IMPL-LOGGER_MODULE:
+  type: IMPL
+  name: Logger Module Implementation
+  status: Implemented
+  description: Logger Module Implementation
+  cross_references:
+    - ARCH-LOGGING_SYSTEM
+    - REQ-LOGGING_SYSTEM
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-LOGGER_MODULE.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+IMPL-LOGGER_CONFIG:
+  type: IMPL
+  name: Logger Configuration Implementation
+  status: Implemented
+  description: Logger Configuration Implementation
+  cross_references:
+    - ARCH-LOGGING_CONFIG
+    - REQ-LOGGING_CONFIG
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-LOGGER_CONFIG.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+IMPL-LOGGER_TOKENS:
+  type: IMPL
+  name: Semantic Token Integration Implementation
+  status: Implemented
+  description: Semantic Token Integration Implementation
+  cross_references:
+    - ARCH-LOGGING_SEMANTIC_TOKENS
+    - REQ-LOGGING_SEMANTIC_TOKENS
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-LOGGER_TOKENS.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+IMPL-FILE_MARKING:
+  type: IMPL
+  name: React State Mark Management
+  status: Active
+  description: React State Mark Management
+  cross_references:
+    - ARCH-MARKING_STATE
+    - REQ-FILE_MARKING_WEB
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-FILE_MARKING.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+IMPL-BULK_OPS:
+  type: IMPL
+  name: Parallel Bulk Operations with Progress
+  status: Active
+  description: Parallel Bulk Operations with Progress
+  cross_references:
+    - ARCH-BATCH_OPERATIONS
+    - REQ-BULK_FILE_OPS
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-BULK_OPS.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+IMPL-OVERWRITE_PROMPT:
+  type: IMPL
+  name: Overwrite Confirmation with File Comparison
+  status: Active
+  description: Users need to see existing file attributes and comparison before overwriting
+  cross_references:
+    - ARCH-BATCH_OPERATIONS
+    - IMPL-BULK_OPS
+    - REQ-BULK_FILE_OPS
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-OVERWRITE_PROMPT.yaml
+  metadata:
+    created:
+      date: 2026-02-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-08T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-08T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-SORT_FILTER:
+  type: IMPL
+  name: Client-Side Sort and Filter Functions
+  status: Implemented
+  description: Client-Side Sort and Filter Functions
+  cross_references:
+    - REQ-FILE_SORTING_ADVANCED
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-SORT_FILTER.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+IMPL-DIR_HISTORY:
+  type: IMPL
+  name: Directory History with localStorage Bookmarks
+  status: Implemented
+  description: Directory History with localStorage Bookmarks
+  cross_references:
+    - ARCH-DIRECTORY_HISTORY
+    - REQ-ADVANCED_NAV
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-DIR_HISTORY.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+IMPL-COMPARISON_COLORS:
+  type: IMPL
+  name: CSS Class-Based Comparison Coloring
+  status: Implemented
+  description: CSS Class-Based Comparison Coloring
+  cross_references:
+    - ARCH-COMPARISON_COLORING
+    - REQ-FILE_COMPARISON_VISUAL
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-COMPARISON_COLORS.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+IMPL-FILE_SEARCH:
+  type: IMPL
+  name: Dual-Mode Search Implementation with SSR Guards
+  status: Implemented
+  description: Dual-Mode Search Implementation with SSR Guards
+  cross_references:
+    - ARCH-SEARCH_ENGINE
+    - REQ-FILE_SEARCH
+    - REQ-REACT_SSR_STABILITY
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-FILE_SEARCH.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+IMPL-FILE_PREVIEW:
+  type: IMPL
+  name: Server-Side Preview API Routes
+  status: Implemented
+  description: Server-Side Preview API Routes
+  cross_references:
+    - ARCH-PREVIEW_SYSTEM
+    - REQ-FILE_PREVIEW
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-FILE_PREVIEW.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+IMPL-KEYBINDS:
+  type: IMPL
+  name: Keybinding Registry and Dispatcher
+  status: Implemented
+  description: Keybinding Registry and Dispatcher
+  cross_references:
+    - ARCH-KEYBIND_SYSTEM
+    - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+    - REQ-REACT_SSR_STABILITY
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-KEYBINDS.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-08"
+IMPL-MOUSE_SUPPORT:
+  type: IMPL
+  name: Mouse and Touch Interaction Implementation
+  status: Active
+  description: Mouse and Touch Interaction Implementation
+  cross_references:
+    - ARCH-MOUSE_SUPPORT
+    - REQ-MOUSE_INTERACTION
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-MOUSE_SUPPORT.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-08"
+IMPL-FILES_CONFIG_COMPLETE:
+  type: IMPL
+  name: Complete File Manager Configuration Implementation
+  status: Active
+  description: Complete File Manager Configuration Implementation
+  cross_references:
+    - ARCH-CONFIG_DRIVEN_UI
+    - REQ-CONFIG_DRIVEN_FILE_MANAGER
+    - REQ-FILES_CONFIG_COMPLETE
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-FILES_CONFIG_COMPLETE.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+IMPL-PANE_MANAGEMENT:
+  type: IMPL
+  name: Runtime Pane Management Controls
+  status: Active
+  description: Runtime Pane Management Controls
+  cross_references:
+    - ARCH-KEYBIND_SYSTEM
+    - ARCH-PANE_LIFECYCLE
+    - REQ-FILES_CONFIG_COMPLETE
+    - REQ-MULTI_PANE_LAYOUT
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-PANE_MANAGEMENT.yaml
+  metadata:
+    registered: "2026-02-07"
+    last_updated: "2026-02-07"
+IMPL-PANE_REFRESH:
+  type: IMPL
+  name: Manual Pane Refresh Implementation
+  status: Active
+  description: Manual Pane Refresh Implementation
+  cross_references:
+    - ARCH-KEYBIND_SYSTEM
+    - ARCH-PANE_REFRESH
+    - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+    - REQ-PANE_REFRESH
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-PANE_REFRESH.yaml
+  metadata:
+    registered: "2026-02-08"
+    last_updated: "2026-02-08"
+IMPL-FILE_COLUMN_CONFIG:
+  type: IMPL
+  name: Configurable File Column Display
+  status: Active
+  description: Dynamic column configuration for file pane display with configurable order, visibility, and time formatting (YYYY-MM-DD HH:MM:SS)
+  cross_references:
+    - ARCH-CONFIG_DRIVEN_UI
+    - IMPL-FILE_AGE_DISPLAY
+    - IMPL-FILE_PANE
+    - IMPL-FILES_CONFIG
+    - REQ-CONFIG_DRIVEN_FILE_MANAGER
+    - REQ-FILE_LISTING
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-FILE_COLUMN_CONFIG.yaml
+  metadata:
+    registered: "2026-02-08"
+    last_updated: "2026-02-08"
+IMPL-RENAME_DIALOG:
+  type: IMPL
+  name: Rename File Dialog and R-Key Handler
+  status: Active
+  description: Rename modal and wiring for R key and context menu Rename; implements file.rename action
+  cross_references:
+    - ARCH-KEYBIND_SYSTEM
+    - IMPL-KEYBINDS
+    - IMPL-MOUSE_SUPPORT
+    - REQ-FILE_OPERATIONS
+    - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+    - REQ-MOUSE_INTERACTION
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-RENAME_DIALOG.yaml
+  metadata:
+    registered: "2026-02-08"
+    last_updated: "2026-02-08"
+IMPL-NSYNC_ENGINE:
+  type: IMPL
+  name: Sync Engine Core Implementation
+  status: Active
+  description: Core sync engine orchestrating multi-destination file synchronization with observer pattern
+  cross_references:
+    - ARCH-NSYNC_INTEGRATION
+    - REQ-MOVE_SEMANTICS
+    - REQ-NSYNC_MULTI_TARGET
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-NSYNC_ENGINE.yaml
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated: 2026-02-09T00:00:00.000Z
+IMPL-NSYNC_TYPE_SAFETY:
+  type: IMPL
+  name: TypeScript Type Safety for Node.js Types
+  status: Active
+  description: Type guards and conversions to handle Node.js bigint file sizes and stream types
+  cross_references:
+    - IMPL-NSYNC_ENGINE
+    - IMPL-NSYNC_HASH
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-NSYNC_TYPE_SAFETY.yaml
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated: 2026-02-09T00:00:00.000Z
+IMPL-CURSOR_BOUNDS_CHECK:
+  type: IMPL
+  name: Cursor Bounds Validation Fix
+  status: Active
+  description: Fix guard condition in handleNavigate to validate cursor is non-negative before array access
+  cross_references:
+    - IMPL-WORKSPACE_VIEW
+    - IMPL-DIR_HISTORY
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-CURSOR_BOUNDS_CHECK.yaml
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated: 2026-02-09T00:00:00.000Z
+IMPL-COPY_ATTRS:
+  type: IMPL
+  name: Copy Preserve File Attributes
+  status: Active
+  description: Preserve mode and atime/mtime on destination after copy where possible (best-effort)
+  cross_references:
+    - IMPL-FILES_DATA
+    - IMPL-NSYNC_OPERATIONS
+    - REQ-COPY_OPERATIONS
+    - REQ-FILE_OPERATIONS
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-COPY_ATTRS.yaml
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated: 2026-02-09T00:00:00.000Z
+IMPL-NSYNC_HASH:
+  type: IMPL
+  name: Hash Computation Implementation
+  status: Active
+  description: Hash computation with BLAKE3, SHA-256, XXH3 support and streaming for large files
+  cross_references:
+    - REQ-HASH_COMPUTATION
+    - ARCH-HASH_VERIFICATION
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-NSYNC_HASH.yaml
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated: 2026-02-09T00:00:00.000Z
+IMPL-NSYNC_VERIFY:
+  type: IMPL
+  name: Destination Verification Implementation
+  status: Active
+  description: Destination file verification by recomputing hash and comparing to source
+  cross_references:
+    - REQ-VERIFY_DEST
+    - ARCH-HASH_VERIFICATION
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-NSYNC_VERIFY.yaml
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated: 2026-02-09T00:00:00.000Z
+IMPL-NSYNC_STORE:
+  type: IMPL
+  name: Store Monitoring Implementation
+  status: Active
+  description: Simplified store failure detection using error streak tracking per destination
+  cross_references:
+    - REQ-STORE_FAILURE_DETECT
+    - ARCH-STORE_MONITORING
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-NSYNC_STORE.yaml
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated: 2026-02-09T00:00:00.000Z
+IMPL-NSYNC_COMPARE:
+  type: IMPL
+  name: File Comparison Implementation
+  status: Active
+  description: File comparison using size, mtime, hash methods to skip unchanged files
+  cross_references:
+    - REQ-COMPARE_METHODS
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-NSYNC_COMPARE.yaml
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated: 2026-02-09T00:00:00.000Z
+IMPL-NSYNC_OPERATIONS:
+  type: IMPL
+  name: File Operations Wrappers
+  status: Active
+  description: Copy, move, delete operation wrappers ensuring destination directories exist
+  cross_references:
+    - REQ-NSYNC_MULTI_TARGET
+    - REQ-MOVE_SEMANTICS
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-NSYNC_OPERATIONS.yaml
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated: 2026-02-09T00:00:00.000Z
+ARCH-SEARCH_ENGINE:
+  type: ARCH
+  name: SEARCH ENGINE
+  status: Active
+  description: Implement a hybrid search system with **client-side incremental file finding** and **server-side content searching**, us
+  cross_references:
+    - REQ-FILE_SEARCH
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-SEARCH_ENGINE.yaml
+  metadata:
+    created:
+      date: "2026-02-07"
+      author: migration
+ARCH-KEYBIND_SYSTEM:
+  type: ARCH
+  name: KEYBIND SYSTEM
+  status: Active
+  description: Implement a **configuration-driven keyboard shortcut system** with a centralized registry, event-driven architecture, an
+  cross_references:
+    - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+    - REQ-KEYBOARD_NAVIGATION
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-KEYBIND_SYSTEM.yaml
+  metadata:
+    created:
+      date: "2026-02-07"
+      author: migration
+IMPL-LINKED_NAV:
+  type: IMPL
+  name: Linked Pane Navigation Implementation
+  status: Active
+  description: Add linkedMode boolean state to WorkspaceView, modify handleNavigate to sync with auto-disable, modify handleCursorMove for filename sync, modify handleSortChange for all-pane sync, refactor parent navigation to navigateToParent(paneIndex), add Parent .. button in FilePane header, add visual indicators in footer and pane headers, register link.toggle keybinding
+  cross_references:
+    - ARCH-LINKED_NAV
+    - REQ-LINKED_PANES
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-LINKED_NAV.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-09T00:00:00.000Z
+      author: AI Agent
+      reason: Added Parent .. button in FilePane header with onNavigateParent callback; refactored parent navigation to navigateToParent(paneIndex) supporting any pane index
+    last_validated:
+      date: 2026-02-08T00:00:00.000Z
+      validator: AI Agent
+      result: pass - manual testing confirmed all panes navigate to parent when linked
+      author: AI Agent
+      reason: Complete implementation with cursor sync, sort sync, auto-disable, and comprehensive test coverage
+ARCH-NSYNC_INTEGRATION:
+  type: ARCH
+  name: Nsync Integration Architecture
+  status: Active
+  description: Architecture for integrating multi-destination sync engine into nx1 file manager
+  cross_references:
+    - REQ-NSYNC_MULTI_TARGET
+    - IMPL-NSYNC_ENGINE
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-NSYNC_INTEGRATION.yaml
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated: 2026-02-09T00:00:00.000Z
+ARCH-HASH_VERIFICATION:
+  type: ARCH
+  name: Hash Verification Design
+  status: Active
+  description: Design for optional hash-based file verification using multiple algorithms
+  cross_references:
+    - IMPL-NSYNC_HASH
+    - REQ-HASH_COMPUTATION
+    - REQ-VERIFY_DEST
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-HASH_VERIFICATION.yaml
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated: 2026-02-09T00:00:00.000Z
+ARCH-STORE_MONITORING:
+  type: ARCH
+  name: Store Monitoring Design
+  status: Active
+  description: Simplified store monitoring using error streak tracking instead of device IDs
+  cross_references:
+    - REQ-STORE_FAILURE_DETECT
+    - IMPL-NSYNC_STORE
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-STORE_MONITORING.yaml
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated: 2026-02-09T00:00:00.000Z
+ARCH-PERFORMANCE_OPT:
+  type: ARCH
+  name: Performance Optimization Architecture
+  status: Planned
+  description: Virtual scrolling, lazy metadata, debounced comparison index, optimized sort
+  cross_references:
+    - REQ-FILES_PERFORMANCE
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-PERFORMANCE_OPT.yaml
+IMPL-PERFORMANCE_OPT:
+  type: IMPL
+  name: IMPL PERFORMANCE_OPT
+  status: Planned
+  description: IMPL PERFORMANCE_OPT
+  cross_references:
+    - REQ-FILES_PERFORMANCE
+    - ARCH-PERFORMANCE_OPT
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-PERFORMANCE_OPT.yaml
+  metadata:
+    registered: 2026-02-08T00:00:00.000Z
+    last_updated: 2026-02-08T00:00:00.000Z
+IMPL-TOOLBAR_COMPONENT:
+  type: IMPL
+  name: Toolbar React Component Implementation
+  status: Implemented
+  description: React components for toolbar system including base and specialized toolbars with compact icon-only button design
+  cross_references:
+    - ARCH-TOOLBAR_ACTIONS
+    - ARCH-TOOLBAR_LAYOUT
+    - REQ-TOOLBAR_SYSTEM
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-TOOLBAR_COMPONENT.yaml
+  metadata:
+    registered: 2026-02-08T00:00:00.000Z
+    last_updated: 2026-02-08T00:00:00.000Z
+IMPL-TOOLBAR_CONFIG:
+  type: IMPL
+  name: Toolbar Configuration Loading
+  status: Active
+  description: Configuration types and loading utilities for toolbar system
+  cross_references:
+    - REQ-TOOLBAR_CONFIG
+    - ARCH-TOOLBAR_LAYOUT
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-TOOLBAR_CONFIG.yaml
+  metadata:
+    registered: 2026-02-08T00:00:00.000Z
+    last_updated: 2026-02-08T00:00:00.000Z
+REQ-COPY_OPERATIONS:
+  type: REQ
+  name: Copy Operations Preserve File Attributes
+  category: Functional
+  status: Active
+  description: Copied files should preserve mode and timestamps where the platform allows
+  cross_references:
+    - REQ-FILE_OPERATIONS
+    - IMPL-COPY_ATTRS
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-COPY_OPERATIONS.yaml
+  metadata:
+    created:
+      date: "2026-02-09"
+      author: migration

@@ -1,6 +1,6 @@
 # Goful Feature Transfer - Quick Reference
 
-**Quick Links**: [Full Plan](GOFUL_FEATURE_TRANSFER.md) | [Summary](GOFUL_TRANSFER_SUMMARY.md) | [Tasks](../stdd/tasks.md)
+**Quick Links**: [Full Plan](GOFUL_FEATURE_TRANSFER.md) | [Summary](GOFUL_TRANSFER_SUMMARY.md) | [TIED requirements](../tied/requirements.yaml)
 
 ---
 

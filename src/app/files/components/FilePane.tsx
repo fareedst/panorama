@@ -1,4 +1,4 @@
-// [IMPL-FILE_PANE] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-FILE_LISTING] [REQ-DIRECTORY_NAVIGATION]
+// [IMPL-FILE_PANE] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-FILE_LISTING] [REQ-DIRECTORY_NAVIGATION]: Top-level File Pane Component: Client component renders file list with cursor, marks, comparison colors, and proper date conversion
 // [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED]
 // [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION]
 // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] [ARCH-LINKED_NAV]
@@ -357,6 +357,7 @@ export default function FilePane({
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDragDrop}
+      // [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION]: switch focusIndex when user clicks pane via FilePane onFocusRequest onMouseDown
       onMouseDown={() => onFocusRequest?.()}
     >
       {/* Header with path */}

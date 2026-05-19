@@ -1,0 +1,60 @@
+# ARCH detail — ARCH-FILESYSTEM_ABSTRACTION
+ARCH-FILESYSTEM_ABSTRACTION:
+  name: Server-Side Filesystem Abstraction
+  status: Active
+  cross_references:
+    - REQ-DIRECTORY_NAVIGATION
+    - REQ-FILE_OPERATIONS
+  decision: Data layer module (files.data.ts) wraps Node.js fs/promises API
+  rationale:
+    why: Server-side filesystem access via data layer ensures security and follows Next.js best practices
+    problems_solved:
+      - Client-side filesystem access impossible
+      - Difficult testing
+      - Security vulnerabilities from direct fs access
+    benefits:
+      - Consistent API
+      - Secure server-side access
+      - Testable with mocks
+  alternatives_considered:
+    - name: Client-side File System Access API
+      pros:
+        - Native browser support
+      cons:
+        - Limited to user's local files
+        - Not server filesystem
+      rejected_reason: Requirement is server filesystem browsing
+  implementation_approach:
+    summary: Data layer module (files.data.ts) wraps Node.js fs/promises API
+    details:
+      - Error handling for permissions, non-existent paths
+      - Path validation to prevent directory traversal
+      - Server-only module (not imported by client components)
+      - Use fs/promises for async operations
+  traceability:
+    requirements:
+      - REQ-DIRECTORY_NAVIGATION
+      - REQ-FILE_OPERATIONS
+    implementation:
+      - IMPL-FILES_DATA
+    tests: []
+    code_annotations:
+      - ARCH-FILESYSTEM_ABSTRACTION
+  related_decisions:
+    depends_on:
+      - ARCH-NEXTJS_FRAMEWORK
+    informs:
+      - IMPL-FILES_DATA
+    see_also: []
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

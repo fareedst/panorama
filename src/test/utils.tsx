@@ -1,4 +1,4 @@
-// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]
+// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: Top-level Test Setup Implementation: Create test setup file with utilities and mocks
 // Test utilities for React component testing. Provides custom render function
 // that can be extended with providers (theme, router, etc.) as needed.
 // Re-exports Testing Library for convenient single-import usage.

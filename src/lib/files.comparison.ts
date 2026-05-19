@@ -1,4 +1,4 @@
-// [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]
+// [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: Top-level CSS Class-Based Comparison Coloring: Enhance ComparisonIndex, apply CSS classes from theme
 // Enhanced comparison index logic (client-safe, no Node.js imports)
 
 import type {

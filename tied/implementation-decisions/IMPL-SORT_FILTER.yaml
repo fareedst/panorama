@@ -1,0 +1,56 @@
+IMPL-SORT_FILTER:
+  name: Client-Side Sort and Filter Functions
+  status: Implemented
+  cross_references:
+    - REQ-FILE_SORTING_ADVANCED
+  decision: Sort functions in files.utils.ts with comparator dispatch
+  rationale:
+    why: Client-side sorting avoids server round-trips for instant feedback
+    problems_solved:
+      - Server sorting adds latency
+      - Cannot sort without network
+    benefits:
+      - Directory prioritization
+      - Instant sort updates
+      - Multiple criteria support
+  implementation_approach:
+    summary: Sort functions in files.utils.ts with comparator dispatch
+    details:
+      - 'Comparators: byName, bySize, byTime, byExtension'
+      - 'Directory priority: if (dirsFirst && a.isDir !== b.isDir)'
+      - Cursor preservation via filename match after sort
+      - sortFiles(files, sortBy, ascending, dirsFirst)
+  code_locations:
+    files:
+      - path: src/lib/files.utils.ts
+        description: Sort and filter utilities
+        lines: []
+    functions:
+      - name: sortFiles
+        file: src/lib/files.utils.ts
+        description: Main sort function with criteria dispatch
+  traceability:
+    architecture:
+      - ARCH-SORT_PIPELINE
+    requirements:
+      - REQ-FILE_SORTING_ADVANCED
+    tests: []
+    code_annotations:
+      - IMPL-SORT_FILTER
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-FILES_UTILS
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T16:06:42.636Z"
+      author: AI Agent
+      reason: IMPL essence_pseudocode retrofit all 58
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

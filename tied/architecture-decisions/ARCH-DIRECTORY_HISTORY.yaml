@@ -1,0 +1,65 @@
+# ARCH detail — ARCH-DIRECTORY_HISTORY
+ARCH-DIRECTORY_HISTORY:
+  name: Per-Directory Cursor Position History
+  status: Implemented
+  cross_references:
+    - REQ-ADVANCED_NAV
+  decision: Maintain user context when navigating directory trees using per-directory cursor position history with filename-based restoration that survives file changes.
+  rationale:
+    why: Maintain user context when navigating directory trees
+    problems_solved:
+      - Disorientation in deep directory trees
+      - Lost cursor position when revisiting directories
+      - No breadcrumb on parent navigation
+    benefits:
+      - Filename-based restoration survives file changes
+      - Parent navigation shows previous subdirectory
+      - Separate history per pane
+      - Session-scoped history (simple Map storage)
+  alternatives_considered:
+    - name: Index-based history
+      pros:
+        - Simpler storage (just number)
+      cons:
+        - Breaks when files added/removed
+      rejected_reason: Filename-based more robust
+    - name: localStorage persistence
+      pros:
+        - Survives page refresh
+      cons:
+        - Complexity, stale data issues
+      rejected_reason: Session-only sufficient
+  implementation_approach:
+    summary: Map<pane_id, Map<path, {cursor, scrollTop}>> in React state
+    details:
+      - 'Parent navigation: search for previous dir name in parent list'
+      - LRU cache for recent directories (last 20)
+      - Restore cursor position on revisit by filename match
+      - Save cursor position before directory change
+  traceability:
+    requirements:
+      - REQ-ADVANCED_NAV
+    implementation:
+      - IMPL-DIR_HISTORY
+    tests: []
+    code_annotations:
+      - ARCH-DIRECTORY_HISTORY
+  related_decisions:
+    depends_on:
+      - REQ-ADVANCED_NAV
+    informs:
+      - IMPL-DIR_HISTORY
+    see_also:
+      - ARCH-MARKING_STATE
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation - adapted from Goful ARCH-DIRECTORY_HISTORY
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

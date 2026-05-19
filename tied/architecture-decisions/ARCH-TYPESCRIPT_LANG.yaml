@@ -1,0 +1,55 @@
+# ARCH detail — ARCH-TYPESCRIPT_LANG
+ARCH-TYPESCRIPT_LANG:
+  name: TypeScript for Type Safety
+  status: Active
+  cross_references:
+    - REQ-TYPESCRIPT
+  decision: Use TypeScript with strict mode enabled
+  rationale:
+    why: TypeScript provides compile-time type checking and improved developer experience
+    problems_solved:
+      - Lack of type safety
+      - Poor IDE support
+      - Runtime type errors
+    benefits:
+      - Better IDE intelligence
+      - Compile-time error detection
+      - Easier refactoring
+      - Self-documenting code
+  alternatives_considered:
+    - name: JavaScript with JSDoc
+      pros:
+        - No compilation step
+      cons:
+        - Weaker type checking
+      rejected_reason: TypeScript provides stronger guarantees
+  implementation_approach:
+    summary: Use TypeScript with strict mode enabled
+    details:
+      - Enable strict mode in tsconfig.json
+      - Type all components and functions
+      - Use Next.js types
+  traceability:
+    requirements:
+      - REQ-TYPESCRIPT
+    implementation: []
+    tests: []
+    code_annotations:
+      - REQ-TYPESCRIPT
+  related_decisions:
+    depends_on:
+      - REQ-TYPESCRIPT
+    informs: []
+    see_also: []
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass

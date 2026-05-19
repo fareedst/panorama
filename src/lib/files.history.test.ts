@@ -11,6 +11,8 @@ describe("DirectoryHistory [REQ-ADVANCED_NAV]", () => {
     history = new DirectoryHistory();
   });
 
+  // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]: {id, path, label, created}[]
+
   describe("saveCursorPosition [IMPL-DIR_HISTORY]", () => {
     it("should save cursor position for directory", () => {
       history.saveCursorPosition(0, "/home/user", "file.txt", 5, 100);
@@ -48,6 +50,12 @@ describe("DirectoryHistory [REQ-ADVANCED_NAV]", () => {
       expect(pane1.cursor).toBe(3);
     });
   });
+
+  // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]: Map<paneId, Map<path, {cursor, scrollTop, timestamp}>>
+
+  // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]: Map<paneId, Map<path, {cursor, scrollTop, timestamp}>>
+
+  // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]: Map<paneId, Map<path, {cursor, scrollTop, timestamp}>>
 
   describe("restoreCursorPosition [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY]", () => {
     it("should restore cursor by filename when available", () => {

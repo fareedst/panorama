@@ -1,0 +1,59 @@
+# REQ detail — REQ-FILE_COMPARISON_VISUAL
+REQ-FILE_COMPARISON_VISUAL:
+  name: Visual Cross-Pane File Comparison
+  category: Functional
+  priority: P1
+  status: Implemented
+  description: Files with same names across panes are automatically color-coded for visual comparison. Size comparison uses colors for equal/smallest/largest. Time comparison uses colors for equal/earliest/latest. Comparison mode can be toggled on/off with backtick key. Colors are configurable in theme.yaml.
+  rationale:
+    why: Users need to identify file differences across directories for sync and backup tasks
+    problems_solved:
+      - Difficult to identify newest or largest versions
+      - Manual comparison of files across directories is tedious
+      - No visual indication of same/different files
+    benefits:
+      - Automatic color-coded file comparison
+      - Instant identification of same/different files
+      - Size and time comparisons visible at a glance
+      - Toggle on/off for focused work
+  satisfaction_criteria:
+    - criterion: 'Size comparison: equal (green), smallest (blue), largest (red)'
+    - criterion: 'Time comparison: equal (green), earliest (blue), latest (red)'
+    - criterion: Comparison colors configurable in theme.yaml
+    - criterion: Comparison index rebuilds on pane content changes
+    - criterion: Files with same name across panes are color-coded
+    - criterion: Toggle comparison mode with backtick key
+  validation_criteria:
+    - method: Unit tests
+      coverage: Comparison index building with various file sets
+    - method: Integration tests
+      coverage: Color application and toggle behavior
+    - method: Visual tests
+      coverage: Color coding displays correctly
+  traceability:
+    architecture:
+      - ARCH-COMPARISON_COLORING
+    implementation:
+      - IMPL-COMPARISON_COLORS
+    tests: []
+    code_annotations:
+      - REQ-FILE_COMPARISON_VISUAL
+  related_requirements:
+    depends_on:
+      - REQ-CROSS_PANE_COMPARISON
+      - REQ-MULTI_PANE_LAYOUT
+    related_to:
+      - REQ-CONFIG_DRIVEN_FILE_MANAGER
+    supersedes: []
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation - adapted from Goful REQ-FILE_COMPARISON_COLORS for web
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

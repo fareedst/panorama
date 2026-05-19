@@ -1,4 +1,4 @@
-// [IMPL-NSYNC_HASH] [ARCH-HASH_VERIFICATION] [REQ-HASH_COMPUTATION]
+// [IMPL-NSYNC_HASH] [ARCH-HASH_VERIFICATION] [REQ-HASH_COMPUTATION]: Top-level Hash Computation Implementation: Hash computation with BLAKE3, SHA-256, XXH3 support and streaming for large files
 // Hash computation module with BLAKE3, SHA256, and XXH3 support
 
 import fs from "fs";

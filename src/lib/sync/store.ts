@@ -1,4 +1,4 @@
-// [IMPL-NSYNC_STORE] [ARCH-STORE_MONITORING] [REQ-STORE_FAILURE_DETECT]
+// [IMPL-NSYNC_STORE] [ARCH-STORE_MONITORING] [REQ-STORE_FAILURE_DETECT]: Top-level Store Monitoring Implementation: Simplified store failure detection using error streak tracking per destination
 // Simplified store monitoring - track error streaks to detect drive failures
 
 import path from "path";

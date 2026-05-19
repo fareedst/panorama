@@ -1,4 +1,4 @@
-// [IMPL-BULK_OPS] [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]
+// [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: Top-level Parallel Bulk Operations with Progress: API routes for bulk operations, Promise.allSettled with progress callbacks
 // Confirmation dialog for destructive operations
 
 "use client";

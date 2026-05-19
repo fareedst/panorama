@@ -73,6 +73,8 @@ describe("SearchDialog [TEST-FILE_SEARCH] [REQ-FILE_SEARCH]", () => {
     localStorageMock.clear();
   });
 
+  // [IMPL-FILE_SEARCH] [ARCH-SEARCH_ENGINE] [REQ-FILE_SEARCH] [REQ-REACT_SSR_STABILITY]: regex validation, ReDoS prevention, path validation, file size limits
+
   describe("Rendering [IMPL-FILE_SEARCH]", () => {
     it("should not render when closed [REQ-FILE_SEARCH]", () => {
       const { container } = render(
@@ -137,6 +139,8 @@ describe("SearchDialog [TEST-FILE_SEARCH] [REQ-FILE_SEARCH]", () => {
       expect(recursiveCheckbox).toBeChecked();
     });
   });
+
+  // [IMPL-FILE_SEARCH] [ARCH-SEARCH_ENGINE] [REQ-FILE_SEARCH] [REQ-REACT_SSR_STABILITY]: regex validation, ReDoS prevention, path validation, file size limits
 
   describe("Search Execution [IMPL-FILE_SEARCH]", () => {
     it("should execute search when button clicked [REQ-FILE_SEARCH]", async () => {
@@ -324,6 +328,8 @@ describe("SearchDialog [TEST-FILE_SEARCH] [REQ-FILE_SEARCH]", () => {
     });
   });
 
+  // [IMPL-FILE_SEARCH] [ARCH-SEARCH_ENGINE] [REQ-FILE_SEARCH] [REQ-REACT_SSR_STABILITY]: regex validation, ReDoS prevention, path validation, file size limits
+
   describe("Search Results [IMPL-FILE_SEARCH]", () => {
     it("should display search results [REQ-FILE_SEARCH]", async () => {
       vi.mocked(searchContent).mockResolvedValue({
@@ -486,6 +492,8 @@ describe("SearchDialog [TEST-FILE_SEARCH] [REQ-FILE_SEARCH]", () => {
     });
   });
 
+  // [IMPL-FILE_SEARCH] [ARCH-SEARCH_ENGINE] [REQ-FILE_SEARCH] [REQ-REACT_SSR_STABILITY]: regex validation, ReDoS prevention, path validation, file size limits
+
   describe("Search Options [IMPL-FILE_SEARCH]", () => {
     it("should pass recursive option [REQ-FILE_SEARCH]", async () => {
       vi.mocked(searchContent).mockResolvedValue({
@@ -624,6 +632,8 @@ describe("SearchDialog [TEST-FILE_SEARCH] [REQ-FILE_SEARCH]", () => {
     });
   });
 
+  // [IMPL-FILE_SEARCH] [ARCH-SEARCH_ENGINE] [REQ-FILE_SEARCH] [REQ-REACT_SSR_STABILITY]: regex validation, ReDoS prevention, path validation, file size limits
+
   describe("Result Selection [IMPL-FILE_SEARCH]", () => {
     it("should call onSelectResult when result clicked [REQ-FILE_SEARCH]", async () => {
       vi.mocked(searchContent).mockResolvedValue({
@@ -666,6 +676,8 @@ describe("SearchDialog [TEST-FILE_SEARCH] [REQ-FILE_SEARCH]", () => {
     });
   });
 
+  // [IMPL-FILE_SEARCH] [ARCH-SEARCH_ENGINE] [REQ-FILE_SEARCH] [REQ-REACT_SSR_STABILITY]: regex validation, ReDoS prevention, path validation, file size limits
+
   describe("Keyboard Navigation [IMPL-FILE_SEARCH]", () => {
     it("should close on Escape key [REQ-FILE_SEARCH]", () => {
       render(
@@ -684,6 +696,8 @@ describe("SearchDialog [TEST-FILE_SEARCH] [REQ-FILE_SEARCH]", () => {
       expect(mockOnClose).toHaveBeenCalledTimes(1);
     });
   });
+
+  // [IMPL-FILE_SEARCH] [ARCH-SEARCH_ENGINE] [REQ-FILE_SEARCH] [REQ-REACT_SSR_STABILITY]: regex validation, ReDoS prevention, path validation, file size limits
 
   describe("Error Handling [IMPL-FILE_SEARCH]", () => {
     it("should display error message on search failure [REQ-FILE_SEARCH]", async () => {
@@ -708,6 +722,8 @@ describe("SearchDialog [TEST-FILE_SEARCH] [REQ-FILE_SEARCH]", () => {
       });
     });
   });
+
+  // [IMPL-FILE_SEARCH] [ARCH-SEARCH_ENGINE] [REQ-FILE_SEARCH] [REQ-REACT_SSR_STABILITY]: regex validation, ReDoS prevention, path validation, file size limits
 
   describe("Edge Cases [IMPL-FILE_SEARCH]", () => {
     it("should handle undefined copy prop [REQ-FILE_SEARCH]", () => {

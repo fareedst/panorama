@@ -1,0 +1,55 @@
+# REQ detail — REQ-FONT_SYSTEM
+REQ-FONT_SYSTEM:
+  name: Custom Font Loading System
+  category: Non-Functional
+  priority: P1
+  status: Implemented
+  description: Custom fonts improve brand consistency and visual appeal with efficient loading
+  rationale:
+    why: Custom fonts improve brand consistency and visual appeal with efficient loading
+    problems_solved:
+      - Inconsistent typography
+      - Large font file sizes
+      - Layout shift during font loading
+    benefits:
+      - Automatic subsetting and preloading
+      - Brand consistency
+      - Flexible font application via CSS variables
+      - No layout shift (CLS)
+  satisfaction_criteria:
+    - criterion: CSS variables are created for font families
+    - criterion: Font loading doesn't cause layout shift
+    - criterion: Fonts use next/font/google for optimization
+    - criterion: Geist Mono font loads for monospace text
+    - criterion: Geist Sans font loads for body text
+  validation_criteria:
+    - method: Visual testing
+      coverage: Fonts are visible and correctly applied
+    - method: Performance testing
+      coverage: No Flash of Unstyled Text (FOUT), Lighthouse audit shows no layout shift
+  traceability:
+    architecture:
+      - ARCH-GOOGLE_FONTS
+      - ARCH-CSS_VARIABLES_FONTS
+    implementation:
+      - IMPL-FONT_LOADING
+    tests: []
+    code_annotations:
+      - REQ-FONT_SYSTEM
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-ROOT_LAYOUT
+    supersedes: []
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass

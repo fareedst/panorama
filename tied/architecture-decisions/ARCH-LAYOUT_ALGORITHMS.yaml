@@ -1,0 +1,60 @@
+# ARCH detail — ARCH-LAYOUT_ALGORITHMS
+ARCH-LAYOUT_ALGORITHMS:
+  name: Multi-Pane Layout Algorithms
+  status: Active
+  cross_references:
+    - REQ-MULTI_PANE_LAYOUT
+  decision: Pure TypeScript functions calculate absolute pane bounds based on layout type
+  rationale:
+    why: Geometric layout calculations optimize screen space for different file management tasks
+    problems_solved:
+      - Inconsistent layouts
+      - Inefficient screen space usage
+      - Manual pane positioning
+    benefits:
+      - Automatic pane allocation
+      - Consistent layouts
+      - Optimal space utilization
+  alternatives_considered:
+    - name: CSS Grid/Flexbox only
+      pros:
+        - Native CSS solution
+      cons:
+        - Limited layout flexibility
+        - Difficult dynamic layouts
+      rejected_reason: Cannot support all Goful layout types
+  implementation_approach:
+    summary: Pure TypeScript functions calculate absolute pane bounds based on layout type
+    details:
+      - 'Fullscreen: All panes overlap, only focused visible'
+      - 'OneColumn: All panes equal height vertically'
+      - 'OneRow: All panes equal width horizontally'
+      - 'Tile: First pane left 50%, others stacked vertically right 50%'
+      - Return PaneBounds[] with x, y, width, height for each pane
+  traceability:
+    requirements:
+      - REQ-MULTI_PANE_LAYOUT
+    implementation:
+      - IMPL-LAYOUT_CALCULATOR
+    tests: []
+    code_annotations:
+      - ARCH-LAYOUT_ALGORITHMS
+  related_decisions:
+    depends_on:
+      - REQ-MULTI_PANE_LAYOUT
+    informs:
+      - IMPL-LAYOUT_CALCULATOR
+    see_also:
+      - ARCH-FILE_MANAGER_HIERARCHY
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

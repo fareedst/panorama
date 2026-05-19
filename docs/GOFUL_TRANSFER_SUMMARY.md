@@ -8,7 +8,7 @@
 
 ## What Has Been Documented
 
-This session has created comprehensive STDD-compliant documentation for transferring the complete UX and filesystem features from the Goful terminal file manager to the web-based file manager in this project.
+This session has created comprehensive TIED-compliant documentation for transferring the complete UX and filesystem features from the Goful terminal file manager to the web-based file manager in this project. Records now live under `tied/` (migrated from legacy `stdd/`).
 
 ### Documents Created
 
@@ -24,7 +24,7 @@ This session has created comprehensive STDD-compliant documentation for transfer
    - Success criteria and metrics
    - Total estimated effort: 49 days (10 weeks)
 
-2. **`/stdd/tasks.md`** (updated)
+2. **Task tracking** (historically `stdd/tasks.md`; product tasks tracked via TIED REQ/ARCH/IMPL in `tied/`)
    - Added P0 task: "Complete File Manager UX from Goful"
    - 12 phases broken down into 80+ subtasks
    - Each phase with requirements, architecture, implementation tokens

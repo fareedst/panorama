@@ -1,4 +1,4 @@
-// [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION]
+// [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: Top-level Sync Engine Core Implementation: SyncEngine class orchestrates sync loop iterating over sources, syncing each to all destinations in parallel, tracking results, and handling move deletion
 // Sync module exports
 
 export { SyncEngine } from "./engine";

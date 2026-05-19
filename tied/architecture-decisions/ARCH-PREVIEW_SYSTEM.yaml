@@ -1,0 +1,67 @@
+# ARCH detail — ARCH-PREVIEW_SYSTEM
+ARCH-PREVIEW_SYSTEM:
+  name: Server-Side File Preview Rendering
+  status: Active
+  cross_references:
+    - REQ-FILE_PREVIEW
+  decision: File preview and metadata are served via server-side API routes. Client components (InfoPanel, PreviewPanel) fetch from GET /api/files/info and GET /api/files/preview. Type detection (text, image, archive) and content limits (e.g. text 100KB) are enforced on the server.
+  rationale:
+    why: File preview requires server-side content access and security checks
+    problems_solved:
+      - Cannot access file contents from client
+      - Large files overwhelm browser memory
+      - No security validation of file types
+    benefits:
+      - Content sanitization before sending to client
+      - Efficient streaming for large files
+      - Server controls file access and security
+      - Support for text, image, archive types
+  alternatives_considered:
+    - name: Client-side preview
+      pros:
+        - No server round-trip
+      cons:
+        - Cannot access server filesystem
+      rejected_reason: Impossible in web environment
+    - name: Full file download
+      pros:
+        - Simple implementation
+      cons:
+        - Wasteful for large files
+      rejected_reason: Preview needs only subset of content
+  implementation_approach:
+    summary: API routes for preview/info with type detection and content sanitization
+    details:
+      - 'Archive preview: list entries without extracting'
+      - 'File type detection: extension + magic bytes'
+      - 'Image preview: serve via Next.js Image optimization'
+      - 'Text preview: first 100KB with encoding detection'
+      - GET /api/files/info?path=... for detailed metadata
+      - GET /api/files/preview?path=...&type=text|image|archive
+  traceability:
+    requirements:
+      - REQ-FILE_PREVIEW
+    implementation:
+      - IMPL-FILE_PREVIEW
+    tests: []
+    code_annotations:
+      - ARCH-PREVIEW_SYSTEM
+  related_decisions:
+    depends_on:
+      - REQ-FILE_PREVIEW
+    informs:
+      - IMPL-FILE_PREVIEW
+    see_also:
+      - ARCH-SERVER_CLIENT_BOUNDARY
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation - web-specific architecture
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

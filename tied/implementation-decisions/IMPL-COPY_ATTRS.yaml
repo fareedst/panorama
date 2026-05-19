@@ -1,0 +1,45 @@
+IMPL-COPY_ATTRS:
+  name: Copy Preserve File Attributes
+  status: Active
+  cross_references:
+    - IMPL-FILES_DATA
+    - IMPL-NSYNC_OPERATIONS
+    - REQ-COPY_OPERATIONS
+    - REQ-FILE_OPERATIONS
+  decision: Shared preserveCopyAttributes() after fs.copyFile; stat source then chmod + utimes on dest; each step try/catch so unsupported or denied ops do not fail the copy
+  rationale:
+    why: Copying a file with nsync or simpler methods must maintain attributes (mode, timestamps) where possible
+    benefits:
+      - 'Best-effort: copy still succeeds if chmod/utimes fail'
+      - Preserves mode (permissions) on Unix
+      - Preserves mtime/atime for comparison and backup semantics
+  implementation_approach:
+    summary: Shared preserveCopyAttributes() after fs.copyFile; stat source then chmod + utimes on dest; each step try/catch so unsupported or denied ops do not fail the copy
+  code_locations:
+    files:
+      - path: src/lib/copyAttributes.ts
+        description: preserveCopyAttributes() helper
+      - path: src/lib/sync/operations.ts
+        description: Called after copyFile
+      - path: src/lib/files.data.ts
+        description: Called after copyFile
+  traceability:
+    requirements:
+      - REQ-COPY_OPERATIONS
+      - REQ-FILE_OPERATIONS
+    tests: []
+    code_annotations:
+      - IMPL-COPY_ATTRS
+  related_decisions:
+    depends_on:
+      - IMPL-NSYNC_OPERATIONS
+      - IMPL-FILES_DATA
+    see_also: []
+  metadata:
+    created:
+      date: 2026-02-09T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T16:06:42.636Z"
+      author: AI Agent
+      reason: IMPL essence_pseudocode retrofit all 58

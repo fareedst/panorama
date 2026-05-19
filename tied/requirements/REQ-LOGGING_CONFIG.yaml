@@ -1,0 +1,53 @@
+# REQ detail — REQ-LOGGING_CONFIG
+REQ-LOGGING_CONFIG:
+  name: Configurable Logging Behavior
+  category: Functional
+  priority: P1
+  status: Implemented
+  description: Enable runtime control of logging behavior without code changes
+  rationale:
+    why: Enable runtime control of logging behavior without code changes
+    problems_solved:
+      - Cannot change log levels without recompiling
+      - Cannot disable logging in production
+      - Hard-coded logging behavior
+    benefits:
+      - Dynamic log level control
+      - Easy production/development mode switching
+      - Environment-based configuration
+  satisfaction_criteria:
+    - criterion: Log directory configurable via environment variable
+    - criterion: Log level configurable via environment variable
+    - criterion: Logging enabled by default (true by default)
+    - criterion: Logging enabled/disabled via environment variable
+  validation_criteria:
+    - method: Unit tests
+      coverage: Configuration parsing and defaults
+    - method: Integration tests
+      coverage: Environment variable overrides
+  traceability:
+    architecture:
+      - ARCH-LOGGING_CONFIG
+    implementation:
+      - IMPL-LOGGER_CONFIG
+    tests: []
+    code_annotations:
+      - REQ-LOGGING_CONFIG
+  related_requirements:
+    depends_on:
+      - REQ-LOGGING_SYSTEM
+    related_to:
+      - REQ-CONFIG_DRIVEN_UI
+    supersedes: []
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

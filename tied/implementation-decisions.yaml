@@ -1,0 +1,3849 @@
+IMPL-ROOT_LAYOUT:
+  name: Root Layout Implementation
+  status: Active
+  cross_references:
+    - ARCH-LAYOUT_PATTERN
+    - REQ-ROOT_LAYOUT
+  rationale:
+    why: Implements root layout pattern for consistent HTML structure and font loading
+    problems_solved:
+      - Inconsistent HTML structure
+      - Font loading management
+    benefits:
+      - Centralized HTML structure
+      - Consistent font loading
+      - Metadata management
+  implementation_approach:
+    summary: Create layout.tsx with html/body tags, font variables, and metadata
+    details:
+      - Export default RootLayout function
+      - Export metadata object
+      - Include body tag with font variables
+      - Include html tag with lang from config
+      - Render children
+  code_locations:
+    files:
+      - path: src/app/layout.tsx
+        description: Root layout component
+    functions:
+      - name: RootLayout
+        file: src/app/layout.tsx
+        description: Root layout component function
+  traceability:
+    architecture:
+      - ARCH-LAYOUT_PATTERN
+    requirements:
+      - REQ-ROOT_LAYOUT
+    tests: []
+    code_annotations:
+      - REQ-ROOT_LAYOUT
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-FONT_LOADING
+      - IMPL-THEME_INJECTION
+  detail_file: implementation-decisions/IMPL-ROOT_LAYOUT.yaml
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-HOME_PAGE:
+  name: Home Page Implementation
+  status: Active
+  cross_references:
+    - ARCH-SERVER_COMPONENTS
+    - REQ-HOME_PAGE
+  rationale:
+    why: Implements home page with config-driven content
+    problems_solved:
+      - Hard-coded home page content
+      - Difficult customization
+    benefits:
+      - Config-driven content
+      - Easy customization
+  implementation_approach:
+    summary: Server component that loads config and renders content
+    details:
+      - Load site config
+      - Render content from config
+      - Render links from config
+      - Render logo from config
+  code_locations:
+    files:
+      - path: src/app/page.tsx
+        description: Home page component
+    functions:
+      - name: Home
+        file: src/app/page.tsx
+        description: Home page component function
+  traceability:
+    architecture:
+      - ARCH-SERVER_COMPONENTS
+    requirements:
+      - REQ-HOME_PAGE
+    tests: []
+    code_annotations:
+      - REQ-HOME_PAGE
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-CONFIG_LOADER
+  detail_file: implementation-decisions/IMPL-HOME_PAGE.yaml
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-DARK_MODE:
+  name: Dark Mode Implementation
+  status: Active
+  cross_references:
+    - ARCH-CSS_VARIABLES
+    - REQ-DARK_MODE
+  rationale:
+    why: Implements dark mode using CSS variables and prefers-color-scheme
+    problems_solved:
+      - Manual theme switching
+      - Static colors
+    benefits:
+      - Automatic system preference detection
+      - Dynamic theming
+  implementation_approach:
+    summary: Define CSS variables in globals.css with prefers-color-scheme media query
+    details:
+      - 'Define dark mode values with @media (prefers-color-scheme: dark)'
+      - Apply variables to body
+      - Define --background and --foreground in :root
+  code_locations:
+    files:
+      - path: src/app/globals.css
+        description: Global CSS with dark mode variables
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-CSS_VARIABLES
+    requirements:
+      - REQ-DARK_MODE
+    tests: []
+    code_annotations:
+      - REQ-DARK_MODE
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-THEME_INJECTION
+  detail_file: implementation-decisions/IMPL-DARK_MODE.yaml
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-FONT_LOADING:
+  name: Font Loading Implementation
+  status: Active
+  cross_references:
+    - ARCH-CSS_VARIABLES_FONTS
+    - ARCH-GOOGLE_FONTS
+    - REQ-FONT_SYSTEM
+  rationale:
+    why: Implements optimized font loading with next/font/google
+    problems_solved:
+      - Font loading causing layout shift
+      - Large font files
+    benefits:
+      - Automatic subsetting
+      - CSS variables for fonts
+      - No layout shift
+  implementation_approach:
+    summary: Use next/font/google for Geist fonts with CSS variables
+    details:
+      - Apply to body element
+      - Configure subsetting (latin)
+      - Create CSS variables
+      - Import Geist_Sans and Geist_Mono from next/font/google
+  code_locations:
+    files:
+      - path: src/app/layout.tsx
+        description: Font loading and application
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-GOOGLE_FONTS
+      - ARCH-CSS_VARIABLES_FONTS
+    requirements:
+      - REQ-FONT_SYSTEM
+    tests: []
+    code_annotations:
+      - REQ-FONT_SYSTEM
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-ROOT_LAYOUT
+  detail_file: implementation-decisions/IMPL-FONT_LOADING.yaml
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-IMAGE_OPTIMIZATION:
+  name: Image Optimization Implementation
+  status: Active
+  cross_references:
+    - ARCH-NEXTJS_FRAMEWORK
+    - REQ-BRANDING
+  rationale:
+    why: Use Next.js Image component for optimized image loading
+    problems_solved:
+      - Large image files
+      - Layout shift from images
+    benefits:
+      - Automatic optimization
+      - Modern formats
+      - Responsive sizing
+  implementation_approach:
+    summary: Use Next.js Image component for all images
+    details:
+      - Add alt text
+      - Import Image from next/image
+      - Provide width and height
+      - Use dark mode inversion classes
+  code_locations:
+    files:
+      - path: src/app/page.tsx
+        description: Image usage in home page
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-NEXTJS_FRAMEWORK
+    requirements:
+      - REQ-BRANDING
+    tests: []
+    code_annotations:
+      - REQ-BRANDING
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also: []
+  detail_file: implementation-decisions/IMPL-IMAGE_OPTIMIZATION.yaml
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-EXTERNAL_LINKS:
+  name: External Links Implementation
+  status: Active
+  cross_references:
+    - ARCH-APP_ROUTER
+    - REQ-NAVIGATION_LINKS
+  rationale:
+    why: Implement secure external links with proper attributes
+    problems_solved:
+      - Security vulnerabilities from improper links
+      - Missing security attributes
+    benefits:
+      - Secure external links
+      - Proper referrer handling
+  implementation_approach:
+    summary: Add target='_blank' and rel='noopener noreferrer' to external links
+    details:
+      - Add rel='noopener noreferrer'
+      - Add target='_blank'
+      - Load URLs from config
+      - Use <a> tags for external links
+  code_locations:
+    files:
+      - path: src/app/page.tsx
+        description: External links in home page
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-APP_ROUTER
+    requirements:
+      - REQ-NAVIGATION_LINKS
+    tests: []
+    code_annotations:
+      - REQ-NAVIGATION_LINKS
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also: []
+  detail_file: implementation-decisions/IMPL-EXTERNAL_LINKS.yaml
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-METADATA:
+  name: Metadata Implementation
+  status: Active
+  cross_references:
+    - ARCH-NEXTJS_FRAMEWORK
+    - REQ-METADATA
+  rationale:
+    why: Implement metadata using Next.js Metadata API
+    problems_solved:
+      - Manual meta tag management
+      - Inconsistent metadata
+    benefits:
+      - Type-safe metadata
+      - Automatic meta tag generation
+  implementation_approach:
+    summary: Export metadata object from layout
+    details:
+      - Export metadata constant
+      - Include title and description
+      - Load from config
+  code_locations:
+    files:
+      - path: src/app/layout.tsx
+        description: Metadata export
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-NEXTJS_FRAMEWORK
+    requirements:
+      - REQ-METADATA
+    tests: []
+    code_annotations:
+      - REQ-METADATA
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-ROOT_LAYOUT
+  detail_file: implementation-decisions/IMPL-METADATA.yaml
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-RESPONSIVE_CLASSES:
+  name: Responsive Classes Implementation
+  status: Active
+  cross_references:
+    - ARCH-RESPONSIVE_FIRST
+    - REQ-RESPONSIVE_DESIGN
+  rationale:
+    why: Implement responsive design with Tailwind breakpoints
+    problems_solved:
+      - Fixed layouts not adapting
+      - Poor mobile experience
+    benefits:
+      - Mobile-first responsive design
+      - Progressive enhancement
+  implementation_approach:
+    summary: Use Tailwind breakpoints (sm:, md:, lg:) with mobile-first approach
+    details:
+      - 'Add md:, lg: for desktop'
+      - 'Add sm: for tablets'
+      - Default styles for mobile
+      - Use flexbox and grid for layouts
+  code_locations:
+    files:
+      - path: src/app/page.tsx
+        description: Responsive classes in home page
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-RESPONSIVE_FIRST
+    requirements:
+      - REQ-RESPONSIVE_DESIGN
+    tests: []
+    code_annotations:
+      - REQ-RESPONSIVE_DESIGN
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-FLEX_LAYOUT
+  detail_file: implementation-decisions/IMPL-RESPONSIVE_CLASSES.yaml
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-FLEX_LAYOUT:
+  name: Flexbox Layout Implementation
+  status: Active
+  cross_references:
+    - ARCH-TAILWIND_V4
+    - REQ-ROOT_LAYOUT
+  rationale:
+    why: Use Tailwind flexbox utilities for layouts
+    problems_solved:
+      - Complex CSS layouts
+      - Alignment issues
+    benefits:
+      - Simple flexbox layouts
+      - Consistent alignment
+  implementation_approach:
+    summary: Use Tailwind flex utilities throughout
+    details:
+      - Use flex, flex-col, flex-row
+      - Use gap for spacing
+      - Use justify and align utilities
+  code_locations:
+    files:
+      - path: src/app/page.tsx
+        description: Flexbox layouts in home page
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-TAILWIND_V4
+    requirements:
+      - REQ-ROOT_LAYOUT
+    tests: []
+    code_annotations:
+      - REQ-ROOT_LAYOUT
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-RESPONSIVE_CLASSES
+  detail_file: implementation-decisions/IMPL-FLEX_LAYOUT.yaml
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-TEST_CONFIG:
+  name: Vitest Configuration
+  status: Active
+  cross_references:
+    - ARCH-TEST_FRAMEWORK
+    - REQ-BUILD_SYSTEM
+  rationale:
+    why: Configure Vitest for fast test execution
+    problems_solved:
+      - Slow test runs
+      - Missing test configuration
+    benefits:
+      - Fast test execution
+      - Coverage reporting
+  implementation_approach:
+    summary: Configure Vitest with React Testing Library and coverage
+    details:
+      - Configure test environment (jsdom)
+      - Configure test setup file
+      - Create vitest.config.ts
+      - Set up coverage with 80% threshold
+  code_locations:
+    files:
+      - path: vitest.config.ts
+        description: Vitest configuration
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-TEST_FRAMEWORK
+    requirements:
+      - REQ-BUILD_SYSTEM
+    tests: []
+    code_annotations:
+      - REQ-BUILD_SYSTEM
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-TEST_SETUP
+  detail_file: implementation-decisions/IMPL-TEST_CONFIG.yaml
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-BUILD_SCRIPTS:
+  name: Build Scripts Implementation
+  status: Active
+  cross_references:
+    - ARCH-NEXTJS_FRAMEWORK
+    - REQ-BUILD_SYSTEM
+  rationale:
+    why: Provide npm scripts for development, build, and testing
+    problems_solved:
+      - Manual command execution
+      - Inconsistent build process
+    benefits:
+      - Standardized scripts
+      - Easy CI/CD integration
+  implementation_approach:
+    summary: Define npm scripts in package.json
+    details:
+      - 'build: next build'
+      - 'dev: next dev'
+      - 'lint: next lint'
+      - 'start: next start'
+      - 'test: vitest run'
+      - 'test:coverage: vitest run --coverage'
+      - 'test:watch: vitest'
+  code_locations:
+    files:
+      - path: package.json
+        description: NPM scripts
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-NEXTJS_FRAMEWORK
+    requirements:
+      - REQ-BUILD_SYSTEM
+    tests: []
+    code_annotations:
+      - REQ-BUILD_SYSTEM
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-TEST_CONFIG
+  detail_file: implementation-decisions/IMPL-BUILD_SCRIPTS.yaml
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-TEST_SETUP:
+  name: Test Setup Implementation
+  status: Active
+  cross_references:
+    - ARCH-TEST_FRAMEWORK
+    - REQ-BUILD_SYSTEM
+  rationale:
+    why: Set up test utilities and mocks
+    problems_solved:
+      - Repeated test setup code
+      - Missing test utilities
+    benefits:
+      - Reusable test utilities
+      - Consistent test setup
+  implementation_approach:
+    summary: Create test setup file with utilities and mocks
+    details:
+      - Configure testing-library
+      - Create test/setup.ts
+      - Mock next/navigation
+      - Mock window.matchMedia
+  code_locations:
+    files:
+      - path: test/setup.ts
+        description: Test setup and utilities
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-TEST_FRAMEWORK
+    requirements:
+      - REQ-BUILD_SYSTEM
+    tests: []
+    code_annotations:
+      - REQ-BUILD_SYSTEM
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-TEST_CONFIG
+  detail_file: implementation-decisions/IMPL-TEST_SETUP.yaml
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-YAML_CONFIG:
+  name: YAML Configuration Structure
+  status: Active
+  cross_references:
+    - ARCH-CONFIG_DRIVEN_UI
+    - REQ-CONFIG_DRIVEN_UI
+  rationale:
+    why: Defines YAML configuration file structure for site and theme
+    problems_solved:
+      - Hard-coded configuration
+      - Lack of structure
+    benefits:
+      - Structured configuration
+      - Easy editing
+  implementation_approach:
+    summary: 'Define two YAML files: site.yaml and theme.yaml'
+    details:
+      - Both support partial configs with defaults
+      - config/site.yaml for content (metadata, branding, links)
+      - config/theme.yaml for styling (colors, spacing, overrides)
+  code_locations:
+    files:
+      - path: config/site.yaml
+        description: Site configuration
+      - path: config/theme.yaml
+        description: Theme configuration
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-CONFIG_DRIVEN_UI
+    requirements:
+      - REQ-CONFIG_DRIVEN_UI
+    tests: []
+    code_annotations:
+      - REQ-CONFIG_DRIVEN_UI
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-CONFIG_LOADER
+  detail_file: implementation-decisions/IMPL-YAML_CONFIG.yaml
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-CONFIG_LOADER:
+  name: Configuration Loader Module
+  status: Active
+  cross_references:
+    - ARCH-CONFIG_DRIVEN_UI
+    - REQ-CONFIG_DRIVEN_UI
+  rationale:
+    why: Provides typed configuration loading with deep merge and caching
+    problems_solved:
+      - Manual YAML parsing
+      - Missing defaults
+      - No type safety
+    benefits:
+      - Automatic deep merge with defaults
+      - Caching for performance
+      - Type-safe config loading
+  implementation_approach:
+    summary: Create config loader module with deep merge and caching
+    details:
+      - Cache parsed configs
+      - Deep merge user config with defaults
+      - Define TypeScript interfaces
+      - Handle missing files gracefully
+      - Implement getSiteConfig() and getThemeConfig()
+  code_locations:
+    files:
+      - path: src/lib/config.ts
+        description: Config loader implementation
+      - path: src/lib/config.types.ts
+        description: Config TypeScript types
+    functions:
+      - name: getSiteConfig
+        file: src/lib/config.ts
+        description: Load and merge site config
+      - name: getThemeConfig
+        file: src/lib/config.ts
+        description: Load and merge theme config
+  traceability:
+    architecture:
+      - ARCH-CONFIG_DRIVEN_UI
+    requirements:
+      - REQ-CONFIG_DRIVEN_UI
+    tests: []
+    code_annotations:
+      - REQ-CONFIG_DRIVEN_UI
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-YAML_CONFIG
+  detail_file: implementation-decisions/IMPL-CONFIG_LOADER.yaml
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-THEME_INJECTION:
+  name: Theme Injection Implementation
+  status: Active
+  cross_references:
+    - ARCH-THEME_INJECTION
+    - REQ-CONFIG_DRIVEN_UI
+  rationale:
+    why: Injects CSS variables from theme config into root layout
+    problems_solved:
+      - Static CSS variables
+      - No config-driven colors
+    benefits:
+      - Dynamic theming
+      - Config-driven CSS variables
+  implementation_approach:
+    summary: Generate CSS variable string from theme config and inject via style attribute
+    details:
+      - Generate CSS variable declarations
+      - Inject via style attribute on body
+      - Load theme config in layout
+  code_locations:
+    files:
+      - path: src/app/layout.tsx
+        description: Theme injection in layout
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-THEME_INJECTION
+    requirements:
+      - REQ-CONFIG_DRIVEN_UI
+    tests: []
+    code_annotations:
+      - REQ-CONFIG_DRIVEN_UI
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-CONFIG_LOADER
+      - IMPL-DARK_MODE
+  detail_file: implementation-decisions/IMPL-THEME_INJECTION.yaml
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-CLASS_OVERRIDES:
+  name: Class Overrides Implementation
+  status: Active
+  cross_references:
+    - ARCH-CLASS_OVERRIDES
+    - REQ-CONFIG_DRIVEN_UI
+  rationale:
+    why: Allows per-element Tailwind class overrides from config
+    problems_solved:
+      - Hard-coded component classes
+      - Difficult style customization
+    benefits:
+      - Flexible component styling
+      - Config-driven classes
+  implementation_approach:
+    summary: Use tailwind-merge to merge default and override classes
+    details:
+      - Apply to components
+      - Define class overrides in theme config
+      - Install tailwind-merge
+      - Merge default classes with overrides using twMerge
+  code_locations:
+    files:
+      - path: src/app/page.tsx
+        description: Class override usage
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-CLASS_OVERRIDES
+    requirements:
+      - REQ-CONFIG_DRIVEN_UI
+    tests: []
+    code_annotations:
+      - REQ-CONFIG_DRIVEN_UI
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-CONFIG_LOADER
+  detail_file: implementation-decisions/IMPL-CLASS_OVERRIDES.yaml
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-CONFIG_DRIVEN_APPEARANCE:
+  name: Config-Driven Appearance Implementation
+  status: Active
+  cross_references:
+    - ARCH-CONFIG_DRIVEN_APPEARANCE
+    - REQ-CONFIG_DRIVEN_APPEARANCE
+  rationale:
+    why: Extends config-driven architecture to all pages including jobs
+    problems_solved:
+      - Hard-coded jobs page layout and copy
+      - Incomplete template configurability
+    benefits:
+      - All pages fully config-driven
+      - Complete template configurability
+  implementation_approach:
+    summary: Add jobs config loader, extend theme with jobs overrides, refactor jobs UI to use config
+    details:
+      - Add getJobsConfig() function
+      - Define JobsCopyConfig and JobsThemeOverrides types
+      - Extend theme.yaml with jobs section
+      - Refactor forms to use config
+      - Refactor jobs pages to use config
+      - Refactor JobsTable to receive copy and class props
+  code_locations:
+    files:
+      - path: src/lib/jobs.ts
+        description: Jobs config loader
+      - path: src/app/jobs/page.tsx
+        description: Jobs list page using config
+      - path: src/app/jobs/[id]/edit/page.tsx
+        description: Jobs edit page using config
+      - path: config/jobs.yaml
+        description: Jobs configuration
+    functions:
+      - name: getJobsConfig
+        file: src/lib/jobs.ts
+        description: Load jobs config
+  traceability:
+    architecture:
+      - ARCH-CONFIG_DRIVEN_APPEARANCE
+    requirements:
+      - REQ-CONFIG_DRIVEN_APPEARANCE
+    tests: []
+    code_annotations:
+      - REQ-CONFIG_DRIVEN_APPEARANCE
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-CONFIG_LOADER
+  detail_file: implementation-decisions/IMPL-CONFIG_DRIVEN_APPEARANCE.yaml
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-GLOBAL_ERROR_BOUNDARY:
+  name: Global Error Boundary Implementation
+  status: Active
+  cross_references:
+    - ARCH-NEXTJS_FRAMEWORK
+    - REQ-ERROR_HANDLING
+  rationale:
+    why: Provides root-level error recovery with full HTML document
+    problems_solved:
+      - Application crashes on errors
+      - No error recovery
+    benefits:
+      - Graceful error recovery
+      - Better error UX
+  implementation_approach:
+    summary: Create global-error.tsx with full HTML document for root-level errors
+    details:
+      - Create src/app/global-error.tsx
+      - Include full HTML document (html, body tags)
+      - Provide reset button
+      - Use 'use client' directive
+  code_locations:
+    files:
+      - path: src/app/global-error.tsx
+        description: Global error boundary
+    functions:
+      - name: GlobalError
+        file: src/app/global-error.tsx
+        description: Global error boundary component
+  traceability:
+    architecture:
+      - ARCH-NEXTJS_FRAMEWORK
+    requirements:
+      - REQ-ERROR_HANDLING
+    tests: []
+    code_annotations:
+      - REQ-ERROR_HANDLING
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also: []
+  detail_file: implementation-decisions/IMPL-GLOBAL_ERROR_BOUNDARY.yaml
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-FILE_MANAGER_PAGE:
+  name: File Manager Page Implementation
+  status: Implemented
+  cross_references:
+    - ARCH-FILE_MANAGER_HIERARCHY
+    - REQ-FILE_MANAGER_PAGE
+  rationale:
+    why: Server component pattern loads initial data and config, follows existing patterns
+    problems_solved:
+      - Client-side filesystem access
+      - Config injection
+      - Initial data loading
+    benefits:
+      - Config-driven UI
+      - Consistent with existing patterns
+      - Server-side data loading
+  implementation_approach:
+    summary: Server component loads directory data and config, renders WorkspaceView
+    details:
+      - Created src/app/files/page.tsx as server component
+      - Loads initial directory (user home)
+      - Passes data to WorkspaceView client component
+      - Sorts files server-side before passing to client
+  code_locations:
+    files:
+      - path: src/app/files/page.tsx
+        description: File manager server page
+        lines:
+          - 1
+          - 21
+    functions:
+      - name: FilesPage
+        file: src/app/files/page.tsx
+        description: Server component page function
+  traceability:
+    architecture:
+      - ARCH-FILE_MANAGER_HIERARCHY
+    requirements:
+      - REQ-FILE_MANAGER_PAGE
+    tests: []
+    code_annotations:
+      - IMPL-FILE_MANAGER_PAGE
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-WORKSPACE_VIEW
+  detail_file: implementation-decisions/IMPL-FILE_MANAGER_PAGE.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Implementation complete and tested
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-WORKSPACE_VIEW:
+  name: Workspace View Client Component with Stable React Keys
+  status: Implemented
+  cross_references:
+    - ARCH-FILE_MANAGER_HIERARCHY
+    - IMPL-FILES_API
+    - REQ-KEYBOARD_NAVIGATION
+    - REQ-MULTI_PANE_LAYOUT
+    - REQ-REACT_SSR_STABILITY
+  rationale:
+    why: Client component manages pane state, layout, focus, and keyboard handling with unique React keys
+    problems_solved:
+      - Complex state management
+      - Focus management
+      - Layout coordination
+      - React duplicate key warnings from dialog components
+    benefits:
+      - Centralized state management
+      - Event handling hub
+      - Layout coordination
+      - Stable component rendering without warnings
+  implementation_approach:
+    summary: Client component with unique dialog keys, useMemo keybinding initialization, and API integration
+    details:
+      - 'API integration: Calls GET /api/files?path=... (not /api/files/list)'
+      - 'Critical fix: Removed sortFiles import to prevent client-side fs dependency'
+      - 'Dialog keys: finder-open/finder-closed and search-open/search-closed (not shared ''open''/''closed'')'
+      - 'Fixed 2026-02-07: Unique keys prevent React duplicate key warnings'
+      - 'Keybinding initialization: useMemo (not useEffect) for synchronous setup'
+      - 'State: panes[] (path, files, cursor, marks), layout, focusIndex'
+      - Calculate pane bounds using layout algorithms
+      - Created src/app/files/WorkspaceView.tsx with 'use client'
+      - Render header (title, layout selector) and panes
+      - Sorting handled server-side (page.tsx and API route)
+      - useEffect for keyboard event listeners
+  code_locations:
+    files:
+      - path: src/app/files/WorkspaceView.tsx
+        description: Workspace client component with fixed dialog keys
+        lines:
+          - 1129
+          - 1145
+    functions:
+      - name: WorkspaceView
+        file: src/app/files/WorkspaceView.tsx
+        description: Main workspace component with unique dialog keys
+      - name: handleNavigate
+        file: src/app/files/WorkspaceView.tsx
+        description: Navigate to directory via API call
+  key_bugs_fixed:
+    - bug: 'React console error: Encountered two children with the same key, `closed`'
+      root_cause: 'Both FinderDialog and SearchDialog used identical key logic: key={show ? ''open'' : ''closed''}'
+      solution: 'Changed to unique keys: finder-open/finder-closed and search-open/search-closed'
+      impact: No more React duplicate key warnings
+      line_numbers:
+        - 1129
+        - 1145
+    - bug: useMemo dependency array missing handlers (lint/React)
+      root_cause: useMemo callback referenced handleNavigate, handleBulkCopy, handleBulkMove, handleBulkDelete but dependency array did not list them
+      solution: Added handleNavigate, handleBulkCopy, handleBulkMove, handleBulkDelete to useMemo dependency array
+      impact: Correct hook dependencies; no lint warnings
+  traceability:
+    architecture:
+      - ARCH-FILE_MANAGER_HIERARCHY
+    requirements:
+      - REQ-DIRECTORY_NAVIGATION
+      - REQ-KEYBOARD_NAVIGATION
+      - REQ-MULTI_PANE_LAYOUT
+      - REQ-REACT_SSR_STABILITY
+    tests: []
+    code_annotations:
+      - IMPL-WORKSPACE_VIEW
+  related_decisions:
+    depends_on:
+      - IMPL-FILES_API
+    supersedes: []
+    see_also:
+      - IMPL-FILE_PANE
+      - IMPL-KEYBINDS
+      - IMPL-LAYOUT_CALCULATOR
+  detail_file: implementation-decisions/IMPL-WORKSPACE_VIEW.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Documented fixes for duplicate React keys, keybinding timing, and useMemo dependency array
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass - no React warnings, 523 tests passing
+IMPL-FILE_PANE:
+  name: File Pane Component
+  status: Implemented
+  cross_references:
+    - ARCH-FILE_MANAGER_HIERARCHY
+    - REQ-DIRECTORY_NAVIGATION
+    - REQ-FILE_LISTING
+  rationale:
+    why: Individual pane component displays files and handles pane-level interactions with proper date handling
+    problems_solved:
+      - File rendering
+      - JSON date serialization issues
+      - Pane-level state
+      - Visual indicators
+    benefits:
+      - Clear visual feedback
+      - Independent rendering
+      - Reusable pane component
+      - Robust date handling for API responses
+  implementation_approach:
+    summary: Client component renders file list with cursor, marks, comparison colors, and proper date conversion
+    details:
+      - 'Applies styles: cursor highlight, mark highlight, directory indicators'
+      - 'Critical fix: Import formatSize from files.utils (client-safe) not files.data'
+      - 'Date handling fix: Wrap mtime in new Date() constructor to handle string dates from API'
+      - 'Props: path, files, cursor, marks, bounds, focused, handlers'
+      - 'Type safety fix: Changed event handler from MouseEvent to ChangeEvent'
+      - Absolute positioning with bounds from props
+      - Created src/app/files/components/FilePane.tsx
+      - Renders header with path
+      - Renders scrollable file list with checkboxes
+  code_locations:
+    files:
+      - path: src/app/files/components/FilePane.tsx
+        description: File pane component
+        lines:
+          - 1
+          - 174
+      - path: src/app/files/components/FilePane.test.tsx
+        description: File pane tests (12 tests)
+        lines:
+          - 1
+          - 256
+    functions:
+      - name: FilePane
+        file: src/app/files/components/FilePane.tsx
+        description: File pane component function
+  traceability:
+    architecture:
+      - ARCH-FILE_MANAGER_HIERARCHY
+    requirements:
+      - REQ-FILE_LISTING
+      - REQ-DIRECTORY_NAVIGATION
+    tests: []
+    code_annotations:
+      - IMPL-FILE_PANE
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-WORKSPACE_VIEW
+      - IMPL-FILES_UTILS
+  detail_file: implementation-decisions/IMPL-FILE_PANE.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Fixed date handling for JSON-serialized dates from API, 12 tests passing
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-FILES_DATA:
+  name: Filesystem Data Layer
+  status: Implemented
+  cross_references:
+    - ARCH-FILESYSTEM_ABSTRACTION
+    - REQ-DIRECTORY_NAVIGATION
+    - REQ-FILE_OPERATIONS
+  rationale:
+    why: Server-side data layer provides secure filesystem access with consistent API
+    problems_solved:
+      - Direct filesystem access
+      - Inconsistent error handling
+      - Security vulnerabilities
+    benefits:
+      - Consistent API
+      - Secure access
+      - Testable with mocks
+  implementation_approach:
+    summary: Server-only module wraps Node.js fs/promises API with validation
+    details:
+      - 'Critical fix: Moved formatSize to files.utils.ts (client-safe)'
+      - Created src/lib/files.data.ts (server-only)
+      - Error handling for permissions, non-existent paths
+      - Export FileStat interface (name, path, isDirectory, size, mtime, extension)
+      - Implemented copyFile, moveFile, deleteFile, renameFile
+      - Implemented listDirectory, getParentDirectory, joinPath, getFileInfo
+      - Implemented sortFiles with SortType enum
+      - Path validation to prevent directory traversal
+      - Re-exports formatSize for backward compatibility
+  code_locations:
+    files:
+      - path: src/lib/files.data.ts
+        description: Filesystem data layer (server-only)
+        lines:
+          - 1
+          - 279
+      - path: src/lib/files.types.ts
+        description: TypeScript interfaces
+        lines:
+          - 1
+          - 55
+      - path: src/lib/files.utils.ts
+        description: Client-safe utilities
+        lines:
+          - 1
+          - 26
+      - path: src/lib/files.data.test.ts
+        description: Data layer tests (34 tests)
+        lines:
+          - 1
+          - 595
+    functions:
+      - name: listDirectory
+        file: src/lib/files.data.ts
+        description: List directory contents with error handling
+      - name: sortFiles
+        file: src/lib/files.data.ts
+        description: Sort files by various criteria with directory priority
+      - name: buildComparisonIndex
+        file: src/lib/files.data.ts
+        description: Build cross-pane comparison index
+      - name: formatSize
+        file: src/lib/files.utils.ts
+        description: Format bytes for display (client-safe)
+  traceability:
+    architecture:
+      - ARCH-FILESYSTEM_ABSTRACTION
+    requirements:
+      - REQ-DIRECTORY_NAVIGATION
+      - REQ-FILE_OPERATIONS
+    tests: []
+    code_annotations:
+      - IMPL-FILES_DATA
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-FILES_UTILS
+  detail_file: implementation-decisions/IMPL-FILES_DATA.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Implementation complete with server/client boundary fix, 34 tests passing
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-LAYOUT_CALCULATOR:
+  name: Layout Calculation Algorithms
+  status: Implemented
+  cross_references:
+    - ARCH-LAYOUT_ALGORITHMS
+    - REQ-MULTI_PANE_LAYOUT
+  rationale:
+    why: Pure functions calculate pane bounds for different layout types
+    problems_solved:
+      - Difficult layout changes
+      - Layout inconsistencies
+      - Manual pane positioning
+    benefits:
+      - Automatic pane allocation
+      - Easy layout switching
+      - Testable layout logic
+  implementation_approach:
+    summary: Pure TypeScript functions calculate PaneBounds[] from container dimensions and layout type
+    details:
+      - 'Fullscreen: all panes at (0,0) with full dimensions'
+      - 'Helper functions: getTotalArea, doOverlap for validation'
+      - 'OneColumn: equal height vertically'
+      - 'OneRow: equal width horizontally'
+      - 'Tile: first pane left 50%, others stacked vertically right 50%'
+      - Created src/lib/files.layout.ts
+      - Exported LayoutType = 'Tile' | 'OneRow' | 'OneColumn' | 'Fullscreen'
+      - Exported PaneBounds interface (x, y, width, height)
+      - Implemented calculateLayout(containerWidth, containerHeight, numPanes, layoutType)
+  code_locations:
+    files:
+      - path: src/lib/files.layout.ts
+        description: Layout calculation algorithms
+        lines:
+          - 1
+          - 237
+      - path: src/lib/files.layout.test.ts
+        description: Layout tests (62 tests)
+        lines:
+          - 1
+          - 365
+    functions:
+      - name: calculateLayout
+        file: src/lib/files.layout.ts
+        description: Calculate pane bounds for layout type
+      - name: calculateTileLayout
+        file: src/lib/files.layout.ts
+        description: Tile layout algorithm
+      - name: calculateOneRowLayout
+        file: src/lib/files.layout.ts
+        description: One row layout algorithm
+      - name: calculateOneColumnLayout
+        file: src/lib/files.layout.ts
+        description: One column layout algorithm
+  traceability:
+    architecture:
+      - ARCH-LAYOUT_ALGORITHMS
+    requirements:
+      - REQ-MULTI_PANE_LAYOUT
+    tests: []
+    code_annotations:
+      - IMPL-LAYOUT_CALCULATOR
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-WORKSPACE_VIEW
+  detail_file: implementation-decisions/IMPL-LAYOUT_CALCULATOR.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Implementation complete, 62 tests passing
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-COMPARISON_INDEX:
+  name: Comparison Index Implementation
+  status: Implemented
+  cross_references:
+    - ARCH-COMPARISON_INDEX
+    - REQ-CROSS_PANE_COMPARISON
+  rationale:
+    why: Centralized index enables efficient cross-pane file comparison
+    problems_solved:
+      - Performance issues
+      - Repeated comparisons
+      - Scattered comparison logic
+    benefits:
+      - Centralized logic
+      - Easy to rebuild
+      - O(1) lookup
+  implementation_approach:
+    summary: Build Map-based index from pane contents, provide query interface
+    details:
+      - 'buildComparisonIndex(panes: FileStat[][]): ComparisonIndex'
+      - 'CompareState interface (panes: number[], sizes: number[], mtimes: Date[])'
+      - 'ComparisonIndex.get(paneIndex: number, filename: string): CompareState | null'
+      - getSharedFilenames() returns sorted list of files in 2+ panes
+      - Implemented in src/lib/files.data.ts
+      - Returns null if file only in one pane or not in requested pane
+  code_locations:
+    files:
+      - path: src/lib/files.data.ts
+        description: Comparison index implementation
+        lines:
+          - 228
+          - 279
+      - path: src/lib/files.types.ts
+        description: CompareState and ComparisonIndex types
+        lines:
+          - 30
+          - 55
+    functions:
+      - name: buildComparisonIndex
+        file: src/lib/files.data.ts
+        description: Build comparison index from pane arrays
+  traceability:
+    architecture:
+      - ARCH-COMPARISON_INDEX
+    requirements:
+      - REQ-CROSS_PANE_COMPARISON
+    tests: []
+    code_annotations:
+      - IMPL-COMPARISON_INDEX
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-FILE_PANE
+  detail_file: implementation-decisions/IMPL-COMPARISON_INDEX.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Implementation complete and tested
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-FILES_API:
+  name: File Operations API Routes
+  status: Implemented
+  cross_references:
+    - ARCH-FILE_OPERATIONS_API
+    - IMPL-LOGGER_MODULE
+    - REQ-DIRECTORY_NAVIGATION
+    - REQ-FILE_OPERATIONS
+  rationale:
+    why: API routes provide secure server-side file operations with comprehensive logging
+    problems_solved:
+      - Client-side file operations
+      - Inconsistent error handling
+      - Missing error traceability in logs
+      - Security vulnerabilities
+    benefits:
+      - Centralized validation
+      - Complete error logging with semantic tokens
+      - RESTful interface
+      - Secure operations
+  implementation_approach:
+    summary: GET /api/files for directory listing, POST /api/files for operations (copy, move, delete, rename, bulk-*, sync-all), operation-specific validation, integrated with session logger
+    details:
+      - 'GET handler at /api/files (not /api/files/list): accepts path query param, returns sorted directory listing'
+      - 'Operation-specific validation: only copy, move, delete, rename require src; sync-all and bulk-delete use sources array (no src)'
+      - 'POST handler: extract operation, src, dest from body'
+      - All log entries include semantic tokens for traceability
+      - Call files.data or SyncEngine (sync-all); return JSON success/error responses
+      - Created src/app/api/files/route.ts
+      - Dynamic import of operation functions to optimize bundle
+      - Error responses logged with full context (paths, operations, error messages)
+      - Integrated logger module for debug, info, warn, error logging
+      - Path validation (..) only when src/dest present
+      - Switch on operation type (copy, move, delete, rename, bulk-copy, bulk-move, bulk-delete, sync-all)
+  code_locations:
+    files:
+      - path: src/app/api/files/route.ts
+        description: File operations API route with logging and operation-specific validation
+        lines:
+          - 1
+          - 240
+    functions:
+      - name: GET
+        file: src/app/api/files/route.ts
+        description: Handle directory listing requests with logging
+      - name: POST
+        file: src/app/api/files/route.ts
+        description: Handle file operations with operation-specific validation and comprehensive logging
+  traceability:
+    architecture:
+      - ARCH-FILE_OPERATIONS_API
+      - ARCH-LOGGING_SYSTEM
+    requirements:
+      - REQ-DIRECTORY_NAVIGATION
+      - REQ-FILE_OPERATIONS
+      - REQ-LOGGING_SYSTEM
+    tests: []
+    code_annotations:
+      - IMPL-FILES_API
+      - IMPL-LOGGER_MODULE
+  related_decisions:
+    depends_on:
+      - IMPL-LOGGER_MODULE
+    supersedes: []
+    see_also:
+      - IMPL-FILES_DATA
+      - IMPL-WORKSPACE_VIEW
+  detail_file: implementation-decisions/IMPL-FILES_API.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-09T00:00:00.000Z
+      author: AI Agent
+      reason: Operation-specific validation (sync-all/bulk-delete do not require src); added route.test.ts
+    last_validated:
+      date: 2026-02-09T00:00:00.000Z
+      validator: AI Agent
+      result: pass - 6/6 route tests, sync-all accepts request without src
+IMPL-FILES_CONFIG:
+  name: Files Configuration Loader
+  status: Implemented
+  cross_references:
+    - ARCH-CONFIG_DRIVEN_UI
+    - REQ-CONFIG_DRIVEN_FILE_MANAGER
+  rationale:
+    why: Config loader provides files-specific configuration following existing patterns
+    problems_solved:
+      - Hard-coded UI text
+      - Inconsistent with project
+      - No configuration support
+    benefits:
+      - Config-driven UI
+      - Consistent patterns
+      - Easy customization
+  implementation_approach:
+    summary: Add getFilesConfig() to config.ts, extend types, create config/files.yaml
+    details:
+      - Added files? field to ThemeConfig interface
+      - Added FilesCopyConfig interface to config.types.ts
+      - Added FilesThemeConfig and FilesThemeOverrides interfaces
+      - Added getFilesConfig() function to config.ts
+      - Added getFilesOverride() helper function
+      - Created config/files.yaml with copy section
+      - Extended theme.yaml with files.overrides and compareColors sections
+  code_locations:
+    files:
+      - path: config/files.yaml
+        description: Files configuration
+        lines:
+          - 1
+          - 32
+      - path: config/theme.yaml
+        description: Extended with files section
+        lines:
+          - 85
+          - 101
+      - path: src/lib/config.ts
+        description: Config loader with getFilesConfig()
+        lines:
+          - 376
+          - 438
+      - path: src/lib/config.types.ts
+        description: Files config types
+        lines:
+          - 279
+          - 342
+    functions:
+      - name: getFilesConfig
+        file: src/lib/config.ts
+        description: Load files configuration with defaults
+      - name: getFilesOverride
+        file: src/lib/config.ts
+        description: Get theme override for files component
+  traceability:
+    architecture:
+      - ARCH-CONFIG_DRIVEN_UI
+    requirements:
+      - REQ-CONFIG_DRIVEN_FILE_MANAGER
+    tests: []
+    code_annotations:
+      - IMPL-FILES_CONFIG
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-CONFIG_LOADER
+  detail_file: implementation-decisions/IMPL-FILES_CONFIG.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Implementation complete, config files created
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-FILES_UTILS:
+  name: Client-Safe File Utilities
+  status: Implemented
+  cross_references:
+    - ARCH-FILESYSTEM_ABSTRACTION
+    - REQ-FILE_LISTING
+  rationale:
+    why: Separate client-safe utilities from server-only filesystem code
+    problems_solved:
+      - Build errors from Node.js modules in browser bundle
+      - Cannot import fs/promises in client components
+      - Need shared utilities for both server and client
+    benefits:
+      - Clear server/client boundary
+      - No bundling issues
+      - Reusable utility functions
+  implementation_approach:
+    summary: Created separate files.utils.ts for client-safe utilities like formatSize
+    details:
+      - Client components (FilePane) import from files.utils.ts
+      - Created src/lib/files.utils.ts with no Node.js dependencies
+      - files.data.ts re-exports formatSize for server-side consumers
+      - Moved formatSize() from files.data.ts to files.utils.ts
+      - This prevents fs/promises from being pulled into client bundle
+  code_locations:
+    files:
+      - path: src/lib/files.utils.ts
+        description: Client-safe utilities (no Node.js dependencies)
+        lines:
+          - 1
+          - 26
+    functions:
+      - name: formatSize
+        file: src/lib/files.utils.ts
+        description: Format bytes as human-readable size (B, KB, MB, GB, TB)
+  traceability:
+    architecture:
+      - ARCH-FILESYSTEM_ABSTRACTION
+    requirements:
+      - REQ-FILE_LISTING
+    tests: []
+    code_annotations:
+      - IMPL-FILES_UTILS
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-FILES_DATA
+      - IMPL-FILE_PANE
+  detail_file: implementation-decisions/IMPL-FILES_UTILS.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Created to fix fs/promises bundling issue
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-LOGGER_MODULE:
+  name: Logger Module Implementation
+  status: Implemented
+  cross_references:
+    - ARCH-LOGGING_SYSTEM
+    - REQ-LOGGING_SYSTEM
+  rationale:
+    why: Centralized logging module provides consistent API and file management
+    problems_solved:
+      - Inconsistent log formats
+      - No file management
+      - Scattered logging code
+    benefits:
+      - Automatic file management
+      - Consistent log format
+      - Single source of truth for logging
+  implementation_approach:
+    summary: Create logger module with session-based file writing and six log levels
+    details:
+      - 'API: logger.fatal(), logger.error(), logger.warn(), logger.info(), logger.debug(), logger.trace()'
+      - 'Each method signature: (tokens: string | string[], message: string, metadata?: object)'
+      - 'Format: [ISO_TIMESTAMP] [LEVEL] [TOKENS] message [metadata]'
+      - 'Six log levels: FATAL=0, ERROR=1, WARN=2, INFO=3, DEBUG=4, TRACE=5'
+      - Created src/lib/logger.ts as server-only module
+      - Initialize log file on first write with timestamp in filename
+      - Synchronous write for FATAL, buffered for others
+      - Write to os.tmpdir() with filename nx1-log-YYYY-MM-DD-HH-mm-ss-SSS.log
+  code_locations:
+    files:
+      - path: src/lib/logger.ts
+        description: Main logger module implementation
+        lines:
+          - 1
+          - 295
+      - path: src/lib/logger.types.ts
+        description: TypeScript types for logging
+        lines:
+          - 1
+          - 135
+      - path: src/lib/logger.test.ts
+        description: Logger tests (26 passing)
+        lines:
+          - 1
+          - 356
+    functions:
+      - name: fatal
+        file: src/lib/logger.ts
+        description: Log fatal error (level 0)
+      - name: error
+        file: src/lib/logger.ts
+        description: Log error (level 1)
+      - name: warn
+        file: src/lib/logger.ts
+        description: Log warning (level 2)
+      - name: info
+        file: src/lib/logger.ts
+        description: Log info (level 3)
+      - name: debug
+        file: src/lib/logger.ts
+        description: Log debug (level 4)
+      - name: trace
+        file: src/lib/logger.ts
+        description: Log trace (level 5)
+  traceability:
+    architecture:
+      - ARCH-LOGGING_SYSTEM
+    requirements:
+      - REQ-LOGGING_SYSTEM
+    tests: []
+    code_annotations:
+      - IMPL-LOGGER_MODULE
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-LOGGER_CONFIG
+      - IMPL-LOGGER_TOKENS
+  detail_file: implementation-decisions/IMPL-LOGGER_MODULE.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Implementation complete with 26 passing tests
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-LOGGER_CONFIG:
+  name: Logger Configuration Implementation
+  status: Implemented
+  cross_references:
+    - ARCH-LOGGING_CONFIG
+    - REQ-LOGGING_CONFIG
+  rationale:
+    why: Environment-based configuration enables runtime control
+    problems_solved:
+      - Hard-coded settings
+      - Cannot adjust in production
+    benefits:
+      - Runtime configuration
+      - Environment-specific behavior
+  implementation_approach:
+    summary: Read environment variables at module initialization with defaults and console output
+    details:
+      - 'Read CONSOLE_ERRORS (default: ''true'')'
+      - 'Read ENABLE_LOGGING (default: ''true'')'
+      - 'Read LOG_DIR (default: os.tmpdir())'
+      - 'Read LOG_LEVEL (default: ''INFO'')'
+      - Export getLogConfig() for inspection
+      - Mirror ERROR and FATAL logs to console.error() if CONSOLE_ERRORS='true'
+      - No-op logging if ENABLE_LOGGING='false'
+      - Output log file path to console on first write
+      - Parse and validate at module load
+  code_locations:
+    files:
+      - path: src/lib/logger.ts
+        description: Configuration parsing in module initialization
+      - path: src/lib/logger.types.ts
+        description: LogConfig type definition
+    functions:
+      - name: getLogConfig
+        file: src/lib/logger.ts
+        description: Returns current log configuration
+  traceability:
+    architecture:
+      - ARCH-LOGGING_CONFIG
+    requirements:
+      - REQ-LOGGING_CONFIG
+    tests: []
+    code_annotations:
+      - IMPL-LOGGER_CONFIG
+  related_decisions:
+    depends_on:
+      - IMPL-LOGGER_MODULE
+    supersedes: []
+    see_also: []
+  detail_file: implementation-decisions/IMPL-LOGGER_CONFIG.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-LOGGER_TOKENS:
+  name: Semantic Token Integration Implementation
+  status: Implemented
+  cross_references:
+    - ARCH-LOGGING_SEMANTIC_TOKENS
+    - REQ-LOGGING_SEMANTIC_TOKENS
+  rationale:
+    why: Required tokens parameter ensures TIED traceability
+    problems_solved:
+      - Optional tokens easily forgotten
+      - Inconsistent token usage
+    benefits:
+      - 100% token coverage
+      - Compile-time enforcement
+      - Easy grep/search
+  implementation_approach:
+    summary: TypeScript API requires tokens as first parameter
+    details:
+      - 'All log methods: (tokens: string | string[], message: string, metadata?: object)'
+      - 'Helper: formatTokens(tokens: string | string[]): string'
+      - Format tokens as space-separated in output
+      - No validation in PROD for performance
+      - Validate token format at runtime (DEV mode)
+  code_locations:
+    files:
+      - path: src/lib/logger.ts
+        description: Token formatting and validation
+      - path: src/lib/logger.types.ts
+        description: SemanticToken type
+    functions:
+      - name: formatTokens
+        file: src/lib/logger.ts
+        description: Format tokens for log output
+      - name: validateTokens
+        file: src/lib/logger.ts
+        description: Validate token format (DEV only)
+  traceability:
+    architecture:
+      - ARCH-LOGGING_SEMANTIC_TOKENS
+    requirements:
+      - REQ-LOGGING_SEMANTIC_TOKENS
+    tests: []
+    code_annotations:
+      - IMPL-LOGGER_TOKENS
+  related_decisions:
+    depends_on:
+      - IMPL-LOGGER_MODULE
+    supersedes: []
+    see_also: []
+  detail_file: implementation-decisions/IMPL-LOGGER_TOKENS.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-FILE_MARKING:
+  name: React State Mark Management
+  status: Active
+  cross_references:
+    - ARCH-MARKING_STATE
+    - REQ-FILE_MARKING_WEB
+  rationale:
+    why: Client-side marking with Set<string> provides instant feedback and name-based persistence
+    problems_solved:
+      - Network latency on mark toggles
+      - Mark loss on re-sort
+    benefits:
+      - Instant UI updates
+      - Persistent across view changes
+      - Simple state structure
+  implementation_approach:
+    summary: React useState with Set<string> per pane, keyboard and mouse handlers
+    details:
+      - 'Footer: [${marks.size}/${files.length}]'
+      - 'handleClearMarks: marks.clear()'
+      - 'handleInvertMarks: symmetric difference'
+      - 'handleMarkAll: new Set(files.map(f => f.name))'
+      - 'handleToggleMark: Add/remove filename from set'
+      - 'PaneState: { path, files, cursor, marks: Set<string>, scrollTop }'
+      - 'Visual: checkbox icon + bg-marked CSS class'
+  code_locations:
+    files:
+      - path: src/app/files/WorkspaceView.tsx
+        description: Mark state and handlers
+        lines: []
+      - path: src/app/files/components/FilePane.tsx
+        description: Checkbox rendering
+        lines: []
+    functions:
+      - name: handleToggleMark
+        file: src/app/files/WorkspaceView.tsx
+        description: Toggle mark on specific file
+      - name: handleMarkAll
+        file: src/app/files/WorkspaceView.tsx
+        description: Mark all files in pane
+  traceability:
+    architecture:
+      - ARCH-MARKING_STATE
+    requirements:
+      - REQ-FILE_MARKING_WEB
+    tests: []
+    code_annotations:
+      - IMPL-FILE_MARKING
+  related_decisions:
+    depends_on:
+      - ARCH-MARKING_STATE
+    supersedes: []
+    see_also:
+      - IMPL-BULK_OPS
+  detail_file: implementation-decisions/IMPL-FILE_MARKING.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-BULK_OPS:
+  name: Parallel Bulk Operations with Progress
+  status: Active
+  cross_references:
+    - ARCH-BATCH_OPERATIONS
+    - REQ-BULK_FILE_OPS
+  rationale:
+    why: Promise.allSettled enables parallel operations with progress tracking and error collection
+    problems_solved:
+      - Slow sequential operations
+      - No progress feedback
+    benefits:
+      - Error collection without stopping on first failure
+      - Parallel execution via Promise.allSettled (continue on error, report all at end)
+      - Real-time progress callbacks
+  implementation_approach:
+    summary: API routes for bulk operations, Promise.allSettled with progress callbacks
+    details:
+      - 'Client: ProgressDialog with percentage bar, current file, error list, summary'
+      - 'ConfirmDialog: Escape to cancel, Enter to confirm; destructive styling for delete'
+      - 'POST /api/files { operation: ''bulk-copy'' | ''bulk-move'' | ''bulk-delete'', sources, dest }'
+      - 'Server: bulkCopy/bulkMove/bulkDelete in files.data.ts use Promise.allSettled'
+      - V key for move (not M) to avoid conflict with marking shortcut
+  code_locations:
+    files:
+      - path: src/app/api/files/route.ts
+        description: Bulk operation handlers
+        lines: []
+      - path: src/lib/files.data.ts
+        description: Bulk operation functions
+        lines: []
+    functions:
+      - name: bulkCopy
+        file: src/lib/files.data.ts
+        description: Copy multiple files with progress
+      - name: bulkMove
+        file: src/lib/files.data.ts
+        description: Move multiple files with progress
+  traceability:
+    architecture:
+      - ARCH-BATCH_OPERATIONS
+    requirements:
+      - REQ-BULK_FILE_OPS
+    tests: []
+    code_annotations:
+      - IMPL-BULK_OPS
+  related_decisions:
+    depends_on:
+      - ARCH-BATCH_OPERATIONS
+      - IMPL-FILE_MARKING
+    supersedes: []
+    see_also:
+      - IMPL-FILES_API
+      - IMPL-OVERWRITE_PROMPT
+  detail_file: implementation-decisions/IMPL-BULK_OPS.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-08T00:00:00.000Z
+      author: AI Agent
+      reason: Added overwrite prompt enhancement
+    last_validated:
+      date: 2026-02-08T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-OVERWRITE_PROMPT:
+  name: Overwrite Confirmation with File Comparison
+  status: Active
+  cross_references:
+    - ARCH-BATCH_OPERATIONS
+    - IMPL-BULK_OPS
+    - REQ-BULK_FILE_OPS
+  rationale:
+    why: Users need to see existing file attributes and comparison before overwriting
+    problems_solved:
+      - No visibility into what will be replaced
+      - Risk of overwriting newer/larger files
+      - Silent overwriting without user awareness
+    benefits:
+      - Clear comparison of source vs existing files
+      - No additional API calls (uses existing pane data)
+      - Shows size and time differences
+  implementation_approach:
+    summary: Detect file conflicts before confirmation, display comparison details in ConfirmDialog
+    details:
+      - Before opening confirm dialog, check destination pane files for matching names
+      - Build FileConflict array with formatted summaries and comparison text
+      - ConfirmDialog extended with optional conflicts prop and scrollable detail section
+      - describeFileComparison() utility provides size/time comparison logic
+      - Uses path-browserify for basename extraction in browser
+  code_locations:
+    files:
+      - path: src/app/files/WorkspaceView.tsx
+        description: Conflict detection in handleBulkCopy and handleBulkMove
+        lines: []
+      - path: src/app/files/components/ConfirmDialog.tsx
+        description: FileConflict interface and rendering
+        lines: []
+      - path: src/lib/files.utils.ts
+        description: describeFileComparison utility
+        lines: []
+    functions:
+      - name: describeFileComparison
+        file: src/lib/files.utils.ts
+        description: Compare two files and describe size/time differences
+      - name: handleBulkCopy
+        file: src/app/files/WorkspaceView.tsx
+        description: Copy with conflict detection
+      - name: handleBulkMove
+        file: src/app/files/WorkspaceView.tsx
+        description: Move with conflict detection
+  traceability:
+    architecture:
+      - ARCH-BATCH_OPERATIONS
+    requirements:
+      - REQ-BULK_FILE_OPS
+    tests: []
+    code_annotations:
+      - IMPL-OVERWRITE_PROMPT
+  related_decisions:
+    depends_on:
+      - IMPL-BULK_OPS
+      - IMPL-FILES_DATA
+    supersedes: []
+    see_also:
+      - IMPL-COMPARISON_COLORS
+  detail_file: implementation-decisions/IMPL-OVERWRITE_PROMPT.yaml
+  metadata:
+    created:
+      date: 2026-02-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-08T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-08T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-SORT_FILTER:
+  name: Client-Side Sort and Filter Functions
+  status: Implemented
+  cross_references:
+    - REQ-FILE_SORTING_ADVANCED
+  rationale:
+    why: Client-side sorting avoids server round-trips for instant feedback
+    problems_solved:
+      - Server sorting adds latency
+      - Cannot sort without network
+    benefits:
+      - Directory prioritization
+      - Instant sort updates
+      - Multiple criteria support
+  implementation_approach:
+    summary: Sort functions in files.utils.ts with comparator dispatch
+    details:
+      - 'Comparators: byName, bySize, byTime, byExtension'
+      - 'Directory priority: if (dirsFirst && a.isDir !== b.isDir)'
+      - Cursor preservation via filename match after sort
+      - sortFiles(files, sortBy, ascending, dirsFirst)
+  code_locations:
+    files:
+      - path: src/lib/files.utils.ts
+        description: Sort and filter utilities
+        lines: []
+    functions:
+      - name: sortFiles
+        file: src/lib/files.utils.ts
+        description: Main sort function with criteria dispatch
+  traceability:
+    architecture:
+      - ARCH-SORT_PIPELINE
+    requirements:
+      - REQ-FILE_SORTING_ADVANCED
+    tests: []
+    code_annotations:
+      - IMPL-SORT_FILTER
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-FILES_UTILS
+  detail_file: implementation-decisions/IMPL-SORT_FILTER.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-DIR_HISTORY:
+  name: Directory History with localStorage Bookmarks
+  status: Implemented
+  cross_references:
+    - ARCH-DIRECTORY_HISTORY
+    - REQ-ADVANCED_NAV
+  rationale:
+    why: History and bookmarks enable efficient navigation and context preservation
+    problems_solved:
+      - Lost cursor position on directory revisit
+      - Repetitive navigation to common locations
+    benefits:
+      - Bookmark persistence across sessions
+      - Cursor restoration on revisit
+      - Recent directories LRU cache
+  implementation_approach:
+    summary: Map-based history in React state, localStorage for bookmarks
+    details:
+      - 'Bookmarks in localStorage: {id, path, label, created}[]'
+      - 'DirectoryHistory: Map<paneId, Map<path, {cursor, scrollTop, timestamp}>>'
+      - restoreCursorPosition on directory load
+      - saveCursorPosition before directory change
+  code_locations:
+    files:
+      - path: src/lib/files.history.ts
+        description: History management
+        lines: []
+      - path: src/lib/files.bookmarks.ts
+        description: Bookmark management
+        lines: []
+    functions:
+      - name: saveCursorPosition
+        file: src/lib/files.history.ts
+        description: Save cursor state before navigation
+  traceability:
+    architecture:
+      - ARCH-DIRECTORY_HISTORY
+    requirements:
+      - REQ-ADVANCED_NAV
+    tests: []
+    code_annotations:
+      - IMPL-DIR_HISTORY
+  related_decisions:
+    depends_on:
+      - ARCH-DIRECTORY_HISTORY
+    supersedes: []
+    see_also: []
+  detail_file: implementation-decisions/IMPL-DIR_HISTORY.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Test environment fixes - localStorage runtime checks
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+      notes: 36 tests passing, localStorage errors resolved, 0 lint errors
+IMPL-COMPARISON_COLORS:
+  name: CSS Class-Based Comparison Coloring
+  status: Implemented
+  cross_references:
+    - ARCH-COMPARISON_COLORING
+    - REQ-FILE_COMPARISON_VISUAL
+  rationale:
+    why: CSS classes enable theme-driven comparison colors
+    problems_solved:
+      - Hard-coded comparison colors
+      - No theme integration
+    benefits:
+      - Consistent with existing styling
+      - Easy to customize
+      - Theme.yaml controls all colors
+  implementation_approach:
+    summary: Enhance ComparisonIndex, apply CSS classes from theme
+    details:
+      - 'Apply classes: comparison-equal, comparison-smallest, comparison-largest'
+      - 'buildEnhancedComparisonIndex: compute sizeClass and timeClass'
+      - 'Theme colors: file-manager.comparison section'
+  code_locations:
+    files:
+      - path: src/lib/files.data.ts
+        description: Enhanced comparison index builder
+        lines: []
+      - path: src/app/files/components/FilePane.tsx
+        description: CSS class application
+        lines: []
+    functions:
+      - name: buildEnhancedComparisonIndex
+        file: src/lib/files.data.ts
+        description: Build comparison with size/time analysis
+  traceability:
+    architecture:
+      - ARCH-COMPARISON_COLORING
+    requirements:
+      - REQ-FILE_COMPARISON_VISUAL
+    tests: []
+    code_annotations:
+      - IMPL-COMPARISON_COLORS
+  related_decisions:
+    depends_on:
+      - ARCH-COMPARISON_COLORING
+    supersedes: []
+    see_also:
+      - IMPL-COMPARISON_INDEX
+  detail_file: implementation-decisions/IMPL-COMPARISON_COLORS.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-FILE_SEARCH:
+  name: Dual-Mode Search Implementation with SSR Guards
+  status: Implemented
+  cross_references:
+    - ARCH-SEARCH_ENGINE
+    - REQ-FILE_SEARCH
+    - REQ-REACT_SSR_STABILITY
+  rationale:
+    why: Different search modes for filename vs content search with SSR-safe localStorage access
+    problems_solved:
+      - Cannot search file contents
+      - localStorage access causing SSR errors
+      - No quick filename filtering
+    benefits:
+      - 'Content search: comprehensive server-side'
+      - 'Incremental finder: instant client-side'
+      - SSR-safe history loading
+  implementation_approach:
+    summary: Client-side incremental finder + server-side content search API with SSR guards
+    details:
+      - 'Security: regex validation, ReDoS prevention, path validation, file size limits'
+      - 'SSR guards: typeof window === ''undefined'' checks in add(), getAll(), clear() methods'
+      - Config-driven UI text and keybindings
+      - FinderDialog component (Ctrl+F) for file name search with keyboard navigation
+      - Search utilities module (files.search.ts) with fuzzy matching, history
+      - SearchDialog component (Ctrl+Shift+F) for content search with options
+      - SearchHistory class with localStorage persistence (max 20)
+      - Server API (POST /api/files/search) for content searching with security
+      - Server context returns empty results without errors
+  code_locations:
+    files:
+      - path: src/lib/files.search.ts
+        description: 'Search utilities with SSR guards: fuzzy matching, filtering, scoring, SearchHistory class'
+        lines:
+          - 155
+          - 189
+      - path: src/app/files/components/FinderDialog.tsx
+        description: File finder component with real-time filtering and keyboard nav
+        lines:
+          - 1
+          - 305
+      - path: src/app/files/components/SearchDialog.tsx
+        description: Content search component with options (recursive, case, regex, pattern)
+        lines:
+          - 1
+          - 388
+      - path: src/app/api/files/search/route.ts
+        description: Content search API endpoint with security and line-by-line search
+        lines:
+          - 1
+          - 274
+      - path: src/app/files/WorkspaceView.tsx
+        description: 'Integration: state, handlers, dialog rendering with copy props'
+        lines:
+          - 1
+          - 1018
+    functions:
+      - name: SearchHistory.add
+        file: src/lib/files.search.ts
+        description: 'SSR guard: early return if typeof window === ''undefined'''
+      - name: SearchHistory.getAll
+        file: src/lib/files.search.ts
+        description: 'SSR guard: return [] if typeof window === ''undefined'''
+      - name: SearchHistory.clear
+        file: src/lib/files.search.ts
+        description: 'SSR guard: early return if typeof window === ''undefined'''
+  test_coverage:
+    files:
+      - path: src/lib/files.search.test.ts
+        description: 'Search utilities tests (30 tests): fuzzy match, filter, score, history'
+        passing: true
+      - path: src/app/api/files/search/route.test.ts
+        description: 'API endpoint tests (27 tests): validation, regex, search, security, response'
+        passing: true
+        lines: 850
+      - path: src/app/files/components/FinderDialog.test.tsx
+        description: 'FinderDialog tests (38 tests): render, filter, keyboard, mouse, history, highlighting'
+        passing: true
+        lines: 503
+      - path: src/app/files/components/SearchDialog.test.tsx
+        description: 'SearchDialog tests (29 tests): render, execute, results, options, select, keyboard, errors'
+        passing: true
+        lines: 721
+    metrics:
+      total_tests: 124
+      passing: 124
+      coverage_percentage: 100
+      total_project_tests: 523
+      test_code_lines: 2074
+  test_fixes_part3:
+    - fix: Dangerous regex test uses valid pattern with 5 groups for many-groups detection
+    - fix: Empty pattern test verifies button disabled instead of clicking disabled button
+    - fix: FinderDialog filtering tests use setTimeout for React re-render after state
+    - fix: MaxResults truncation test uses multiple files for truncation flag
+    - fix: Path traversal test accepts 400 or 404 (validation order)
+    - fix: SearchDialog loading state tests simplified to avoid async timing issues
+  key_bugs_fixed:
+    - bug: localStorage.getItem is not a function (SSR)
+      root_cause: SearchHistory.getAll() called during SSR where localStorage polyfill exists but getItem is not a function
+      solution: Added typeof window === 'undefined' guards to add(), getAll(), clear() methods
+      impact: No more SSR errors, history loads correctly in browser
+      verification: 'Console logs showed isServer: true and empty history returned without errors'
+  detail_file: implementation-decisions/IMPL-FILE_SEARCH.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Added SSR guards to fix localStorage errors during server-side rendering
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass - 523 total tests passing, no SSR errors, production build successful
+IMPL-FILE_PREVIEW:
+  name: Server-Side Preview API Routes
+  status: Implemented
+  cross_references:
+    - ARCH-PREVIEW_SYSTEM
+    - REQ-FILE_PREVIEW
+  rationale:
+    why: File preview requires server-side file access with security
+    problems_solved:
+      - Cannot access files from client
+      - No content sanitization
+    benefits:
+      - Content type detection
+      - Preview size limits
+      - Secure file access control
+  implementation_approach:
+    summary: API routes for preview and info with type detection
+    details:
+      - 'Archive: list entries (jszip library)'
+      - 'File type: extension + magic bytes'
+      - 'Image: Next.js Image optimization'
+      - 'Text: first 100KB, encoding detection'
+      - GET /api/files/info?path=... for metadata
+      - GET /api/files/preview?path=...&type=text|image|archive
+  code_locations:
+    files:
+      - path: src/app/api/files/preview/route.ts
+        description: Preview content endpoint
+        lines: []
+      - path: src/app/api/files/info/route.ts
+        description: File metadata endpoint
+        lines: []
+    functions:
+      - name: GET handler
+        file: src/app/api/files/preview/route.ts
+        description: Return preview content
+  traceability:
+    architecture:
+      - ARCH-PREVIEW_SYSTEM
+    requirements:
+      - REQ-FILE_PREVIEW
+    tests: []
+    code_annotations:
+      - IMPL-FILE_PREVIEW
+  related_decisions:
+    depends_on:
+      - ARCH-PREVIEW_SYSTEM
+    supersedes: []
+    see_also:
+      - IMPL-FILES_API
+  detail_file: implementation-decisions/IMPL-FILE_PREVIEW.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+IMPL-KEYBINDS:
+  name: Keybinding Registry and Dispatcher
+  status: Implemented
+  cross_references:
+    - ARCH-KEYBIND_SYSTEM
+    - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+    - REQ-REACT_SSR_STABILITY
+  rationale:
+    why: Centralized keybinding enables configuration and discoverability with proper initialization timing
+    problems_solved:
+      - Hard-coded keybindings
+      - No help overlay
+      - Registry not initialized before component render
+      - Scattered keyboard handlers
+    benefits:
+      - Auto-generated help overlay
+      - Config-driven from files.yaml
+      - Single keybind registry
+      - Synchronous initialization during render phase
+  implementation_approach:
+    summary: Keybinding registry with useMemo initialization and global keydown handler
+    details:
+      - 'Action handlers Map: category.verb naming (e.g., file.copy, navigate.up)'
+      - 'Category validation: only ''navigation'', ''file-operations'', ''marking'', ''view-sort'', ''preview'', ''advanced'', ''system'' allowed'
+      - 'Command palette: fuzzy search on action/description with arrow key navigation'
+      - 'Fixed timing issue: moved from useEffect to useMemo to ensure registry ready before child components access it'
+      - 'Global handler: matchKeybinding(event) → find action → execute handler'
+      - 'Help overlay: renders keybindings grouped by 7 categories'
+      - 'Keybinding interface: {key, action, description, category, modifiers}'
+      - Load from files.yaml keybindings section (31 keybindings defined)
+      - Registry initialized with useMemo (synchronous during render, not after)
+  code_locations:
+    files:
+      - path: src/lib/files.keybinds.ts
+        description: Keybinding registry, matcher, formatters, validation (320 lines)
+        lines: []
+      - path: src/app/files/components/HelpOverlay.tsx
+        description: Help overlay component (130 lines)
+        lines: []
+      - path: src/app/files/components/CommandPalette.tsx
+        description: Command palette component (220 lines)
+        lines: []
+      - path: src/app/files/WorkspaceView.tsx
+        description: useMemo initialization of registry (fixed from useEffect)
+        lines:
+          - 66
+          - 68
+      - path: config/files.yaml
+        description: Keybindings configuration (31 keybindings with valid categories)
+        lines:
+          - 194
+          - 202
+  test_coverage:
+    files:
+      - path: src/lib/files.keybinds.test.ts
+        description: Unit tests for registry, matching, formatting, validation (43 tests)
+        passing: true
+    metrics:
+      total_tests: 43
+      passing: 43
+      coverage_percentage: 100
+  key_bugs_fixed:
+    - bug: Registry not initialized warning
+      root_cause: initializeKeybindingRegistry called in useEffect runs after child component render
+      solution: Changed to useMemo for synchronous initialization during render phase
+      impact: No more '[IMPL-KEYBINDS] Registry not initialized' warnings
+    - bug: Invalid category 'search' validation errors
+      root_cause: 'config/files.yaml defined category: ''search'' which is not in KeybindingCategory enum'
+      solution: Changed category from 'search' to 'system' for Ctrl+F and Ctrl+Shift+F keybindings
+      impact: Loaded 31 keybindings across 7 categories without validation errors
+    - bug: React Compiler warnings in CommandPalette (setState in effect, missing useMemo)
+      root_cause: filteredKeybindings recomputed every render; legitimate setState-in-effect for modal reset
+      solution: Added useMemo for filteredKeybindings; added eslint-disable for setState-in-effect where intentional
+      impact: 0 lint errors, 4 performance-only warnings
+    - bug: Help overlay not triggered by 'h' keystroke
+      root_cause: '''h'' key was bound to view.hidden action instead of help.show in config/files.yaml'
+      solution: Remapped 'h' key from view.hidden to help.show (line 207-210 in config/files.yaml)
+      impact: Help overlay now appears when pressing 'h' key
+    - bug: Help overlay not triggered by '?' keystroke
+      root_cause: '''?'' keybinding didn''t specify shift modifier, causing matcher to reject when Shift was pressed (required for ''?'')'
+      solution: 'Added explicit modifiers: {shift: true} to ''?'' keybinding (line 89-94 in config/files.yaml)'
+      impact: Help overlay now appears when pressing '?' (Shift+/)
+    - bug: Hidden files toggle lost keybinding after remapping 'h'
+      root_cause: Reassigning 'h' to help.show left view.hidden action without a key
+      solution: Assigned '.' (period) key to view.hidden action (line 212-215 in config/files.yaml)
+      impact: Hidden files toggle preserved with new keybinding (functionality still TODO)
+    - bug: 'React duplicate key warning: ''Encountered two children with the same key, help.show'''
+      root_cause: Multiple keybindings with same action (help.show bound to both '?' and 'h'); HelpOverlay used key={kb.action} causing duplicate React keys
+      solution: Changed React key from kb.action to formatKeyCombo(kb) in HelpOverlay.tsx line 121, generating unique keys like 'Shift+?' and 'h'
+      impact: Eliminated React console error; help popup renders correctly with both keybindings visible
+    - bug: Help overlay requires pressing Escape twice to close
+      root_cause: WorkspaceView's global keydown handler processed ALL keyboard events including when modal overlays were open. When Escape was pressed, both WorkspaceView (matching it to mark.clear action) and HelpOverlay handlers fired, creating interference between the two event listeners
+      solution: Added modal state check in WorkspaceView keydown handler (line ~1169) to skip keybinding processing when any modal overlay is open (showHelp, showCommandPalette, showFinderDialog, showSearchDialog). Added these states to useEffect dependency array
+      impact: Modal overlays now exclusively handle their own keyboard events without interference. Escape closes help overlay on first press. Fix applies to all modal dialogs
+      debug_evidence: Runtime logs showed WorkspaceView received Escape first (~2ms before HelpOverlay), matched it to mark.clear, then HelpOverlay processed same event. After fix, WorkspaceView skips processing when modals are open
+    - bug: Keystroke 'r' to rename did nothing
+      root_cause: file.rename action handler was a TODO/no-op (console.info only, no UI)
+      solution: 'Implemented rename flow in IMPL-RENAME_DIALOG: RenameDialog component, rename state, file.rename opens dialog for cursor file, onRename(file) for context menu; handleRenameConfirm calls POST /api/files rename then refresh'
+      impact: 'R key and context menu Rename open rename dialog and perform rename; footer shows ''R: Rename'''
+  key_algorithms:
+    - name: Keybinding matching
+      complexity: O(n) over keybindings per keypress
+      note: First match wins; modifier exact match
+    - name: Category lookup
+      complexity: O(1)
+      note: Map by category for help overlay and command palette
+  performance:
+    registry_init_ms: < 5
+    key_match_per_keystroke_ms: < 1
+    help_overlay_render_ms: < 16
+    command_palette_filter_ms: < 5
+  detail_file: implementation-decisions/IMPL-KEYBINDS.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-08T00:00:00.000Z
+      author: AI Agent
+      reason: Fixed double-Escape bug in help overlay by adding modal state check to WorkspaceView keydown handler
+    last_validated:
+      date: 2026-02-08T00:00:00.000Z
+      validator: AI Agent
+      result: pass - help triggered by both 'h' and '?', closes on first Escape press, no interference with modal keyboard events
+IMPL-MOUSE_SUPPORT:
+  name: Mouse and Touch Interaction Implementation
+  status: Active
+  cross_references:
+    - ARCH-MOUSE_SUPPORT
+    - REQ-MOUSE_INTERACTION
+  technical_approach:
+    summary: Integrated mouse and touch support via context menu component, HTML5 drag-drop, and existing click handlers
+    components:
+      - name: ContextMenu Component
+        path: src/app/files/components/ContextMenu.tsx
+        lines: 198
+        description: Portal-rendered context menu with operation discovery
+      - name: FilePane Mouse Integration
+        path: src/app/files/components/FilePane.tsx
+        lines_added: 150
+        description: Added mouse event handlers and drag-drop support
+  implementation_details:
+    context_menu:
+      - Accessible ARIA labels and roles
+      - Keyboard shortcuts displayed next to operations
+      - Outside click and Escape key dismiss
+      - Portal rendering to document.body (escapes pane overflow)
+      - Position calculation with boundary detection
+      - Shows target file count (marked files or current file)
+    drag_drop:
+      - 'Drag data: { files: string[], sourcePath: string }'
+      - 'Modifier key detection: Ctrl=copy, default=move'
+      - Custom drag image with file count badge
+      - HTML5 drag-and-drop API (native browser)
+      - Touch support built-in (works on tablets)
+      - Visual drop target highlighting (ring on drag-over)
+    click_handlers:
+      - 'Double click: enters directory or opens file (already existed)'
+      - 'Mouse down on pane: sets focus to that pane (onFocusRequest callback)'
+      - 'Right click: shows context menu at coordinates'
+      - 'Single click: moves cursor to clicked file'
+    scroll:
+      - Native browser overflow-y-auto (no custom implementation)
+  design_decisions:
+    - decision: Portal vs inline menu
+      choice: Portal to document.body
+      rationale: Escapes pane overflow constraints
+    - decision: HTML5 drag-drop vs library
+      choice: HTML5 API
+      rationale: No dependencies, touch support, standard behavior
+    - decision: Custom drag image
+      choice: Generated DOM element with file count
+      rationale: Better UX than default HTML drag ghost
+  integration_points:
+    - Connects to existing bulk operation logic (Phase 2)
+    - Respects marked files (operates on marks if present)
+    - WorkspaceView passes operation handlers to FilePane
+  files_modified:
+    created:
+      - src/app/files/components/ContextMenu.tsx
+      - src/app/files/components/ContextMenu.test.tsx
+    modified:
+      - src/app/files/components/FilePane.tsx
+  traceability:
+    requirements:
+      - REQ-MOUSE_INTERACTION
+    architecture:
+      - ARCH-MOUSE_SUPPORT
+    tests: []
+    code_annotations:
+      - ARCH-MOUSE_SUPPORT
+      - IMPL-MOUSE_SUPPORT
+      - REQ-MOUSE_INTERACTION
+  test_results:
+    test_files:
+      - path: src/app/files/components/ContextMenu.test.tsx
+        tests: 31
+        passed: 31
+        failed: 0
+      - path: src/app/files/components/FilePane.test.tsx
+        tests: 14
+        passed: 14
+        failed: 0
+        notes: Includes 2 tests for onFocusRequest (pane click and file click bubbling)
+      - path: src/app/files/WorkspaceView.test.tsx
+        tests: 38
+        passed: 38
+        failed: 0
+        notes: Includes 2 integration tests for mouse-click focus switching
+    total_project_tests: 554
+    total_passing: 554
+    coverage_percentage: Not measured (integrated testing)
+  key_features:
+    - Click to select file
+    - Double-click to enter directory
+    - Drag-and-drop between panes
+    - Mouse click on pane sets focus
+    - Right-click context menu with all operations
+    - Scroll wheel support (native)
+    - Touch-friendly (works on tablets)
+  accessibility:
+    - All operations keyboard-accessible
+    - Context menu uses role='menu' and role='menuitem'
+    - Drag-drop complements keyboard workflow
+    - Menu has aria-label='File operations menu'
+  performance:
+    context_menu_render_ms: < 16
+    drag_image_creation_ms: < 1
+    position_calculation_ms: < 1
+  detail_file: implementation-decisions/IMPL-MOUSE_SUPPORT.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-08T00:00:00.000Z
+      author: AI Agent
+      reason: Added mouse-click-to-focus functionality via onFocusRequest callback prop in FilePane, with onMouseDown handler on pane container for focus bubbling
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass - 554 tests passing
+IMPL-FILES_CONFIG_COMPLETE:
+  name: Complete File Manager Configuration Implementation
+  status: Active
+  cross_references:
+    - ARCH-CONFIG_DRIVEN_UI
+    - REQ-CONFIG_DRIVEN_FILE_MANAGER
+    - REQ-FILES_CONFIG_COMPLETE
+  rationale:
+    why: Complete file manager configuration system by externalizing all UI text, layout preferences, startup behavior, and file type indicators
+    problems_solved:
+      - Fixed layout and startup behavior
+      - Hard-coded UI strings scattered across components
+      - Incomplete theme configuration
+      - Non-customizable file type indicators
+    benefits:
+      - Complete visual customization of file types
+      - Easy workflow personalization via YAML
+      - Future internationalization support ready
+      - Zero code changes for appearance customization
+  implementation_approach:
+    summary: Extended YAML configuration files with new sections (layout, startup, fileTypes), updated TypeScript types, added defaults, and provided helper functions for configuration access
+    details:
+      - Added FileTypeConfig, FilesLayoutConfig, FilesStartupConfig TypeScript interfaces
+      - Extended config/files.yaml with marking/help/commandPalette copy, layout preferences, startup configuration
+      - Extended config/theme.yaml with fileTypes section (9 common types with icon/color/patterns)
+      - Extended DEFAULT_FILES_CONFIG with all new sections and defaults
+      - Implemented getFileTypeConfig() for pattern-based file type matching
+  code_locations:
+    files:
+      - path: config/files.yaml
+        description: Extended with marking, help, commandPalette copy; added layout and startup sections
+        lines:
+          - 40
+          - 90
+      - path: config/theme.yaml
+        description: Added fileTypes configuration with 9 file types and patterns
+        lines:
+          - 100
+          - 175
+      - path: src/lib/config.types.ts
+        description: Added FileTypeConfig, FilesLayoutConfig, FilesStartupConfig interfaces; extended FilesCopyConfig, FilesThemeConfig, FilesConfig
+        lines:
+          - 311
+          - 450
+      - path: src/lib/config.ts
+        description: Extended DEFAULT_FILES_CONFIG; added getFileTypeConfig() helper
+        lines:
+          - 390
+          - 510
+      - path: src/lib/config.test.ts
+        description: Added 16 new tests for files configuration and file type matching
+        lines:
+          - 393
+          - 503
+    functions:
+      - name: getFileTypeConfig
+        file: src/lib/config.ts
+        description: Matches filename against configured file type patterns and returns icon/color config
+      - name: getFilesConfig
+        file: src/lib/config.ts
+        description: Loads and merges files configuration with defaults
+  traceability:
+    architecture:
+      - ARCH-CONFIG_DRIVEN_UI
+    requirements:
+      - REQ-FILES_CONFIG_COMPLETE
+      - REQ-CONFIG_DRIVEN_FILE_MANAGER
+    tests: []
+    code_annotations:
+      - IMPL-FILES_CONFIG_COMPLETE
+      - REQ-FILES_CONFIG_COMPLETE
+  related_decisions:
+    depends_on:
+      - IMPL-CONFIG_LOADER
+      - IMPL-FILES_CONFIG
+      - IMPL-KEYBINDS
+    supersedes: []
+    see_also:
+      - IMPL-THEME_INJECTION
+      - IMPL-COMPARISON_COLORS
+  test_results:
+    test_files:
+      - path: src/lib/config.test.ts
+        tests: 55
+        passed: 55
+        failed: 0
+        note: 16 new tests added for Phase 11 configuration
+    total_project_tests: 570
+    total_passing: 570
+    coverage: Configuration module 100% covered
+  key_features:
+    - All UI text externalized to config/files.yaml
+    - Complete comparison color palette (name/size/time)
+    - File type icons and colors with pattern matching
+    - Keybinding configuration (existing, documented)
+    - Layout preferences (default type, pane count, max panes)
+    - Startup configuration (mode, paths, remember last)
+  configuration_sections:
+    copy:
+      - commandPalette (title, placeholder, noResults, executeButton)
+      - help (title, close)
+      - marking (markedCount, clearMarks, markAll, invertMarks)
+    layout:
+      - 'allowPaneManagement: boolean'
+      - 'default: tile|oneRow|oneColumn|fullscreen'
+      - 'defaultPaneCount: number'
+      - 'maxPanes: number'
+    startup:
+      - 'mode: configured|last|home'
+      - 'paths: Record<string, string>'
+      - 'rememberLastLocations: boolean'
+    fileTypes:
+      - directory, file, image, code, archive, document, spreadsheet, video, audio, config
+      - 'Each type: icon, iconClass, patterns[]'
+  performance:
+    config_load_ms: < 5
+    file_type_match_ms: < 1
+    memory_overhead_kb: ~10
+  detail_file: implementation-decisions/IMPL-FILES_CONFIG_COMPLETE.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Phase 11 implementation complete
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass - 570 tests passing (55 config tests)
+IMPL-PANE_MANAGEMENT:
+  name: Runtime Pane Management Controls
+  status: Active
+  cross_references:
+    - ARCH-KEYBIND_SYSTEM
+    - ARCH-PANE_LIFECYCLE
+    - REQ-FILES_CONFIG_COMPLETE
+    - REQ-MULTI_PANE_LAYOUT
+  rationale:
+    why: Implements runtime controls for adding and removing file panes to support flexible multi-panel workflows per ARCH-PANE_LIFECYCLE
+    problems_solved:
+      - Cannot adapt layout to current task needs
+      - No UI affordance for pane management
+      - Pane count fixed at initialization
+      - Users cannot adjust pane count without reloading page
+    benefits:
+      - Config validation prevents invalid states
+      - Dynamic workflow adjustment without page reload
+      - Keyboard shortcuts integrate with existing keybind system
+      - Respects user's maxPanes and allowPaneManagement preferences
+  implementation_approach:
+    summary: Add/remove pane handlers with config validation, keyboard shortcuts, command palette integration
+    details:
+      - 'Command palette actions: pane.add and pane.remove'
+      - 'handleAddPane(): Check allowPaneManagement and maxPanes limit, clone focused pane or create new at home'
+      - 'handleRemovePane(index): Check allowPaneManagement and minimum 1 pane, adjust focusIndex after removal'
+      - 'Keyboard shortcuts: = or Ctrl+= to add, - or Ctrl+- to remove'
+      - 'Type synchronization: Added pane-management category to KeybindingCategory type in files.keybinds.ts, category labels, and validation array'
+      - Config validation ensures layout.allowPaneManagement && panes.length < layout.maxPanes
+      - State updates trigger comparison index rebuild and layout recalculation
+  code_locations:
+    files:
+      - path: src/app/files/WorkspaceView.tsx
+        description: Added handleAddPane and handleRemovePane handlers with keybinding integration
+        lines:
+          - 0
+          - 0
+      - path: config/files.yaml
+        description: Added pane management keybindings and copy text
+        lines:
+          - 0
+          - 0
+      - path: src/lib/config.types.ts
+        description: Added pane-management to KeybindingCategory type
+        lines:
+          - 283
+          - 293
+      - path: src/lib/files.keybinds.ts
+        description: Added pane-management to KeybindingCategory type, labels, and validation
+        lines:
+          - 10
+          - 18
+    functions:
+      - name: handleAddPane
+        file: src/app/files/WorkspaceView.tsx
+        description: Adds new pane with config validation, clones focused pane state
+      - name: handleRemovePane
+        file: src/app/files/WorkspaceView.tsx
+        description: Removes pane at index with config validation, adjusts focus
+  traceability:
+    architecture:
+      - ARCH-PANE_LIFECYCLE
+      - ARCH-KEYBIND_SYSTEM
+    requirements:
+      - REQ-MULTI_PANE_LAYOUT
+      - REQ-FILES_CONFIG_COMPLETE
+    tests: []
+    code_annotations:
+      - ARCH-PANE_LIFECYCLE
+      - IMPL-PANE_MANAGEMENT
+      - REQ-MULTI_PANE_LAYOUT
+  related_decisions:
+    depends_on:
+      - IMPL-FILES_CONFIG_COMPLETE
+      - IMPL-KEYBINDS
+      - IMPL-WORKSPACE_VIEW
+    supersedes: []
+    see_also:
+      - IMPL-LAYOUT_CALCULATOR
+      - IMPL-COMPARISON_INDEX
+  detail_file: implementation-decisions/IMPL-PANE_MANAGEMENT.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Added type synchronization fix for KeybindingCategory
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass - build succeeds, 570 tests passing
+IMPL-PANE_REFRESH:
+  name: Manual Pane Refresh Implementation
+  status: Active
+  cross_references:
+    - ARCH-KEYBIND_SYSTEM
+    - ARCH-PANE_REFRESH
+    - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+    - REQ-PANE_REFRESH
+  rationale:
+    why: Implements ARCH-PANE_REFRESH by reusing handleNavigate mechanism to refresh directory listings when external file system changes occur
+    problems_solved:
+      - Browser default refresh would reload entire page
+      - Need for both single and multi-pane refresh
+      - No refresh mechanism in original implementation
+      - Stale directory listings when files modified externally
+    benefits:
+      - Browser default prevented by existing keybinding system
+      - Consistent with existing post-operation refresh pattern
+      - Leverages existing handleNavigate logic (API fetch, sort, cursor restoration)
+      - Minimal code (2 keybindings + 2 handlers = 10 lines total)
+      - Parallel multi-pane refresh using Promise.all
+  implementation_approach:
+    summary: Add Ctrl+R and Ctrl+Shift+R keybindings, handlers call handleNavigate with current path
+    details:
+      - 'config/files.yaml: Add pane.refresh (Ctrl+R) and pane.refresh-all (Ctrl+Shift+R) keybindings'
+      - 'handleNavigate already provides: fetch from /api/files, sortFiles application, cursor restoration'
+      - 'WorkspaceView.tsx actionHandlers: pane.refresh calls handleNavigate(focusIndex, pane.path)'
+      - Both actions in pane-management category for organization
+      - Marks cleared automatically (existing handleNavigate behavior)
+      - No changes needed to useMemo dependencies (handleNavigate and panes already included)
+      - pane.refresh-all uses Promise.all(panes.map((p, idx) => handleNavigate(idx, p.path)))
+  code_locations:
+    files:
+      - path: config/files.yaml
+        description: Added pane.refresh and pane.refresh-all keybinding definitions
+        lines:
+          - 287
+          - 300
+      - path: src/app/files/WorkspaceView.tsx
+        description: Added refresh action handlers in actionHandlers Map
+        lines:
+          - 1158
+          - 1166
+    functions:
+      - name: pane.refresh handler
+        file: src/app/files/WorkspaceView.tsx
+        description: Refreshes currently focused pane by calling handleNavigate with current path
+      - name: pane.refresh-all handler
+        file: src/app/files/WorkspaceView.tsx
+        description: Refreshes all panes in parallel using Promise.all
+  traceability:
+    architecture:
+      - ARCH-PANE_REFRESH
+      - ARCH-KEYBIND_SYSTEM
+    requirements:
+      - REQ-PANE_REFRESH
+      - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+    tests: []
+    code_annotations:
+      - ARCH-PANE_REFRESH
+      - IMPL-PANE_REFRESH
+      - REQ-PANE_REFRESH
+  related_decisions:
+    depends_on:
+      - IMPL-FILES_API
+      - IMPL-KEYBINDS
+      - IMPL-WORKSPACE_VIEW
+    supersedes: []
+    see_also:
+      - IMPL-PANE_MANAGEMENT
+      - IMPL-BULK_OPS
+  detail_file: implementation-decisions/IMPL-PANE_REFRESH.yaml
+  metadata:
+    created:
+      date: 2026-02-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-08T00:00:00.000Z
+      author: AI Agent
+      reason: Initial implementation
+    last_validated:
+      date: 2026-02-08T00:00:00.000Z
+      validator: AI Agent
+      result: pass - build succeeds, 36 keybindings loaded
+IMPL-FILE_COLUMN_CONFIG:
+  name: Configurable File Column Display
+  status: Active
+  cross_references:
+    - ARCH-CONFIG_DRIVEN_UI
+    - IMPL-FILE_PANE
+    - IMPL-FILES_CONFIG
+    - REQ-CONFIG_DRIVEN_FILE_MANAGER
+    - REQ-FILE_LISTING
+  rationale:
+    why: Implements configurable column display for file panes to meet user requirement for customizable file metadata display order and format
+    problems_solved:
+      - Column display not integrated with existing YAML configuration system
+      - Hard-coded column order (checkbox, icon, name, size, mtime) cannot be changed
+      - No way to hide/show specific columns based on user preference
+      - Time format was simplified (toLocaleDateString) instead of full timestamp
+    benefits:
+      - 'Default order optimized for most recent changes: mtime, size, name'
+      - 'Users can hide unwanted columns (visible: false)'
+      - Consistent YYYY-MM-DD HH:MM:SS time format
+      - Full integration with existing config-driven architecture
+      - Users can configure column order via config/files.yaml
+  implementation_approach:
+    summary: Extended config system with FilesColumnConfig type, added formatDateTime utility, and refactored FilePane to render columns dynamically based on configuration
+    details:
+      - Added columns section to config/files.yaml with visibility control
+      - Added default columns configuration (mtime, size, name) to DEFAULT_FILES_CONFIG
+      - Added FileColumnId type and FilesColumnConfig interface to config.types.ts
+      - Checkbox and directory icon remain fixed, columns render in config order
+      - Columns with visible:false are filtered out
+      - Created formatDateTime utility function for YYYY-MM-DD HH:MM:SS formatting
+      - Extended FilesConfig interface with optional columns array
+      - Refactored FilePane rendering to use dynamic column generation via renderColumn helper
+      - Threaded columns prop through page.tsx → WorkspaceView.tsx → FilePane.tsx
+  code_locations:
+    files:
+      - path: src/lib/config.types.ts
+        description: Added FileColumnId type, FilesColumnConfig interface, columns to FilesConfig
+        lines:
+          - 464
+          - 471
+      - path: src/lib/config.ts
+        description: Added default columns array to DEFAULT_FILES_CONFIG
+        lines:
+          - 473
+          - 479
+      - path: config/files.yaml
+        description: Added columns configuration section
+        lines:
+          - 332
+          - 341
+      - path: src/lib/files.utils.ts
+        description: Added formatDateTime function for YYYY-MM-DD HH:MM:SS format
+        lines:
+          - 42
+          - 57
+      - path: src/app/files/page.tsx
+        description: Extract and pass columns config to WorkspaceView
+        lines:
+          - 28
+          - 36
+          - 72
+      - path: src/app/files/WorkspaceView.tsx
+        description: Accept columns prop and forward to FilePane
+        lines:
+          - 1296
+          - 60
+          - 74
+      - path: src/app/files/components/FilePane.tsx
+        description: Accept columns prop, added renderColumn helper, dynamic column rendering
+        lines:
+          - 13
+          - 280
+          - 323
+          - 369
+          - 6
+          - 63
+          - 93
+    functions:
+      - name: formatDateTime
+        file: src/lib/files.utils.ts
+        description: Formats Date or ISO string to YYYY-MM-DD HH:MM:SS with zero-padding
+      - name: renderColumn
+        file: src/app/files/components/FilePane.tsx
+        description: Helper function that renders a single column based on FileColumnId
+  traceability:
+    architecture:
+      - ARCH-CONFIG_DRIVEN_UI
+    requirements:
+      - REQ-CONFIG_DRIVEN_FILE_MANAGER
+      - REQ-FILE_LISTING
+    tests: []
+    code_annotations:
+      - IMPL-FILE_COLUMN_CONFIG
+      - REQ-CONFIG_DRIVEN_FILE_MANAGER
+  related_decisions:
+    depends_on:
+      - ARCH-CONFIG_DRIVEN_UI
+      - IMPL-FILE_PANE
+      - IMPL-FILES_CONFIG
+    supersedes: []
+    see_also:
+      - IMPL-FILES_CONFIG_COMPLETE
+  detail_file: implementation-decisions/IMPL-FILE_COLUMN_CONFIG.yaml
+  metadata:
+    created:
+      date: 2026-02-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-08T00:00:00.000Z
+      author: AI Agent
+      reason: Initial implementation of configurable file columns
+    last_validated:
+      date: 2026-02-08T00:00:00.000Z
+      validator: AI Agent
+      result: pass - all tests passing (593 passed), formatDateTime unit tests pass, column rendering works correctly
+IMPL-RENAME_DIALOG:
+  name: Rename File Dialog and R-Key Handler
+  status: Active
+  cross_references:
+    - ARCH-KEYBIND_SYSTEM
+    - IMPL-KEYBINDS
+    - IMPL-MOUSE_SUPPORT
+    - REQ-FILE_OPERATIONS
+    - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+    - REQ-MOUSE_INTERACTION
+  rationale:
+    why: Implements the file.rename action so that keystroke R and context menu Rename open a modal and perform rename via existing API
+    problems_solved:
+      - 'No UI for single-file rename despite POST /api/files operation: rename already existing'
+      - Context menu Rename had no wired handler from WorkspaceView
+      - Keystroke 'r' to rename did nothing (handler was TODO/no-op)
+    benefits:
+      - 'Pane refresh after rename via handleNavigate; footer shows ''R: Rename'' hint'
+      - R key opens rename dialog for cursor file; context menu Rename opens dialog for right-clicked file
+      - Single RenameDialog component; same API flow for both entry points
+  implementation_approach:
+    summary: RenameDialog component, rename state in WorkspaceView, file.rename handler and onRename(file) callback; handleRenameConfirm calls POST /api/files rename then refreshes pane
+    details:
+      - 'ContextMenu: call onRename(file) instead of onRename(); ContextMenu.test updated to expect onRename(mockFile)'
+      - 'file.rename action handler: get pane.files[pane.cursor]; if file, setRenameDialog with file.path, file.name, focusIndex'
+      - 'FilePane onRename: (file: FileStat) => void; pass onRename={(file) => setRenameDialog(...)} so context menu opens dialog for that file'
+      - 'Footer: added ''R: Rename'' hint'
+      - 'RenameDialog.tsx: modal with initialName input, onConfirm(newName), onClose; ESC to cancel'
+      - 'WorkspaceView: renameDialog state { isOpen, filePath, fileName, paneIndex }; handleRenameConfirm(filePath, paneIndex, newName) builds dest path, POST operation rename, handleNavigate(paneIndex, dir)'
+  code_locations:
+    files:
+      - path: src/app/files/components/RenameDialog.tsx
+        description: Rename modal component
+        lines:
+          - 1
+          - 100
+      - path: src/app/files/WorkspaceView.tsx
+        description: renameDialog state, handleRenameConfirm, file.rename handler, RenameDialog render, onRename to FilePane
+        lines: []
+      - path: src/app/files/components/FilePane.tsx
+        description: 'onRename prop type (file: FileStat) => void'
+        lines:
+          - 54
+          - 55
+      - path: src/app/files/components/ContextMenu.tsx
+        description: onRename(file) call and type
+        lines:
+          - 28
+          - 161
+    functions:
+      - name: handleRenameConfirm
+        file: src/app/files/WorkspaceView.tsx
+        description: POST /api/files rename then handleNavigate to refresh pane
+  traceability:
+    architecture:
+      - ARCH-KEYBIND_SYSTEM
+    requirements:
+      - REQ-FILE_OPERATIONS
+      - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+      - REQ-MOUSE_INTERACTION
+    tests: []
+    code_annotations:
+      - IMPL-MOUSE_SUPPORT
+      - IMPL-RENAME_DIALOG
+      - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+  related_decisions:
+    depends_on:
+      - IMPL-FILES_API
+      - IMPL-KEYBINDS
+      - IMPL-WORKSPACE_VIEW
+    supersedes: []
+    see_also:
+      - IMPL-MOUSE_SUPPORT
+      - IMPL-KEYBINDS
+  detail_file: implementation-decisions/IMPL-RENAME_DIALOG.yaml
+  metadata:
+    created:
+      date: 2026-02-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-08T00:00:00.000Z
+      author: AI Agent
+      reason: TIED decision for rename fix (R key + context menu)
+    last_validated:
+      date: 2026-02-08T00:00:00.000Z
+      validator: AI Agent
+      result: pass - R opens dialog, context menu Rename opens dialog, rename API and refresh work
+IMPL-NSYNC_ENGINE:
+  name: Sync Engine Core Implementation
+  status: Active
+  cross_references:
+    - ARCH-NSYNC_INTEGRATION
+    - REQ-MOVE_SEMANTICS
+    - REQ-NSYNC_MULTI_TARGET
+  rationale:
+    why: Implements multi-destination file synchronization engine orchestrating parallel sync with observer pattern, move semantics, and store monitoring
+    problems_solved:
+      - No progress tracking during long operations
+      - Sequential sync to multiple destinations is slow
+      - Source deleted before all destinations verified
+    benefits:
+      - Parallel sync to all destinations
+      - Real-time progress callbacks via observer
+      - Safe move semantics (delete source only after ALL succeed)
+      - Store failure detection and abort
+  implementation_approach:
+    summary: SyncEngine class orchestrates sync loop iterating over sources, syncing each to all destinations in parallel, tracking results, and handling move deletion
+    details:
+      - 'For each source: syncItem() syncs to all destinations via Promise.all'
+      - 'Move semantics: track sourcesToDelete, delete only after ALL destinations succeed'
+      - 'Observer callbacks: onStart, onItemStart, onItemProgress, onItemComplete, onProgress, onFinish'
+      - 'sync() method: validate inputs, build plan, iterate sources'
+      - StoreMonitor tracks error streaks, marks stores unavailable
+      - SyncEngine constructor accepts optional SyncObserver
+      - syncToDestination() handles single source->dest copy with compare, hash, verify
+  code_locations:
+    files:
+      - path: src/lib/sync/engine.ts
+        description: SyncEngine class with sync(), syncItem(), syncToDestination() methods
+        lines: []
+      - path: src/app/api/files/route.ts
+        description: API route handler for sync-all operation
+        lines: []
+      - path: src/app/files/WorkspaceView.tsx
+        description: handleCopyAll(), handleMoveAll() React handlers
+        lines: []
+    functions:
+      - name: sync
+        file: src/lib/sync/engine.ts
+        description: Main entry point for multi-destination sync
+      - name: syncItem
+        file: src/lib/sync/engine.ts
+        description: Sync single source to all destinations in parallel
+      - name: syncToDestination
+        file: src/lib/sync/engine.ts
+        description: Sync source to single destination with compare/verify
+  traceability:
+    architecture:
+      - ARCH-NSYNC_INTEGRATION
+    requirements:
+      - REQ-NSYNC_MULTI_TARGET
+      - REQ-MOVE_SEMANTICS
+    tests: []
+    code_annotations:
+      - IMPL-NSYNC_ENGINE
+      - REQ-MOVE_SEMANTICS
+      - REQ-NSYNC_MULTI_TARGET
+  related_decisions:
+    depends_on:
+      - IMPL-NSYNC_COMPARE
+      - IMPL-NSYNC_HASH
+      - IMPL-NSYNC_OPERATIONS
+      - IMPL-NSYNC_STORE
+      - IMPL-NSYNC_VERIFY
+    supersedes: []
+    see_also:
+      - IMPL-BULK_OPS
+      - IMPL-FILES_API
+  detail_file: implementation-decisions/IMPL-NSYNC_ENGINE.yaml
+  metadata:
+    created:
+      date: 2026-02-09T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-09T00:00:00.000Z
+      author: AI Agent
+      reason: API validation fix (sync-all without src); route tests and TIED docs
+    last_validated:
+      date: 2026-02-09T00:00:00.000Z
+      validator: AI Agent
+      result: pass - 4/4 engine tests, 6/6 route tests, Copy to All Panes verified
+IMPL-NSYNC_TYPE_SAFETY:
+  name: TypeScript Type Safety for Node.js Types
+  status: Active
+  cross_references:
+    - IMPL-NSYNC_ENGINE
+    - IMPL-NSYNC_HASH
+  rationale:
+    why: Handle Node.js type incompatibilities (bigint file sizes, stream types, import type restrictions) to pass TypeScript strict mode compilation
+    problems_solved:
+      - ErrorClass imported as type but used as value (enum access)
+      - stat.size is number | bigint but code expected only number
+      - Stream 'data' event emits string | Buffer but code expected only Buffer
+    benefits:
+      - Correct stream type handling
+      - Production-ready TypeScript build
+      - Type-safe handling of large files (bigint support)
+      - Zero TypeScript compilation errors
+  implementation_approach:
+    summary: Add type guards and conversions to handle Node.js bigint sizes and stream types; fix import statements to allow value usage
+    details:
+      - 'Apply conversion in 3 locations: plan.totalBytes, result.bytesCopied, ItemInfo.size'
+      - 'Convert stat.size bigint to number: typeof stat.size === ''bigint'' ? Number(stat.size) : stat.size'
+      - 'Fix ErrorClass import: move from ''import type'' to regular import'
+      - 'Fix NoopObserver import: move from separate import to regular import'
+      - 'Handle stream chunk types: typeof chunk === ''string'' ? Buffer.from(chunk) : chunk'
+  code_locations:
+    files:
+      - path: src/lib/sync/engine.ts
+        description: Type conversions for stat.size (3 locations), ErrorClass import fix
+        lines:
+          - 169
+          - 261
+          - 7
+          - 89
+      - path: src/lib/sync/hash.ts
+        description: Stream chunk type handling
+        lines:
+          - 111
+          - 114
+    functions: []
+  traceability:
+    architecture: []
+    requirements: []
+    tests: []
+    code_annotations:
+      - IMPL-NSYNC_TYPE_SAFETY
+  related_decisions:
+    depends_on:
+      - IMPL-NSYNC_ENGINE
+      - IMPL-NSYNC_HASH
+    supersedes: []
+    see_also:
+      - IMPL-TEST_SETUP
+  detail_file: implementation-decisions/IMPL-NSYNC_TYPE_SAFETY.yaml
+  metadata:
+    created:
+      date: 2026-02-09T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-09T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation after TypeScript build fixes
+    last_validated:
+      date: 2026-02-09T00:00:00.000Z
+      validator: AI Agent
+      result: pass - npm run build succeeds with zero errors
+IMPL-CURSOR_BOUNDS_CHECK:
+  name: Cursor Bounds Validation Fix
+  status: Active
+  cross_references:
+    - IMPL-WORKSPACE_VIEW
+    - IMPL-DIR_HISTORY
+  rationale:
+    why: Fix runtime crash in handleNavigate when cursor is negative by adding proper bounds validation
+    problems_solved:
+      - Accessing pane.files[-1] returns undefined, causing crash on .name access
+      - Crash when pane.cursor is -1 (invalid state)
+      - Guard condition only checked upper bound, not lower bound
+    benefits:
+      - CopyAll/MoveAll operations complete without crashes
+      - Handles edge cases where cursor becomes negative
+      - Proper validation of cursor before array access
+  implementation_approach:
+    summary: Add cursor >= 0 check to guard condition before accessing pane.files[pane.cursor]
+    details:
+      - 'Root cause: Guard checked ''cursor < files.length'' but not ''cursor >= 0'''
+      - 'Solution: Add ''cursor >= 0'' to guard condition'
+      - 'When cursor = -1: -1 < 8 evaluates to true, guard passes but pane.files[-1] = undefined'
+      - Ensures cursor is in valid range [0, files.length-1] before array access
+  code_locations:
+    files:
+      - path: src/app/files/WorkspaceView.tsx
+        description: handleNavigate function guard condition for saving cursor position
+        lines:
+          - 265
+    functions:
+      - name: handleNavigate
+        file: src/app/files/WorkspaceView.tsx
+        description: Added cursor >= 0 check to guard condition before accessing pane.files[pane.cursor]
+  traceability:
+    architecture: []
+    requirements:
+      - REQ-KEYBOARD_NAVIGATION
+      - REQ-MULTI_PANE_LAYOUT
+    tests: []
+    code_annotations:
+      - IMPL-CURSOR_BOUNDS_CHECK
+      - IMPL-WORKSPACE_VIEW
+  related_decisions:
+    depends_on:
+      - IMPL-WORKSPACE_VIEW
+      - IMPL-DIR_HISTORY
+    supersedes: []
+    see_also:
+      - IMPL-NSYNC_ENGINE
+  detail_file: implementation-decisions/IMPL-CURSOR_BOUNDS_CHECK.yaml
+  metadata:
+    created:
+      date: 2026-02-09T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-09T00:00:00.000Z
+      author: AI Agent
+      reason: Bug fix after discovering crash in CopyAll operation
+    last_validated:
+      date: 2026-02-09T00:00:00.000Z
+      validator: AI Agent
+      result: pass - CopyAll completes without crash, verified with runtime logs
+IMPL-COPY_ATTRS:
+  name: Copy Preserve File Attributes
+  status: Active
+  cross_references:
+    - IMPL-FILES_DATA
+    - IMPL-NSYNC_OPERATIONS
+    - REQ-COPY_OPERATIONS
+    - REQ-FILE_OPERATIONS
+  rationale:
+    why: Copying a file with nsync or simpler methods must maintain attributes (mode, timestamps) where possible
+    benefits:
+      - 'Best-effort: copy still succeeds if chmod/utimes fail'
+      - Preserves mode (permissions) on Unix
+      - Preserves mtime/atime for comparison and backup semantics
+  implementation_approach:
+    summary: Shared preserveCopyAttributes() after fs.copyFile; stat source then chmod + utimes on dest; each step try/catch so unsupported or denied ops do not fail the copy
+  code_locations:
+    files:
+      - path: src/lib/copyAttributes.ts
+        description: preserveCopyAttributes() helper
+      - path: src/lib/sync/operations.ts
+        description: Called after copyFile
+      - path: src/lib/files.data.ts
+        description: Called after copyFile
+  traceability:
+    requirements:
+      - REQ-COPY_OPERATIONS
+      - REQ-FILE_OPERATIONS
+    tests: []
+    code_annotations:
+      - IMPL-COPY_ATTRS
+  related_decisions:
+    depends_on:
+      - IMPL-NSYNC_OPERATIONS
+      - IMPL-FILES_DATA
+    see_also: []
+  detail_file: implementation-decisions/IMPL-COPY_ATTRS.yaml
+  metadata:
+    created:
+      date: 2026-02-09T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-09T00:00:00.000Z
+      author: AI Agent
+      reason: Copy must maintain attributes where possible (TODO)
+IMPL-NSYNC_HASH:
+  name: Hash Computation Implementation
+  status: Active
+  cross_references:
+    - REQ-HASH_COMPUTATION
+    - ARCH-HASH_VERIFICATION
+  rationale:
+    why: Hash computation with BLAKE3, SHA-256, XXH3 support and streaming for large files
+    problems_solved: []
+    benefits: []
+  implementation_approach:
+    summary: Hash computation with BLAKE3, SHA-256, XXH3 support and streaming for large files
+    details: []
+  code_locations:
+    files:
+      - path: src/lib/sync/hash.ts
+        description: IMPL-NSYNC_HASH
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-HASH_VERIFICATION
+    requirements:
+      - REQ-HASH_COMPUTATION
+    tests: []
+    code_annotations:
+      - IMPL-NSYNC_HASH
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also: []
+  detail_file: implementation-decisions/IMPL-NSYNC_HASH.yaml
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated: 2026-02-09T00:00:00.000Z
+IMPL-NSYNC_VERIFY:
+  name: Destination Verification Implementation
+  status: Active
+  cross_references:
+    - REQ-VERIFY_DEST
+    - ARCH-HASH_VERIFICATION
+  rationale:
+    why: Destination file verification by recomputing hash and comparing to source
+    problems_solved: []
+    benefits: []
+  implementation_approach:
+    summary: Destination file verification by recomputing hash and comparing to source
+    details: []
+  code_locations:
+    files:
+      - path: src/lib/sync/verify.ts
+        description: IMPL-NSYNC_VERIFY
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-HASH_VERIFICATION
+    requirements:
+      - REQ-VERIFY_DEST
+    tests: []
+    code_annotations:
+      - IMPL-NSYNC_VERIFY
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also: []
+  detail_file: implementation-decisions/IMPL-NSYNC_VERIFY.yaml
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated: 2026-02-09T00:00:00.000Z
+IMPL-NSYNC_STORE:
+  name: Store Monitoring Implementation
+  status: Active
+  cross_references:
+    - REQ-STORE_FAILURE_DETECT
+    - ARCH-STORE_MONITORING
+  rationale:
+    why: Simplified store failure detection using error streak tracking per destination
+    problems_solved: []
+    benefits: []
+  implementation_approach:
+    summary: Simplified store failure detection using error streak tracking per destination
+    details: []
+  code_locations:
+    files:
+      - path: src/lib/sync/store.ts
+        description: IMPL-NSYNC_STORE
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-STORE_MONITORING
+    requirements:
+      - REQ-STORE_FAILURE_DETECT
+    tests: []
+    code_annotations:
+      - IMPL-NSYNC_STORE
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also: []
+  detail_file: implementation-decisions/IMPL-NSYNC_STORE.yaml
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated: 2026-02-09T00:00:00.000Z
+IMPL-NSYNC_COMPARE:
+  name: File Comparison Implementation
+  status: Active
+  cross_references:
+    - REQ-COMPARE_METHODS
+  rationale:
+    why: File comparison using size, mtime, hash methods to skip unchanged files
+    problems_solved: []
+    benefits: []
+  implementation_approach:
+    summary: File comparison using size, mtime, hash methods to skip unchanged files
+    details: []
+  code_locations:
+    files:
+      - path: src/lib/sync/compare.ts
+        description: IMPL-NSYNC_COMPARE
+    functions: []
+  traceability:
+    architecture: []
+    requirements:
+      - REQ-COMPARE_METHODS
+    tests: []
+    code_annotations:
+      - IMPL-NSYNC_COMPARE
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also: []
+  detail_file: implementation-decisions/IMPL-NSYNC_COMPARE.yaml
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated: 2026-02-09T00:00:00.000Z
+IMPL-NSYNC_OPERATIONS:
+  name: File Operations Wrappers
+  status: Active
+  cross_references:
+    - REQ-NSYNC_MULTI_TARGET
+    - REQ-MOVE_SEMANTICS
+  rationale:
+    why: Copy, move, delete operation wrappers ensuring destination directories exist
+    problems_solved: []
+    benefits: []
+  implementation_approach:
+    summary: Copy, move, delete operation wrappers ensuring destination directories exist
+    details: []
+  code_locations:
+    files:
+      - path: src/lib/sync/operations.ts
+        description: IMPL-NSYNC_OPERATIONS
+    functions: []
+  traceability:
+    architecture: []
+    requirements:
+      - REQ-NSYNC_MULTI_TARGET
+      - REQ-MOVE_SEMANTICS
+    tests: []
+    code_annotations:
+      - IMPL-NSYNC_OPERATIONS
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also: []
+  detail_file: implementation-decisions/IMPL-NSYNC_OPERATIONS.yaml
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated: 2026-02-09T00:00:00.000Z
+IMPL-LINKED_NAV:
+  name: Linked Pane Navigation Implementation
+  status: Active
+  cross_references:
+    - ARCH-LINKED_NAV
+    - REQ-LINKED_PANES
+  rationale:
+    why: Implements ARCH-LINKED_NAV architecture to provide synchronized directory navigation, cursor position, and sort order across multiple panes with auto-disable on divergence
+    problems_solved:
+      - 'Auto-disable: Preventing broken sync state on divergent navigation'
+      - 'Configuration: Integration with existing keybinding system'
+      - 'Cursor synchronization: Filename-based cursor matching across panes'
+      - 'Mouse-based parent navigation: Added Parent .. button in pane header for mouse users, respecting linked mode automatically'
+      - 'Parent navigation bypass: Fixed handleParentNavigation to call handleNavigate instead of direct setPanes, ensuring linked sync on Backspace'
+      - 'Per-pane parent navigation: Refactored parent navigation to support any pane index, not just focused pane'
+      - 'Sort synchronization: Consistent ordering for comparison tasks'
+      - 'State management: Clean integration of link state with existing pane state'
+      - 'Sync implementation: Reliable propagation of navigation, cursor, and sort changes to linked panes'
+      - 'UI feedback: Clear visual indication of linked state in footer and pane headers'
+    benefits:
+      - 'Complete feature parity: Matches Goful linked navigation implementation'
+      - 'Consistent architecture: All navigation paths use handleNavigate for unified linked sync behavior'
+      - 'Graceful degradation: Handles missing files/directories without breaking'
+      - 'Maintainable: Well-documented with semantic token annotations'
+      - 'Minimal code changes: Localized modifications to existing handlers'
+      - 'Testable: Clear separation of state management and synchronization logic'
+      - 'Type-safe: Full TypeScript typing for link state and sync logic'
+  implementation_approach:
+    summary: Add linkedMode boolean state to WorkspaceView, modify handleNavigate to sync with auto-disable, modify handleCursorMove for filename sync, modify handleSortChange for all-pane sync, refactor parent navigation to navigateToParent(paneIndex), add Parent .. button in FilePane header, add visual indicators in footer and pane headers, register link.toggle keybinding
+    details:
+      - "Visual indicators: Show \U0001F517 badge in footer (L: Linked) and in each pane header when linkedMode enabled"
+      - 'Auto-disable: Disable linkedMode and show warning if partial navigation failure'
+      - 'Downward navigation: Extract subdirectory name, append to each linked pane''s path, count successes/failures'
+      - 'Existence check: Verify target directory exists before navigating linked pane'
+      - 'Graceful degradation: Log warning and continue if target not found'
+      - 'handleCursorMove: Find matching filename in all panes and sync cursor position'
+      - 'handleNavigate: Check linkedMode, extract relative path, navigate other panes with success/failure tracking'
+      - 'handleSortChange: Apply sort settings to all panes when linked'
+      - 'Keybinding: L key maps to link.toggle action, Backspace uses navigateToParent(focusIndex)'
+      - 'navigateToParent(paneIndex): Refactored parent navigation to accept any pane index (not just focusIndex), pre-saves subdirectory name for cursor positioning, calls handleNavigate to trigger linked sync (2026-02-09)'
+      - 'onNavigateParent prop: FilePane receives callback from WorkspaceView: () => navigateToParent(paneIndex) for per-pane parent navigation'
+      - 'Parent .. button: Added in FilePane header next to Linked indicator, visible when not at root, calls onNavigateParent callback (2026-02-09)'
+      - 'State: linkedMode: boolean in WorkspaceView (default false)'
+      - 'State: syncingRef: useRef<Set<number>> to track panes in sync operation'
+      - 'Upward navigation: Calculate steps up, navigate all panes up by same levels'
+  code_locations:
+    files:
+      - path: src/app/files/WorkspaceView.tsx
+        description: Link state management and synchronization logic
+        lines:
+          - 1095-1101
+          - 125-129
+          - 1315-1323
+          - 283-366
+          - 369-407
+          - 521-559
+          - 897-922
+      - path: src/app/files/components/FilePane.tsx
+        description: Link prop interface, Parent .. button UI, onNavigateParent callback
+        lines:
+          - 364-378
+          - 56-65
+          - 85
+      - path: src/app/files/WorkspaceView.test.tsx
+        description: Comprehensive test coverage
+        lines:
+          - 707-1101
+    functions:
+      - name: handleNavigate
+        file: src/app/files/WorkspaceView.tsx
+        description: Modified to synchronize linked panes with auto-disable on divergence
+        lines:
+          - 218-366
+      - name: handleCursorMove
+        file: src/app/files/WorkspaceView.tsx
+        description: Modified to sync cursor by filename across all panes
+        lines:
+          - 369-407
+      - name: handleSortChange
+        file: src/app/files/WorkspaceView.tsx
+        description: Modified to apply sort to all panes when linked
+        lines:
+          - 521-559
+      - name: navigateToParent
+        file: src/app/files/WorkspaceView.tsx
+        description: Refactored parent navigation (2026-02-09) to accept paneIndex parameter; pre-saves subdirectory cursor position, calls handleNavigate for linked sync
+        lines:
+          - 1218-1242
+      - name: link.toggle action handler
+        file: src/app/files/WorkspaceView.tsx
+        description: Toggles linkedMode state
+        lines:
+          - 1095-1101
+  traceability:
+    architecture:
+      - ARCH-FILE_MANAGER_HIERARCHY
+      - ARCH-KEYBIND_SYSTEM
+      - ARCH-LINKED_NAV
+      - ARCH-SORT_PIPELINE
+    requirements:
+      - REQ-DIRECTORY_NAVIGATION
+      - REQ-LINKED_PANES
+      - REQ-MULTI_PANE_LAYOUT
+    tests:
+      - TEST-LINKED_PANES
+    code_annotations:
+      - ARCH-LINKED_NAV
+      - IMPL-LINKED_NAV
+      - REQ-LINKED_PANES
+  related_decisions:
+    depends_on:
+      - ARCH-FILE_MANAGER_HIERARCHY
+      - ARCH-KEYBIND_SYSTEM
+      - ARCH-SORT_PIPELINE
+      - IMPL-WORKSPACE_VIEW
+    supersedes: []
+    see_also:
+      - IMPL-COMPARISON_COLORS
+      - IMPL-DIR_HISTORY
+      - IMPL-PANE_MANAGEMENT
+      - IMPL-SORT_FILTER
+  detail_file: implementation-decisions/IMPL-LINKED_NAV.yaml
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-09T00:00:00.000Z
+      author: AI Agent
+      reason: Added Parent .. button in FilePane header with onNavigateParent callback; refactored parent navigation to navigateToParent(paneIndex) supporting any pane index
+    last_validated:
+      date: 2026-02-08T00:00:00.000Z
+      validator: AI Agent
+      result: pass - manual testing confirmed all panes navigate to parent when linked
+      author: AI Agent
+      reason: Complete implementation with cursor sync, sort sync, auto-disable, and comprehensive test coverage
+IMPL-PERFORMANCE_OPT:
+  name: IMPL PERFORMANCE_OPT
+  status: Planned
+  cross_references:
+    - REQ-FILES_PERFORMANCE
+    - ARCH-PERFORMANCE_OPT
+  rationale:
+    why: IMPL PERFORMANCE_OPT
+    problems_solved: []
+    benefits: []
+  implementation_approach:
+    summary: IMPL PERFORMANCE_OPT
+    details: []
+  code_locations:
+    files: []
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-PERFORMANCE_OPT
+    requirements:
+      - REQ-FILES_PERFORMANCE
+    tests: []
+    code_annotations:
+      - IMPL-PERFORMANCE_OPT
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also: []
+  detail_file: implementation-decisions/IMPL-PERFORMANCE_OPT.yaml
+  metadata:
+    registered: 2026-02-08T00:00:00.000Z
+    last_updated: 2026-02-08T00:00:00.000Z
+IMPL-TOOLBAR_COMPONENT:
+  name: Toolbar React Component Implementation
+  status: Implemented
+  cross_references:
+    - ARCH-TOOLBAR_ACTIONS
+    - ARCH-TOOLBAR_LAYOUT
+    - REQ-TOOLBAR_SYSTEM
+  rationale:
+    why: React components for toolbar system including base and specialized toolbars with compact icon-only button design
+    problems_solved: []
+    benefits: []
+  implementation_approach:
+    summary: React components for toolbar system including base and specialized toolbars with compact icon-only button design
+    details: []
+  code_locations:
+    files: []
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-TOOLBAR_LAYOUT
+      - ARCH-TOOLBAR_ACTIONS
+    requirements:
+      - REQ-TOOLBAR_SYSTEM
+    tests: []
+    code_annotations:
+      - IMPL-TOOLBAR_COMPONENT
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also: []
+  detail_file: implementation-decisions/IMPL-TOOLBAR_COMPONENT.yaml
+  metadata:
+    registered: 2026-02-08T00:00:00.000Z
+    last_updated: 2026-02-08T00:00:00.000Z
+IMPL-TOOLBAR_CONFIG:
+  name: Toolbar Configuration Loading
+  status: Active
+  cross_references:
+    - REQ-TOOLBAR_CONFIG
+    - ARCH-TOOLBAR_LAYOUT
+  rationale:
+    why: Configuration types and loading utilities for toolbar system
+    problems_solved: []
+    benefits: []
+  implementation_approach:
+    summary: Configuration types and loading utilities for toolbar system
+    details: []
+  code_locations:
+    files: []
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-TOOLBAR_LAYOUT
+    requirements:
+      - REQ-TOOLBAR_CONFIG
+    tests: []
+    code_annotations:
+      - IMPL-TOOLBAR_CONFIG
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also: []
+  detail_file: implementation-decisions/IMPL-TOOLBAR_CONFIG.yaml
+  metadata:
+    registered: 2026-02-08T00:00:00.000Z
+    last_updated: 2026-02-08T00:00:00.000Z

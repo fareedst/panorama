@@ -27,6 +27,8 @@ beforeEach(() => {
 // Config loading and defaults
 // ---------------------------------------------------------------------------
 
+// [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Cache parsed configs
+
 describe("getSiteConfig [REQ-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]", () => {
   it("returns a complete SiteConfig object", () => {
     const config = getSiteConfig();
@@ -38,16 +40,22 @@ describe("getSiteConfig [REQ-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]", () => {
     expect(config.navigation).toBeDefined();
   });
 
+  // [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Both support partial configs with defaults
+
   it("loads metadata from config [IMPL-YAML_CONFIG]", () => {
     const config = getSiteConfig();
     expect(config.metadata.title).toBe("File Manager");
     expect(config.metadata.description).toContain("file manager");
   });
 
+  // [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Both support partial configs with defaults
+
   it("loads locale from config [IMPL-YAML_CONFIG]", () => {
     const config = getSiteConfig();
     expect(config.locale).toBe("en");
   });
+
+  // [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Both support partial configs with defaults
 
   it("loads branding from config [IMPL-YAML_CONFIG]", () => {
     const config = getSiteConfig();
@@ -57,11 +65,15 @@ describe("getSiteConfig [REQ-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]", () => {
     expect(config.branding.logo.height).toBe(20);
   });
 
+  // [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Both support partial configs with defaults
+
   it("loads content from config [IMPL-YAML_CONFIG]", () => {
     const config = getSiteConfig();
     expect(config.content.heading).toContain("get started");
     expect(config.content.description).toContain("{templates}");
   });
+
+  // [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Both support partial configs with defaults
 
   it("loads navigation from config [IMPL-YAML_CONFIG]", () => {
     const config = getSiteConfig();
@@ -73,12 +85,16 @@ describe("getSiteConfig [REQ-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]", () => {
     expect(config.navigation.security.rel).toBe("noopener noreferrer");
   });
 
+  // [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Cache parsed configs
+
   it("caches the result on subsequent calls [IMPL-CONFIG_LOADER]", () => {
     const config1 = getSiteConfig();
     const config2 = getSiteConfig();
     // Same reference due to caching
     expect(config1).toBe(config2);
   });
+
+  // [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Cache parsed configs
 
   it("returns fresh config after cache reset [IMPL-CONFIG_LOADER]", () => {
     const config1 = getSiteConfig();
@@ -91,6 +107,8 @@ describe("getSiteConfig [REQ-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]", () => {
   });
 });
 
+// [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Cache parsed configs
+
 describe("getThemeConfig [REQ-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]", () => {
   it("returns a complete ThemeConfig object", () => {
     const config = getThemeConfig();
@@ -102,11 +120,15 @@ describe("getThemeConfig [REQ-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]", () => {
     expect(config.overrides).toBeDefined();
   });
 
+  // [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Both support partial configs with defaults
+
   it("loads light mode colors [IMPL-YAML_CONFIG]", () => {
     const config = getThemeConfig();
     expect(config.colors.light.background).toBe("#ffffff");
     expect(config.colors.light.foreground).toBe("#171717");
   });
+
+  // [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Both support partial configs with defaults
 
   it("loads dark mode colors [IMPL-YAML_CONFIG]", () => {
     const config = getThemeConfig();
@@ -114,12 +136,16 @@ describe("getThemeConfig [REQ-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]", () => {
     expect(config.colors.dark.foreground).toBe("#ededed");
   });
 
+  // [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Both support partial configs with defaults
+
   it("loads font configuration [IMPL-YAML_CONFIG]", () => {
     const config = getThemeConfig();
     expect(config.fonts.sans.variable).toBe("--font-geist-sans");
     expect(config.fonts.sans.fallback).toBe("Arial, Helvetica, sans-serif");
     expect(config.fonts.mono.variable).toBe("--font-geist-mono");
   });
+
+  // [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Both support partial configs with defaults
 
   it("loads spacing configuration [IMPL-YAML_CONFIG]", () => {
     const config = getThemeConfig();
@@ -129,12 +155,16 @@ describe("getThemeConfig [REQ-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]", () => {
     expect(config.spacing.buttonGap).toBe("4");
   });
 
+  // [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Both support partial configs with defaults
+
   it("loads sizing configuration [IMPL-YAML_CONFIG]", () => {
     const config = getThemeConfig();
     expect(config.sizing.maxContentWidth).toBe("3xl");
     expect(config.sizing.buttonHeight).toBe("12");
     expect(config.sizing.buttonDesktopWidth).toBe("158px");
   });
+
+  // [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Cache parsed configs
 
   it("caches the result on subsequent calls [IMPL-CONFIG_LOADER]", () => {
     const config1 = getThemeConfig();
@@ -146,6 +176,8 @@ describe("getThemeConfig [REQ-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]", () => {
 // ---------------------------------------------------------------------------
 // Deep merge utility
 // ---------------------------------------------------------------------------
+
+// [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Cache parsed configs
 
 describe("deepMerge [IMPL-CONFIG_LOADER]", () => {
   it("returns target when source is empty", () => {
@@ -205,6 +237,8 @@ describe("deepMerge [IMPL-CONFIG_LOADER]", () => {
 // generateThemeCss
 // ---------------------------------------------------------------------------
 
+// [IMPL-THEME_INJECTION] [ARCH-THEME_INJECTION] [REQ-CONFIG_DRIVEN_UI]: Generate CSS variable declarations
+
 describe("generateThemeCss [REQ-CONFIG_DRIVEN_UI] [IMPL-THEME_INJECTION]", () => {
   it("generates valid CSS with light and dark mode variables", () => {
     const theme = getThemeConfig();
@@ -239,6 +273,8 @@ describe("generateThemeCss [REQ-CONFIG_DRIVEN_UI] [IMPL-THEME_INJECTION]", () =>
 // ---------------------------------------------------------------------------
 // getOverride
 // ---------------------------------------------------------------------------
+
+// [IMPL-CLASS_OVERRIDES] [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI]: Apply to components
 
 describe("getOverride [REQ-CONFIG_DRIVEN_UI] [IMPL-CLASS_OVERRIDES]", () => {
   it("returns empty string for undefined override key", () => {
@@ -285,6 +321,8 @@ describe("getOverride [REQ-CONFIG_DRIVEN_UI] [IMPL-CLASS_OVERRIDES]", () => {
 // Default configs structure
 // ---------------------------------------------------------------------------
 
+// [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Both support partial configs with defaults
+
 describe("Default configs [IMPL-YAML_CONFIG]", () => {
   it("DEFAULT_SITE_CONFIG has all required fields", () => {
     expect(_DEFAULT_SITE_CONFIG.metadata.title).toBeTruthy();
@@ -310,6 +348,8 @@ describe("Default configs [IMPL-YAML_CONFIG]", () => {
 // ---------------------------------------------------------------------------
 // Files Configuration Tests [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE]
 // ---------------------------------------------------------------------------
+
+// [IMPL-FILES_CONFIG_COMPLETE] [ARCH-CONFIG_DRIVEN_UI] [REQ-FILES_CONFIG_COMPLETE] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: Added FileTypeConfig, FilesLayoutConfig, FilesStartupConfig TypeScript interfaces
 
 describe("getFilesConfig [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE]", () => {
   it("returns complete FilesConfig object", () => {
@@ -353,6 +393,8 @@ describe("getFilesConfig [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE
     expect(config.keybindings!.length).toBeGreaterThan(0);
   });
 });
+
+// [IMPL-FILES_CONFIG_COMPLETE] [ARCH-CONFIG_DRIVEN_UI] [REQ-FILES_CONFIG_COMPLETE] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: Added FileTypeConfig, FilesLayoutConfig, FilesStartupConfig TypeScript interfaces
 
 describe("getFileTypeConfig [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE]", () => {
   it("returns directory config for directories", () => {
@@ -410,6 +452,8 @@ describe("getFileTypeConfig [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPL
     expect(result.icon).toBe("📄");
   });
 });
+
+// [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] [ARCH-KEYBIND_SYSTEM] [REQ-MULTI_PANE_LAYOUT] [REQ-FILES_CONFIG_COMPLETE]: pane.add and pane.remove
 
 describe("Pane Management Config [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE]", () => {
   it("loads pane management copy text", () => {

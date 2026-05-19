@@ -21,6 +21,8 @@ vi.mock("@/lib/sync", () => ({
   })),
 }));
 
+// [IMPL-FILES_API] [ARCH-FILE_OPERATIONS_API] [ARCH-LOGGING_SYSTEM] [REQ-DIRECTORY_NAVIGATION] [REQ-FILE_OPERATIONS] [REQ-LOGGING_SYSTEM]: accepts path query param, returns sorted directory listing
+
 describe("POST /api/files [TEST-FILES_API] [IMPL-FILES_API] [REQ-FILE_OPERATIONS]", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -35,6 +37,8 @@ describe("POST /api/files [TEST-FILES_API] [IMPL-FILES_API] [REQ-FILE_OPERATIONS
       errors: [],
     });
   });
+
+  // [IMPL-FILES_API] [ARCH-FILE_OPERATIONS_API] [ARCH-LOGGING_SYSTEM] [REQ-DIRECTORY_NAVIGATION] [REQ-FILE_OPERATIONS] [REQ-LOGGING_SYSTEM]: accepts path query param, returns sorted directory listing
 
   describe("Operation validation [IMPL-FILES_API]", () => {
     it("returns 400 when operation is missing [REQ-FILE_OPERATIONS]", async () => {
@@ -62,7 +66,10 @@ describe("POST /api/files [TEST-FILES_API] [IMPL-FILES_API] [REQ-FILE_OPERATIONS
     });
   });
 
+  // [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: syncItem() syncs to all destinations via Promise.all
+
   describe("sync-all operation [IMPL-NSYNC_ENGINE] [REQ-NSYNC_MULTI_TARGET]", () => {
+    // [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: syncItem() syncs to all destinations via Promise.all
     it("accepts sync-all without src when sources and destinations provided [IMPL-NSYNC_ENGINE]", async () => {
       const request = new NextRequest("http://localhost/api/files", {
         method: "POST",

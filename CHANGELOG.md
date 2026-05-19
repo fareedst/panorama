@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+
+### Changed
+
+- Migrate project documentation from **STDD** (`stdd/`) to **TIED 2.2** (`tied/`): YAML indexes, detail files, 58 IMPL pseudo-code sidecars with per-block REQ/ARCH/IMPL token comments, inherited `tied/methodology/`, and updated `AGENTS.md` / `README.md`.
+- Replace remaining STDD traceability wording in TIED YAML with TIED terminology.
+
+### Added
+
+- TIED agent docs under `tied/docs/` (LEAP, pseudo-code validation, implementation checklists, commit guidelines).
+
+### Notes
+
+- Application runtime behavior is unchanged; traceability and agent workflow are the primary delta.
+- `scripts/fortify-impl-pseudocode.mjs` regenerates IMPL sidecars from detail YAML (run after IMPL detail edits).
+
+---
+
 ## [0.5.1] - 2026-02-10
 
 ### Added

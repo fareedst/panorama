@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "clean": "rm -rf .next out build dist coverage test-results playwright-report playwright/.cache .vitest vitest-results .cache .temp .tmp dist-ssr && find . -name '*.tsbuildinfo' -not -path './node_modules/*' -delete",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",

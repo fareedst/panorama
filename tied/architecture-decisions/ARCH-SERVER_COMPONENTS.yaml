@@ -1,0 +1,47 @@
+# ARCH detail — ARCH-SERVER_COMPONENTS
+ARCH-SERVER_COMPONENTS:
+  name: Server Components as Default
+  status: Active
+  cross_references:
+    - REQ-APP_STRUCTURE
+  decision: Use server components by default, client components only when needed
+  rationale:
+    why: Server components reduce bundle size and improve performance
+    problems_solved:
+      - Large client bundles
+      - Slow initial page loads
+    benefits:
+      - Better SEO
+      - Faster page loads
+      - Smaller bundles
+  alternatives_considered: []
+  implementation_approach:
+    summary: Use server components by default, client components only when needed
+    details:
+      - All components are server components by default
+      - Add 'use client' directive only for interactivity
+  traceability:
+    requirements:
+      - REQ-APP_STRUCTURE
+    implementation:
+      - IMPL-HOME_PAGE
+    tests: []
+    code_annotations:
+      - REQ-APP_STRUCTURE
+  related_decisions:
+    depends_on:
+      - ARCH-REACT_VERSION
+    informs: []
+    see_also: []
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass

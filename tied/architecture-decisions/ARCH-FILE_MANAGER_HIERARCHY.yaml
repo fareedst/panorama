@@ -1,0 +1,65 @@
+# ARCH detail — ARCH-FILE_MANAGER_HIERARCHY
+ARCH-FILE_MANAGER_HIERARCHY:
+  name: File Manager Component Hierarchy
+  status: Active
+  cross_references:
+    - REQ-FILE_MANAGER_PAGE
+    - REQ-MULTI_PANE_LAYOUT
+  decision: Server page loads data, client workspace manages panes, file pane displays content
+  rationale:
+    why: Three-tier hierarchy (Page → Workspace → Pane) separates concerns and follows existing project patterns
+    problems_solved:
+      - Difficult state management
+      - Monolithic file manager component
+      - Poor testability
+    benefits:
+      - Clear separation of concerns
+      - Independent testing of layers
+      - Reusable pane components
+      - Server/client component split
+  alternatives_considered:
+    - name: Single-component approach
+      pros:
+        - Simpler initial implementation
+      cons:
+        - Poor testability
+        - Difficult state management
+      rejected_reason: Doesn't scale to multi-pane complexity
+  implementation_approach:
+    summary: Server page loads data, client workspace manages panes, file pane displays content
+    details:
+      - FilePane (client component) - displays files, handles pane-level interactions
+      - FilesPage (server component) - loads initial directory data and config
+      - Follow calendar view pattern from existing codebase
+      - WorkspaceView (client component) - manages pane state, layout, focus
+  traceability:
+    requirements:
+      - REQ-FILE_MANAGER_PAGE
+      - REQ-MULTI_PANE_LAYOUT
+    implementation:
+      - IMPL-FILE_MANAGER_PAGE
+      - IMPL-FILE_PANE
+      - IMPL-WORKSPACE_VIEW
+    tests: []
+    code_annotations:
+      - ARCH-FILE_MANAGER_HIERARCHY
+  related_decisions:
+    depends_on:
+      - ARCH-SERVER_COMPONENTS
+      - ARCH-NEXTJS_FRAMEWORK
+    informs:
+      - IMPL-FILE_MANAGER_PAGE
+      - IMPL-WORKSPACE_VIEW
+    see_also: []
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

@@ -1,0 +1,81 @@
+IMPL-FILES_CONFIG:
+  name: Files Configuration Loader
+  status: Implemented
+  cross_references:
+    - ARCH-CONFIG_DRIVEN_UI
+    - REQ-CONFIG_DRIVEN_FILE_MANAGER
+  decision: Add getFilesConfig() to config.ts, extend types, create config/files.yaml
+  rationale:
+    why: Config loader provides files-specific configuration following existing patterns
+    problems_solved:
+      - Hard-coded UI text
+      - Inconsistent with project
+      - No configuration support
+    benefits:
+      - Config-driven UI
+      - Consistent patterns
+      - Easy customization
+  implementation_approach:
+    summary: Add getFilesConfig() to config.ts, extend types, create config/files.yaml
+    details:
+      - Added files? field to ThemeConfig interface
+      - Added FilesCopyConfig interface to config.types.ts
+      - Added FilesThemeConfig and FilesThemeOverrides interfaces
+      - Added getFilesConfig() function to config.ts
+      - Added getFilesOverride() helper function
+      - Created config/files.yaml with copy section
+      - Extended theme.yaml with files.overrides and compareColors sections
+  code_locations:
+    files:
+      - path: config/files.yaml
+        description: Files configuration
+        lines:
+          - 1
+          - 32
+      - path: config/theme.yaml
+        description: Extended with files section
+        lines:
+          - 85
+          - 101
+      - path: src/lib/config.ts
+        description: Config loader with getFilesConfig()
+        lines:
+          - 376
+          - 438
+      - path: src/lib/config.types.ts
+        description: Files config types
+        lines:
+          - 279
+          - 342
+    functions:
+      - name: getFilesConfig
+        file: src/lib/config.ts
+        description: Load files configuration with defaults
+      - name: getFilesOverride
+        file: src/lib/config.ts
+        description: Get theme override for files component
+  traceability:
+    architecture:
+      - ARCH-CONFIG_DRIVEN_UI
+    requirements:
+      - REQ-CONFIG_DRIVEN_FILE_MANAGER
+    tests: []
+    code_annotations:
+      - IMPL-FILES_CONFIG
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-CONFIG_LOADER
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T16:06:42.636Z"
+      author: AI Agent
+      reason: IMPL essence_pseudocode retrofit all 58
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

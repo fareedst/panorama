@@ -1,0 +1,49 @@
+# REQ detail — REQ-STORE_FAILURE_DETECT
+REQ-STORE_FAILURE_DETECT:
+  name: Store Failure Detection
+  category: Non-Functional
+  priority: P2
+  status: Implemented
+  description: Detect when external drives or network shares become unavailable to avoid wasteful retries
+  rationale:
+    why: Detect when external drives or network shares become unavailable to avoid wasteful retries
+    problems_solved:
+      - No detection of network share disconnection
+      - Sync continues retrying when drive detached
+      - Wasted time on unavailable destinations
+    benefits:
+      - Clear error classification
+      - Early abort on store failure
+      - Simplified implementation (error streaks vs device IDs)
+  satisfaction_criteria:
+    - criterion: Abort sync if store becomes unavailable
+    - criterion: Mark store unavailable after 3+ sequential errors
+    - criterion: Track error streaks per destination
+  validation_criteria:
+    - method: Unit tests
+      coverage: Error streak tracking, abort logic
+  traceability:
+    architecture:
+      - ARCH-STORE_MONITORING
+    implementation:
+      - IMPL-NSYNC_STORE
+    tests: []
+    code_annotations:
+      - REQ-STORE_FAILURE_DETECT
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-NSYNC_MULTI_TARGET
+    supersedes: []
+  metadata:
+    created:
+      date: 2026-02-09T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-09T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-09T00:00:00.000Z
+      validator: AI Agent
+      result: implemented

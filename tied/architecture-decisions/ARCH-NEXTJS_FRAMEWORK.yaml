@@ -1,0 +1,70 @@
+# ARCH detail — ARCH-NEXTJS_FRAMEWORK
+ARCH-NEXTJS_FRAMEWORK:
+  name: Next.js 16.1 Framework Choice
+  status: Active
+  cross_references:
+    - REQ-APP_STRUCTURE
+    - REQ-BUILD_SYSTEM
+  decision: Use Next.js 16.1+ with App Router pattern
+  rationale:
+    why: Next.js provides best-in-class React framework with server components, optimized builds, and excellent developer experience
+    problems_solved:
+      - Complex React setup and configuration
+      - Manual routing implementation
+      - Server-side rendering complexity
+    benefits:
+      - Excellent performance optimizations
+      - File-based routing system
+      - Server components by default
+      - Strong TypeScript support
+  alternatives_considered:
+    - name: Create React App
+      pros:
+        - Simple setup
+      cons:
+        - No SSR support
+        - Limited optimization
+      rejected_reason: Lacks server-side rendering and modern features
+    - name: Remix
+      pros:
+        - Good SSR support
+      cons:
+        - Smaller ecosystem
+      rejected_reason: Next.js has larger ecosystem and better tooling
+  implementation_approach:
+    summary: Use Next.js 16.1+ with App Router pattern
+    details:
+      - Configure TypeScript strict mode
+      - Enable server components by default
+      - Install Next.js 16.1+ with React 19
+      - Use App Router (src/app/ directory)
+  traceability:
+    requirements:
+      - REQ-APP_STRUCTURE
+      - REQ-BUILD_SYSTEM
+    implementation:
+      - IMPL-BUILD_SCRIPTS
+      - IMPL-HOME_PAGE
+      - IMPL-ROOT_LAYOUT
+    tests: []
+    code_annotations:
+      - REQ-APP_STRUCTURE
+  related_decisions:
+    depends_on:
+      - REQ-APP_STRUCTURE
+    informs:
+      - ARCH-APP_ROUTER
+      - ARCH-REACT_VERSION
+    see_also: []
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass

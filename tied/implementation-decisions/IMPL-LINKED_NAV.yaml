@@ -1,0 +1,136 @@
+IMPL-LINKED_NAV:
+  name: Linked Pane Navigation Implementation
+  status: Active
+  cross_references:
+    - ARCH-LINKED_NAV
+    - REQ-LINKED_PANES
+  decision: Add linkedMode boolean state to WorkspaceView, modify handleNavigate to sync with auto-disable, modify handleCursorMove for filename sync, modify handleSortChange for all-pane sync, refactor parent navigation to navigateToParent(paneIndex), add Parent .. button in FilePane header, add visual indicators in footer and pane headers, register link.toggle keybinding
+  rationale:
+    why: Implements ARCH-LINKED_NAV architecture to provide synchronized directory navigation, cursor position, and sort order across multiple panes with auto-disable on divergence
+    problems_solved:
+      - 'Auto-disable: Preventing broken sync state on divergent navigation'
+      - 'Configuration: Integration with existing keybinding system'
+      - 'Cursor synchronization: Filename-based cursor matching across panes'
+      - 'Mouse-based parent navigation: Added Parent .. button in pane header for mouse users, respecting linked mode automatically'
+      - 'Parent navigation bypass: Fixed handleParentNavigation to call handleNavigate instead of direct setPanes, ensuring linked sync on Backspace'
+      - 'Per-pane parent navigation: Refactored parent navigation to support any pane index, not just focused pane'
+      - 'Sort synchronization: Consistent ordering for comparison tasks'
+      - 'State management: Clean integration of link state with existing pane state'
+      - 'Sync implementation: Reliable propagation of navigation, cursor, and sort changes to linked panes'
+      - 'UI feedback: Clear visual indication of linked state in footer and pane headers'
+    benefits:
+      - 'Complete feature parity: Matches Goful linked navigation implementation'
+      - 'Consistent architecture: All navigation paths use handleNavigate for unified linked sync behavior'
+      - 'Graceful degradation: Handles missing files/directories without breaking'
+      - 'Maintainable: Well-documented with semantic token annotations'
+      - 'Minimal code changes: Localized modifications to existing handlers'
+      - 'Testable: Clear separation of state management and synchronization logic'
+      - 'Type-safe: Full TypeScript typing for link state and sync logic'
+  implementation_approach:
+    summary: Add linkedMode boolean state to WorkspaceView, modify handleNavigate to sync with auto-disable, modify handleCursorMove for filename sync, modify handleSortChange for all-pane sync, refactor parent navigation to navigateToParent(paneIndex), add Parent .. button in FilePane header, add visual indicators in footer and pane headers, register link.toggle keybinding
+    details:
+      - "Visual indicators: Show \U0001F517 badge in footer (L: Linked) and in each pane header when linkedMode enabled"
+      - 'Auto-disable: Disable linkedMode and show warning if partial navigation failure'
+      - 'Downward navigation: Extract subdirectory name, append to each linked pane''s path, count successes/failures'
+      - 'Existence check: Verify target directory exists before navigating linked pane'
+      - 'Graceful degradation: Log warning and continue if target not found'
+      - 'handleCursorMove: Find matching filename in all panes and sync cursor position'
+      - 'handleNavigate: Check linkedMode, extract relative path, navigate other panes with success/failure tracking'
+      - 'handleSortChange: Apply sort settings to all panes when linked'
+      - 'Keybinding: L key maps to link.toggle action, Backspace uses navigateToParent(focusIndex)'
+      - 'navigateToParent(paneIndex): Refactored parent navigation to accept any pane index (not just focusIndex), pre-saves subdirectory name for cursor positioning, calls handleNavigate to trigger linked sync (2026-02-09)'
+      - 'onNavigateParent prop: FilePane receives callback from WorkspaceView: () => navigateToParent(paneIndex) for per-pane parent navigation'
+      - 'Parent .. button: Added in FilePane header next to Linked indicator, visible when not at root, calls onNavigateParent callback (2026-02-09)'
+      - 'State: linkedMode: boolean in WorkspaceView (default false)'
+      - 'State: syncingRef: useRef<Set<number>> to track panes in sync operation'
+      - 'Upward navigation: Calculate steps up, navigate all panes up by same levels'
+  code_locations:
+    files:
+      - path: src/app/files/WorkspaceView.tsx
+        description: Link state management and synchronization logic
+        lines:
+          - 1095-1101
+          - 125-129
+          - 1315-1323
+          - 283-366
+          - 369-407
+          - 521-559
+          - 897-922
+      - path: src/app/files/components/FilePane.tsx
+        description: Link prop interface, Parent .. button UI, onNavigateParent callback
+        lines:
+          - 364-378
+          - 56-65
+          - 85
+      - path: src/app/files/WorkspaceView.test.tsx
+        description: Comprehensive test coverage
+        lines:
+          - 707-1101
+    functions:
+      - name: handleNavigate
+        file: src/app/files/WorkspaceView.tsx
+        description: Modified to synchronize linked panes with auto-disable on divergence
+        lines:
+          - 218-366
+      - name: handleCursorMove
+        file: src/app/files/WorkspaceView.tsx
+        description: Modified to sync cursor by filename across all panes
+        lines:
+          - 369-407
+      - name: handleSortChange
+        file: src/app/files/WorkspaceView.tsx
+        description: Modified to apply sort to all panes when linked
+        lines:
+          - 521-559
+      - name: navigateToParent
+        file: src/app/files/WorkspaceView.tsx
+        description: Refactored parent navigation (2026-02-09) to accept paneIndex parameter; pre-saves subdirectory cursor position, calls handleNavigate for linked sync
+        lines:
+          - 1218-1242
+      - name: link.toggle action handler
+        file: src/app/files/WorkspaceView.tsx
+        description: Toggles linkedMode state
+        lines:
+          - 1095-1101
+  traceability:
+    architecture:
+      - ARCH-FILE_MANAGER_HIERARCHY
+      - ARCH-KEYBIND_SYSTEM
+      - ARCH-LINKED_NAV
+      - ARCH-SORT_PIPELINE
+    requirements:
+      - REQ-DIRECTORY_NAVIGATION
+      - REQ-LINKED_PANES
+      - REQ-MULTI_PANE_LAYOUT
+    tests:
+      - TEST-LINKED_PANES
+    code_annotations:
+      - ARCH-LINKED_NAV
+      - IMPL-LINKED_NAV
+      - REQ-LINKED_PANES
+  related_decisions:
+    depends_on:
+      - ARCH-FILE_MANAGER_HIERARCHY
+      - ARCH-KEYBIND_SYSTEM
+      - ARCH-SORT_PIPELINE
+      - IMPL-WORKSPACE_VIEW
+    supersedes: []
+    see_also:
+      - IMPL-COMPARISON_COLORS
+      - IMPL-DIR_HISTORY
+      - IMPL-PANE_MANAGEMENT
+      - IMPL-SORT_FILTER
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T16:06:42.636Z"
+      author: AI Agent
+      reason: IMPL essence_pseudocode retrofit all 58
+    last_validated:
+      date: 2026-02-08T00:00:00.000Z
+      validator: AI Agent
+      result: pass - manual testing confirmed all panes navigate to parent when linked
+      author: AI Agent
+      reason: Complete implementation with cursor sync, sort sync, auto-disable, and comprehensive test coverage

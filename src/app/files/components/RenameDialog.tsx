@@ -1,4 +1,4 @@
-// [IMPL-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] Rename file dialog
+// [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION]: Top-level Mouse and Touch Interaction Implementation: Mouse and Touch Interaction Implementation
 // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] Used by file.rename keybinding and context menu
 
 "use client";

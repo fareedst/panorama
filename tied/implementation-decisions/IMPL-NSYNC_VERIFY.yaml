@@ -1,0 +1,37 @@
+IMPL-NSYNC_VERIFY:
+  name: Destination Verification Implementation
+  status: Active
+  cross_references:
+    - REQ-VERIFY_DEST
+    - ARCH-HASH_VERIFICATION
+  decision: Destination file verification by recomputing hash and comparing to source
+  rationale:
+    why: Destination file verification by recomputing hash and comparing to source
+    problems_solved: []
+    benefits: []
+  implementation_approach:
+    summary: Destination file verification by recomputing hash and comparing to source
+    details: []
+  code_locations:
+    files:
+      - path: src/lib/sync/verify.ts
+        description: IMPL-NSYNC_VERIFY
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-HASH_VERIFICATION
+    requirements:
+      - REQ-VERIFY_DEST
+    tests: []
+    code_annotations:
+      - IMPL-NSYNC_VERIFY
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also: []
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated:
+      date: "2026-05-19T16:06:42.636Z"
+      author: AI Agent
+      reason: IMPL essence_pseudocode retrofit all 58

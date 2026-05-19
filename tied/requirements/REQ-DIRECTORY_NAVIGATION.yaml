@@ -1,0 +1,55 @@
+# REQ detail — REQ-DIRECTORY_NAVIGATION
+REQ-DIRECTORY_NAVIGATION:
+  name: Server Filesystem Directory Navigation
+  category: Functional
+  priority: P0
+  status: Implemented
+  description: Users need to browse the server filesystem to locate and manage files
+  rationale:
+    why: Users need to browse the server filesystem to locate and manage files
+    problems_solved:
+      - Difficulty finding files in nested directories
+      - Lack of parent/child directory traversal
+      - No visual directory navigation
+    benefits:
+      - Easy parent/child navigation
+      - Multiple directory views simultaneously
+      - Visual directory browsing
+  satisfaction_criteria:
+    - criterion: Can navigate into subdirectories (Enter key or click)
+    - criterion: Can navigate to parent directory (Backspace key)
+    - criterion: Current path displayed in pane header
+    - criterion: Directory entries marked visually (folder icon or indicator)
+  validation_criteria:
+    - method: Navigation testing
+      coverage: Can navigate into and out of directories
+    - method: Path testing
+      coverage: Current path updates correctly
+  traceability:
+    architecture:
+      - ARCH-FILESYSTEM_ABSTRACTION
+    implementation:
+      - IMPL-FILE_PANE
+      - IMPL-FILES_DATA
+      - IMPL-FILES_UTILS
+    tests: []
+    code_annotations:
+      - REQ-DIRECTORY_NAVIGATION
+  related_requirements:
+    depends_on:
+      - REQ-FILE_MANAGER_PAGE
+    related_to:
+      - REQ-FILE_LISTING
+    supersedes: []
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Implementation complete, 34 data layer tests passing
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

@@ -1,0 +1,35 @@
+IMPL-NSYNC_COMPARE:
+  name: File Comparison Implementation
+  status: Active
+  cross_references:
+    - REQ-COMPARE_METHODS
+  decision: File comparison using size, mtime, hash methods to skip unchanged files
+  rationale:
+    why: File comparison using size, mtime, hash methods to skip unchanged files
+    problems_solved: []
+    benefits: []
+  implementation_approach:
+    summary: File comparison using size, mtime, hash methods to skip unchanged files
+    details: []
+  code_locations:
+    files:
+      - path: src/lib/sync/compare.ts
+        description: IMPL-NSYNC_COMPARE
+    functions: []
+  traceability:
+    architecture: []
+    requirements:
+      - REQ-COMPARE_METHODS
+    tests: []
+    code_annotations:
+      - IMPL-NSYNC_COMPARE
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also: []
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated:
+      date: "2026-05-19T16:06:42.636Z"
+      author: AI Agent
+      reason: IMPL essence_pseudocode retrofit all 58

@@ -1,0 +1,65 @@
+# REQ detail — REQ-BULK_FILE_OPS
+REQ-BULK_FILE_OPS:
+  name: Bulk File Operations on Marked Files
+  category: Functional
+  priority: P0
+  status: Implemented
+  description: |-
+    Users must be able to perform copy, move, delete, and rename operations on multiple files efficiently using the marking system. Operations work on marked files when marks exist, otherwise on the cursor file. All operations are asynchronous (non-blocking UI) with real-time progress tracking, error handling, and confirmation dialogs for destructive operations.
+
+    This requirement extends the file marking system to enable efficient batch operations across panes in the web file manager.
+  rationale:
+    why: Users need to perform copy, move, delete operations on multiple files efficiently
+    problems_solved:
+      - Manual error recovery for failed operations
+      - No progress visibility for batch operations
+      - Tedious repetition of single-file operations
+    benefits:
+      - Automatic error handling and reporting
+      - Cross-pane operations (source pane to destination pane)
+      - Efficient multi-file operations via marking system
+      - Real-time progress tracking with cancellation support
+  satisfaction_criteria:
+    - criterion: Confirmation dialogs before destructive operations
+    - criterion: Copy marked files to target pane directory (C key)
+    - criterion: Delete marked files with confirmation dialog (D key)
+    - criterion: Error handling with user-friendly messages
+    - criterion: Move marked files to target pane directory (M key)
+    - criterion: Operations are asynchronous (non-blocking UI)
+    - criterion: Operations work on marked files if marks exist, otherwise on cursor file
+    - criterion: Progress bar shows completion percentage, file count, current file
+    - criterion: Rename single file or bulk rename with pattern (R key)
+  validation_criteria:
+    - method: Unit tests
+      coverage: Bulk copy, move, delete on marked files
+    - method: Integration tests
+      coverage: Cross-pane operations and progress tracking
+    - method: Error tests
+      coverage: Permission errors, disk full, non-existent files
+  traceability:
+    architecture:
+      - ARCH-BATCH_OPERATIONS
+    implementation:
+      - IMPL-BULK_OPS
+    tests: []
+    code_annotations:
+      - REQ-BULK_FILE_OPS
+  related_requirements:
+    depends_on:
+      - REQ-FILE_MARKING_WEB
+      - REQ-FILE_OPERATIONS
+    related_to:
+      - REQ-CROSS_PANE_COMPARISON
+    supersedes: []
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation - adapted from Goful REQ-FILE_OPERATIONS for web batch context
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

@@ -1,4 +1,4 @@
-// [IMPL-DIR_HISTORY] [REQ-ADVANCED_NAV]
+// [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]: Top-level Directory History with localStorage Bookmarks: Map-based history in React state, localStorage for bookmarks
 // Bookmark management dialog
 
 "use client";

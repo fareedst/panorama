@@ -1,0 +1,62 @@
+# ARCH detail — ARCH-TOOLBAR_LAYOUT
+ARCH-TOOLBAR_LAYOUT:
+  name: Toolbar Positioning and Layout Architecture
+  status: Implemented
+  cross_references:
+    - REQ-TOOLBAR_SYSTEM
+    - REQ-TOOLBAR_CONFIG
+  decision: Implement a three-tier toolbar system with configurable positioning, using a horizontal button group layout with category-based grouping and visual separators.
+  rationale:
+    why: Three-tier toolbar system with configurable positioning optimizes discoverability while preserving keyboard-first design
+    problems_solved:
+      - 36+ operations overwhelming in single toolbar
+      - Fixed layout unsuitable for all use cases
+      - No visual separation of action scopes
+    benefits:
+      - Clear scope separation (workspace vs pane vs system)
+      - Configuration-driven positioning
+      - Minimal screen space consumption
+      - Responsive design for mobile/tablet/desktop
+  alternatives_considered:
+    - name: Single unified toolbar
+      pros:
+        - Simpler implementation
+      cons:
+        - 36+ buttons overwhelming
+        - No scope separation
+      rejected_reason: Visual separation critical for usability
+  implementation_approach:
+    summary: Three toolbar types (workspace, pane, system) with configurable position and button groups
+    details:
+      - 'Configurable position: top, bottom, hidden, per-pane'
+      - 'PaneToolbar: actions on focused pane'
+      - 'SystemToolbar: independent actions'
+      - 'WorkspaceToolbar: actions affecting all panes'
+  traceability:
+    requirements:
+      - REQ-TOOLBAR_SYSTEM
+      - REQ-TOOLBAR_CONFIG
+    implementation:
+      - IMPL-TOOLBAR_COMPONENT
+    tests: []
+    code_annotations:
+      - ARCH-TOOLBAR_LAYOUT
+  related_decisions:
+    depends_on:
+      - ARCH-KEYBIND_SYSTEM
+      - ARCH-CONFIG_DRIVEN_UI
+    informs:
+      - IMPL-TOOLBAR_COMPONENT
+    see_also: []
+  metadata:
+    created:
+      date: 2026-02-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-08T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-08T00:00:00.000Z
+      validator: AI Agent
+      result: planned

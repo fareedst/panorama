@@ -28,6 +28,8 @@ describe("Search API Route [TEST-FILE_SEARCH] [REQ-FILE_SEARCH]", () => {
     vi.restoreAllMocks();
   });
 
+  // [IMPL-FILE_SEARCH] [ARCH-SEARCH_ENGINE] [REQ-FILE_SEARCH] [REQ-REACT_SSR_STABILITY]: regex validation, ReDoS prevention, path validation, file size limits
+
   describe("Request Validation [IMPL-FILE_SEARCH]", () => {
     it("should reject missing pattern [REQ-FILE_SEARCH]", async () => {
       const request = new NextRequest("http://localhost/api/files/search", {
@@ -136,6 +138,8 @@ describe("Search API Route [TEST-FILE_SEARCH] [REQ-FILE_SEARCH]", () => {
     });
   });
 
+  // [IMPL-FILE_SEARCH] [ARCH-SEARCH_ENGINE] [REQ-FILE_SEARCH] [REQ-REACT_SSR_STABILITY]: regex validation, ReDoS prevention, path validation, file size limits
+
   describe("Regex Validation [IMPL-FILE_SEARCH]", () => {
     it("should reject invalid regex pattern [REQ-FILE_SEARCH]", async () => {
       const mockStats = {
@@ -207,6 +211,8 @@ describe("Search API Route [TEST-FILE_SEARCH] [REQ-FILE_SEARCH]", () => {
       expect(data.error).toBe("Potentially dangerous regex pattern");
     });
   });
+
+  // [IMPL-FILE_SEARCH] [ARCH-SEARCH_ENGINE] [REQ-FILE_SEARCH] [REQ-REACT_SSR_STABILITY]: regex validation, ReDoS prevention, path validation, file size limits
 
   describe("Search Execution [IMPL-FILE_SEARCH]", () => {
     it("should search files successfully [REQ-FILE_SEARCH]", async () => {
@@ -473,6 +479,8 @@ describe("Search API Route [TEST-FILE_SEARCH] [REQ-FILE_SEARCH]", () => {
     });
   });
 
+  // [IMPL-FILE_SEARCH] [ARCH-SEARCH_ENGINE] [REQ-FILE_SEARCH] [REQ-REACT_SSR_STABILITY]: regex validation, ReDoS prevention, path validation, file size limits
+
   describe("Error Handling [IMPL-FILE_SEARCH]", () => {
     it("should handle readdir errors gracefully [REQ-FILE_SEARCH]", async () => {
       const mockStats = {
@@ -544,6 +552,8 @@ describe("Search API Route [TEST-FILE_SEARCH] [REQ-FILE_SEARCH]", () => {
       expect(data.error).toBe("Search failed");
     });
   });
+
+  // [IMPL-FILE_SEARCH] [ARCH-SEARCH_ENGINE] [REQ-FILE_SEARCH] [REQ-REACT_SSR_STABILITY]: regex validation, ReDoS prevention, path validation, file size limits
 
   describe("Response Format [IMPL-FILE_SEARCH]", () => {
     it("should return correct response structure [REQ-FILE_SEARCH]", async () => {

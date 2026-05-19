@@ -1,0 +1,58 @@
+# REQ detail — REQ-FILE_PREVIEW
+REQ-FILE_PREVIEW:
+  name: File Preview Panel
+  category: Functional
+  priority: P2
+  status: Implemented
+  description: Enable users to view file contents without opening external applications. Provide instant preview for text files, images, and archives directly within the file manager interface.
+  rationale:
+    why: Users need to view file contents without opening external applications
+    problems_solved:
+      - Cannot inspect archive contents without extracting
+      - Must open files in editors to view contents
+      - No quick preview for images or text files
+    benefits:
+      - File metadata display
+      - Instant file preview in dedicated panel
+      - No external application launching
+      - Text, image, and archive support
+  satisfaction_criteria:
+    - criterion: Archive contents listing (zip, tar, tar.gz)
+    - criterion: File type detection via extension and magic bytes
+    - criterion: Image thumbnail preview with dimensions
+    - criterion: Info panel shows detailed file metadata (I key)
+    - criterion: Preview pane resizable (split-pane view)
+    - criterion: Text file preview (Q key) with syntax highlighting
+  validation_criteria:
+    - method: Unit tests
+      coverage: File type detection and content loading
+    - method: Integration tests
+      coverage: Preview API and rendering
+    - method: Security tests
+      coverage: Malicious file handling
+  traceability:
+    architecture:
+      - ARCH-PREVIEW_SYSTEM
+    implementation:
+      - IMPL-FILE_PREVIEW
+    tests: []
+    code_annotations:
+      - REQ-FILE_PREVIEW
+  related_requirements:
+    depends_on:
+      - REQ-FILE_LISTING
+    related_to:
+      - REQ-FILE_OPERATIONS
+    supersedes: []
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation - new requirement for web file manager
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

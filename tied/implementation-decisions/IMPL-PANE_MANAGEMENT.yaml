@@ -1,0 +1,93 @@
+IMPL-PANE_MANAGEMENT:
+  name: Runtime Pane Management Controls
+  status: Active
+  cross_references:
+    - ARCH-KEYBIND_SYSTEM
+    - ARCH-PANE_LIFECYCLE
+    - REQ-FILES_CONFIG_COMPLETE
+    - REQ-MULTI_PANE_LAYOUT
+  decision: Add/remove pane handlers with config validation, keyboard shortcuts, command palette integration
+  rationale:
+    why: Implements runtime controls for adding and removing file panes to support flexible multi-panel workflows per ARCH-PANE_LIFECYCLE
+    problems_solved:
+      - Cannot adapt layout to current task needs
+      - No UI affordance for pane management
+      - Pane count fixed at initialization
+      - Users cannot adjust pane count without reloading page
+    benefits:
+      - Config validation prevents invalid states
+      - Dynamic workflow adjustment without page reload
+      - Keyboard shortcuts integrate with existing keybind system
+      - Respects user's maxPanes and allowPaneManagement preferences
+  implementation_approach:
+    summary: Add/remove pane handlers with config validation, keyboard shortcuts, command palette integration
+    details:
+      - 'Command palette actions: pane.add and pane.remove'
+      - 'handleAddPane(): Check allowPaneManagement and maxPanes limit, clone focused pane or create new at home'
+      - 'handleRemovePane(index): Check allowPaneManagement and minimum 1 pane, adjust focusIndex after removal'
+      - 'Keyboard shortcuts: = or Ctrl+= to add, - or Ctrl+- to remove'
+      - 'Type synchronization: Added pane-management category to KeybindingCategory type in files.keybinds.ts, category labels, and validation array'
+      - Config validation ensures layout.allowPaneManagement && panes.length < layout.maxPanes
+      - State updates trigger comparison index rebuild and layout recalculation
+  code_locations:
+    files:
+      - path: src/app/files/WorkspaceView.tsx
+        description: Added handleAddPane and handleRemovePane handlers with keybinding integration
+        lines:
+          - 0
+          - 0
+      - path: config/files.yaml
+        description: Added pane management keybindings and copy text
+        lines:
+          - 0
+          - 0
+      - path: src/lib/config.types.ts
+        description: Added pane-management to KeybindingCategory type
+        lines:
+          - 283
+          - 293
+      - path: src/lib/files.keybinds.ts
+        description: Added pane-management to KeybindingCategory type, labels, and validation
+        lines:
+          - 10
+          - 18
+    functions:
+      - name: handleAddPane
+        file: src/app/files/WorkspaceView.tsx
+        description: Adds new pane with config validation, clones focused pane state
+      - name: handleRemovePane
+        file: src/app/files/WorkspaceView.tsx
+        description: Removes pane at index with config validation, adjusts focus
+  traceability:
+    architecture:
+      - ARCH-PANE_LIFECYCLE
+      - ARCH-KEYBIND_SYSTEM
+    requirements:
+      - REQ-MULTI_PANE_LAYOUT
+      - REQ-FILES_CONFIG_COMPLETE
+    tests: []
+    code_annotations:
+      - ARCH-PANE_LIFECYCLE
+      - IMPL-PANE_MANAGEMENT
+      - REQ-MULTI_PANE_LAYOUT
+  related_decisions:
+    depends_on:
+      - IMPL-FILES_CONFIG_COMPLETE
+      - IMPL-KEYBINDS
+      - IMPL-WORKSPACE_VIEW
+    supersedes: []
+    see_also:
+      - IMPL-LAYOUT_CALCULATOR
+      - IMPL-COMPARISON_INDEX
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T16:06:42.636Z"
+      author: AI Agent
+      reason: IMPL essence_pseudocode retrofit all 58
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass - build succeeds, 570 tests passing

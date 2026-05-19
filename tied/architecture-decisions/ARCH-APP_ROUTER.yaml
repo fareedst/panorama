@@ -1,0 +1,56 @@
+# ARCH detail — ARCH-APP_ROUTER
+ARCH-APP_ROUTER:
+  name: Next.js App Router Pattern
+  status: Active
+  cross_references:
+    - REQ-APP_STRUCTURE
+  decision: Use App Router with src/app/ directory
+  rationale:
+    why: App Router provides modern routing with server components and improved data fetching
+    problems_solved:
+      - Complex Pages Router patterns
+      - Client-side routing overhead
+    benefits:
+      - File-based routing
+      - Improved data fetching
+      - Server components by default
+  alternatives_considered:
+    - name: Pages Router
+      pros:
+        - More stable
+      cons:
+        - Older pattern
+      rejected_reason: App Router is the future of Next.js
+  implementation_approach:
+    summary: Use App Router with src/app/ directory
+    details:
+      - Create src/app/ directory
+      - Use layout.tsx for layouts
+      - Use page.tsx for routes
+  traceability:
+    requirements:
+      - REQ-APP_STRUCTURE
+    implementation:
+      - IMPL-ROOT_LAYOUT
+      - IMPL-HOME_PAGE
+    tests: []
+    code_annotations:
+      - REQ-APP_STRUCTURE
+  related_decisions:
+    depends_on:
+      - ARCH-NEXTJS_FRAMEWORK
+    informs:
+      - ARCH-SERVER_COMPONENTS
+    see_also: []
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass

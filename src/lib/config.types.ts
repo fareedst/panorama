@@ -1,4 +1,4 @@
-// [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]
+// [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Top-level YAML Configuration Structure: Define two YAML files: site.yaml and theme.yaml
 // TypeScript interfaces defining the shape of YAML configuration files.
 // These types ensure type safety when loading and consuming config values.
 

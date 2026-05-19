@@ -1,0 +1,49 @@
+# ARCH detail — ARCH-CONFIG_DRIVEN_APPEARANCE
+ARCH-CONFIG_DRIVEN_APPEARANCE:
+  name: Config-Driven Appearance for All Pages
+  status: Active
+  cross_references:
+    - REQ-CONFIG_DRIVEN_APPEARANCE
+    - REQ-CONFIG_DRIVEN_UI
+  decision: 'Extend the configuration-driven UI so that every page and shared component gets appearance and layout from one or more configuration files. No route or component may rely on hard-coded layout classes, spacing, colors, or user-facing copy; all such values are sourced from `config/site.yaml`, `config/theme.yaml`, and `config/jobs.yaml` (or extended sections). This ensures the project serves as a highly-configurable template with a single, consistent pattern: config dictates what users see and how it looks.'
+  rationale:
+    why: Extend config-driven architecture to all pages for complete template configurability
+    problems_solved:
+      - Incomplete template configurability
+      - Hard-coded classes in some components
+    benefits:
+      - Complete template configurability
+      - Consistent config-driven approach
+  alternatives_considered: []
+  implementation_approach:
+    summary: Extend config system to jobs pages with dedicated jobs config and theme overrides
+    details:
+      - Add jobs config loader
+      - Extend theme with jobs overrides
+      - Refactor jobs components to use config
+  traceability:
+    requirements:
+      - REQ-CONFIG_DRIVEN_APPEARANCE
+    implementation:
+      - IMPL-CONFIG_DRIVEN_APPEARANCE
+    tests: []
+    code_annotations:
+      - REQ-CONFIG_DRIVEN_APPEARANCE
+  related_decisions:
+    depends_on:
+      - ARCH-CONFIG_DRIVEN_UI
+    informs:
+      - IMPL-CONFIG_DRIVEN_APPEARANCE
+    see_also: []
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass

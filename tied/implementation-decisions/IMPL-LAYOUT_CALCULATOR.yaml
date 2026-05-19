@@ -1,0 +1,79 @@
+IMPL-LAYOUT_CALCULATOR:
+  name: Layout Calculation Algorithms
+  status: Implemented
+  cross_references:
+    - ARCH-LAYOUT_ALGORITHMS
+    - REQ-MULTI_PANE_LAYOUT
+  decision: Pure TypeScript functions calculate PaneBounds[] from container dimensions and layout type
+  rationale:
+    why: Pure functions calculate pane bounds for different layout types
+    problems_solved:
+      - Difficult layout changes
+      - Layout inconsistencies
+      - Manual pane positioning
+    benefits:
+      - Automatic pane allocation
+      - Easy layout switching
+      - Testable layout logic
+  implementation_approach:
+    summary: Pure TypeScript functions calculate PaneBounds[] from container dimensions and layout type
+    details:
+      - 'Fullscreen: all panes at (0,0) with full dimensions'
+      - 'Helper functions: getTotalArea, doOverlap for validation'
+      - 'OneColumn: equal height vertically'
+      - 'OneRow: equal width horizontally'
+      - 'Tile: first pane left 50%, others stacked vertically right 50%'
+      - Created src/lib/files.layout.ts
+      - Exported LayoutType = 'Tile' | 'OneRow' | 'OneColumn' | 'Fullscreen'
+      - Exported PaneBounds interface (x, y, width, height)
+      - Implemented calculateLayout(containerWidth, containerHeight, numPanes, layoutType)
+  code_locations:
+    files:
+      - path: src/lib/files.layout.ts
+        description: Layout calculation algorithms
+        lines:
+          - 1
+          - 237
+      - path: src/lib/files.layout.test.ts
+        description: Layout tests (62 tests)
+        lines:
+          - 1
+          - 365
+    functions:
+      - name: calculateLayout
+        file: src/lib/files.layout.ts
+        description: Calculate pane bounds for layout type
+      - name: calculateTileLayout
+        file: src/lib/files.layout.ts
+        description: Tile layout algorithm
+      - name: calculateOneRowLayout
+        file: src/lib/files.layout.ts
+        description: One row layout algorithm
+      - name: calculateOneColumnLayout
+        file: src/lib/files.layout.ts
+        description: One column layout algorithm
+  traceability:
+    architecture:
+      - ARCH-LAYOUT_ALGORITHMS
+    requirements:
+      - REQ-MULTI_PANE_LAYOUT
+    tests: []
+    code_annotations:
+      - IMPL-LAYOUT_CALCULATOR
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-WORKSPACE_VIEW
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T16:06:42.636Z"
+      author: AI Agent
+      reason: IMPL essence_pseudocode retrofit all 58
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

@@ -1,0 +1,37 @@
+REQ-COPY_OPERATIONS:
+  name: Copy Operations Preserve File Attributes
+  category: Functional
+  priority: P1
+  status: Implemented
+  rationale:
+    why: Copied files should preserve mode and timestamps where the platform allows
+    problems_solved:
+      - Loss of mtime breaks comparison
+      - Permission loss on Unix copies
+    benefits:
+      - Best-effort attribute preservation after copyFile
+  satisfaction_criteria:
+    - criterion: After copy, destination mode and mtime/atime match source when supported
+  validation_criteria:
+    - method: Unit tests
+      coverage: sync engine attribute preservation
+  traceability:
+    architecture: []
+    implementation:
+      - IMPL-COPY_ATTRS
+    tests:
+      - src/lib/sync/engine.test.ts
+    code_annotations:
+      - REQ-COPY_OPERATIONS
+      - IMPL-COPY_ATTRS
+  related_requirements:
+    depends_on:
+      - REQ-FILE_OPERATIONS
+    related_to: []
+    supersedes: []
+  detail_file: requirements/REQ-COPY_OPERATIONS.yaml
+  metadata:
+    created:
+      date: "2026-02-09"
+      author: migration
+  description: Copied files should preserve mode and timestamps where the platform allows

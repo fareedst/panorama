@@ -51,6 +51,8 @@ describe("[TEST-FILE_COMPARISON] buildEnhancedComparisonIndex", () => {
     expect(result.has("shared.txt")).toBe(true);
   });
 
+  // [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: comparison-equal, comparison-smallest, comparison-largest
+
   describe("size comparison [IMPL-COMPARISON_COLORS]", () => {
     it("should mark equal sizes [REQ-FILE_COMPARISON_VISUAL]", () => {
       const now = new Date();
@@ -97,6 +99,8 @@ describe("[TEST-FILE_COMPARISON] buildEnhancedComparisonIndex", () => {
       expect(fileMap?.get(2)?.sizeComparison[0]).toBe("largest");
     });
   });
+
+  // [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: comparison-equal, comparison-smallest, comparison-largest
 
   describe("time comparison [IMPL-COMPARISON_COLORS]", () => {
     it("should mark equal times [REQ-FILE_COMPARISON_VISUAL]", () => {
@@ -176,6 +180,8 @@ describe("[TEST-FILE_COMPARISON] buildEnhancedComparisonIndex", () => {
     });
   });
 
+  // [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: comparison-equal, comparison-smallest, comparison-largest
+
   describe("multiple shared files [IMPL-COMPARISON_COLORS]", () => {
     it("should handle multiple shared files independently [REQ-FILE_COMPARISON_VISUAL]", () => {
       const now = new Date();
@@ -208,6 +214,8 @@ describe("[TEST-FILE_COMPARISON] buildEnhancedComparisonIndex", () => {
       expect(file2?.get(1)?.timeComparison[0]).toBe("latest");
     });
   });
+
+  // [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: comparison-equal, comparison-smallest, comparison-largest
 
   describe("comparison state structure [IMPL-COMPARISON_COLORS]", () => {
     it("should maintain panes, sizes, and mtimes arrays [REQ-FILE_COMPARISON_VISUAL]", () => {

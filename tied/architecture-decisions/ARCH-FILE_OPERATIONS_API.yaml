@@ -1,0 +1,58 @@
+# ARCH detail — ARCH-FILE_OPERATIONS_API
+ARCH-FILE_OPERATIONS_API:
+  name: File Operations API Routes
+  status: Active
+  cross_references:
+    - REQ-FILE_OPERATIONS
+  decision: POST /api/files endpoint handles copy, move, delete, rename operations
+  rationale:
+    why: API routes provide secure server-side file operations accessible from client
+    problems_solved:
+      - Client cannot perform filesystem operations
+      - No centralized error handling
+      - Security vulnerabilities from client-side access
+    benefits:
+      - Centralized validation and error handling
+      - RESTful interface
+      - Secure server-side operations
+  alternatives_considered:
+    - name: Server actions
+      pros:
+        - Simpler than API routes
+      cons:
+        - Tied to forms
+        - Less flexible for programmatic calls
+      rejected_reason: API routes more flexible for file operations
+  implementation_approach:
+    summary: POST /api/files endpoint handles copy, move, delete, rename operations
+    details:
+      - 'Request body: { operation, src, dest }'
+      - Call data layer functions
+      - Return success/error responses
+      - Switch on operation type
+  traceability:
+    requirements:
+      - REQ-FILE_OPERATIONS
+    implementation:
+      - IMPL-FILES_API
+    tests: []
+    code_annotations:
+      - ARCH-FILE_OPERATIONS_API
+  related_decisions:
+    depends_on:
+      - ARCH-FILESYSTEM_ABSTRACTION
+    informs:
+      - IMPL-FILES_API
+    see_also: []
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

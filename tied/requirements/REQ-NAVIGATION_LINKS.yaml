@@ -1,0 +1,50 @@
+# REQ detail — REQ-NAVIGATION_LINKS
+REQ-NAVIGATION_LINKS:
+  name: External Navigation Links
+  category: Functional
+  priority: P1
+  status: Implemented
+  description: External links guide users to additional resources for learning and deployment
+  rationale:
+    why: External links guide users to additional resources for learning and deployment
+    problems_solved:
+      - Lack of guidance to external resources
+      - Security vulnerabilities from improper link handling
+    benefits:
+      - Easy access to learning resources
+      - Preserved application state when opening new tabs
+      - Secure external link handling
+  satisfaction_criteria:
+    - criterion: Links have rel='noopener noreferrer' for security
+    - criterion: Links have target='_blank' to open in new tabs
+    - criterion: Links to Templates, Learning Center, Deploy, and Documentation are present
+  validation_criteria:
+    - method: Link testing
+      coverage: All links are clickable and navigate correctly
+    - method: Security validation
+      coverage: Security attributes are present in DOM
+  traceability:
+    architecture:
+      - ARCH-APP_ROUTER
+    implementation:
+      - IMPL-EXTERNAL_LINKS
+    tests: []
+    code_annotations:
+      - REQ-NAVIGATION_LINKS
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-HOME_PAGE
+    supersedes: []
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass

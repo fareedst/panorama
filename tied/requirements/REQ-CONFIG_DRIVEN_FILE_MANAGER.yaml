@@ -1,0 +1,53 @@
+# REQ detail — REQ-CONFIG_DRIVEN_FILE_MANAGER
+REQ-CONFIG_DRIVEN_FILE_MANAGER:
+  name: Configuration-Driven File Manager UI
+  category: Functional
+  priority: P1
+  status: Implemented
+  description: Consistent with project architecture, all UI text and styling should be configurable
+  rationale:
+    why: Consistent with project architecture, all UI text and styling should be configurable
+    problems_solved:
+      - Difficult customization
+      - Hard-coded UI text
+      - Inconsistent with existing config pattern
+    benefits:
+      - All UI text from config
+      - Consistent with project architecture
+      - Easy customization
+  satisfaction_criteria:
+    - criterion: All styling overrides in config/theme.yaml
+    - criterion: All user-facing text comes from config/files.yaml
+    - criterion: Changing config changes UI without code changes
+  validation_criteria:
+    - method: Config testing
+      coverage: Config changes reflected in UI
+    - method: Code inspection
+      coverage: No hard-coded user-facing text in components
+  traceability:
+    architecture:
+      - ARCH-CONFIG_DRIVEN_UI
+    implementation:
+      - IMPL-FILES_CONFIG
+      - IMPL-FILE_MANAGER_PAGE
+    tests: []
+    code_annotations:
+      - REQ-CONFIG_DRIVEN_FILE_MANAGER
+  related_requirements:
+    depends_on:
+      - REQ-CONFIG_DRIVEN_UI
+      - REQ-FILE_MANAGER_PAGE
+    related_to: []
+    supersedes: []
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

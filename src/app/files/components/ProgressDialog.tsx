@@ -1,4 +1,4 @@
-// [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]
+// [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: Top-level Parallel Bulk Operations with Progress: API routes for bulk operations, Promise.allSettled with progress callbacks
 // Progress dialog for bulk operations
 
 "use client";

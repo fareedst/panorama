@@ -1,0 +1,91 @@
+IMPL-FILES_DATA:
+  name: Filesystem Data Layer
+  status: Implemented
+  cross_references:
+    - ARCH-FILESYSTEM_ABSTRACTION
+    - REQ-DIRECTORY_NAVIGATION
+    - REQ-FILE_OPERATIONS
+  decision: Server-only module wraps Node.js fs/promises API with validation
+  rationale:
+    why: Server-side data layer provides secure filesystem access with consistent API
+    problems_solved:
+      - Direct filesystem access
+      - Inconsistent error handling
+      - Security vulnerabilities
+    benefits:
+      - Consistent API
+      - Secure access
+      - Testable with mocks
+  implementation_approach:
+    summary: Server-only module wraps Node.js fs/promises API with validation
+    details:
+      - 'Critical fix: Moved formatSize to files.utils.ts (client-safe)'
+      - Created src/lib/files.data.ts (server-only)
+      - Error handling for permissions, non-existent paths
+      - Export FileStat interface (name, path, isDirectory, size, mtime, extension)
+      - Implemented copyFile, moveFile, deleteFile, renameFile
+      - Implemented listDirectory, getParentDirectory, joinPath, getFileInfo
+      - Implemented sortFiles with SortType enum
+      - Path validation to prevent directory traversal
+      - Re-exports formatSize for backward compatibility
+  code_locations:
+    files:
+      - path: src/lib/files.data.ts
+        description: Filesystem data layer (server-only)
+        lines:
+          - 1
+          - 279
+      - path: src/lib/files.types.ts
+        description: TypeScript interfaces
+        lines:
+          - 1
+          - 55
+      - path: src/lib/files.utils.ts
+        description: Client-safe utilities
+        lines:
+          - 1
+          - 26
+      - path: src/lib/files.data.test.ts
+        description: Data layer tests (34 tests)
+        lines:
+          - 1
+          - 595
+    functions:
+      - name: listDirectory
+        file: src/lib/files.data.ts
+        description: List directory contents with error handling
+      - name: sortFiles
+        file: src/lib/files.data.ts
+        description: Sort files by various criteria with directory priority
+      - name: buildComparisonIndex
+        file: src/lib/files.data.ts
+        description: Build cross-pane comparison index
+      - name: formatSize
+        file: src/lib/files.utils.ts
+        description: Format bytes for display (client-safe)
+  traceability:
+    architecture:
+      - ARCH-FILESYSTEM_ABSTRACTION
+    requirements:
+      - REQ-DIRECTORY_NAVIGATION
+      - REQ-FILE_OPERATIONS
+    tests: []
+    code_annotations:
+      - IMPL-FILES_DATA
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-FILES_UTILS
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T16:06:42.636Z"
+      author: AI Agent
+      reason: IMPL essence_pseudocode retrofit all 58
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

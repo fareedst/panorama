@@ -1,0 +1,55 @@
+# REQ detail — REQ-CROSS_PANE_COMPARISON
+REQ-CROSS_PANE_COMPARISON:
+  name: Cross-Pane File Comparison
+  category: Functional
+  priority: P1
+  status: Implemented
+  description: Users need to identify file differences across directories for sync and comparison tasks
+  rationale:
+    why: Users need to identify file differences across directories for sync and comparison tasks
+    problems_solved:
+      - Difficulty identifying file differences
+      - Manual comparison required
+      - No visual diff indicators
+    benefits:
+      - Automatic file comparison
+      - Identify same/different files quickly
+      - Visual diff indicators (color coding)
+  satisfaction_criteria:
+    - criterion: Comparison updates when panes change
+    - criterion: Different sizes/times indicated with distinct colors
+    - criterion: Files unique to one pane clearly marked
+    - criterion: Files with same name across panes color-coded
+  validation_criteria:
+    - method: Comparison testing
+      coverage: Comparison colors display correctly
+    - method: Index testing
+      coverage: Comparison index builds and updates correctly
+  traceability:
+    architecture:
+      - ARCH-COMPARISON_INDEX
+    implementation:
+      - IMPL-COMPARISON_INDEX
+      - IMPL-FILE_PANE
+    tests: []
+    code_annotations:
+      - REQ-CROSS_PANE_COMPARISON
+  related_requirements:
+    depends_on:
+      - REQ-FILE_LISTING
+      - REQ-MULTI_PANE_LAYOUT
+    related_to:
+      - REQ-FILE_OPERATIONS
+    supersedes: []
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

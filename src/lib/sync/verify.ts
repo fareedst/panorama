@@ -1,4 +1,4 @@
-// [IMPL-NSYNC_VERIFY] [ARCH-HASH_VERIFICATION] [REQ-VERIFY_DEST]
+// [IMPL-NSYNC_VERIFY] [ARCH-HASH_VERIFICATION] [REQ-VERIFY_DEST]: Top-level Destination Verification Implementation: Destination file verification by recomputing hash and comparing to source
 // Destination verification module - recompute hash and verify
 
 import { computeFileHash, verifyHash } from "./hash";

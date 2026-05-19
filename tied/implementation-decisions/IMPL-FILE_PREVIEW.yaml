@@ -1,0 +1,63 @@
+IMPL-FILE_PREVIEW:
+  name: Server-Side Preview API Routes
+  status: Implemented
+  cross_references:
+    - ARCH-PREVIEW_SYSTEM
+    - REQ-FILE_PREVIEW
+  decision: API routes for preview and info with type detection
+  rationale:
+    why: File preview requires server-side file access with security
+    problems_solved:
+      - Cannot access files from client
+      - No content sanitization
+    benefits:
+      - Content type detection
+      - Preview size limits
+      - Secure file access control
+  implementation_approach:
+    summary: API routes for preview and info with type detection
+    details:
+      - 'Archive: list entries (jszip library)'
+      - 'File type: extension + magic bytes'
+      - 'Image: Next.js Image optimization'
+      - 'Text: first 100KB, encoding detection'
+      - GET /api/files/info?path=... for metadata
+      - GET /api/files/preview?path=...&type=text|image|archive
+  code_locations:
+    files:
+      - path: src/app/api/files/preview/route.ts
+        description: Preview content endpoint
+        lines: []
+      - path: src/app/api/files/info/route.ts
+        description: File metadata endpoint
+        lines: []
+    functions:
+      - name: GET handler
+        file: src/app/api/files/preview/route.ts
+        description: Return preview content
+  traceability:
+    architecture:
+      - ARCH-PREVIEW_SYSTEM
+    requirements:
+      - REQ-FILE_PREVIEW
+    tests: []
+    code_annotations:
+      - IMPL-FILE_PREVIEW
+  related_decisions:
+    depends_on:
+      - ARCH-PREVIEW_SYSTEM
+    supersedes: []
+    see_also:
+      - IMPL-FILES_API
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T16:06:42.636Z"
+      author: AI Agent
+      reason: IMPL essence_pseudocode retrofit all 58
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

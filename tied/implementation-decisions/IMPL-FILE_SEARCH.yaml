@@ -1,0 +1,79 @@
+IMPL-FILE_SEARCH:
+  name: Dual-Mode Search Implementation with SSR Guards
+  status: Implemented
+  cross_references:
+    - ARCH-SEARCH_ENGINE
+    - REQ-FILE_SEARCH
+    - REQ-REACT_SSR_STABILITY
+  decision: Client-side incremental finder + server-side content search API with SSR guards
+  rationale:
+    why: Different search modes for filename vs content search with SSR-safe localStorage access
+    problems_solved:
+      - Cannot search file contents
+      - localStorage access causing SSR errors
+      - No quick filename filtering
+    benefits:
+      - 'Content search: comprehensive server-side'
+      - 'Incremental finder: instant client-side'
+      - SSR-safe history loading
+  implementation_approach:
+    summary: Client-side incremental finder + server-side content search API with SSR guards
+    details:
+      - 'Security: regex validation, ReDoS prevention, path validation, file size limits'
+      - 'SSR guards: typeof window === ''undefined'' checks in add(), getAll(), clear() methods'
+      - Config-driven UI text and keybindings
+      - FinderDialog component (Ctrl+F) for file name search with keyboard navigation
+      - Search utilities module (files.search.ts) with fuzzy matching, history
+      - SearchDialog component (Ctrl+Shift+F) for content search with options
+      - SearchHistory class with localStorage persistence (max 20)
+      - Server API (POST /api/files/search) for content searching with security
+      - Server context returns empty results without errors
+  code_locations:
+    files:
+      - path: src/lib/files.search.ts
+        description: 'Search utilities with SSR guards: fuzzy matching, filtering, scoring, SearchHistory class'
+        lines:
+          - 155
+          - 189
+      - path: src/app/files/components/FinderDialog.tsx
+        description: File finder component with real-time filtering and keyboard nav
+        lines:
+          - 1
+          - 305
+      - path: src/app/files/components/SearchDialog.tsx
+        description: Content search component with options (recursive, case, regex, pattern)
+        lines:
+          - 1
+          - 388
+      - path: src/app/api/files/search/route.ts
+        description: Content search API endpoint with security and line-by-line search
+        lines:
+          - 1
+          - 274
+      - path: src/app/files/WorkspaceView.tsx
+        description: 'Integration: state, handlers, dialog rendering with copy props'
+        lines:
+          - 1
+          - 1018
+    functions:
+      - name: SearchHistory.add
+        file: src/lib/files.search.ts
+        description: 'SSR guard: early return if typeof window === ''undefined'''
+      - name: SearchHistory.getAll
+        file: src/lib/files.search.ts
+        description: 'SSR guard: return [] if typeof window === ''undefined'''
+      - name: SearchHistory.clear
+        file: src/lib/files.search.ts
+        description: 'SSR guard: early return if typeof window === ''undefined'''
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T16:06:42.636Z"
+      author: AI Agent
+      reason: IMPL essence_pseudocode retrofit all 58
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass - 523 total tests passing, no SSR errors, production build successful

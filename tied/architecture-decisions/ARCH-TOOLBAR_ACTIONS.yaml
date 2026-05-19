@@ -1,0 +1,55 @@
+# ARCH detail — ARCH-TOOLBAR_ACTIONS
+ARCH-TOOLBAR_ACTIONS:
+  name: Action-to-Button Mapping Architecture
+  status: Implemented
+  cross_references:
+    - REQ-TOOLBAR_SYSTEM
+    - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+  decision: Toolbar buttons derive all metadata (icon, label, keystroke, description) from the existing keybinding registry, ensuring consistent behavior between toolbar clicks and keyboard shortcuts.
+  rationale:
+    why: Derive button metadata from keybinding registry to ensure consistency
+    problems_solved:
+      - Potential inconsistency between toolbar and keyboard
+      - Code duplication of action handlers
+    benefits:
+      - Consistent behavior guaranteed
+      - Single source of truth
+      - Zero duplication
+  alternatives_considered:
+    - name: Separate button configuration
+      pros:
+        - Explicit control
+      cons:
+        - Duplication
+      rejected_reason: Single source of truth critical
+  implementation_approach:
+    summary: Derive icon, label, keystroke from keybinding registry
+    details:
+      - ACTION_ICON_MAP for icon mapping
+      - handleToolbarAction dispatch to existing handlers
+  traceability:
+    requirements:
+      - REQ-TOOLBAR_SYSTEM
+    implementation:
+      - IMPL-TOOLBAR_COMPONENT
+    tests: []
+    code_annotations:
+      - ARCH-TOOLBAR_ACTIONS
+  related_decisions:
+    depends_on:
+      - ARCH-KEYBIND_SYSTEM
+    informs:
+      - IMPL-TOOLBAR_COMPONENT
+    see_also: []
+  metadata:
+    created:
+      date: 2026-02-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-08T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-08T00:00:00.000Z
+      validator: AI Agent
+      result: planned

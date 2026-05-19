@@ -1,4 +1,4 @@
-// [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED]
+// [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED]: Top-level Client-Side Sort and Filter Functions: Sort functions in files.utils.ts with comparator dispatch
 // Sort dialog component for file manager
 
 "use client";

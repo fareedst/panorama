@@ -14,6 +14,9 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Generated coverage output
     "coverage/**",
+    "scripts/**",
+    ".tied-migration/**",
+    ".cursor/**",
   ]),
 ]);
 

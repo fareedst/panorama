@@ -1,4 +1,4 @@
-// [TEST-NSYNC_ENGINE] [REQ-NSYNC_MULTI_TARGET]
+// [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: Top-level Sync Engine Core Implementation: SyncEngine class orchestrates sync loop iterating over sources, syncing each to all destinations in parallel, tracking results, and handling move deletion
 // SyncEngine tests
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
@@ -63,6 +63,9 @@ describe("SyncEngine", () => {
     expect(dest2Content).toBe("test content");
   });
 
+  // [IMPL-COPY_ATTRS] [REQ-COPY_OPERATIONS] [REQ-FILE_OPERATIONS]: Shared preserveCopyAttributes() after fs.copyFile; stat source then chmod + utimes on dest; each step try/catch so unsupported or denied ops do not fail the copy
+
+  // [IMPL-COPY_ATTRS] [REQ-COPY_OPERATIONS] [REQ-FILE_OPERATIONS]: after copy apply utimes and chmod from source stat
   it("should preserve file attributes (mtime, mode) where possible [IMPL-COPY_ATTRS]", async () => {
     const sourceFile = path.join(sourceDir, "attrs.txt");
     await fs.writeFile(sourceFile, "content");
@@ -130,6 +133,7 @@ describe("SyncEngine", () => {
     expect(calls).toContain("finish");
   });
 
+  // [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: delete source only after all destinations succeed for that item
   it("should handle move semantics [REQ-MOVE_SEMANTICS]", async () => {
     // Create source file
     const sourceFile = path.join(sourceDir, "test.txt");

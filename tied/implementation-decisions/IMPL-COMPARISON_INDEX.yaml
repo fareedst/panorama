@@ -1,0 +1,67 @@
+IMPL-COMPARISON_INDEX:
+  name: Comparison Index Implementation
+  status: Implemented
+  cross_references:
+    - ARCH-COMPARISON_INDEX
+    - REQ-CROSS_PANE_COMPARISON
+  decision: Build Map-based index from pane contents, provide query interface
+  rationale:
+    why: Centralized index enables efficient cross-pane file comparison
+    problems_solved:
+      - Performance issues
+      - Repeated comparisons
+      - Scattered comparison logic
+    benefits:
+      - Centralized logic
+      - Easy to rebuild
+      - O(1) lookup
+  implementation_approach:
+    summary: Build Map-based index from pane contents, provide query interface
+    details:
+      - 'buildComparisonIndex(panes: FileStat[][]): ComparisonIndex'
+      - 'CompareState interface (panes: number[], sizes: number[], mtimes: Date[])'
+      - 'ComparisonIndex.get(paneIndex: number, filename: string): CompareState | null'
+      - getSharedFilenames() returns sorted list of files in 2+ panes
+      - Implemented in src/lib/files.data.ts
+      - Returns null if file only in one pane or not in requested pane
+  code_locations:
+    files:
+      - path: src/lib/files.data.ts
+        description: Comparison index implementation
+        lines:
+          - 228
+          - 279
+      - path: src/lib/files.types.ts
+        description: CompareState and ComparisonIndex types
+        lines:
+          - 30
+          - 55
+    functions:
+      - name: buildComparisonIndex
+        file: src/lib/files.data.ts
+        description: Build comparison index from pane arrays
+  traceability:
+    architecture:
+      - ARCH-COMPARISON_INDEX
+    requirements:
+      - REQ-CROSS_PANE_COMPARISON
+    tests: []
+    code_annotations:
+      - IMPL-COMPARISON_INDEX
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - IMPL-FILE_PANE
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T16:06:42.636Z"
+      author: AI Agent
+      reason: IMPL essence_pseudocode retrofit all 58
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

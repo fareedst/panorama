@@ -1,4 +1,4 @@
-// [IMPL-LOGGER_MODULE] [IMPL-LOGGER_CONFIG] [IMPL-LOGGER_TOKENS]
+// [IMPL-LOGGER_MODULE] [ARCH-LOGGING_SYSTEM] [REQ-LOGGING_SYSTEM]: Top-level Logger Module Implementation: Create logger module with session-based file writing and six log levels
 // [ARCH-LOGGING_SYSTEM] [ARCH-LOGGING_CONFIG] [ARCH-LOGGING_SEMANTIC_TOKENS]
 // [REQ-LOGGING_SYSTEM] [REQ-LOGGING_CONFIG] [REQ-LOGGING_SEMANTIC_TOKENS]
 // Session-based file logging system with semantic token integration.

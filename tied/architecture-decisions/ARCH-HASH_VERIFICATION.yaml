@@ -1,0 +1,32 @@
+ARCH-HASH_VERIFICATION:
+  name: Hash Verification Design
+  status: Active
+  cross_references:
+    - IMPL-NSYNC_HASH
+    - REQ-HASH_COMPUTATION
+    - REQ-VERIFY_DEST
+  decision: Design for optional hash-based file verification using multiple algorithms
+  rationale:
+    why: Design for optional hash-based file verification using multiple algorithms
+    problems_solved: []
+    benefits: []
+  alternatives_considered: []
+  implementation_approach:
+    summary: Design for optional hash-based file verification using multiple algorithms
+    details: []
+  traceability:
+    requirements:
+      - REQ-HASH_COMPUTATION
+      - REQ-VERIFY_DEST
+    implementation:
+      - IMPL-NSYNC_HASH
+    tests: []
+    code_annotations:
+      - ARCH-HASH_VERIFICATION
+  related_decisions:
+    depends_on: []
+    informs: []
+    see_also: []
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated: 2026-02-09T00:00:00.000Z

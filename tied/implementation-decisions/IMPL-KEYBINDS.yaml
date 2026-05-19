@@ -1,0 +1,65 @@
+IMPL-KEYBINDS:
+  name: Keybinding Registry and Dispatcher
+  status: Implemented
+  cross_references:
+    - ARCH-KEYBIND_SYSTEM
+    - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+    - REQ-REACT_SSR_STABILITY
+  decision: Keybinding registry with useMemo initialization and global keydown handler
+  rationale:
+    why: Centralized keybinding enables configuration and discoverability with proper initialization timing
+    problems_solved:
+      - Hard-coded keybindings
+      - No help overlay
+      - Registry not initialized before component render
+      - Scattered keyboard handlers
+    benefits:
+      - Auto-generated help overlay
+      - Config-driven from files.yaml
+      - Single keybind registry
+      - Synchronous initialization during render phase
+  implementation_approach:
+    summary: Keybinding registry with useMemo initialization and global keydown handler
+    details:
+      - 'Action handlers Map: category.verb naming (e.g., file.copy, navigate.up)'
+      - 'Category validation: only ''navigation'', ''file-operations'', ''marking'', ''view-sort'', ''preview'', ''advanced'', ''system'' allowed'
+      - 'Command palette: fuzzy search on action/description with arrow key navigation'
+      - 'Fixed timing issue: moved from useEffect to useMemo to ensure registry ready before child components access it'
+      - 'Global handler: matchKeybinding(event) → find action → execute handler'
+      - 'Help overlay: renders keybindings grouped by 7 categories'
+      - 'Keybinding interface: {key, action, description, category, modifiers}'
+      - Load from files.yaml keybindings section (31 keybindings defined)
+      - Registry initialized with useMemo (synchronous during render, not after)
+  code_locations:
+    files:
+      - path: src/lib/files.keybinds.ts
+        description: Keybinding registry, matcher, formatters, validation (320 lines)
+        lines: []
+      - path: src/app/files/components/HelpOverlay.tsx
+        description: Help overlay component (130 lines)
+        lines: []
+      - path: src/app/files/components/CommandPalette.tsx
+        description: Command palette component (220 lines)
+        lines: []
+      - path: src/app/files/WorkspaceView.tsx
+        description: useMemo initialization of registry (fixed from useEffect)
+        lines:
+          - 66
+          - 68
+      - path: config/files.yaml
+        description: Keybindings configuration (31 keybindings with valid categories)
+        lines:
+          - 194
+          - 202
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T16:06:42.636Z"
+      author: AI Agent
+      reason: IMPL essence_pseudocode retrofit all 58
+    last_validated:
+      date: 2026-02-08T00:00:00.000Z
+      validator: AI Agent
+      result: pass - help triggered by both 'h' and '?', closes on first Escape press, no interference with modal keyboard events

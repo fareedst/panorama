@@ -1,4 +1,4 @@
-// [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW]
+// [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW]: Top-level Server-Side Preview API Routes: API routes for preview and info with type detection
 // Preview Panel - displays file content preview (text, image, archive)
 
 "use client";

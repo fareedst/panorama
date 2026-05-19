@@ -1,0 +1,55 @@
+# REQ detail — REQ-HOME_PAGE
+REQ-HOME_PAGE:
+  name: Home Page with Welcome Content
+  category: Functional
+  priority: P0
+  status: Implemented
+  description: A welcoming home page provides immediate value to users, guides them to next steps, and demonstrates the application's capabilities
+  rationale:
+    why: A welcoming home page provides immediate value to users, guides them to next steps, and demonstrates the application's capabilities
+    problems_solved:
+      - Lack of clear entry point for users
+      - Missing guidance for next steps
+    benefits:
+      - Clear entry point for users
+      - Guidance to learning resources
+      - Template for future page development
+  satisfaction_criteria:
+    - criterion: All links open in new tabs with security attributes
+    - criterion: Home page exists at src/app/page.tsx
+    - criterion: Page displays Next.js logo using Next.js Image component
+    - criterion: Page includes welcome content and links
+  validation_criteria:
+    - method: Page rendering
+      coverage: Home page renders at root URL (/)
+    - method: Content validation
+      coverage: All text content is visible and readable
+    - method: Link validation
+      coverage: All links are clickable and include proper security attributes
+  traceability:
+    architecture:
+      - ARCH-SERVER_COMPONENTS
+    implementation:
+      - IMPL-HOME_PAGE
+    tests: []
+    code_annotations:
+      - REQ-HOME_PAGE
+  related_requirements:
+    depends_on:
+      - REQ-APP_STRUCTURE
+    related_to:
+      - REQ-BRANDING
+      - REQ-NAVIGATION_LINKS
+    supersedes: []
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass

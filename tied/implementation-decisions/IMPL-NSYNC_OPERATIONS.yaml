@@ -1,0 +1,37 @@
+IMPL-NSYNC_OPERATIONS:
+  name: File Operations Wrappers
+  status: Active
+  cross_references:
+    - REQ-NSYNC_MULTI_TARGET
+    - REQ-MOVE_SEMANTICS
+  decision: Copy, move, delete operation wrappers ensuring destination directories exist
+  rationale:
+    why: Copy, move, delete operation wrappers ensuring destination directories exist
+    problems_solved: []
+    benefits: []
+  implementation_approach:
+    summary: Copy, move, delete operation wrappers ensuring destination directories exist
+    details: []
+  code_locations:
+    files:
+      - path: src/lib/sync/operations.ts
+        description: IMPL-NSYNC_OPERATIONS
+    functions: []
+  traceability:
+    architecture: []
+    requirements:
+      - REQ-NSYNC_MULTI_TARGET
+      - REQ-MOVE_SEMANTICS
+    tests: []
+    code_annotations:
+      - IMPL-NSYNC_OPERATIONS
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also: []
+  metadata:
+    registered: 2026-02-09T00:00:00.000Z
+    last_updated:
+      date: "2026-05-19T16:06:42.636Z"
+      author: AI Agent
+      reason: IMPL essence_pseudocode retrofit all 58

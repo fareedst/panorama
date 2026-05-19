@@ -1,0 +1,59 @@
+# ARCH detail — ARCH-COMPARISON_INDEX
+ARCH-COMPARISON_INDEX:
+  name: Cross-Pane File Comparison Index
+  status: Active
+  cross_references:
+    - REQ-CROSS_PANE_COMPARISON
+  decision: Build Map<filename, CompareState[]> index from all pane contents
+  rationale:
+    why: Centralized index enables efficient cross-pane file comparison and state tracking
+    problems_solved:
+      - Difficult to maintain comparison state
+      - Inefficient pairwise comparisons
+      - Scattered comparison logic
+    benefits:
+      - Easy to rebuild on pane changes
+      - O(1) lookup for comparison state
+      - Single source of truth
+  alternatives_considered:
+    - name: On-demand comparison
+      pros:
+        - No pre-computation
+      cons:
+        - Slow for large directories
+        - Repeated calculations
+      rejected_reason: Performance issues with large file lists
+  implementation_approach:
+    summary: Build Map<filename, CompareState[]> index from all pane contents
+    details:
+      - 'Color coding: yellow (same name), red/green (size/time diff)'
+      - Build index when panes change (navigate, reload)
+      - CompareState tracks which panes have the file, sizes, mtimes
+      - Pane components query index for each file
+  traceability:
+    requirements:
+      - REQ-CROSS_PANE_COMPARISON
+    implementation:
+      - IMPL-COMPARISON_INDEX
+    tests: []
+    code_annotations:
+      - ARCH-COMPARISON_INDEX
+  related_decisions:
+    depends_on:
+      - REQ-CROSS_PANE_COMPARISON
+    informs:
+      - IMPL-COMPARISON_INDEX
+    see_also:
+      - ARCH-FILE_MANAGER_HIERARCHY
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

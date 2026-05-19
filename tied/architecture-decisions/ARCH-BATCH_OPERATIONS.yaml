@@ -1,0 +1,66 @@
+# ARCH detail — ARCH-BATCH_OPERATIONS
+ARCH-BATCH_OPERATIONS:
+  name: Async Batch File Operations Architecture
+  status: Active
+  cross_references:
+    - REQ-BULK_FILE_OPS
+  decision: '[See architecture-decisions.yaml for details]'
+  rationale:
+    why: Batch operations need async execution with progress tracking and error handling
+    problems_solved:
+      - Blocking UI during long operations
+      - No progress visibility
+      - Poor error recovery
+    benefits:
+      - Cross-pane operation support
+      - Graceful error handling with partial success
+      - Non-blocking UI with Promise.all
+      - Real-time progress callbacks
+  alternatives_considered:
+    - name: Sequential operations
+      pros:
+        - Simpler implementation
+      cons:
+        - Slower for large file sets
+      rejected_reason: Parallel operations significantly faster
+    - name: Server-side job queue
+      pros:
+        - Survives page refresh
+      cons:
+        - Complex job management infrastructure
+      rejected_reason: Over-engineered for current needs
+  implementation_approach:
+    summary: Promise.all with progress callbacks, fallback to cursor file
+    details:
+      - 'Error collection: continue on error, report at end'
+      - 'POST /api/files with operation: bulk-copy/bulk-move/bulk-delete'
+      - 'Progress dialog shows: percentage, file count, current file'
+      - Check marks.size > 0, use marked files; else use cursor file
+      - Server streams progress updates via callbacks
+  traceability:
+    requirements:
+      - REQ-BULK_FILE_OPS
+    implementation:
+      - IMPL-BULK_OPS
+    tests: []
+    code_annotations:
+      - ARCH-BATCH_OPERATIONS
+  related_decisions:
+    depends_on:
+      - ARCH-MARKING_STATE
+    informs:
+      - IMPL-BULK_OPS
+    see_also:
+      - ARCH-SERVER_CLIENT_BOUNDARY
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Initial creation - adapted from Goful ARCH-ASYNC_FILE_OPERATIONS
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

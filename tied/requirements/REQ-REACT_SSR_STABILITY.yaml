@@ -1,0 +1,57 @@
+# REQ detail — REQ-REACT_SSR_STABILITY
+REQ-REACT_SSR_STABILITY:
+  name: React SSR Stability and Correctness
+  category: Non-Functional
+  priority: P0
+  status: Implemented
+  description: Next.js server-side rendering requires stable components with unique keys and SSR-safe code
+  rationale:
+    why: Next.js server-side rendering requires stable components with unique keys and SSR-safe code
+    problems_solved:
+      - localStorage access causing SSR errors
+      - Module initialization timing issues
+      - React duplicate key warnings breaking component rendering
+    benefits:
+      - Clean SSR without browser API errors
+      - Predictable module initialization
+      - Stable component rendering without warnings
+  satisfaction_criteria:
+    - criterion: Keybinding registry initialized before first component render
+    - criterion: LocalStorage accessed only in browser context
+    - criterion: No React console warnings about duplicate keys
+    - criterion: No SSR errors from browser API access
+  validation_criteria:
+    - method: Console inspection
+      coverage: No React warnings or errors during page load
+    - method: Production build
+      coverage: Build succeeds without errors
+  traceability:
+    architecture:
+      - ARCH-REACT_VERSION
+      - ARCH-SERVER_COMPONENTS
+    implementation:
+      - IMPL-FILE_SEARCH
+      - IMPL-KEYBINDS
+      - IMPL-WORKSPACE_VIEW
+    tests: []
+    code_annotations:
+      - REQ-REACT_SSR_STABILITY
+  related_requirements:
+    depends_on:
+      - REQ-APP_STRUCTURE
+    related_to:
+      - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+      - REQ-FILE_SEARCH
+    supersedes: []
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+      reason: Documented fixes for duplicate keys, SSR localStorage errors, and keybinding timing
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

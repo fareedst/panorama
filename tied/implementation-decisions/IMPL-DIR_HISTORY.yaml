@@ -1,0 +1,61 @@
+IMPL-DIR_HISTORY:
+  name: Directory History with localStorage Bookmarks
+  status: Implemented
+  cross_references:
+    - ARCH-DIRECTORY_HISTORY
+    - REQ-ADVANCED_NAV
+  decision: Map-based history in React state, localStorage for bookmarks
+  rationale:
+    why: History and bookmarks enable efficient navigation and context preservation
+    problems_solved:
+      - Lost cursor position on directory revisit
+      - Repetitive navigation to common locations
+    benefits:
+      - Bookmark persistence across sessions
+      - Cursor restoration on revisit
+      - Recent directories LRU cache
+  implementation_approach:
+    summary: Map-based history in React state, localStorage for bookmarks
+    details:
+      - 'Bookmarks in localStorage: {id, path, label, created}[]'
+      - 'DirectoryHistory: Map<paneId, Map<path, {cursor, scrollTop, timestamp}>>'
+      - restoreCursorPosition on directory load
+      - saveCursorPosition before directory change
+  code_locations:
+    files:
+      - path: src/lib/files.history.ts
+        description: History management
+        lines: []
+      - path: src/lib/files.bookmarks.ts
+        description: Bookmark management
+        lines: []
+    functions:
+      - name: saveCursorPosition
+        file: src/lib/files.history.ts
+        description: Save cursor state before navigation
+  traceability:
+    architecture:
+      - ARCH-DIRECTORY_HISTORY
+    requirements:
+      - REQ-ADVANCED_NAV
+    tests: []
+    code_annotations:
+      - IMPL-DIR_HISTORY
+  related_decisions:
+    depends_on:
+      - ARCH-DIRECTORY_HISTORY
+    supersedes: []
+    see_also: []
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T16:06:42.636Z"
+      author: AI Agent
+      reason: IMPL essence_pseudocode retrofit all 58
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass
+      notes: 36 tests passing, localStorage errors resolved, 0 lint errors

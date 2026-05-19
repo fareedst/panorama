@@ -1,0 +1,62 @@
+IMPL-LOGGER_TOKENS:
+  name: Semantic Token Integration Implementation
+  status: Implemented
+  cross_references:
+    - ARCH-LOGGING_SEMANTIC_TOKENS
+    - REQ-LOGGING_SEMANTIC_TOKENS
+  decision: TypeScript API requires tokens as first parameter
+  rationale:
+    why: Required tokens parameter ensures TIED traceability
+    problems_solved:
+      - Optional tokens easily forgotten
+      - Inconsistent token usage
+    benefits:
+      - 100% token coverage
+      - Compile-time enforcement
+      - Easy grep/search
+  implementation_approach:
+    summary: TypeScript API requires tokens as first parameter
+    details:
+      - 'All log methods: (tokens: string | string[], message: string, metadata?: object)'
+      - 'Helper: formatTokens(tokens: string | string[]): string'
+      - Format tokens as space-separated in output
+      - No validation in PROD for performance
+      - Validate token format at runtime (DEV mode)
+  code_locations:
+    files:
+      - path: src/lib/logger.ts
+        description: Token formatting and validation
+      - path: src/lib/logger.types.ts
+        description: SemanticToken type
+    functions:
+      - name: formatTokens
+        file: src/lib/logger.ts
+        description: Format tokens for log output
+      - name: validateTokens
+        file: src/lib/logger.ts
+        description: Validate token format (DEV only)
+  traceability:
+    architecture:
+      - ARCH-LOGGING_SEMANTIC_TOKENS
+    requirements:
+      - REQ-LOGGING_SEMANTIC_TOKENS
+    tests: []
+    code_annotations:
+      - IMPL-LOGGER_TOKENS
+  related_decisions:
+    depends_on:
+      - IMPL-LOGGER_MODULE
+    supersedes: []
+    see_also: []
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T16:06:42.636Z"
+      author: AI Agent
+      reason: IMPL essence_pseudocode retrofit all 58
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

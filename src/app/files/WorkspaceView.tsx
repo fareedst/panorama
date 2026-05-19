@@ -1,4 +1,4 @@
-// [IMPL-WORKSPACE_VIEW] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-MULTI_PANE_LAYOUT] [REQ-KEYBOARD_NAVIGATION]
+// [IMPL-WORKSPACE_VIEW] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-DIRECTORY_NAVIGATION] [REQ-KEYBOARD_NAVIGATION] [REQ-MULTI_PANE_LAYOUT] [REQ-REACT_SSR_STABILITY]: Top-level Workspace View Client Component with Stable React Keys: Client component with unique dialog keys, useMemo keybinding initialization, and API integration
 // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
 // [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED]
 // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
@@ -448,8 +448,7 @@ export default function WorkspaceView({
   }, [panes, linkedMode]);
 
   
-  // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] [ARCH-LINKED_NAV]
-  // Handle cursor movement with linked pane synchronization and scroll-to-center
+  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: sync cursor to same filename in all panes when linkedMode ON
   const handleCursorMove = useCallback((paneIndex: number, newCursor: number) => {
     setPanes((prev) => {
       const updated = [...prev];
@@ -502,7 +501,7 @@ export default function WorkspaceView({
     });
   }, [linkedMode, panes.length]);
   
-  // Handle file marking [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]
+  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: toggle single file mark on m key or checkbox click via handleToggleMark
   const handleToggleMark = useCallback((paneIndex: number, filename: string) => {
     setPanes((prev) => {
       const updated = [...prev];
@@ -522,7 +521,7 @@ export default function WorkspaceView({
     });
   }, []);
   
-  // Mark all files in pane [IMPL-FILE_MARKING] [REQ-FILE_MARKING_WEB]
+  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: mark every file in pane on Shift+M via handleMarkAll
   const handleMarkAll = useCallback((paneIndex: number) => {
     setPanes((prev) => {
       const updated = [...prev];
@@ -536,7 +535,7 @@ export default function WorkspaceView({
     });
   }, []);
   
-  // Invert marks in pane [IMPL-FILE_MARKING] [REQ-FILE_MARKING_WEB]
+  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: symmetric difference of marks on Ctrl+M via handleInvertMarks
   const handleInvertMarks = useCallback((paneIndex: number) => {
     setPanes((prev) => {
       const updated = [...prev];
@@ -558,7 +557,7 @@ export default function WorkspaceView({
     });
   }, []);
   
-  // Clear all marks in pane [IMPL-FILE_MARKING] [REQ-FILE_MARKING_WEB]
+  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: remove all marks on Escape via handleClearMarks
   const handleClearMarks = useCallback((paneIndex: number) => {
     setPanes((prev) => {
       const updated = [...prev];
@@ -597,7 +596,7 @@ export default function WorkspaceView({
   }, []);
   
   // [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED]
-  // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Handle sort settings change with linked sync
+  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: apply sort criterion direction dirsFirst to all panes when linked
   const handleSortChange = (
     criterion: SortCriterion,
     direction: SortDirection,
@@ -1372,8 +1371,8 @@ export default function WorkspaceView({
     });
     
     // Marking
+    // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: mark focused file then advance cursor down one row (Space key)
     handlers.set("mark.toggle", () => {
-      // Space: Mark and move down
       const file = pane.files[pane.cursor];
       if (file) {
         handleToggleMark(focusIndex, file.name);
@@ -1383,8 +1382,8 @@ export default function WorkspaceView({
       }
     });
     
+    // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: toggle single file mark on m key or checkbox click via handleToggleMark
     handlers.set("mark.toggle-cursor", () => {
-      // M: Toggle mark (no move)
       const file = pane.files[pane.cursor];
       if (file) {
         handleToggleMark(focusIndex, file.name);
@@ -1722,6 +1721,7 @@ export default function WorkspaceView({
             sortDirsFirst={pane.sortDirsFirst}
             linked={linkedMode && panes.length > 1} // [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
             scrollTrigger={scrollTriggers.get(index)} // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Scroll sync
+            // [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION]: switch focusIndex when user clicks pane via FilePane onFocusRequest onMouseDown
             onFocusRequest={() => setFocusIndex(index)}
             onNavigateParent={() => navigateToParent(index)} // [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
             columns={columns} // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]

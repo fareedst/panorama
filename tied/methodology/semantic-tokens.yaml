@@ -1,0 +1,300 @@
+# Semantic Tokens Index (YAML Database)
+#
+# This YAML file serves as the central registry for all semantic tokens in the project.
+# Each top-level key is a semantic token (e.g., REQ-TIED_SETUP, ARCH-TIED_STRUCTURE, IMPL-MODULE_VALIDATION).
+#
+# To append a new token:
+# 1. Copy the template block at the bottom of this file (TOKEN-IDENTIFIER)
+# 2. Paste it at the end with a blank line before it
+# 3. Replace TOKEN-IDENTIFIER with your new token
+# 4. Fill in all fields
+# 5. Set detail_file to the detail path, or null for index-only (methodology seed); procedure: tied/docs/agent-req-implementation-checklist.yaml
+#
+# Field descriptions:
+#   type: REQ | ARCH | IMPL | TEST | PROC
+#   name: Short descriptive name of the token
+#   category: Sub-category (e.g., "Core Functional", "Non-Functional" for REQ; free-form for others; optional)
+#   status: Active | Deprecated | Template | Planned
+#   description: One-line description of what this token represents
+#   cross_references: List of related tokens (traceability chain)
+#   source_index: Path to the YAML index that holds the full record (e.g., requirements.yaml, architecture-decisions.yaml, implementation-decisions.yaml, processes.md)
+#   detail_file: Path to the detailed .yaml, or null when no detail file (methodology seed)
+#   metadata: Structured metadata with registered and last_updated dates
+REQ-TIED_SETUP:
+  type: REQ
+  name: TIED Methodology Setup
+  category: Core Functional
+  status: Active
+  description: Index stub; procedure in agent-req-implementation-checklist.yaml
+  cross_references:
+    - ARCH-TIED_STRUCTURE
+    - IMPL-TIED_FILES
+  source_index: requirements.yaml
+  detail_file: null
+  metadata:
+    registered: 2025-11-08
+    last_updated: 2026-04-21
+REQ-MODULE_VALIDATION:
+  type: REQ
+  name: Independent Module Validation Before Integration
+  category: Core Functional
+  status: Active
+  description: Index stub; procedure in agent-req-implementation-checklist.yaml
+  cross_references:
+    - ARCH-MODULE_VALIDATION
+    - IMPL-MODULE_VALIDATION
+  source_index: requirements.yaml
+  detail_file: null
+  metadata:
+    registered: 2025-01-27
+    last_updated: 2026-04-21
+ARCH-TIED_STRUCTURE:
+  type: ARCH
+  name: TIED Project Structure
+  status: Active
+  description: Index stub; procedure in agent-req-implementation-checklist.yaml
+  cross_references:
+    - REQ-TIED_SETUP
+    - IMPL-TIED_FILES
+  source_index: architecture-decisions.yaml
+  detail_file: null
+  metadata:
+    registered: 2025-12-18
+    last_updated: 2026-04-21
+ARCH-MODULE_VALIDATION:
+  type: ARCH
+  name: Module Validation Strategy
+  status: Active
+  description: Index stub; procedure in agent-req-implementation-checklist.yaml
+  cross_references:
+    - REQ-MODULE_VALIDATION
+    - IMPL-MODULE_VALIDATION
+  source_index: architecture-decisions.yaml
+  detail_file: null
+  metadata:
+    registered: 2025-12-18
+    last_updated: 2026-04-21
+IMPL-TIED_FILES:
+  type: IMPL
+  name: TIED File Creation
+  status: Active
+  description: Index stub; procedure in agent-req-implementation-checklist.yaml
+  cross_references:
+    - ARCH-TIED_STRUCTURE
+    - REQ-TIED_SETUP
+  source_index: implementation-decisions.yaml
+  detail_file: null
+  metadata:
+    registered: 2025-12-18
+    last_updated: 2026-04-21
+IMPL-MODULE_VALIDATION:
+  type: IMPL
+  name: Module Validation Implementation
+  status: Active
+  description: Index stub; procedure in agent-req-implementation-checklist.yaml
+  cross_references:
+    - ARCH-MODULE_VALIDATION
+    - REQ-MODULE_VALIDATION
+  source_index: implementation-decisions.yaml
+  detail_file: null
+  metadata:
+    registered: 2025-12-18
+    last_updated: 2026-04-21
+PROC-PROJECT_SURVEY_AND_SETUP:
+  type: PROC
+  name: Project Survey and Setup Process
+  status: Active
+  description: Survey and readiness process supporting REQ-TIED_SETUP and ARCH-TIED_STRUCTURE
+  cross_references:
+    - REQ-TIED_SETUP
+    - ARCH-TIED_STRUCTURE
+  source_index: processes.md
+  detail_file: null
+  metadata:
+    registered: 2025-11-08
+    last_updated: 2026-02-08
+PROC-BUILD_PIPELINE_VALIDATION:
+  type: PROC
+  name: Build Pipeline Validation Process
+  status: Active
+  description: Build/deploy validation tied to REQ-MODULE_VALIDATION
+  cross_references:
+    - REQ-MODULE_VALIDATION
+  source_index: processes.md
+  detail_file: null
+  metadata:
+    registered: 2025-11-08
+    last_updated: 2026-02-08
+PROC-TOKEN_AUDIT:
+  type: PROC
+  name: Token Audit Process
+  status: Active
+  description: Mandatory checklist ensuring every requirement → architecture → implementation → code/test path is annotated and documented
+  cross_references: []
+  source_index: processes.md
+  detail_file: null
+  metadata:
+    registered: 2025-11-08
+    last_updated: 2026-02-08
+PROC-TOKEN_VALIDATION:
+  type: PROC
+  name: Token Validation Process
+  status: Active
+  description: Automated validation workflow that proves all referenced tokens exist in the registry
+  cross_references: []
+  source_index: processes.md
+  detail_file: null
+  metadata:
+    registered: 2025-11-08
+    last_updated: 2026-02-08
+PROC-YAML_DB_OPERATIONS:
+  type: PROC
+  name: YAML Database Operations Process
+  status: Active
+  description: YAML database operations for reading, writing, querying, and validating YAML index files
+  cross_references:
+    - REQ-TIED_SETUP
+    - ARCH-TIED_STRUCTURE
+  source_index: processes.md
+  detail_file: null
+  metadata:
+    registered: 2025-11-08
+    last_updated: 2026-02-08
+PROC-TIED_METHODOLOGY_READONLY:
+  type: PROC
+  name: TIED-sourced YAML read-only in client
+  status: Active
+  description: Methodology YAML (tied/methodology/) is read-only in client; project YAML (tied/ root) holds client data only; refresh methodology via copy_files.sh
+  cross_references:
+    - ARCH-TIED_STRUCTURE
+    - PROC-YAML_DB_OPERATIONS
+    - REQ-TIED_SETUP
+  source_index: processes.md
+  detail_file: null
+  metadata:
+    registered: 2026-03-16
+    last_updated: 2026-03-16
+PROC-TEST_STRATEGY:
+  type: PROC
+  name: Test Strategy and Coverage (minimize untested code)
+  status: Active
+  description: Minimize code not covered by tests; unit/integration cover IMPL/ARCH/REQ logic; E2E reserved for critical journeys
+  cross_references:
+    - REQ-MODULE_VALIDATION
+    - IMPL-MODULE_VALIDATION
+  source_index: processes.md
+  detail_file: null
+  metadata:
+    registered: 2026-03-01
+    last_updated: 2026-03-01
+PROC-TIED_DEV_CYCLE:
+  type: PROC
+  name: TIED Development Cycle (session workflow)
+  status: Active
+  description: 'Session workflow: plan from TIED, author pseudo-code and tokens, add/align tests, implement (TDD), minimal glue, validate, sync TIED to code'
+  cross_references:
+    - PROC-COMMIT_MESSAGES
+    - PROC-IMPL_PSEUDOCODE_TOKENS
+    - PROC-TOKEN_AUDIT
+    - PROC-TOKEN_VALIDATION
+    - REQ-MODULE_VALIDATION
+    - REQ-TIED_SETUP
+  source_index: processes.md
+  detail_file: null
+  metadata:
+    registered: 2026-03-01
+    last_updated: 2026-03-05
+PROC-COMMIT_MESSAGES:
+  type: PROC
+  name: Commit message format and guidelines
+  status: Active
+  description: Consistent commit message format (type/scope/subject, body, footer); optional TIED token references for traceability
+  cross_references:
+    - PROC-TIED_DEV_CYCLE
+  source_index: processes.md
+  detail_file: null
+  metadata:
+    registered: 2026-03-03
+    last_updated: 2026-03-03
+PROC-IMPL_PSEUDOCODE_TOKENS:
+  type: PROC
+  name: IMPL pseudo-code semantic token comments (most critical)
+  status: Active
+  description: Every block in IMPL essence_pseudocode must have a comment naming REQ/ARCH/IMPL and how the block implements them; primary mechanism for implementation traceability
+  cross_references:
+    - PROC-TIED_DEV_CYCLE
+  source_index: processes.md
+  detail_file: null
+  metadata:
+    registered: 2026-03-05
+    last_updated: 2026-03-05
+PROC-RELEASE:
+  type: PROC
+  name: Release and version numbering
+  status: Active
+  description: Version numbering (major/minor/patch/build) for releases
+  cross_references:
+    - PROC-COMMIT_MESSAGES
+  source_index: processes.md
+  detail_file: null
+  metadata:
+    registered: 2026-03-03
+    last_updated: 2026-03-03
+REQ-FEEDBACK_TO_TIED:
+  type: REQ
+  name: Feedback to TIED (Feature Requests, Bug Reports, Methodology)
+  category: Functional
+  status: Active
+  description: Index stub; optional feedback tooling; see checklist when building
+  cross_references:
+    - ARCH-FEEDBACK_STORAGE
+    - IMPL-MCP_FEEDBACK_TOOLS
+  source_index: requirements.yaml
+  detail_file: null
+  metadata:
+    registered: 2026-03-03
+    last_updated: 2026-04-21
+ARCH-FEEDBACK_STORAGE:
+  type: ARCH
+  name: Feedback Storage for TIED Reporting
+  status: Active
+  description: Index stub; see checklist when building feedback path
+  cross_references:
+    - REQ-FEEDBACK_TO_TIED
+    - IMPL-MCP_FEEDBACK_TOOLS
+  source_index: architecture-decisions.yaml
+  detail_file: null
+  metadata:
+    registered: 2026-03-03
+    last_updated: 2026-04-21
+IMPL-MCP_FEEDBACK_TOOLS:
+  type: IMPL
+  name: MCP Feedback Tools
+  status: Active
+  description: Index stub; TIED mcp-server tools when adopted
+  cross_references:
+    - ARCH-FEEDBACK_STORAGE
+    - REQ-FEEDBACK_TO_TIED
+  source_index: implementation-decisions.yaml
+  detail_file: null
+  metadata:
+    registered: 2026-03-03
+    last_updated: 2026-04-21
+# ---
+# Template Record - Copy this block to create new tokens
+# ---
+#
+# TOKEN-IDENTIFIER:
+#   type: REQ | ARCH | IMPL | TEST | PROC
+#   name: Token Name
+#   category: Optional category (e.g., Core Functional, Non-Functional for REQ)
+#   status: Active | Deprecated | Template | Planned
+#   description: "One-line description of what this token represents"
+#   cross_references:
+#     - RELATED-TOKEN-1
+#     - RELATED-TOKEN-2
+#   source_index: requirements.yaml | architecture-decisions.yaml | implementation-decisions.yaml | processes.md
+#   detail_file: path/to/detail/file.yaml | null
+#   metadata:
+#     registered: YYYY-MM-DD
+#     last_updated: YYYY-MM-DD

@@ -76,6 +76,8 @@ describe("FinderDialog [TEST-FILE_SEARCH] [REQ-FILE_SEARCH]", () => {
     localStorageMock.clear();
   });
 
+  // [IMPL-FILE_SEARCH] [ARCH-SEARCH_ENGINE] [REQ-FILE_SEARCH] [REQ-REACT_SSR_STABILITY]: regex validation, ReDoS prevention, path validation, file size limits
+
   describe("Rendering [IMPL-FILE_SEARCH]", () => {
     it("should not render when closed [REQ-FILE_SEARCH]", () => {
       const { container } = render(
@@ -152,6 +154,8 @@ describe("FinderDialog [TEST-FILE_SEARCH] [REQ-FILE_SEARCH]", () => {
       expect(screen.getByText("📁")).toBeInTheDocument();
     });
   });
+
+  // [IMPL-FILE_SEARCH] [ARCH-SEARCH_ENGINE] [REQ-FILE_SEARCH] [REQ-REACT_SSR_STABILITY]: regex validation, ReDoS prevention, path validation, file size limits
 
   describe("Filtering [IMPL-FILE_SEARCH]", () => {
     it("should filter files by pattern [REQ-FILE_SEARCH]", async () => {
@@ -251,6 +255,8 @@ describe("FinderDialog [TEST-FILE_SEARCH] [REQ-FILE_SEARCH]", () => {
       });
     });
   });
+
+  // [IMPL-FILE_SEARCH] [ARCH-SEARCH_ENGINE] [REQ-FILE_SEARCH] [REQ-REACT_SSR_STABILITY]: regex validation, ReDoS prevention, path validation, file size limits
 
   describe("Keyboard Navigation [IMPL-FILE_SEARCH]", () => {
     it("should close on Escape key [REQ-FILE_SEARCH]", () => {
@@ -393,6 +399,8 @@ describe("FinderDialog [TEST-FILE_SEARCH] [REQ-FILE_SEARCH]", () => {
     });
   });
 
+  // [IMPL-FILE_SEARCH] [ARCH-SEARCH_ENGINE] [REQ-FILE_SEARCH] [REQ-REACT_SSR_STABILITY]: regex validation, ReDoS prevention, path validation, file size limits
+
   describe("Mouse Interaction [IMPL-FILE_SEARCH]", () => {
     it("should select file on click [REQ-FILE_SEARCH]", () => {
       render(
@@ -452,6 +460,8 @@ describe("FinderDialog [TEST-FILE_SEARCH] [REQ-FILE_SEARCH]", () => {
     });
   });
 
+  // [IMPL-FILE_SEARCH] [ARCH-SEARCH_ENGINE] [REQ-FILE_SEARCH] [REQ-REACT_SSR_STABILITY]: regex validation, ReDoS prevention, path validation, file size limits
+
   describe("Search History [IMPL-FILE_SEARCH]", () => {
     it("should save pattern to history on selection [REQ-FILE_SEARCH]", () => {
       render(
@@ -504,6 +514,8 @@ describe("FinderDialog [TEST-FILE_SEARCH] [REQ-FILE_SEARCH]", () => {
     });
   });
 
+  // [IMPL-FILE_SEARCH] [ARCH-SEARCH_ENGINE] [REQ-FILE_SEARCH] [REQ-REACT_SSR_STABILITY]: regex validation, ReDoS prevention, path validation, file size limits
+
   describe("Match Highlighting [IMPL-FILE_SEARCH]", () => {
     it("should highlight matching text [REQ-FILE_SEARCH]", async () => {
       render(
@@ -526,6 +538,8 @@ describe("FinderDialog [TEST-FILE_SEARCH] [REQ-FILE_SEARCH]", () => {
       });
     });
   });
+
+  // [IMPL-FILE_SEARCH] [ARCH-SEARCH_ENGINE] [REQ-FILE_SEARCH] [REQ-REACT_SSR_STABILITY]: regex validation, ReDoS prevention, path validation, file size limits
 
   describe("Edge Cases [IMPL-FILE_SEARCH]", () => {
     it("should handle empty file list [REQ-FILE_SEARCH]", () => {

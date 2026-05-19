@@ -1,0 +1,80 @@
+IMPL-FILES_API:
+  name: File Operations API Routes
+  status: Implemented
+  cross_references:
+    - ARCH-FILE_OPERATIONS_API
+    - IMPL-LOGGER_MODULE
+    - REQ-DIRECTORY_NAVIGATION
+    - REQ-FILE_OPERATIONS
+  decision: GET /api/files for directory listing, POST /api/files for operations (copy, move, delete, rename, bulk-*, sync-all), operation-specific validation, integrated with session logger
+  rationale:
+    why: API routes provide secure server-side file operations with comprehensive logging
+    problems_solved:
+      - Client-side file operations
+      - Inconsistent error handling
+      - Missing error traceability in logs
+      - Security vulnerabilities
+    benefits:
+      - Centralized validation
+      - Complete error logging with semantic tokens
+      - RESTful interface
+      - Secure operations
+  implementation_approach:
+    summary: GET /api/files for directory listing, POST /api/files for operations (copy, move, delete, rename, bulk-*, sync-all), operation-specific validation, integrated with session logger
+    details:
+      - 'GET handler at /api/files (not /api/files/list): accepts path query param, returns sorted directory listing'
+      - 'Operation-specific validation: only copy, move, delete, rename require src; sync-all and bulk-delete use sources array (no src)'
+      - 'POST handler: extract operation, src, dest from body'
+      - All log entries include semantic tokens for traceability
+      - Call files.data or SyncEngine (sync-all); return JSON success/error responses
+      - Created src/app/api/files/route.ts
+      - Dynamic import of operation functions to optimize bundle
+      - Error responses logged with full context (paths, operations, error messages)
+      - Integrated logger module for debug, info, warn, error logging
+      - Path validation (..) only when src/dest present
+      - Switch on operation type (copy, move, delete, rename, bulk-copy, bulk-move, bulk-delete, sync-all)
+  code_locations:
+    files:
+      - path: src/app/api/files/route.ts
+        description: File operations API route with logging and operation-specific validation
+        lines:
+          - 1
+          - 240
+    functions:
+      - name: GET
+        file: src/app/api/files/route.ts
+        description: Handle directory listing requests with logging
+      - name: POST
+        file: src/app/api/files/route.ts
+        description: Handle file operations with operation-specific validation and comprehensive logging
+  traceability:
+    architecture:
+      - ARCH-FILE_OPERATIONS_API
+      - ARCH-LOGGING_SYSTEM
+    requirements:
+      - REQ-DIRECTORY_NAVIGATION
+      - REQ-FILE_OPERATIONS
+      - REQ-LOGGING_SYSTEM
+    tests: []
+    code_annotations:
+      - IMPL-FILES_API
+      - IMPL-LOGGER_MODULE
+  related_decisions:
+    depends_on:
+      - IMPL-LOGGER_MODULE
+    supersedes: []
+    see_also:
+      - IMPL-FILES_DATA
+      - IMPL-WORKSPACE_VIEW
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T16:06:42.636Z"
+      author: AI Agent
+      reason: IMPL essence_pseudocode retrofit all 58
+    last_validated:
+      date: 2026-02-09T00:00:00.000Z
+      validator: AI Agent
+      result: pass - 6/6 route tests, sync-all accepts request without src

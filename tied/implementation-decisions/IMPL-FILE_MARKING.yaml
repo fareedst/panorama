@@ -1,0 +1,68 @@
+IMPL-FILE_MARKING:
+  name: React State Mark Management
+  status: Active
+  cross_references:
+    - ARCH-MARKING_STATE
+    - REQ-FILE_MARKING_WEB
+  decision: React useState with Set<string> per pane, keyboard and mouse handlers
+  rationale:
+    why: Client-side marking with Set<string> provides instant feedback and name-based persistence
+    problems_solved:
+      - Network latency on mark toggles
+      - Mark loss on re-sort
+    benefits:
+      - Instant UI updates
+      - Persistent across view changes
+      - Simple state structure
+  implementation_approach:
+    summary: React useState with Set<string> per pane, keyboard and mouse handlers
+    details:
+      - 'Footer: [${marks.size}/${files.length}]'
+      - 'handleClearMarks: marks.clear()'
+      - 'handleInvertMarks: symmetric difference'
+      - 'handleMarkAll: new Set(files.map(f => f.name))'
+      - 'handleToggleMark: Add/remove filename from set'
+      - 'PaneState: { path, files, cursor, marks: Set<string>, scrollTop }'
+      - 'Visual: checkbox icon + bg-marked CSS class'
+  code_locations:
+    files:
+      - path: src/app/files/WorkspaceView.tsx
+        description: Mark state and handlers
+        lines: []
+      - path: src/app/files/components/FilePane.tsx
+        description: Checkbox rendering
+        lines: []
+    functions:
+      - name: handleToggleMark
+        file: src/app/files/WorkspaceView.tsx
+        description: Toggle mark on specific file
+      - name: handleMarkAll
+        file: src/app/files/WorkspaceView.tsx
+        description: Mark all files in pane
+  traceability:
+    architecture:
+      - ARCH-MARKING_STATE
+    requirements:
+      - REQ-FILE_MARKING_WEB
+    tests:
+      - TEST-FILE_MARKING
+    code_annotations:
+      - IMPL-FILE_MARKING
+  related_decisions:
+    depends_on:
+      - ARCH-MARKING_STATE
+    supersedes: []
+    see_also:
+      - IMPL-BULK_OPS
+  metadata:
+    created:
+      date: 2026-02-07T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T16:06:42.636Z"
+      author: AI Agent
+      reason: IMPL essence_pseudocode retrofit all 58
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      validator: AI Agent
+      result: pass

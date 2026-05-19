@@ -3,7 +3,7 @@
 **Version**: 0.5.1  
 **Last Updated**: 2026-02-10
 
-**Panorama** is a modern **multi-pane file manager** built for **visual multi-destination sync with verification** — see all targets at once and confirm every copy. Built with Next.js, React 19, TypeScript, and Tailwind CSS v4, following **Semantic Token-Driven Development (STDD)** methodology for complete traceability from requirements through implementation.
+**Panorama** is a modern **multi-pane file manager** built for **visual multi-destination sync with verification** — see all targets at once and confirm every copy. Built with Next.js, React 19, TypeScript, and Tailwind CSS v4, following **TIED** (Traceability-Integrated Engineering Documentation) methodology for complete traceability from requirements through implementation. Project records live under [`tied/`](tied/).
 
 Browse and manage server files with keyboard-driven navigation, **1 pane or more** (no upper limit; 3 panes by default), file operations, visual comparison across panes, content search, and a comprehensive toolbar system with 36+ discoverable operations.
 
@@ -83,7 +83,7 @@ Browse and manage server files with keyboard-driven navigation, **1 pane or more
 - **Tailwind CSS v4** with mobile-first responsive design
 - **Dark Mode** with automatic system preference detection
 - **Optimized Fonts** using next/font with Geist Sans and Geist Mono
-- **STDD Documentation** with full requirements traceability
+- **TIED documentation** with full requirements traceability (`tied/`)
 - **Comprehensive Testing** with Vitest and React Testing Library (576 tests passing)
 
 ## Quick Start
@@ -400,12 +400,14 @@ nx1/
 │       └── integration/
 │           └── app.test.tsx      # Application integration tests
 ├── public/                       # Static assets
-├── stdd/                         # STDD Documentation
-│   ├── requirements.yaml         # Requirements [REQ-*]
-│   ├── architecture-decisions.yaml # Architecture [ARCH-*]
-│   ├── implementation-decisions.yaml # Implementation [IMPL-*]
-│   ├── semantic-tokens.yaml      # Token registry
-│   └── tasks.md                  # Task tracking
+├── tied/                         # TIED documentation (project + methodology/)
+│   ├── requirements.yaml         # Project requirements [REQ-*]
+│   ├── architecture-decisions.yaml
+│   ├── implementation-decisions.yaml
+│   ├── semantic-tokens.yaml
+│   ├── requirements/             # REQ detail YAML
+│   ├── architecture-decisions/   # ARCH detail YAML
+│   └── implementation-decisions/ # IMPL detail + *-pseudocode.md
 ├── docs/                         # Additional documentation
 │   ├── FILE_MANAGER_SOLE_PURPOSE.md # Refactor summary
 │   ├── GOFUL_TRANSFER_SUMMARY.md # Feature transfer notes
@@ -414,8 +416,7 @@ nx1/
 ├── CHANGELOG.md                  # Version history
 ├── README.md                     # This file
 ├── TESTING.md                    # Testing guide
-├── AGENTS.md                     # AI agent instructions
-├── ai-principles.md              # STDD methodology guide
+├── AGENTS.md                     # AI agent operating guide (TIED)
 ├── eslint.config.mjs             # ESLint configuration
 ├── next.config.ts                # Next.js configuration
 ├── package.json                  # Dependencies and scripts
@@ -454,36 +455,35 @@ docker run -p 3000:3000 file-manager
 4. Start: `npm start`
 5. Use PM2 or systemd for process management
 
-## STDD Methodology
+## TIED Methodology
 
-This project follows **Semantic Token-Driven Development (STDD) v1.5.0**, creating a traceable chain from requirements to code:
+This project follows **TIED 2.2** (see [AGENTS.md](AGENTS.md)), creating a traceable chain from requirements to code:
 
 ```
-[REQ-*] → [ARCH-*] → [IMPL-*] → Code → Tests
+[REQ-*] → [ARCH-*] → [IMPL-*] (essence_pseudocode) → Tests → Code
 ```
 
 ### Documentation
 
-All STDD documentation is in the `stdd/` directory:
+Project records are under **`tied/`** (methodology templates are read-only in `tied/methodology/`):
 
-- **[Requirements](stdd/requirements.yaml)** – 40+ documented requirements
-- **[Architecture Decisions](stdd/architecture-decisions.yaml)** – 25+ decision files
-- **[Implementation Decisions](stdd/implementation-decisions.yaml)** – 35+ implementation files
-- **[Semantic Tokens](stdd/semantic-tokens.yaml)** – Complete token registry
-- **[Tasks](stdd/tasks.md)** – Task tracking with priorities
+- **[Requirements](tied/requirements.yaml)** – product requirements
+- **[Architecture](tied/architecture-decisions.yaml)** – architecture decisions
+- **[Implementation](tied/implementation-decisions.yaml)** – implementation decisions and pseudocode sidecars
+- **[Semantic tokens](tied/semantic-tokens.yaml)** – token registry
+- Guides: [tied/docs/](tied/docs/) (agent checklist, pseudocode validation, MCP runbook)
 
 ### For Developers
 
 When adding new features:
 
-1. Document the requirement with `[REQ-*]` token
-2. Record architecture decision with `[ARCH-*]`
-3. Document implementation with `[IMPL-*]`
-4. Add semantic token comments to code
-5. Write tests referencing the `[REQ-*]` token
-6. Update the token registry
+1. Document the requirement with `[REQ-*]` in `tied/requirements.yaml` (use `tied-cli.sh` / TIED MCP)
+2. Record architecture with `[ARCH-*]`
+3. Author `[IMPL-*]` with `essence_pseudocode` in `tied/implementation-decisions/IMPL-*-pseudocode.md`
+4. Write failing tests, then code, aligned to pseudocode blocks
+5. Run `tied_validate_consistency` before merging
 
-See `AGENTS.md` and `ai-principles.md` for complete guidelines.
+See [AGENTS.md](AGENTS.md) and [tied/docs/ai-principles.md](tied/docs/ai-principles.md) for complete guidelines.
 
 ## Key Features Deep Dive
 
@@ -557,7 +557,7 @@ npm run dev -- -p 3001
 
 **Build fails**:
 ```bash
-rm -rf .next
+npm run clean
 npm run build
 ```
 
@@ -572,11 +572,11 @@ npm run build
 
 ## Contributing
 
-Contributions welcome! Please follow STDD methodology:
+Contributions welcome! Please follow TIED (see [AGENTS.md](AGENTS.md)):
 
 1. Fork the repository
 2. Create a feature branch
-3. Document requirement in `stdd/requirements.yaml`
+3. Document requirement in `tied/requirements.yaml` via TIED MCP / `tied-cli.sh`
 4. Implement with semantic token comments
 5. Write tests with `[REQ-*]` references
 6. Update documentation
@@ -592,6 +592,6 @@ Contributions welcome! Please follow STDD methodology:
 
 ---
 
-**Built with Next.js, React, and STDD Methodology**
+**Built with Next.js, React, and TIED**
 
 *Version 0.5.0 - File Manager as Sole Purpose*

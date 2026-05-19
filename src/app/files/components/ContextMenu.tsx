@@ -1,4 +1,4 @@
-// [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION]
+// [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION]: Top-level Mouse and Touch Interaction Implementation: Mouse and Touch Interaction Implementation
 // Context menu component for file operations
 
 "use client";

@@ -502,6 +502,7 @@ describe("WorkspaceView Bulk Operations [REQ-BULK_FILE_OPS]", () => {
   });
 });
 
+// [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: Escape to cancel, Enter to confirm; destructive styling for delete
 describe("ConfirmDialog [IMPL-BULK_OPS]", () => {
   it("should close on Escape key [REQ-BULK_FILE_OPS]", async () => {
     render(
@@ -602,6 +603,8 @@ describe("Integration Tests [TEST-BULK_FILE_OPS]", () => {
     expect(true).toBe(true);
   });
 });
+
+// [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: Before opening confirm dialog, check destination pane files for matching names
 
 describe("Overwrite Prompt [TEST-BULK_FILE_OPS] [IMPL-OVERWRITE_PROMPT]", () => {
   const mockSourceFiles: FileStat[] = [

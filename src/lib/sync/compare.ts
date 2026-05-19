@@ -1,4 +1,4 @@
-// [IMPL-NSYNC_COMPARE] [ARCH-COPY_POLICY] [REQ-COMPARE_METHODS]
+// [IMPL-NSYNC_COMPARE] [REQ-COMPARE_METHODS]: Top-level File Comparison Implementation: File comparison using size, mtime, hash methods to skip unchanged files
 // File comparison module with multiple comparison methods
 
 import fs from "fs/promises";

@@ -1,4 +1,4 @@
-// [IMPL-FILES_DATA] [IMPL-SORT_FILTER] [REQ-FILE_LISTING] [REQ-FILE_SORTING_ADVANCED]
+// [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-DIRECTORY_NAVIGATION] [REQ-FILE_OPERATIONS]: Top-level Filesystem Data Layer: Server-only module wraps Node.js fs/promises API with validation
 // Client-safe file utilities (no Node.js dependencies)
 
 import type { FileStat } from "./files.types";

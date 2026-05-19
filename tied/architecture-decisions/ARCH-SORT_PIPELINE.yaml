@@ -1,0 +1,113 @@
+# ARCH detail — ARCH-SORT_PIPELINE
+ARCH-SORT_PIPELINE:
+  name: Multi-Criteria Sort Pipeline Architecture
+  status: Active
+  cross_references:
+    - REQ-FILE_SORTING_ADVANCED
+  decision: |-
+    Architecture: Composable sort pipeline with pluggable comparators
+
+    ```typescript
+    // Sort function signature
+    sortFiles(
+      files: FileStat[],
+      sortBy: SortCriterion,    // "name" | "size" | "mtime" | "extension"
+      ascending: boolean,
+      dirsFirst: boolean
+    ): FileStat[]
+
+    // Comparator composition
+    function buildComparator(
+      criterion: SortCriterion,
+      ascending: boolean,
+      dirsFirst: boolean
+    ): (a: FileStat, b: FileStat) => number
+    ```
+
+    Key Design Principles:
+
+    1. Client-Side Execution: All sorting happens in browser for instant feedback
+    2. Comparator Pattern: Separate comparator functions for each criterion
+    3. Directory Priority: Optional layer that runs before primary sort
+    4. Immutability: Returns new sorted array, preserves original
+    5. Cursor Preservation: Track filename before/after sort to maintain cursor position
+  rationale:
+    why: |-
+      Architecture: Composable sort pipeline with pluggable comparators
+
+      ```typescript
+      // Sort function signature
+      sortFiles(
+        files: FileStat[],
+        sortBy: SortCriterion,    // "name" | "size" | "mtime" | "extension"
+        ascending: boolean,
+        dirsFirst: boolean
+      ): FileStat[]
+
+      // Comparator composition
+      function buildComparator(
+        criterion: SortCriterion,
+        ascending: boolean,
+        dirsFirst: boolean
+      ): (a: FileStat, b: FileStat) => number
+      ```
+
+      Key Design Principles:
+
+      1. Client-Side Execution: All sorting happens in browser for instant feedback
+      2. Comparator Pattern: Separate comparator functions for each criterion
+      3. Directory Priority: Optional layer that runs before primary sort
+      4. Immutability: Returns new sorted array, preserves original
+      5. Cursor Preservation: Track filename before/after sort to maintain cursor position
+  alternatives_considered:
+    - option: Server-side sorting
+      pros:
+        - Handles very large directories
+        - Reduces client bundle size
+      cons:
+        - Network latency on every sort
+        - More complex state management
+      rejected_reason: User expects instant sort feedback; latency breaks UX
+  implementation_approach:
+    summary: |-
+      Architecture: Composable sort pipeline with pluggable comparators
+
+      ```typescript
+      // Sort function signature
+      sortFiles(
+        files: FileStat[],
+        sortBy: SortCriterion,    // "name" | "size" | "mtime" | "extension"
+        ascending: boolean,
+        dirsFirst: boolean
+      ): FileStat[]
+
+      // Comparator composition
+      function buildComparator(
+        criterion: SortCriterion,
+        ascending: boolean,
+        dirsFirst: boolean
+      ): (a: FileStat, b: FileStat) => number
+      ```
+
+      Key Design Principles:
+
+      1. Client-Side Execution: All sorting happens in browser for instant feedback
+      2. Comparator Pattern: Separate comparator functions for each criterion
+      3. Directory Priority: Optional layer that runs before primary sort
+      4. Immutability: Returns new sorted array, preserves original
+      5. Cursor Preservation: Track filename before/after sort to maintain cursor position
+    details: []
+  traceability:
+    requirements:
+      - REQ-FILE_SORTING_ADVANCED
+    implementation:
+      - IMPL-SORT_FILTER
+    tests: []
+  metadata:
+    created:
+      date: "2026-02-07"
+      author: AI Agent
+    last_updated:
+      date: "2026-02-07"
+      author: AI Agent
+      reason: Initial creation for Phase 5

@@ -1,0 +1,58 @@
+# REQ detail — REQ-ROOT_LAYOUT
+REQ-ROOT_LAYOUT:
+  name: Root Layout with HTML Structure
+  category: Functional
+  priority: P0
+  status: Implemented
+  description: Root layouts in Next.js App Router enable shared UI across all routes, consistent font loading, and metadata management
+  rationale:
+    why: Root layouts in Next.js App Router enable shared UI across all routes, consistent font loading, and metadata management
+    problems_solved:
+      - Code duplication across pages
+      - Complex font loading management
+      - Inconsistent styling and behavior
+    benefits:
+      - Centralized metadata management
+      - Consistent font loading
+      - Reduced code duplication
+      - Shared UI across all routes
+  satisfaction_criteria:
+    - criterion: Font variables are applied to body element
+    - criterion: Layout exports default function matching Next.js RootLayout type
+    - criterion: Layout includes <body> tag with appropriate styling
+    - criterion: Layout includes <html> tag with lang attribute
+    - criterion: Layout renders children prop correctly
+    - criterion: Root layout exists at src/app/layout.tsx
+  validation_criteria:
+    - method: Component testing
+      coverage: Layout component renders without errors
+    - method: Integration testing
+      coverage: All pages are wrapped by the layout automatically
+    - method: TypeScript validation
+      coverage: TypeScript compilation passes without layout-related errors
+  traceability:
+    architecture:
+      - ARCH-LAYOUT_PATTERN
+    implementation:
+      - IMPL-ROOT_LAYOUT
+    tests: []
+    code_annotations:
+      - REQ-ROOT_LAYOUT
+  related_requirements:
+    depends_on:
+      - REQ-APP_STRUCTURE
+    related_to:
+      - REQ-FONT_SYSTEM
+    supersedes: []
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass

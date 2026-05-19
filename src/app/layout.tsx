@@ -1,4 +1,4 @@
-// [IMPL-ROOT_LAYOUT] [ARCH-LAYOUT_PATTERN] [REQ-ROOT_LAYOUT] [REQ-CONFIG_DRIVEN_UI]
+// [IMPL-ROOT_LAYOUT] [ARCH-LAYOUT_PATTERN] [REQ-ROOT_LAYOUT]: Top-level Root Layout Implementation: Create layout.tsx with html/body tags, font variables, and metadata
 // Root layout component that wraps all pages with consistent HTML structure,
 // font configuration, global styles, and theme CSS variable injection.
 // Metadata, locale, and theme colors are driven by YAML configuration files.

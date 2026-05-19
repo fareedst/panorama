@@ -1,0 +1,62 @@
+IMPL-CURSOR_BOUNDS_CHECK:
+  name: Cursor Bounds Validation Fix
+  status: Active
+  cross_references:
+    - IMPL-WORKSPACE_VIEW
+    - IMPL-DIR_HISTORY
+  decision: Add cursor >= 0 check to guard condition before accessing pane.files[pane.cursor]
+  rationale:
+    why: Fix runtime crash in handleNavigate when cursor is negative by adding proper bounds validation
+    problems_solved:
+      - Accessing pane.files[-1] returns undefined, causing crash on .name access
+      - Crash when pane.cursor is -1 (invalid state)
+      - Guard condition only checked upper bound, not lower bound
+    benefits:
+      - CopyAll/MoveAll operations complete without crashes
+      - Handles edge cases where cursor becomes negative
+      - Proper validation of cursor before array access
+  implementation_approach:
+    summary: Add cursor >= 0 check to guard condition before accessing pane.files[pane.cursor]
+    details:
+      - 'Root cause: Guard checked ''cursor < files.length'' but not ''cursor >= 0'''
+      - 'Solution: Add ''cursor >= 0'' to guard condition'
+      - 'When cursor = -1: -1 < 8 evaluates to true, guard passes but pane.files[-1] = undefined'
+      - Ensures cursor is in valid range [0, files.length-1] before array access
+  code_locations:
+    files:
+      - path: src/app/files/WorkspaceView.tsx
+        description: handleNavigate function guard condition for saving cursor position
+        lines:
+          - 265
+    functions:
+      - name: handleNavigate
+        file: src/app/files/WorkspaceView.tsx
+        description: Added cursor >= 0 check to guard condition before accessing pane.files[pane.cursor]
+  traceability:
+    architecture: []
+    requirements:
+      - REQ-KEYBOARD_NAVIGATION
+      - REQ-MULTI_PANE_LAYOUT
+    tests: []
+    code_annotations:
+      - IMPL-CURSOR_BOUNDS_CHECK
+      - IMPL-WORKSPACE_VIEW
+  related_decisions:
+    depends_on:
+      - IMPL-WORKSPACE_VIEW
+      - IMPL-DIR_HISTORY
+    supersedes: []
+    see_also:
+      - IMPL-NSYNC_ENGINE
+  metadata:
+    created:
+      date: 2026-02-09T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T16:06:42.636Z"
+      author: AI Agent
+      reason: IMPL essence_pseudocode retrofit all 58
+    last_validated:
+      date: 2026-02-09T00:00:00.000Z
+      validator: AI Agent
+      result: pass - CopyAll completes without crash, verified with runtime logs

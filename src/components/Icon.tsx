@@ -1,4 +1,4 @@
-// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_ACTIONS] Icon component for toolbar buttons
+// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [ARCH-TOOLBAR_ACTIONS] [REQ-TOOLBAR_SYSTEM]: Top-level Toolbar React Component Implementation: React components for toolbar system including base and specialized toolbars with compact icon-only button design
 // Unified SVG icon system supporting all file manager toolbar actions
 
 import React from "react";

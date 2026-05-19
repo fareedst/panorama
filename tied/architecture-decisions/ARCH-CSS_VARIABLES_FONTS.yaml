@@ -1,0 +1,48 @@
+# ARCH detail — ARCH-CSS_VARIABLES_FONTS
+ARCH-CSS_VARIABLES_FONTS:
+  name: CSS Variables for Font Assignment
+  status: Active
+  cross_references:
+    - REQ-FONT_SYSTEM
+  decision: Create CSS variables for font families
+  rationale:
+    why: CSS variables enable flexible font application throughout the application
+    problems_solved:
+      - Direct font name references
+      - Difficult font changes
+    benefits:
+      - Flexible font application
+      - Easy font swapping
+  alternatives_considered: []
+  implementation_approach:
+    summary: Create CSS variables for font families
+    details:
+      - Apply to body element
+      - Create --font-geist-mono variable
+      - Create --font-geist-sans variable
+  traceability:
+    requirements:
+      - REQ-FONT_SYSTEM
+    implementation:
+      - IMPL-FONT_LOADING
+    tests: []
+    code_annotations:
+      - REQ-FONT_SYSTEM
+  related_decisions:
+    depends_on:
+      - ARCH-GOOGLE_FONTS
+    informs:
+      - IMPL-FONT_LOADING
+    see_also: []
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass

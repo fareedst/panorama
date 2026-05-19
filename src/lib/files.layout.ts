@@ -1,4 +1,4 @@
-// [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]
+// [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: Top-level Layout Calculation Algorithms: Pure TypeScript functions calculate PaneBounds[] from container dimensions and layout type
 // Multi-pane layout calculation algorithms ported from Goful
 
 /**

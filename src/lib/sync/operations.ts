@@ -1,4 +1,4 @@
-// [IMPL-NSYNC_OPERATIONS] [ARCH-COPY_ENGINE] [REQ-COPY_OPERATIONS]
+// [IMPL-NSYNC_OPERATIONS] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: Top-level File Operations Wrappers: Copy, move, delete operation wrappers ensuring destination directories exist
 // File operation wrappers - copy and move
 
 import fs from "fs/promises";

@@ -1,0 +1,58 @@
+# ARCH detail — ARCH-TAILWIND_V4
+ARCH-TAILWIND_V4:
+  name: Tailwind CSS v4 Styling System
+  status: Active
+  cross_references:
+    - REQ-TAILWIND_STYLING
+  decision: Use Tailwind CSS v4 with PostCSS
+  rationale:
+    why: Tailwind v4 provides utility-first CSS with excellent performance and developer experience
+    problems_solved:
+      - CSS naming complexity
+      - Inconsistent styling
+      - Large CSS bundles
+    benefits:
+      - Consistent design tokens
+      - Excellent purging
+      - Rapid development
+      - Small CSS bundles
+  alternatives_considered:
+    - name: CSS Modules
+      pros:
+        - Component-scoped styles
+      cons:
+        - More boilerplate
+      rejected_reason: Tailwind is more efficient for utility-first approach
+  implementation_approach:
+    summary: Use Tailwind CSS v4 with PostCSS
+    details:
+      - Configure PostCSS
+      - Enable purging for production
+      - Install Tailwind CSS v4
+      - Use @theme directive for custom tokens
+  traceability:
+    requirements:
+      - REQ-TAILWIND_STYLING
+    implementation:
+      - IMPL-FLEX_LAYOUT
+    tests: []
+    code_annotations:
+      - REQ-TAILWIND_STYLING
+  related_decisions:
+    depends_on:
+      - REQ-TAILWIND_STYLING
+    informs:
+      - ARCH-RESPONSIVE_FIRST
+    see_also: []
+  metadata:
+    created:
+      date: 2025-11-08T00:00:00.000Z
+      author: AI Agent
+    last_updated:
+      date: 2026-02-06T00:00:00.000Z
+      author: AI Agent
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      validator: AI Agent
+      result: pass

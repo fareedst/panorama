@@ -1,0 +1,35 @@
+IMPL-PERFORMANCE_OPT:
+  name: IMPL PERFORMANCE_OPT
+  status: Planned
+  cross_references:
+    - REQ-FILES_PERFORMANCE
+    - ARCH-PERFORMANCE_OPT
+  decision: IMPL PERFORMANCE_OPT
+  rationale:
+    why: IMPL PERFORMANCE_OPT
+    problems_solved: []
+    benefits: []
+  implementation_approach:
+    summary: IMPL PERFORMANCE_OPT
+    details: []
+  code_locations:
+    files: []
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-PERFORMANCE_OPT
+    requirements:
+      - REQ-FILES_PERFORMANCE
+    tests: []
+    code_annotations:
+      - IMPL-PERFORMANCE_OPT
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also: []
+  metadata:
+    registered: 2026-02-08T00:00:00.000Z
+    last_updated:
+      date: "2026-05-19T16:06:42.636Z"
+      author: AI Agent
+      reason: IMPL essence_pseudocode retrofit all 58

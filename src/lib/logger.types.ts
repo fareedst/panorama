@@ -1,4 +1,4 @@
-// [IMPL-LOGGER_MODULE] [IMPL-LOGGER_CONFIG] [IMPL-LOGGER_TOKENS]
+// [IMPL-LOGGER_MODULE] [ARCH-LOGGING_SYSTEM] [REQ-LOGGING_SYSTEM]: Top-level Logger Module Implementation: Create logger module with session-based file writing and six log levels
 // [ARCH-LOGGING_SYSTEM] [REQ-LOGGING_SYSTEM]
 // TypeScript types for the logging system
 

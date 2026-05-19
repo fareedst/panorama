@@ -56,9 +56,6 @@ pids
 # env files (can opt-in for committing if needed)
 .env*
 
-# vercel
-.vercel
-
 # typescript
 *.tsbuildinfo
 next-env.d.ts
@@ -101,4 +98,11 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
+.bkpdir.yml
+.cursor
+.tied-migration
+docs/SEMANTIC_TOKENS_MIGRATION_SUMMARY.md
+docs/TODO.md
 prompts
+scripts/*.mjs
