@@ -1,0 +1,26 @@
+REQ-MESH_SAFETY:
+  name: Mesh Safety Guardrails
+  category: Functional
+  priority: P0
+  status: Implemented
+  description: Dry-run before first sync, destructive confirmation, quarantine, topology cycle blocks — phase 23.
+  satisfaction_criteria:
+    - criterion: first_sync_requires_dry_run
+    - criterion: large_delete_set_requires_confirmation
+  validation_criteria:
+    - method: Vitest
+      coverage: src/lib/mesh/services/safety-service.test.ts
+  traceability:
+    implementation:
+      - IMPL-MESH_SAFETY
+    tests:
+      - src/lib/mesh/services/safety-service.test.ts
+  related_requirements:
+    depends_on:
+      - REQ-MESH_PLATFORM
+    related_to: []
+    supersedes: []
+  metadata:
+    created:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent

@@ -57,7 +57,6 @@ export function Toolbar({
             return (
               <ToolbarButton
                 key={action}
-                action={action}
                 {...buttonProps}
                 onClick={() => onAction(action)}
                 active={activeActions.has(action)}

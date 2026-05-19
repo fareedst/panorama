@@ -17,11 +17,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - TIED agent docs under `tied/docs/` (LEAP, pseudo-code validation, implementation checklists, commit guidelines).
+- **Mesh sync platform** (`src/lib/mesh`, `src/app/mesh`, `src/app/api/mesh`): layered services (CRUD, depots, topology, planning, sessions, safety, auth), JSON persistence, fake/local connectors, REST API, React UI, and Playwright E2E (`e2e/mesh-sync.spec.ts`).
+- TIED mesh REQ/ARCH/IMPL detail records and `IMPL-MESH_*` essence pseudo-code sidecars with per-block token comments mirrored in tests and production code (`[PROC-IMPL_PSEUDOCODE_TOKENS]`).
+- Child requirements `REQ-MESH_MONITORING`, `REQ-MESH_SCHEDULE`, `REQ-MESH_IMPORT_EXPORT`, `REQ-MESH_REAL_CONNECTORS`, and `REQ-MESH_HARDENING`; additional IMPL tokens (`IMPL-MESH_RUNTIME`, `IMPL-MESH_SESSION`, and related service modules).
 
 ### Notes
 
-- Application runtime behavior is unchanged; traceability and agent workflow are the primary delta.
-- `scripts/fortify-impl-pseudocode.mjs` regenerates IMPL sidecars from detail YAML (run after IMPL detail edits).
+- Application runtime behavior is unchanged for non-mesh surfaces; mesh is a new subsystem behind `/mesh` and `/api/mesh`.
+- `scripts/fortify-impl-pseudocode.mjs` regenerates IMPL sidecars from detail YAML (run after IMPL detail edits); mesh sidecars are hand-authored alongside that workflow.
 
 ---
 

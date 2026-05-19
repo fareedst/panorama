@@ -1,0 +1,42 @@
+ARCH-MESH_CRUD:
+  name: Mesh CRUD Service Layer
+  status: Active
+  cross_references:
+    - ARCH-MESH_DOMAIN
+    - ARCH-MESH_LAYERED
+    - REQ-MESH_CRUD
+  decision: Mesh CRUD lives in src/lib/mesh/services with in-memory repository interface for TDD; domain validateMesh on every write.
+  rationale:
+    why: Phase 2 L2 service over L1 domain.
+    problems_solved:
+      - CRUD mixed with API or GUI
+    benefits:
+      - Repository swappable for phase 16 persistence
+  implementation_approach:
+    summary: MeshService + MeshRepository interface + InMemoryMeshRepository
+    details:
+      - MeshRecord wraps Mesh with lifecycle status active|archived
+      - Active session registry blocks hard delete
+  traceability:
+    requirements:
+      - REQ-MESH_CRUD
+    implementation:
+      - IMPL-MESH_CRUD
+    tests:
+      - src/lib/mesh/services/mesh-service.test.ts
+    code_annotations:
+      - ARCH-MESH_CRUD
+  related_decisions:
+    depends_on:
+      - ARCH-MESH_DOMAIN
+      - ARCH-MESH_LAYERED
+    informs: []
+    see_also: []
+  metadata:
+    created:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent
+      reason: Phase 2

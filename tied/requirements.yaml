@@ -2884,7 +2884,7 @@ REQ-MESH_PLATFORM:
   name: Mesh Sync Platform
   category: Functional
   priority: P0
-  status: Planned
+  status: In Progress
   description: Web-based synchronization platform for variable-sized meshes of file depots, sync links, policies, sessions, conflicts, and admin GUI—delivered in phased units per sync_mesh_web_application deployment plan.
   rationale:
     why: Panorama needs durable mesh configuration and governed sync runtime separate from ephemeral multi-pane copy/move (REQ-NSYNC_MULTI_TARGET).
@@ -2985,3 +2985,98 @@ REQ-MESH_DOMAIN_MODEL:
       date: "2026-05-19T20:15:00.000Z"
       author: AI Agent
       reason: 'sync-tied-stack: index traceability.tests aligned with passing mesh domain Vitest suite'
+REQ-MESH_CRUD:
+  name: Mesh CRUD Unit Logic
+  category: Functional
+  priority: P0
+  status: Implemented
+  cross_references:
+    - ARCH-MESH_LAYERED
+    - REQ-MESH_DOMAIN_MODEL
+    - REQ-MESH_PLATFORM
+  detail_file: requirements/REQ-MESH_CRUD.yaml
+REQ-MESH_API:
+  name: Mesh Management API
+  category: Functional
+  priority: P0
+  status: Implemented
+  cross_references:
+    - REQ-MESH_PLATFORM
+    - REQ-MESH_CRUD
+  detail_file: requirements/REQ-MESH_API.yaml
+REQ-MESH_GUI:
+  name: Mesh Web GUI
+  category: Functional
+  priority: P1
+  status: In Progress
+  cross_references:
+    - REQ-MESH_API
+    - REQ-MESH_PLATFORM
+  detail_file: requirements/REQ-MESH_GUI.yaml
+REQ-MESH_SAFETY:
+  name: Mesh Safety Guardrails
+  category: Functional
+  priority: P0
+  status: Implemented
+  cross_references:
+    - REQ-MESH_PLATFORM
+  detail_file: requirements/REQ-MESH_SAFETY.yaml
+REQ-MESH_AUTH:
+  name: Mesh Authorization
+  category: Functional
+  priority: P1
+  status: Implemented
+  cross_references:
+    - REQ-MESH_PLATFORM
+  detail_file: requirements/REQ-MESH_AUTH.yaml
+REQ-MESH_E2E_RELEASE:
+  name: Mesh E2E Release Validation
+  category: Functional
+  priority: P1
+  status: Implemented
+  cross_references:
+    - REQ-MESH_PLATFORM
+    - REQ-MESH_GUI
+  detail_file: requirements/REQ-MESH_E2E_RELEASE.yaml
+REQ-MESH_MONITORING:
+  name: Mesh Operational Monitoring
+  category: Functional
+  priority: P2
+  status: Implemented
+  cross_references:
+    - REQ-MESH_PLATFORM
+  detail_file: requirements/REQ-MESH_MONITORING.yaml
+REQ-MESH_SCHEDULE:
+  name: Mesh Sync Scheduling
+  category: Functional
+  priority: P2
+  status: Implemented
+  cross_references:
+    - REQ-MESH_PLATFORM
+  detail_file: requirements/REQ-MESH_SCHEDULE.yaml
+REQ-MESH_IMPORT_EXPORT:
+  name: Mesh Configuration Import and Export
+  category: Functional
+  priority: P2
+  status: Implemented
+  cross_references:
+    - REQ-MESH_PLATFORM
+    - REQ-MESH_CRUD
+  detail_file: requirements/REQ-MESH_IMPORT_EXPORT.yaml
+REQ-MESH_REAL_CONNECTORS:
+  name: Mesh Real Filesystem Connectors
+  category: Functional
+  priority: P1
+  status: Implemented
+  cross_references:
+    - REQ-MESH_PLATFORM
+    - REQ-MESH_E2E_RELEASE
+  detail_file: requirements/REQ-MESH_REAL_CONNECTORS.yaml
+REQ-MESH_HARDENING:
+  name: Mesh Executor Hardening
+  category: Functional
+  priority: P2
+  status: Implemented
+  cross_references:
+    - REQ-MESH_PLATFORM
+  detail_file: requirements/REQ-MESH_HARDENING.yaml

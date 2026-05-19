@@ -1,0 +1,42 @@
+REQ-MESH_API:
+  name: Mesh Management API
+  category: Functional
+  priority: P0
+  status: Implemented
+  description: REST API for mesh CRUD, topology, plan, sessions, conflicts, and events under src/app/api/mesh/.
+  rationale:
+    why: Deployment plan phase 15 deployable API slice.
+    problems_solved:
+      - No HTTP surface for mesh GUI
+    benefits:
+      - GUI can load mesh data via fetch
+  satisfaction_criteria:
+    - criterion: api_does_not_return_secret_values
+    - criterion: get_mesh_returns_mesh
+    - criterion: post_mesh_creates_mesh
+  validation_criteria:
+    - method: Vitest
+      coverage: src/app/api/mesh/route.test.ts, depots-links.route.test.ts
+  traceability:
+    architecture:
+      - ARCH-MESH_LAYERED
+    implementation:
+      - IMPL-MESH_API
+    tests:
+      - src/app/api/mesh/route.test.ts
+    code_annotations:
+      - REQ-MESH_API
+  related_requirements:
+    depends_on:
+      - REQ-MESH_CRUD
+    related_to:
+      - REQ-MESH_PLATFORM
+    supersedes: []
+  metadata:
+    created:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent
+      reason: Phase 15 API

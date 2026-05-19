@@ -1,0 +1,9 @@
+IMPL-MESH_AUTH:
+  name: Mesh Authorization Service
+  status: Active
+  cross_references:
+    - REQ-MESH_AUTH
+  decision: AuthorizationService with role matrix.
+  code_locations:
+    files:
+      - path: src/lib/mesh/services/authorization-service.ts

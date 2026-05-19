@@ -1,0 +1,34 @@
+REQ-MESH_REAL_CONNECTORS:
+  name: Mesh Real Filesystem Connectors
+  category: Functional
+  priority: P1
+  status: Implemented
+  description: Local filesystem connector for local depots used in E2E and production-like sync.
+  satisfaction_criteria:
+    - criterion: local_depot_uses_filesystem_connector
+    - criterion: connector_lists_and_copies_files_on_disk
+  validation_criteria:
+    - method: Vitest
+      coverage: src/lib/mesh/connector/local-filesystem-connector.test.ts
+    - method: Playwright
+      coverage: e2e/mesh-sync.spec.ts
+  traceability:
+    architecture:
+      - ARCH-MESH_LAYERED
+    implementation:
+      - IMPL-MESH_CONNECTOR
+      - IMPL-MESH_LOCAL_CONNECTOR
+    tests:
+      - src/lib/mesh/connector/local-filesystem-connector.test.ts
+    code_annotations:
+      - REQ-MESH_REAL_CONNECTORS
+  related_requirements:
+    depends_on:
+      - REQ-MESH_PLATFORM
+    related_to:
+      - REQ-MESH_E2E_RELEASE
+    supersedes: []
+  metadata:
+    created:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent

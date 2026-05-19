@@ -106,3 +106,4 @@ docs/SEMANTIC_TOKENS_MIGRATION_SUMMARY.md
 docs/TODO.md
 prompts
 scripts/*.mjs
+tmp

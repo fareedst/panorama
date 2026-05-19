@@ -2741,3 +2741,11 @@ ARCH-MESH_DOMAIN:
       date: "2026-05-19T20:15:00.000Z"
       author: AI Agent
       reason: 'sync-tied-stack: index traceability.tests aligned with mesh domain Vitest suite'
+ARCH-MESH_CRUD:
+  name: Mesh CRUD Service Layer
+  status: Active
+  cross_references:
+    - ARCH-MESH_DOMAIN
+    - ARCH-MESH_LAYERED
+    - REQ-MESH_CRUD
+  detail_file: architecture-decisions/ARCH-MESH_CRUD.yaml

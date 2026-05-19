@@ -1,0 +1,40 @@
+IMPL-MESH_API:
+  name: Mesh API Route Handlers
+  status: Active
+  cross_references:
+    - REQ-MESH_API
+    - REQ-MESH_PLATFORM
+  decision: Next.js App Router handlers delegate to getMeshRuntime().
+  rationale:
+    why: Phase 15
+  implementation_approach:
+    summary: src/app/api/mesh/**
+  code_locations:
+    files:
+      - path: src/app/api/mesh/route.ts
+        description: List/create
+      - path: src/app/api/mesh/[meshId]/depots/route.ts
+        description: Add depot
+      - path: src/app/api/mesh/[meshId]/links/route.ts
+        description: Add sync link
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-MESH_LAYERED
+    requirements:
+      - REQ-MESH_API
+    tests:
+      - src/app/api/mesh/route.test.ts
+      - src/app/api/mesh/depots-links.route.test.ts
+    code_annotations:
+      - IMPL-MESH_API
+  related_decisions:
+    depends_on:
+      - IMPL-MESH_CRUD
+    supersedes: []
+    see_also: []
+  testability: integration
+  metadata:
+    created:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent

@@ -1,0 +1,36 @@
+IMPL-MESH_CONNECTOR:
+  name: Mesh Connector Contract
+  status: Active
+  cross_references:
+    - REQ-MESH_PLATFORM
+    - IMPL-MESH_DOMAIN_TYPES
+  decision: Connector interface with FakeConnector and LocalFilesystemConnector implementations.
+  implementation_approach:
+    summary: src/lib/mesh/connector/
+  code_locations:
+    files:
+      - path: src/lib/mesh/connector/types.ts
+        description: Connector interface
+      - path: src/lib/mesh/connector/fake-connector.ts
+        description: In-memory fake connector
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-MESH_LAYERED
+    requirements:
+      - REQ-MESH_PLATFORM
+    tests:
+      - src/lib/mesh/connector/fake-connector.test.ts
+      - src/lib/mesh/connector/local-filesystem-connector.test.ts
+    code_annotations:
+      - IMPL-MESH_CONNECTOR
+  related_decisions:
+    depends_on:
+      - IMPL-MESH_DOMAIN_TYPES
+    supersedes: []
+    see_also: []
+  testability: unit
+  metadata:
+    created:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent

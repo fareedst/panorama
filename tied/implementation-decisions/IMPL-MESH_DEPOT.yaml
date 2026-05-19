@@ -1,0 +1,34 @@
+IMPL-MESH_DEPOT:
+  name: Mesh Depot Service
+  status: Active
+  cross_references:
+    - IMPL-MESH_CRUD
+    - IMPL-MESH_DOMAIN_TYPES
+    - REQ-MESH_PLATFORM
+  decision: DepotService manages depots embedded in mesh records via MeshRepository.
+  implementation_approach:
+    summary: src/lib/mesh/services/depot-service.ts
+  code_locations:
+    files:
+      - path: src/lib/mesh/services/depot-service.ts
+        description: Depot CRUD on mesh
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-MESH_LAYERED
+    requirements:
+      - REQ-MESH_PLATFORM
+    tests:
+      - src/lib/mesh/services/depot-service.test.ts
+    code_annotations:
+      - IMPL-MESH_DEPOT
+  related_decisions:
+    depends_on:
+      - IMPL-MESH_CRUD
+    supersedes: []
+    see_also: []
+  testability: unit
+  metadata:
+    created:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent

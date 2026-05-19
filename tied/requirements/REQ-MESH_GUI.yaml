@@ -1,0 +1,50 @@
+REQ-MESH_GUI:
+  name: Mesh Web GUI
+  category: Functional
+  priority: P1
+  status: Implemented
+  description: 'Mesh UI at src/app/mesh: list, detail, topology, plan, sync, conflicts with navigation.'
+  rationale:
+    why: Deployment plan phases 17-22.
+    problems_solved:
+      - No visual mesh management
+    benefits:
+      - Operators can inspect topology and plans
+  satisfaction_criteria:
+    - criterion: user_can_reach_every_major_feature_from_menu
+    - criterion: mesh_list_displays_mesh_name_state_and_depot_count
+  validation_criteria:
+    - method: Vitest RTL
+      coverage: src/app/mesh/components/MeshListClient.test.tsx
+    - method: Vitest RTL
+      coverage: src/app/mesh/components/MeshDetailClient.test.tsx
+    - method: Vitest RTL
+      coverage: src/app/mesh/components/PlanViewClient.test.tsx
+    - method: Vitest RTL
+      coverage: src/app/mesh/components/ConflictsClient.test.tsx
+    - method: Vitest RTL
+      coverage: src/app/mesh/components/SyncSessionClient.test.tsx
+    - method: Vitest RTL
+      coverage: src/app/mesh/components/TopologyGraphClient.test.tsx
+    - method: Playwright
+      coverage: e2e/mesh-sync.spec.ts
+  traceability:
+    architecture:
+      - ARCH-MESH_LAYERED
+    implementation:
+      - IMPL-MESH_GUI
+    tests:
+      - src/app/mesh/components/MeshListClient.test.tsx
+      - e2e/mesh-sync.spec.ts
+    code_annotations:
+      - REQ-MESH_GUI
+  related_requirements:
+    depends_on:
+      - REQ-MESH_API
+    related_to:
+      - REQ-MESH_PLATFORM
+    supersedes: []
+  metadata:
+    created:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent

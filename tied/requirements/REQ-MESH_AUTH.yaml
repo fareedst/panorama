@@ -1,0 +1,13 @@
+REQ-MESH_AUTH:
+  name: Mesh Authorization
+  status: Implemented
+  description: Role-based permissions viewer/operator/admin; X-Mesh-Role header; phase 24.
+  validation_criteria:
+    - method: Vitest
+      coverage: src/lib/mesh/services/authorization-service.test.ts
+  traceability:
+    implementation:
+      - IMPL-MESH_AUTH
+    tests:
+      - src/lib/mesh/services/authorization-service.test.ts
+      - src/app/api/mesh/route.auth.test.ts

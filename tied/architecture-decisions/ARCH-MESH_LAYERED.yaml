@@ -30,8 +30,13 @@ ARCH-MESH_LAYERED:
     requirements:
       - REQ-MESH_PLATFORM
       - REQ-MESH_DOMAIN_MODEL
-    implementation: []
-    tests: []
+    implementation:
+      - IMPL-MESH_API
+      - IMPL-MESH_GUI
+      - IMPL-MESH_RUNTIME
+    tests:
+      - src/lib/mesh/services/services.integration.test.ts
+      - e2e/mesh-sync.spec.ts
     code_annotations:
       - ARCH-MESH_LAYERED
   related_decisions:

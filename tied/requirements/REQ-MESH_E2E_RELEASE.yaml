@@ -1,0 +1,10 @@
+REQ-MESH_E2E_RELEASE:
+  name: Mesh E2E Release Validation
+  status: Implemented
+  description: Playwright flows for mesh UI phase 30.
+  validation_criteria:
+    - method: Playwright
+      coverage: e2e/mesh-sync.spec.ts
+  traceability:
+    tests:
+      - e2e/mesh-sync.spec.ts

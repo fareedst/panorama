@@ -3990,3 +3990,145 @@ IMPL-MESH_DOMAIN_TYPES:
       date: "2026-05-19T20:15:00.000Z"
       validator: AI Agent
       result: 'pass — sync-tied-stack: 50 Vitest mesh tests; tied_validate_consistency ok'
+IMPL-MESH_CRUD:
+  name: Mesh CRUD Service Implementation
+  status: Active
+  cross_references:
+    - ARCH-MESH_CRUD
+    - IMPL-MESH_DOMAIN_TYPES
+    - REQ-MESH_CRUD
+  detail_file: implementation-decisions/IMPL-MESH_CRUD.yaml
+IMPL-MESH_API:
+  name: Mesh API Route Handlers
+  status: Active
+  cross_references:
+    - REQ-MESH_API
+    - IMPL-MESH_CRUD
+  detail_file: implementation-decisions/IMPL-MESH_API.yaml
+IMPL-MESH_GUI:
+  name: Mesh React UI
+  status: Active
+  cross_references:
+    - REQ-MESH_GUI
+    - IMPL-MESH_API
+  detail_file: implementation-decisions/IMPL-MESH_GUI.yaml
+IMPL-MESH_SAFETY:
+  name: Mesh Safety Service
+  status: Active
+  cross_references:
+    - REQ-MESH_SAFETY
+  detail_file: implementation-decisions/IMPL-MESH_SAFETY.yaml
+IMPL-MESH_AUTH:
+  name: Mesh Authorization Service
+  status: Active
+  cross_references:
+    - REQ-MESH_AUTH
+  detail_file: implementation-decisions/IMPL-MESH_AUTH.yaml
+IMPL-MESH_DEPOT:
+  name: Mesh Depot Service
+  status: Active
+  cross_references:
+    - REQ-MESH_PLATFORM
+    - IMPL-MESH_CRUD
+  detail_file: implementation-decisions/IMPL-MESH_DEPOT.yaml
+IMPL-MESH_CONNECTOR:
+  name: Mesh Connector Contract
+  status: Active
+  cross_references:
+    - REQ-MESH_PLATFORM
+  detail_file: implementation-decisions/IMPL-MESH_CONNECTOR.yaml
+IMPL-MESH_TOPOLOGY:
+  name: Mesh Topology Service
+  status: Active
+  cross_references:
+    - REQ-MESH_PLATFORM
+  detail_file: implementation-decisions/IMPL-MESH_TOPOLOGY.yaml
+IMPL-MESH_PERSISTENCE:
+  name: Mesh JSON Persistence
+  status: Active
+  cross_references:
+    - REQ-MESH_PLATFORM
+  detail_file: implementation-decisions/IMPL-MESH_PERSISTENCE.yaml
+IMPL-MESH_RUNTIME:
+  name: Mesh Runtime Composition Root
+  status: Active
+  cross_references:
+    - ARCH-MESH_LAYERED
+    - REQ-MESH_PLATFORM
+  detail_file: implementation-decisions/IMPL-MESH_RUNTIME.yaml
+IMPL-MESH_SESSION:
+  name: Mesh Session Lifecycle
+  status: Active
+  cross_references:
+    - REQ-MESH_PLATFORM
+  detail_file: implementation-decisions/IMPL-MESH_SESSION.yaml
+IMPL-MESH_PLANNING:
+  name: Mesh Planning Service
+  status: Active
+  cross_references:
+    - REQ-MESH_PLATFORM
+  detail_file: implementation-decisions/IMPL-MESH_PLANNING.yaml
+IMPL-MESH_EXECUTOR:
+  name: Mesh Executor Service
+  status: Active
+  cross_references:
+    - REQ-MESH_PLATFORM
+  detail_file: implementation-decisions/IMPL-MESH_EXECUTOR.yaml
+IMPL-MESH_EVENTS:
+  name: Mesh Event Log
+  status: Active
+  cross_references:
+    - REQ-MESH_PLATFORM
+  detail_file: implementation-decisions/IMPL-MESH_EVENTS.yaml
+IMPL-MESH_INVENTORY:
+  name: Mesh Inventory Scan
+  status: Active
+  cross_references:
+    - REQ-MESH_PLATFORM
+  detail_file: implementation-decisions/IMPL-MESH_INVENTORY.yaml
+IMPL-MESH_POLICY:
+  name: Mesh Policy Filters
+  status: Active
+  cross_references:
+    - REQ-MESH_PLATFORM
+  detail_file: implementation-decisions/IMPL-MESH_POLICY.yaml
+IMPL-MESH_CONFLICT:
+  name: Mesh Conflict Management
+  status: Active
+  cross_references:
+    - REQ-MESH_PLATFORM
+  detail_file: implementation-decisions/IMPL-MESH_CONFLICT.yaml
+IMPL-MESH_MONITORING:
+  name: Mesh Monitoring Service
+  status: Active
+  cross_references:
+    - REQ-MESH_MONITORING
+    - REQ-MESH_PLATFORM
+  detail_file: implementation-decisions/IMPL-MESH_MONITORING.yaml
+IMPL-MESH_SCHEDULE:
+  name: Mesh Schedule Service
+  status: Active
+  cross_references:
+    - REQ-MESH_SCHEDULE
+    - REQ-MESH_PLATFORM
+  detail_file: implementation-decisions/IMPL-MESH_SCHEDULE.yaml
+IMPL-MESH_IMPORT_EXPORT:
+  name: Mesh Import Export
+  status: Active
+  cross_references:
+    - REQ-MESH_IMPORT_EXPORT
+    - REQ-MESH_PLATFORM
+  detail_file: implementation-decisions/IMPL-MESH_IMPORT_EXPORT.yaml
+IMPL-MESH_CREDENTIAL:
+  name: Mesh Credential References
+  status: Active
+  cross_references:
+    - REQ-MESH_PLATFORM
+  detail_file: implementation-decisions/IMPL-MESH_CREDENTIAL.yaml
+IMPL-MESH_HARDENING:
+  name: Mesh Hardening Service
+  status: Active
+  cross_references:
+    - REQ-MESH_HARDENING
+    - REQ-MESH_PLATFORM
+  detail_file: implementation-decisions/IMPL-MESH_HARDENING.yaml

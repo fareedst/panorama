@@ -1,0 +1,34 @@
+IMPL-MESH_GUI:
+  name: Mesh React UI
+  status: Active
+  cross_references:
+    - REQ-MESH_GUI
+  decision: Client components under src/app/mesh/components consume /api/mesh endpoints.
+  rationale:
+    why: Phases 17-22 GUI
+  implementation_approach:
+    summary: Next.js pages + client components
+  code_locations:
+    files:
+      - path: src/app/mesh/page.tsx
+        description: Mesh list
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-MESH_LAYERED
+    requirements:
+      - REQ-MESH_GUI
+    tests:
+      - src/app/mesh/components/MeshListClient.test.tsx
+    code_annotations:
+      - IMPL-MESH_GUI
+  related_decisions:
+    depends_on:
+      - IMPL-MESH_API
+    supersedes: []
+    see_also: []
+  testability: component
+  metadata:
+    created:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent

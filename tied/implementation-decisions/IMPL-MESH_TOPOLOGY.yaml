@@ -1,0 +1,33 @@
+IMPL-MESH_TOPOLOGY:
+  name: Mesh Topology Service
+  status: Active
+  cross_references:
+    - REQ-MESH_PLATFORM
+    - IMPL-MESH_DEPOT
+  decision: Topology validation, graph projection, and link helpers on mesh domain.
+  implementation_approach:
+    summary: src/lib/mesh/services/topology-service.ts
+  code_locations:
+    files:
+      - path: src/lib/mesh/services/topology-service.ts
+        description: Topology graph and validation
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-MESH_LAYERED
+    requirements:
+      - REQ-MESH_PLATFORM
+    tests:
+      - src/lib/mesh/services/topology-service.test.ts
+    code_annotations:
+      - IMPL-MESH_TOPOLOGY
+  related_decisions:
+    depends_on:
+      - IMPL-MESH_DEPOT
+    supersedes: []
+    see_also: []
+  testability: unit
+  metadata:
+    created:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent

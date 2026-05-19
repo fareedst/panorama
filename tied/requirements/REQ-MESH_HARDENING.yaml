@@ -1,0 +1,30 @@
+REQ-MESH_HARDENING:
+  name: Mesh Executor Hardening
+  category: Functional
+  priority: P2
+  status: Implemented
+  description: Concurrency slots and retry policy for sync operation execution.
+  satisfaction_criteria:
+    - criterion: concurrent_operations_limited_per_mesh
+    - criterion: retries_stop_at_max_attempts
+  validation_criteria:
+    - method: Vitest
+      coverage: src/lib/mesh/services/hardening-service.test.ts
+  traceability:
+    architecture:
+      - ARCH-MESH_LAYERED
+    implementation:
+      - IMPL-MESH_HARDENING
+    tests:
+      - src/lib/mesh/services/hardening-service.test.ts
+    code_annotations:
+      - REQ-MESH_HARDENING
+  related_requirements:
+    depends_on:
+      - REQ-MESH_PLATFORM
+    related_to: []
+    supersedes: []
+  metadata:
+    created:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent

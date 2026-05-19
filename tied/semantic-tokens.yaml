@@ -2506,3 +2506,400 @@ IMPL-MESH_DOMAIN_TYPES:
   metadata:
     registered: "2026-05-19T00:00:00.000Z"
     last_updated: "2026-05-19T00:00:00.000Z"
+IMPL-MESH_DEPOT:
+  type: IMPL
+  name: Mesh Depot Service
+  status: Active
+  description: Depot CRUD on mesh records
+  cross_references:
+    - REQ-MESH_PLATFORM
+    - IMPL-MESH_CRUD
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-MESH_DEPOT.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+IMPL-MESH_CONNECTOR:
+  type: IMPL
+  name: Mesh Connector Contract
+  status: Active
+  description: Connector interface and fake/local implementations
+  cross_references:
+    - REQ-MESH_PLATFORM
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-MESH_CONNECTOR.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+IMPL-MESH_TOPOLOGY:
+  type: IMPL
+  name: Mesh Topology Service
+  status: Active
+  description: Topology validation and graph projection
+  cross_references:
+    - REQ-MESH_PLATFORM
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-MESH_TOPOLOGY.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+IMPL-MESH_PERSISTENCE:
+  type: IMPL
+  name: Mesh JSON Persistence
+  status: Active
+  description: JsonMeshRepository and createMeshRepository factory
+  cross_references:
+    - REQ-MESH_PLATFORM
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-MESH_PERSISTENCE.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+ARCH-MESH_CRUD:
+  type: ARCH
+  name: Mesh CRUD Service Layer
+  status: Active
+  description: L2 CRUD over mesh repository
+  cross_references:
+    - REQ-MESH_CRUD
+    - ARCH-MESH_LAYERED
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-MESH_CRUD.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+REQ-MESH_CRUD:
+  type: REQ
+  name: Mesh CRUD Unit Logic
+  status: Implemented
+  description: Mesh lifecycle CRUD service
+  cross_references:
+    - ARCH-MESH_CRUD
+    - IMPL-MESH_CRUD
+    - REQ-MESH_PLATFORM
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-MESH_CRUD.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+REQ-MESH_API:
+  type: REQ
+  name: Mesh Management API
+  status: Implemented
+  cross_references:
+    - IMPL-MESH_API
+    - REQ-MESH_PLATFORM
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-MESH_API.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+REQ-MESH_GUI:
+  type: REQ
+  name: Mesh Web GUI
+  status: Implemented
+  cross_references:
+    - IMPL-MESH_GUI
+    - REQ-MESH_API
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-MESH_GUI.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+REQ-MESH_SAFETY:
+  type: REQ
+  name: Mesh Safety Guardrails
+  status: Implemented
+  cross_references:
+    - IMPL-MESH_SAFETY
+    - REQ-MESH_PLATFORM
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-MESH_SAFETY.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+REQ-MESH_AUTH:
+  type: REQ
+  name: Mesh Authorization
+  status: Implemented
+  cross_references:
+    - IMPL-MESH_AUTH
+    - REQ-MESH_PLATFORM
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-MESH_AUTH.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+REQ-MESH_E2E_RELEASE:
+  type: REQ
+  name: Mesh E2E Release Validation
+  status: Implemented
+  cross_references:
+    - REQ-MESH_GUI
+    - e2e/mesh-sync.spec.ts
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-MESH_E2E_RELEASE.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+REQ-MESH_MONITORING:
+  type: REQ
+  name: Mesh Operational Monitoring
+  status: Implemented
+  cross_references:
+    - IMPL-MESH_MONITORING
+    - REQ-MESH_PLATFORM
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-MESH_MONITORING.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+REQ-MESH_SCHEDULE:
+  type: REQ
+  name: Mesh Sync Scheduling
+  status: Implemented
+  cross_references:
+    - IMPL-MESH_SCHEDULE
+    - REQ-MESH_PLATFORM
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-MESH_SCHEDULE.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+REQ-MESH_IMPORT_EXPORT:
+  type: REQ
+  name: Mesh Import Export
+  status: Implemented
+  cross_references:
+    - IMPL-MESH_IMPORT_EXPORT
+    - REQ-MESH_PLATFORM
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-MESH_IMPORT_EXPORT.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+REQ-MESH_REAL_CONNECTORS:
+  type: REQ
+  name: Mesh Real Filesystem Connectors
+  status: Implemented
+  cross_references:
+    - IMPL-MESH_CONNECTOR
+    - REQ-MESH_E2E_RELEASE
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-MESH_REAL_CONNECTORS.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+REQ-MESH_HARDENING:
+  type: REQ
+  name: Mesh Executor Hardening
+  status: Implemented
+  cross_references:
+    - IMPL-MESH_HARDENING
+    - REQ-MESH_PLATFORM
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-MESH_HARDENING.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+IMPL-MESH_CRUD:
+  type: IMPL
+  name: Mesh CRUD Service
+  status: Active
+  cross_references:
+    - ARCH-MESH_CRUD
+    - REQ-MESH_CRUD
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-MESH_CRUD.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+IMPL-MESH_API:
+  type: IMPL
+  name: Mesh API Route Handlers
+  status: Active
+  cross_references:
+    - REQ-MESH_API
+    - ARCH-MESH_LAYERED
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-MESH_API.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+IMPL-MESH_GUI:
+  type: IMPL
+  name: Mesh React UI
+  status: Active
+  cross_references:
+    - REQ-MESH_GUI
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-MESH_GUI.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+IMPL-MESH_SAFETY:
+  type: IMPL
+  name: Mesh Safety Service
+  status: Active
+  cross_references:
+    - REQ-MESH_SAFETY
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-MESH_SAFETY.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+IMPL-MESH_AUTH:
+  type: IMPL
+  name: Mesh Authorization Service
+  status: Active
+  cross_references:
+    - REQ-MESH_AUTH
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-MESH_AUTH.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+IMPL-MESH_RUNTIME:
+  type: IMPL
+  name: Mesh Runtime Composition
+  status: Active
+  cross_references:
+    - REQ-MESH_PLATFORM
+    - ARCH-MESH_LAYERED
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-MESH_RUNTIME.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+IMPL-MESH_SESSION:
+  type: IMPL
+  name: Mesh Session Lifecycle
+  status: Active
+  cross_references:
+    - REQ-MESH_PLATFORM
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-MESH_SESSION.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+IMPL-MESH_PLANNING:
+  type: IMPL
+  name: Mesh Planning Service
+  status: Active
+  cross_references:
+    - REQ-MESH_PLATFORM
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-MESH_PLANNING.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+IMPL-MESH_EXECUTOR:
+  type: IMPL
+  name: Mesh Executor Service
+  status: Active
+  cross_references:
+    - REQ-MESH_PLATFORM
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-MESH_EXECUTOR.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+IMPL-MESH_EVENTS:
+  type: IMPL
+  name: Mesh Event Log
+  status: Active
+  cross_references:
+    - REQ-MESH_PLATFORM
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-MESH_EVENTS.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+IMPL-MESH_INVENTORY:
+  type: IMPL
+  name: Mesh Inventory Scan
+  status: Active
+  cross_references:
+    - REQ-MESH_PLATFORM
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-MESH_INVENTORY.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+IMPL-MESH_POLICY:
+  type: IMPL
+  name: Mesh Policy Filters
+  status: Active
+  cross_references:
+    - REQ-MESH_PLATFORM
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-MESH_POLICY.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+IMPL-MESH_CONFLICT:
+  type: IMPL
+  name: Mesh Conflict Management
+  status: Active
+  cross_references:
+    - REQ-MESH_PLATFORM
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-MESH_CONFLICT.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+IMPL-MESH_MONITORING:
+  type: IMPL
+  name: Mesh Monitoring Service
+  status: Active
+  cross_references:
+    - REQ-MESH_MONITORING
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-MESH_MONITORING.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+IMPL-MESH_SCHEDULE:
+  type: IMPL
+  name: Mesh Schedule Service
+  status: Active
+  cross_references:
+    - REQ-MESH_SCHEDULE
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-MESH_SCHEDULE.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+IMPL-MESH_IMPORT_EXPORT:
+  type: IMPL
+  name: Mesh Import Export
+  status: Active
+  cross_references:
+    - REQ-MESH_IMPORT_EXPORT
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-MESH_IMPORT_EXPORT.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+IMPL-MESH_CREDENTIAL:
+  type: IMPL
+  name: Mesh Credential References
+  status: Active
+  cross_references:
+    - REQ-MESH_PLATFORM
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-MESH_CREDENTIAL.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"
+IMPL-MESH_HARDENING:
+  type: IMPL
+  name: Mesh Hardening Service
+  status: Active
+  cross_references:
+    - REQ-MESH_HARDENING
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-MESH_HARDENING.yaml
+  metadata:
+    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: "2026-05-19T00:00:00.000Z"

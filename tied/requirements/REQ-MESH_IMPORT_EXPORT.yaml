@@ -1,0 +1,35 @@
+REQ-MESH_IMPORT_EXPORT:
+  name: Mesh Configuration Import and Export
+  category: Functional
+  priority: P2
+  status: Implemented
+  description: Export and import mesh configuration documents without credential secrets.
+  satisfaction_criteria:
+    - criterion: export_never_includes_secret_values
+    - criterion: import_creates_or_updates_mesh_via_validation
+  validation_criteria:
+    - method: Vitest
+      coverage: src/lib/mesh/services/import-export-service.test.ts
+    - method: Vitest
+      coverage: src/app/api/mesh/import-export.route.test.ts
+  traceability:
+    architecture:
+      - ARCH-MESH_LAYERED
+    implementation:
+      - IMPL-MESH_IMPORT_EXPORT
+      - IMPL-MESH_API
+    tests:
+      - src/lib/mesh/services/import-export-service.test.ts
+      - src/app/api/mesh/import-export.route.test.ts
+    code_annotations:
+      - REQ-MESH_IMPORT_EXPORT
+  related_requirements:
+    depends_on:
+      - REQ-MESH_CRUD
+      - REQ-MESH_PLATFORM
+    related_to: []
+    supersedes: []
+  metadata:
+    created:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent

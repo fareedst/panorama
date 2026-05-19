@@ -1,0 +1,32 @@
+IMPL-MESH_IMPORT_EXPORT:
+  name: Mesh Import Export
+  status: Active
+  cross_references:
+    - ARCH-MESH_LAYERED
+    - REQ-MESH_IMPORT_EXPORT
+    - REQ-MESH_PLATFORM
+  decision: See essence_pseudocode sidecar and src/lib/mesh/services.
+  implementation_approach:
+    summary: src/lib/mesh/services/
+    details:
+      - See essence_pseudocode sidecar
+  traceability:
+    architecture:
+      - ARCH-MESH_LAYERED
+    requirements:
+      - REQ-MESH_PLATFORM
+    tests:
+      - src/lib/mesh/services/import-export-service.test.ts
+      - src/app/api/mesh/import-export.route.test.ts
+    code_annotations:
+      - IMPL-MESH_IMPORT_EXPORT
+  related_decisions:
+    depends_on:
+      - IMPL-MESH_RUNTIME
+    supersedes: []
+    see_also: []
+  testability: unit
+  metadata:
+    created:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent
