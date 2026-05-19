@@ -1,3 +1,59 @@
+REQ-TIED_SETUP:
+  name: TIED Methodology Setup
+  category: Functional
+  priority: P0
+  status: Implemented
+  detail_file: null
+  traceability:
+    architecture:
+      - ARCH-TIED_STRUCTURE
+    implementation:
+      - IMPL-TIED_FILES
+  related_requirements:
+    depends_on: []
+    related_to: []
+    supersedes: []
+  metadata:
+    last_updated:
+      reason: 'Methodology seed; procedure: tied/docs/agent-req-implementation-checklist.yaml'
+REQ-MODULE_VALIDATION:
+  name: Independent Module Validation Before Integration
+  category: Functional
+  priority: P0
+  status: Implemented
+  detail_file: null
+  traceability:
+    architecture:
+      - ARCH-MODULE_VALIDATION
+    implementation:
+      - IMPL-MODULE_VALIDATION
+  related_requirements:
+    depends_on:
+      - REQ-TIED_SETUP
+    related_to: []
+    supersedes: []
+  metadata:
+    last_updated:
+      reason: 'Methodology seed; procedure: tied/docs/agent-req-implementation-checklist.yaml'
+REQ-FEEDBACK_TO_TIED:
+  name: Feedback to TIED (Feature Requests, Bug Reports, Methodology)
+  category: Functional
+  priority: P1
+  status: Planned
+  detail_file: null
+  traceability:
+    architecture:
+      - ARCH-FEEDBACK_STORAGE
+    implementation:
+      - IMPL-MCP_FEEDBACK_TOOLS
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-TIED_SETUP
+    supersedes: []
+  metadata:
+    last_updated:
+      reason: 'Methodology seed; procedure: tied/docs/agent-req-implementation-checklist.yaml'
 REQ-APP_STRUCTURE:
   name: Next.js App Router Application Structure
   category: Functional
@@ -2824,3 +2880,108 @@ REQ-COPY_OPERATIONS:
     created:
       date: "2026-02-09"
       author: migration
+REQ-MESH_PLATFORM:
+  name: Mesh Sync Platform
+  category: Functional
+  priority: P0
+  status: Planned
+  description: Web-based synchronization platform for variable-sized meshes of file depots, sync links, policies, sessions, conflicts, and admin GUI—delivered in phased units per sync_mesh_web_application deployment plan.
+  rationale:
+    why: Panorama needs durable mesh configuration and governed sync runtime separate from ephemeral multi-pane copy/move (REQ-NSYNC_MULTI_TARGET).
+    problems_solved:
+      - No dry-run planning or session-isolated sync
+      - No first-class conflict or audit model for configuration-driven sync
+      - No named mesh of depots and relationships
+    benefits:
+      - Explicit safety and credential handling
+      - Phased TDD delivery of domain, API, persistence, and GUI
+      - Traceable REQ hierarchy for the mesh program
+  satisfaction_criteria:
+    - criterion: Child REQ slices satisfy their acceptance criteria in order
+    - criterion: Existing pane file manager and nsync behavior remain available unless a later REQ explicitly changes them
+    - criterion: Final release gates (E2E, audit, safety) pass per REQ-MESH_E2E_RELEASE when that slice is in scope
+  validation_criteria:
+    - method: TIED consistency
+      coverage: REQ hierarchy and traceability
+    - method: Automated tests
+      coverage: Per-child REQ validation_criteria
+  traceability:
+    architecture:
+      - ARCH-MESH_LAYERED
+    implementation: []
+    tests: []
+    code_annotations:
+      - REQ-MESH_PLATFORM
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-MESH_DOMAIN_MODEL
+      - REQ-NSYNC_MULTI_TARGET
+    supersedes: []
+  detail_file: requirements/REQ-MESH_PLATFORM.yaml
+  metadata:
+    created:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent
+      reason: Initial mesh program umbrella REQ (author-requirement)
+REQ-MESH_DOMAIN_MODEL:
+  name: Mesh Domain Language and Core Types
+  category: Functional
+  priority: P0
+  status: Implemented
+  description: 'Stable vocabulary and smallest domain objects for mesh sync: mesh, depot, sync link, policy, filter, credential reference, sync session, change set, sync operation, sync event, and conflict—with validation and serialization contracts.'
+  rationale:
+    why: Sponsor deployment phase 1 (domain_language_and_core_types) must be formalized before CRUD, connectors, or GUI.
+    problems_solved:
+      - No serialization contract for persistence and API
+      - No shared domain model for mesh configuration and runtime
+      - No validation rules for invalid mesh/depot/link/session objects
+    benefits:
+      - All later phases compose testable units on stable types
+      - Explicit rejection of invalid domain instances
+      - Independent construction and round-trip serialization of core objects
+  satisfaction_criteria:
+    - criterion: All core objects can be constructed independently and serialized; invalid objects are rejected
+    - criterion: Change set contains ordered sync operations
+    - criterion: Conflict has type, participants, and status
+    - criterion: Credential reference never exposes secret material in serialization
+    - criterion: Depot requires name, kind, and root; connector reference validated per kind
+    - criterion: Mesh requires a non-empty name; accepts zero or more depots when modeled
+    - criterion: Policy has safe default values (non-destructive defaults)
+    - criterion: Sync link requires valid source and target depot references
+    - criterion: Sync session requires an immutable mesh configuration snapshot
+  validation_criteria:
+    - method: Unit tests (Vitest)
+      coverage: src/lib/mesh/domain/validators.test.ts, serialize.test.ts, domain.composition.test.ts — mesh_requires_name through invalid_core_objects_are_rejected
+    - method: tied_validate_consistency
+      coverage: REQ-MESH_DOMAIN_MODEL traceability after sync-tied-stack
+  traceability:
+    architecture:
+      - ARCH-MESH_LAYERED
+      - ARCH-MESH_DOMAIN
+    implementation:
+      - IMPL-MESH_DOMAIN_TYPES
+    tests:
+      - src/lib/mesh/domain/domain.composition.test.ts
+      - src/lib/mesh/domain/serialize.test.ts
+      - src/lib/mesh/domain/validators.test.ts
+    code_annotations:
+      - REQ-MESH_DOMAIN_MODEL
+  related_requirements:
+    depends_on:
+      - REQ-MESH_PLATFORM
+    related_to:
+      - REQ-MODULE_VALIDATION
+    supersedes: []
+  detail_file: requirements/REQ-MESH_DOMAIN_MODEL.yaml
+  metadata:
+    created:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T20:15:00.000Z"
+      author: AI Agent
+      reason: 'sync-tied-stack: index traceability.tests aligned with passing mesh domain Vitest suite'

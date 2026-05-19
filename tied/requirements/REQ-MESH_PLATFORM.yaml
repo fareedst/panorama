@@ -1,0 +1,44 @@
+REQ-MESH_PLATFORM:
+  name: Mesh Sync Platform
+  category: Functional
+  priority: P0
+  status: Planned
+  description: 'Umbrella requirement for the mesh synchronization program: ordered deployment of domain types, services, connectors, API, persistence, GUI, safety, and E2E validation. Sponsor label mesh; goal deploy mesh.'
+  rationale:
+    why: Deliver sync_mesh_web_application as a testable, documented subsystem without collapsing scope into a single undifferentiated implementation pass.
+    problems_solved:
+      - Informal sponsor YAML is not traceable REQ/ARCH/IMPL
+      - Risk of implementing GUI or persistence before domain invariants exist
+    benefits:
+      - Clear parent/child REQ structure aligned to sponsor phases
+      - Module validation before integration ([REQ-MODULE_VALIDATION])
+  satisfaction_criteria:
+    - criterion: Credential secrets never appear in serialized mesh documents, API responses, or exports
+    - criterion: Destructive sync requires explicit policy and user confirmation paths when those slices are implemented
+    - criterion: REQ-MESH_DOMAIN_MODEL and subsequent child REQs are authored with ARCH/IMPL before RED tests for each slice
+  validation_criteria:
+    - method: tied_validate_consistency
+      coverage: Mesh REQ tokens and cross-references
+    - method: Checklist verification-gate
+      coverage: Per completed child slice
+  traceability:
+    architecture:
+      - ARCH-MESH_LAYERED
+    implementation: []
+    tests: []
+    code_annotations:
+      - REQ-MESH_PLATFORM
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-MESH_DOMAIN_MODEL
+      - REQ-NSYNC_MULTI_TARGET
+    supersedes: []
+  metadata:
+    created:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent
+      reason: Initial mesh program umbrella REQ (author-requirement)

@@ -1,3 +1,63 @@
+ARCH-TIED_STRUCTURE:
+  name: TIED Project Structure
+  status: Active
+  cross_references:
+    - REQ-TIED_SETUP
+  detail_file: null
+  traceability:
+    requirements:
+      - REQ-TIED_SETUP
+    implementation:
+      - IMPL-TIED_FILES
+  related_decisions:
+    depends_on:
+      - REQ-TIED_SETUP
+    informs:
+      - IMPL-TIED_FILES
+    see_also: []
+  metadata:
+    last_updated:
+      reason: 'Methodology seed; procedure: tied/docs/agent-req-implementation-checklist.yaml'
+ARCH-MODULE_VALIDATION:
+  name: Module Validation Strategy
+  status: Active
+  cross_references:
+    - REQ-MODULE_VALIDATION
+  detail_file: null
+  traceability:
+    requirements:
+      - REQ-MODULE_VALIDATION
+    implementation:
+      - IMPL-MODULE_VALIDATION
+  related_decisions:
+    depends_on:
+      - REQ-MODULE_VALIDATION
+    informs:
+      - IMPL-MODULE_VALIDATION
+    see_also: []
+  metadata:
+    last_updated:
+      reason: 'Methodology seed; procedure: tied/docs/agent-req-implementation-checklist.yaml'
+ARCH-FEEDBACK_STORAGE:
+  name: Feedback Storage for TIED Reporting
+  status: Active
+  cross_references:
+    - REQ-FEEDBACK_TO_TIED
+  detail_file: null
+  traceability:
+    requirements:
+      - REQ-FEEDBACK_TO_TIED
+    implementation:
+      - IMPL-MCP_FEEDBACK_TOOLS
+  related_decisions:
+    depends_on:
+      - REQ-FEEDBACK_TO_TIED
+    informs:
+      - IMPL-MCP_FEEDBACK_TOOLS
+    see_also: []
+  metadata:
+    last_updated:
+      reason: 'Methodology seed; procedure: tied/docs/agent-req-implementation-checklist.yaml'
 ARCH-NEXTJS_FRAMEWORK:
   name: Next.js 16.1 Framework Choice
   status: Active
@@ -2546,3 +2606,138 @@ ARCH-PERFORMANCE_OPT:
     see_also: []
   detail_file: architecture-decisions/ARCH-PERFORMANCE_OPT.yaml
   metadata: {}
+ARCH-MESH_LAYERED:
+  name: Mesh Subsystem Layered Architecture
+  status: Active
+  cross_references:
+    - REQ-MESH_PLATFORM
+    - REQ-MESH_DOMAIN_MODEL
+  decision: Mesh sync is a separate layered subsystem under src/lib/mesh/ and src/app/mesh/ (and src/app/api/mesh/), composed after unit-validated modules; it does not replace pane-level nsync (REQ-NSYNC_MULTI_TARGET).
+  rationale:
+    why: The mesh program spans domain, services, connectors, persistence, HTTP API, and GUI; clear layer boundaries enforce build-small-units-first and composition-only-after-unit-tests-pass.
+    problems_solved:
+      - Monolithic mesh code mixed with file-manager UI
+      - Premature database or API coupling before domain invariants
+      - Unclear boundary between ephemeral pane sync and durable mesh configuration
+    benefits:
+      - Aligns sponsor phases 1–30 to layer slices
+      - Independent validation of domain and services before wiring
+      - Predictable dependency direction (inward toward domain)
+  alternatives_considered:
+    - name: Extend src/lib/sync/ as mesh engine
+      pros:
+        - Reuse hash/compare/operations
+      cons:
+        - Pane-centric API; no mesh/depot/link model
+        - Couples configuration to visible panes
+      rejected_reason: Mesh requires durable configuration graph and session snapshots distinct from WorkspaceView panes
+    - name: Single package with GUI-first delivery
+      pros:
+        - Faster visible progress
+      cons:
+        - Violates module validation and TDD order
+        - Hard to test planning/safety in isolation
+      rejected_reason: Sponsor plan and REQ-MODULE_VALIDATION require domain-first TDD
+  implementation_approach:
+    summary: Six logical layers with one-way dependencies toward the domain core
+    details:
+      - 'L1 Domain (src/lib/mesh/domain): types, validators, serialization contracts — no I/O'
+      - 'L2 Services (src/lib/mesh/services): CRUD, topology, policy, planning, session, executor — pure logic + repository interfaces'
+      - 'L3 Connectors (src/lib/mesh/connectors): filesystem contracts; fake implementations for tests'
+      - 'L4 Persistence (src/lib/mesh/persistence): repository implementations — introduced after domain/services stable'
+      - 'L5 API (src/app/api/mesh): HTTP mapping; no secrets in responses'
+      - 'L6 GUI (src/app/mesh): Next.js routes and components; composition tests before E2E'
+      - Existing src/lib/sync and src/app/files remain; optional future adapter may call shared hash/compare utilities without merging models
+  traceability:
+    requirements:
+      - REQ-MESH_PLATFORM
+      - REQ-MESH_DOMAIN_MODEL
+    implementation: []
+    tests: []
+    code_annotations:
+      - ARCH-MESH_LAYERED
+  related_decisions:
+    depends_on: []
+    informs:
+      - ARCH-MESH_DOMAIN
+    see_also:
+      - ARCH-NSYNC_INTEGRATION
+      - ARCH-MODULE_VALIDATION
+  detail_file: architecture-decisions/ARCH-MESH_LAYERED.yaml
+  metadata:
+    created:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent
+      reason: Initial mesh layered architecture (author-architecture)
+ARCH-MESH_DOMAIN:
+  name: Mesh Pure Domain Module
+  status: Active
+  cross_references:
+    - REQ-MESH_DOMAIN_MODEL
+    - ARCH-MESH_LAYERED
+  decision: Phase-1 domain types, validators, and serialization live in src/lib/mesh/domain as a pure TypeScript module with no filesystem, HTTP, or database imports.
+  rationale:
+    why: REQ-MESH_DOMAIN_MODEL requires constructible, serializable core objects and explicit rejection of invalid instances before any CRUD or connector work.
+    problems_solved:
+      - Invalid mesh graphs persisting to storage
+      - Mutable mesh configuration during an active sync session
+      - Secret material in serialized credential fields
+    benefits:
+      - Fast Vitest unit tests without mocks for I/O
+      - Serialization contract shared by API and persistence layers
+      - Stable vocabulary for all later mesh services
+  alternatives_considered:
+    - name: Zod schemas only at API boundary
+      pros:
+        - Less domain code
+      cons:
+        - Validation duplicated across API and persistence
+        - Weaker collision detection in IMPL pseudo-code
+      rejected_reason: Domain invariants must be authoritative inside L1 before outer layers
+    - name: ORM entities as domain
+      pros:
+        - Faster persistence later
+      cons:
+        - Couples domain to database shape
+        - Harder pure unit tests
+      rejected_reason: Violates layered architecture and phase-1 deployable:false
+  implementation_approach:
+    summary: Typed domain model with factory/validator functions and explicit serialization DTOs
+    details:
+      - 'Entities: Mesh, Depot, SyncLink, Policy, Filter, CredentialReference, SyncSession, ChangeSet, SyncOperation, SyncEvent, Conflict'
+      - 'On-disk: src/lib/mesh/domain/types.ts, internal.ts, validators.ts, serialize.ts, index.ts; tests validators.test.ts, serialize.test.ts, domain.composition.test.ts'
+      - 'Serialization: JSON-safe DTOs; CredentialReference stores id/label only — never secret values'
+      - 'Validation at construction: reject invalid combinations with structured errors'
+      - ChangeSet maintains ordered SyncOperation list
+      - Conflict records type, participants (depot/path refs), status enum
+      - Default Policy values non-destructive (safe defaults per sponsor phase 1)
+      - SyncSession holds immutable MeshSnapshot (deep copy or frozen snapshot id) separate from live Mesh edits
+  traceability:
+    requirements:
+      - REQ-MESH_DOMAIN_MODEL
+    implementation:
+      - IMPL-MESH_DOMAIN_TYPES
+    tests:
+      - src/lib/mesh/domain/domain.composition.test.ts
+      - src/lib/mesh/domain/serialize.test.ts
+      - src/lib/mesh/domain/validators.test.ts
+    code_annotations:
+      - ARCH-MESH_DOMAIN
+  related_decisions:
+    depends_on:
+      - ARCH-MESH_LAYERED
+    informs: []
+    see_also:
+      - ARCH-MODULE_VALIDATION
+  detail_file: architecture-decisions/ARCH-MESH_DOMAIN.yaml
+  metadata:
+    created:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T20:15:00.000Z"
+      author: AI Agent
+      reason: 'sync-tied-stack: index traceability.tests aligned with mesh domain Vitest suite'

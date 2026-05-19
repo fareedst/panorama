@@ -1,0 +1,81 @@
+IMPL-MESH_DOMAIN_TYPES:
+  name: Mesh Domain Types and Validation
+  status: Active
+  cross_references:
+    - ARCH-MESH_DOMAIN
+    - ARCH-MESH_LAYERED
+    - REQ-MESH_DOMAIN_MODEL
+    - REQ-MESH_PLATFORM
+  decision: Pure domain types, validators, and JSON-safe serialization for mesh, depot, sync link, policy, filter, credential reference, session, change set, operations, events, and conflict.
+  rationale:
+    why: Fulfills REQ-MESH_DOMAIN_MODEL and ARCH-MESH_DOMAIN L1 module.
+    problems_solved:
+      - Ad-hoc structs
+      - Mutable session configuration
+      - Secrets in config documents
+    benefits:
+      - Deterministic validation at construction
+      - Immutable mesh snapshots for sessions
+      - Ordered change sets and explicit conflicts
+  implementation_approach:
+    summary: Synchronous pure functions; validators before entity return; DTO strip secrets
+    details:
+      - 'Phase C: intra-IMPL call graph documented in essence_pseudocode IntraImplComposition block; no cross-IMPL depends_on in phase 1.'
+      - 'Phase H end-to-end-ui: no E2E tests — zero e2e_only blocks; coverage via validators.test.ts, serialize.test.ts, domain.composition.test.ts.'
+      - 'Phase I verification-gate: Vitest 50/50 mesh tests pass; ESLint 0 errors; mesh domain tsc clean; tied_validate_consistency pass; agent_req_checklist_post_test pseudocode validation pass; module L1 validated independently (validators, serialize, composition barrel).'
+      - No imports from fs, next/server, or database clients
+      - See essence_pseudocode sidecar for procedure contracts
+  code_locations:
+    files:
+      - path: src/lib/mesh/domain/types.ts
+        description: Entity and enum types
+      - path: src/lib/mesh/domain/internal.ts
+        description: Shared validation helpers (private)
+      - path: src/lib/mesh/domain/validators.ts
+        description: VALIDATE_* procedures
+      - path: src/lib/mesh/domain/serialize.ts
+        description: TO_DTO / FROM_DTO
+      - path: src/lib/mesh/domain/index.ts
+        description: Public exports
+      - path: src/lib/mesh/domain/domain.test-helpers.ts
+        description: Shared test helpers
+      - path: src/lib/mesh/domain/validators.test.ts
+        description: Validation unit tests
+      - path: src/lib/mesh/domain/serialize.test.ts
+        description: Serialization unit tests
+      - path: src/lib/mesh/domain/domain.composition.test.ts
+        description: Phase G composition tests (public barrel bindings)
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-MESH_DOMAIN
+      - ARCH-MESH_LAYERED
+    requirements:
+      - REQ-MESH_DOMAIN_MODEL
+      - REQ-MESH_PLATFORM
+    tests:
+      - src/lib/mesh/domain/domain.composition.test.ts
+      - src/lib/mesh/domain/serialize.test.ts
+      - src/lib/mesh/domain/validators.test.ts
+    code_annotations:
+      - IMPL-MESH_DOMAIN_TYPES
+      - REQ-MESH_DOMAIN_MODEL
+      - REQ-MESH_PLATFORM
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also: []
+  testability: unit
+  metadata:
+    created:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T19:30:00.000Z"
+      author: AI Agent
+      reason: 'verification-gate Phase I: Vitest and mesh tsc clean; tied_validate_consistency; post-test pseudocode validation; three-way alignment'
+    last_validated:
+      date: "2026-05-19T19:30:00.000Z"
+      validator: AI Agent
+      result: 'pass — verification-gate Phase I: 50 mesh unit+composition tests; tied_validate_consistency ok; agent_req_checklist_post_test; zero e2e_only blocks'
+  test_coverage_note: 'Phase H (end-to-end-ui) skipped: no UI-only behavior. L1 mesh domain is pure TypeScript (validators, serialize, index); all procedures are unit- and composition-testable via Vitest. Project Playwright harness (e2e/) is present but not applicable until a future UI IMPL wires mesh configuration in the app shell.'

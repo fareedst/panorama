@@ -1,3 +1,66 @@
+IMPL-TIED_FILES:
+  name: TIED File Creation
+  status: Active
+  cross_references:
+    - ARCH-TIED_STRUCTURE
+    - REQ-TIED_SETUP
+  detail_file: null
+  traceability:
+    architecture:
+      - ARCH-TIED_STRUCTURE
+    requirements:
+      - REQ-TIED_SETUP
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - ARCH-TIED_STRUCTURE
+      - REQ-TIED_SETUP
+  metadata:
+    last_updated:
+      reason: 'Methodology seed; procedure: tied/docs/agent-req-implementation-checklist.yaml'
+IMPL-MODULE_VALIDATION:
+  name: Module Validation Implementation
+  status: Active
+  cross_references:
+    - ARCH-MODULE_VALIDATION
+    - REQ-MODULE_VALIDATION
+  detail_file: null
+  traceability:
+    architecture:
+      - ARCH-MODULE_VALIDATION
+    requirements:
+      - REQ-MODULE_VALIDATION
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - ARCH-MODULE_VALIDATION
+      - REQ-MODULE_VALIDATION
+  metadata:
+    last_updated:
+      reason: 'Methodology seed; procedure: tied/docs/agent-req-implementation-checklist.yaml'
+IMPL-MCP_FEEDBACK_TOOLS:
+  name: MCP Feedback Tools (tied_feedback_add, tied_feedback_export)
+  status: Active
+  cross_references:
+    - ARCH-FEEDBACK_STORAGE
+    - REQ-FEEDBACK_TO_TIED
+  detail_file: null
+  traceability:
+    architecture:
+      - ARCH-FEEDBACK_STORAGE
+    requirements:
+      - REQ-FEEDBACK_TO_TIED
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also:
+      - ARCH-FEEDBACK_STORAGE
+      - REQ-FEEDBACK_TO_TIED
+  metadata:
+    last_updated:
+      reason: 'Methodology seed; procedure: tied/docs/agent-req-implementation-checklist.yaml'
 IMPL-ROOT_LAYOUT:
   name: Root Layout Implementation
   status: Active
@@ -3847,3 +3910,83 @@ IMPL-TOOLBAR_CONFIG:
   metadata:
     registered: 2026-02-08T00:00:00.000Z
     last_updated: 2026-02-08T00:00:00.000Z
+IMPL-MESH_DOMAIN_TYPES:
+  name: Mesh Domain Types and Validation
+  status: Active
+  cross_references:
+    - ARCH-MESH_DOMAIN
+    - ARCH-MESH_LAYERED
+    - REQ-MESH_DOMAIN_MODEL
+    - REQ-MESH_PLATFORM
+  rationale:
+    why: 'Implements phase-1 pure domain module: construct, validate, and serialize mesh core entities without I/O.'
+    problems_solved:
+      - Invalid objects reaching services or API
+      - No shared mesh vocabulary in code
+      - Secret material in serialized configuration
+    benefits:
+      - JSON-safe DTOs for persistence and API layers
+      - Single source of validation rules for later mesh services
+      - Unit-testable domain in isolation
+  implementation_approach:
+    summary: Synchronous pure functions; validators before entity return; DTO strip secrets
+    details:
+      - 'Phase C: intra-IMPL call graph documented in essence_pseudocode IntraImplComposition block; no cross-IMPL depends_on in phase 1.'
+      - 'Phase H end-to-end-ui: no E2E tests — zero e2e_only blocks; coverage via validators.test.ts, serialize.test.ts, domain.composition.test.ts.'
+      - 'Phase I verification-gate: Vitest 50/50 mesh tests pass; ESLint 0 errors; mesh domain tsc clean; tied_validate_consistency pass; agent_req_checklist_post_test pseudocode validation pass; module L1 validated independently (validators, serialize, composition barrel).'
+      - No imports from fs, next/server, or database clients
+      - See essence_pseudocode sidecar for procedure contracts
+  code_locations:
+    files:
+      - path: src/lib/mesh/domain/types.ts
+        description: Entity and enum types
+      - path: src/lib/mesh/domain/internal.ts
+        description: Shared validation helpers (private)
+      - path: src/lib/mesh/domain/validators.ts
+        description: VALIDATE_* procedures
+      - path: src/lib/mesh/domain/serialize.ts
+        description: TO_DTO / FROM_DTO
+      - path: src/lib/mesh/domain/index.ts
+        description: Public exports
+      - path: src/lib/mesh/domain/domain.test-helpers.ts
+        description: Shared test helpers
+      - path: src/lib/mesh/domain/validators.test.ts
+        description: Validation unit tests
+      - path: src/lib/mesh/domain/serialize.test.ts
+        description: Serialization unit tests
+      - path: src/lib/mesh/domain/domain.composition.test.ts
+        description: Phase G composition tests (public barrel bindings)
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-MESH_DOMAIN
+      - ARCH-MESH_LAYERED
+    requirements:
+      - REQ-MESH_DOMAIN_MODEL
+      - REQ-MESH_PLATFORM
+    tests:
+      - src/lib/mesh/domain/domain.composition.test.ts
+      - src/lib/mesh/domain/serialize.test.ts
+      - src/lib/mesh/domain/validators.test.ts
+    code_annotations:
+      - IMPL-MESH_DOMAIN_TYPES
+      - REQ-MESH_DOMAIN_MODEL
+      - REQ-MESH_PLATFORM
+  related_decisions:
+    depends_on: []
+    supersedes: []
+    see_also: []
+  testability: unit
+  detail_file: implementation-decisions/IMPL-MESH_DOMAIN_TYPES.yaml
+  metadata:
+    created:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T20:15:00.000Z"
+      author: AI Agent
+      reason: 'sync-tied-stack: align implementation index with detail and on-disk mesh domain module'
+    last_validated:
+      date: "2026-05-19T20:15:00.000Z"
+      validator: AI Agent
+      result: 'pass — sync-tied-stack: 50 Vitest mesh tests; tied_validate_consistency ok'

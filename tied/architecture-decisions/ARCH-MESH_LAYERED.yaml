@@ -1,0 +1,50 @@
+ARCH-MESH_LAYERED:
+  name: Mesh Subsystem Layered Architecture
+  status: Active
+  cross_references:
+    - REQ-MESH_PLATFORM
+    - REQ-MESH_DOMAIN_MODEL
+  decision: Mesh sync is a separate layered subsystem under src/lib/mesh/ and src/app/mesh/ (and src/app/api/mesh/), composed after unit-validated modules; it does not replace pane-level nsync (REQ-NSYNC_MULTI_TARGET).
+  rationale:
+    why: Fulfill REQ-MESH_PLATFORM phased delivery with testable module boundaries.
+    problems_solved:
+      - Monolithic mesh implementation
+      - Cross-layer leakage of persistence or UI into domain
+    benefits:
+      - Sponsor phases map to layers and REQ slices
+      - Composition and E2E deferred until lower layers pass unit tests
+  alternatives_considered:
+    - name: Extend src/lib/sync/ as mesh engine
+      pros:
+        - Reuse existing sync code
+      cons:
+        - No mesh configuration model
+      rejected_reason: Different product surface and data model
+  implementation_approach:
+    summary: Domain-centric layers L1–L6 with nsync coexistence
+    details:
+      - 'Dependency rule: outer layers depend inward; domain has zero imports from API/GUI/persistence'
+      - Cross-cutting safety and auth span services+API+GUI (later phases)
+      - First deployable slices (API/persistence/GUI) only after corresponding REQ slices and IMPL pseudo-code
+  traceability:
+    requirements:
+      - REQ-MESH_PLATFORM
+      - REQ-MESH_DOMAIN_MODEL
+    implementation: []
+    tests: []
+    code_annotations:
+      - ARCH-MESH_LAYERED
+  related_decisions:
+    depends_on: []
+    informs:
+      - ARCH-MESH_DOMAIN
+    see_also:
+      - ARCH-NSYNC_INTEGRATION
+  metadata:
+    created:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent
+    last_updated:
+      date: "2026-05-19T00:00:00.000Z"
+      author: AI Agent
+      reason: Initial mesh layered architecture (author-architecture)
