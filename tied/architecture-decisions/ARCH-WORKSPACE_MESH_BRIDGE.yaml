@@ -6,14 +6,17 @@ ARCH-WORKSPACE_MESH_BRIDGE:
     summary: Pure bridge module, POST /api/mesh, /files?meshId= restore with dual server/client layout channels
     details:
       - applyMaxPanesLimit truncates restored panes; FilesPage surfaces restoreWarning including layout unreadable cases
+      - diffWorkspaceSnapshots compares live state to saved baseline; mesh.diffWorkspace toolbar action
+      - File manager shows loaded mesh name; save dialog supports update existing or save as new
       - FilesPage export const dynamic = force-dynamic for per-request meshId restore
       - links array empty on workspace save (linked mode does not create sync links)
       - NewTabLink for Open in File Manager and workspace Mesh Sync header (cross-surface new tab)
       - normalizeLayoutType (NORMALIZE_LAYOUT) at snapshot boundaries and restore init
       - Optional human note may prefix description before workspaceSnapshot JSON
+      - PUT /api/mesh/:meshId/workspace updates description snapshot and syncs depots via planDepotSync
       - Restore precedence over paneN URL query when meshId bootstrap applies (restoredFromMesh)
       - restoreLayout prop plus client meshId fetch for RSC/multi-worker layout rehydrate
-      - Store creates new mesh only (no in-place update)
+      - Successful workspace update save sets savedSnapshot to the exact captured snapshot so diff badge clears immediately
   traceability:
     requirements:
       - REQ-WORKSPACE_MESH_BRIDGE
@@ -21,8 +24,10 @@ ARCH-WORKSPACE_MESH_BRIDGE:
       - IMPL-WORKSPACE_MESH_BRIDGE
     tests:
       - e2e/workspace-mesh-bridge.spec.ts
+      - src/app/api/mesh/[meshId]/workspace/workspace.route.test.ts
       - src/app/api/mesh/workspace-bridge.route.test.ts
       - src/app/files/components/SaveWorkspaceMeshDialog.test.tsx
+      - src/app/files/components/WorkspaceDiffDialog.test.tsx
       - src/app/files/page.mesh-restore.test.tsx
       - src/app/files/WorkspaceView.mesh-restore.test.tsx
       - src/app/mesh/components/MeshDetailClient.test.tsx
@@ -44,6 +49,6 @@ ARCH-WORKSPACE_MESH_BRIDGE:
       date: "2026-05-21T00:00:00.000Z"
       author: AI Agent
     last_updated:
-      date: "2026-05-22T00:00:00.000Z"
+      date: "2026-05-22T12:00:00.000Z"
       author: AI Agent
-      reason: LEAP from IMPL — layout normalization, dual restore channels, cross-surface NewTabLink, test paths
+      reason: LEAP — PUT workspace update, diff toolbar, loaded name, test paths

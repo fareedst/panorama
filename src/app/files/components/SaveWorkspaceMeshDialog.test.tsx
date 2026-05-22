@@ -1,4 +1,4 @@
-// [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE]: Save workspace mesh dialog tests
+// [REQ-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE]: Save workspace mesh dialog tests — STORE_FROM_WORKSPACE_UI
 
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
@@ -30,7 +30,39 @@ describe("SaveWorkspaceMeshDialog STORE_FROM_WORKSPACE_UI [REQ-WORKSPACE_MESH_BR
     });
     fireEvent.click(screen.getByTestId("save-workspace-mesh-submit"));
     await waitFor(() => {
-      expect(onSave).toHaveBeenCalledWith("Test Mesh", "my note");
+      expect(onSave).toHaveBeenCalledWith("Test Mesh", "my note", "create");
+    });
+  });
+
+  it("UPDATE_EXISTING_WORKSPACE_shows_mode_radios_when_meshId_set", () => {
+    render(
+      <SaveWorkspaceMeshDialog
+        isOpen
+        meshId="mesh-1"
+        defaultName="My Workspace"
+        onClose={() => {}}
+        onSave={vi.fn()}
+      />,
+    );
+    expect(screen.getByTestId("save-workspace-mesh-mode-update")).toBeInTheDocument();
+    expect(screen.getByTestId("save-workspace-mesh-mode-create")).toBeInTheDocument();
+    expect(screen.getByTestId("save-workspace-mesh-name")).toHaveValue("My Workspace");
+  });
+
+  it("UPDATE_EXISTING_WORKSPACE_calls_onSave_with_update_mode", async () => {
+    const onSave = vi.fn().mockResolvedValue(undefined);
+    render(
+      <SaveWorkspaceMeshDialog
+        isOpen
+        meshId="mesh-1"
+        defaultName="My Workspace"
+        onClose={() => {}}
+        onSave={onSave}
+      />,
+    );
+    fireEvent.click(screen.getByTestId("save-workspace-mesh-submit"));
+    await waitFor(() => {
+      expect(onSave).toHaveBeenCalledWith("My Workspace", undefined, "update");
     });
   });
 });

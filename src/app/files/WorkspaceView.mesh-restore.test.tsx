@@ -1,7 +1,7 @@
 // [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE]: Mesh restore applies layout geometry
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { render, screen, waitFor, within, fireEvent } from "@testing-library/react";
 import WorkspaceView from "./WorkspaceView";
 import type { FileStat } from "@/lib/files.types";
 import type { FilesLayoutConfig } from "@/lib/config.types";
@@ -622,6 +622,70 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
     expect(link).toHaveAttribute("aria-label", "Mesh Sync (opens in new tab)");
   });
 
+  // [REQ-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] DIFF_SAVED_VS_CURRENT — how: header Diff hidden until saved baseline exists.
+  it("DIFF_SAVED_VS_CURRENT_hides_header_diff_without_savedSnapshot", () => {
+    render(
+      <WorkspaceView
+        initialPanes={[{ path: "/pane0", files: mockPaneFiles("/pane0") }]}
+        keybindings={mockKeybindings}
+        copy={mockCopy}
+        layout={mockLayout}
+        columns={mockColumns}
+        meshId="mesh-no-baseline"
+      />,
+    );
+    expect(screen.queryByTestId("workspace-diff-header-button")).not.toBeInTheDocument();
+  });
+
+  it("DIFF_SAVED_VS_CURRENT_shows_header_diff_when_savedSnapshot_loaded", () => {
+    const baseline = captureWorkspaceSnapshot({
+      layout: "Tile",
+      focusIndex: 0,
+      linkedMode: false,
+      comparisonMode: "off",
+      panes: [
+        {
+          path: "/pane0",
+          sortBy: "name",
+          sortDirection: "asc",
+          sortDirsFirst: true,
+          cursor: 0,
+        },
+      ],
+    });
+    render(
+      <WorkspaceView
+        initialPanes={[{ path: "/pane0", files: mockPaneFiles("/pane0") }]}
+        keybindings={mockKeybindings}
+        copy={mockCopy}
+        layout={mockLayout}
+        columns={mockColumns}
+        meshId="mesh-with-baseline"
+        loadedSnapshot={baseline}
+      />,
+    );
+    expect(screen.getByTestId("workspace-diff-header-button")).toBeInTheDocument();
+  });
+
+  // [REQ-WORKSPACE_MESH_BRIDGE] SHOW_LOADED_WORKSPACE_NAME — how: loadedMeshName renders in header.
+  it("SHOW_LOADED_WORKSPACE_NAME_displays_mesh_name_in_header", () => {
+    render(
+      <WorkspaceView
+        initialPanes={[{ path: "/pane0", files: mockPaneFiles("/pane0") }]}
+        keybindings={mockKeybindings}
+        copy={mockCopy}
+        layout={mockLayout}
+        columns={mockColumns}
+        meshId="mesh-name-1"
+        loadedMeshName="My Saved Workspace"
+        restoredFromMesh
+      />,
+    );
+    expect(screen.getByTestId("workspace-loaded-name")).toHaveTextContent(
+      "My Saved Workspace",
+    );
+  });
+
   // [REQ-WORKSPACE_MESH_BRIDGE] WORKSPACE_HEADER_MESH_LINK — how: meshId prop links to /mesh/{meshId} in new tab.
   it("WORKSPACE_HEADER_MESH_LINK_points_to_mesh_detail_when_meshId_set", () => {
     render(
@@ -638,5 +702,93 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
     expect(link).toHaveAttribute("href", "/mesh/mesh-restore-nav-1");
     expect(link).toHaveAttribute("target", "_blank");
     expect(link).toHaveAttribute("rel", "noopener noreferrer");
+  });
+
+  // [REQ-WORKSPACE_MESH_BRIDGE] save_update_clears_diff_baseline — how: setSavedSnapshot(snapshot) after PUT clears diff badge.
+  it("UPDATE_WORKSPACE_MESH_clears_diff_badge_after_save", async () => {
+    const meshId = "mesh-diff-clear-1";
+    const meshSaveKeybindings = [
+      ...mockKeybindings,
+      {
+        key: "m",
+        modifiers: { ctrl: true, shift: true },
+        action: "mesh.saveWorkspace",
+        description: "Save workspace as mesh",
+        category: "system" as const,
+      },
+    ];
+    const oneRowSnapshot = captureWorkspaceSnapshot({
+      layout: "OneRow",
+      focusIndex: 0,
+      linkedMode: false,
+      comparisonMode: "off",
+      panes: [
+        {
+          path: "/pane0",
+          sortBy: "name",
+          sortDirection: "asc",
+          sortDirsFirst: true,
+          cursor: 0,
+        },
+        {
+          path: "/pane1",
+          sortBy: "name",
+          sortDirection: "asc",
+          sortDirsFirst: true,
+          cursor: 0,
+        },
+      ],
+    });
+
+    (global.fetch as ReturnType<typeof vi.fn>).mockImplementation(
+      async (input: RequestInfo | URL, init?: RequestInit) => {
+        const url = typeof input === "string" ? input : input.toString();
+        if (url.includes(`/api/mesh/${meshId}/workspace`) && init?.method === "PUT") {
+          return {
+            ok: true,
+            json: async () => ({ mesh: { name: "Test Mesh" } }),
+          } as Response;
+        }
+        if (url.includes(`/api/mesh/${meshId}`)) {
+          return { ok: true, json: async () => ({ mesh: {} }) } as Response;
+        }
+        return { ok: true, json: async () => [] } as Response;
+      },
+    );
+
+    render(
+      <WorkspaceView
+        initialPanes={twoInitialPanes}
+        keybindings={meshSaveKeybindings}
+        copy={mockCopy}
+        layout={mockLayout}
+        columns={mockColumns}
+        meshId={meshId}
+        loadedMeshName="Test Mesh"
+        loadedSnapshot={oneRowSnapshot}
+        restoredFromMesh
+        restoreUi={{
+          layout: "Tile",
+          focusIndex: 0,
+          linkedMode: false,
+          comparisonMode: "off",
+        }}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId("workspace-diff-change-count")).toBeInTheDocument();
+    });
+
+    fireEvent.keyDown(window, { key: "m", ctrlKey: true, shiftKey: true });
+    await waitFor(() => {
+      expect(screen.getByTestId("save-workspace-mesh-dialog")).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId("save-workspace-mesh-submit"));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId("workspace-diff-change-count")).not.toBeInTheDocument();
+    });
   });
 });

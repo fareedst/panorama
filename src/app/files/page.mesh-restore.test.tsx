@@ -67,6 +67,8 @@ describe("REQ-WORKSPACE_MESH_BRIDGE FilesPage RESTORE_ON_FILES_PAGE [IMPL-WORKSP
     expect(props.restoreLayout).toBe("OneRow");
     expect((props.restoreUi as { layout: string } | undefined)?.layout).toBe("OneRow");
     expect((props.initialPanes as { path: string }[])[0]?.path).toBe("/tmp/ws-pane-a");
+    expect(props.loadedMeshName).toBe("Page restore");
+    expect((props.loadedSnapshot as { layout: string } | undefined)?.layout).toBe("OneRow");
   });
 
   // [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_ON_FILES_PAGE — how: missing mesh surfaces restoreWarning and passes meshId without restore.

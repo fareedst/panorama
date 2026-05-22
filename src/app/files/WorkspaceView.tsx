@@ -37,12 +37,18 @@ import { SearchDialog } from "./components/SearchDialog";
 import { WorkspaceToolbar } from "./components/WorkspaceToolbar";
 import { PaneToolbar } from "./components/PaneToolbar";
 import { SystemToolbar } from "./components/SystemToolbar";
-import { SaveWorkspaceMeshDialog } from "./components/SaveWorkspaceMeshDialog";
+import {
+  SaveWorkspaceMeshDialog,
+  type WorkspaceMeshSaveMode,
+} from "./components/SaveWorkspaceMeshDialog";
+import { WorkspaceDiffDialog } from "./components/WorkspaceDiffDialog";
 import { NewTabLink } from "@/components/NewTabLink";
 import {
   buildMeshCreatePayload,
   captureWorkspaceSnapshot,
+  diffWorkspaceSnapshots,
   parseWorkspaceSnapshotFromMesh,
+  type WorkspaceSnapshot,
 } from "@/lib/workspace-mesh-bridge";
 
 interface PaneState {
@@ -118,6 +124,10 @@ interface WorkspaceViewProps {
   restorePaneMeta?: RestorePaneMeta[];
   restoredFromMesh?: boolean;
   restoreWarning?: string | null;
+  /** [REQ-WORKSPACE_MESH_BRIDGE] Mesh name when loaded via meshId */
+  loadedMeshName?: string;
+  /** [REQ-WORKSPACE_MESH_BRIDGE] Baseline snapshot for diff/update */
+  loadedSnapshot?: WorkspaceSnapshot;
 }
 
 /**
@@ -166,7 +176,10 @@ export default function WorkspaceView({
   restorePaneMeta,
   restoredFromMesh = false,
   restoreWarning = null,
+  loadedMeshName: loadedMeshNameProp,
+  loadedSnapshot: loadedSnapshotProp,
 }: WorkspaceViewProps) {
+  const workspaceMeshCopy = copy.workspaceMesh;
   const router = useRouter();
   // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
   // Initialize keybinding registry synchronously before first render
@@ -234,11 +247,18 @@ export default function WorkspaceView({
     () => restoreUi?.linkedMode ?? layoutConfig.defaultLinkedMode ?? true,
   );
 
-  // [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] Save workspace as mesh
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] STORE_FROM_WORKSPACE_UI / DIFF_SAVED_VS_CURRENT
   const [saveMeshDialogOpen, setSaveMeshDialogOpen] = useState(false);
+  const [diffDialogOpen, setDiffDialogOpen] = useState(false);
+  const [loadedMeshName, setLoadedMeshName] = useState<string | undefined>(loadedMeshNameProp);
+  const [savedSnapshot, setSavedSnapshot] = useState<WorkspaceSnapshot | null>(
+    loadedSnapshotProp ?? null,
+  );
   
   // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Track if we're in a sync operation (prevent infinite recursion)
   const syncingRef = useRef<Set<number>>(new Set());
+  /** Skip one loadedSnapshotProp sync after local update save (router.replace may deliver stale RSC props). */
+  const skipPropBaselineSyncRef = useRef(false);
   
   // [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED] Sort dialog state
   const [sortDialog, setSortDialog] = useState<{
@@ -307,6 +327,45 @@ export default function WorkspaceView({
     }
   }, [restoreLayout]);
 
+  useEffect(() => {
+    setLoadedMeshName(loadedMeshNameProp);
+  }, [loadedMeshNameProp]);
+
+  useEffect(() => {
+    if (loadedSnapshotProp) {
+      if (skipPropBaselineSyncRef.current) {
+        skipPropBaselineSyncRef.current = false;
+        return;
+      }
+      setSavedSnapshot(loadedSnapshotProp);
+    }
+  }, [loadedSnapshotProp]);
+
+  const captureCurrentSnapshot = useCallback((): WorkspaceSnapshot => {
+    return captureWorkspaceSnapshot({
+      layout,
+      focusIndex,
+      linkedMode,
+      comparisonMode,
+      panes: panes.map((p) => ({
+        path: p.path,
+        sortBy: p.sortBy,
+        sortDirection: p.sortDirection,
+        sortDirsFirst: p.sortDirsFirst,
+        cursor: p.cursor,
+      })),
+    });
+  }, [layout, focusIndex, linkedMode, comparisonMode, panes]);
+
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] DIFF_SAVED_VS_CURRENT
+  // how: diffWorkspaceSnapshots(savedSnapshot, current) drives header badge and WorkspaceDiffDialog rows
+  const workspaceDiffChanges = useMemo(() => {
+    if (!savedSnapshot) {
+      return [];
+    }
+    return diffWorkspaceSnapshots(savedSnapshot, captureCurrentSnapshot());
+  }, [savedSnapshot, captureCurrentSnapshot]);
+
   // [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_LAYOUT_IN_WORKSPACE_VIEW — client fetch /api/mesh/:meshId once (layoutRehydratedRef).
   useEffect(() => {
     if (!meshId || layoutRehydratedRef.current) {
@@ -323,6 +382,7 @@ export default function WorkspaceView({
         }
         const data = (await res.json()) as {
           mesh?: {
+            name?: string;
             description?: string;
             tags?: string[];
             depots?: { id?: string; name?: string; kind?: string; root?: string }[];
@@ -332,6 +392,9 @@ export default function WorkspaceView({
         if (!mesh) {
           console.debug("DEBUG: mesh layout rehydrate missing mesh in response", meshId);
           return;
+        }
+        if (mesh.name) {
+          setLoadedMeshName(mesh.name);
         }
         const parsed = parseWorkspaceSnapshotFromMesh({
           description: mesh.description,
@@ -347,9 +410,22 @@ export default function WorkspaceView({
             accessMode: "read_write" as const,
           })),
         });
+        if (parsed) {
+          setSavedSnapshot(parsed);
+        }
         const normalized = normalizeLayoutType(parsed?.layout);
         if (!normalized) {
           console.debug("DEBUG: mesh layout rehydrate no layout in snapshot", meshId);
+          return;
+        }
+        // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_LAYOUT_IN_WORKSPACE_VIEW
+        // how: skip client layout overwrite when server already passed restoreLayout (avoids clobbering user edits after async fetch)
+        if (restoreLayout || restoreUi?.layout) {
+          console.debug(
+            "DEBUG: mesh layout rehydrate skipped layout apply (server restoreLayout prop)",
+            normalized,
+            meshId,
+          );
           return;
         }
         console.debug(
@@ -1417,22 +1493,50 @@ export default function WorkspaceView({
     await handleNavigate(paneIndex, parentPath);
   }, [panes, handleNavigate]);
 
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] UPDATE_EXISTING_WORKSPACE
+  const handleUpdateWorkspaceMesh = useCallback(
+    async (name: string, note?: string) => {
+      if (!meshId) {
+        throw new Error("No workspace loaded to update");
+      }
+      const snapshot = captureCurrentSnapshot();
+      const res = await fetch(`/api/mesh/${meshId}/workspace`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, note, snapshot }),
+      });
+      const data = (await res.json()) as {
+        mesh?: {
+          name?: string;
+          description?: string;
+          tags?: string[];
+          depots?: { id?: string; name?: string; kind?: string; root?: string }[];
+        };
+        error?: { message?: string };
+      };
+      if (!res.ok || !data.mesh) {
+        throw new Error(data.error?.message ?? "Failed to update workspace");
+      }
+      if (data.mesh.name) {
+        setLoadedMeshName(data.mesh.name);
+      }
+      // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] save_update_clears_diff_baseline
+      // how: setSavedSnapshot to exact capture (not re-parsed mesh) so diff badge clears immediately
+      skipPropBaselineSyncRef.current = true;
+      setSavedSnapshot(snapshot);
+      router.replace(`/files?meshId=${meshId}`);
+    },
+    [meshId, captureCurrentSnapshot, router],
+  );
+
   // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] STORE_FROM_WORKSPACE_UI
   const handleSaveWorkspaceAsMesh = useCallback(
-    async (name: string, note?: string) => {
-      const snapshot = captureWorkspaceSnapshot({
-        layout,
-        focusIndex,
-        linkedMode,
-        comparisonMode,
-        panes: panes.map((p) => ({
-          path: p.path,
-          sortBy: p.sortBy,
-          sortDirection: p.sortDirection,
-          sortDirsFirst: p.sortDirsFirst,
-          cursor: p.cursor,
-        })),
-      });
+    async (name: string, note?: string, mode: WorkspaceMeshSaveMode = "create") => {
+      if (mode === "update" && meshId) {
+        await handleUpdateWorkspaceMesh(name, note);
+        return;
+      }
+      const snapshot = captureCurrentSnapshot();
       const payload = buildMeshCreatePayload({ name, note, snapshot });
       const res = await fetch("/api/mesh", {
         method: "POST",
@@ -1448,13 +1552,15 @@ export default function WorkspaceView({
       }
       router.push(`/mesh/${data.mesh.id}`);
     },
-    [layout, focusIndex, linkedMode, comparisonMode, panes, router],
+    [captureCurrentSnapshot, meshId, handleUpdateWorkspaceMesh, router],
   );
 
   // [REQ-TOOLBAR_SYSTEM] Workspace-scoped actions (no focused pane required)
   const workspaceActionHandlers = useMemo(() => {
     const handlers = new Map<string, () => void>();
     handlers.set("mesh.saveWorkspace", () => setSaveMeshDialogOpen(true));
+    // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] DIFF_SAVED_VS_CURRENT
+    handlers.set("mesh.diffWorkspace", () => setDiffDialogOpen(true));
     handlers.set("help.show", () => setShowHelp((prev) => !prev));
     handlers.set("command.palette", () => setShowCommandPalette((prev) => !prev));
     handlers.set("search.finder", () => setShowFinderDialog(true));
@@ -1803,9 +1909,15 @@ export default function WorkspaceView({
     if (panes.length <= 1) {
       disabled.add('pane.remove');
     }
+
+    // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] DIFF_SAVED_VS_CURRENT
+    // how: disable mesh.diffWorkspace until meshId and saved baseline exist
+    if (!meshId || !savedSnapshot) {
+      disabled.add('mesh.diffWorkspace');
+    }
     
     return disabled;
-  }, [panes, focusIndex, layoutConfig]);
+  }, [panes, focusIndex, layoutConfig, meshId, savedSnapshot]);
   
   return (
     <div className="h-screen flex flex-col bg-zinc-100 dark:bg-zinc-950">
@@ -1819,6 +1931,15 @@ export default function WorkspaceView({
             <p className="text-sm text-zinc-600 dark:text-zinc-400">
               Browse and manage server files
             </p>
+            {/* [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] SHOW_LOADED_WORKSPACE_NAME */}
+            {loadedMeshName && (
+              <p
+                className="mt-1 text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                data-testid="workspace-loaded-name"
+              >
+                {workspaceMeshCopy?.loadedLabel ?? "Workspace"}: {loadedMeshName}
+              </p>
+            )}
             {restoreWarning && (
               <p
                 className="mt-1 text-sm text-amber-700 dark:text-amber-300"
@@ -1832,10 +1953,36 @@ export default function WorkspaceView({
                 className="mt-1 text-sm text-emerald-700 dark:text-emerald-400"
                 data-testid="workspace-restored-from-mesh"
               >
-                Workspace restored from mesh
+                {loadedMeshName
+                  ? (workspaceMeshCopy?.loadedMessage ?? 'Loaded workspace "{name}"').replace(
+                      "{name}",
+                      loadedMeshName,
+                    )
+                  : "Workspace restored from mesh"}
               </p>
             )}
           </div>
+
+          {/* [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] DIFF_SAVED_VS_CURRENT — header Diff control */}
+          {meshId && savedSnapshot && (
+            <button
+              type="button"
+              onClick={() => setDiffDialogOpen(true)}
+              className="shrink-0 rounded border border-zinc-300 px-3 py-1.5 text-sm text-zinc-700 hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              data-testid="workspace-diff-header-button"
+              title={workspaceMeshCopy?.diffButton ?? "Compare to saved workspace"}
+            >
+              {workspaceMeshCopy?.diffButton ?? "Diff"}
+              {workspaceDiffChanges.length > 0 && (
+                <span
+                  className="ml-1.5 inline-flex min-w-[1.25rem] justify-center rounded-full bg-amber-500 px-1 text-xs text-white"
+                  data-testid="workspace-diff-change-count"
+                >
+                  {workspaceDiffChanges.length}
+                </span>
+              )}
+            </button>
+          )}
 
           {/* [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] WORKSPACE_HEADER_MESH_LINK — cross-surface nav to Mesh */}
           <nav
@@ -2023,9 +2170,27 @@ export default function WorkspaceView({
 
       <SaveWorkspaceMeshDialog
         isOpen={saveMeshDialogOpen}
-        defaultName={`Workspace ${new Date().toISOString().slice(0, 16).replace("T", " ")}`}
+        meshId={meshId}
+        defaultName={
+          loadedMeshName ??
+          `Workspace ${new Date().toISOString().slice(0, 16).replace("T", " ")}`
+        }
+        saveDialogTitle={workspaceMeshCopy?.saveDialogTitle}
+        updateDialogTitle={workspaceMeshCopy?.updateDialogTitle}
+        createModeLabel={workspaceMeshCopy?.createModeLabel}
+        updateModeLabel={workspaceMeshCopy?.updateModeLabel}
+        updateSubmitLabel={workspaceMeshCopy?.updateSubmitLabel}
+        createSubmitLabel={workspaceMeshCopy?.createSubmitLabel}
         onClose={() => setSaveMeshDialogOpen(false)}
         onSave={handleSaveWorkspaceAsMesh}
+      />
+
+      <WorkspaceDiffDialog
+        isOpen={diffDialogOpen}
+        title={workspaceMeshCopy?.diffDialogTitle}
+        noChangesMessage={workspaceMeshCopy?.diffNoChanges}
+        changes={workspaceDiffChanges}
+        onClose={() => setDiffDialogOpen(false)}
       />
       
       <BookmarkDialog

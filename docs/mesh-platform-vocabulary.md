@@ -39,6 +39,9 @@
 | **Virtual depot** | Depot `kind: virtual` — **VirtualConnector** synthetic inventory ([REQ-MESH_REAL_CONNECTORS](../tied/requirements/REQ-MESH_REAL_CONNECTORS.yaml)) |
 | **Default connector fallback** | When `kind` is unknown/unregistered — **VirtualConnector** (synthetic stub), not a live filesystem connector |
 | **Workspace snapshot** | Tag `workspace-snapshot`; UI state JSON in `description.workspaceSnapshot` ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)) |
+| **Saved snapshot baseline** | Parsed snapshot from loaded mesh `description`; compared to live workspace for diff badge ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)) |
+| **Workspace update** | In-place save of current file-manager state to an existing mesh | `PUT /api/mesh/:meshId/workspace` | `UPDATE_EXISTING_WORKSPACE` |
+| **Workspace diff** | Compare live workspace to saved baseline | `mesh.diffWorkspace`, `WorkspaceDiffDialog` | `DIFF_SAVED_VS_CURRENT` |
 | **Open in File Manager** | Mesh detail restore entry (new tab) | `/files?meshId=` | `IMPL-WORKSPACE_MESH_BRIDGE` restore |
 | **Cross-surface link** | New-tab navigation between Mesh GUI and File Manager workspace; `target="_blank"`, `rel="noopener noreferrer"`, screen-reader disclosure |
 | **Open mesh from workspace** | File Manager header nav to Mesh | `/mesh` or `/mesh/:meshId` | `open-mesh-from-workspace` |
@@ -65,6 +68,8 @@
 | Workspace snapshot summary | `workspace-snapshot-summary` | mesh `description` JSON | `IMPL-WORKSPACE_MESH_BRIDGE` |
 | Open workspace from mesh | `open-workspace-from-mesh` | `/files?meshId=` (new tab) | `IMPL-WORKSPACE_MESH_BRIDGE` |
 | Open mesh from workspace | `open-mesh-from-workspace` | `/mesh` or `/mesh/:meshId` (new tab) | `IMPL-WORKSPACE_MESH_BRIDGE` |
+| Update workspace from file manager | save dialog update mode | `PUT /api/mesh/:meshId/workspace` | `UPDATE_EXISTING_WORKSPACE` |
+| Diff workspace vs saved | `workspace-diff-dialog`, header Diff | `diffWorkspaceSnapshots` | `DIFF_SAVED_VS_CURRENT` |
 
 ## Named concepts
 
@@ -77,6 +82,8 @@
 - **Mesh repository** — Persistence (`JsonMeshRepository`, `createMeshRepository`).
 - **Role / permission** — `IMPL-MESH_AUTH_can`, `require`; header `parseMeshRole`.
 - **WorkspaceSnapshot v1** — JSON object under `description.workspaceSnapshot`: `version`, `layout`, `focusIndex`, `linkedMode`, `comparisonMode`, `panes[]` (path, sort, cursor per pane); tag `workspace-snapshot` on save ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)).
+- **Workspace update** — `PUT /api/mesh/:meshId/workspace` applies `buildMeshPatchPayload` and `planDepotSync` so mesh metadata and depot roots match the captured snapshot ([IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml)).
+- **Saved snapshot baseline** — Client `savedSnapshot` used by `diffWorkspaceSnapshots`; after update save, set to the exact captured snapshot so the diff badge clears without re-parse drift.
 
 ## Pseudo-code block names
 
@@ -96,6 +103,9 @@
 | Execute approved session | `runApprovedSession` → `IMPL-MESH_RUNTIME_runApprovedSession` | IMPL-MESH_RUNTIME |
 | Register conflict | `registerConflict` → `IMPL-MESH_CONFLICT_registerConflict` | IMPL-MESH_CONFLICT |
 | Execute operations | `executeOperations` → `IMPL-MESH_EXECUTOR_executeOperations` | IMPL-MESH_EXECUTOR |
+| Update existing workspace | `UPDATE_EXISTING_WORKSPACE` | IMPL-WORKSPACE_MESH_BRIDGE |
+| Diff saved vs current | `DIFF_SAVED_VS_CURRENT` | IMPL-WORKSPACE_MESH_BRIDGE |
+| Save workspace from UI | `STORE_FROM_WORKSPACE_UI` | IMPL-WORKSPACE_MESH_BRIDGE |
 
 ## Alphabetical index
 
@@ -123,7 +133,10 @@
 - **Sync session** — plan execution instance
 - **Sync start** — begin approved session on Sync Now page
 - **Topology** — graph validation/projection
+- **Saved snapshot baseline** — client baseline for workspace diff; cleared on successful update save
+- **Workspace diff** — live vs saved snapshot comparison (`mesh.diffWorkspace`)
 - **Workspace snapshot** — tag `workspace-snapshot`; `description.workspaceSnapshot` v1 JSON
+- **Workspace update** — `PUT /api/mesh/:meshId/workspace` from file manager
 
 ## See also
 

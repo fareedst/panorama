@@ -5,8 +5,13 @@ import {
   WORKSPACE_SNAPSHOT_TAG,
   WORKSPACE_SNAPSHOT_VERSION,
   buildMeshCreatePayload,
+  buildMeshPatchPayload,
+  buildMeshUpdateDescription,
   captureWorkspaceSnapshot,
+  diffWorkspaceSnapshots,
+  extractNotePrefixFromDescription,
   parseWorkspaceSnapshotFromMesh,
+  planDepotSync,
   depotPathsFromMesh,
   applyMaxPanesLimit,
   workspaceSnapshotSummary,
@@ -280,6 +285,70 @@ describe("REQ-WORKSPACE_MESH_BRIDGE [IMPL-WORKSPACE_MESH_BRIDGE]", () => {
       ],
     };
     expect(parseWorkspaceSnapshotFromMesh(mesh)?.layout).toBe("OneRow");
+  });
+
+  it("buildMeshPatchPayload_preserves_note_prefix_from_existing_description", () => {
+    const snapshot = baseSnapshot;
+    const existing = buildMeshUpdateDescription(snapshot, "kept note");
+    const patch = buildMeshPatchPayload({
+      snapshot,
+      existingDescription: existing,
+    });
+    expect(extractNotePrefixFromDescription(patch.description)).toBe("kept note");
+    expect(patch.tags).toContain(WORKSPACE_SNAPSHOT_TAG);
+  });
+
+  it("planDepotSync_updates_adds_and_removes_depots", () => {
+    const twoToOne = planDepotSync(
+      [
+        { id: "d1", name: "Pane 1", root: "/old-a" },
+        { id: "d2", name: "Pane 2", root: "/old-b" },
+      ],
+      [
+        { path: "/new-a", sortBy: "name", sortDirection: "asc", sortDirsFirst: true, cursor: 0 },
+      ],
+    );
+    expect(twoToOne).toContainEqual({
+      op: "update",
+      depotId: "d1",
+      root: "/new-a",
+      name: "Pane 1",
+    });
+    expect(twoToOne).toContainEqual({ op: "remove", depotId: "d2" });
+
+    const oneToTwo = planDepotSync(
+      [{ id: "d1", name: "Pane 1", root: "/a" }],
+      [
+        { path: "/a", sortBy: "name", sortDirection: "asc", sortDirsFirst: true, cursor: 0 },
+        { path: "/b", sortBy: "name", sortDirection: "asc", sortDirsFirst: true, cursor: 0 },
+      ],
+    );
+    expect(oneToTwo).toContainEqual({ op: "add", name: "Pane 2", root: "/b" });
+  });
+
+  it("diffWorkspaceSnapshots_lists_layout_and_pane_changes", () => {
+    const current = captureWorkspaceSnapshot({
+      layout: "Tile",
+      focusIndex: 0,
+      linkedMode: false,
+      comparisonMode: "off",
+      panes: [
+        {
+          path: "/tmp/changed",
+          sortBy: "name",
+          sortDirection: "asc",
+          sortDirsFirst: true,
+          cursor: 0,
+        },
+      ],
+    });
+    const changes = diffWorkspaceSnapshots(baseSnapshot, current);
+    expect(changes.some((c) => c.field === "layout")).toBe(true);
+    expect(changes.some((c) => c.field === "Pane 1 path")).toBe(true);
+  });
+
+  it("diffWorkspaceSnapshots_returns_empty_when_equal", () => {
+    expect(diffWorkspaceSnapshots(baseSnapshot, baseSnapshot)).toEqual([]);
   });
 
   it("PARSE_SNAPSHOT_FROM_MESH_round_trips_focus_linked_comparison", () => {

@@ -1,19 +1,25 @@
 IMPL-WORKSPACE_MESH_BRIDGE:
   name: Workspace Mesh Bridge Implementation
   status: Implemented
-  description: workspace-mesh-bridge.ts, normalizeLayoutType in files.layout, SaveWorkspaceMeshDialog, NewTabLink, WorkspaceView store/restore and header Mesh Sync nav, FilesPage meshId force-dynamic restore, MeshDetailClient summary and open-workspace NewTabLink. E2E justified for full save/restore UI path.
+  description: workspace-mesh-bridge.ts (capture, parse, diff, planDepotSync, patch payload), normalizeLayoutType in files.layout, SaveWorkspaceMeshDialog (update/create), WorkspaceDiffDialog, NewTabLink, WorkspaceView store/restore/update/diff and header loaded name, FilesPage meshId bootstrap, PUT /api/mesh/:meshId/workspace, MeshDetailClient summary and open-workspace NewTabLink. E2E justified for full save/restore/update/diff UI path.
   code_locations:
     files:
       - path: src/lib/workspace-mesh-bridge.ts
-        description: Snapshot capture, parse, mesh payload
+        description: CAPTURE_SNAPSHOT, BUILD_MESH_PAYLOAD, BUILD_MESH_PATCH_PAYLOAD, PLAN_DEPOT_SYNC, DIFF_SAVED_VS_CURRENT
       - path: src/lib/files.layout.ts
         description: NORMALIZE_LAYOUT via normalizeLayoutType
       - path: src/components/NewTabLink.tsx
         description: Cross-surface new-tab links with security and a11y
       - path: src/app/files/page.tsx
-        description: RESTORE_ON_FILES_PAGE server bootstrap
+        description: RESTORE_ON_FILES_PAGE and SHOW_LOADED_WORKSPACE_NAME server bootstrap
       - path: src/app/files/WorkspaceView.tsx
-        description: RESTORE_LAYOUT_IN_WORKSPACE_VIEW, WORKSPACE_HEADER_MESH_LINK
+        description: STORE_FROM_WORKSPACE_UI, UPDATE_EXISTING_WORKSPACE, DIFF_SAVED_VS_CURRENT, RESTORE_LAYOUT_IN_WORKSPACE_VIEW, WORKSPACE_HEADER_MESH_LINK
+      - path: src/app/files/components/SaveWorkspaceMeshDialog.tsx
+        description: STORE_FROM_WORKSPACE_UI update vs create modes
+      - path: src/app/files/components/WorkspaceDiffDialog.tsx
+        description: DIFF_SAVED_VS_CURRENT dialog presentation
+      - path: src/app/api/mesh/[meshId]/workspace/route.ts
+        description: UPDATE_EXISTING_WORKSPACE PUT handler
       - path: src/app/mesh/components/MeshDetailClient.tsx
         description: MESH_DETAIL_RESTORE_LINK open-workspace-from-mesh
   essence_pseudocode_path: implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE-pseudocode.md
@@ -25,8 +31,10 @@ IMPL-WORKSPACE_MESH_BRIDGE:
     implementation: []
     tests:
       - e2e/workspace-mesh-bridge.spec.ts
+      - src/app/api/mesh/[meshId]/workspace/workspace.route.test.ts
       - src/app/api/mesh/workspace-bridge.route.test.ts
       - src/app/files/components/SaveWorkspaceMeshDialog.test.tsx
+      - src/app/files/components/WorkspaceDiffDialog.test.tsx
       - src/app/files/page.mesh-restore.test.tsx
       - src/app/files/WorkspaceView.mesh-restore.test.tsx
       - src/app/mesh/components/MeshDetailClient.test.tsx
@@ -40,6 +48,6 @@ IMPL-WORKSPACE_MESH_BRIDGE:
       date: "2026-05-21T00:00:00.000Z"
       author: AI Agent
     last_updated:
-      date: "2026-05-21T00:00:00.000Z"
+      date: "2026-05-22T12:00:00.000Z"
       author: AI Agent
-      reason: Fortification — layout normalization, cross-surface NewTabLink, RESTORE_ON_FILES_PAGE and client rehydrate pseudo-code
+      reason: LEAP — workspace update PUT, diff vs saved, loaded name, save_update_clears_diff_baseline

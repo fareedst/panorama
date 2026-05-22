@@ -39,7 +39,8 @@
 | Shortcut badge | on button | via `deriveToolbarButton` + registry | `getKeybindingRegistry()` |
 | Copy to all | icon + Shift+C | `file.copyAll` in pane group | `handleCopyAll` |
 | Command palette | “Command Palette” | `command.palette` | Ctrl+P |
-| Save workspace as mesh | “Save workspace as mesh” (Mesh group) | `copy.workspaceMesh.saveDialogTitle` | `mesh.saveWorkspace` (Ctrl+Shift+M) | `handleSaveWorkspaceAsMesh` ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)) |
+| Save workspace as mesh | “Save workspace as mesh” (Mesh group) | `copy.workspaceMesh.saveDialogTitle` | `mesh.saveWorkspace` (Ctrl+Shift+M) | `handleSaveWorkspaceAsMesh` / update via dialog ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)) |
+| Diff workspace vs saved | “Diff” (header + Mesh group) | `copy.workspaceMesh.diffButton` | `mesh.diffWorkspace` | `WorkspaceDiffDialog` ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)) |
 
 ### Action namespace prefixes (stable)
 
@@ -55,7 +56,7 @@
 | `history.*` | back / forward |
 | `bookmark.*` | bookmark ops |
 | `help.*` / `command.*` | system |
-| `mesh.*` | workspace → mesh bridge ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)); e.g. `mesh.saveWorkspace` |
+| `mesh.*` | workspace → mesh bridge ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)); e.g. `mesh.saveWorkspace`, `mesh.diffWorkspace` |
 
 Authoritative enumeration: `config/files.yaml` → `keybindings`.
 
@@ -65,7 +66,8 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 - **Shared dispatch** — Toolbar `onAction(action)` and keyboard layer call the same handler map in `WorkspaceView`.
 - **deriveToolbarButton** — Resolves icon, label, shortcut display from action + registry (`src/lib/toolbar.utils.ts`).
 - **ToolbarButton** — Compact icon + keystroke badge component (`ToolbarButton.tsx`).
-- **mesh.saveWorkspace** — Workspace toolbar action; icon `network` in `toolbar.utils.ts`; opens save dialog then POST `/api/mesh`.
+- **mesh.saveWorkspace** — Workspace toolbar action; icon `network` in `toolbar.utils.ts`; opens save dialog (update current mesh when `meshId` set, else POST `/api/mesh`).
+- **mesh.diffWorkspace** — Compare live workspace to saved snapshot; icon `git-compare`; disabled without loaded snapshot.
 
 ## Pseudo-code block names
 
@@ -75,6 +77,8 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 | Config load/types | `MainBehavior` → `IMPL-TOOLBAR_CONFIG_MainBehavior` | IMPL-TOOLBAR_CONFIG |
 | Registry / validation | (see IMPL-KEYBINDS sidecar) | IMPL-KEYBINDS |
 | Workspace keybind map | `KeybindingInit` → `IMPL-WORKSPACE_VIEW_KeybindingInit` | IMPL-WORKSPACE_VIEW |
+| Save workspace from UI | `STORE_FROM_WORKSPACE_UI` | IMPL-WORKSPACE_MESH_BRIDGE |
+| Diff saved vs current | `DIFF_SAVED_VS_CURRENT` | IMPL-WORKSPACE_MESH_BRIDGE |
 
 ## Alphabetical index
 
@@ -83,7 +87,8 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 - **Disabled action** — toolbar grayed set
 - **Keybinding** — YAML shortcut row
 - **Keybinding category** — grouping for help UI
-- **mesh.saveWorkspace** — Ctrl+Shift+M; workspace Mesh toolbar group
+- **mesh.diffWorkspace** — workspace Mesh group + header Diff; disabled without saved baseline
+- **mesh.saveWorkspace** — Ctrl+Shift+M; workspace Mesh toolbar group (update or save-as-new)
 - **Pane toolbar** — `toolbars.pane`
 - **System toolbar** — `toolbars.system`
 - **Toolbar test id** — `toolbar-{action}`

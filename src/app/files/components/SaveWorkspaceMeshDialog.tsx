@@ -1,19 +1,36 @@
 "use client";
 
-// [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_CRUD]: Dialog to save workspace as mesh
+// [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_CRUD] [REQ-TOOLBAR_SYSTEM]: STORE_FROM_WORKSPACE_UI dialog — update vs create modes
 
 import { useState } from "react";
+
+export type WorkspaceMeshSaveMode = "update" | "create";
 
 export interface SaveWorkspaceMeshDialogProps {
   isOpen: boolean;
   defaultName?: string;
+  /** When set, dialog offers update vs save-as-new. */
+  meshId?: string;
+  saveDialogTitle?: string;
+  updateDialogTitle?: string;
+  createModeLabel?: string;
+  updateModeLabel?: string;
+  updateSubmitLabel?: string;
+  createSubmitLabel?: string;
   onClose: () => void;
-  onSave: (name: string, note?: string) => Promise<void>;
+  onSave: (name: string, note?: string, mode?: WorkspaceMeshSaveMode) => Promise<void>;
 }
 
 export function SaveWorkspaceMeshDialog({
   isOpen,
   defaultName = "",
+  meshId,
+  saveDialogTitle = "Save workspace as mesh",
+  updateDialogTitle = "Save workspace",
+  createModeLabel = "Save as new workspace",
+  updateModeLabel = "Update current workspace",
+  updateSubmitLabel = "Update workspace",
+  createSubmitLabel = "Save as new workspace",
   onClose,
   onSave,
 }: SaveWorkspaceMeshDialogProps) {
@@ -23,20 +40,62 @@ export function SaveWorkspaceMeshDialog({
   return (
     <SaveWorkspaceMeshDialogForm
       defaultName={defaultName}
+      meshId={meshId}
+      saveDialogTitle={saveDialogTitle}
+      updateDialogTitle={updateDialogTitle}
+      createModeLabel={createModeLabel}
+      updateModeLabel={updateModeLabel}
+      updateSubmitLabel={updateSubmitLabel}
+      createSubmitLabel={createSubmitLabel}
       onClose={onClose}
       onSave={onSave}
     />
   );
 }
 
-type FormProps = Pick<SaveWorkspaceMeshDialogProps, "defaultName" | "onClose" | "onSave">;
+type FormProps = Pick<
+  SaveWorkspaceMeshDialogProps,
+  | "defaultName"
+  | "meshId"
+  | "saveDialogTitle"
+  | "updateDialogTitle"
+  | "createModeLabel"
+  | "updateModeLabel"
+  | "updateSubmitLabel"
+  | "createSubmitLabel"
+  | "onClose"
+  | "onSave"
+>;
 
-/** Mounted only while open — fresh state each open without setState-in-effect. */
-function SaveWorkspaceMeshDialogForm({ defaultName = "", onClose, onSave }: FormProps) {
+function SaveWorkspaceMeshDialogForm({
+  defaultName = "",
+  meshId,
+  saveDialogTitle,
+  updateDialogTitle,
+  createModeLabel,
+  updateModeLabel,
+  updateSubmitLabel,
+  createSubmitLabel,
+  onClose,
+  onSave,
+}: FormProps) {
+  const canUpdate = Boolean(meshId);
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE]
+  // how: default to update when meshId loaded; radio switches create vs update submit path
+  const [mode, setMode] = useState<WorkspaceMeshSaveMode>(canUpdate ? "update" : "create");
   const [name, setName] = useState(defaultName);
   const [note, setNote] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+
+  const title = canUpdate
+    ? mode === "update"
+      ? updateDialogTitle
+      : saveDialogTitle
+    : saveDialogTitle;
+
+  const submitLabel =
+    mode === "update" && canUpdate ? updateSubmitLabel : createSubmitLabel;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -48,7 +107,7 @@ function SaveWorkspaceMeshDialogForm({ defaultName = "", onClose, onSave }: Form
     setSaving(true);
     setError(null);
     try {
-      await onSave(trimmed, note.trim() || undefined);
+      await onSave(trimmed, note.trim() || undefined, canUpdate ? mode : "create");
       onClose();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save mesh");
@@ -72,10 +131,39 @@ function SaveWorkspaceMeshDialogForm({ defaultName = "", onClose, onSave }: Form
           id="save-workspace-mesh-title"
           className="text-lg font-semibold text-zinc-900 dark:text-zinc-100"
         >
-          Save workspace as mesh
+          {title}
         </h2>
+        {canUpdate && (
+          <fieldset className="mt-4 space-y-2" data-testid="save-workspace-mesh-mode">
+            <legend className="sr-only">Save mode</legend>
+            <label className="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+              <input
+                type="radio"
+                name="workspace-mesh-mode"
+                checked={mode === "update"}
+                onChange={() => setMode("update")}
+                disabled={saving}
+                data-testid="save-workspace-mesh-mode-update"
+              />
+              {updateModeLabel}
+            </label>
+            <label className="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+              <input
+                type="radio"
+                name="workspace-mesh-mode"
+                checked={mode === "create"}
+                onChange={() => setMode("create")}
+                disabled={saving}
+                data-testid="save-workspace-mesh-mode-create"
+              />
+              {createModeLabel}
+            </label>
+          </fieldset>
+        )}
         <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-          Stores pane paths, layout, and UI state as a new mesh configuration.
+          {mode === "update" && canUpdate
+            ? "Overwrites the current workspace snapshot on this mesh."
+            : "Stores pane paths, layout, and UI state as a new mesh configuration."}
         </p>
         <label className="mt-4 block text-sm text-zinc-700 dark:text-zinc-300">
           Mesh name
@@ -119,7 +207,7 @@ function SaveWorkspaceMeshDialogForm({ defaultName = "", onClose, onSave }: Form
             data-testid="save-workspace-mesh-submit"
             disabled={saving}
           >
-            {saving ? "Saving…" : "Save mesh"}
+            {saving ? "Saving…" : submitLabel}
           </button>
         </div>
       </form>

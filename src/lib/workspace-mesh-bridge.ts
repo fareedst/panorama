@@ -39,6 +39,26 @@ export type MeshCreateFromWorkspaceInput = {
   snapshot: WorkspaceSnapshot;
 };
 
+export type MeshUpdateFromWorkspaceInput = {
+  name?: string;
+  note?: string;
+  snapshot: WorkspaceSnapshot;
+  existingDescription?: string;
+};
+
+export type WorkspaceSnapshotChange = {
+  field: string;
+  saved: string;
+  current: string;
+};
+
+export type DepotSyncOp =
+  | { op: "update"; depotId: string; root: string; name: string }
+  | { op: "add"; name: string; root: string }
+  | { op: "remove"; depotId: string };
+
+export type DepotForSync = { id: string; name: string; root: string };
+
 // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] CAPTURE_SNAPSHOT
 /** Build v1 snapshot from live workspace pane state. */
 export function captureWorkspaceSnapshot(input: WorkspaceCaptureInput): WorkspaceSnapshot {
@@ -52,14 +72,129 @@ export function captureWorkspaceSnapshot(input: WorkspaceCaptureInput): Workspac
   };
 }
 
+// [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] EXTRACT_NOTE_PREFIX
+/** Human-readable note before JSON in mesh description, if any. */
+export function extractNotePrefixFromDescription(description: string | undefined): string {
+  if (!description?.trim()) {
+    return "";
+  }
+  const trimmed = description.trim();
+  const jsonStart = trimmed.indexOf("{");
+  if (jsonStart <= 0) {
+    return jsonStart < 0 ? trimmed : "";
+  }
+  return trimmed.slice(0, jsonStart).trim();
+}
+
+// [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] BUILD_MESH_UPDATE_DESCRIPTION
+/** Rebuild description with workspaceSnapshot JSON; optional note prefix. */
+export function buildMeshUpdateDescription(
+  snapshot: WorkspaceSnapshot,
+  note?: string,
+  existingDescription?: string,
+): string {
+  const descriptionPayload = { workspaceSnapshot: snapshot };
+  const noteText = note?.trim() ?? extractNotePrefixFromDescription(existingDescription);
+  return noteText
+    ? `${noteText}\n${JSON.stringify(descriptionPayload)}`
+    : JSON.stringify(descriptionPayload);
+}
+
+// [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] BUILD_MESH_PATCH_PAYLOAD
+/** PATCH /api/mesh/:id body fields for workspace update. */
+export function buildMeshPatchPayload(input: MeshUpdateFromWorkspaceInput): {
+  name?: string;
+  description: string;
+  tags: string[];
+} {
+  const description = buildMeshUpdateDescription(
+    input.snapshot,
+    input.note,
+    input.existingDescription,
+  );
+  return {
+    ...(input.name?.trim() ? { name: input.name.trim() } : {}),
+    description,
+    tags: [WORKSPACE_SNAPSHOT_TAG],
+  };
+}
+
+// [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] PLAN_DEPOT_SYNC
+/** Ordered depot ops to align mesh depots with snapshot pane paths. */
+export function planDepotSync(
+  existingDepots: DepotForSync[],
+  snapshotPanes: WorkspaceSnapshotPane[],
+): DepotSyncOp[] {
+  const ops: DepotSyncOp[] = [];
+  const pairCount = Math.min(existingDepots.length, snapshotPanes.length);
+  for (let i = 0; i < pairCount; i++) {
+    const depot = existingDepots[i];
+    const pane = snapshotPanes[i];
+    const name = `Pane ${i + 1}`;
+    if (depot.root !== pane.path || depot.name !== name) {
+      ops.push({ op: "update", depotId: depot.id, root: pane.path, name });
+    }
+  }
+  for (let i = existingDepots.length - 1; i >= snapshotPanes.length; i--) {
+    ops.push({ op: "remove", depotId: existingDepots[i].id });
+  }
+  for (let i = existingDepots.length; i < snapshotPanes.length; i++) {
+    ops.push({ op: "add", name: `Pane ${i + 1}`, root: snapshotPanes[i].path });
+  }
+  return ops;
+}
+
+// [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] DIFF_SAVED_VS_CURRENT
+/** Field-level diff between saved and current workspace snapshots. */
+export function diffWorkspaceSnapshots(
+  saved: WorkspaceSnapshot,
+  current: WorkspaceSnapshot,
+): WorkspaceSnapshotChange[] {
+  const changes: WorkspaceSnapshotChange[] = [];
+  const push = (field: string, savedVal: unknown, currentVal: unknown) => {
+    const s = String(savedVal);
+    const c = String(currentVal);
+    if (s !== c) {
+      changes.push({ field, saved: s, current: c });
+    }
+  };
+
+  push("layout", saved.layout, current.layout);
+  push("focusIndex", saved.focusIndex + 1, current.focusIndex + 1);
+  push("linkedMode", saved.linkedMode ? "on" : "off", current.linkedMode ? "on" : "off");
+  push("comparisonMode", saved.comparisonMode, current.comparisonMode);
+  push("paneCount", saved.panes.length, current.panes.length);
+
+  const maxPanes = Math.max(saved.panes.length, current.panes.length);
+  for (let i = 0; i < maxPanes; i++) {
+    const sp = saved.panes[i];
+    const cp = current.panes[i];
+    const n = i + 1;
+    if (!sp && cp) {
+      changes.push({ field: `Pane ${n}`, saved: "(missing)", current: cp.path });
+      continue;
+    }
+    if (sp && !cp) {
+      changes.push({ field: `Pane ${n}`, saved: sp.path, current: "(missing)" });
+      continue;
+    }
+    if (!sp || !cp) {
+      continue;
+    }
+    push(`Pane ${n} path`, sp.path, cp.path);
+    push(`Pane ${n} sortBy`, sp.sortBy, cp.sortBy);
+    push(`Pane ${n} sortDirection`, sp.sortDirection, cp.sortDirection);
+    push(`Pane ${n} sortDirsFirst`, sp.sortDirsFirst, cp.sortDirsFirst);
+    push(`Pane ${n} cursor`, sp.cursor, cp.cursor);
+  }
+  return changes;
+}
+
 // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] BUILD_MESH_PAYLOAD
 /** POST /api/mesh body: depots from panes, UI in description JSON, tag workspace-snapshot. */
 export function buildMeshCreatePayload(input: MeshCreateFromWorkspaceInput): Record<string, unknown> {
   const { snapshot, name, note } = input;
-  const descriptionPayload = { workspaceSnapshot: snapshot };
-  const description = note?.trim()
-    ? `${note.trim()}\n${JSON.stringify(descriptionPayload)}`
-    : JSON.stringify(descriptionPayload);
+  const description = buildMeshUpdateDescription(snapshot, note);
 
   return {
     name: name.trim(),

@@ -60,6 +60,7 @@ const ACTION_ICON_MAP: Record<string, string> = {
 
   // Mesh / workspace bridge
   'mesh.saveWorkspace': 'network',
+  'mesh.diffWorkspace': 'git-compare',
   
   // Bookmarks
   'bookmark.goto': 'folder-open',

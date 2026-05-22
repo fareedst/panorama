@@ -49,6 +49,41 @@ test.describe("workspace mesh bridge E2E [REQ-WORKSPACE_MESH_BRIDGE]", () => {
       await expect(filesPage.getByTestId("workspace-layout-select")).toHaveValue("OneRow", {
         timeout: 10000,
       });
+
+      const layoutSelect = filesPage.getByTestId("workspace-layout-select");
+      await layoutSelect.selectOption("Tile");
+      await layoutSelect.evaluate((el) => {
+        const select = el as HTMLSelectElement;
+        select.value = "Tile";
+        select.dispatchEvent(new Event("change", { bubbles: true }));
+      });
+      await expect(layoutSelect).toHaveValue("Tile", { timeout: 5000 });
+      await expect(filesPage.getByTestId("workspace-diff-header-button")).toBeVisible({
+        timeout: 5000,
+      });
+      await filesPage.getByTestId("workspace-diff-header-button").click();
+      await expect(filesPage.getByTestId("workspace-diff-dialog")).toBeVisible({
+        timeout: 5000,
+      });
+      await expect(filesPage.getByTestId("workspace-diff-table")).toBeVisible({
+        timeout: 5000,
+      });
+      await filesPage.getByTestId("workspace-diff-close").click();
+
+      await filesPage.keyboard.press("Control+Shift+M");
+      await expect(filesPage.getByTestId("save-workspace-mesh-dialog")).toBeVisible({
+        timeout: 5000,
+      });
+      await filesPage.getByTestId("save-workspace-mesh-mode-update").check();
+      await filesPage.getByTestId("save-workspace-mesh-submit").click();
+      await expect(filesPage.getByTestId("workspace-diff-change-count")).not.toBeVisible({
+        timeout: 10000,
+      });
+      await filesPage.getByTestId("workspace-diff-header-button").click();
+      await expect(filesPage.getByTestId("workspace-diff-no-changes")).toBeVisible({
+        timeout: 5000,
+      });
+      await filesPage.getByTestId("workspace-diff-close").click();
       const pane0Box = await filesPage.getByTestId("pane-0").boundingBox();
       const pane1Box = await filesPage.getByTestId("pane-1").boundingBox();
       expect(pane0Box).not.toBeNull();

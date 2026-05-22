@@ -15,6 +15,7 @@ import { getRuntime } from "@/lib/mesh/api/mesh-api-helpers";
 import {
   applyMaxPanesLimit,
   parseWorkspaceSnapshotFromMesh,
+  type WorkspaceSnapshot,
 } from "@/lib/workspace-mesh-bridge";
 import { normalizeLayoutType, type LayoutType } from "@/lib/files.layout";
 
@@ -64,11 +65,16 @@ export default async function FilesPage({
   let restorePaneMeta: RestorePaneMeta[] | undefined;
   let restoredFromMesh = false;
   let restoreWarning: string | null = null;
+  let loadedMeshName: string | undefined;
+  let loadedSnapshot: WorkspaceSnapshot | undefined;
 
   // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_ON_FILES_PAGE
   if (meshId) {
     const record = getRuntime().meshService.getMesh(meshId);
     if (record) {
+      // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] SHOW_LOADED_WORKSPACE_NAME
+      // how: pass mesh name and baseline snapshot to WorkspaceView for header and diff
+      loadedMeshName = record.mesh.name;
       const snapshot = parseWorkspaceSnapshotFromMesh(record.mesh);
       if (snapshot) {
         const { snapshot: limited, truncated } = applyMaxPanesLimit(
@@ -117,6 +123,7 @@ export default async function FilesPage({
           cursor: p.cursor,
         }));
         restoredFromMesh = true;
+        loadedSnapshot = limited;
       } else {
         restoreWarning =
           "Workspace snapshot could not be read from this mesh; pane layout may use defaults. Save the workspace again or open mesh detail to verify.";
@@ -168,6 +175,8 @@ export default async function FilesPage({
       restorePaneMeta={restorePaneMeta}
       restoredFromMesh={restoredFromMesh}
       restoreWarning={restoreWarning}
+      loadedMeshName={loadedMeshName}
+      loadedSnapshot={loadedSnapshot}
     />
   );
 }

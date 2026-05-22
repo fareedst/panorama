@@ -276,6 +276,20 @@ export interface FilesCopyConfig {
     minPanesReached?: string;
     paneManagementDisabled?: string;
   };
+  // [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE]
+  workspaceMesh?: {
+    saveDialogTitle?: string;
+    updateDialogTitle?: string;
+    createModeLabel?: string;
+    updateModeLabel?: string;
+    updateSubmitLabel?: string;
+    createSubmitLabel?: string;
+    diffDialogTitle?: string;
+    diffNoChanges?: string;
+    diffButton?: string;
+    loadedLabel?: string;
+    loadedMessage?: string;
+  };
 }
 
 /** Theme overrides for file manager. */

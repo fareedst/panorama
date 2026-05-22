@@ -85,6 +85,16 @@ copy:
   # [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE]
   workspaceMesh:
     saveDialogTitle: "Save workspace as mesh"
+    updateDialogTitle: "Save workspace"
+    createModeLabel: "Save as new workspace"
+    updateModeLabel: "Update current workspace"
+    updateSubmitLabel: "Update workspace"
+    createSubmitLabel: "Save as new workspace"
+    diffDialogTitle: "Workspace changes"
+    diffNoChanges: "No differences from saved workspace."
+    diffButton: "Diff"
+    loadedLabel: "Workspace"
+    loadedMessage: 'Loaded workspace "{name}"'
     saveSuccess: "Workspace saved as mesh"
 
 # [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
@@ -390,6 +400,7 @@ toolbars:
       - name: "Mesh"
         actions:
           - "mesh.saveWorkspace"
+          - "mesh.diffWorkspace"
   
   # Pane toolbar - actions on focused pane
   pane:

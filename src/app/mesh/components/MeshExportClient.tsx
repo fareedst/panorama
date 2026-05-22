@@ -16,7 +16,11 @@ export function MeshExportClient({ meshId }: { meshId: string }) {
     const a = document.createElement("a");
     a.href = url;
     a.download = `mesh-${meshId}.json`;
+    a.style.display = "none";
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
     setMessage("Export downloaded (credentials redacted)");
   }
 

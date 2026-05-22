@@ -99,7 +99,11 @@ RESTORE_LAYOUT_IN_WORKSPACE_VIEW(meshId, restoreLayout, restoreUi, restoredFromM
     layoutRehydratedRef = true
     FETCH /api/mesh/{meshId}
     parsed = PARSE_SNAPSHOT_FROM_MESH(response.mesh)
-    IF parsed.layout THEN setLayout(NORMALIZE_LAYOUT(parsed.layout)) with DEBUG log
+    IF parsed THEN setSavedSnapshot(parsed)
+    # how: apply layout from fetch only when server did not pass restoreLayout (avoid clobbering user edits)
+    IF parsed.layout AND NOT restoreLayout AND NOT restoreUi.layout THEN
+      setLayout(NORMALIZE_LAYOUT(parsed.layout)) with DEBUG log
+    ELSE skip layout apply with DEBUG log
   calculateLayout uses layout for pane bounds (Tile, OneRow, OneColumn, Fullscreen)
   workspace-layout-select data-testid reflects layoutState
 ```
@@ -138,11 +142,57 @@ WORKSPACE_HEADER_MESH_LINK(meshId):
 
 ## STORE_FROM_WORKSPACE_UI
 # [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_GUI] [REQ-TOOLBAR_SYSTEM]
-# how: mesh.saveWorkspace opens dialog; POST /api/mesh BUILD_MESH_PAYLOAD; router.push /mesh/:id.
+# how: mesh.saveWorkspace opens dialog; update mode PUT /api/mesh/:id/workspace or create POST /api/mesh.
 
 ```
-STORE_FROM_WORKSPACE_UI():
+STORE_FROM_WORKSPACE_UI(meshId?, loadedMeshName?):
   snapshot = CAPTURE_SNAPSHOT(current)
-  POST /api/mesh BUILD_MESH_PAYLOAD(name, snapshot, note)
-  NAVIGATE /mesh/:id
+  # [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_CRUD]
+  # how: update path — PUT workspace, set saved baseline to captured snapshot, stay on /files?meshId=
+  IF dialog mode is update AND meshId THEN
+    PUT /api/mesh/{meshId}/workspace { name?, note?, snapshot }
+    setSavedSnapshot(snapshot)  // exact captured baseline; clears diff badge
+    skipPropBaselineSyncRef = true  // router.replace may deliver stale loadedSnapshot prop
+    router.replace /files?meshId=
+  # [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_GUI]
+  # how: create path — POST new mesh then navigate to mesh detail
+  ELSE
+    POST /api/mesh BUILD_MESH_PAYLOAD(name, snapshot, note)
+    NAVIGATE /mesh/:id
+```
+
+## SHOW_LOADED_WORKSPACE_NAME
+# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-FILE_MANAGER_PAGE]
+# how: FilesPage passes loadedMeshName + loadedSnapshot; header shows Workspace: {name}; client fetch refreshes baseline.
+
+```
+SHOW_LOADED_WORKSPACE_NAME(meshId, record):
+  IF meshId AND record THEN PASS loadedMeshName, loadedSnapshot to WorkspaceView
+  RENDER data-testid=workspace-loaded-name with mesh name
+  IF restoredFromMesh THEN message Loaded workspace "{name}"
+```
+
+## UPDATE_EXISTING_WORKSPACE
+# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_CRUD]
+# how: buildMeshPatchPayload + planDepotSync; PUT route applies metadata then depot ops in order.
+
+```
+UPDATE_EXISTING_WORKSPACE(meshId, snapshot, note?, name?):
+  patch = buildMeshPatchPayload(snapshot, note, existingDescription)
+  updateMeshMetadata(meshId, patch)
+  # [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_CRUD]
+  # how: planDepotSync aligns depot roots/names with snapshot pane paths (update, add, remove)
+  FOR op IN planDepotSync(depots, snapshot.panes) APPLY update|add|remove
+  RETURN updated mesh DTO
+```
+
+## DIFF_SAVED_VS_CURRENT
+# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-TOOLBAR_SYSTEM]
+# how: diffWorkspaceSnapshots(savedSnapshot, current); mesh.diffWorkspace opens WorkspaceDiffDialog.
+
+```
+DIFF_SAVED_VS_CURRENT(savedSnapshot, current):
+  changes = diffWorkspaceSnapshots(saved, current)
+  RENDER WorkspaceDiffDialog with field / saved / current rows or no-differences message
+  DISABLE action WHEN NOT meshId OR NOT savedSnapshot
 ```
