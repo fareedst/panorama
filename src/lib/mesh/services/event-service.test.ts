@@ -1,6 +1,9 @@
-// [IMPL-MESH_EVENTS] [REQ-MESH_PLATFORM]: Event log tests — phase 14
+// [IMPL-MESH_EVENTS] [IMPL-MESH_PERSISTENCE] [REQ-MESH_PLATFORM]: Event log tests — phase 14
 
 import { describe, it, expect } from "vitest";
+import { mkdtempSync, rmSync, existsSync } from "fs";
+import { tmpdir } from "os";
+import { join } from "path";
 import { EventService } from "./event-service";
 
 describe("EventService [IMPL-MESH_EVENTS]", () => {
@@ -59,5 +62,21 @@ describe("EventService [IMPL-MESH_EVENTS]", () => {
     expect(svc.queryBySession("sess-1").some((e) => e.type === "session_lifecycle")).toBe(
       true,
     );
+  });
+});
+
+describe("EventService JSON persistence [IMPL-MESH_PERSISTENCE]", () => {
+  it("append_only_events_survive_reload", () => {
+    const dir = mkdtempSync(join(tmpdir(), "mesh-events-persist-"));
+    try {
+      const a = new EventService({ dataDir: dir });
+      a.recordOperationStarted("op-z");
+      expect(existsSync(join(dir, "sync-events.json"))).toBe(true);
+
+      const b = new EventService({ dataDir: dir });
+      expect(b.list().some((e) => e.subject === "op-z")).toBe(true);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });

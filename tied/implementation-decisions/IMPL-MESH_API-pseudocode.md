@@ -4,7 +4,7 @@
 
 ## ApiHelpers
 
-// how: Shared helpers wire Next.js Request to getMeshRuntime, role parsing, and error mapping.
+// [IMPL-MESH_API] [ARCH-MESH_LAYERED] [REQ-MESH_API]: Shared helpers wire Next.js Request to getMeshRuntime, X-Mesh-Role parsing, permission gate, and typed error mapping.
 
 CONTRACT requirePermission
   INPUT: request Request; permission MeshPermission
@@ -27,7 +27,7 @@ PROCEDURE IMPL-MESH_API_handleServiceResult(result)
 
 ## ListCreateMeshRoute
 
-// how: GET list meshes; POST create mesh after create_mesh permission.
+// [IMPL-MESH_API] [IMPL-MESH_CRUD] [REQ-MESH_API] [REQ-MESH_PLATFORM]: GET lists DTO meshes; POST creates after create_mesh permission and records audit event.
 
 PROCEDURE IMPL-MESH_API_GET_mesh_list(request)
   CALL requirePermission(view_mesh)
@@ -44,10 +44,36 @@ PROCEDURE IMPL-MESH_API_POST_mesh_create(request)
 
 ## MeshSubRoutes
 
-// how: Per-mesh routes under [meshId] delegate to runtime services (depots, links, topology, plan, sessions, conflicts, events, schedule, import/export).
+// [IMPL-MESH_API] [IMPL-MESH_RUNTIME] [ARCH-MESH_LAYERED] [REQ-MESH_API]: Per-mesh `[meshId]` routes delegate to depot/link/topology/plan/session/conflict/event/schedule/import-export services with DTO sanitization.
 
 PROCEDURE IMPL-MESH_API_mesh_subroute(meshId, operation)
   CALL requirePermission appropriate to operation
   LOAD mesh via meshService or runtime helper
   DELEGATE to depotService | sessionService | planning | safety checks
   RETURN JSON DTO responses without credential secret fields
+
+## SessionsRoute
+
+// [IMPL-MESH_API] [IMPL-MESH_RUNTIME] [IMPL-MESH_SESSION] [REQ-MESH_API] [REQ-MESH_PLATFORM]: Session lifecycle and progress over HTTP.
+
+PROCEDURE IMPL-MESH_API_GET_sessions(meshId, optional sessionId query)
+  IF sessionId THEN RETURN session plus getSessionProgress
+  ELSE RETURN sessions listForMesh meshId
+
+PROCEDURE IMPL-MESH_API_POST_sessions_start(meshId, sessionId, confirmedDestructive, optional changeSet)
+  CALL checkExecution on changeSet OR approved plan from session
+  CALL runApprovedSession; RETURN session executed progress
+
+PROCEDURE IMPL-MESH_API_POST_sessions_pause_resume_cancel(meshId, sessionId, action)
+  ON cancel CALL cancelSessionExecution THEN sessions.cancel
+  DELEGATE pause resume to SessionService
+
+## CredentialsRoute
+
+// [IMPL-MESH_API] [IMPL-MESH_AUTH] [REQ-MESH_AUTH]: POST creates masked credential reference rows after manage_credentials permission; never returns secret material.
+
+PROCEDURE IMPL-MESH_API_POST_credentials(request)
+  CALL requirePermission manage_credentials
+  PARSE label from JSON body
+  CALL CredentialReferenceStore.create
+  RETURN 201 with credential DTO or 400 validation fault

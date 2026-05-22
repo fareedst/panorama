@@ -1,6 +1,6 @@
 "use client";
 
-// [IMPL-MESH_GUI] [REQ-MESH_PLATFORM]: Dry-run plan — phase 20
+// [IMPL-MESH_GUI] [ARCH-MESH_LAYERED] [REQ-MESH_GUI] [REQ-MESH_PLATFORM]: Dry-run plan — approve only; start on Sync page
 
 import { useEffect, useState } from "react";
 import { MeshDetailNav } from "../layout";
@@ -54,6 +54,7 @@ export function PlanViewClient({ meshId }: { meshId: string }) {
     (op) => op.kind === "delete" || op.riskLevel === "high",
   );
 
+  // [IMPL-MESH_GUI] [REQ-MESH_GUI] [REQ-MESH_SAFETY]: Approve plan only — create session, approve changeSet, persist for Sync page start
   async function approvePlan() {
     if (!plan || !mesh?.links[0]) {
       return;
@@ -67,21 +68,16 @@ export function PlanViewClient({ meshId }: { meshId: string }) {
       return;
     }
     const { session } = await sessionRes.json();
-    await fetch(`/api/mesh/${meshId}/sessions`, {
+    const approveRes = await fetch(`/api/mesh/${meshId}/sessions`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "approve", sessionId: session.id, changeSet: plan }),
     });
-    const startRes = await fetch(`/api/mesh/${meshId}/sessions`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        action: "start",
-        sessionId: session.id,
-        confirmedDestructive: hasDestructive,
-      }),
-    });
-    if (startRes.ok) {
+    if (approveRes.ok) {
+      sessionStorage.setItem(
+        `mesh-approved-session-${meshId}`,
+        JSON.stringify({ sessionId: session.id, hasDestructive }),
+      );
       setApproved(true);
     }
   }

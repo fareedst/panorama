@@ -3,6 +3,7 @@ IMPL-MESH_PLANNING:
   status: Active
   cross_references:
     - ARCH-MESH_LAYERED
+    - REQ-MESH_HARDENING
     - REQ-MESH_PLATFORM
   decision: See essence_pseudocode sidecar and src/lib/mesh/services.
   implementation_approach:
@@ -14,8 +15,10 @@ IMPL-MESH_PLANNING:
       - ARCH-MESH_LAYERED
     requirements:
       - REQ-MESH_PLATFORM
+      - REQ-MESH_HARDENING
     tests:
       - src/lib/mesh/services/planning-service.test.ts
+      - src/app/api/mesh/plan-conflicts.route.test.ts
     code_annotations:
       - IMPL-MESH_PLANNING
   related_decisions:

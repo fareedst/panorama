@@ -82,6 +82,41 @@ describe("mesh plan and conflicts API [IMPL-MESH_API]", () => {
     expect(res.status).toBe(200);
     const data = await res.json();
     expect(data.changeSet).toBeDefined();
+    expect(data.operationTotalCount).toBeGreaterThanOrEqual(data.changeSet.operations.length);
+    expect(data.operationReturnedCount).toBe(data.changeSet.operations.length);
+  });
+
+  it("post_plan_honours_operation_slice", async () => {
+    const mesh = await meshWithTwoDepots();
+    const rt = (await import("@/lib/mesh/runtime/mesh-runtime")).getMeshRuntime();
+    const record = rt.meshRepository.get(mesh.id)!;
+    const depots = record.mesh.depots;
+    const { FakeConnector } = await import("@/lib/mesh/connector/fake-connector");
+    const src = new FakeConnector();
+    for (let i = 0; i < 5; i++) {
+      src.seedFile(`/bulk-${i}.txt`, new TextEncoder().encode("x"));
+    }
+    rt.registerConnector(depots[0].id, src);
+    rt.registerConnector(depots[1].id, new FakeConnector());
+    const res = await planPost(
+      new Request(`http://localhost/api/mesh/${mesh.id}/plan`, {
+        method: "POST",
+        headers: adminHeaders,
+        body: JSON.stringify({
+          sourceDepotId: depots[0].id,
+          targetDepotId: depots[1].id,
+          dryRun: true,
+          operationOffset: 1,
+          operationLimit: 2,
+        }),
+      }),
+      { params: Promise.resolve({ meshId: mesh.id }) },
+    );
+    expect(res.status).toBe(200);
+    const data = await res.json();
+    expect(data.operationTotalCount).toBeGreaterThanOrEqual(3);
+    expect(data.changeSet.operations).toHaveLength(2);
+    expect(data.operationReturnedCount).toBe(2);
   });
 
   it("get_conflicts_returns_list", async () => {

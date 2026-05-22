@@ -231,7 +231,7 @@ export class SyncEngine {
     },
     signal?: AbortSignal
   ): Promise<ItemResult> {
-    const { compareMethod, hashAlgorithm, verify, move } = options;
+    const { compareMethod, hashAlgorithm, verify } = options;
     
     // Get source info
     const sourceStat = await getFileStat(source);

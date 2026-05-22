@@ -154,9 +154,10 @@ export class SearchHistory {
 
     // Save to localStorage
     try {
+      if (!localStorage || typeof localStorage.setItem !== "function") return;
       localStorage.setItem(this.key, JSON.stringify(limited));
-    } catch (e) {
-      console.warn(`[IMPL-FILE_SEARCH] Failed to save search history:`, e);
+    } catch {
+      // [IMPL-FILE_SEARCH] [REQ-FILE_SEARCH]: Silent fail (quota, private mode, corrupt storage) — matches BookmarkManager
     }
   }
 
@@ -166,13 +167,14 @@ export class SearchHistory {
   getAll(): SearchHistoryEntry[] {
     // SSR guard: localStorage only available in browser
     if (typeof window === 'undefined') return [];
-    
+    if (!localStorage || typeof localStorage.getItem !== "function") return [];
+
     try {
       const json = localStorage.getItem(this.key);
       if (!json) return [];
       return JSON.parse(json);
-    } catch (e) {
-      console.warn(`[IMPL-FILE_SEARCH] Failed to load search history:`, e);
+    } catch {
+      // [IMPL-FILE_SEARCH] [REQ-FILE_SEARCH]: Silent fail on corrupt or unreadable storage — matches BookmarkManager
       return [];
     }
   }
@@ -194,9 +196,10 @@ export class SearchHistory {
     if (typeof window === 'undefined') return;
     
     try {
+      if (!localStorage || typeof localStorage.removeItem !== "function") return;
       localStorage.removeItem(this.key);
-    } catch (e) {
-      console.warn(`[IMPL-FILE_SEARCH] Failed to clear history:`, e);
+    } catch {
+      // [IMPL-FILE_SEARCH] [REQ-FILE_SEARCH]: Silent fail in test environment or restricted storage
     }
   }
 }

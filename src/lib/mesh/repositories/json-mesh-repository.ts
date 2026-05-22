@@ -2,7 +2,7 @@
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs";
 import { join } from "path";
-import type { MeshRecord } from "../mesh-record";
+import { normalizeMeshRecordVersion, type MeshRecord } from "../mesh-record";
 import type { ListMeshesOptions, MeshRepository } from "./mesh-repository";
 
 export class JsonMeshRepository implements MeshRepository {
@@ -24,7 +24,9 @@ export class JsonMeshRepository implements MeshRepository {
     }
     const raw = readFileSync(this.filePath, "utf-8");
     const parsed = JSON.parse(raw) as MeshRecord[];
-    this.cache = new Map(parsed.map((r) => [r.mesh.id, r]));
+    this.cache = new Map(
+      parsed.map((r) => [r.mesh.id, normalizeMeshRecordVersion(structuredClone(r))]),
+    );
   }
 
   private persist(): void {
@@ -32,13 +34,13 @@ export class JsonMeshRepository implements MeshRepository {
   }
 
   save(record: MeshRecord): void {
-    this.cache.set(record.mesh.id, structuredClone(record));
+    this.cache.set(record.mesh.id, structuredClone(normalizeMeshRecordVersion(record)));
     this.persist();
   }
 
   get(meshId: string): MeshRecord | undefined {
     const record = this.cache.get(meshId);
-    return record ? structuredClone(record) : undefined;
+    return record ? structuredClone(normalizeMeshRecordVersion(record)) : undefined;
   }
 
   delete(meshId: string): void {
@@ -50,6 +52,6 @@ export class JsonMeshRepository implements MeshRepository {
     const includeArchived = options?.includeArchived ?? false;
     return [...this.cache.values()]
       .filter((r) => includeArchived || r.status === "active")
-      .map((r) => structuredClone(r));
+      .map((r) => structuredClone(normalizeMeshRecordVersion(r)));
   }
 }

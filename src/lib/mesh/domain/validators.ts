@@ -159,16 +159,13 @@ function resolveMeshPolicy(policy: unknown): Policy | DomainValidationError {
   return isPresent(policy) ? validatePolicy(policy) : defaultPolicy();
 }
 
-// how: Enforce credential_reference_does_not_expose_secret_material at construction and deserialization.
+// how: Validate record shape; assign id via resolveEntityId when omitted; forbid secret payloads on domain references.
 
 export function validateCredentialReference(
   attrs: unknown,
 ): CredentialReference | DomainValidationError {
   if (!isRecord(attrs)) {
     return makeValidationError("credential", "credential_id_required", "Credential id is required");
-  }
-  if (!nonEmptyString(attrs.id)) {
-    return makeValidationError("credential.id", "credential_id_required", "Credential id is required");
   }
   if (!nonEmptyString(attrs.label)) {
     return makeValidationError(
@@ -184,7 +181,7 @@ export function validateCredentialReference(
       "Secret material is not allowed on domain credential references",
     );
   }
-  return { id: attrs.id, label: attrs.label };
+  return { id: resolveEntityId(attrs), label: attrs.label };
 }
 
 // how: Enforce depot_requires_name_kind_and_root and DepotKind enum for each depot in a mesh.

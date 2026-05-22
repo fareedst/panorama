@@ -21,6 +21,8 @@ export * from "./services/event-service";
 export * from "./runtime/mesh-runtime";
 export * from "./connector/fake-connector";
 export * from "./connector/local-filesystem-connector";
+export * from "./connector/remote-connector";
+export * from "./connector/virtual-connector";
 export * from "./connector/types";
 export * from "./services/safety-service";
 export * from "./services/authorization-service";

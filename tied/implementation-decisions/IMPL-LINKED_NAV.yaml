@@ -116,10 +116,8 @@ IMPL-LINKED_NAV:
       - IMPL-WORKSPACE_VIEW
     supersedes: []
     see_also:
-      - IMPL-COMPARISON_COLORS
-      - IMPL-DIR_HISTORY
-      - IMPL-PANE_MANAGEMENT
-      - IMPL-SORT_FILTER
+      - docs/linked-navigation-vocabulary.md
+      - docs/panorama-domain-references.md
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z

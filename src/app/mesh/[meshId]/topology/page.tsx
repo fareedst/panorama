@@ -1,3 +1,4 @@
+// [IMPL-MESH_GUI] [REQ-MESH_PLATFORM]: **Topology** projection route
 import { TopologyGraphClient } from "../../components/TopologyGraphClient";
 
 type Props = { params: Promise<{ meshId: string }> };

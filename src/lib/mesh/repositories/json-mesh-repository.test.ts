@@ -1,7 +1,7 @@
 // [REQ-MESH_PLATFORM]: Persistence round-trip — phase 16
 
 import { describe, it, expect } from "vitest";
-import { mkdtempSync, rmSync } from "fs";
+import { readFileSync, writeFileSync, mkdtempSync, rmSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
 import { JsonMeshRepository } from "./json-mesh-repository";
@@ -9,6 +9,7 @@ import { MeshService } from "../services/mesh-service";
 import { DepotService } from "../services/depot-service";
 import { isDomainValidationError } from "../domain";
 import { addLinkToMesh } from "../services/topology-service";
+import { nextMeshRecordAfterMeshMutation } from "../mesh-record";
 
 describe("JsonMeshRepository [IMPL-MESH_PERSISTENCE]", () => {
   it("save_and_load_mesh", () => {
@@ -61,13 +62,63 @@ describe("JsonMeshRepository [IMPL-MESH_PERSISTENCE]", () => {
       if (isDomainValidationError(withLink) || "code" in withLink) {
         throw new Error("link");
       }
-      record.mesh = withLink;
-      repo.save(record);
+      const linked = nextMeshRecordAfterMeshMutation(record, withLink);
+      repo.save(linked);
 
       const repo2 = new JsonMeshRepository(dir);
       const loaded = repo2.get(created.mesh.id)!;
       expect(loaded.mesh.depots).toHaveLength(2);
       expect(loaded.mesh.links).toHaveLength(1);
+      expect(loaded.mesh.policy.retryMaxAttempts).toBeGreaterThanOrEqual(1);
+      expect(loaded.configurationVersion).toBe(4);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("coerces_missing_configuration_version_on_reload", () => {
+    const dir = mkdtempSync(join(tmpdir(), "mesh-cv-coerce-"));
+    try {
+      const repo = new JsonMeshRepository(dir);
+      const meshSvc = new MeshService(repo);
+      const created = meshSvc.createMesh({ name: "Legacy" });
+      if (isDomainValidationError(created) || "code" in created) {
+        throw new Error("setup");
+      }
+      const filePath = join(dir, "meshes.json");
+      const rows = JSON.parse(readFileSync(filePath, "utf-8")) as Record<string, unknown>[];
+      for (const r of rows) {
+        delete r.configurationVersion;
+      }
+      writeFileSync(filePath, JSON.stringify(rows));
+
+      const repo2 = new JsonMeshRepository(dir);
+      const loaded = repo2.get(created.mesh.id);
+      expect(loaded?.configurationVersion).toBe(1);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("policy_round_trips_via_mesh_service", () => {
+    const dir = mkdtempSync(join(tmpdir(), "mesh-policy-"));
+    try {
+      const repo = new JsonMeshRepository(dir);
+      const meshSvc = new MeshService(repo);
+      const created = meshSvc.createMesh({ name: "Policy Mesh" });
+      if (isDomainValidationError(created) || "code" in created) {
+        throw new Error("setup");
+      }
+      const basePolicy = created.mesh.policy;
+      const patched = meshSvc.updateMeshMetadata(created.mesh.id, {
+        policy: { ...basePolicy, deletePolicy: "allow" as const },
+      });
+      if (isDomainValidationError(patched) || "code" in patched) throw new Error("patch");
+
+      const repo2 = new JsonMeshRepository(dir);
+      const loaded = repo2.get(created.mesh.id)!;
+      expect(loaded.mesh.policy.deletePolicy).toBe("allow");
+      expect(loaded.mesh.policy.retryMaxAttempts).toBe(created.mesh.policy.retryMaxAttempts);
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }

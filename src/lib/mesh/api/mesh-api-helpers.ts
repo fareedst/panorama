@@ -49,7 +49,12 @@ export function handleServiceResult<T>(
     !("mesh" in result)
   ) {
     const err = result as { code: string; message: string };
-    const status = err.code === "mesh_not_found" ? 404 : 400;
+    const status =
+      err.code === "mesh_not_found"
+        ? 404
+        : err.code === "stale_configuration"
+          ? 409
+          : 400;
     return jsonError(status, err.code, err.message);
   }
   return null;

@@ -8,7 +8,7 @@ import {
   type DomainValidationError,
   type Mesh,
 } from "../domain";
-import type { MeshRecord } from "../mesh-record";
+import { nextMeshRecordAfterMeshMutation, type MeshRecord } from "../mesh-record";
 import type { MeshRepository } from "../repositories/mesh-repository";
 
 export type DepotServiceError = { code: string; message: string };
@@ -47,9 +47,8 @@ export class DepotService {
     if (isDomainValidationError(validated)) {
       return validated;
     }
-    record.mesh = validated;
-    record.updatedAt = new Date().toISOString();
-    this.meshRepository.save(record);
+    const nextRecord = nextMeshRecordAfterMeshMutation(record, validated);
+    this.meshRepository.save(nextRecord);
   }
 
   addDepot(meshId: string, attrs: unknown): Depot | DepotServiceError | DomainValidationError {

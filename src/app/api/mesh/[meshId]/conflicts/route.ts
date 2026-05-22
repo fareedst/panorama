@@ -28,7 +28,7 @@ export async function POST(request: Request, { params }: Params) {
     rt.events.recordConflictResolved(body.conflictId);
     return Response.json({ conflict: resolved });
   }
-  const created = rt.conflicts.create(body);
+  const created = rt.conflicts.create(body, meshId);
   if (isDomainValidationError(created)) {
     return jsonError(400, created.code, created.message);
   }

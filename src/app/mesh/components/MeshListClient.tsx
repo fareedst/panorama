@@ -3,7 +3,7 @@
 // [IMPL-MESH_GUI] [REQ-MESH_PLATFORM]: Mesh list view — phase 18
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 type MeshRow = {
   id: string;
@@ -17,15 +17,16 @@ export function MeshListClient() {
   const [includeArchived, setIncludeArchived] = useState(false);
   const [name, setName] = useState("");
 
-  async function load() {
+  const load = useCallback(async () => {
     const res = await fetch(`/api/mesh?includeArchived=${includeArchived}`);
     const data = await res.json();
     setMeshes(data.meshes ?? []);
-  }
+  }, [includeArchived]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch on mount / filter change
     void load();
-  }, [includeArchived]);
+  }, [load]);
 
   async function createMesh() {
     if (!name.trim()) {

@@ -1,10 +1,9 @@
-# REQ detail — REQ-LINKED_PANES
 REQ-LINKED_PANES:
   name: Linked Pane Navigation
   category: Functional
   priority: P2
   status: Implemented
-  description: The web file manager must support a toggleable "linked" navigation mode where directory navigation in the focused pane propagates to all other panes in the workspace. When enabled and the user navigates into a subdirectory, all other panes that contain a matching subdirectory also navigate to it. When the user navigates to a parent directory (backspace), all panes navigate to their respective parent directories. When linked mode is ON, cursor movements (via mouse clicks or keyboard navigation) synchronize the highlight position across all panes by filename. When linked mode is OFF, cursor movements only affect the focused pane. Sort changes also propagate to all panes when linked mode is ON.
+  description: 'Toggleable linked mode synchronizes directory navigation, cursor position (by filename), and sort across panes. Canonical terms: docs/linked-navigation-vocabulary.md; pseudo-code blocks IMPL-LINKED_NAV_* in tied/implementation-decisions/IMPL-LINKED_NAV-pseudocode.md.'
   rationale:
     why: Users need synchronized navigation across panes for comparison tasks
     problems_solved:
@@ -19,9 +18,10 @@ REQ-LINKED_PANES:
   satisfaction_criteria:
     - criterion: Link groups configurable (future enhancement)
     - criterion: Linked mode persists across directory changes
-    - criterion: Linked panes navigate to same subdirectory together
-    - criterion: Toggle linked mode with L key
-    - criterion: Visual indicator shows linked state in pane headers
+    - criterion: Linked panes navigate to same subdirectory together (DownwardNavigation)
+    - criterion: Terminology aligns with docs/linked-navigation-vocabulary.md
+    - criterion: Toggle linked mode with L key (link.toggle)
+    - criterion: Visual indicator shows linked state in pane headers (VisualIndicators)
   validation_criteria:
     - method: Unit tests
       coverage: Link state management and sync logic
@@ -48,9 +48,9 @@ REQ-LINKED_PANES:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-07T00:00:00.000Z
+      date: "2026-05-19"
       author: AI Agent
-      reason: Initial creation - adapted from Goful REQ-LINKED_NAVIGATION for web
+      reason: Link canonical domain vocabulary
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

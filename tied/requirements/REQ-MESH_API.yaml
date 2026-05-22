@@ -13,10 +13,15 @@ REQ-MESH_API:
   satisfaction_criteria:
     - criterion: api_does_not_return_secret_values
     - criterion: get_mesh_returns_mesh
+    - criterion: get_sessions_with_sessionId_returns_progress
     - criterion: post_mesh_creates_mesh
+    - criterion: post_sessions_cancel_signals_runtime_cancel_flag
+    - criterion: post_sessions_start_uses_approved_plan_when_no_changeSet
   validation_criteria:
     - method: Vitest
       coverage: src/app/api/mesh/route.test.ts, depots-links.route.test.ts
+    - method: Vitest
+      coverage: src/app/api/mesh/sessions.route.test.ts
   traceability:
     architecture:
       - ARCH-MESH_LAYERED
@@ -24,6 +29,7 @@ REQ-MESH_API:
       - IMPL-MESH_API
     tests:
       - src/app/api/mesh/route.test.ts
+      - src/app/api/mesh/sessions.route.test.ts
     code_annotations:
       - REQ-MESH_API
   related_requirements:

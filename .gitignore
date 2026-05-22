@@ -31,6 +31,9 @@
 /build
 /dist
 
+# mesh persistence (local dev / e2e)
+.mesh-data/
+
 # misc
 .DS_Store
 *.pem
@@ -107,3 +110,4 @@ docs/TODO.md
 prompts
 scripts/*.mjs
 tmp
+docs/.markscope-preview-cache

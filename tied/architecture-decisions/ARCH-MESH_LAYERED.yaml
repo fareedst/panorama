@@ -24,8 +24,12 @@ ARCH-MESH_LAYERED:
     summary: Domain-centric layers L1–L6 with nsync coexistence
     details:
       - 'Dependency rule: outer layers depend inward; domain has zero imports from API/GUI/persistence'
+      - 'Two-phase plan/sync: L5 GUI Plan page approves session only; Sync page starts execution with optional confirmedDestructive; sessionStorage handoff between pages'
       - Cross-cutting safety and auth span services+API+GUI (later phases)
       - First deployable slices (API/persistence/GUI) only after corresponding REQ slices and IMPL pseudo-code
+      - L4 MeshRuntime exposes session progress counters and cancelSessionExecution; L5 GET /sessions returns progress for polling
+      - Multi-link runApprovedSession iterates all mesh links; remote depot kind registers RemoteConnector stub at L3
+      - Virtual depots and other unknown connector kinds resolve to VirtualConnector synthetic inventory at L3
   traceability:
     requirements:
       - REQ-MESH_PLATFORM
@@ -35,8 +39,9 @@ ARCH-MESH_LAYERED:
       - IMPL-MESH_GUI
       - IMPL-MESH_RUNTIME
     tests:
-      - src/lib/mesh/services/services.integration.test.ts
       - e2e/mesh-sync.spec.ts
+      - src/app/api/mesh/credentials.route.test.ts
+      - src/lib/mesh/services/services.integration.test.ts
     code_annotations:
       - ARCH-MESH_LAYERED
   related_decisions:
@@ -45,11 +50,12 @@ ARCH-MESH_LAYERED:
       - ARCH-MESH_DOMAIN
     see_also:
       - ARCH-NSYNC_INTEGRATION
+      - docs/mesh-platform-vocabulary.md
   metadata:
     created:
       date: "2026-05-19T00:00:00.000Z"
       author: AI Agent
     last_updated:
-      date: "2026-05-19T00:00:00.000Z"
+      date: "2026-05-20"
       author: AI Agent
-      reason: Initial mesh layered architecture (author-architecture)
+      reason: Document two-phase plan/sync and session progress at layer boundary

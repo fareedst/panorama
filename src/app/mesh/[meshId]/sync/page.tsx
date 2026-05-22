@@ -1,3 +1,4 @@
+// [IMPL-MESH_GUI] [REQ-MESH_GUI] [REQ-MESH_PLATFORM]: **Sync start** route — executes approved **sync session**
 import { SyncSessionClient } from "../../components/SyncSessionClient";
 
 type Props = { params: Promise<{ meshId: string }> };

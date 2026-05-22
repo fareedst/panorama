@@ -56,6 +56,7 @@ describe("IMPL-MESH_RUNTIME mesh services integration [REQ-MESH_PLATFORM]", () =
     expect(topo.graph.edges).toHaveLength(1);
   });
 
+  // [IMPL-MESH_RUNTIME] [IMPL-MESH_EXECUTOR] [REQ-MESH_PLATFORM]: fake connector copy via executor — runApprovedSession
   it("fake connector copy via executor", async () => {
     const rt = getMeshRuntime();
     const created = rt.meshService.createMesh({ name: "Sync" });
@@ -108,6 +109,81 @@ describe("IMPL-MESH_RUNTIME mesh services integration [REQ-MESH_PLATFORM]", () =
     expect(runResult).toBe(true);
     const readBack = dstConn.readFile("/file.txt");
     expect(typeof readBack === "object" && readBack !== null && !("code" in readBack)).toBe(true);
+  });
+
+  // [IMPL-MESH_RUNTIME] [IMPL-MESH_EXECUTOR] [REQ-MESH_PLATFORM]: runApprovedSession iterates all mesh links (fan-out)
+  it("runApprovedSession_fan_out_two_links", async () => {
+    const rt = getMeshRuntime();
+    const created = rt.meshService.createMesh({ name: "FanOut" });
+    if (isDomainValidationError(created) || "code" in created) {
+      throw new Error("setup");
+    }
+    const src = rt.depotService.addDepot(created.mesh.id, {
+      name: "Src",
+      kind: "virtual",
+      root: "/",
+    });
+    const dst1 = rt.depotService.addDepot(created.mesh.id, {
+      name: "Dst1",
+      kind: "virtual",
+      root: "/",
+    });
+    const dst2 = rt.depotService.addDepot(created.mesh.id, {
+      name: "Dst2",
+      kind: "virtual",
+      root: "/",
+    });
+    if (
+      isDomainValidationError(src) ||
+      isDomainValidationError(dst1) ||
+      isDomainValidationError(dst2) ||
+      "code" in src ||
+      "code" in dst1 ||
+      "code" in dst2
+    ) {
+      throw new Error("depot setup");
+    }
+    const srcConn = new FakeConnector();
+    const dstConn1 = new FakeConnector();
+    const dstConn2 = new FakeConnector();
+    srcConn.seedFile("/fan.txt", new TextEncoder().encode("fan"));
+    rt.registerConnector(src.id, srcConn);
+    rt.registerConnector(dst1.id, dstConn1);
+    rt.registerConnector(dst2.id, dstConn2);
+    const record = rt.meshRepository.get(created.mesh.id)!;
+    record.mesh.links = [
+      {
+        id: "l1",
+        sourceDepotId: src.id,
+        targetDepotId: dst1.id,
+        direction: "one_way",
+      },
+      {
+        id: "l2",
+        sourceDepotId: src.id,
+        targetDepotId: dst2.id,
+        direction: "one_way",
+      },
+    ];
+    rt.meshRepository.save(record);
+    const plan = rt.generatePlan(created.mesh.id, src.id, dst1.id);
+    if (!plan || "allowed" in plan) {
+      throw new Error("plan");
+    }
+    const session = rt.sessions.createSession(record.mesh);
+    if (isDomainValidationError(session)) {
+      throw new Error("session");
+    }
+    rt.safety.recordDryRun(created.mesh.id);
+    rt.sessions.approvePlan(session.id, plan);
+    const runResult = await rt.runApprovedSession(session.id, {
+      confirmedDestructive: true,
+    });
+    expect(runResult).toBe(true);
+    const prog = rt.getSessionProgress(session.id);
+    expect(prog.total).toBe(plan.operations.length * 2);
+    expect(dstConn1.readFile("/fan.txt")).not.toHaveProperty("code");
+    expect(dstConn2.readFile("/fan.txt")).not.toHaveProperty("code");
   });
 
   it("exclude_filter_wins_over_include_filter", () => {

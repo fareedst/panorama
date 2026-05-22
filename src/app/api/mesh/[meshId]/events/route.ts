@@ -10,5 +10,9 @@ export async function GET(_request: Request, { params }: Params) {
   if (!rt.meshService.getMesh(meshId)) {
     return jsonError(404, "mesh_not_found", "Mesh not found");
   }
-  return Response.json({ events: rt.events.queryByMesh(meshId) });
+  const active = rt.sessions.listForMesh(meshId).find((s) => s.state === "running");
+  return Response.json({
+    events: rt.events.queryByMesh(meshId),
+    progress: active ? rt.getSessionProgress(active.id) : undefined,
+  });
 }

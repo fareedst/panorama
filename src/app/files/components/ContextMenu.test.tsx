@@ -11,8 +11,9 @@ describe("[TEST-MOUSE_INTERACTION] ContextMenu Component", () => {
     name: "test.txt",
     path: "/test/test.txt",
     size: 1024,
-    mtime: Date.now(),
+    mtime: new Date(),
     isDirectory: false,
+    extension: ".txt",
   };
 
   const defaultProps = {
@@ -275,9 +276,9 @@ describe("[TEST-MOUSE_INTERACTION] Drop Operation Detection", () => {
   });
 
   it("allows different-directory drop", () => {
-    const sourcePath = "/test/source";
-    const targetPath = "/test/target";
-    
+    const sourcePath: string = "/test/source";
+    const targetPath: string = "/test/target";
+
     const shouldDrop = sourcePath !== targetPath;
     expect(shouldDrop).toBe(true);
   });

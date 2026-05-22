@@ -1,3 +1,4 @@
+// [IMPL-MESH_GUI] [REQ-MESH_PLATFORM]: **Conflicts** list route
 import { ConflictsClient } from "../../components/ConflictsClient";
 
 type Props = { params: Promise<{ meshId: string }> };

@@ -71,31 +71,35 @@ describe("filterFiles [REQ-FILE_SEARCH] [TEST-FILE_SEARCH]", () => {
   const mockFiles: FileStat[] = [
     {
       name: "test.ts",
+      path: "/test/test.ts",
       isDirectory: false,
       size: 100,
-      modified: new Date(),
-      permissions: "rw-r--r--",
+      mtime: new Date(),
+      extension: ".ts",
     },
     {
       name: "TestFile.tsx",
+      path: "/test/TestFile.tsx",
       isDirectory: false,
       size: 200,
-      modified: new Date(),
-      permissions: "rw-r--r--",
+      mtime: new Date(),
+      extension: ".tsx",
     },
     {
       name: "example.js",
+      path: "/test/example.js",
       isDirectory: false,
       size: 150,
-      modified: new Date(),
-      permissions: "rw-r--r--",
+      mtime: new Date(),
+      extension: ".js",
     },
     {
       name: "docs",
+      path: "/test/docs",
       isDirectory: true,
       size: 0,
-      modified: new Date(),
-      permissions: "rwxr-xr-x",
+      mtime: new Date(),
+      extension: "",
     },
   ];
 
@@ -281,24 +285,27 @@ describe("Search Integration [REQ-FILE_SEARCH] [TEST-FILE_SEARCH]", () => {
   const mockFiles: FileStat[] = [
     {
       name: "component.tsx",
+      path: "/test/component.tsx",
       isDirectory: false,
       size: 500,
-      modified: new Date("2024-01-01"),
-      permissions: "rw-r--r--",
+      mtime: new Date("2024-01-01"),
+      extension: ".tsx",
     },
     {
       name: "component.test.tsx",
+      path: "/test/component.test.tsx",
       isDirectory: false,
       size: 300,
-      modified: new Date("2024-01-02"),
-      permissions: "rw-r--r--",
+      mtime: new Date("2024-01-02"),
+      extension: ".tsx",
     },
     {
       name: "utils.ts",
+      path: "/test/utils.ts",
       isDirectory: false,
       size: 200,
-      modified: new Date("2024-01-03"),
-      permissions: "rw-r--r--",
+      mtime: new Date("2024-01-03"),
+      extension: ".ts",
     },
   ];
 

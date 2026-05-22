@@ -3,20 +3,37 @@ REQ-MESH_HARDENING:
   category: Functional
   priority: P2
   status: Implemented
-  description: Concurrency slots and retry policy for sync operation execution.
+  description: Concurrency slots, retry backoff, optional outbound bandwidth pacing, optimistic mesh configuration versioning, and plan pagination knobs for large change sets ([REQ-MESH_PLATFORM] prompts phase 29).
   satisfaction_criteria:
     - criterion: concurrent_operations_limited_per_mesh
+    - criterion: executor_retries_apply_exponential_backoff_via_hardening_delay_between_attempts_when_runtime_executes_operations
+    - criterion: generated_change_set_can_be_sliced_via_plan_api_for_large_plans
+    - criterion: mesh_configuration_version_increments_on_saved_mutations_json_repository_coerces_legacy_records
+    - criterion: outbound_bandwidth_cap_throttles_approximate_bytes_after_successful_copy_or_update_when_configured
     - criterion: retries_stop_at_max_attempts
+    - criterion: stale_mesh_patch_rejected_when_expected_configuration_version_provided_but_mismatched
   validation_criteria:
     - method: Vitest
       coverage: src/lib/mesh/services/hardening-service.test.ts
+    - method: Vitest
+      coverage: src/lib/mesh/services/mesh-service.test.ts
+    - method: Vitest
+      coverage: src/lib/mesh/repositories/json-mesh-repository.test.ts
+    - method: Vitest
+      coverage: src/lib/mesh/services/planning-service.test.ts
+    - method: Vitest
+      coverage: src/app/api/mesh/plan-conflicts.route.test.ts
   traceability:
     architecture:
       - ARCH-MESH_LAYERED
     implementation:
       - IMPL-MESH_HARDENING
     tests:
+      - src/app/api/mesh/plan-conflicts.route.test.ts
+      - src/lib/mesh/repositories/json-mesh-repository.test.ts
       - src/lib/mesh/services/hardening-service.test.ts
+      - src/lib/mesh/services/mesh-service.test.ts
+      - src/lib/mesh/services/planning-service.test.ts
     code_annotations:
       - REQ-MESH_HARDENING
   related_requirements:

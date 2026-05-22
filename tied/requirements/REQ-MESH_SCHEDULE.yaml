@@ -10,6 +10,8 @@ REQ-MESH_SCHEDULE:
   validation_criteria:
     - method: Vitest
       coverage: src/lib/mesh/services/schedule-service.test.ts
+    - method: Vitest RTL
+      coverage: src/app/mesh/components/MeshScheduleClient.test.tsx
   traceability:
     architecture:
       - ARCH-MESH_LAYERED
@@ -18,6 +20,7 @@ REQ-MESH_SCHEDULE:
       - IMPL-MESH_API
     tests:
       - src/lib/mesh/services/schedule-service.test.ts
+      - src/app/mesh/components/MeshScheduleClient.test.tsx
     code_annotations:
       - REQ-MESH_SCHEDULE
   related_requirements:

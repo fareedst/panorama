@@ -6,7 +6,14 @@ import {
   type DomainValidationError,
   type Mesh,
 } from "../domain";
-import type { MeshRecord, MeshLifecycleStatus } from "../mesh-record";
+import {
+  nextMeshRecordAfterLifecycleMutation,
+  nextMeshRecordAfterMeshMutation,
+  INITIAL_MESH_CONFIGURATION_VERSION,
+  normalizeMeshRecordVersion,
+  type MeshRecord,
+  type MeshLifecycleStatus,
+} from "../mesh-record";
 import type { MeshRepository } from "../repositories/mesh-repository";
 
 export type MeshServiceError = {
@@ -26,7 +33,13 @@ function nowIso(): string {
 
 function wrapMesh(mesh: Mesh, status: MeshLifecycleStatus = "active"): MeshRecord {
   const ts = nowIso();
-  return { mesh, status, createdAt: ts, updatedAt: ts };
+  return {
+    mesh,
+    status,
+    createdAt: ts,
+    updatedAt: ts,
+    configurationVersion: INITIAL_MESH_CONFIGURATION_VERSION,
+  };
 }
 
 export class MeshService {
@@ -54,26 +67,39 @@ export class MeshService {
   // [IMPL-MESH_CRUD] [ARCH-MESH_CRUD] [REQ-MESH_CRUD]: updateMeshMetadata — merge patch, re-validate mesh, save
   updateMeshMetadata(
     meshId: string,
-    patch: { name?: string; description?: string; tags?: string[] },
+    patch: {
+      name?: string;
+      description?: string;
+      tags?: string[];
+      policy?: Record<string, unknown>;
+      /** When set, must match stored configurationVersion ([REQ-MESH_HARDENING], prompts phase 29 optimistic_locking). */
+      expectedConfigurationVersion?: number;
+    },
   ): MeshServiceResult<MeshRecord> {
     const existing = this.repository.get(meshId);
     if (!existing) {
       return serviceError("mesh_not_found", "Mesh not found");
+    }
+    const normalized = normalizeMeshRecordVersion(existing);
+    if (
+      patch.expectedConfigurationVersion !== undefined &&
+      patch.expectedConfigurationVersion !== normalized.configurationVersion
+    ) {
+      return serviceError("stale_configuration", "Stale mesh configurationVersion; reload and retry");
     }
     const validated = validateMesh({
       ...existing.mesh,
       name: patch.name ?? existing.mesh.name,
       description: patch.description ?? existing.mesh.description,
       tags: patch.tags ?? existing.mesh.tags,
+      policy: patch.policy
+        ? { ...existing.mesh.policy, ...patch.policy }
+        : existing.mesh.policy,
     });
     if (isDomainValidationError(validated)) {
       return validated;
     }
-    const record: MeshRecord = {
-      ...existing,
-      mesh: validated,
-      updatedAt: nowIso(),
-    };
+    const record = nextMeshRecordAfterMeshMutation(existing, validated);
     this.repository.save(record);
     return record;
   }
@@ -84,11 +110,7 @@ export class MeshService {
     if (!existing) {
       return serviceError("mesh_not_found", "Mesh not found");
     }
-    const record: MeshRecord = {
-      ...existing,
-      status: "archived",
-      updatedAt: nowIso(),
-    };
+    const record = nextMeshRecordAfterLifecycleMutation(existing, { status: "archived" });
     this.repository.save(record);
     return record;
   }

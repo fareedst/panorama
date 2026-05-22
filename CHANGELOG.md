@@ -9,22 +9,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-
-- Migrate project documentation from **STDD** (`stdd/`) to **TIED 2.2** (`tied/`): YAML indexes, detail files, 58 IMPL pseudo-code sidecars with per-block REQ/ARCH/IMPL token comments, inherited `tied/methodology/`, and updated `AGENTS.md` / `README.md`.
-- Replace remaining STDD traceability wording in TIED YAML with TIED terminology.
-
 ### Added
 
-- TIED agent docs under `tied/docs/` (LEAP, pseudo-code validation, implementation checklists, commit guidelines).
-- **Mesh sync platform** (`src/lib/mesh`, `src/app/mesh`, `src/app/api/mesh`): layered services (CRUD, depots, topology, planning, sessions, safety, auth), JSON persistence, fake/local connectors, REST API, React UI, and Playwright E2E (`e2e/mesh-sync.spec.ts`).
-- TIED mesh REQ/ARCH/IMPL detail records and `IMPL-MESH_*` essence pseudo-code sidecars with per-block token comments mirrored in tests and production code (`[PROC-IMPL_PSEUDOCODE_TOKENS]`).
-- Child requirements `REQ-MESH_MONITORING`, `REQ-MESH_SCHEDULE`, `REQ-MESH_IMPORT_EXPORT`, `REQ-MESH_REAL_CONNECTORS`, and `REQ-MESH_HARDENING`; additional IMPL tokens (`IMPL-MESH_RUNTIME`, `IMPL-MESH_SESSION`, and related service modules).
+- When `MESH_DATA_DIR` is set, mesh **sync sessions** (including approved plans) persist to `sync-sessions.json` and audit **events** to `sync-events.json`, alongside `meshes.json` (`[IMPL-MESH_PERSISTENCE]`).
+- Canonical domain vocabulary in `docs/*-vocabulary.md` (index: [`docs/panorama-domain-references.md`](docs/panorama-domain-references.md)); interactive guide [`docs/panorama-build-test.md`](docs/panorama-build-test.md).
+- Mesh sub-pages (per-mesh and **mesh hub routes**): schedule, export, history, rules, settings, global depots/policies/sync; **Remote connector** stub for **remote depots**; **VirtualConnector** default for **virtual depots** and unknown kinds; sessions `GET` includes **session progress**; expanded Playwright coverage in `e2e/mesh-sync.spec.ts`.
+- `POST /api/mesh/credentials` for **credential references** (masked handles only); Vitest composition tests for sessions API and credentials route.
+- RTL tests for `MeshScheduleClient`, `MeshExportClient`, `MeshArchiveClient`; multi-link `runApprovedSession` integration coverage.
+
+### Changed
+
+- **Plan approval** vs **sync start**: Plan page performs **plan approval** only; **Sync start** on Sync Now with optional `confirmedDestructive`; **approved session handoff** via `sessionStorage`.
+- `MeshRuntime.runApprovedSession` iterates all **sync links**; pause/cancel/**session progress** counters; retry/backoff and outbound throttle hooks; Vitest **functional `localStorage`** shim in [`src/test/setup.ts`](src/test/setup.ts) (Node 22). Playwright `webServer` uses dedicated **PORT**, `MESH_DATA_DIR`, and `MESH_ASYNC_SYNC` (`[IMPL-TEST_SETUP]` / `[REQ-MESH_E2E_RELEASE]`).
+- **Credential references**: creating via API allocates an `id` when omitted (`resolveEntityId`), matching depot-style entity creation (`[IMPL-MESH_DOMAIN_TYPES]`).
+- Search history silent storage failures aligned with **BookmarkManager**; bulk-delete test uses stable fetch routing.
+- TIED LEAP alignment: REQ/ARCH/IMPL and [`docs/mesh-platform-vocabulary.md`](docs/mesh-platform-vocabulary.md); `IMPL-MESH_GUI`, `IMPL-MESH_RUNTIME`, `IMPL-MESH_CONNECTOR`, `IMPL-MESH_API`, `IMPL-MESH_HARDENING`, `IMPL-TEST_SETUP` sidecars updated with `[PROC-IMPL_PSEUDOCODE_TOKENS]` block comments mirrored in code and tests.
 
 ### Notes
 
-- Application runtime behavior is unchanged for non-mesh surfaces; mesh is a new subsystem behind `/mesh` and `/api/mesh`.
-- `scripts/fortify-impl-pseudocode.mjs` regenerates IMPL sidecars from detail YAML (run after IMPL detail edits); mesh sidecars are hand-authored alongside that workflow.
+- Mesh subsystem lives under `/mesh` and `/api/mesh`; file-manager **NSYNC** behavior is unchanged (see **[NSYNC]** in [`docs/nsync-multi-target-vocabulary.md`](docs/nsync-multi-target-vocabulary.md)).
+- `scripts/fortify-impl-pseudocode.mjs` regenerates IMPL sidecars from detail YAML after bulk edits.
+- Run `npm run test:e2e` (or `PLAYWRIGHT_PORT=3001 npx playwright test e2e/mesh-sync.spec.ts`) locally after dev server preflight.
+- **Historical (STDD migration)**: Earlier releases migrated methodology from **STDD** (`stdd/`) to **TIED 2.2** (`tied/`): YAML indexes and detail records, pseudocode sidecars, inherited `tied/methodology/`, baseline mesh platform REQ/ARCH/IMPL (`REQ-MESH_MONITORING`, `REQ-MESH_SCHEDULE`, **child REQs**, etc.), updated `AGENTS.md` / `README.md`, and terminology aligned to **TIED** tokens.
 
 ---
 

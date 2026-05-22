@@ -68,8 +68,8 @@ IMPL-NSYNC_ENGINE:
       - IMPL-NSYNC_VERIFY
     supersedes: []
     see_also:
-      - IMPL-BULK_OPS
-      - IMPL-FILES_API
+      - docs/nsync-multi-target-vocabulary.md
+      - docs/panorama-domain-references.md
   metadata:
     created:
       date: 2026-02-09T00:00:00.000Z

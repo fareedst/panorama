@@ -48,4 +48,15 @@ export class HardeningService {
   getRetryDelay(attempt: number): number {
     return retryBackoffDelay(attempt, this.config.retryBaseDelayMs);
   }
+
+  /** Pace outbound-ish bytes after connector operations ([REQ-MESH_HARDENING], prompts phase 29 bandwidth_limits). */
+  async throttleOutboundBytes(approxByteCount: number): Promise<void> {
+    const bps = this.config.maxBandwidthBytesPerSecond;
+    if (!bps || bps <= 0 || approxByteCount <= 0) {
+      return;
+    }
+    const ms = Math.ceil((approxByteCount / bps) * 1000);
+    if (ms <= 0) return;
+    await new Promise<void>((resolve) => setTimeout(resolve, ms));
+  }
 }

@@ -16,8 +16,15 @@ export default defineConfig({
     globals: true,
     // [IMPL-TEST_CONFIG] Setup file for matchers and mocks
     setupFiles: ['./src/test/setup.ts'],
-    // [IMPL-TEST_CONFIG] Process CSS imports for Tailwind classes
-    css: true,
+    // [IMPL-TEST_CONFIG] [IMPL-LOGGER_CONFIG] Suppress ERROR/FATAL console mirroring during tests;
+    // logger.test.ts uses vi.resetModules() when asserting console behavior.
+    env: {
+      CONSOLE_ERRORS: 'false',
+    },
+    // [IMPL-TEST_CONFIG] Do not inject compiled CSS into jsdom — Tailwind v4 output
+    // (@layer, @property, etc.) triggers "Could not parse CSS stylesheet" in jsdom.
+    // Unit tests assert DOM/behavior, not computed styles; E2E covers real CSS.
+    css: false,
     // [IMPL-TEST_CONFIG] Exclude E2E tests (Playwright) from Vitest
     exclude: [
       '**/node_modules/**',

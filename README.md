@@ -472,6 +472,7 @@ Project records are under **`tied/`** (methodology templates are read-only in `t
 - **[Implementation](tied/implementation-decisions.yaml)** – implementation decisions and pseudocode sidecars
 - **[Semantic tokens](tied/semantic-tokens.yaml)** – token registry
 - Guides: [tied/docs/](tied/docs/) (agent checklist, pseudocode validation, MCP runbook)
+- **Domain vocabulary (canonical terms for REQ/IMPL):** [docs/panorama-domain-references.md](docs/panorama-domain-references.md)
 
 ### For Developers
 

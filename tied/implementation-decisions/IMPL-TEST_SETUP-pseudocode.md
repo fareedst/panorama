@@ -67,11 +67,18 @@ PROCEDURE IMPL-TEST_SETUP_MockWindowMatchMedia(context)
   CALL Mock window.matchMedia
   ON invalid input OR missing data THEN RETURN without mutation
 
+## FunctionalLocalStorage
+
+// [IMPL-TEST_SETUP] [IMPL-FILE_SEARCH] [REQ-BUILD_SYSTEM]: Replace non-functional Node 22 global localStorage with in-memory Storage for Vitest/jsdom.
+
+PROCEDURE IMPL-TEST_SETUP_FunctionalLocalStorage()
+  IF globalThis.localStorage exists AND getItem is not function
+  THEN assign createInMemoryLocalStorage to globalThis.localStorage
+  // how: Enables SearchHistory and BookmarkManager component tests without quota errors.
+
 ## CodeLocations
 
-// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: map implementing and verifying source files for this IMPL
-
-// FILE: test/setup.ts — Test setup and utilities
+// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: Implementing files map — `src/test/setup.ts` (testing-library, localStorage shim, next/font mock, matchMedia).
 
 ## ErrorHandling
 

@@ -1,11 +1,10 @@
 // [IMPL-MESH_DEPOT] [REQ-MESH_PLATFORM]: Depot CRUD unit tests — phases 3–5
 
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import { isDomainValidationError } from "../domain";
 import { InMemoryMeshRepository } from "../repositories/memory-mesh-repository";
 import { MeshService } from "./mesh-service";
 import { DepotService, discoverDepotCapabilities } from "./depot-service";
-import { validateTopology } from "./topology-service";
 
 function setup() {
   const repo = new InMemoryMeshRepository();

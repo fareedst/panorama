@@ -1,6 +1,6 @@
 // [REQ-MESH_HARDENING]: Hardening tests — phase 29
 
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import {
   ConcurrencyLimiter,
   HardeningService,
@@ -32,5 +32,18 @@ describe("HardeningService [IMPL-MESH_HARDENING]", () => {
     };
     await Promise.all([limiter.run(task), limiter.run(task)]);
     expect(maxConcurrent).toBe(1);
+  });
+
+  it("throttleOutboundBytes_schedules_minimum_delay_from_bandwidth_cap", async () => {
+    vi.useFakeTimers();
+    const svc = new HardeningService({
+      maxConcurrentOperations: 4,
+      maxBandwidthBytesPerSecond: 1000,
+      retryBaseDelayMs: 10,
+    });
+    const pending = svc.throttleOutboundBytes(2500);
+    await vi.advanceTimersByTimeAsync(2500);
+    await pending;
+    vi.useRealTimers();
   });
 });

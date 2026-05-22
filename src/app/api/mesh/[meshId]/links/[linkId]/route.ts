@@ -6,6 +6,7 @@ import {
   requirePermission,
 } from "@/lib/mesh/api/mesh-api-helpers";
 import { toDtoMesh } from "@/lib/mesh/domain";
+import { nextMeshRecordAfterMeshMutation } from "@/lib/mesh/mesh-record";
 import { removeLinkFromMesh } from "@/lib/mesh/services/topology-service";
 
 type Params = { params: Promise<{ meshId: string; linkId: string }> };
@@ -21,9 +22,9 @@ export async function DELETE(_request: Request, { params }: Params) {
   if (!record) {
     return jsonError(404, "mesh_not_found", "Mesh not found");
   }
-  record.mesh = removeLinkFromMesh(record.mesh, linkId);
-  record.updatedAt = new Date().toISOString();
-  rt.meshRepository.save(record);
+  const mesh = removeLinkFromMesh(record.mesh, linkId);
+  const nextRecord = nextMeshRecordAfterMeshMutation(record, mesh);
+  rt.meshRepository.save(nextRecord);
   rt.events.recordMeshUpdated(meshId, "link_removed");
-  return Response.json({ mesh: toDtoMesh(record.mesh) });
+  return Response.json({ mesh: toDtoMesh(nextRecord.mesh) });
 }

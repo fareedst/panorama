@@ -16,7 +16,7 @@ import {
   validateFilter,
   validateSyncEvent,
 } from "./validators";
-import type { Mesh } from "./types";
+import type { CredentialReference, Mesh } from "./types";
 import {
   expectValidationError,
   minimalMesh,
@@ -103,11 +103,12 @@ describe("IMPL-MESH_DOMAIN_TYPES_VALIDATE_CREDENTIAL_REFERENCE [REQ-MESH_DOMAIN_
     expect(result).toEqual({ id: "cred-1", label: "Main" });
   });
 
-  it("rejects missing id", () => {
-    expectValidationError(
-      validateCredentialReference({ label: "Main" }),
-      "credential_id_required",
-    );
+  it("allocates_id_when_omitted", () => {
+    const result = validateCredentialReference({ label: "Main" });
+    refuteValidationError(result);
+    expect(result).toMatchObject({ label: "Main" });
+    expect(typeof (result as CredentialReference).id).toBe("string");
+    expect((result as CredentialReference).id.length).toBeGreaterThan(0);
   });
 
   it("rejects secret on attrs", () => {

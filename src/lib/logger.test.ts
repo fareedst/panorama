@@ -358,6 +358,8 @@ describe("[TEST-LOGGER_MODULE] Logger Module", () => {
 
     beforeEach(async () => {
       process.env.LOG_LEVEL = "TRACE";
+      // Vitest sets CONSOLE_ERRORS=false globally; enable mirroring for this suite.
+      process.env.CONSOLE_ERRORS = "true";
       consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {});
       consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
       vi.resetModules();
@@ -427,24 +429,16 @@ describe("[TEST-LOGGER_MODULE] Logger Module", () => {
     });
 
     it("should include metadata in console ERROR output", async () => {
-      // Clear any CONSOLE_ERRORS env var that might be set
-      delete process.env.CONSOLE_ERRORS;
-      
-      // Import a fresh logger without spies to test actual behavior
-      consoleLogSpy.mockRestore();
-      consoleErrorSpy.mockRestore();
-      vi.resetModules();
-      
       const { logger } = await import("./logger");
-      
-      // Just verify the error method works with metadata
-      expect(() => {
-        logger.error("REQ-LOGGING_SYSTEM", "Error with metadata", { code: 404 });
-      }).not.toThrow();
-      
-      // Verify config has consoleErrors enabled by default
-      const config = logger.getConfig();
-      expect(config.consoleErrors).toBe(true);
+
+      logger.error("REQ-LOGGING_SYSTEM", "Error with metadata", { code: 404 });
+
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
+        expect.stringMatching(
+          /\[ERROR\].*\[REQ-LOGGING_SYSTEM\].*Error with metadata.*"code":404/
+        )
+      );
+      expect(logger.getConfig().consoleErrors).toBe(true);
     });
 
     it("should respect CONSOLE_ERRORS environment variable", async () => {

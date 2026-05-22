@@ -1,10 +1,23 @@
 import { test, expect } from '@playwright/test';
+import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
 const SCREENSHOT_DIR = path.join(__dirname, '../docs/screenshots');
+const SETUP_SCRIPT = path.join(__dirname, '../scripts/setup_copyall_demo.sh');
+
+function ensureCopyAllDemoDirs() {
+  execSync(`bash "${SETUP_SCRIPT}" --clean`, {
+    cwd: path.join(__dirname, '..'),
+    stdio: 'pipe',
+  });
+}
 
 test.describe('CopyAll Demo Recording', () => {
+  test.beforeAll(() => {
+    ensureCopyAllDemoDirs();
+  });
+
   test.beforeEach(async () => {
     // Ensure screenshot directory exists
     if (!fs.existsSync(SCREENSHOT_DIR)) {

@@ -23,6 +23,7 @@ REQ-BUILD_SYSTEM:
     - criterion: npm run start runs production server
     - criterion: npm run test:coverage generates coverage report with 80%+ coverage
     - criterion: npm test runs all tests
+    - criterion: vitest_setup_provides_functional_localStorage_shim_for_node_22
   validation_criteria:
     - method: Script testing
       coverage: All npm scripts execute successfully
@@ -35,6 +36,7 @@ REQ-BUILD_SYSTEM:
     implementation:
       - IMPL-BUILD_SCRIPTS
       - IMPL-TEST_CONFIG
+      - IMPL-TEST_SETUP
     tests: []
     code_annotations:
       - REQ-BUILD_SYSTEM

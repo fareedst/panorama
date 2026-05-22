@@ -1,9 +1,10 @@
 // [IMPL-MESH_RUNTIME] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: Composed mesh runtime — wires L2 services for API and tests
 
-import { FakeConnector } from "../connector/fake-connector";
 import { LocalFilesystemConnector } from "../connector/local-filesystem-connector";
+import { RemoteConnector } from "../connector/remote-connector";
+import { VirtualConnector } from "../connector/virtual-connector";
 import type { Connector } from "../connector/types";
-import type { ChangeSet, Mesh } from "../domain";
+import type { ChangeSet, Depot, Mesh, SyncOperation } from "../domain";
 import { createMeshRepository } from "../repositories/create-mesh-repository";
 import type { MeshRepository } from "../repositories/mesh-repository";
 import {
@@ -15,7 +16,7 @@ import { ConflictService } from "../services/conflict-service";
 import { CredentialReferenceStore } from "../services/credential-service";
 import { DepotService } from "../services/depot-service";
 import { EventService } from "../services/event-service";
-import { ExecutorService } from "../services/executor-service";
+import { ExecutorService, type OperationResult } from "../services/executor-service";
 import { HardeningService } from "../services/hardening-service";
 import { ImportExportService } from "../services/import-export-service";
 import { InventoryService } from "../services/inventory-service";
@@ -26,7 +27,6 @@ import { SafetyService } from "../services/safety-service";
 import { ScheduleService } from "../services/schedule-service";
 import { SessionService } from "../services/session-service";
 import { projectTopologyGraph, validateTopology } from "../services/topology-service";
-import type { Depot } from "../domain";
 import type { SafetyCheckResult } from "../services/safety-service";
 
 export class MeshRuntime {
@@ -58,6 +58,11 @@ export class MeshRuntime {
     permission: MeshPermission;
     outcome: string;
   }[] = [];
+  private readonly sessionProgress = new Map<
+    string,
+    { completed: number; failed: number; total: number }
+  >();
+  private readonly sessionCancelFlags = new Set<string>();
 
   constructor(meshRepository?: MeshRepository) {
     this.meshRepository = meshRepository ?? createMeshRepository();
@@ -92,6 +97,7 @@ export class MeshRuntime {
     }
   }
 
+  // [IMPL-MESH_RUNTIME] [IMPL-MESH_CONNECTOR] [REQ-MESH_REAL_CONNECTORS] [REQ-MESH_PLATFORM]: Depot kind → connector — local FS, remote stub, virtual synthetic, default VirtualConnector (pseudocode IMPL-MESH_RUNTIME_getConnectorForDepot)
   getConnectorForDepot(depot: Depot): Connector {
     const existing = this.connectors.get(depot.id);
     if (existing) {
@@ -102,7 +108,17 @@ export class MeshRuntime {
       this.registerConnector(depot.id, local);
       return local;
     }
-    return new FakeConnector();
+    if (depot.kind === "remote") {
+      const remote = new RemoteConnector(depot.root);
+      this.registerConnector(depot.id, remote);
+      return remote;
+    }
+    if (depot.kind === "virtual") {
+      const virtual = new VirtualConnector();
+      this.registerConnector(depot.id, virtual);
+      return virtual;
+    }
+    return new VirtualConnector();
   }
 
   getTopology(meshId: string) {
@@ -162,6 +178,17 @@ export class MeshRuntime {
     return this.safety.checkCanExecutePlan(meshId, changeSet, { confirmedDestructive });
   }
 
+  // [IMPL-MESH_RUNTIME] [IMPL-MESH_SESSION] [REQ-MESH_PLATFORM]: Expose execution counters for API polling
+  getSessionProgress(sessionId: string) {
+    return this.sessionProgress.get(sessionId) ?? { completed: 0, failed: 0, total: 0 };
+  }
+
+  // [IMPL-MESH_RUNTIME] [IMPL-MESH_SESSION] [REQ-MESH_E2E_RELEASE]: Signal in-flight runApprovedSession loop to stop
+  cancelSessionExecution(sessionId: string): void {
+    this.sessionCancelFlags.add(sessionId);
+  }
+
+  // [IMPL-MESH_RUNTIME] [IMPL-MESH_EXECUTOR] [IMPL-MESH_SESSION] [REQ-MESH_E2E_RELEASE]: runApprovedSession — execute plan per link; honor pause/cancel; async when MESH_ASYNC_SYNC
   async runApprovedSession(
     sessionId: string,
     options?: { confirmedDestructive?: boolean },
@@ -177,30 +204,138 @@ export class MeshRuntime {
       return safetyCheck;
     }
     const mesh = session.meshSnapshot.mesh;
-    const link = mesh.links[0];
-    if (!link) {
+    const links = mesh.links.length > 0 ? mesh.links : [];
+    if (links.length === 0) {
       return false;
     }
-    const source = mesh.depots.find((d) => d.id === link.sourceDepotId);
-    const target = mesh.depots.find((d) => d.id === link.targetDepotId);
-    if (!source || !target) {
-      return false;
-    }
-    this.sessions.start(sessionId);
-    this.events.recordSessionLifecycle(sessionId, "running");
-    await this.hardening.limiter.run(async () => {
-      this.executor.executeChangeSet(
-        plan,
-        this.getConnectorForDepot(source),
-        this.getConnectorForDepot(target),
-        mesh.policy,
-        mesh.policy.retryMaxAttempts,
-      );
+    this.sessionCancelFlags.delete(sessionId);
+    const totalOps = plan.operations.length * links.length;
+    this.sessionProgress.set(sessionId, {
+      completed: 0,
+      failed: 0,
+      total: totalOps,
     });
-    this.sessions.complete(sessionId);
-    this.safety.recordSuccessfulSync(meshId);
-    this.events.recordSessionLifecycle(sessionId, "completed");
+    this.sessions.start(sessionId);
+    this.events.recordSessionLifecycle(sessionId, "running", meshId);
+
+    const run = async () => {
+      const delayMs = process.env.MESH_ASYNC_SYNC === "1" ? 400 : 0;
+      for (const link of links) {
+        const source = mesh.depots.find((d) => d.id === link.sourceDepotId);
+        const target = mesh.depots.find((d) => d.id === link.targetDepotId);
+        if (!source || !target) {
+          continue;
+        }
+        const sourceConn = this.getConnectorForDepot(source);
+        const targetConn = this.getConnectorForDepot(target);
+        for (const op of plan.operations) {
+          if (this.sessionCancelFlags.has(sessionId)) {
+            this.sessions.cancel(sessionId);
+            this.events.recordSessionLifecycle(sessionId, "cancelled", meshId);
+            return;
+          }
+          const current = this.sessions.getSession(sessionId);
+          if (current?.state === "paused") {
+            await new Promise<void>((resolve) => {
+              const check = setInterval(() => {
+                const s = this.sessions.getSession(sessionId);
+                if (!s || s.state !== "paused" || this.sessionCancelFlags.has(sessionId)) {
+                  clearInterval(check);
+                  resolve();
+                }
+              }, 100);
+            });
+          }
+          if (this.sessionCancelFlags.has(sessionId)) {
+            this.sessions.cancel(sessionId);
+            return;
+          }
+          const result = await this.executeOperationWithBackoffAndThrottle(
+            sessionId,
+            mesh,
+            op,
+            sourceConn,
+            targetConn,
+          );
+          const prog = this.sessionProgress.get(sessionId)!;
+          if (result.success) {
+            prog.completed += 1;
+          } else if (!result.skipped) {
+            prog.failed += 1;
+          }
+          this.sessionProgress.set(sessionId, { ...prog });
+          if (delayMs > 0) {
+            await new Promise((r) => setTimeout(r, delayMs));
+          }
+        }
+      }
+      if (!this.sessionCancelFlags.has(sessionId)) {
+        this.sessions.complete(sessionId);
+        this.safety.recordSuccessfulSync(meshId);
+        this.events.recordSessionLifecycle(sessionId, "completed", meshId);
+      }
+    };
+
+    if (process.env.MESH_ASYNC_SYNC === "1") {
+      void run();
+      return true;
+    }
+    await this.hardening.limiter.run(run);
     return true;
+  }
+
+  // [IMPL-MESH_HARDENING] [REQ-MESH_HARDENING]: Retry backoff between attempts + optional outbound bytes pacing ([REQ-MESH_PLATFORM] prompts phase 29)
+  private async executeOperationWithBackoffAndThrottle(
+    sessionId: string,
+    mesh: Mesh,
+    op: SyncOperation,
+    sourceConn: Connector,
+    targetConn: Connector,
+  ): Promise<OperationResult> {
+    const policy = mesh.policy;
+
+    if (this.sessionCancelFlags.has(sessionId)) {
+      return { operationId: op.id, success: false, error: "cancelled", attempts: 0 };
+    }
+
+    let last: OperationResult | undefined;
+
+    for (let attempt = 1; attempt <= policy.retryMaxAttempts; attempt++) {
+      last = this.executor.executeOperation(op, sourceConn, targetConn, policy);
+
+      if (last.success || last.skipped || this.sessionCancelFlags.has(sessionId)) {
+        break;
+      }
+
+      if (attempt < policy.retryMaxAttempts) {
+        const delayMs = this.hardening.getRetryDelay(attempt + 1);
+        if (delayMs > 0) {
+          await new Promise<void>((resolve) => {
+            const deadline = Date.now() + delayMs;
+            const tick = setInterval(() => {
+              if (this.sessionCancelFlags.has(sessionId)) {
+                clearInterval(tick);
+                resolve();
+                return;
+              }
+              if (Date.now() >= deadline) {
+                clearInterval(tick);
+                resolve();
+              }
+            }, 10);
+          });
+        }
+      }
+    }
+
+    const result = last!;
+    if (result.success && !result.skipped && (op.kind === "copy" || op.kind === "update")) {
+      const meta = sourceConn.statEntry(op.sourcePath);
+      if (!("code" in meta) && !meta.isDirectory && typeof meta.size === "number" && meta.size > 0) {
+        await this.hardening.throttleOutboundBytes(meta.size);
+      }
+    }
+    return result;
   }
 
   getMonitoringSummary() {

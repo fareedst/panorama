@@ -19,6 +19,7 @@ describe("MonitoringService [IMPL-MESH_MONITORING]", () => {
       status: "active",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
+      configurationVersion: 1,
     };
     const summary = svc.buildSummary([record], [], [], 2);
     expect(summary.pendingConflictCount).toBe(2);

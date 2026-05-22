@@ -2,7 +2,7 @@
 
 // [IMPL-MESH_GUI] [REQ-MESH_PLATFORM]: Conflict resolution — phase 22
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { MeshDetailNav } from "../layout";
 
 type Conflict = {
@@ -16,15 +16,16 @@ export function ConflictsClient({ meshId }: { meshId: string }) {
   const [conflicts, setConflicts] = useState<Conflict[]>([]);
   const [selected, setSelected] = useState<Conflict | null>(null);
 
-  async function load() {
+  const load = useCallback(async () => {
     const res = await fetch(`/api/mesh/${meshId}/conflicts`);
     const data = await res.json();
     setConflicts(data.conflicts ?? []);
-  }
+  }, [meshId]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch on mount / meshId change
     void load();
-  }, [meshId]);
+  }, [load]);
 
   async function resolve(resolution: string) {
     if (!selected) {

@@ -1,4 +1,4 @@
-// [IMPL-MESH_API] [REQ-MESH_PLATFORM]: Session API with safety guards
+// [IMPL-MESH_API] [ARCH-MESH_LAYERED] [REQ-MESH_API] [REQ-MESH_PLATFORM]: Session API with safety guards
 
 import {
   getRuntime,
@@ -9,6 +9,28 @@ import {
 import { isDomainValidationError, type ChangeSet } from "@/lib/mesh/domain";
 
 type Params = { params: Promise<{ meshId: string }> };
+
+// [IMPL-MESH_API] [IMPL-MESH_RUNTIME] [REQ-MESH_API]: GET sessions list or single session with progress
+export async function GET(request: Request, { params }: Params) {
+  const { meshId } = await params;
+  const rt = getRuntime();
+  if (!rt.meshService.getMesh(meshId)) {
+    return jsonError(404, "mesh_not_found", "Mesh not found");
+  }
+  const url = new URL(request.url);
+  const sessionId = url.searchParams.get("sessionId");
+  if (sessionId) {
+    const session = rt.sessions.getSession(sessionId);
+    if (!session) {
+      return jsonError(404, "session_not_found", "Session not found");
+    }
+    return Response.json({
+      session,
+      progress: rt.getSessionProgress(sessionId),
+    });
+  }
+  return Response.json({ sessions: rt.sessions.listForMesh(meshId) });
+}
 
 export async function POST(request: Request, { params }: Params) {
   const { meshId } = await params;
@@ -34,7 +56,7 @@ export async function POST(request: Request, { params }: Params) {
     if (isDomainValidationError(session)) {
       return jsonError(400, session.code, session.message);
     }
-    rt.events.recordSessionLifecycle(session.id, session.state);
+    rt.events.recordSessionLifecycle(session.id, session.state, meshId);
     return Response.json({ session }, { status: 201 });
   }
 
@@ -51,11 +73,13 @@ export async function POST(request: Request, { params }: Params) {
     return Response.json({ approved: true });
   }
 
+  // [IMPL-MESH_API] [IMPL-MESH_RUNTIME] [REQ-MESH_API]: POST sessions start — checkExecution on changeSet or approved plan; runApprovedSession returns progress
   if (body.action === "start") {
     const denied = requirePermission(request, "run_sync");
     if (denied) {
       return denied;
     }
+    const plan = rt.sessions.getApprovedPlan(body.sessionId);
     if (body.changeSet) {
       const safety = rt.checkExecution(meshId, body.changeSet, body.confirmedDestructive);
       if (!safety.allowed) {
@@ -71,6 +95,20 @@ export async function POST(request: Request, { params }: Params) {
         );
       }
       rt.sessions.approvePlan(body.sessionId, body.changeSet);
+    } else if (plan) {
+      const safety = rt.checkExecution(meshId, plan, body.confirmedDestructive);
+      if (!safety.allowed) {
+        return Response.json(
+          {
+            error: {
+              code: safety.code ?? "safety_blocked",
+              message: safety.message ?? "Blocked",
+            },
+            requiresConfirmation: safety.requiresConfirmation,
+          },
+          { status: 400 },
+        );
+      }
     }
     const runResult = await rt.runApprovedSession(body.sessionId, {
       confirmedDestructive: body.confirmedDestructive,
@@ -82,7 +120,11 @@ export async function POST(request: Request, { params }: Params) {
       );
     }
     const result = rt.sessions.getSession(body.sessionId);
-    return Response.json({ session: result, executed: runResult === true });
+    return Response.json({
+      session: result,
+      executed: runResult === true,
+      progress: rt.getSessionProgress(body.sessionId),
+    });
   }
 
   if (body.action === "pause") {
@@ -105,11 +147,13 @@ export async function POST(request: Request, { params }: Params) {
     return err ?? Response.json({ session: result });
   }
 
+  // [IMPL-MESH_API] [IMPL-MESH_RUNTIME] [REQ-MESH_API]: POST sessions cancel — cancelSessionExecution then sessions.cancel
   if (body.action === "cancel") {
     const denied = requirePermission(request, "pause_cancel_sync");
     if (denied) {
       return denied;
     }
+    rt.cancelSessionExecution(body.sessionId);
     const result = rt.sessions.cancel(body.sessionId);
     const err = handleServiceResult(result);
     return err ?? Response.json({ session: result });

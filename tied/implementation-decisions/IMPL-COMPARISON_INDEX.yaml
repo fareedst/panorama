@@ -52,7 +52,8 @@ IMPL-COMPARISON_INDEX:
     depends_on: []
     supersedes: []
     see_also:
-      - IMPL-FILE_PANE
+      - docs/cross-pane-comparison-vocabulary.md
+      - docs/panorama-domain-references.md
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z

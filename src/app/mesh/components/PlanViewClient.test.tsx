@@ -32,8 +32,15 @@ describe("PlanViewClient [IMPL-MESH_GUI]", () => {
             }),
           );
         }
-        if (url.includes("/sessions")) {
-          return new Response(JSON.stringify({ session: { id: "s1", state: "completed" } }));
+        if (url.includes("/sessions") && init?.method === "POST") {
+          const body = JSON.parse(String(init.body)) as { action?: string };
+          if (body.action === "create") {
+            return new Response(JSON.stringify({ session: { id: "s1", state: "idle" } }));
+          }
+          if (body.action === "approve") {
+            return new Response(JSON.stringify({ approved: true }));
+          }
+          return new Response(JSON.stringify({ session: { id: "s1", state: "running" } }));
         }
         return new Response(
           JSON.stringify({
@@ -77,6 +84,21 @@ describe("PlanViewClient [IMPL-MESH_GUI]", () => {
     await user.selectOptions(screen.getByTestId("operation-filter"), "copy");
     expect(screen.getByTestId("change-set-table")).toHaveTextContent("copy");
     expect(screen.getByTestId("change-set-table")).not.toHaveTextContent("delete");
+  });
+
+  // [IMPL-MESH_GUI] [REQ-MESH_GUI]: Plan approval persists **approved session handoff** (sessionStorage) without **sync start** on Plan page
+  it("user_can_approve_plan_without_starting_sync", async () => {
+    const user = userEvent.setup();
+    const setItem = vi.fn();
+    vi.stubGlobal("sessionStorage", { setItem, getItem: () => null });
+    render(<PlanViewClient meshId="m1" />);
+    await user.click(screen.getByTestId("generate-plan-btn"));
+    await waitFor(() => screen.getByTestId("approve-plan-btn"));
+    await user.click(screen.getByTestId("approve-plan-btn"));
+    await waitFor(() => {
+      expect(screen.getByTestId("plan-approved")).toBeVisible();
+    });
+    expect(setItem).toHaveBeenCalled();
   });
 
   it("user_can_discard_plan", async () => {

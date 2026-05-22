@@ -1,10 +1,9 @@
-# REQ detail — REQ-NSYNC_MULTI_TARGET
 REQ-NSYNC_MULTI_TARGET:
   name: Multi-Destination File Synchronization
   category: Functional
   priority: P1
   status: Implemented
-  description: Enable efficient copying/moving of files from source to multiple destinations in parallel, inspired by Goful's nsync usage
+  description: 'Enable efficient copying/moving of files from the focused pane (sources) to all other visible panes (destinations) in parallel. Canonical terms: docs/nsync-multi-target-vocabulary.md; pseudo-code blocks IMPL-NSYNC_ENGINE_* in tied/implementation-decisions/IMPL-NSYNC_ENGINE-pseudocode.md.'
   rationale:
     why: Enable efficient copying/moving of files from source to multiple destinations in parallel, inspired by Goful's nsync usage
     problems_solved:
@@ -17,10 +16,11 @@ REQ-NSYNC_MULTI_TARGET:
       - Progress tracking and error reporting per destination
       - Safe move semantics (delete source only after ALL succeed)
   satisfaction_criteria:
-    - criterion: 'Move semantics: delete source only after all destinations succeed'
+    - criterion: 'Move semantics: delete source only after all destinations succeed (see MoveSemantics / IMPL-NSYNC_ENGINE_MoveSemantics)'
     - criterion: Cancellation support via AbortSignal
-    - criterion: Observer pattern for progress callbacks
-    - criterion: Sync files to 2+ destinations in parallel
+    - criterion: Observer pattern for progress callbacks (SyncObserver)
+    - criterion: Sync files to 2+ destinations in parallel via sync-all / SyncEngine
+    - criterion: Terminology and block names align with docs/nsync-multi-target-vocabulary.md
   validation_criteria:
     - method: Unit tests
       coverage: Multi-destination sync, move semantics, observer callbacks
@@ -46,9 +46,9 @@ REQ-NSYNC_MULTI_TARGET:
       date: 2026-02-09T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-09T00:00:00.000Z
+      date: "2026-05-19"
       author: AI Agent
-      reason: Initial creation after nsync implementation
+      reason: Link canonical domain vocabulary and pseudo-code block names
     last_validated:
       date: 2026-02-09T00:00:00.000Z
       validator: AI Agent

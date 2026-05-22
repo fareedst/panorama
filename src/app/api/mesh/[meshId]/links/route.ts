@@ -6,6 +6,7 @@ import {
   requirePermission,
 } from "@/lib/mesh/api/mesh-api-helpers";
 import { isDomainValidationError, toDtoMesh } from "@/lib/mesh/domain";
+import { nextMeshRecordAfterMeshMutation } from "@/lib/mesh/mesh-record";
 import { addLinkToMesh } from "@/lib/mesh/services/topology-service";
 
 type Params = { params: Promise<{ meshId: string }> };
@@ -33,9 +34,8 @@ export async function POST(request: Request, { params }: Params) {
     const message = isDomainValidationError(updated) ? updated.message : updated.message;
     return jsonError(400, code, message);
   }
-  record.mesh = updated;
-  record.updatedAt = new Date().toISOString();
-  rt.meshRepository.save(record);
+  const nextRecord = nextMeshRecordAfterMeshMutation(record, updated);
+  rt.meshRepository.save(nextRecord);
   rt.events.recordMeshUpdated(meshId, "link_added");
   const link = updated.links[updated.links.length - 1];
   return Response.json({ link, mesh: toDtoMesh(updated) }, { status: 201 });

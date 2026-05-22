@@ -5,11 +5,17 @@ REQ-MESH_REAL_CONNECTORS:
   status: Implemented
   description: Local filesystem connector for local depots used in E2E and production-like sync.
   satisfaction_criteria:
-    - criterion: local_depot_uses_filesystem_connector
     - criterion: connector_lists_and_copies_files_on_disk
+    - criterion: local_depot_uses_filesystem_connector
+    - criterion: remote_depot_registers_stub_connector_without_network_io
+    - criterion: virtual_depot_uses_synthetic_inventory_connector_that_defaults_to_readable_stub_tree
   validation_criteria:
     - method: Vitest
       coverage: src/lib/mesh/connector/local-filesystem-connector.test.ts
+    - method: Vitest
+      coverage: src/lib/mesh/connector/remote-connector.test.ts
+    - method: Vitest
+      coverage: src/lib/mesh/connector/virtual-connector.test.ts
     - method: Playwright
       coverage: e2e/mesh-sync.spec.ts
   traceability:
@@ -17,9 +23,10 @@ REQ-MESH_REAL_CONNECTORS:
       - ARCH-MESH_LAYERED
     implementation:
       - IMPL-MESH_CONNECTOR
-      - IMPL-MESH_LOCAL_CONNECTOR
     tests:
       - src/lib/mesh/connector/local-filesystem-connector.test.ts
+      - src/lib/mesh/connector/remote-connector.test.ts
+      - src/lib/mesh/connector/virtual-connector.test.ts
     code_annotations:
       - REQ-MESH_REAL_CONNECTORS
   related_requirements:

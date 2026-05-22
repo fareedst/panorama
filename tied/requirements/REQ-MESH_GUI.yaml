@@ -3,7 +3,7 @@ REQ-MESH_GUI:
   category: Functional
   priority: P1
   status: Implemented
-  description: 'Mesh UI at src/app/mesh: list, detail, topology, plan, sync, conflicts with navigation.'
+  description: 'Mesh UI at src/app/mesh: list, detail, topology, plan, sync, conflicts, schedule, export, history, rules, settings. Canonical terms: docs/mesh-platform-vocabulary.md; two-phase plan approve then sync start per IMPL-MESH_GUI-pseudocode.'
   rationale:
     why: Deployment plan phases 17-22.
     problems_solved:
@@ -11,8 +11,12 @@ REQ-MESH_GUI:
     benefits:
       - Operators can inspect topology and plans
   satisfaction_criteria:
-    - criterion: user_can_reach_every_major_feature_from_menu
+    - criterion: menu_reaches_schedule_export_history_archive_settings
     - criterion: mesh_list_displays_mesh_name_state_and_depot_count
+    - criterion: plan_page_approves_session_without_starting_sync
+    - criterion: sync_page_starts_approved_session_from_sessionStorage_handoff
+    - criterion: terminology_aligns_with_docs_mesh_platform_vocabulary
+    - criterion: user_can_reach_every_major_feature_from_menu
   validation_criteria:
     - method: Vitest RTL
       coverage: src/app/mesh/components/MeshListClient.test.tsx
@@ -26,6 +30,12 @@ REQ-MESH_GUI:
       coverage: src/app/mesh/components/SyncSessionClient.test.tsx
     - method: Vitest RTL
       coverage: src/app/mesh/components/TopologyGraphClient.test.tsx
+    - method: Vitest RTL
+      coverage: src/app/mesh/components/MeshScheduleClient.test.tsx
+    - method: Vitest RTL
+      coverage: src/app/mesh/components/MeshExportClient.test.tsx
+    - method: Vitest RTL
+      coverage: src/app/mesh/components/MeshArchiveClient.test.tsx
     - method: Playwright
       coverage: e2e/mesh-sync.spec.ts
   traceability:
@@ -34,8 +44,11 @@ REQ-MESH_GUI:
     implementation:
       - IMPL-MESH_GUI
     tests:
-      - src/app/mesh/components/MeshListClient.test.tsx
       - e2e/mesh-sync.spec.ts
+      - src/app/mesh/components/MeshArchiveClient.test.tsx
+      - src/app/mesh/components/MeshExportClient.test.tsx
+      - src/app/mesh/components/MeshListClient.test.tsx
+      - src/app/mesh/components/MeshScheduleClient.test.tsx
     code_annotations:
       - REQ-MESH_GUI
   related_requirements:

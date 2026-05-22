@@ -33,6 +33,7 @@ export function MeshDetailClient({ meshId }: { meshId: string }) {
   const [linkTarget, setLinkTarget] = useState("");
   const [linkDirection, setLinkDirection] = useState<"one_way" | "bidirectional">("one_way");
   const [error, setError] = useState<string | null>(null);
+  const [credentialDenied, setCredentialDenied] = useState(false);
 
   const reload = useCallback(async () => {
     const res = await fetch(`/api/mesh/${meshId}`);
@@ -45,6 +46,7 @@ export function MeshDetailClient({ meshId }: { meshId: string }) {
   }, [meshId]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch on mount / meshId change
     void reload();
   }, [reload]);
 
@@ -209,6 +211,40 @@ export function MeshDetailClient({ meshId }: { meshId: string }) {
             Add link
           </button>
         </div>
+      </section>
+
+      <section
+        className="mt-6 rounded border border-zinc-800 p-4"
+        data-testid="depot-credentials-section"
+      >
+        <h2 className="text-lg font-medium">Depot credentials</h2>
+        <p className="mt-1 text-sm text-zinc-500">
+          Credential references are labels only; secrets are never stored in mesh exports.
+        </p>
+        <button
+          type="button"
+          className="mt-2 rounded bg-zinc-700 px-3 py-2 text-sm"
+          data-testid="manage-credentials-btn"
+          onClick={() => {
+            void fetch("/api/mesh/credentials", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "x-mesh-role": "operator",
+              },
+              body: JSON.stringify({ label: "test" }),
+            }).then((res) => {
+              setCredentialDenied(res.status === 403);
+            });
+          }}
+        >
+          Manage credentials
+        </button>
+        {credentialDenied && (
+          <p className="mt-2 text-sm text-amber-300" data-testid="credential-denied">
+            Credential management denied for operator role
+          </p>
+        )}
       </section>
 
       <section className="mt-6" data-testid="depot-summary">

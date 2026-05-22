@@ -82,3 +82,37 @@ export class PlanningService {
     return { ...changeSet, id: `plan-${Date.now()}` };
   }
 }
+
+/** Pagination for oversized change-set responses ([REQ-MESH_HARDENING], prompts phase 29 large_inventory_handling). */
+export function paginateChangeSetOperations(
+  changeSet: ChangeSet,
+  operationOffset?: number,
+  operationLimit?: number,
+): {
+  changeSet: ChangeSet;
+  totalOperations: number;
+  offset: number;
+  requestedLimit?: number;
+  returnedOperations: number;
+} {
+  const totalOperations = changeSet.operations.length;
+  if (operationOffset == null && operationLimit == null) {
+    return {
+      changeSet,
+      totalOperations,
+      offset: 0,
+      returnedOperations: totalOperations,
+    };
+  }
+  const offset = Math.max(0, operationOffset ?? 0);
+  const end =
+    operationLimit == null ? undefined : Math.max(offset, offset + Math.max(0, operationLimit));
+  const slice = changeSet.operations.slice(offset, end);
+  return {
+    changeSet: { ...changeSet, operations: slice },
+    totalOperations,
+    offset,
+    requestedLimit: operationLimit ?? undefined,
+    returnedOperations: slice.length,
+  };
+}

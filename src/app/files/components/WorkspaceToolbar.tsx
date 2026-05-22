@@ -3,7 +3,7 @@
 
 "use client";
 
-import { Toolbar, type ToolbarProps } from "./Toolbar";
+import { Toolbar } from "./Toolbar";
 import type { ToolbarConfig } from "@/lib/config.types";
 
 export interface WorkspaceToolbarProps {

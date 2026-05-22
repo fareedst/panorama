@@ -1,9 +1,12 @@
-// [IMPL-MESH_GUI] [REQ-MESH_PLATFORM]: Mesh navigation shell — phase 17
+// [IMPL-MESH_GUI] [ARCH-MESH_LAYERED] [REQ-MESH_GUI] [REQ-MESH_PLATFORM]: Mesh navigation shell — phase 17
 
 import Link from "next/link";
 
 const globalNav = [
   { href: "/mesh", label: "Meshes" },
+  { href: "/mesh/depots", label: "Depots" },
+  { href: "/mesh/sync", label: "Sync" },
+  { href: "/mesh/policies", label: "Policies" },
   { href: "/mesh/monitoring", label: "Monitoring" },
   { href: "/mesh/settings", label: "Settings" },
   { href: "/files", label: "File Manager" },
@@ -13,9 +16,16 @@ export function MeshDetailNav({ meshId }: { meshId: string }) {
   const items = [
     { href: `/mesh/${meshId}`, label: "Overview" },
     { href: `/mesh/${meshId}/topology`, label: "Topology" },
+    { href: `/mesh/${meshId}/depots`, label: "Depots" },
+    { href: `/mesh/${meshId}/rules`, label: "Rules" },
     { href: `/mesh/${meshId}/plan`, label: "Plan" },
     { href: `/mesh/${meshId}/sync`, label: "Sync Now" },
     { href: `/mesh/${meshId}/conflicts`, label: "Conflicts" },
+    { href: `/mesh/${meshId}/history`, label: "History" },
+    { href: `/mesh/${meshId}/logs`, label: "Logs" },
+    { href: `/mesh/${meshId}/export`, label: "Export" },
+    { href: `/mesh/${meshId}/schedule`, label: "Schedule" },
+    { href: `/mesh/${meshId}/settings`, label: "Settings" },
   ];
   return (
     <nav

@@ -115,4 +115,32 @@ describe("REQ-MESH_CRUD mesh CRUD [IMPL-MESH_CRUD]", () => {
     const all = svc.listMeshes(true);
     expect(all.length).toBeGreaterThanOrEqual(2);
   });
+
+  it("configuration_version_starts_at_one_and_increments_on_update", () => {
+    const repo = new InMemoryMeshRepository();
+    const svc = new MeshService(repo);
+    const created = svc.createMesh({ name: "Versioned" });
+    if (isDomainValidationError(created) || isServiceError(created)) {
+      throw new Error("setup failed");
+    }
+    expect(repo.get(created.mesh.id)?.configurationVersion).toBe(1);
+    const patched = svc.updateMeshMetadata(created.mesh.id, { name: "V2" });
+    if (!isServiceError(patched) && !isDomainValidationError(patched)) {
+      expect(patched.configurationVersion).toBe(2);
+    }
+  });
+
+  it("stale_expected_configuration_version_rejected", () => {
+    const svc = new MeshService(new InMemoryMeshRepository());
+    const created = svc.createMesh({ name: "Lock" });
+    if (isDomainValidationError(created) || isServiceError(created)) {
+      throw new Error("setup failed");
+    }
+    const stale = svc.updateMeshMetadata(created.mesh.id, {
+      expectedConfigurationVersion: 99,
+      name: "Nope",
+    });
+    expect(isServiceError(stale)).toBe(true);
+    if (isServiceError(stale)) expect(stale.code).toBe("stale_configuration");
+  });
 });

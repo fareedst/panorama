@@ -3,7 +3,7 @@
 import { describe, it, expect } from "vitest";
 import { validateMesh, isDomainValidationError, defaultPolicy } from "../domain";
 import type { InventorySnapshot } from "./inventory-service";
-import { PlanningService } from "./planning-service";
+import { PlanningService, paginateChangeSetOperations } from "./planning-service";
 
 function mesh() {
   const m = validateMesh({ name: "Plan Mesh", policy: defaultPolicy() });
@@ -88,5 +88,25 @@ describe("PlanningService [IMPL-MESH_PLANNING]", () => {
     });
     const copy = plan.operations.find((o) => o.kind === "copy");
     expect(copy?.targetPath).toBe("/dst/a.txt");
+  });
+
+  it("paginateChangeSetOperations_slices_operations", () => {
+    const full = planner.generateDryRunPlan({
+      mesh: mesh(),
+      sourceInventory: snap("s", [
+        { path: "/1.txt", isDirectory: false, size: 1, mtimeMs: 100 },
+        { path: "/2.txt", isDirectory: false, size: 1, mtimeMs: 101 },
+        { path: "/3.txt", isDirectory: false, size: 1, mtimeMs: 102 },
+      ]),
+      targetInventory: snap("t", []),
+    });
+    expect(full.operations.length).toBeGreaterThanOrEqual(3);
+    const page = paginateChangeSetOperations(full, 1, 1);
+    expect(page.changeSet.operations).toHaveLength(1);
+    expect(page.returnedOperations).toBe(1);
+    expect(page.totalOperations).toBe(full.operations.length);
+    expect(page.offset).toBe(1);
+    const untouched = paginateChangeSetOperations(full);
+    expect(untouched.changeSet.operations).toHaveLength(full.operations.length);
   });
 });

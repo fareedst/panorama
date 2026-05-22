@@ -12,19 +12,26 @@ import {
 
 export class ConflictService {
   private readonly conflicts = new Map<string, Conflict>();
+  private readonly meshIdByConflict = new Map<string, string>();
 
-  create(attrs: unknown): Conflict | DomainValidationError {
+  create(attrs: unknown, meshId?: string): Conflict | DomainValidationError {
     const conflict = validateConflict(attrs);
     if (isDomainValidationError(conflict)) {
       return conflict;
     }
     this.conflicts.set(conflict.id, conflict);
+    if (meshId) {
+      this.meshIdByConflict.set(conflict.id, meshId);
+    }
     return conflict;
   }
 
   list(meshId?: string): Conflict[] {
-    void meshId;
-    return [...this.conflicts.values()].filter((c) => c.status === "pending");
+    const all = [...this.conflicts.values()].filter((c) => c.status === "pending");
+    if (!meshId) {
+      return all;
+    }
+    return all.filter((c) => this.meshIdByConflict.get(c.id) === meshId);
   }
 
   resolve(
@@ -41,7 +48,8 @@ export class ConflictService {
     return resolved;
   }
 
-  applyResolutionToChangeSet(changeSet: ChangeSet, _conflict: Conflict): ChangeSet {
+  applyResolutionToChangeSet(changeSet: ChangeSet, conflict: Conflict): ChangeSet {
+    void conflict;
     return changeSet;
   }
 

@@ -15,8 +15,13 @@ IMPL-MESH_HARDENING:
       - ARCH-MESH_LAYERED
     requirements:
       - REQ-MESH_PLATFORM
+      - REQ-MESH_HARDENING
     tests:
+      - src/app/api/mesh/plan-conflicts.route.test.ts
+      - src/lib/mesh/repositories/json-mesh-repository.test.ts
       - src/lib/mesh/services/hardening-service.test.ts
+      - src/lib/mesh/services/mesh-service.test.ts
+      - src/lib/mesh/services/planning-service.test.ts
     code_annotations:
       - IMPL-MESH_HARDENING
   related_decisions:

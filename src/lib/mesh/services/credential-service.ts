@@ -29,7 +29,9 @@ export class CredentialReferenceStore {
     return this.refs.get(id);
   }
 
-  detach(_meshId: string, _depotId: string): void {
+  detach(meshId: string, depotId: string): void {
+    void meshId;
+    void depotId;
     // references are shared; detach only clears depot association in depot service
   }
 

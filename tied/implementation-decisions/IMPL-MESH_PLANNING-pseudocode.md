@@ -4,7 +4,7 @@
 
 ## generateDryRunPlan
 
-// how: Compare source and target inventory listings; emit copy/update/delete operations per policy.
+// [IMPL-MESH_PLANNING] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — diff source vs target inventory snapshots into copy/update/delete **change set** respecting mesh **policy**.
 
 PROCEDURE IMPL-MESH_PLANNING_generateDryRunPlan({ mesh, sourceInventory, targetInventory })
   FOR each source file
@@ -13,3 +13,11 @@ PROCEDURE IMPL-MESH_PLANNING_generateDryRunPlan({ mesh, sourceInventory, targetI
   FOR each target-only file per policy
     MAY add delete operation
   RETURN ChangeSet with operations array and summary counts
+
+## paginateChangeSetOperations
+
+// [IMPL-MESH_PLANNING] [ARCH-MESH_LAYERED] [REQ-MESH_HARDENING]: Optional offset/limit slicing for oversized change-set responses returned via plan APIs.
+
+PROCEDURE IMPL-MESH_PLANNING_paginateChangeSetOperations(changeSet, offset optional, limit optional)
+  IF offset absent AND limit absent THEN RETURN full changeSet
+  ELSE slice operations array contiguously preserving changeSet identifiers for bookkeeping

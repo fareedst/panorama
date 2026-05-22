@@ -1,10 +1,9 @@
-# REQ detail — REQ-CROSS_PANE_COMPARISON
 REQ-CROSS_PANE_COMPARISON:
   name: Cross-Pane File Comparison
   category: Functional
   priority: P1
   status: Implemented
-  description: Users need to identify file differences across directories for sync and comparison tasks
+  description: 'Users identify file differences across panes using the comparison index and visual modes. Canonical terms: docs/cross-pane-comparison-vocabulary.md; blocks BuildEnhancedIndex, SizeComparison, TimeComparison.'
   rationale:
     why: Users need to identify file differences across directories for sync and comparison tasks
     problems_solved:
@@ -17,9 +16,10 @@ REQ-CROSS_PANE_COMPARISON:
       - Visual diff indicators (color coding)
   satisfaction_criteria:
     - criterion: Comparison updates when panes change
-    - criterion: Different sizes/times indicated with distinct colors
+    - criterion: Different sizes/times indicated with distinct colors (ComparisonMode size/time)
     - criterion: Files unique to one pane clearly marked
-    - criterion: Files with same name across panes color-coded
+    - criterion: Files with same name across panes color-coded (shared filename / CompareState)
+    - criterion: Terminology aligns with docs/cross-pane-comparison-vocabulary.md
   validation_criteria:
     - method: Comparison testing
       coverage: Comparison colors display correctly
@@ -46,9 +46,9 @@ REQ-CROSS_PANE_COMPARISON:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-07T00:00:00.000Z
+      date: "2026-05-19"
       author: AI Agent
-      reason: Initial creation
+      reason: Link canonical domain vocabulary
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

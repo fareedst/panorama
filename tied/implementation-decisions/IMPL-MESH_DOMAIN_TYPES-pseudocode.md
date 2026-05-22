@@ -112,20 +112,20 @@ PROCEDURE IMPL-MESH_DOMAIN_TYPES_VALIDATE_POLICY(attrs)
 
 ## VALIDATE_CREDENTIAL_REFERENCE
 
-// how: Enforce credential_reference_does_not_expose_secret_material at construction and deserialization.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: Enforce credential_reference_does_not_expose_secret_material; allocate fresh id when omitted (same pattern as depots via resolveEntityId).
 
 CONTRACT ValidateCredentialReference
-  INPUT: attrs { id, label, secret? }
+  INPUT: attrs { id?, label, secret? }
   OUTPUT: CredentialReference OR DomainValidationError
   DATA: CredentialReference { id, label }
 
-// how: Require id and label; reject any secret field on domain credential references.
+// how: Require non-empty label; resolve id with IMPL-MESH_DOMAIN_TYPES_resolveEntityId when id missing/empty; reject any secret field on domain credential references.
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_VALIDATE_CREDENTIAL_REFERENCE(attrs)
-  IF attrs.id is missing OR empty THEN RETURN validation error "credential_id_required"
   IF attrs.label is missing OR empty THEN RETURN validation error "credential_label_required"
   IF attrs.secret is present THEN RETURN validation error "credential_secret_not_allowed_in_domain"
-  RETURN CredentialReference { id: attrs.id, label: attrs.label }
+  ASSIGN credId = CALL IMPL-MESH_DOMAIN_TYPES_resolveEntityId(attrs)
+  RETURN CredentialReference { id: credId, label: attrs.label }
 
 ## SERIALIZE_CREDENTIAL_REFERENCE
 

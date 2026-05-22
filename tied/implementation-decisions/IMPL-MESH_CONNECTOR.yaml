@@ -2,9 +2,10 @@ IMPL-MESH_CONNECTOR:
   name: Mesh Connector Contract
   status: Active
   cross_references:
-    - REQ-MESH_PLATFORM
     - IMPL-MESH_DOMAIN_TYPES
-  decision: Connector interface with FakeConnector and LocalFilesystemConnector implementations.
+    - REQ-MESH_PLATFORM
+    - REQ-MESH_REAL_CONNECTORS
+  decision: Connector interface with FakeConnector, VirtualConnector (synthetic default tree), LocalFilesystemConnector, and RemoteConnector stub implementations.
   implementation_approach:
     summary: src/lib/mesh/connector/
   code_locations:
@@ -13,15 +14,19 @@ IMPL-MESH_CONNECTOR:
         description: Connector interface
       - path: src/lib/mesh/connector/fake-connector.ts
         description: In-memory fake connector
+      - path: src/lib/mesh/connector/virtual-connector.ts
+        description: Synthetic virtual depot connector for virtual-kind depots
     functions: []
   traceability:
     architecture:
       - ARCH-MESH_LAYERED
     requirements:
       - REQ-MESH_PLATFORM
+      - REQ-MESH_REAL_CONNECTORS
     tests:
-      - src/lib/mesh/connector/fake-connector.test.ts
       - src/lib/mesh/connector/local-filesystem-connector.test.ts
+      - src/lib/mesh/connector/remote-connector.test.ts
+      - src/lib/mesh/connector/virtual-connector.test.ts
     code_annotations:
       - IMPL-MESH_CONNECTOR
   related_decisions:

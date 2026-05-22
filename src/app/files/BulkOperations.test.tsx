@@ -320,22 +320,37 @@ describe("WorkspaceView Bulk Operations [REQ-BULK_FILE_OPS]", () => {
   });
   
   it("should display errors in progress dialog [REQ-BULK_FILE_OPS]", async () => {
-    // Mock an error response
-    (global.fetch as ReturnType<typeof vi.fn>).mockImplementationOnce(() =>
-      Promise.resolve({
+    // [REQ-BULK_FILE_OPS]: Stable fetch mock — route by URL/method so GET listing survives POST bulk-delete refresh
+    // Mock bulk delete with partial errors; keep directory listing as FileStat[]
+    (global.fetch as ReturnType<typeof vi.fn>).mockImplementation((url: string, options?: RequestInit) => {
+      const body = options?.body ? JSON.parse(options.body as string) : {};
+
+      if (url.includes("/api/files?path=")) {
+        return Promise.resolve({
+          ok: true,
+          json: async () => [...mockFiles],
+        } as Response);
+      }
+
+      if (options?.method === "POST" && url.includes("/api/files")) {
+        const operation = body.operation;
+        if (operation?.startsWith("bulk-")) {
+          return Promise.resolve({
+            ok: true,
+            json: async (): Promise<OperationResult> => ({
+              successCount: 1,
+              errorCount: 1,
+              errors: [{ file: "/test/file2.txt", error: "Permission denied" }],
+            }),
+          } as Response);
+        }
+      }
+
+      return Promise.resolve({
         ok: true,
-        json: async () => [...mockFiles],
-      } as Response)
-    ).mockImplementationOnce(() =>
-      Promise.resolve({
-        ok: true,
-        json: async (): Promise<OperationResult> => ({
-          successCount: 1,
-          errorCount: 1,
-          errors: [{ file: "/test/file2.txt", error: "Permission denied" }],
-        }),
-      } as Response)
-    );
+        json: async () => ({ success: true }),
+      } as Response);
+    });
     
     render(
       <WorkspaceView
@@ -366,7 +381,9 @@ describe("WorkspaceView Bulk Operations [REQ-BULK_FILE_OPS]", () => {
     
     // Wait for completion and check for errors
     await waitFor(() => {
-      expect(screen.getByText(/Delete Complete|error/i)).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: "Delete Complete" })).toBeInTheDocument();
+      expect(screen.getByText(/1 error occurred/i)).toBeInTheDocument();
+      expect(screen.getByText(/Permission denied/i)).toBeInTheDocument();
     }, { timeout: 3000 });
   });
   
