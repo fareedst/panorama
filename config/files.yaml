@@ -82,6 +82,11 @@ copy:
     minPanesReached: "At least one pane must remain"
     paneManagementDisabled: "Pane management is disabled"
 
+  # [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE]
+  workspaceMesh:
+    saveDialogTitle: "Save workspace as mesh"
+    saveSuccess: "Workspace saved as mesh"
+
 # [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
 # Keyboard shortcut definitions
 keybindings:
@@ -98,6 +103,14 @@ keybindings:
       ctrl: true
     action: "command.palette"
     description: "Open command palette"
+    category: "system"
+
+  - key: "m"
+    modifiers:
+      ctrl: true
+      shift: true
+    action: "mesh.saveWorkspace"
+    description: "Save workspace as mesh"
     category: "system"
   
   # Navigation
@@ -374,6 +387,9 @@ toolbars:
           - "pane.add"
           - "pane.remove"
           - "pane.refresh-all"
+      - name: "Mesh"
+        actions:
+          - "mesh.saveWorkspace"
   
   # Pane toolbar - actions on focused pane
   pane:

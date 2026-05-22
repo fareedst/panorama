@@ -57,6 +57,9 @@ const ACTION_ICON_MAP: Record<string, string> = {
   'pane.remove': 'minus',
   'pane.refresh': 'refresh-cw',
   'pane.refresh-all': 'refresh-ccw',
+
+  // Mesh / workspace bridge
+  'mesh.saveWorkspace': 'network',
   
   // Bookmarks
   'bookmark.goto': 'folder-open',

@@ -3080,3 +3080,13 @@ REQ-MESH_HARDENING:
   cross_references:
     - REQ-MESH_PLATFORM
   detail_file: requirements/REQ-MESH_HARDENING.yaml
+REQ-WORKSPACE_MESH_BRIDGE:
+  name: Workspace Mesh Bridge
+  category: Functional
+  priority: P1
+  status: Implemented
+  cross_references:
+    - REQ-MESH_GUI
+    - REQ-MESH_PLATFORM
+    - REQ-MULTI_PANE_LAYOUT
+  detail_file: requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml

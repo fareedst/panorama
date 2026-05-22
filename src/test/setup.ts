@@ -78,3 +78,17 @@ vi.mock('next/font/google', () => ({
     style: { fontFamily: 'Geist Mono' },
   }),
 }));
+
+// [IMPL-WORKSPACE_MESH_BRIDGE] [IMPL-TEST_SETUP]: WorkspaceView uses useRouter for mesh save redirect
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    back: vi.fn(),
+    forward: vi.fn(),
+    refresh: vi.fn(),
+    prefetch: vi.fn(),
+  }),
+  usePathname: () => '/files',
+  useSearchParams: () => new URLSearchParams(),
+}));

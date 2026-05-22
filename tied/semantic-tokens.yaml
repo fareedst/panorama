@@ -2702,6 +2702,44 @@ REQ-MESH_HARDENING:
   metadata:
     registered: "2026-05-19T00:00:00.000Z"
     last_updated: "2026-05-19T00:00:00.000Z"
+REQ-WORKSPACE_MESH_BRIDGE:
+  type: REQ
+  name: Workspace Mesh Bridge
+  status: Implemented
+  cross_references:
+    - ARCH-WORKSPACE_MESH_BRIDGE
+    - IMPL-WORKSPACE_MESH_BRIDGE
+    - REQ-MESH_PLATFORM
+    - REQ-MULTI_PANE_LAYOUT
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml
+  metadata:
+    registered: "2026-05-21T00:00:00.000Z"
+    last_updated: "2026-05-21T00:00:00.000Z"
+ARCH-WORKSPACE_MESH_BRIDGE:
+  type: ARCH
+  name: Workspace Mesh Bridge Architecture
+  status: Accepted
+  cross_references:
+    - REQ-WORKSPACE_MESH_BRIDGE
+    - IMPL-WORKSPACE_MESH_BRIDGE
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-WORKSPACE_MESH_BRIDGE.yaml
+  metadata:
+    registered: "2026-05-21T00:00:00.000Z"
+    last_updated: "2026-05-21T00:00:00.000Z"
+IMPL-WORKSPACE_MESH_BRIDGE:
+  type: IMPL
+  name: Workspace Mesh Bridge Implementation
+  status: Implemented
+  cross_references:
+    - REQ-WORKSPACE_MESH_BRIDGE
+    - ARCH-WORKSPACE_MESH_BRIDGE
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml
+  metadata:
+    registered: "2026-05-21T00:00:00.000Z"
+    last_updated: "2026-05-21T00:00:00.000Z"
 IMPL-MESH_CRUD:
   type: IMPL
   name: Mesh CRUD Service

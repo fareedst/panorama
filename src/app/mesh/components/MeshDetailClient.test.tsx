@@ -1,9 +1,15 @@
 // [REQ-MESH_GUI] [IMPL-MESH_GUI]: Mesh detail component tests — phase 18
+// [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE]: MESH_DETAIL_RESTORE_LINK, WORKSPACE_SNAPSHOT_SUMMARY
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MeshDetailClient } from "./MeshDetailClient";
+import {
+  buildMeshCreatePayload,
+  captureWorkspaceSnapshot,
+  WORKSPACE_SNAPSHOT_TAG,
+} from "@/lib/workspace-mesh-bridge";
 
 describe("MeshDetailClient [IMPL-MESH_GUI]", () => {
   beforeEach(() => {
@@ -63,5 +69,53 @@ describe("MeshDetailClient [IMPL-MESH_GUI]", () => {
         expect.objectContaining({ method: "POST" }),
       );
     });
+  });
+
+  it("MESH_DETAIL_RESTORE_LINK_shows_workspace_snapshot_summary_and_open_link", async () => {
+    const snapshot = captureWorkspaceSnapshot({
+      layout: "OneRow",
+      focusIndex: 0,
+      linkedMode: true,
+      comparisonMode: "name",
+      panes: [
+        {
+          path: "/tmp/ws-pane",
+          sortBy: "name",
+          sortDirection: "asc",
+          sortDirsFirst: true,
+          cursor: 0,
+        },
+      ],
+    });
+    const payload = buildMeshCreatePayload({ name: "WS", snapshot });
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () =>
+        new Response(
+          JSON.stringify({
+            mesh: {
+              id: "mesh-ws-1",
+              name: "WS",
+              description: payload.description,
+              tags: [WORKSPACE_SNAPSHOT_TAG],
+              depots: [
+                { id: "d1", name: "Pane 1", kind: "local", root: "/tmp/ws-pane" },
+              ],
+              links: [],
+            },
+            status: "active",
+          }),
+        ),
+      ),
+    );
+
+    render(<MeshDetailClient meshId="mesh-ws-1" />);
+    await waitFor(() => {
+      expect(screen.getByTestId("workspace-snapshot-summary")).toBeInTheDocument();
+    });
+    expect(screen.getByTestId("workspace-snapshot-summary")).toHaveTextContent("/tmp/ws-pane");
+    expect(screen.getByTestId("workspace-snapshot-summary")).toHaveTextContent("Linked: on");
+    const link = screen.getByTestId("open-workspace-from-mesh");
+    expect(link).toHaveAttribute("href", "/files?meshId=mesh-ws-1");
   });
 });

@@ -10,6 +10,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { useRouter } from "next/navigation";
 import path from "path-browserify";
 import type { FileStat, OperationResult, ComparisonMode } from "@/lib/files.types";
 import type { LayoutType } from "@/lib/files.layout";
@@ -37,6 +38,11 @@ import { SearchDialog } from "./components/SearchDialog";
 import { WorkspaceToolbar } from "./components/WorkspaceToolbar";
 import { PaneToolbar } from "./components/PaneToolbar";
 import { SystemToolbar } from "./components/SystemToolbar";
+import { SaveWorkspaceMeshDialog } from "./components/SaveWorkspaceMeshDialog";
+import {
+  buildMeshCreatePayload,
+  captureWorkspaceSnapshot,
+} from "@/lib/workspace-mesh-bridge";
 
 interface PaneState {
   path: string;
@@ -55,6 +61,22 @@ interface PaneInitialState {
   files: FileStat[];
 }
 
+/** [IMPL-WORKSPACE_MESH_BRIDGE] Per-pane UI restored from mesh snapshot */
+export type RestorePaneMeta = {
+  sortBy: SortCriterion;
+  sortDirection: SortDirection;
+  sortDirsFirst: boolean;
+  cursor: number;
+};
+
+/** [IMPL-WORKSPACE_MESH_BRIDGE] Workspace-level UI restored from mesh */
+export type RestoreUiState = {
+  layout: LayoutType;
+  focusIndex: number;
+  linkedMode: boolean;
+  comparisonMode: ComparisonMode;
+};
+
 interface WorkspaceViewProps {
   /** Initial panes from server */
   initialPanes: PaneInitialState[];
@@ -68,6 +90,11 @@ interface WorkspaceViewProps {
   columns: import("@/lib/config.types").FilesColumnConfig[];
   /** Toolbar configuration from server [REQ-TOOLBAR_SYSTEM] [IMPL-TOOLBAR_COMPONENT] */
   toolbars?: ToolbarsConfig;
+  /** [REQ-WORKSPACE_MESH_BRIDGE] Restored from /files?meshId= */
+  restoreUi?: RestoreUiState;
+  restorePaneMeta?: RestorePaneMeta[];
+  restoredFromMesh?: boolean;
+  restoreWarning?: string | null;
 }
 
 /**
@@ -76,6 +103,33 @@ interface WorkspaceViewProps {
  * [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] [REQ-MULTI_PANE_LAYOUT]
  * [REQ-TOOLBAR_SYSTEM] [IMPL-TOOLBAR_COMPONENT] Toolbar integration
  */
+// [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_ON_FILES_PAGE — apply restorePaneMeta to pane state
+function buildPaneStatesFromInitial(
+  initialPanes: PaneInitialState[],
+  restorePaneMeta?: RestorePaneMeta[],
+): PaneState[] {
+  return initialPanes.map((pane, i) => {
+    const meta = restorePaneMeta?.[i];
+    const sortBy = meta?.sortBy ?? "name";
+    const sortDirection = meta?.sortDirection ?? "asc";
+    const sortDirsFirst = meta?.sortDirsFirst ?? true;
+    const files = sortFiles([...pane.files], sortBy, sortDirection, sortDirsFirst);
+    const cursor =
+      meta?.cursor !== undefined
+        ? Math.min(meta.cursor, Math.max(0, files.length - 1))
+        : 0;
+    return {
+      path: pane.path,
+      files,
+      cursor,
+      marks: new Set<string>(),
+      sortBy,
+      sortDirection,
+      sortDirsFirst,
+    };
+  });
+}
+
 export default function WorkspaceView({
   initialPanes,
   keybindings,
@@ -83,7 +137,12 @@ export default function WorkspaceView({
   layout: layoutConfig,
   columns,
   toolbars,
+  restoreUi,
+  restorePaneMeta,
+  restoredFromMesh = false,
+  restoreWarning = null,
 }: WorkspaceViewProps) {
+  const router = useRouter();
   // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
   // Initialize keybinding registry synchronously before first render
   // This ensures the registry is available when CommandPalette and HelpOverlay render
@@ -94,21 +153,13 @@ export default function WorkspaceView({
   
   // [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] Initialize panes from server data
   // State
-  const [panes, setPanes] = useState<PaneState[]>(
-    initialPanes.map((pane) => ({
-      path: pane.path,
-      files: sortFiles([...pane.files], "name", "asc", true), // [IMPL-SORT_FILTER] Apply default sort
-      cursor: 0,
-      marks: new Set<string>(),
-      sortBy: "name",
-      sortDirection: "asc",
-      sortDirsFirst: true,
-    }))
+  const [panes, setPanes] = useState<PaneState[]>(() =>
+    buildPaneStatesFromInitial(initialPanes, restorePaneMeta),
   );
   const [layout, setLayout] = useState<LayoutType>(
-    (layoutConfig.default || "Tile") as LayoutType
+    () => restoreUi?.layout ?? ((layoutConfig.default || "Tile") as LayoutType),
   );
-  const [focusIndex, setFocusIndex] = useState(0);
+  const [focusIndex, setFocusIndex] = useState(() => restoreUi?.focusIndex ?? 0);
   const [containerWidth, setContainerWidth] = useState(800);
   const [containerHeight, setContainerHeight] = useState(600);
   // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Track scroll triggers for linked pane synchronization
@@ -148,13 +199,17 @@ export default function WorkspaceView({
   });
   
   // [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL] Comparison mode state
-  const [comparisonMode, setComparisonMode] = useState<ComparisonMode>("off");
-  
-  // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] [ARCH-LINKED_NAV] Linked navigation state
-  // Initialize from config (default true)
-  const [linkedMode, setLinkedMode] = useState<boolean>(
-    layoutConfig.defaultLinkedMode ?? true
+  const [comparisonMode, setComparisonMode] = useState<ComparisonMode>(
+    () => restoreUi?.comparisonMode ?? "off",
   );
+
+  // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] [ARCH-LINKED_NAV] Linked navigation state
+  const [linkedMode, setLinkedMode] = useState<boolean>(
+    () => restoreUi?.linkedMode ?? layoutConfig.defaultLinkedMode ?? true,
+  );
+
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] Save workspace as mesh
+  const [saveMeshDialogOpen, setSaveMeshDialogOpen] = useState(false);
   
   // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Track if we're in a sync operation (prevent infinite recursion)
   const syncingRef = useRef<Set<number>>(new Set());
@@ -234,7 +289,11 @@ export default function WorkspaceView({
 
   // Initialize panes from URL query parameters (for E2E testing and deep linking)
   // Query params: ?pane0=/path/to/dir&pane1=/another/path&pane2=/third/path
+  // [IMPL-WORKSPACE_MESH_BRIDGE] Skip when server restored from meshId
   useEffect(() => {
+    if (restoredFromMesh) {
+      return;
+    }
     const searchParams = new URLSearchParams(window.location.search);
     const panePathsFromUrl: string[] = [];
     
@@ -256,7 +315,7 @@ export default function WorkspaceView({
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Run only once on mount
+  }, [restoredFromMesh]); // Run only once on mount
   
   // Calculate pane bounds
   const bounds = calculateLayout(
@@ -1265,32 +1324,62 @@ export default function WorkspaceView({
     // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Use handleNavigate to trigger linked sync
     await handleNavigate(paneIndex, parentPath);
   }, [panes, handleNavigate]);
-  
+
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] STORE_FROM_WORKSPACE_UI
+  const handleSaveWorkspaceAsMesh = useCallback(
+    async (name: string, note?: string) => {
+      const snapshot = captureWorkspaceSnapshot({
+        layout,
+        focusIndex,
+        linkedMode,
+        comparisonMode,
+        panes: panes.map((p) => ({
+          path: p.path,
+          sortBy: p.sortBy,
+          sortDirection: p.sortDirection,
+          sortDirsFirst: p.sortDirsFirst,
+          cursor: p.cursor,
+        })),
+      });
+      const payload = buildMeshCreatePayload({ name, note, snapshot });
+      const res = await fetch("/api/mesh", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = (await res.json()) as {
+        mesh?: { id: string };
+        error?: { message?: string };
+      };
+      if (!res.ok || !data.mesh?.id) {
+        throw new Error(data.error?.message ?? "Failed to create mesh");
+      }
+      router.push(`/mesh/${data.mesh.id}`);
+    },
+    [layout, focusIndex, linkedMode, comparisonMode, panes, router],
+  );
+
+  // [REQ-TOOLBAR_SYSTEM] Workspace-scoped actions (no focused pane required)
+  const workspaceActionHandlers = useMemo(() => {
+    const handlers = new Map<string, () => void>();
+    handlers.set("mesh.saveWorkspace", () => setSaveMeshDialogOpen(true));
+    handlers.set("help.show", () => setShowHelp((prev) => !prev));
+    handlers.set("command.palette", () => setShowCommandPalette((prev) => !prev));
+    handlers.set("search.finder", () => setShowFinderDialog(true));
+    handlers.set("search.content", () => setShowSearchDialog(true));
+    handlers.set("pane.refresh-all", () => {
+      void Promise.all(panes.map((p, idx) => handleNavigate(idx, p.path)));
+    });
+    return handlers;
+  }, [panes, handleNavigate]);
+
   // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
-  // Action handlers registry (maps action names to handler functions)
-  const actionHandlers = useMemo(() => {
+  // Pane-scoped action handlers
+  const paneActionHandlers = useMemo(() => {
     const handlers = new Map<string, () => void>();
     const pane = panes[focusIndex];
     if (!pane) return handlers;
-    
-    // System
-    handlers.set("help.show", () => {
-      setShowHelp((prev) => !prev);
-    });
-    
-    handlers.set("command.palette", () => {
-      setShowCommandPalette((prev) => !prev);
-    });
-    
-    // [REQ-FILE_SEARCH] [IMPL-FILE_SEARCH] Search handlers
-    handlers.set("search.finder", () => {
-      setShowFinderDialog(true);
-    });
-    
-    handlers.set("search.content", () => {
-      setShowSearchDialog(true);
-    });
-    
+
     // Navigation
     handlers.set("navigate.up", () => {
       if (pane.cursor > 0) {
@@ -1517,14 +1606,16 @@ export default function WorkspaceView({
       void handleNavigate(focusIndex, pane.path);
     });
     
-    handlers.set("pane.refresh-all", () => {
-      void Promise.all(
-        panes.map((p, idx) => handleNavigate(idx, p.path))
-      );
-    });
-    
     return handlers;
   }, [panes, focusIndex, navigateToParent, handleNavigate, handleBulkCopy, handleBulkMove, handleBulkDelete, handleAddPane, handleRemovePane, handleClearMarks, handleCursorMove, handleToggleMark, handleMarkAll, handleInvertMarks, handleCopyAll, handleMoveAll]);
+
+  const actionHandlers = useMemo(() => {
+    const merged = new Map(workspaceActionHandlers);
+    for (const [key, fn] of paneActionHandlers) {
+      merged.set(key, fn);
+    }
+    return merged;
+  }, [workspaceActionHandlers, paneActionHandlers]);
   
   // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
   // Keyboard event handler using keybinding registry
@@ -1636,6 +1727,22 @@ export default function WorkspaceView({
             <p className="text-sm text-zinc-600 dark:text-zinc-400">
               Browse and manage server files
             </p>
+            {restoreWarning && (
+              <p
+                className="mt-1 text-sm text-amber-700 dark:text-amber-300"
+                data-testid="workspace-restore-warning"
+              >
+                {restoreWarning}
+              </p>
+            )}
+            {restoredFromMesh && !restoreWarning && (
+              <p
+                className="mt-1 text-sm text-emerald-700 dark:text-emerald-400"
+                data-testid="workspace-restored-from-mesh"
+              >
+                Workspace restored from mesh
+              </p>
+            )}
           </div>
           
           {/* Layout selector */}
@@ -1804,6 +1911,13 @@ export default function WorkspaceView({
         initialName={renameDialog.fileName}
         onConfirm={(newName) => handleRenameConfirm(renameDialog.filePath, renameDialog.paneIndex, newName)}
         onClose={() => setRenameDialog((prev) => ({ ...prev, isOpen: false }))}
+      />
+
+      <SaveWorkspaceMeshDialog
+        isOpen={saveMeshDialogOpen}
+        defaultName={`Workspace ${new Date().toISOString().slice(0, 16).replace("T", " ")}`}
+        onClose={() => setSaveMeshDialogOpen(false)}
+        onSave={handleSaveWorkspaceAsMesh}
       />
       
       <BookmarkDialog

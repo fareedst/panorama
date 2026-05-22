@@ -1,9 +1,16 @@
 "use client";
 
 // [IMPL-MESH_GUI] [REQ-MESH_GUI]: Mesh detail with depot/link management — phases 17–18
+// [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE]: Workspace snapshot summary and restore link
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { MeshDetailNav } from "../layout";
+import {
+  WORKSPACE_SNAPSHOT_TAG,
+  parseWorkspaceSnapshotFromMesh,
+  workspaceSnapshotSummary,
+} from "@/lib/workspace-mesh-bridge";
 
 type DepotRow = { id: string; name: string; kind: string; root?: string };
 type LinkRow = {
@@ -18,6 +25,7 @@ type MeshDetail = {
     id: string;
     name: string;
     description?: string;
+    tags?: string[];
     depots: DepotRow[];
     links: LinkRow[];
   };
@@ -108,13 +116,62 @@ export function MeshDetailClient({ meshId }: { meshId: string }) {
   }
 
   const depotNameById = new Map(data.mesh.depots.map((d) => [d.id, d.name]));
+  const isWorkspaceSnapshot = data.mesh.tags?.includes(WORKSPACE_SNAPSHOT_TAG) ?? false;
+  const parsedSnapshot = parseWorkspaceSnapshotFromMesh({
+    description: data.mesh.description,
+    tags: data.mesh.tags ?? [],
+    depots: data.mesh.depots.map((d) => ({
+      id: d.id,
+      name: d.name,
+      kind: (d.kind as "local" | "remote" | "virtual") || "local",
+      root: d.root ?? "",
+      accessMode: "read_write" as const,
+    })),
+  });
+  const workspaceSummary = parsedSnapshot
+    ? workspaceSnapshotSummary(parsedSnapshot)
+    : null;
+
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] MESH_DETAIL_RESTORE_LINK + WORKSPACE_SNAPSHOT_SUMMARY
+  const showDescriptionLine =
+    data.mesh.description &&
+    !isWorkspaceSnapshot &&
+    !data.mesh.description.trim().startsWith("{");
 
   return (
     <div data-testid="mesh-detail">
       <MeshDetailNav meshId={meshId} />
       <h1 className="text-2xl font-semibold">{data.mesh.name}</h1>
-      {data.mesh.description && (
+      {showDescriptionLine && (
         <p className="mt-1 text-zinc-400">{data.mesh.description}</p>
+      )}
+      {data.mesh.depots.length > 0 && (
+        <Link
+          href={`/files?meshId=${meshId}`}
+          className="mt-3 inline-block rounded bg-emerald-700 px-3 py-2 text-sm hover:bg-emerald-600"
+          data-testid="open-workspace-from-mesh"
+        >
+          Open in File Manager
+        </Link>
+      )}
+      {isWorkspaceSnapshot && workspaceSummary && (
+        <section
+          className="mt-4 rounded border border-zinc-800 p-4 text-sm text-zinc-300"
+          data-testid="workspace-snapshot-summary"
+        >
+          <h2 className="text-lg font-medium text-zinc-100">Workspace snapshot</h2>
+          <ul className="mt-2 list-inside list-disc space-y-1">
+            <li>Layout: {workspaceSummary.layout}</li>
+            <li>Focus pane: {workspaceSummary.focusIndex + 1}</li>
+            <li>Linked: {workspaceSummary.linkedMode ? "on" : "off"}</li>
+            <li>Comparison: {workspaceSummary.comparisonMode}</li>
+            {workspaceSummary.panePaths.map((p, i) => (
+              <li key={p}>
+                Pane {i + 1}: {p}
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
       <p className="mt-2 text-sm text-zinc-500" data-testid="mesh-detail-status">
         Status: {data.status}

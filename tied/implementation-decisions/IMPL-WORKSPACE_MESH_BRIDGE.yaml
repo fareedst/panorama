@@ -1,0 +1,27 @@
+IMPL-WORKSPACE_MESH_BRIDGE:
+  name: Workspace Mesh Bridge Implementation
+  status: Implemented
+  description: workspace-mesh-bridge.ts, SaveWorkspaceMeshDialog, WorkspaceView store/restore handlers, FilesPage meshId searchParams, MeshDetailClient summary and open-workspace link. E2E justified for full save/restore UI path.
+  essence_pseudocode_path: implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE-pseudocode.md
+  traceability:
+    requirements:
+      - REQ-WORKSPACE_MESH_BRIDGE
+    architecture:
+      - ARCH-WORKSPACE_MESH_BRIDGE
+    implementation: []
+    tests:
+      - e2e/workspace-mesh-bridge.spec.ts
+      - src/app/api/mesh/workspace-bridge.route.test.ts
+      - src/app/files/components/SaveWorkspaceMeshDialog.test.tsx
+      - src/app/mesh/components/MeshDetailClient.test.tsx
+      - src/lib/workspace-mesh-bridge.test.ts
+    code_annotations:
+      - IMPL-WORKSPACE_MESH_BRIDGE
+  metadata:
+    created:
+      date: "2026-05-21T00:00:00.000Z"
+      author: AI Agent
+    last_updated:
+      date: "2026-05-21T00:00:00.000Z"
+      author: AI Agent
+      reason: Fortification — pseudo-code blocks, composition tests, traceability

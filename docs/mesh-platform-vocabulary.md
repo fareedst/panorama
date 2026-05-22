@@ -38,6 +38,8 @@
 | **Mesh hub route** | Global `/mesh/...` page without `:meshId` (informational shells); mesh **detail** routes use **`/mesh/:meshId/**` |
 | **Virtual depot** | Depot `kind: virtual` — **VirtualConnector** synthetic inventory ([REQ-MESH_REAL_CONNECTORS](../tied/requirements/REQ-MESH_REAL_CONNECTORS.yaml)) |
 | **Default connector fallback** | When `kind` is unknown/unregistered — **VirtualConnector** (synthetic stub), not a live filesystem connector |
+| **Workspace snapshot** | Tag `workspace-snapshot`; UI state JSON in `description.workspaceSnapshot` ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)) |
+| **Open in File Manager** | Mesh detail restore entry | `/files?meshId=` | `IMPL-WORKSPACE_MESH_BRIDGE` restore |
 
 ## Naming bridge
 
@@ -58,6 +60,8 @@
 | Export mesh | export page | `GET /export` | `IMPL-MESH_GUI_export` |
 | Archive mesh | settings, `archive-mesh-btn` | mesh archive API | `IMPL-MESH_GUI_archive` |
 | Schedule | schedule page | schedule routes | `IMPL-MESH_GUI_schedule` |
+| Workspace snapshot summary | `workspace-snapshot-summary` | mesh `description` JSON | `IMPL-WORKSPACE_MESH_BRIDGE` |
+| Open workspace from mesh | `open-workspace-from-mesh` | `/files?meshId=` | `IMPL-WORKSPACE_MESH_BRIDGE` |
 
 ## Named concepts
 
@@ -69,6 +73,7 @@
 - **Mesh runtime** — Facade for authorize → plan → session → execute (`MeshRuntime`).
 - **Mesh repository** — Persistence (`JsonMeshRepository`, `createMeshRepository`).
 - **Role / permission** — `IMPL-MESH_AUTH_can`, `require`; header `parseMeshRole`.
+- **WorkspaceSnapshot v1** — JSON object under `description.workspaceSnapshot`: `version`, `layout`, `focusIndex`, `linkedMode`, `comparisonMode`, `panes[]` (path, sort, cursor per pane); tag `workspace-snapshot` on save ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)).
 
 ## Pseudo-code block names
 

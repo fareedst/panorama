@@ -1,0 +1,41 @@
+ARCH-WORKSPACE_MESH_BRIDGE:
+  name: Workspace Mesh Bridge Architecture
+  status: Accepted
+  decision: 'Bridge workspace and mesh via a pure module (workspace-mesh-bridge.ts): pane paths map to local depots; UI state lives in mesh description JSON (workspaceSnapshot v1) and tag workspace-snapshot. File manager and mesh remain separate surfaces; restore uses server-side mesh load on FilesPage and client restoreUi props. Open in File Manager appears when the mesh has depots; workspace-snapshot summary when tag and JSON parse.'
+  implementation_approach:
+    summary: Pure bridge module, existing POST /api/mesh, /files?meshId= restore bootstrap
+    details:
+      - applyMaxPanesLimit truncates restored panes; FilesPage surfaces restoreWarning
+      - links array empty on workspace save (linked mode does not create sync links)
+      - Optional human note may prefix description before workspaceSnapshot JSON
+      - Restore precedence over paneN URL query when meshId bootstrap applies (restoredFromMesh)
+      - Store creates new mesh only (no in-place update)
+  traceability:
+    requirements:
+      - REQ-WORKSPACE_MESH_BRIDGE
+    implementation:
+      - IMPL-WORKSPACE_MESH_BRIDGE
+    tests:
+      - e2e/workspace-mesh-bridge.spec.ts
+      - src/app/api/mesh/workspace-bridge.route.test.ts
+      - src/app/files/components/SaveWorkspaceMeshDialog.test.tsx
+      - src/app/mesh/components/MeshDetailClient.test.tsx
+      - src/lib/workspace-mesh-bridge.test.ts
+    code_annotations:
+      - ARCH-WORKSPACE_MESH_BRIDGE
+  related_decisions:
+    depends_on:
+      - ARCH-FILE_MANAGER_HIERARCHY
+      - ARCH-MESH_LAYERED
+      - ARCH-PANE_LIFECYCLE
+    informs:
+      - IMPL-WORKSPACE_MESH_BRIDGE
+    see_also: []
+  metadata:
+    created:
+      date: "2026-05-21T00:00:00.000Z"
+      author: AI Agent
+    last_updated:
+      date: "2026-05-21T00:00:00.000Z"
+      author: AI Agent
+      reason: LEAP from IMPL — restore precedence, note prefix, maxPanes, test paths

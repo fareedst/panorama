@@ -4119,6 +4119,13 @@ IMPL-MESH_IMPORT_EXPORT:
     - REQ-MESH_IMPORT_EXPORT
     - REQ-MESH_PLATFORM
   detail_file: implementation-decisions/IMPL-MESH_IMPORT_EXPORT.yaml
+IMPL-WORKSPACE_MESH_BRIDGE:
+  name: Workspace Mesh Bridge
+  status: Active
+  cross_references:
+    - REQ-WORKSPACE_MESH_BRIDGE
+    - REQ-MESH_PLATFORM
+  detail_file: implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml
 IMPL-MESH_CREDENTIAL:
   name: Mesh Credential References
   status: Active

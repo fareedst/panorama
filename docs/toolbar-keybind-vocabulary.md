@@ -8,7 +8,7 @@
 
 | Kind | Tokens / artifacts |
 | --- | --- |
-| REQ | [REQ-TOOLBAR_SYSTEM](../tied/requirements/REQ-TOOLBAR_SYSTEM.yaml), [REQ-TOOLBAR_CONFIG](../tied/requirements/REQ-TOOLBAR_CONFIG.yaml), [REQ-KEYBOARD_SHORTCUTS_COMPLETE](../tied/requirements/REQ-KEYBOARD_SHORTCUTS_COMPLETE.yaml), [REQ-KEYBOARD_NAVIGATION](../tied/requirements/REQ-KEYBOARD_NAVIGATION.yaml) |
+| REQ | [REQ-TOOLBAR_SYSTEM](../tied/requirements/REQ-TOOLBAR_SYSTEM.yaml), [REQ-TOOLBAR_CONFIG](../tied/requirements/REQ-TOOLBAR_CONFIG.yaml), [REQ-KEYBOARD_SHORTCUTS_COMPLETE](../tied/requirements/REQ-KEYBOARD_SHORTCUTS_COMPLETE.yaml), [REQ-KEYBOARD_NAVIGATION](../tied/requirements/REQ-KEYBOARD_NAVIGATION.yaml), [REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml) |
 | ARCH | [ARCH-TOOLBAR_LAYOUT](../tied/architecture-decisions/ARCH-TOOLBAR_LAYOUT.yaml), [ARCH-TOOLBAR_ACTIONS](../tied/architecture-decisions/ARCH-TOOLBAR_ACTIONS.yaml), [ARCH-KEYBIND_SYSTEM](../tied/architecture-decisions/ARCH-KEYBIND_SYSTEM.yaml) |
 | IMPL | [IMPL-TOOLBAR_COMPONENT](../tied/implementation-decisions/IMPL-TOOLBAR_COMPONENT.yaml), [IMPL-TOOLBAR_CONFIG](../tied/implementation-decisions/IMPL-TOOLBAR_CONFIG.yaml), [IMPL-KEYBINDS](../tied/implementation-decisions/IMPL-KEYBINDS.yaml) |
 | Pseudo-code | [IMPL-TOOLBAR_COMPONENT-pseudocode.md](../tied/implementation-decisions/IMPL-TOOLBAR_COMPONENT-pseudocode.md), [IMPL-KEYBINDS-pseudocode.md](../tied/implementation-decisions/IMPL-KEYBINDS-pseudocode.md) |
@@ -39,6 +39,7 @@
 | Shortcut badge | on button | via `deriveToolbarButton` + registry | `getKeybindingRegistry()` |
 | Copy to all | icon + Shift+C | `file.copyAll` in pane group | `handleCopyAll` |
 | Command palette | “Command Palette” | `command.palette` | Ctrl+P |
+| Save workspace as mesh | “Save workspace as mesh” (Mesh group) | `copy.workspaceMesh.saveDialogTitle` | `mesh.saveWorkspace` (Ctrl+Shift+M) | `handleSaveWorkspaceAsMesh` ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)) |
 
 ### Action namespace prefixes (stable)
 
@@ -54,6 +55,7 @@
 | `history.*` | back / forward |
 | `bookmark.*` | bookmark ops |
 | `help.*` / `command.*` | system |
+| `mesh.*` | workspace → mesh bridge ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)); e.g. `mesh.saveWorkspace` |
 
 Authoritative enumeration: `config/files.yaml` → `keybindings`.
 
@@ -63,6 +65,7 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 - **Shared dispatch** — Toolbar `onAction(action)` and keyboard layer call the same handler map in `WorkspaceView`.
 - **deriveToolbarButton** — Resolves icon, label, shortcut display from action + registry (`src/lib/toolbar.utils.ts`).
 - **ToolbarButton** — Compact icon + keystroke badge component (`ToolbarButton.tsx`).
+- **mesh.saveWorkspace** — Workspace toolbar action; icon `network` in `toolbar.utils.ts`; opens save dialog then POST `/api/mesh`.
 
 ## Pseudo-code block names
 
@@ -80,6 +83,7 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 - **Disabled action** — toolbar grayed set
 - **Keybinding** — YAML shortcut row
 - **Keybinding category** — grouping for help UI
+- **mesh.saveWorkspace** — Ctrl+Shift+M; workspace Mesh toolbar group
 - **Pane toolbar** — `toolbars.pane`
 - **System toolbar** — `toolbars.system`
 - **Toolbar test id** — `toolbar-{action}`

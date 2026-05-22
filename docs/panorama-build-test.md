@@ -1,9 +1,8 @@
 #!/usr/bin/env mde
 # Panorama — build, test, and run (interactive)
 
-This file is an **interactive guide** for the `mde` runner indicated by the shebang: pick values in ```ux``` blocks, run ```bash``` snippets, and use **`$EVAL`** so commands are echoed/traced when your environment provides that helper.
+This file is an **interactive guide** for the `mde` runner indicated by the shebang: pick values in ```ux``` blocks, run ```bash``` snippets.
 
-- **`$EVAL`** — prefix for commands you want logged (often `eval` or a local `echo_exec`-style wrapper).
 - **`ux`** — named filters; choosing a row sets a variable (e.g. `VITEST_FILTER`) from the **Name** column via `transform`.
 - **`vars`** — document-level variables injected into following ```bash``` blocks.
 - **`bash :[demo]`** — labeled demo blocks some runners treat specially.
@@ -23,7 +22,6 @@ See also: [TESTING.md](../TESTING.md) (STDD, coverage philosophy) · [README.md 
 - [Mesh manual smoke](#mesh-manual-smoke-routes-persistence-api)
 - [Playwright E2E](#playwright-e2e)
 - [Demo pipeline](#demo-pipeline)
-- [EVAL / document options](#eval--document-options)
 
 ---
 
@@ -36,6 +34,15 @@ Static checks (ESLint + TypeScript) then production Next.js compile.
 set +e
 source ~/.bash_profile
 set -e
+
+# macOS/BSD
+kill_tcp_server () {
+  lsof -tiTCP:$1 | tee /dev/tty | xargs kill -1
+}
+list_tcp_jobs () {
+  lsof -tiTCP:$1 || true
+}
+
 cd /Users/fareed/Documents/dev/node/panorama
 ```
 - MARKSCOPE_CLIENT_DIR: ${MARKSCOPE_CLIENT_DIR}
@@ -294,11 +301,33 @@ Routes match [`src/app/mesh/layout.tsx`](../src/app/mesh/layout.tsx).
 
 When **`MESH_DATA_DIR`** is set, mesh JSON lives in that directory: **`meshes.json`**, plus **`sync-sessions.json`** (sessions, including approved plans) and **`sync-events.json`** (audit events). Use the same directory across dev server restarts to verify persistence.
 
+```ux
+init: 3010
+name: PLAYWRIGHT_PORT
+```
+```ux
+act: :exec
+exec: list_tcp_jobs $PLAYWRIGHT_PORT
+format: Refresh jobs
+init: false
+name: PLAYWRIGHT_PORT_JOBS
+transform: :chomp
+```
+
+| Port| Jobs
+| -| -
+| ${PLAYWRIGHT_PORT}| ${PLAYWRIGHT_PORT_JOBS}
+
+```bash
+kill_tcp_server "$PLAYWRIGHT_PORT"
+```
+
 ```bash @r:trace
 # Example: isolated mesh data dir for local manual runs (adjust path).
 export MESH_DATA_DIR="$PWD/.mesh-data-local"
 mkdir -p "$MESH_DATA_DIR"
-npm run dev
+kill_tcp_server "$PLAYWRIGHT_PORT"
+npm run dev -- -p "$PLAYWRIGHT_PORT"
 ```
 
 ### Credentials API (`POST /api/mesh/credentials`)
@@ -306,8 +335,8 @@ npm run dev
 Creates a credential **reference** (masked handle). Caller needs **`manage_credentials`** permission (manual smoke: header **`x-mesh-role: admin`**). Body may include **`label`**; **`id`** is allocated when omitted ([route](../src/app/api/mesh/credentials/route.ts), [tests](../src/app/api/mesh/credentials.route.test.ts)).
 
 ```bash @r:trace
-# With dev server on port 3000 (adjust host/port if yours differs).
-curl -sS -X POST "http://127.0.0.1:3000/api/mesh/credentials" \
+# With dev server on port PLAYWRIGHT_PORT
+curl -sS -X POST "http://127.0.0.1:$PLAYWRIGHT_PORT/api/mesh/credentials" \
   -H "Content-Type: application/json" \
   -H "x-mesh-role: admin" \
   -d '{"label":"smoke-cred"}'
@@ -321,10 +350,10 @@ curl -sS -X POST "http://127.0.0.1:3000/api/mesh/credentials" \
 | - | - |
 | `testDir` | `e2e/` |
 | Browser | Chromium |
-| `baseURL` | `http://127.0.0.1:3001` (override with `PLAYWRIGHT_PORT`) |
+| `baseURL` | `http://127.0.0.1:${PLAYWRIGHT_PORT}` (via `PLAYWRIGHT_PORT`) |
 | `fullyParallel` | `false` |
 | `workers` | `1` |
-| `webServer` | `npm run dev -- -p <PLAYWRIGHT_PORT>` (reuse only if `PLAYWRIGHT_REUSE_SERVER=1` and URL responds; preflight fails fast on zombie port) |
+| `webServer` | `npm run dev -- -p ${PLAYWRIGHT_PORT}` (reuse only if `PLAYWRIGHT_REUSE_SERVER=1` and URL responds; preflight fails fast on zombie port) |
 | `MESH_DATA_DIR` | Temp dir under OS tmp (or env override) |
 | `MESH_ASYNC_SYNC` | `1` |
 | Timeout | 60s per test |
@@ -405,35 +434,11 @@ npm run demo:verify
 ```
 
 ---
-```ux
-init: 3010
-name: PLAYWRIGHT_PORT
-```
-| Port| Jobs
-| -| -
-| ${PLAYWRIGHT_PORT} | $(lsof -ti ":$PLAYWRIGHT_PORT")
-
-```bash
-# macOS/BSD
-lsof -tiTCP:$PLAYWRIGHT_PORT | tee /dev/tty | xargs kill -1
-```
 ```bash
 export PLAYWRIGHT_PORT
 npm run test:e2e
 ```
 ---
-
-
-## EVAL / document options
-
-```ux
-name: EVAL
-allow:
-- echo_exec
-- eval
-```
-
-`echo_exec` is a local binary that prints the command and exit status to stderr.
 
 ## See also
 

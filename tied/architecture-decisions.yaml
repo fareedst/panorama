@@ -2749,3 +2749,11 @@ ARCH-MESH_CRUD:
     - ARCH-MESH_LAYERED
     - REQ-MESH_CRUD
   detail_file: architecture-decisions/ARCH-MESH_CRUD.yaml
+ARCH-WORKSPACE_MESH_BRIDGE:
+  name: Workspace Mesh Bridge Architecture
+  status: Accepted
+  cross_references:
+    - ARCH-FILE_MANAGER_HIERARCHY
+    - ARCH-MESH_LAYERED
+    - REQ-WORKSPACE_MESH_BRIDGE
+  detail_file: architecture-decisions/ARCH-WORKSPACE_MESH_BRIDGE.yaml
