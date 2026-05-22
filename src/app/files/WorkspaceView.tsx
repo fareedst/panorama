@@ -37,6 +37,9 @@ import { SearchDialog } from "./components/SearchDialog";
 import { WorkspaceToolbar } from "./components/WorkspaceToolbar";
 import { PaneToolbar } from "./components/PaneToolbar";
 import { SystemToolbar } from "./components/SystemToolbar";
+import { Toolbar } from "./components/Toolbar";
+import { ToolbarCompactToggle } from "./components/ToolbarCompactToggle";
+import { mergeTopToolbarConfigs } from "@/lib/toolbar.utils";
 import {
   SaveWorkspaceMeshDialog,
   type WorkspaceMeshSaveMode,
@@ -246,6 +249,9 @@ export default function WorkspaceView({
   const [linkedMode, setLinkedMode] = useState<boolean>(
     () => restoreUi?.linkedMode ?? layoutConfig.defaultLinkedMode ?? true,
   );
+
+  // [REQ-TOOLBAR_SYSTEM] [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] WORKSPACE_TOOLBAR_DISPLAY_MODE: session toolbarExpanded (not persisted)
+  const [toolbarExpanded, setToolbarExpanded] = useState(true);
 
   // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] STORE_FROM_WORKSPACE_UI / DIFF_SAVED_VS_CURRENT
   const [saveMeshDialogOpen, setSaveMeshDialogOpen] = useState(false);
@@ -1918,6 +1924,25 @@ export default function WorkspaceView({
     
     return disabled;
   }, [panes, focusIndex, layoutConfig, meshId, savedSnapshot]);
+
+  const mergedToolbarConfig = useMemo(
+    () => (toolbars ? mergeTopToolbarConfigs(toolbars) : null),
+    [toolbars],
+  );
+
+  const toolbarCompactToggle = (
+    <ToolbarCompactToggle
+      expanded={toolbarExpanded}
+      onToggle={() => setToolbarExpanded((v) => !v)}
+    />
+  );
+
+  const showWorkspaceTop =
+    Boolean(toolbars?.workspace.enabled && toolbars.workspace.position === "top");
+  const showPaneTop =
+    Boolean(toolbars?.pane.enabled && toolbars.pane.position === "top");
+  const showSystemTop =
+    Boolean(toolbars?.system.enabled && toolbars.system.position === "top");
   
   return (
     <div className="h-screen flex flex-col bg-zinc-100 dark:bg-zinc-950">
@@ -2031,37 +2056,56 @@ export default function WorkspaceView({
         </div>
       </header>
       
-      {/* [REQ-TOOLBAR_SYSTEM] [IMPL-TOOLBAR_COMPONENT] Toolbars */}
+      {/* [REQ-TOOLBAR_SYSTEM] [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] WORKSPACE_TOOLBAR_DISPLAY_MODE */}
       {toolbars && toolbars.enabled && (
         <>
-          {/* Workspace toolbar */}
-          {toolbars.workspace.enabled && toolbars.workspace.position === 'top' && (
-            <WorkspaceToolbar
-              config={toolbars.workspace}
-              onAction={handleExecuteAction}
-              activeActions={activeActions}
-              disabledActions={disabledActions}
-            />
-          )}
-          
-          {/* Pane toolbar */}
-          {toolbars.pane.enabled && toolbars.pane.position === 'top' && (
-            <PaneToolbar
-              config={toolbars.pane}
-              onAction={handleExecuteAction}
-              activeActions={activeActions}
-              disabledActions={disabledActions}
-            />
-          )}
-          
-          {/* System toolbar */}
-          {toolbars.system.enabled && toolbars.system.position === 'top' && (
-            <SystemToolbar
-              config={toolbars.system}
-              onAction={handleExecuteAction}
-              activeActions={activeActions}
-              disabledActions={disabledActions}
-            />
+          {toolbarExpanded ? (
+            <>
+              {showWorkspaceTop && (
+                <WorkspaceToolbar
+                  config={toolbars.workspace}
+                  onAction={handleExecuteAction}
+                  activeActions={activeActions}
+                  disabledActions={disabledActions}
+                  leadingContent={toolbarCompactToggle}
+                />
+              )}
+
+              {showPaneTop && (
+                <PaneToolbar
+                  config={toolbars.pane}
+                  onAction={handleExecuteAction}
+                  activeActions={activeActions}
+                  disabledActions={disabledActions}
+                  leadingContent={!showWorkspaceTop ? toolbarCompactToggle : undefined}
+                />
+              )}
+
+              {showSystemTop && (
+                <SystemToolbar
+                  config={toolbars.system}
+                  onAction={handleExecuteAction}
+                  activeActions={activeActions}
+                  disabledActions={disabledActions}
+                  leadingContent={
+                    !showWorkspaceTop && !showPaneTop ? toolbarCompactToggle : undefined
+                  }
+                />
+              )}
+            </>
+          ) : (
+            mergedToolbarConfig && (
+              <Toolbar
+                config={mergedToolbarConfig}
+                onAction={handleExecuteAction}
+                activeActions={activeActions}
+                disabledActions={disabledActions}
+                leadingContent={toolbarCompactToggle}
+                showKeystroke={false}
+                singleRow
+                className="toolbar-compact"
+              />
+            )
           )}
         </>
       )}

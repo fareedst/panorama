@@ -11,6 +11,9 @@ export interface WorkspaceToolbarProps {
   onAction: (action: string) => void;
   activeActions?: Set<string>;
   disabledActions?: Set<string>;
+  showKeystroke?: boolean;
+  leadingContent?: React.ReactNode;
+  singleRow?: boolean;
 }
 
 /**
@@ -23,6 +26,9 @@ export function WorkspaceToolbar({
   onAction,
   activeActions,
   disabledActions,
+  showKeystroke,
+  leadingContent,
+  singleRow,
 }: WorkspaceToolbarProps) {
   return (
     <Toolbar
@@ -30,6 +36,9 @@ export function WorkspaceToolbar({
       onAction={onAction}
       activeActions={activeActions}
       disabledActions={disabledActions}
+      showKeystroke={showKeystroke}
+      leadingContent={leadingContent}
+      singleRow={singleRow}
       className="workspace-toolbar"
     />
   );

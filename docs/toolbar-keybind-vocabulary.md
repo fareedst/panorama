@@ -27,6 +27,12 @@
 | **Active action** | Toolbar button pressed/highlighted state (`activeActions` Set) |
 | **Disabled action** | Context-gated (`disabledActions` Set) — e.g. copy with no marks |
 | **Toolbar test id** | `data-testid="toolbar-{action}"` e.g. `toolbar-file.copyAll` |
+| **Toolbar compact mode** | Single merged top row; icon-only buttons (no keystroke badges) |
+| **Toolbar expanded mode** | Default three-tier layout with keystroke badges on each button |
+| **Toolbar compact toggle** | Leading control on first top toolbar; `data-testid="toolbar-compact-toggle"` |
+| **leadingContent** | Optional slot before the first button group (toggle, future chrome); passed to `Toolbar` / tier wrappers |
+| **Session toolbar display state** | `toolbarExpanded` in `WorkspaceView` (session-only, not URL/mesh); synonym: toolbar display mode |
+| **singleRow** | `Toolbar` prop: one horizontal row with overflow scroll (compact merged layout) |
 
 ## Naming bridge
 
@@ -68,6 +74,10 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 - **ToolbarButton** — Compact icon + keystroke badge component (`ToolbarButton.tsx`).
 - **mesh.saveWorkspace** — Workspace toolbar action; icon `network` in `toolbar.utils.ts`; opens save dialog (update current mesh when `meshId` set, else POST `/api/mesh`).
 - **mesh.diffWorkspace** — Compare live workspace to saved snapshot; icon `git-compare`; disabled without loaded snapshot.
+- **Toolbar compact toggle** — UI-only leading control; not a keybinding action; switches compact/expanded toolbar display.
+- **Merged toolbar config** — Runtime concat of enabled top-position tier groups via `mergeTopToolbarConfigs` (`src/lib/toolbar.utils.ts`).
+- **Toggle placement rule** — Compact toggle on the **first visible top tier** in order workspace → pane → system (`showWorkspaceTop`, `showPaneTop`, `showSystemTop` in `WorkspaceView`).
+- **leadingContent** — Renders before the first group; vertical separator when groups follow.
 
 ## Pseudo-code block names
 
@@ -77,6 +87,9 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 | Config load/types | `MainBehavior` → `IMPL-TOOLBAR_CONFIG_MainBehavior` | IMPL-TOOLBAR_CONFIG |
 | Registry / validation | (see IMPL-KEYBINDS sidecar) | IMPL-KEYBINDS |
 | Workspace keybind map | `KeybindingInit` → `IMPL-WORKSPACE_VIEW_KeybindingInit` | IMPL-WORKSPACE_VIEW |
+| Toolbar compact toggle | `TOOLBAR_COMPACT_TOGGLE` → `IMPL-TOOLBAR_COMPONENT_ToolbarCompactToggle` | IMPL-TOOLBAR_COMPONENT |
+| Merge top toolbars | `MERGE_TOP_TOOLBARS` → `IMPL-TOOLBAR_COMPONENT_MergeTopToolbars` | IMPL-TOOLBAR_COMPONENT |
+| Workspace toolbar display | `WORKSPACE_TOOLBAR_DISPLAY_MODE` → `IMPL-TOOLBAR_COMPONENT_WorkspaceToolbarDisplayMode` | IMPL-TOOLBAR_COMPONENT |
 | Save workspace from UI | `STORE_FROM_WORKSPACE_UI` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Diff saved vs current | `DIFF_SAVED_VS_CURRENT` | IMPL-WORKSPACE_MESH_BRIDGE |
 
@@ -87,10 +100,16 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 - **Disabled action** — toolbar grayed set
 - **Keybinding** — YAML shortcut row
 - **Keybinding category** — grouping for help UI
+- **leadingContent** — leading slot before first toolbar group
+- **Session toolbar display state** — `toolbarExpanded` session flag in WorkspaceView
+- **singleRow** — compact merged toolbar horizontal layout flag
 - **mesh.diffWorkspace** — workspace Mesh group + header Diff; disabled without saved baseline
 - **mesh.saveWorkspace** — Ctrl+Shift+M; workspace Mesh toolbar group (update or save-as-new)
 - **Pane toolbar** — `toolbars.pane`
 - **System toolbar** — `toolbars.system`
+- **Toolbar compact mode** — single merged top row; icon-only buttons
+- **Toolbar compact toggle** — `toolbar-compact-toggle`
+- **Toolbar expanded mode** — three-tier layout with keystroke badges
 - **Toolbar test id** — `toolbar-{action}`
 - **Workspace toolbar** — `toolbars.workspace`
 

@@ -116,3 +116,4 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 - [panorama-domain-references.md](panorama-domain-references.md)
 - [linked-navigation-vocabulary.md](linked-navigation-vocabulary.md)
 - [file-marking-vocabulary.md](file-marking-vocabulary.md)
+- [toolbar-keybind-vocabulary.md](toolbar-keybind-vocabulary.md) — workspace/pane/system toolbars, compact toggle

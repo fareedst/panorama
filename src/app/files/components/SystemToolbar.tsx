@@ -11,6 +11,8 @@ export interface SystemToolbarProps {
   onAction: (action: string) => void;
   activeActions?: Set<string>;
   disabledActions?: Set<string>;
+  showKeystroke?: boolean;
+  leadingContent?: React.ReactNode;
 }
 
 /**
@@ -23,6 +25,8 @@ export function SystemToolbar({
   onAction,
   activeActions,
   disabledActions,
+  showKeystroke,
+  leadingContent,
 }: SystemToolbarProps) {
   return (
     <Toolbar
@@ -30,6 +34,8 @@ export function SystemToolbar({
       onAction={onAction}
       activeActions={activeActions}
       disabledActions={disabledActions}
+      showKeystroke={showKeystroke}
+      leadingContent={leadingContent}
       className="system-toolbar"
     />
   );

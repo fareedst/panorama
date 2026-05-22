@@ -25,11 +25,61 @@ PROCEDURE IMPL-TOOLBAR_COMPONENT_MainBehavior(context)
   CALL STEP 1: React components for toolbar system including base and specialized toolbars with compact icon-only button design
   ON error LOG diagnostic with token refs
 
+## TOOLBAR_COMPACT_TOGGLE
+
+// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM]: how: leading toggle on first top toolbar switches session toolbarExpanded state; expanded shows three tiers with keystroke badges; compact shows merged single row icon-only; tooltips unchanged
+
+CONTRACT ToolbarCompactToggle
+  INPUT: toolbarExpanded boolean, onToggle callback
+  OUTPUT: ToolbarCompactToggle button at leading slot
+  DATA: aria-pressed, data-testid toolbar-compact-toggle
+
+PROCEDURE IMPL-TOOLBAR_COMPONENT_ToolbarCompactToggle(context)
+  RENDER ToolbarCompactToggle with chevrons-up when expanded, chevrons-down when compact
+  ON click TOGGLE toolbarExpanded in WorkspaceView
+  KEEP button title and aria-label keystroke-free (UI-only control)
+
+## MERGE_TOP_TOOLBARS
+
+// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM]: how: mergeTopToolbarConfigs concatenates enabled top-position workspace, pane, system groups for compact single-row render
+
+CONTRACT MergeTopToolbars
+  INPUT: ToolbarsConfig from server
+  OUTPUT: merged ToolbarConfig or null
+  DATA: workspace, pane, system tier groups
+
+PROCEDURE IMPL-TOOLBAR_COMPONENT_MergeTopToolbars(context)
+  FILTER tiers WHERE enabled AND position == top
+  CONCAT groups IN ORDER workspace, pane, system
+  IF no groups THEN RETURN null
+  RETURN merged ToolbarConfig for compact Toolbar render
+
+## WORKSPACE_TOOLBAR_DISPLAY_MODE
+
+// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM]: how: WorkspaceView branches on toolbarExpanded; expanded renders up to three top tiers with toggle on first visible tier; compact renders single merged Toolbar with showKeystroke=false and singleRow
+
+CONTRACT WorkspaceToolbarDisplayMode
+  INPUT: toolbars config, toolbarExpanded boolean, mergedToolbarConfig from mergeTopToolbarConfigs
+  OUTPUT: one or three top toolbars plus toggle placement on first visible tier
+  DATA: showWorkspaceTop, showPaneTop, showSystemTop, toolbarCompactToggle element
+
+PROCEDURE IMPL-TOOLBAR_COMPONENT_WorkspaceToolbarDisplayMode(context)
+  IF toolbarExpanded THEN
+    RENDER WorkspaceToolbar WHEN showWorkspaceTop WITH leadingContent toggle
+    RENDER PaneToolbar WHEN showPaneTop WITH leadingContent toggle IF workspace tier not top
+    RENDER SystemToolbar WHEN showSystemTop WITH leadingContent toggle IF workspace and pane tiers not top
+  ELSE
+    IF mergedToolbarConfig THEN
+      RENDER Toolbar merged config showKeystroke=false singleRow className toolbar-compact WITH leadingContent toggle
+    ENDIF
+  ENDIF
+  KEEP toolbarExpanded session-only (not persisted to URL or mesh snapshot)
+
 ## CodeLocations
 
 // [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [ARCH-TOOLBAR_ACTIONS] [REQ-TOOLBAR_SYSTEM]: map implementing and verifying source files for this IMPL
 
-// (no code_locations.files recorded in IMPL detail YAML)
+// src/app/files/components/ToolbarCompactToggle.tsx, Toolbar.tsx, ToolbarButton.tsx, WorkspaceToolbar.tsx, PaneToolbar.tsx, SystemToolbar.tsx, src/lib/toolbar.utils.ts, src/app/files/WorkspaceView.tsx; tests toolbar.utils.test.ts, Toolbar*.test.tsx, WorkspaceView.toolbar-compact.test.tsx
 
 ## ErrorHandling
 

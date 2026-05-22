@@ -15,6 +15,12 @@ export interface ToolbarProps {
   activeActions?: Set<string>;
   disabledActions?: Set<string>;
   className?: string;
+  /** Hide keystroke badges on buttons (compact mode). [REQ-TOOLBAR_SYSTEM] */
+  showKeystroke?: boolean;
+  /** Content rendered before the first button group (e.g. compact toggle). */
+  leadingContent?: React.ReactNode;
+  /** Force single-row layout with horizontal scroll. [REQ-TOOLBAR_SYSTEM] */
+  singleRow?: boolean;
 }
 
 /**
@@ -28,10 +34,15 @@ export function Toolbar({
   activeActions = new Set(),
   disabledActions = new Set(),
   className = "",
+  showKeystroke = true,
+  leadingContent,
+  singleRow = false,
 }: ToolbarProps) {
   const registry = getKeybindingRegistry();
 
   if (!config.enabled) return null;
+
+  const hasGroups = config.groups.length > 0;
 
   return (
     <div
@@ -39,16 +50,25 @@ export function Toolbar({
         flex items-center gap-1 px-2 py-1
         bg-gray-100 dark:bg-gray-900
         border-b border-gray-300 dark:border-gray-700
+        ${singleRow ? "flex-nowrap overflow-x-auto min-h-0" : ""}
         ${className}
-      `.trim().replace(/\s+/g, ' ')}
+      `.trim().replace(/\s+/g, " ")}
       role="toolbar"
       aria-label="File manager toolbar"
     >
+      {leadingContent}
+      {leadingContent && hasGroups && (
+        <div
+          className="h-8 w-px bg-gray-300 dark:bg-gray-700 shrink-0"
+          role="separator"
+          aria-orientation="vertical"
+        />
+      )}
       {config.groups.map((group, groupIndex) => (
         <ToolbarGroup
           key={group.name}
           name={group.name}
-          showSeparator={groupIndex > 0}
+          showSeparator={groupIndex > 0 || Boolean(leadingContent)}
         >
           {group.actions.map((action) => {
             const buttonProps = deriveToolbarButton(action, registry.keybindings);
@@ -61,6 +81,7 @@ export function Toolbar({
                 onClick={() => onAction(action)}
                 active={activeActions.has(action)}
                 disabled={disabledActions.has(action)}
+                showKeystroke={showKeystroke}
               />
             );
           })}

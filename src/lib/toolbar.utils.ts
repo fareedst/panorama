@@ -1,7 +1,7 @@
 // [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [ARCH-TOOLBAR_ACTIONS] [REQ-TOOLBAR_SYSTEM]: Top-level Toolbar React Component Implementation: React components for toolbar system including base and specialized toolbars with compact icon-only button design
 // Utility functions for toolbar button derivation and formatting
 
-import type { KeybindingConfig } from "./config.types";
+import type { KeybindingConfig, ToolbarConfig, ToolbarsConfig } from "./config.types";
 
 export interface DerivedButtonProps {
   action: string;
@@ -171,5 +171,32 @@ export function deriveToolbarButton(
     label: deriveLabelFromDescription(keybinding.description),
     keystroke: formatKeystroke(keybinding),
     description: keybinding.description,
+  };
+}
+
+// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM] MERGE_TOP_TOOLBARS: how: concat enabled top-position workspace, pane, system groups for compact single-row render
+/**
+ * Merge enabled top-position toolbar tiers for compact single-row display.
+ * [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM]
+ */
+export function mergeTopToolbarConfigs(toolbars: ToolbarsConfig): ToolbarConfig | null {
+  const tiers: ToolbarConfig[] = [
+    toolbars.workspace,
+    toolbars.pane,
+    toolbars.system,
+  ];
+
+  const groups = tiers
+    .filter((tier) => tier.enabled && tier.position === "top")
+    .flatMap((tier) => tier.groups);
+
+  if (groups.length === 0) {
+    return null;
+  }
+
+  return {
+    enabled: true,
+    position: "top",
+    groups,
   };
 }

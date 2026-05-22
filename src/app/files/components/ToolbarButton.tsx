@@ -15,6 +15,8 @@ export interface ToolbarButtonProps {
   active?: boolean;
   disabled?: boolean;
   className?: string;
+  /** When false, hide keystroke badge but keep tooltip/aria-label unchanged. [REQ-TOOLBAR_SYSTEM] */
+  showKeystroke?: boolean;
 }
 
 /**
@@ -32,6 +34,7 @@ export function ToolbarButton({
   active = false,
   disabled = false,
   className = "",
+  showKeystroke = true,
 }: ToolbarButtonProps) {
   // [REQ-TOOLBAR_SYSTEM] Only show label if no icon present
   const showLabel = !icon;
@@ -55,12 +58,14 @@ export function ToolbarButton({
     >
       {icon && <Icon name={icon} size={16} className="flex-shrink-0" />}
       {showLabel && <span className="font-medium">{label}</span>}
-      <span
-        className="px-1 py-0.5 text-xs rounded bg-gray-200 dark:bg-gray-700 font-mono"
-        aria-hidden="true"
-      >
-        {keystroke}
-      </span>
+      {showKeystroke && (
+        <span
+          className="px-1 py-0.5 text-xs rounded bg-gray-200 dark:bg-gray-700 font-mono"
+          aria-hidden="true"
+        >
+          {keystroke}
+        </span>
+      )}
     </button>
   );
 }
