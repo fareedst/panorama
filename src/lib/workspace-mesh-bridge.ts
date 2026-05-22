@@ -1,7 +1,7 @@
 // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_PLATFORM] [REQ-MULTI_PANE_LAYOUT]: Workspace ↔ mesh snapshot bridge
 
 import type { ComparisonMode } from "./files.types";
-import type { LayoutType } from "./files.layout";
+import { normalizeLayoutType, type LayoutType } from "./files.layout";
 import type { SortCriterion, SortDirection } from "./files.utils";
 import type { Mesh } from "./mesh/domain";
 
@@ -44,7 +44,7 @@ export type MeshCreateFromWorkspaceInput = {
 export function captureWorkspaceSnapshot(input: WorkspaceCaptureInput): WorkspaceSnapshot {
   return {
     version: WORKSPACE_SNAPSHOT_VERSION,
-    layout: input.layout,
+    layout: normalizeLayoutType(input.layout) ?? "Tile",
     focusIndex: input.focusIndex,
     linkedMode: input.linkedMode,
     comparisonMode: input.comparisonMode,
@@ -79,6 +79,20 @@ function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === "object" && v !== null;
 }
 
+/** Accept `{ workspaceSnapshot }` wrapper or a root-level v1 snapshot object. */
+function extractSnapshotRecord(parsed: unknown): Record<string, unknown> | null {
+  if (!isRecord(parsed)) {
+    return null;
+  }
+  if (isRecord(parsed.workspaceSnapshot)) {
+    return parsed.workspaceSnapshot;
+  }
+  if (Number(parsed.version) === WORKSPACE_SNAPSHOT_VERSION && Array.isArray(parsed.panes)) {
+    return parsed;
+  }
+  return null;
+}
+
 // PARSE_SNAPSHOT_FROM_MESH — parse description JSON (note prefix allowed)
 function parseDescriptionJson(description: string | undefined): WorkspaceSnapshot | null {
   if (!description?.trim()) {
@@ -89,10 +103,11 @@ function parseDescriptionJson(description: string | undefined): WorkspaceSnapsho
   const jsonText = jsonStart >= 0 ? trimmed.slice(jsonStart) : trimmed;
   try {
     const parsed = JSON.parse(jsonText) as unknown;
-    if (!isRecord(parsed) || !isRecord(parsed.workspaceSnapshot)) {
+    const snapshotRecord = extractSnapshotRecord(parsed);
+    if (!snapshotRecord) {
       return null;
     }
-    return validateWorkspaceSnapshot(parsed.workspaceSnapshot);
+    return validateWorkspaceSnapshot(snapshotRecord);
   } catch {
     return null;
   }
@@ -102,7 +117,7 @@ function validateWorkspaceSnapshot(raw: unknown): WorkspaceSnapshot | null {
   if (!isRecord(raw)) {
     return null;
   }
-  if (raw.version !== WORKSPACE_SNAPSHOT_VERSION) {
+  if (Number(raw.version) !== WORKSPACE_SNAPSHOT_VERSION) {
     return null;
   }
   if (!Array.isArray(raw.panes) || raw.panes.length === 0) {
@@ -121,11 +136,8 @@ function validateWorkspaceSnapshot(raw: unknown): WorkspaceSnapshot | null {
       cursor: typeof p.cursor === "number" && p.cursor >= 0 ? p.cursor : 0,
     });
   }
-  const layout = raw.layout as LayoutType;
-  const validLayouts: LayoutType[] = ["Tile", "OneRow", "OneColumn", "Fullscreen"];
-  if (!validLayouts.includes(layout)) {
-    return null;
-  }
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-MULTI_PANE_LAYOUT] NORMALIZE_LAYOUT within PARSE_SNAPSHOT_FROM_MESH
+  const layout = normalizeLayoutType(raw.layout) ?? "Tile";
   const comparison = raw.comparisonMode as ComparisonMode;
   const validComparison: ComparisonMode[] = ["off", "name", "size", "time"];
   return {

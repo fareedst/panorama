@@ -17,7 +17,7 @@ describe("workspace mesh bridge API BUILD_MESH_PAYLOAD [REQ-WORKSPACE_MESH_BRIDG
 
   it("BUILD_MESH_PAYLOAD_post_mesh_with_workspace_snapshot_round_trips", async () => {
     const snapshot = captureWorkspaceSnapshot({
-      layout: "Tile",
+      layout: "OneColumn",
       focusIndex: 0,
       linkedMode: false,
       comparisonMode: "off",
@@ -49,5 +49,6 @@ describe("workspace mesh bridge API BUILD_MESH_PAYLOAD [REQ-WORKSPACE_MESH_BRIDG
     const loaded = (await getRes.json()) as { mesh: Parameters<typeof parseWorkspaceSnapshotFromMesh>[0] };
     const parsed = parseWorkspaceSnapshotFromMesh(loaded.mesh);
     expect(parsed?.panes[0].path).toBe("/tmp/ws-a");
+    expect(parsed?.layout).toBe("OneColumn");
   });
 });

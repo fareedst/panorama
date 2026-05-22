@@ -39,12 +39,11 @@ set -e
 kill_tcp_server () {
   lsof -tiTCP:$1 | tee /dev/tty | xargs kill -1
 }
-list_tcp_jobs () {
-  lsof -tiTCP:$1 || true
-}
 
 cd /Users/fareed/Documents/dev/node/panorama
+export MESH_DATA_DIR
 ```
+
 - MARKSCOPE_CLIENT_DIR: ${MARKSCOPE_CLIENT_DIR}
 - MARKSCOPE_DOCS_DIR: ${MARKSCOPE_DOCS_DIR}
 - MARKSCOPE_SCRIPTS_DIR: ${MARKSCOPE_SCRIPTS_DIR}
@@ -302,21 +301,40 @@ Routes match [`src/app/mesh/layout.tsx`](../src/app/mesh/layout.tsx).
 When **`MESH_DATA_DIR`** is set, mesh JSON lives in that directory: **`meshes.json`**, plus **`sync-sessions.json`** (sessions, including approved plans) and **`sync-events.json`** (audit events). Use the same directory across dev server restarts to verify persistence.
 
 ```ux
+init: /Users/fareed/Documents/dev/node/panorama/data
+name: MESH_DATA_DIR
+```
+
+```ux
 init: 3010
 name: PLAYWRIGHT_PORT
+on_valid_groups:
+- PLAYWRIGHT_PORT
 ```
-```ux
+```ux @g:PLAYWRIGHT_PORT
 act: :exec
-exec: list_tcp_jobs $PLAYWRIGHT_PORT
+exec: >-
+  lsof -tiTCP:$PLAYWRIGHT_PORT || echo None
 format: Refresh jobs
 init: false
 name: PLAYWRIGHT_PORT_JOBS
+on_valid_groups:
+- PLAYWRIGHT_PORT_JOBS
+transform: :chomp
+```
+```ux @g:PLAYWRIGHT_PORT_JOBS @hide
+act: :exec
+exec: date
+init: false
+name: JOBS_TIME
+require:
+- PLAYWRIGHT_PORT_JOBS
 transform: :chomp
 ```
 
-| Port| Jobs
-| -| -
-| ${PLAYWRIGHT_PORT}| ${PLAYWRIGHT_PORT_JOBS}
+| Port| Jobs| Report time
+| -| -| -
+| ${PLAYWRIGHT_PORT}| ${PLAYWRIGHT_PORT_JOBS}| ${JOBS_TIME}
 
 ```bash
 kill_tcp_server "$PLAYWRIGHT_PORT"
@@ -324,7 +342,7 @@ kill_tcp_server "$PLAYWRIGHT_PORT"
 
 ```bash @r:trace
 # Example: isolated mesh data dir for local manual runs (adjust path).
-export MESH_DATA_DIR="$PWD/.mesh-data-local"
+MESH_DATA_DIR="$PWD/.mesh-data-local"
 mkdir -p "$MESH_DATA_DIR"
 kill_tcp_server "$PLAYWRIGHT_PORT"
 npm run dev -- -p "$PLAYWRIGHT_PORT"

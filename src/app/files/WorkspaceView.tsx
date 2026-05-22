@@ -13,8 +13,7 @@ import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import path from "path-browserify";
 import type { FileStat, OperationResult, ComparisonMode } from "@/lib/files.types";
-import type { LayoutType } from "@/lib/files.layout";
-import { calculateLayout } from "@/lib/files.layout";
+import { calculateLayout, normalizeLayoutType, type LayoutType } from "@/lib/files.layout";
 import { buildEnhancedComparisonIndex } from "@/lib/files.comparison";
 import { globalDirectoryHistory } from "@/lib/files.history";
 import { globalBookmarkManager } from "@/lib/files.bookmarks";
@@ -39,9 +38,11 @@ import { WorkspaceToolbar } from "./components/WorkspaceToolbar";
 import { PaneToolbar } from "./components/PaneToolbar";
 import { SystemToolbar } from "./components/SystemToolbar";
 import { SaveWorkspaceMeshDialog } from "./components/SaveWorkspaceMeshDialog";
+import { NewTabLink } from "@/components/NewTabLink";
 import {
   buildMeshCreatePayload,
   captureWorkspaceSnapshot,
+  parseWorkspaceSnapshotFromMesh,
 } from "@/lib/workspace-mesh-bridge";
 
 interface PaneState {
@@ -77,6 +78,24 @@ export type RestoreUiState = {
   comparisonMode: ComparisonMode;
 };
 
+// [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_LAYOUT_IN_WORKSPACE_VIEW — resolveInitialWorkspaceLayout init.
+function resolveInitialWorkspaceLayout(
+  restoredFromMesh: boolean,
+  restoreLayout: LayoutType | undefined,
+  restoreUi: RestoreUiState | undefined,
+  layoutConfig: FilesLayoutConfig,
+): LayoutType {
+  const fromRestore =
+    normalizeLayoutType(restoreLayout) ?? normalizeLayoutType(restoreUi?.layout);
+  if (fromRestore) {
+    return fromRestore;
+  }
+  if (restoredFromMesh) {
+    return "Tile";
+  }
+  return normalizeLayoutType(layoutConfig.default) ?? "Tile";
+}
+
 interface WorkspaceViewProps {
   /** Initial panes from server */
   initialPanes: PaneInitialState[];
@@ -90,8 +109,12 @@ interface WorkspaceViewProps {
   columns: import("@/lib/config.types").FilesColumnConfig[];
   /** Toolbar configuration from server [REQ-TOOLBAR_SYSTEM] [IMPL-TOOLBAR_COMPONENT] */
   toolbars?: ToolbarsConfig;
+  /** [REQ-WORKSPACE_MESH_BRIDGE] meshId from /files?meshId= (server + client layout rehydrate). */
+  meshId?: string;
   /** [REQ-WORKSPACE_MESH_BRIDGE] Restored from /files?meshId= */
   restoreUi?: RestoreUiState;
+  /** Canonical layout from mesh restore (avoids restoreUi object drop on RSC boundary). */
+  restoreLayout?: LayoutType;
   restorePaneMeta?: RestorePaneMeta[];
   restoredFromMesh?: boolean;
   restoreWarning?: string | null;
@@ -137,7 +160,9 @@ export default function WorkspaceView({
   layout: layoutConfig,
   columns,
   toolbars,
+  meshId,
   restoreUi,
+  restoreLayout,
   restorePaneMeta,
   restoredFromMesh = false,
   restoreWarning = null,
@@ -156,9 +181,10 @@ export default function WorkspaceView({
   const [panes, setPanes] = useState<PaneState[]>(() =>
     buildPaneStatesFromInitial(initialPanes, restorePaneMeta),
   );
-  const [layout, setLayout] = useState<LayoutType>(
-    () => restoreUi?.layout ?? ((layoutConfig.default || "Tile") as LayoutType),
+  const [layout, setLayout] = useState<LayoutType>(() =>
+    resolveInitialWorkspaceLayout(restoredFromMesh, restoreLayout, restoreUi, layoutConfig),
   );
+  const layoutRehydratedRef = useRef(false);
   const [focusIndex, setFocusIndex] = useState(() => restoreUi?.focusIndex ?? 0);
   const [containerWidth, setContainerWidth] = useState(800);
   const [containerHeight, setContainerHeight] = useState(600);
@@ -273,6 +299,72 @@ export default function WorkspaceView({
     isComplete: false,
   });
   
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_LAYOUT_IN_WORKSPACE_VIEW — sync restoreLayout prop from server.
+  useEffect(() => {
+    const fromProp = normalizeLayoutType(restoreLayout);
+    if (fromProp) {
+      setLayout((prev) => (prev === fromProp ? prev : fromProp));
+    }
+  }, [restoreLayout]);
+
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_LAYOUT_IN_WORKSPACE_VIEW — client fetch /api/mesh/:meshId once (layoutRehydratedRef).
+  useEffect(() => {
+    if (!meshId || layoutRehydratedRef.current) {
+      return;
+    }
+    layoutRehydratedRef.current = true;
+
+    void (async () => {
+      try {
+        const res = await fetch(`/api/mesh/${meshId}`);
+        if (!res.ok) {
+          console.debug("DEBUG: mesh layout rehydrate fetch failed", res.status, meshId);
+          return;
+        }
+        const data = (await res.json()) as {
+          mesh?: {
+            description?: string;
+            tags?: string[];
+            depots?: { id?: string; name?: string; kind?: string; root?: string }[];
+          };
+        };
+        const mesh = data.mesh;
+        if (!mesh) {
+          console.debug("DEBUG: mesh layout rehydrate missing mesh in response", meshId);
+          return;
+        }
+        const parsed = parseWorkspaceSnapshotFromMesh({
+          description: mesh.description,
+          tags: mesh.tags ?? [],
+          depots: (mesh.depots ?? []).map((d, i) => ({
+            id: d.id ?? `d${i}`,
+            name: d.name ?? `Pane ${i + 1}`,
+            kind: (d.kind === "remote" || d.kind === "virtual" ? d.kind : "local") as
+              | "local"
+              | "remote"
+              | "virtual",
+            root: d.root ?? "",
+            accessMode: "read_write" as const,
+          })),
+        });
+        const normalized = normalizeLayoutType(parsed?.layout);
+        if (!normalized) {
+          console.debug("DEBUG: mesh layout rehydrate no layout in snapshot", meshId);
+          return;
+        }
+        console.debug(
+          "DEBUG: mesh layout rehydrate applying",
+          normalized,
+          "serverProps",
+          restoreLayout ?? restoreUi?.layout ?? "none",
+        );
+        setLayout((prev) => (prev === normalized ? prev : normalized));
+      } catch (err) {
+        console.debug("DEBUG: mesh layout rehydrate error", meshId, err);
+      }
+    })();
+  }, [meshId, restoreLayout, restoreUi?.layout]);
+
   // Update container dimensions on mount and resize
   useEffect(() => {
     const updateDimensions = () => {
@@ -324,7 +416,7 @@ export default function WorkspaceView({
     panes.length,
     layout
   );
-  
+
   // [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]
   // Build enhanced comparison index when panes change
   const enhancedComparisonIndex = useMemo(() => {
@@ -1719,7 +1811,7 @@ export default function WorkspaceView({
     <div className="h-screen flex flex-col bg-zinc-100 dark:bg-zinc-950">
       {/* Header */}
       <header className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700 p-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
               File Manager
@@ -1744,13 +1836,29 @@ export default function WorkspaceView({
               </p>
             )}
           </div>
-          
+
+          {/* [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] WORKSPACE_HEADER_MESH_LINK — cross-surface nav to Mesh */}
+          <nav
+            className="flex flex-wrap gap-3 text-sm"
+            data-testid="workspace-cross-surface-nav"
+            aria-label="Cross-surface navigation"
+          >
+            <NewTabLink
+              href={meshId ? `/mesh/${meshId}` : "/mesh"}
+              className="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
+              data-testid="open-mesh-from-workspace"
+            >
+              Mesh Sync
+            </NewTabLink>
+          </nav>
+
           {/* Layout selector */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <label className="text-sm text-zinc-600 dark:text-zinc-400">
               Layout:
             </label>
             <select
+              data-testid="workspace-layout-select"
               value={layout}
               onChange={(e) => setLayout(e.target.value as LayoutType)}
               className="px-3 py-1 border border-zinc-300 dark:border-zinc-600 rounded bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
@@ -1809,7 +1917,7 @@ export default function WorkspaceView({
       >
         {panes.map((pane, index) => (
           <FilePane
-            key={index}
+            key={`pane-${index}`}
             data-testid={`pane-${index}`}
             path={pane.path}
             files={pane.files}

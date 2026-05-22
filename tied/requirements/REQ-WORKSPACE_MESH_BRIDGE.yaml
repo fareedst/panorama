@@ -3,23 +3,31 @@ REQ-WORKSPACE_MESH_BRIDGE:
   category: Functional
   priority: P1
   status: Implemented
-  description: Store file-manager workspace layout (pane paths, layout, focus, linked/comparison, per-pane sort/cursor) as a mesh with workspace-snapshot tag and JSON in description (optional human note before JSON); restore via /files?meshId= with maxPanes truncation warning when applicable.
+  description: Store file-manager workspace layout (pane paths, layout, focus, linked/comparison, per-pane sort/cursor) as a mesh with workspace-snapshot tag and JSON in description (optional human note before JSON); restore via /files?meshId= with maxPanes truncation warning when applicable. Layout type round-trips via normalization of config/UI aliases. Mesh and File Manager cross-surface links open in new tabs with security attributes and assistive disclosure.
   satisfaction_criteria:
+    - criterion: mesh_detail_open_file_manager_in_new_tab_with_a11y
     - criterion: mesh_detail_shows_workspace_snapshot_summary_and_open_in_file_manager
     - criterion: mesh_sync_links_not_inferred_from_linked_mode_on_save
     - criterion: restore_rehydrates_pane_count_paths_and_ui_state_from_mesh
     - criterion: restore_respects_max_panes_with_warning
     - criterion: save_description_may_prefix_optional_note_before_snapshot_json
     - criterion: user_can_save_workspace_as_new_mesh_from_file_manager_toolbar
+    - criterion: workspace_header_open_mesh_in_new_tab_with_a11y
   validation_criteria:
     - method: Vitest
       coverage: src/lib/workspace-mesh-bridge.test.ts
+    - method: Vitest
+      coverage: src/app/files/WorkspaceView.mesh-restore.test.tsx
+    - method: Vitest
+      coverage: src/app/files/page.mesh-restore.test.tsx
     - method: Vitest
       coverage: src/app/files/components/SaveWorkspaceMeshDialog.test.tsx
     - method: Vitest
       coverage: src/app/api/mesh/workspace-bridge.route.test.ts
     - method: Vitest
       coverage: src/app/mesh/components/MeshDetailClient.test.tsx
+    - method: Vitest
+      coverage: src/components/NewTabLink.test.tsx
     - method: Playwright
       coverage: e2e/workspace-mesh-bridge.spec.ts
   traceability:
@@ -31,7 +39,10 @@ REQ-WORKSPACE_MESH_BRIDGE:
       - e2e/workspace-mesh-bridge.spec.ts
       - src/app/api/mesh/workspace-bridge.route.test.ts
       - src/app/files/components/SaveWorkspaceMeshDialog.test.tsx
+      - src/app/files/page.mesh-restore.test.tsx
+      - src/app/files/WorkspaceView.mesh-restore.test.tsx
       - src/app/mesh/components/MeshDetailClient.test.tsx
+      - src/components/NewTabLink.test.tsx
       - src/lib/workspace-mesh-bridge.test.ts
     code_annotations:
       - REQ-WORKSPACE_MESH_BRIDGE
@@ -50,4 +61,4 @@ REQ-WORKSPACE_MESH_BRIDGE:
     last_updated:
       date: "2026-05-21T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP from IMPL — maxPanes restore, note prefix, full test traceability
+      reason: GREEN — normalizeLayoutType at capture/parse/init; restore tests for all v1 UI state

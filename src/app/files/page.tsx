@@ -16,7 +16,10 @@ import {
   applyMaxPanesLimit,
   parseWorkspaceSnapshotFromMesh,
 } from "@/lib/workspace-mesh-bridge";
-import type { LayoutType } from "@/lib/files.layout";
+import { normalizeLayoutType, type LayoutType } from "@/lib/files.layout";
+
+// [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_ON_FILES_PAGE — per-request meshId (not static /files shell).
+export const dynamic = "force-dynamic";
 
 export interface PaneInitialState {
   path: string;
@@ -57,6 +60,7 @@ export default async function FilesPage({
 
   const initialPanes: PaneInitialState[] = [];
   let restoreUi: RestoreUiState | undefined;
+  let restoreLayout: LayoutType | undefined;
   let restorePaneMeta: RestorePaneMeta[] | undefined;
   let restoredFromMesh = false;
   let restoreWarning: string | null = null;
@@ -74,6 +78,21 @@ export default async function FilesPage({
         if (truncated) {
           restoreWarning = `Restored first ${limited.panes.length} pane(s) due to maxPanes limit.`;
         }
+        // how: surface restoreWarning when snapshot JSON lacks layout or is unreadable (Tile fallback).
+        const desc = record.mesh.description ?? "";
+        if (limited.layout === "Tile" && desc.length > 0 && !/"layout"\s*:/.test(desc)) {
+          const layoutWarn =
+            "Layout was not stored in this mesh snapshot; using Tile. Save the workspace again to preserve layout.";
+          restoreWarning = restoreWarning ? `${restoreWarning} ${layoutWarn}` : layoutWarn;
+        } else if (
+          limited.layout === "Tile" &&
+          desc.includes("{") &&
+          !desc.includes("workspaceSnapshot")
+        ) {
+          const layoutWarn =
+            "Workspace snapshot JSON could not be read; using Tile layout. Save the workspace again.";
+          restoreWarning = restoreWarning ? `${restoreWarning} ${layoutWarn}` : layoutWarn;
+        }
         for (const pane of limited.panes) {
           const files = await listDirectory(pane.path);
           const sortedFiles = sortFilesUtils(
@@ -84,8 +103,9 @@ export default async function FilesPage({
           );
           initialPanes.push({ path: pane.path, files: sortedFiles });
         }
+        restoreLayout = normalizeLayoutType(limited.layout) ?? "Tile";
         restoreUi = {
-          layout: limited.layout as LayoutType,
+          layout: restoreLayout,
           focusIndex: limited.focusIndex,
           linkedMode: limited.linkedMode,
           comparisonMode: limited.comparisonMode,
@@ -97,7 +117,13 @@ export default async function FilesPage({
           cursor: p.cursor,
         }));
         restoredFromMesh = true;
+      } else {
+        restoreWarning =
+          "Workspace snapshot could not be read from this mesh; pane layout may use defaults. Save the workspace again or open mesh detail to verify.";
       }
+    } else {
+      restoreWarning =
+        "Mesh not found on server; workspace paths and layout may not restore. Ensure MESH_DATA_DIR is shared across processes or reload after saving.";
     }
   }
 
@@ -129,6 +155,8 @@ export default async function FilesPage({
 
   return (
     <WorkspaceView
+      key={meshId ?? "files-workspace"}
+      meshId={meshId}
       initialPanes={initialPanes}
       keybindings={keybindings}
       copy={copy}
@@ -136,6 +164,7 @@ export default async function FilesPage({
       columns={columns}
       toolbars={toolbars}
       restoreUi={restoreUi}
+      restoreLayout={restoreLayout}
       restorePaneMeta={restorePaneMeta}
       restoredFromMesh={restoredFromMesh}
       restoreWarning={restoreWarning}

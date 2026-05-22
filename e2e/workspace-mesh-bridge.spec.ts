@@ -19,6 +19,9 @@ test.describe("workspace mesh bridge E2E [REQ-WORKSPACE_MESH_BRIDGE]", () => {
       await expect(page.getByText("marker-a.txt").first()).toBeVisible({ timeout: 15000 });
       await expect(page.getByText("marker-b.txt").first()).toBeVisible({ timeout: 15000 });
 
+      // [REQ-WORKSPACE_MESH_BRIDGE] Non-Tile layout must round-trip on restore (OneRow vs Tile differs for 2 panes)
+      await page.getByTestId("workspace-layout-select").selectOption("OneRow");
+
       await page.getByTestId("save-workspace-mesh-dialog").waitFor({ state: "hidden" });
       await page.keyboard.press("Control+Shift+M");
       await expect(page.getByTestId("save-workspace-mesh-dialog")).toBeVisible({ timeout: 5000 });
@@ -32,12 +35,27 @@ test.describe("workspace mesh bridge E2E [REQ-WORKSPACE_MESH_BRIDGE]", () => {
       await expect(page.getByTestId("workspace-snapshot-summary")).toContainText(dirA);
       await expect(page.getByTestId("workspace-snapshot-summary")).toContainText(dirB);
 
-      await page.getByTestId("open-workspace-from-mesh").click();
-      await expect(page.getByTestId("workspace-restored-from-mesh")).toBeVisible({
+      const [filesPage] = await Promise.all([
+        page.context().waitForEvent("page"),
+        page.getByTestId("open-workspace-from-mesh").click(),
+      ]);
+      await filesPage.waitForLoadState("domcontentloaded");
+      await expect(filesPage.getByTestId("workspace-restored-from-mesh")).toBeVisible({
         timeout: 10000,
       });
-      await expect(page.getByText("marker-a.txt").first()).toBeVisible({ timeout: 10000 });
-      await expect(page.getByText("marker-b.txt").first()).toBeVisible({ timeout: 10000 });
+      await expect(filesPage.getByText("marker-a.txt").first()).toBeVisible({ timeout: 10000 });
+      await expect(filesPage.getByText("marker-b.txt").first()).toBeVisible({ timeout: 10000 });
+
+      await expect(filesPage.getByTestId("workspace-layout-select")).toHaveValue("OneRow", {
+        timeout: 10000,
+      });
+      const pane0Box = await filesPage.getByTestId("pane-0").boundingBox();
+      const pane1Box = await filesPage.getByTestId("pane-1").boundingBox();
+      expect(pane0Box).not.toBeNull();
+      expect(pane1Box).not.toBeNull();
+      expect(pane1Box!.x).toBeGreaterThan(pane0Box!.x + 10);
+      await expect(page.getByTestId("mesh-detail")).toBeVisible();
+      await filesPage.close();
     } finally {
       rmSync(dirA, { recursive: true, force: true });
       rmSync(dirB, { recursive: true, force: true });

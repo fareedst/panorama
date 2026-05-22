@@ -6,9 +6,39 @@ import {
   calculateLayout,
   getTotalArea,
   doOverlap,
+  normalizeLayoutType,
   type LayoutType,
   type PaneBounds,
 } from "./files.layout";
+
+describe("normalizeLayoutType [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE]", () => {
+  it("maps canonical LayoutType values", () => {
+    expect(normalizeLayoutType("Tile")).toBe("Tile");
+    expect(normalizeLayoutType("OneRow")).toBe("OneRow");
+    expect(normalizeLayoutType("OneColumn")).toBe("OneColumn");
+    expect(normalizeLayoutType("Fullscreen")).toBe("Fullscreen");
+  });
+
+  it("maps config-style aliases case-insensitively", () => {
+    expect(normalizeLayoutType("tile")).toBe("Tile");
+    expect(normalizeLayoutType("oneRow")).toBe("OneRow");
+    expect(normalizeLayoutType("oneColumn")).toBe("OneColumn");
+    expect(normalizeLayoutType("ONECOLUMN")).toBe("OneColumn");
+    expect(normalizeLayoutType("fullscreen")).toBe("Fullscreen");
+  });
+
+  it("maps files.yaml display labels from mesh snapshots", () => {
+    expect(normalizeLayoutType("One Row")).toBe("OneRow");
+    expect(normalizeLayoutType("one row")).toBe("OneRow");
+    expect(normalizeLayoutType("One Column")).toBe("OneColumn");
+    expect(normalizeLayoutType("one column")).toBe("OneColumn");
+  });
+
+  it("returns null for unknown values", () => {
+    expect(normalizeLayoutType("grid")).toBeNull();
+    expect(normalizeLayoutType(null)).toBeNull();
+  });
+});
 
 describe("calculateLayout [REQ_MULTI_PANE_LAYOUT]", () => {
   const containerWidth = 1000;

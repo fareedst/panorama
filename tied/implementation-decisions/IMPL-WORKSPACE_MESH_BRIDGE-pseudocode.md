@@ -1,12 +1,23 @@
 # IMPL-WORKSPACE_MESH_BRIDGE essence pseudocode
 
+## NORMALIZE_LAYOUT
+# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MULTI_PANE_LAYOUT]
+# how: Map config aliases (tile, oneRow, oneColumn, fullscreen) to canonical LayoutType at capture, parse, and WorkspaceView init.
+
+```
+NORMALIZE_LAYOUT(value):
+  IF value is canonical LayoutType THEN RETURN value
+  IF value matches config alias (case-insensitive) THEN RETURN canonical LayoutType
+  RETURN null
+```
+
 ## CAPTURE_SNAPSHOT
 # [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MULTI_PANE_LAYOUT]
-# how: Copy layout, focus, linked, comparison, and per-pane path/sort/cursor into WorkspaceSnapshot v1.
+# how: Copy layout, focus, linked, comparison, and per-pane path/sort/cursor into WorkspaceSnapshot v1; layout via NORMALIZE_LAYOUT.
 
 ```
 CAPTURE_SNAPSHOT(workspaceState):
-  RETURN { version: 1, layout, focusIndex, linkedMode, comparisonMode, panes[] }
+  RETURN { version: 1, layout: NORMALIZE_LAYOUT(layout) ?? Tile, focusIndex, linkedMode, comparisonMode, panes[] }
 ```
 
 ## BUILD_MESH_PAYLOAD
@@ -26,7 +37,7 @@ BUILD_MESH_PAYLOAD(name, snapshot, note?):
 
 ```
 PARSE_SNAPSHOT_FROM_MESH(mesh):
-  IF valid JSON in description THEN RETURN snapshot
+  IF valid JSON in description THEN RETURN snapshot with NORMALIZE_LAYOUT(layout)
   IF mesh.depots non-empty THEN RETURN depot-only defaults
   RETURN null
 ```
@@ -45,15 +56,52 @@ APPLY_MAX_PANES_LIMIT(snapshot, maxPanes):
 
 ## RESTORE_ON_FILES_PAGE
 # [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-FILE_MANAGER_PAGE]
-# how: searchParams.meshId → getMesh → APPLY_MAX_PANES_LIMIT → listDirectory per path → pass restoreUi to WorkspaceView; restoredFromMesh skips paneN URL hydration.
+# how: export dynamic force-dynamic; searchParams.meshId → getMesh → APPLY_MAX_PANES_LIMIT → listDirectory per path → restoreLayout via NORMALIZE_LAYOUT; layout restoreWarning when JSON lacks layout or is unreadable; pass meshId + key remount to WorkspaceView; restoredFromMesh skips paneN URL hydration.
 
 ```
 RESTORE_ON_FILES_PAGE(meshId):
+  EXPORT dynamic = force-dynamic
+  IF meshId missing THEN skip restore
+  record = getMesh(meshId)
+  IF record missing THEN
+    restoreWarning = Mesh not found on server; MESH_DATA_DIR shared across processes
+    PASS meshId to WorkspaceView (restoredFromMesh false)
   snapshot = PARSE_SNAPSHOT_FROM_MESH(mesh)
+  IF snapshot missing THEN
+    restoreWarning = snapshot unreadable; pane layout may use defaults
+    PASS meshId
   { snapshot, truncated } = APPLY_MAX_PANES_LIMIT(snapshot, layout.maxPanes)
-  IF truncated THEN restoreWarning = user message
+  IF truncated THEN append restoreWarning maxPanes message
+  IF snapshot.layout is Tile AND description lacks layout field THEN append layout not stored warning
+  IF snapshot.layout is Tile AND description JSON invalid THEN append snapshot unreadable layout warning
   initialPanes = listDirectory for each snapshot.panes[].path
-  PASS restoreUi, restorePaneMeta, restoredFromMesh to WorkspaceView
+  restoreLayout = NORMALIZE_LAYOUT(snapshot.layout) ?? Tile
+  restoreUi.layout = restoreLayout
+  PASS meshId, key={meshId ?? files-workspace}, restoreUi, restoreLayout, restorePaneMeta, restoredFromMesh, restoreWarning to WorkspaceView
+```
+
+## RESTORE_LAYOUT_IN_WORKSPACE_VIEW
+# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MULTI_PANE_LAYOUT]
+# how: resolveInitialWorkspaceLayout for useState init; useEffect sync restoreLayout prop; client fetch /api/mesh/:meshId once (layoutRehydratedRef) when meshId set; DEBUG traces on rehydrate path.
+
+```
+resolveInitialWorkspaceLayout(restoredFromMesh, restoreLayout, restoreUi, layoutConfig):
+  fromRestore = NORMALIZE_LAYOUT(restoreLayout) ?? NORMALIZE_LAYOUT(restoreUi.layout)
+  IF fromRestore THEN RETURN fromRestore
+  IF restoredFromMesh THEN RETURN Tile
+  RETURN NORMALIZE_LAYOUT(layoutConfig.default) ?? Tile
+
+RESTORE_LAYOUT_IN_WORKSPACE_VIEW(meshId, restoreLayout, restoreUi, restoredFromMesh, layoutConfig):
+  layoutState = resolveInitialWorkspaceLayout(...)
+  useState layout = layoutState
+  useEffect WHEN restoreLayout prop changes THEN setLayout(NORMALIZE_LAYOUT(restoreLayout))
+  IF meshId present AND NOT layoutRehydratedRef THEN
+    layoutRehydratedRef = true
+    FETCH /api/mesh/{meshId}
+    parsed = PARSE_SNAPSHOT_FROM_MESH(response.mesh)
+    IF parsed.layout THEN setLayout(NORMALIZE_LAYOUT(parsed.layout)) with DEBUG log
+  calculateLayout uses layout for pane bounds (Tile, OneRow, OneColumn, Fullscreen)
+  workspace-layout-select data-testid reflects layoutState
 ```
 
 ## WORKSPACE_SNAPSHOT_SUMMARY
@@ -66,15 +114,26 @@ WORKSPACE_SNAPSHOT_SUMMARY(snapshot):
 ```
 
 ## MESH_DETAIL_RESTORE_LINK
-# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_GUI]
-# how: When mesh has depots, render Open in File Manager link to /files?meshId=; workspace-snapshot tag shows summary section.
+# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_GUI] [IMPL-EXTERNAL_LINKS] [REQ-NAVIGATION_LINKS]
+# how: When mesh has depots, render Open in File Manager NewTabLink to /files?meshId= (target=_blank, rel, a11y); workspace-snapshot tag shows summary section.
 
 ```
 MESH_DETAIL_RESTORE_LINK(meshId, mesh):
   IF mesh.depots.length > 0 THEN
-    RENDER link href=/files?meshId={meshId} testid=open-workspace-from-mesh
+    RENDER NewTabLink href=/files?meshId={meshId} testid=open-workspace-from-mesh target=_blank rel=noopener noreferrer aria-label disclosure
   IF tag workspace-snapshot AND parsed snapshot THEN
     RENDER summary testid=workspace-snapshot-summary from WORKSPACE_SNAPSHOT_SUMMARY
+```
+
+## WORKSPACE_HEADER_MESH_LINK
+# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-EXTERNAL_LINKS] [REQ-NAVIGATION_LINKS]
+# how: Workspace header nav renders Mesh Sync NewTabLink — /mesh when no meshId, /mesh/{meshId} when meshId prop set.
+
+```
+WORKSPACE_HEADER_MESH_LINK(meshId):
+  href = meshId ? /mesh/{meshId} : /mesh
+  RENDER nav testid=workspace-cross-surface-nav
+  RENDER NewTabLink href testid=open-mesh-from-workspace label=Mesh Sync target=_blank rel=noopener noreferrer aria-label disclosure
 ```
 
 ## STORE_FROM_WORKSPACE_UI

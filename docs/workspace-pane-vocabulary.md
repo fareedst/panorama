@@ -25,6 +25,9 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 | **Layout type** | “layout mode” — values `tile`, `oneRow`, `oneColumn`, `fullscreen` |
 | **Pane bounds** | `PaneBounds` — pixel `x`, `y`, `width`, `height` from layout calculator |
 | **Pane management** | “add/remove split” — gated by `layout.allowPaneManagement` and `layout.maxPanes` |
+| **Cross-surface link** | New-tab link between File Manager workspace and Mesh GUI ([mesh-platform-vocabulary.md](mesh-platform-vocabulary.md)) |
+| **Workspace header cross-surface nav** | Header `<nav>` with Mesh Sync link; not pane toolbar |
+| **Layout normalization** | Map config/UI aliases to canonical `LayoutType` — `normalizeLayoutType`, pseudo block `NORMALIZE_LAYOUT` ([IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml)) |
 
 ## Naming bridge
 
@@ -37,6 +40,7 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 | Max panes | “Maximum number of panes reached” | `layout.maxPanes` (`0` = no limit) | — | validation in `handleAddPane` |
 | Layout: tile | “Tile” | `layout.default: tile` | — | `LayoutType` / `calculateLayout` |
 | Focused pane | (visual focus ring) | — | `navigate.tab` | `focusIndex`, `setFocusIndex` |
+| Mesh Sync (header) | “Mesh Sync” | — | — | `open-mesh-from-workspace`, `NewTabLink` |
 
 ## Named concepts
 
@@ -48,7 +52,9 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 - **Startup paths** — `startup.mode` (`configured` \| `last` \| `home`) and `startup.paths.paneN` in `config/files.yaml`.
 - **Parent navigation** — `navigate.parent` / Parent `..` button; must route through `handleNavigate` / `navigateToParent` for linked sync.
 - **Save workspace as mesh** — Toolbar action `mesh.saveWorkspace` (Ctrl+Shift+M); creates mesh with tag `workspace-snapshot` ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)).
+- **Layout normalization** — `normalizeLayoutType` at snapshot capture, parse, Files page restore, and `WorkspaceView` init so stored aliases (e.g. `oneRow`, `"One Row"`) round-trip to canonical layout geometry.
 - **Restore from mesh** — `/files?meshId={id}` hydrates panes from mesh depots and `description` snapshot JSON.
+- **Workspace header cross-surface nav** — `workspace-cross-surface-nav` with **Mesh Sync** `NewTabLink` to `/mesh` or `/mesh/{meshId}` in a new tab.
 
 ## Pseudo-code block names
 
@@ -60,17 +66,21 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 | Remove pane | `RemovePane` → `IMPL-PANE_MANAGEMENT_RemovePane` | IMPL-PANE_MANAGEMENT |
 | Layout: tile / one row / column / fullscreen | `Tile`, `OneRow`, `OneColumn`, `Fullscreen` | IMPL-LAYOUT_CALCULATOR |
 | File row render + scroll | `RenderFileRows`, `ScrollToCursor` | IMPL-FILE_PANE |
+| Layout normalization | `NORMALIZE_LAYOUT` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Capture workspace snapshot | `CAPTURE_SNAPSHOT` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Build mesh create payload | `BUILD_MESH_PAYLOAD` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Parse snapshot from mesh | `PARSE_SNAPSHOT_FROM_MESH` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Restore on Files page | `RESTORE_ON_FILES_PAGE` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Save workspace from UI | `STORE_FROM_WORKSPACE_UI` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Apply max panes on restore | `APPLY_MAX_PANES_LIMIT` | IMPL-WORKSPACE_MESH_BRIDGE |
+| Header link to Mesh | `WORKSPACE_HEADER_MESH_LINK` | IMPL-WORKSPACE_MESH_BRIDGE |
 
 ## Alphabetical index
 
+- **Cross-surface link** — new-tab Mesh ↔ File Manager navigation (`NewTabLink`)
 - **Files page** — server entry; loads config + initial directory data
 - **Focus** — `focusIndex`
+- **Layout normalization** — `normalizeLayoutType` / `NORMALIZE_LAYOUT`
 - **Layout type** — `tile`, `oneRow`, `oneColumn`, `fullscreen`
 - **Pane** — single listing column
 - **Pane bounds** — geometry for CSS placement
@@ -78,6 +88,7 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 - **Pane state** — per-pane React state object
 - **Restore from mesh** — `/files?meshId=` server bootstrap + client `restoreUi`
 - **Workspace** — multi-pane client shell
+- **Workspace header cross-surface nav** — header `workspace-cross-surface-nav`, **Mesh Sync** link
 - **Workspace snapshot** — v1 JSON in mesh `description.workspaceSnapshot` (see [mesh-platform-vocabulary.md](mesh-platform-vocabulary.md))
 
 ## See also

@@ -111,3 +111,5 @@ prompts
 scripts/*.mjs
 tmp
 docs/.markscope-preview-cache
+data
+.mesh-data-local

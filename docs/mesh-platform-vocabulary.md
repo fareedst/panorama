@@ -39,7 +39,9 @@
 | **Virtual depot** | Depot `kind: virtual` — **VirtualConnector** synthetic inventory ([REQ-MESH_REAL_CONNECTORS](../tied/requirements/REQ-MESH_REAL_CONNECTORS.yaml)) |
 | **Default connector fallback** | When `kind` is unknown/unregistered — **VirtualConnector** (synthetic stub), not a live filesystem connector |
 | **Workspace snapshot** | Tag `workspace-snapshot`; UI state JSON in `description.workspaceSnapshot` ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)) |
-| **Open in File Manager** | Mesh detail restore entry | `/files?meshId=` | `IMPL-WORKSPACE_MESH_BRIDGE` restore |
+| **Open in File Manager** | Mesh detail restore entry (new tab) | `/files?meshId=` | `IMPL-WORKSPACE_MESH_BRIDGE` restore |
+| **Cross-surface link** | New-tab navigation between Mesh GUI and File Manager workspace; `target="_blank"`, `rel="noopener noreferrer"`, screen-reader disclosure |
+| **Open mesh from workspace** | File Manager header nav to Mesh | `/mesh` or `/mesh/:meshId` | `open-mesh-from-workspace` |
 
 ## Naming bridge
 
@@ -61,7 +63,8 @@
 | Archive mesh | settings, `archive-mesh-btn` | mesh archive API | `IMPL-MESH_GUI_archive` |
 | Schedule | schedule page | schedule routes | `IMPL-MESH_GUI_schedule` |
 | Workspace snapshot summary | `workspace-snapshot-summary` | mesh `description` JSON | `IMPL-WORKSPACE_MESH_BRIDGE` |
-| Open workspace from mesh | `open-workspace-from-mesh` | `/files?meshId=` | `IMPL-WORKSPACE_MESH_BRIDGE` |
+| Open workspace from mesh | `open-workspace-from-mesh` | `/files?meshId=` (new tab) | `IMPL-WORKSPACE_MESH_BRIDGE` |
+| Open mesh from workspace | `open-mesh-from-workspace` | `/mesh` or `/mesh/:meshId` (new tab) | `IMPL-WORKSPACE_MESH_BRIDGE` |
 
 ## Named concepts
 
@@ -96,6 +99,7 @@
 
 ## Alphabetical index
 
+- **Cross-surface link** — new-tab navigation between Mesh GUI and File Manager workspace
 - **Approved session handoff** — Plan → Sync via `sessionStorage`
 - **Archived mesh** — soft-archived; excluded from default list
 - **Mesh hub route** — global `/mesh/...` placeholder without `:meshId`
@@ -112,11 +116,14 @@
 - **Remote depot** — depot kind using remote connector stub
 - **Mesh** — top-level sync configuration
 - **Mesh runtime** — orchestration facade
+- **Open mesh from workspace** — header `open-mesh-from-workspace` to `/mesh` or `/mesh/:meshId`
+- **Open in File Manager** — mesh detail restore to `/files?meshId=` (new tab)
 - **Sync link** — depot-to-depot link
 - **Session progress** — completed/failed/total counters during run
 - **Sync session** — plan execution instance
 - **Sync start** — begin approved session on Sync Now page
 - **Topology** — graph validation/projection
+- **Workspace snapshot** — tag `workspace-snapshot`; `description.workspaceSnapshot` v1 JSON
 
 ## See also
 

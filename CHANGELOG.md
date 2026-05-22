@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Workspace ↔ mesh bridge** (`[REQ-WORKSPACE_MESH_BRIDGE]`, `[ARCH-WORKSPACE_MESH_BRIDGE]`, `[IMPL-WORKSPACE_MESH_BRIDGE]`): save file-manager workspace (pane paths, layout, focus, linked/comparison, sort/cursor) as a new mesh from workspace toolbar **Mesh** group / keybind **Ctrl+Shift+M** (`mesh.saveWorkspace`); optional note prefixes snapshot JSON in mesh `description`; restore via mesh detail **Open in File Manager** → `/files?meshId=` with server-side directory hydration, `maxPanes` truncation warning, and `restoredFromMesh` precedence over `paneN` URL params. Modules: [`src/lib/workspace-mesh-bridge.ts`](src/lib/workspace-mesh-bridge.ts), [`SaveWorkspaceMeshDialog`](src/app/files/components/SaveWorkspaceMeshDialog.tsx), [`MeshDetailClient`](src/app/mesh/components/MeshDetailClient.tsx) summary + link. Tests: Vitest (`workspace-mesh-bridge.test.ts`, dialog, `workspace-bridge.route.test.ts`, `MeshDetailClient.test.tsx`); E2E [`e2e/workspace-mesh-bridge.spec.ts`](e2e/workspace-mesh-bridge.spec.ts). Vocabulary: [`docs/workspace-pane-vocabulary.md`](docs/workspace-pane-vocabulary.md), [`docs/mesh-platform-vocabulary.md`](docs/mesh-platform-vocabulary.md), [`docs/toolbar-keybind-vocabulary.md`](docs/toolbar-keybind-vocabulary.md).
+- **`NewTabLink`** (`[IMPL-EXTERNAL_LINKS]`, `[REQ-NAVIGATION_LINKS]`): reusable cross-surface new-tab links with `target="_blank"`, `rel="noopener noreferrer"`, and assistive disclosure; workspace header **Mesh Sync** nav (`open-mesh-from-workspace`) and mesh-restore layout normalization via `normalizeLayoutType` / server `restoreLayout` plus client `/api/mesh/:meshId` rehydrate. Tests: [`NewTabLink.test.tsx`](src/components/NewTabLink.test.tsx), [`WorkspaceView.mesh-restore.test.tsx`](src/app/files/WorkspaceView.mesh-restore.test.tsx), [`page.mesh-restore.test.tsx`](src/app/files/page.mesh-restore.test.tsx), [`files.layout.test.ts`](src/lib/files.layout.test.ts).
 - When `MESH_DATA_DIR` is set, mesh **sync sessions** (including approved plans) persist to `sync-sessions.json` and audit **events** to `sync-events.json`, alongside `meshes.json` (`[IMPL-MESH_PERSISTENCE]`).
 - Canonical domain vocabulary in `docs/*-vocabulary.md` (index: [`docs/panorama-domain-references.md`](docs/panorama-domain-references.md)); interactive guide [`docs/panorama-build-test.md`](docs/panorama-build-test.md).
 - Mesh sub-pages (per-mesh and **mesh hub routes**): schedule, export, history, rules, settings, global depots/policies/sync; **Remote connector** stub for **remote depots**; **VirtualConnector** default for **virtual depots** and unknown kinds; sessions `GET` includes **session progress**; expanded Playwright coverage in `e2e/mesh-sync.spec.ts`.
@@ -20,11 +21,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Open in File Manager** (mesh detail) opens in a new tab with security and accessibility attributes (`NewTabLink`).
+- Mesh restore applies stored layout (e.g. **OneRow**) instead of defaulting to **Tile**; E2E asserts layout select value and horizontal pane geometry after new-tab restore.
+- Dev: `.gitignore` adds `data/` and `.mesh-data-local/`; [`docs/panorama-build-test.md`](docs/panorama-build-test.md) UX for `MESH_DATA_DIR` and Playwright port jobs.
 - **Plan approval** vs **sync start**: Plan page performs **plan approval** only; **Sync start** on Sync Now with optional `confirmedDestructive`; **approved session handoff** via `sessionStorage`.
 - `MeshRuntime.runApprovedSession` iterates all **sync links**; pause/cancel/**session progress** counters; retry/backoff and outbound throttle hooks; Vitest **functional `localStorage`** shim in [`src/test/setup.ts`](src/test/setup.ts) (Node 22). Playwright `webServer` uses dedicated **PORT**, `MESH_DATA_DIR`, and `MESH_ASYNC_SYNC` (`[IMPL-TEST_SETUP]` / `[REQ-MESH_E2E_RELEASE]`).
 - **Credential references**: creating via API allocates an `id` when omitted (`resolveEntityId`), matching depot-style entity creation (`[IMPL-MESH_DOMAIN_TYPES]`).
 - Search history silent storage failures aligned with **BookmarkManager**; bulk-delete test uses stable fetch routing.
 - TIED LEAP alignment: REQ/ARCH/IMPL and [`docs/mesh-platform-vocabulary.md`](docs/mesh-platform-vocabulary.md); `IMPL-MESH_GUI`, `IMPL-MESH_RUNTIME`, `IMPL-MESH_CONNECTOR`, `IMPL-MESH_API`, `IMPL-MESH_HARDENING`, `IMPL-TEST_SETUP` sidecars updated with `[PROC-IMPL_PSEUDOCODE_TOKENS]` block comments mirrored in code and tests.
+
+### Fixed
+
+- **`EventService`** unit tests use in-memory `dataDir: ""` when `MESH_DATA_DIR` is set in the shell (`[IMPL-TEST_SETUP]`), avoiding cross-test persistence pollution.
 
 ### Notes
 

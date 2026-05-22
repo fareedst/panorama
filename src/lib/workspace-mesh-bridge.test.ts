@@ -10,6 +10,7 @@ import {
   depotPathsFromMesh,
   applyMaxPanesLimit,
   workspaceSnapshotSummary,
+  type WorkspaceCaptureInput,
 } from "./workspace-mesh-bridge";
 import type { Mesh } from "./mesh/domain";
 
@@ -156,5 +157,141 @@ describe("REQ-WORKSPACE_MESH_BRIDGE [IMPL-WORKSPACE_MESH_BRIDGE]", () => {
     const s = workspaceSnapshotSummary(baseSnapshot);
     expect(s.panePaths).toEqual(["/tmp/a", "/tmp/b"]);
     expect(s.comparisonMode).toBe("name");
+  });
+
+  it("CAPTURE_SNAPSHOT_normalizes_config_style_tile_layout", () => {
+    const snapshot = captureWorkspaceSnapshot({
+      layout: "tile" as WorkspaceCaptureInput["layout"],
+      focusIndex: 0,
+      linkedMode: false,
+      comparisonMode: "off",
+      panes: [
+        {
+          path: "/tmp/a",
+          sortBy: "name",
+          sortDirection: "asc",
+          sortDirsFirst: true,
+          cursor: 0,
+        },
+      ],
+    });
+    expect(snapshot.layout).toBe("Tile");
+    const payload = buildMeshCreatePayload({ name: "Tile norm", snapshot });
+    expect(payload.description as string).toContain('"layout":"Tile"');
+  });
+
+  it("PARSE_SNAPSHOT_FROM_MESH_accepts_config_style_oneColumn_in_json", () => {
+    const snapshot = captureWorkspaceSnapshot({
+      layout: "OneColumn",
+      focusIndex: 0,
+      linkedMode: false,
+      comparisonMode: "off",
+      panes: [
+        {
+          path: "/tmp/a",
+          sortBy: "name",
+          sortDirection: "asc",
+          sortDirsFirst: true,
+          cursor: 0,
+        },
+      ],
+    });
+    const payload = buildMeshCreatePayload({ name: "Col", snapshot });
+    const corrupted = (payload.description as string).replace(
+      '"OneColumn"',
+      '"oneColumn"',
+    );
+    const mesh: Pick<Mesh, "description" | "tags" | "depots"> = {
+      description: corrupted,
+      tags: [WORKSPACE_SNAPSHOT_TAG],
+      depots: (payload.depots as { root: string }[]).map((d, i) => ({
+        id: `d${i}`,
+        name: `Pane ${i + 1}`,
+        kind: "local",
+        root: d.root,
+        accessMode: "read_write",
+      })),
+    };
+    expect(parseWorkspaceSnapshotFromMesh(mesh)?.layout).toBe("OneColumn");
+  });
+
+  it("PARSE_SNAPSHOT_FROM_MESH_accepts_display_label_One_Row_in_json", () => {
+    const snapshot = captureWorkspaceSnapshot({
+      layout: "OneRow",
+      focusIndex: 0,
+      linkedMode: false,
+      comparisonMode: "off",
+      panes: [
+        {
+          path: "/tmp/a",
+          sortBy: "name",
+          sortDirection: "asc",
+          sortDirsFirst: true,
+          cursor: 0,
+        },
+      ],
+    });
+    const payload = buildMeshCreatePayload({ name: "Row label", snapshot });
+    const withDisplayLabel = (payload.description as string).replace(
+      '"OneRow"',
+      '"One Row"',
+    );
+    const mesh: Pick<Mesh, "description" | "tags" | "depots"> = {
+      description: withDisplayLabel,
+      tags: [WORKSPACE_SNAPSHOT_TAG],
+      depots: (payload.depots as { root: string }[]).map((d, i) => ({
+        id: `d${i}`,
+        name: `Pane ${i + 1}`,
+        kind: "local",
+        root: d.root,
+        accessMode: "read_write",
+      })),
+    };
+    expect(parseWorkspaceSnapshotFromMesh(mesh)?.layout).toBe("OneRow");
+  });
+
+  it("PARSE_SNAPSHOT_FROM_MESH_accepts_root_level_snapshot_without_wrapper", () => {
+    const mesh: Pick<Mesh, "description" | "tags" | "depots"> = {
+      description: JSON.stringify({
+        version: 1,
+        layout: "OneRow",
+        focusIndex: 0,
+        linkedMode: false,
+        comparisonMode: "off",
+        panes: [
+          {
+            path: "/tmp/a",
+            sortBy: "name",
+            sortDirection: "asc",
+            sortDirsFirst: true,
+            cursor: 0,
+          },
+        ],
+      }),
+      tags: [WORKSPACE_SNAPSHOT_TAG],
+      depots: [
+        {
+          id: "d0",
+          name: "Pane 1",
+          kind: "local",
+          root: "/tmp/a",
+          accessMode: "read_write",
+        },
+      ],
+    };
+    expect(parseWorkspaceSnapshotFromMesh(mesh)?.layout).toBe("OneRow");
+  });
+
+  it("PARSE_SNAPSHOT_FROM_MESH_round_trips_focus_linked_comparison", () => {
+    const payload = buildMeshCreatePayload({ name: "UI", snapshot: baseSnapshot });
+    const mesh: Pick<Mesh, "description" | "tags" | "depots"> = {
+      description: payload.description as string,
+      tags: [WORKSPACE_SNAPSHOT_TAG],
+      depots: [],
+    };
+    const parsed = parseWorkspaceSnapshotFromMesh(mesh);
+    expect(parsed?.focusIndex).toBe(1);
+    expect(parsed?.linkedMode).toBe(true);
+    expect(parsed?.comparisonMode).toBe("name");
   });
 });

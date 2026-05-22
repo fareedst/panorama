@@ -7,6 +7,28 @@
  */
 export type LayoutType = "Tile" | "OneRow" | "OneColumn" | "Fullscreen";
 
+const LAYOUT_ALIASES: Record<string, LayoutType> = {
+  tile: "Tile",
+  onerow: "OneRow",
+  "one row": "OneRow",
+  onecolumn: "OneColumn",
+  "one column": "OneColumn",
+  fullscreen: "Fullscreen",
+};
+
+// [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MULTI_PANE_LAYOUT] NORMALIZE_LAYOUT
+/** Map config/UI aliases (e.g. tile, oneColumn, "One Row") to canonical LayoutType. */
+export function normalizeLayoutType(value: unknown): LayoutType | null {
+  if (typeof value !== "string" || !value.trim()) {
+    return null;
+  }
+  const key = value.trim();
+  if ((["Tile", "OneRow", "OneColumn", "Fullscreen"] as LayoutType[]).includes(key as LayoutType)) {
+    return key as LayoutType;
+  }
+  return LAYOUT_ALIASES[key.toLowerCase()] ?? null;
+}
+
 /**
  * Pane bounds in pixels
  * [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]

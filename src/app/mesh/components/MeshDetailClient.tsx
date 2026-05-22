@@ -4,7 +4,7 @@
 // [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE]: Workspace snapshot summary and restore link
 
 import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
+import { NewTabLink } from "@/components/NewTabLink";
 import { MeshDetailNav } from "../layout";
 import {
   WORKSPACE_SNAPSHOT_TAG,
@@ -146,13 +146,13 @@ export function MeshDetailClient({ meshId }: { meshId: string }) {
         <p className="mt-1 text-zinc-400">{data.mesh.description}</p>
       )}
       {data.mesh.depots.length > 0 && (
-        <Link
+        <NewTabLink
           href={`/files?meshId=${meshId}`}
           className="mt-3 inline-block rounded bg-emerald-700 px-3 py-2 text-sm hover:bg-emerald-600"
           data-testid="open-workspace-from-mesh"
         >
           Open in File Manager
-        </Link>
+        </NewTabLink>
       )}
       {isWorkspaceSnapshot && workspaceSummary && (
         <section
@@ -166,7 +166,7 @@ export function MeshDetailClient({ meshId }: { meshId: string }) {
             <li>Linked: {workspaceSummary.linkedMode ? "on" : "off"}</li>
             <li>Comparison: {workspaceSummary.comparisonMode}</li>
             {workspaceSummary.panePaths.map((p, i) => (
-              <li key={p}>
+              <li key={`pane-${i}-${p}`}>
                 Pane {i + 1}: {p}
               </li>
             ))}

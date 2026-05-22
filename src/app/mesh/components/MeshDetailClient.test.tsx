@@ -117,5 +117,11 @@ describe("MeshDetailClient [IMPL-MESH_GUI]", () => {
     expect(screen.getByTestId("workspace-snapshot-summary")).toHaveTextContent("Linked: on");
     const link = screen.getByTestId("open-workspace-from-mesh");
     expect(link).toHaveAttribute("href", "/files?meshId=mesh-ws-1");
+    expect(link).toHaveAttribute("target", "_blank");
+    expect(link).toHaveAttribute("rel", "noopener noreferrer");
+    expect(link).toHaveAttribute(
+      "aria-label",
+      "Open in File Manager (opens in new tab)",
+    );
   });
 });
