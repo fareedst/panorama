@@ -361,10 +361,10 @@ describe("getFilesConfig [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE
     expect(config.startup).toBeDefined();
   });
 
+  // [IMPL-WORKSPACE_MESH_BRIDGE] WORKSPACE_HEADER_STATUS — copy.subtitle removed (compact header banner; no loadedMessage).
   it("loads copy section with all UI text", () => {
     const config = getFilesConfig();
     expect(config.copy?.title).toBe("File Manager");
-    expect(config.copy?.subtitle).toBe("Browse and manage server files");
     expect(config.copy?.marking?.markedCount).toBe("{count} marked");
     expect(config.copy?.help?.title).toBe("Keyboard Shortcuts");
     expect(config.copy?.commandPalette?.title).toBe("Command Palette");

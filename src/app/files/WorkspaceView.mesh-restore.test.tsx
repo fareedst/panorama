@@ -32,7 +32,6 @@ const mockColumns = [
 
 const mockCopy = {
   title: "File Manager",
-  subtitle: "Browse files",
 };
 
 function mockPaneFiles(dir: string): FileStat[] {
@@ -667,7 +666,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
     expect(screen.getByTestId("workspace-diff-header-button")).toBeInTheDocument();
   });
 
-  // [REQ-WORKSPACE_MESH_BRIDGE] SHOW_LOADED_WORKSPACE_NAME — how: loadedMeshName renders in header.
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] SHOW_LOADED_WORKSPACE_NAME — how: loadedMeshName renders in header without redundant success line.
   it("SHOW_LOADED_WORKSPACE_NAME_displays_mesh_name_in_header", () => {
     render(
       <WorkspaceView
@@ -681,9 +680,76 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
         restoredFromMesh
       />,
     );
+    expect(screen.getByTestId("workspace-header-status")).toBeInTheDocument();
     expect(screen.getByTestId("workspace-loaded-name")).toHaveTextContent(
       "My Saved Workspace",
     );
+    expect(screen.queryByTestId("workspace-restored-from-mesh")).not.toBeInTheDocument();
+  });
+
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] WORKSPACE_HEADER_STATUS — how: partial restore warning uses amber workspace-restore-warning alongside loaded name.
+  it("WORKSPACE_HEADER_STATUS_shows_restore_warning_when_restoredFromMesh", () => {
+    render(
+      <WorkspaceView
+        initialPanes={[{ path: "/pane0", files: mockPaneFiles("/pane0") }]}
+        keybindings={mockKeybindings}
+        copy={mockCopy}
+        layout={mockLayout}
+        columns={mockColumns}
+        meshId="mesh-warn-1"
+        loadedMeshName="Truncated Workspace"
+        restoredFromMesh
+        restoreWarning="Restored first 2 pane(s) due to maxPanes limit."
+      />,
+    );
+    expect(screen.getByTestId("workspace-header-status")).toBeInTheDocument();
+    expect(screen.getByTestId("workspace-loaded-name")).toHaveTextContent("Truncated Workspace");
+    const warning = screen.getByTestId("workspace-restore-warning");
+    expect(warning).toHaveTextContent("maxPanes limit");
+    expect(warning).toHaveClass("text-amber-700");
+    expect(screen.queryByTestId("workspace-restore-error")).not.toBeInTheDocument();
+  });
+
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] WORKSPACE_HEADER_STATUS — how: bootstrap failure uses red workspace-restore-error.
+  it("WORKSPACE_HEADER_STATUS_shows_restore_error_when_not_restoredFromMesh", () => {
+    render(
+      <WorkspaceView
+        initialPanes={[{ path: "/pane0", files: mockPaneFiles("/pane0") }]}
+        keybindings={mockKeybindings}
+        copy={mockCopy}
+        layout={mockLayout}
+        columns={mockColumns}
+        meshId="mesh-missing-1"
+        restoreWarning="Mesh not found on server; workspace paths and layout may not restore."
+      />,
+    );
+    expect(screen.getByTestId("workspace-header-status")).toBeInTheDocument();
+    const error = screen.getByTestId("workspace-restore-error");
+    expect(error).toHaveTextContent("Mesh not found on server");
+    expect(error).toHaveClass("text-red-700");
+    expect(screen.queryByTestId("workspace-restore-warning")).not.toBeInTheDocument();
+  });
+
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] WORKSPACE_HEADER_STATUS — how: green fallback when restoredFromMesh with no loadedMeshName or warning.
+  it("WORKSPACE_HEADER_STATUS_shows_fallback_when_no_loaded_name", () => {
+    render(
+      <WorkspaceView
+        initialPanes={[{ path: "/pane0", files: mockPaneFiles("/pane0") }]}
+        keybindings={mockKeybindings}
+        copy={mockCopy}
+        layout={mockLayout}
+        columns={mockColumns}
+        meshId="mesh-fallback-1"
+        restoredFromMesh
+      />,
+    );
+    expect(screen.getByTestId("workspace-header-status")).toBeInTheDocument();
+    expect(screen.getByTestId("workspace-restored-from-mesh")).toHaveTextContent(
+      "Workspace restored from mesh",
+    );
+    expect(screen.queryByTestId("workspace-loaded-name")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("workspace-restore-warning")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("workspace-restore-error")).not.toBeInTheDocument();
   });
 
   // [REQ-WORKSPACE_MESH_BRIDGE] WORKSPACE_HEADER_MESH_LINK — how: meshId prop links to /mesh/{meshId} in new tab.

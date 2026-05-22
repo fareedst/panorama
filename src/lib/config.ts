@@ -249,9 +249,9 @@ export function getOverride(
  * [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE]
  */
 const DEFAULT_FILES_CONFIG: FilesConfig = {
+  // [IMPL-WORKSPACE_MESH_BRIDGE] WORKSPACE_HEADER_STATUS — no copy.subtitle default (compact header banner).
   copy: {
     title: "File Manager",
-    subtitle: "Browse and manage server files",
     layoutLabel: "Layout:",
     emptyDirectory: "Empty directory",
     shortcuts: {

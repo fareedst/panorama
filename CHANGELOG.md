@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Workspace header banner** (`[REQ-WORKSPACE_MESH_BRIDGE]`, `[IMPL-WORKSPACE_MESH_BRIDGE]` `WORKSPACE_HEADER_STATUS`): compact header; mesh-loaded name in `workspace-loaded-name` without redundant green success line; restore warnings (amber `workspace-restore-warning`) vs bootstrap errors (red `workspace-restore-error`) grouped in `workspace-header-status`; removed unused `copy.subtitle` and `copy.workspaceMesh.loadedMessage`.
 - **Workspace mesh save dialog**: when `/files?meshId=` is loaded, choose **Update current workspace** or **Save as new workspace**; successful update sets the diff baseline to the captured snapshot so the change badge clears immediately (no re-parse drift).
 - **Open in File Manager** (mesh detail) opens in a new tab with security and accessibility attributes (`NewTabLink`).
 - Mesh restore applies stored layout (e.g. **OneRow**) instead of defaulting to **Tile**; E2E asserts layout select value and horizontal pane geometry after new-tab restore.

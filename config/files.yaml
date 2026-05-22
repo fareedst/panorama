@@ -3,7 +3,6 @@
 
 copy:
   title: "File Manager"
-  subtitle: "Browse and manage server files"
   backToHome: "Back to Home"
   layoutLabel: "Layout:"
   emptyDirectory: "Empty directory"
@@ -94,7 +93,6 @@ copy:
     diffNoChanges: "No differences from saved workspace."
     diffButton: "Diff"
     loadedLabel: "Workspace"
-    loadedMessage: 'Loaded workspace "{name}"'
     saveSuccess: "Workspace saved as mesh"
 
 # [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]

@@ -6,10 +6,12 @@ ARCH-WORKSPACE_MESH_BRIDGE:
     summary: Pure bridge module, POST /api/mesh, /files?meshId= restore with dual server/client layout channels
     details:
       - applyMaxPanesLimit truncates restored panes; FilesPage surfaces restoreWarning including layout unreadable cases
+      - Compact workspace header banner (WORKSPACE_HEADER_STATUS); status row groups loaded name, amber warnings (restoredFromMesh + restoreWarning), and red errors (bootstrap failure)
       - diffWorkspaceSnapshots compares live state to saved baseline; mesh.diffWorkspace toolbar action
       - File manager shows loaded mesh name; save dialog supports update existing or save as new
       - FilesPage export const dynamic = force-dynamic for per-request meshId restore
       - links array empty on workspace save (linked mode does not create sync links)
+      - Loaded mesh name uses copy.workspaceMesh.loadedLabel only; removed loadedMessage copy key; no redundant green success line when name is shown
       - NewTabLink for Open in File Manager and workspace Mesh Sync header (cross-surface new tab)
       - normalizeLayoutType (NORMALIZE_LAYOUT) at snapshot boundaries and restore init
       - Optional human note may prefix description before workspaceSnapshot JSON
@@ -49,6 +51,6 @@ ARCH-WORKSPACE_MESH_BRIDGE:
       date: "2026-05-21T00:00:00.000Z"
       author: AI Agent
     last_updated:
-      date: "2026-05-22T12:00:00.000Z"
+      date: "2026-05-22T18:00:00.000Z"
       author: AI Agent
-      reason: LEAP — PUT workspace update, diff toolbar, loaded name, test paths
+      reason: LEAP — compact header banner, WORKSPACE_HEADER_STATUS warning vs error semantics

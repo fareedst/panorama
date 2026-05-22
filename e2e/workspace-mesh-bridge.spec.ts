@@ -40,7 +40,8 @@ test.describe("workspace mesh bridge E2E [REQ-WORKSPACE_MESH_BRIDGE]", () => {
         page.getByTestId("open-workspace-from-mesh").click(),
       ]);
       await filesPage.waitForLoadState("domcontentloaded");
-      await expect(filesPage.getByTestId("workspace-restored-from-mesh")).toBeVisible({
+      // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] SHOW_LOADED_WORKSPACE_NAME — how: mesh name in workspace-loaded-name (not workspace-restored-from-mesh).
+      await expect(filesPage.getByTestId("workspace-loaded-name")).toContainText(meshName, {
         timeout: 10000,
       });
       await expect(filesPage.getByText("marker-a.txt").first()).toBeVisible({ timeout: 10000 });

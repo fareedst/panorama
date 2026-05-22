@@ -1921,45 +1921,57 @@ export default function WorkspaceView({
   
   return (
     <div className="h-screen flex flex-col bg-zinc-100 dark:bg-zinc-950">
-      {/* Header */}
-      <header className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700 p-4">
+      {/* [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] WORKSPACE_HEADER_STATUS — compact banner */}
+      <header className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-700 px-4 py-2">
         <div className="flex items-center justify-between gap-4">
-          <div>
+          <div className="min-w-0 flex-1">
             <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
               File Manager
             </h1>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
-              Browse and manage server files
-            </p>
-            {/* [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] SHOW_LOADED_WORKSPACE_NAME */}
-            {loadedMeshName && (
-              <p
-                className="mt-1 text-sm font-medium text-zinc-700 dark:text-zinc-300"
-                data-testid="workspace-loaded-name"
+            {(loadedMeshName ||
+              restoreWarning ||
+              (restoredFromMesh && !restoreWarning && !loadedMeshName)) && (
+              <div
+                className="mt-0.5 space-y-0.5"
+                data-testid="workspace-header-status"
               >
-                {workspaceMeshCopy?.loadedLabel ?? "Workspace"}: {loadedMeshName}
-              </p>
-            )}
-            {restoreWarning && (
-              <p
-                className="mt-1 text-sm text-amber-700 dark:text-amber-300"
-                data-testid="workspace-restore-warning"
-              >
-                {restoreWarning}
-              </p>
-            )}
-            {restoredFromMesh && !restoreWarning && (
-              <p
-                className="mt-1 text-sm text-emerald-700 dark:text-emerald-400"
-                data-testid="workspace-restored-from-mesh"
-              >
-                {loadedMeshName
-                  ? (workspaceMeshCopy?.loadedMessage ?? 'Loaded workspace "{name}"').replace(
-                      "{name}",
-                      loadedMeshName,
-                    )
-                  : "Workspace restored from mesh"}
-              </p>
+                {/* [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] SHOW_LOADED_WORKSPACE_NAME */}
+                {loadedMeshName && (
+                  <p
+                    className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                    data-testid="workspace-loaded-name"
+                  >
+                    {workspaceMeshCopy?.loadedLabel ?? "Workspace"}: {loadedMeshName}
+                  </p>
+                )}
+                {/* [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] WORKSPACE_HEADER_STATUS — how: amber warning when partial restore succeeded */}
+                {restoreWarning && restoredFromMesh && (
+                  <p
+                    className="text-sm text-amber-700 dark:text-amber-300"
+                    data-testid="workspace-restore-warning"
+                  >
+                    {restoreWarning}
+                  </p>
+                )}
+                {/* [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] WORKSPACE_HEADER_STATUS — how: red error when server bootstrap failed */}
+                {restoreWarning && !restoredFromMesh && (
+                  <p
+                    className="text-sm text-red-700 dark:text-red-400"
+                    data-testid="workspace-restore-error"
+                  >
+                    {restoreWarning}
+                  </p>
+                )}
+                {/* [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] WORKSPACE_HEADER_STATUS — how: green fallback when restoredFromMesh with no name or warning */}
+                {restoredFromMesh && !restoreWarning && !loadedMeshName && (
+                  <p
+                    className="text-sm text-emerald-700 dark:text-emerald-400"
+                    data-testid="workspace-restored-from-mesh"
+                  >
+                    Workspace restored from mesh
+                  </p>
+                )}
+              </div>
             )}
           </div>
 

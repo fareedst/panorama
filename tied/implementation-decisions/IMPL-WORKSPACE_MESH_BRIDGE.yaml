@@ -1,7 +1,7 @@
 IMPL-WORKSPACE_MESH_BRIDGE:
   name: Workspace Mesh Bridge Implementation
   status: Implemented
-  description: workspace-mesh-bridge.ts (capture, parse, diff, planDepotSync, patch payload), normalizeLayoutType in files.layout, SaveWorkspaceMeshDialog (update/create), WorkspaceDiffDialog, NewTabLink, WorkspaceView store/restore/update/diff and header loaded name, FilesPage meshId bootstrap, PUT /api/mesh/:meshId/workspace, MeshDetailClient summary and open-workspace NewTabLink. E2E justified for full save/restore/update/diff UI path.
+  description: workspace-mesh-bridge.ts (capture, parse, diff, planDepotSync, patch payload), normalizeLayoutType in files.layout, SaveWorkspaceMeshDialog (update/create), WorkspaceDiffDialog, NewTabLink, WorkspaceView store/restore/update/diff, compact header banner with WORKSPACE_HEADER_STATUS (loaded name, amber warnings, red errors), FilesPage meshId bootstrap, PUT /api/mesh/:meshId/workspace, MeshDetailClient summary and open-workspace NewTabLink. E2E justified for full save/restore/update/diff UI path.
   code_locations:
     files:
       - path: src/lib/workspace-mesh-bridge.ts
@@ -13,7 +13,7 @@ IMPL-WORKSPACE_MESH_BRIDGE:
       - path: src/app/files/page.tsx
         description: RESTORE_ON_FILES_PAGE and SHOW_LOADED_WORKSPACE_NAME server bootstrap
       - path: src/app/files/WorkspaceView.tsx
-        description: STORE_FROM_WORKSPACE_UI, UPDATE_EXISTING_WORKSPACE, DIFF_SAVED_VS_CURRENT, RESTORE_LAYOUT_IN_WORKSPACE_VIEW, WORKSPACE_HEADER_MESH_LINK
+        description: STORE_FROM_WORKSPACE_UI, UPDATE_EXISTING_WORKSPACE, DIFF_SAVED_VS_CURRENT, RESTORE_LAYOUT_IN_WORKSPACE_VIEW, WORKSPACE_HEADER_MESH_LINK, WORKSPACE_HEADER_STATUS compact banner
       - path: src/app/files/components/SaveWorkspaceMeshDialog.tsx
         description: STORE_FROM_WORKSPACE_UI update vs create modes
       - path: src/app/files/components/WorkspaceDiffDialog.tsx
@@ -48,6 +48,6 @@ IMPL-WORKSPACE_MESH_BRIDGE:
       date: "2026-05-21T00:00:00.000Z"
       author: AI Agent
     last_updated:
-      date: "2026-05-22T12:00:00.000Z"
+      date: "2026-05-22T18:00:00.000Z"
       author: AI Agent
-      reason: LEAP — workspace update PUT, diff vs saved, loaded name, save_update_clears_diff_baseline
+      reason: LEAP — compact header banner, WORKSPACE_HEADER_STATUS warning vs error, no redundant loadedMessage

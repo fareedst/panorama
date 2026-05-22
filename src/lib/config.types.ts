@@ -201,9 +201,9 @@ export interface KeybindingConfig {
 }
 
 /** Copy strings for file manager UI (all user-facing text from config). */
+// [IMPL-WORKSPACE_MESH_BRIDGE] WORKSPACE_HEADER_STATUS — removed unused copy.subtitle and copy.workspaceMesh.loadedMessage (compact header banner).
 export interface FilesCopyConfig {
   title?: string;
-  subtitle?: string;
   layoutLabel?: string;
   emptyDirectory?: string;
   shortcuts?: {
@@ -288,7 +288,6 @@ export interface FilesCopyConfig {
     diffNoChanges?: string;
     diffButton?: string;
     loadedLabel?: string;
-    loadedMessage?: string;
   };
 }
 

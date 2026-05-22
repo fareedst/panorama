@@ -163,13 +163,30 @@ STORE_FROM_WORKSPACE_UI(meshId?, loadedMeshName?):
 
 ## SHOW_LOADED_WORKSPACE_NAME
 # [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-FILE_MANAGER_PAGE]
-# how: FilesPage passes loadedMeshName + loadedSnapshot; header shows Workspace: {name}; client fetch refreshes baseline.
+# how: FilesPage passes loadedMeshName + loadedSnapshot; compact header status row shows Workspace: {name}; no redundant success line when name is shown.
 
 ```
 SHOW_LOADED_WORKSPACE_NAME(meshId, record):
   IF meshId AND record THEN PASS loadedMeshName, loadedSnapshot to WorkspaceView
-  RENDER data-testid=workspace-loaded-name with mesh name
-  IF restoredFromMesh THEN message Loaded workspace "{name}"
+  RENDER data-testid=workspace-loaded-name with mesh name (copy.workspaceMesh.loadedLabel)
+  # how: omit redundant green Loaded workspace "{name}" when loadedMeshName is already shown in status row.
+  DO NOT render Loaded workspace "{name}" success when loadedMeshName is set
+```
+
+## WORKSPACE_HEADER_STATUS
+# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-FILE_MANAGER_PAGE]
+# how: Compact banner status row (workspace-header-status) below title; groups loaded name, warnings, and errors.
+
+```
+WORKSPACE_HEADER_STATUS(loadedMeshName, restoreWarning, restoredFromMesh):
+  IF loadedMeshName OR restoreWarning OR (restoredFromMesh AND NOT loadedMeshName AND NOT restoreWarning) THEN
+    RENDER workspace-header-status
+    # how: amber warning when partial restore succeeded (RESTORE_ON_FILES_PAGE sets restoredFromMesh + restoreWarning).
+    IF restoreWarning AND restoredFromMesh THEN workspace-restore-warning (amber)
+    # how: red error when server bootstrap failed (RESTORE_ON_FILES_PAGE sets restoreWarning without restoredFromMesh).
+    IF restoreWarning AND NOT restoredFromMesh THEN workspace-restore-error (red)
+    # how: green fallback only when restoredFromMesh with no name and no warning to surface.
+    IF restoredFromMesh AND NOT restoreWarning AND NOT loadedMeshName THEN workspace-restored-from-mesh (fallback only)
 ```
 
 ## UPDATE_EXISTING_WORKSPACE
