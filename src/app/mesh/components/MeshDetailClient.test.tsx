@@ -1,5 +1,5 @@
-// [REQ-MESH_GUI] [IMPL-MESH_GUI]: Mesh detail component tests — phase 18
-// [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE]: MESH_DETAIL_RESTORE_LINK, WORKSPACE_SNAPSHOT_SUMMARY
+// [REQ-MESH_GUI] [IMPL-MESH_GUI] [ARCH-MESH_LAYERED]: Mesh detail component tests
+// [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE]: MESH_DETAIL_RESTORE_LINK, WORKSPACE_SNAPSHOT_SUMMARY
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
@@ -10,6 +10,12 @@ import {
   captureWorkspaceSnapshot,
   WORKSPACE_SNAPSHOT_TAG,
 } from "@/lib/workspace-mesh-bridge";
+
+vi.mock("@/lib/display-spec-store", () => ({
+  getDisplaySpecStore: vi.fn(() => ({
+    get: (id: string) => (id === "spec-abc" ? { id, name: "Hide dotfiles" } : undefined),
+  })),
+}));
 
 describe("MeshDetailClient [IMPL-MESH_GUI]", () => {
   beforeEach(() => {
@@ -72,22 +78,25 @@ describe("MeshDetailClient [IMPL-MESH_GUI]", () => {
   });
 
   it("MESH_DETAIL_RESTORE_LINK_shows_workspace_snapshot_summary_and_open_link", async () => {
+    // [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_GUI] [IMPL-WORKSPACE_MESH_BRIDGE] [IMPL-MESH_GUI] [ARCH-WORKSPACE_MESH_BRIDGE]: mesh_detail_snapshot_summary_shows_note_save_time_shared_and_per_pane_sort_and_display_filters
     const snapshot = captureWorkspaceSnapshot({
       layout: "OneRow",
       focusIndex: 0,
       linkedMode: true,
       comparisonMode: "name",
+      sharedSort: { sortBy: "mtime", sortDirection: "desc", sortDirsFirst: false },
       panes: [
         {
           path: "/tmp/ws-pane",
-          sortBy: "name",
-          sortDirection: "asc",
-          sortDirsFirst: true,
+          sortBy: "size",
+          sortDirection: "desc",
+          sortDirsFirst: false,
           cursor: 0,
+          displaySpecId: "spec-abc",
         },
       ],
     });
-    const payload = buildMeshCreatePayload({ name: "WS", snapshot });
+    const payload = buildMeshCreatePayload({ name: "WS", note: "evening backup", snapshot });
     vi.stubGlobal(
       "fetch",
       vi.fn(async () =>
@@ -104,6 +113,7 @@ describe("MeshDetailClient [IMPL-MESH_GUI]", () => {
               links: [],
             },
             status: "active",
+            updatedAt: "2026-05-22T18:45:00.000Z",
           }),
         ),
       ),
@@ -113,8 +123,15 @@ describe("MeshDetailClient [IMPL-MESH_GUI]", () => {
     await waitFor(() => {
       expect(screen.getByTestId("workspace-snapshot-summary")).toBeInTheDocument();
     });
-    expect(screen.getByTestId("workspace-snapshot-summary")).toHaveTextContent("/tmp/ws-pane");
-    expect(screen.getByTestId("workspace-snapshot-summary")).toHaveTextContent("Linked: on");
+    const summary = screen.getByTestId("workspace-snapshot-summary");
+    expect(summary).toHaveTextContent("evening backup");
+    expect(summary).toHaveTextContent("Most recent save time:");
+    expect(summary).toHaveTextContent("2026-05-22");
+    expect(summary).toHaveTextContent("/tmp/ws-pane");
+    expect(summary).toHaveTextContent("Linked: on");
+    expect(summary).toHaveTextContent("Shared sort: mtime desc");
+    expect(summary).toHaveTextContent("Sort: size desc");
+    expect(summary).toHaveTextContent("Display filter: Hide dotfiles");
     const link = screen.getByTestId("open-workspace-from-mesh");
     expect(link).toHaveAttribute("href", "/files?meshId=mesh-ws-1");
     expect(link).toHaveAttribute("target", "_blank");

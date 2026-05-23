@@ -35,7 +35,8 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 | **Cross-surface link** | New-tab link between File Manager workspace and Mesh GUI ([mesh-platform-vocabulary.md](mesh-platform-vocabulary.md)) |
 | **Workspace header cross-surface nav** | Header `<nav>` with Mesh Sync link; not pane toolbar |
 | **Workspace header banner** | Top `<header>` strip — title, status row, Diff, cross-surface nav (no layout control) |
-| **Shared sort** | Workspace-wide default sort (`sharedSort`); persisted in snapshot v3 |
+| **Shared sort** | Workspace-wide default sort (`sharedSort`); persisted in snapshot v3; shown on mesh detail as **Shared sort** in workspace snapshot summary |
+| **Mesh detail snapshot sort** | Per-pane sort lines in `workspace-snapshot-summary` | `formatPaneSortSettings` | `WORKSPACE_SNAPSHOT_SUMMARY` |
 | **Share sort** | Sort menu action — copy focused pane sort into `sharedSort` |
 | **Apply shared sort** | Sort menu **Shared** — apply `sharedSort` to focused pane only |
 | **Layout toolbar picker** | `view.layout` → `LayoutPickerPopover`; replaces header layout `<select>` |
@@ -71,7 +72,7 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 - **Focus** — Exactly one pane index (`focusIndex`) receives keyboard/file-operation commands unless linked mode propagates navigation ([linked-navigation-vocabulary.md](linked-navigation-vocabulary.md)).
 - **Pane lifecycle** — Add/remove panes with constraints; see [IMPL-PANE_MANAGEMENT](../tied/implementation-decisions/IMPL-PANE_MANAGEMENT.yaml).
 - **Active display spec** — Per-pane `activeDisplaySpecId` selects a named filter catalog entry; `hiddenCount` and `loadedSpecVersion` track apply state ([pane-display-filter-vocabulary.md](pane-display-filter-vocabulary.md)).
-- **Workspace snapshot display spec** — v2+ mesh snapshots persist `displaySpecId` per pane for restore ([REQ-PANE_DISPLAY_FILTER](../tied/requirements/REQ-PANE_DISPLAY_FILTER.yaml), [REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)).
+- **Workspace snapshot display spec** — v2+ mesh snapshots persist `displaySpecId` per pane for restore ([REQ-PANE_DISPLAY_FILTER](../tied/requirements/REQ-PANE_DISPLAY_FILTER.yaml), [REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)); mesh detail shows **Display filter** per pane (catalog name when resolvable, else id).
 - **Layout calculator** — Maps container size + layout type + pane count → `PaneBounds[]` (`src/lib/files.layout.ts`).
 - **Workspace area** — `flex-1 min-h-0` DOM region holding panes; measured via `useElementSize` on `workspaceAreaRef` (`data-testid="workspace-area"`).
 - **Container dimensions** — `containerWidth` and `containerHeight` from workspace-area `clientWidth`/`clientHeight`, not `window.innerWidth` or fixed chrome subtraction.

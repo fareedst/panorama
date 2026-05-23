@@ -47,6 +47,9 @@
 | **Client mesh rehydrate** | Client `/api/mesh/:meshId` full restore | `RESTORE_LAYOUT_IN_WORKSPACE_VIEW` | `IMPL-WORKSPACE_MESH_BRIDGE` |
 | **Cross-surface link** | New-tab navigation between Mesh GUI and File Manager workspace; `target="_blank"`, `rel="noopener noreferrer"`, screen-reader disclosure |
 | **Open mesh from workspace** | File Manager header nav to Mesh | `/mesh` or `/mesh/:meshId` | `open-mesh-from-workspace` |
+| **Mesh list note** | Human-readable prefix before snapshot JSON in `description` | `extractNotePrefixFromDescription` | `mesh-list-note` |
+| **Most recent save time** | Mesh record `updatedAt` (last metadata/workspace save) | `GET /api/mesh` list + detail | `mesh-list-updated-at` |
+| **Sortable mesh list** | Client-side column sort on mesh list headers | `MeshListClient` | `mesh-list-sort-*` |
 
 ## Naming bridge
 
@@ -54,7 +57,10 @@
 | --- | --- | --- | --- |
 | Mesh hub (Depots/Policies/Sync) | `global-depots-page`, policies copy, Sync landing | `/mesh/depots`, `/mesh/policies`, `/mesh/sync` | `IMPL-MESH_GUI_layout` |
 | Credential store | (API only) | `POST /api/mesh/credentials` | `IMPL-MESH_API_credentials` |
-| Mesh list | list view | `GET /api/mesh` | `IMPL-MESH_GUI_list` |
+| Mesh list | list view (name, state, depots, note, save time; sortable headers) | `GET /api/mesh` | `IMPL-MESH_GUI_list` |
+| Mesh list note | `mesh-list-note` column | description prefix | `extractNotePrefixFromDescription` |
+| Most recent save time | `mesh-list-updated-at` column | mesh `updatedAt` | `formatDateTime` |
+| Sortable mesh list | `mesh-list-sort-*` header buttons | client `sortColumn` / `sortDirection` | `IMPL-MESH_GUI_list` |
 | Create mesh | create form | `POST /api/mesh` | `IMPL-MESH_CRUD_createMesh` |
 | Topology graph | topology screen | validate + project | `IMPL-MESH_TOPOLOGY_validateTopology` |
 | Generate plan | plan view, `generate-plan-btn` | `POST /plan` | `IMPL-MESH_RUNTIME_generatePlan` |
@@ -67,7 +73,7 @@
 | Export mesh | export page | `GET /export` | `IMPL-MESH_GUI_export` |
 | Archive mesh | settings, `archive-mesh-btn` | mesh archive API | `IMPL-MESH_GUI_archive` |
 | Schedule | schedule page | schedule routes | `IMPL-MESH_GUI_schedule` |
-| Workspace snapshot summary | `workspace-snapshot-summary` | mesh `description` JSON | `IMPL-WORKSPACE_MESH_BRIDGE` |
+| Workspace snapshot summary | `workspace-snapshot-summary` (note, save time, layout, shared/per-pane sort, display filters) | `workspaceSnapshotSummary`, `WorkspaceSnapshotSummaryList` | `WORKSPACE_SNAPSHOT_SUMMARY` |
 | Open workspace from mesh | `open-workspace-from-mesh` | `/files?meshId=` (new tab) | `IMPL-WORKSPACE_MESH_BRIDGE` |
 | Open mesh from workspace | `open-mesh-from-workspace` | `/mesh` or `/mesh/:meshId` (new tab) | `IMPL-WORKSPACE_MESH_BRIDGE` |
 | Update workspace from file manager | save dialog update mode | `PUT /api/mesh/:meshId/workspace` | `UPDATE_EXISTING_WORKSPACE` |
@@ -84,6 +90,9 @@
 - **Mesh repository** — Persistence (`JsonMeshRepository`, `createMeshRepository`).
 - **Role / permission** — `IMPL-MESH_AUTH_can`, `require`; header `parseMeshRole`.
 - **WorkspaceSnapshot** — JSON object under `description.workspaceSnapshot`; tag `workspace-snapshot` on save ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)). **v1** — base fields (`layout`, `focusIndex`, `linkedMode`, `comparisonMode`, `panes[]` with path/sort/cursor). **v2** — per-pane `displaySpecId`. **v3** — workspace `sharedSort` (`PaneSortSettings`); capture always writes v3; parse accepts v1/v2/v3 and normalizes to v3 (v1/v2 default `sharedSort` to name/asc/dirs-first).
+- **Mesh list note** — Optional human text before snapshot JSON; shown in mesh list **Note** column and mesh detail snapshot summary.
+- **Most recent save time** — Mesh record `updatedAt`; shown in mesh list and detail snapshot summary when workspace was last saved.
+- **Sortable mesh list** — Mesh list table headers toggle ascending/descending client-side sort per column.
 - **Workspace update** — `PUT /api/mesh/:meshId/workspace` applies `buildMeshPatchPayload` and `planDepotSync` so mesh metadata and depot roots match the captured snapshot ([IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml)).
 - **Saved snapshot baseline** — Client `savedSnapshot` used by `diffWorkspaceSnapshots`; after update save, set to the exact captured snapshot so the diff badge clears without re-parse drift.
 
@@ -107,6 +116,8 @@
 | Execute operations | `executeOperations` → `IMPL-MESH_EXECUTOR_executeOperations` | IMPL-MESH_EXECUTOR |
 | Update existing workspace | `UPDATE_EXISTING_WORKSPACE` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Diff saved vs current | `DIFF_SAVED_VS_CURRENT` | IMPL-WORKSPACE_MESH_BRIDGE |
+| Format pane sort label | `FORMAT_PANE_SORT_SETTINGS` | IMPL-WORKSPACE_MESH_BRIDGE |
+| Workspace snapshot summary (full) | `WORKSPACE_SNAPSHOT_SUMMARY` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Save workspace from UI | `STORE_FROM_WORKSPACE_UI` | IMPL-WORKSPACE_MESH_BRIDGE |
 
 ## Alphabetical index
@@ -140,6 +151,9 @@
 - **Saved snapshot baseline** — client baseline for workspace diff; cleared on successful update save
 - **Workspace diff** — live vs saved snapshot comparison (`mesh.diffWorkspace`)
 - **Workspace snapshot** — tag `workspace-snapshot`; `description.workspaceSnapshot` v1/v2/v3 JSON (v2 `displaySpecId`; v3 `sharedSort`)
+- **Mesh list note** — description prefix before snapshot JSON
+- **Most recent save time** — mesh `updatedAt` on list and detail
+- **Sortable mesh list** — client-side sortable mesh list columns
 - **Workspace update** — `PUT /api/mesh/:meshId/workspace` from file manager
 
 ## See also

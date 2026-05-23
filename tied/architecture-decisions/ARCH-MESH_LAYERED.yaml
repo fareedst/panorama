@@ -28,6 +28,7 @@ ARCH-MESH_LAYERED:
       - Cross-cutting safety and auth span services+API+GUI (later phases)
       - First deployable slices (API/persistence/GUI) only after corresponding REQ slices and IMPL pseudo-code
       - L4 MeshRuntime exposes session progress counters and cancelSessionExecution; L5 GET /sessions returns progress for polling
+      - L5 MeshListClient displays note and updatedAt columns and client-side sortable column headers (IMPL-MESH_GUI_list)
       - Multi-link runApprovedSession iterates all mesh links; remote depot kind registers RemoteConnector stub at L3
       - Virtual depots and other unknown connector kinds resolve to VirtualConnector synthetic inventory at L3
   traceability:
@@ -56,6 +57,6 @@ ARCH-MESH_LAYERED:
       date: "2026-05-19T00:00:00.000Z"
       author: AI Agent
     last_updated:
-      date: "2026-05-20"
+      date: "2026-05-22T23:30:00.000Z"
       author: AI Agent
-      reason: Document two-phase plan/sync and session progress at layer boundary
+      reason: LEAP — mesh list note, save time, and sortable columns at L5 GUI

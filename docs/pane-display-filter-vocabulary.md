@@ -24,6 +24,7 @@
 | **Hidden item count** | `rawCount - visibleCount` when raw listing retained |
 | **Reconcile selection** | Drop marks / clamp cursor after filter apply |
 | **No filter** | `activeDisplaySpecId === null` |
+| **Snapshot display spec** | `displaySpecId` on workspace snapshot pane; mesh detail **Display filter** line | `formatDisplaySpecLabel` | `WORKSPACE_SNAPSHOT_SUMMARY` |
 
 ## Naming bridge
 
@@ -34,6 +35,7 @@
 | Manage specs | “Manage display specs…” | `view.displaySpec` | `DisplaySpecManagerDialog` |
 | Active indicator | `Filter: {name}` | — | pane header |
 | Hidden count | `Hidden: N` | — | optional |
+| Snapshot display spec (mesh detail) | `Display filter: {name\|id\|(none)}` | — | `formatDisplaySpecLabel`, `getDisplaySpecStore` |
 
 ## Pseudo-code block names
 
@@ -46,6 +48,12 @@
 | Refresh panes on spec save | `REFRESH_PANES_USING_SPEC` | IMPL-PANE_DISPLAY_FILTER_UI |
 | Server list filter | `SERVER_FILTER_LISTING` | IMPL-DISPLAY_FILTER_API |
 | POST path validation | `VALIDATE_OPERATION_PATHS` | IMPL-DISPLAY_FILTER_API |
+| Snapshot display spec label | `FORMAT_DISPLAY_SPEC_LABEL` | IMPL-WORKSPACE_MESH_BRIDGE |
+
+## Alphabetical index
+
+- **Display spec** — named include/exclude glob catalog entry
+- **Snapshot display spec** — `displaySpecId` on workspace snapshot pane; mesh detail **Display filter** line via `formatDisplaySpecLabel`
 
 ## Related vocabulary
 

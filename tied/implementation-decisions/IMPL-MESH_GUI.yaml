@@ -11,7 +11,9 @@ IMPL-MESH_GUI:
   code_locations:
     files:
       - path: src/app/mesh/page.tsx
-        description: Mesh list
+        description: Mesh list page
+      - path: src/app/mesh/components/MeshListClient.tsx
+        description: IMPL-MESH_GUI_list — note and save-time columns, sortable headers (mesh-list-sort-*)
     functions: []
   traceability:
     architecture:
@@ -32,3 +34,7 @@ IMPL-MESH_GUI:
     created:
       date: "2026-05-19T00:00:00.000Z"
       author: AI Agent
+    last_updated:
+      date: "2026-05-22T23:30:00.000Z"
+      author: AI Agent
+      reason: LEAP — mesh list note, save time, and sortable columns

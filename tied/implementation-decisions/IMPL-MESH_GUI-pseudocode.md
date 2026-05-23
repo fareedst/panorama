@@ -12,10 +12,17 @@ PROCEDURE IMPL-MESH_GUI_layout()
 
 ## MeshListClient
 
-// [IMPL-MESH_GUI] [IMPL-MESH_CRUD] [REQ-MESH_GUI] [REQ-MESH_PLATFORM]: List meshes from GET /api/mesh; POST create; link to mesh **detail** overview.
+// [IMPL-MESH_GUI] [ARCH-MESH_LAYERED] [REQ-MESH_GUI] [REQ-MESH_PLATFORM]: L5 GUI mesh list enriches GET /api/mesh rows with note and save time; POST create; link to mesh detail overview.
 
 PROCEDURE IMPL-MESH_GUI_list()
-  FETCH meshes; DISPLAY name, status, depot count
+  FETCH meshes from GET /api/mesh
+  DISPLAY name, status, depot count in mesh-row testids
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_GUI]
+  // how: Note column uses extractNotePrefixFromDescription(description); save time column uses formatDateTime(updatedAt); testids mesh-list-note, mesh-list-updated-at.
+  DISPLAY note (description prefix) and most recent save time (updatedAt) per row
+  // [IMPL-MESH_GUI] [ARCH-MESH_LAYERED] [REQ-MESH_GUI]
+  // how: SortableHeader buttons toggle sortColumn/sortDirection client-side; aria-sort on active column; testids mesh-list-sort-*.
+  SORTABLE_HEADERS: click column toggles asc/desc; compareMeshes for name, status, depots, note, updatedAt
   ON create submit POST with name field testid new-mesh-name
 
 ## MeshDetailClient

@@ -10,6 +10,8 @@ import {
   captureWorkspaceSnapshot,
   diffWorkspaceSnapshots,
   extractNotePrefixFromDescription,
+  formatDisplaySpecLabel,
+  formatPaneSortSettings,
   parseWorkspaceSnapshotFromMesh,
   planDepotSync,
   depotPathsFromMesh,
@@ -319,9 +321,67 @@ describe("REQ-WORKSPACE_MESH_BRIDGE [IMPL-WORKSPACE_MESH_BRIDGE]", () => {
   });
 
   it("WORKSPACE_SNAPSHOT_SUMMARY_lists_paths", () => {
+    // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE]: WORKSPACE_SNAPSHOT_SUMMARY base fields
     const s = workspaceSnapshotSummary(baseSnapshot);
     expect(s.panePaths).toEqual(["/tmp/a", "/tmp/b"]);
     expect(s.comparisonMode).toBe("name");
+    expect(s.sharedSortLabel).toContain("mtime");
+    expect(s.panes).toHaveLength(2);
+  });
+
+  it("FORMAT_PANE_SORT_SETTINGS_matches_diff_shape", () => {
+    // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-FILE_SORTING_ADVANCED]: FORMAT_PANE_SORT_SETTINGS
+    expect(
+      formatPaneSortSettings({
+        sortBy: "name",
+        sortDirection: "asc",
+        sortDirsFirst: true,
+      }),
+    ).toBe("name asc dirs-first");
+    expect(
+      formatPaneSortSettings({
+        sortBy: "size",
+        sortDirection: "desc",
+        sortDirsFirst: false,
+      }),
+    ).toBe("size desc");
+  });
+
+  it("FORMAT_DISPLAY_SPEC_LABEL_resolves_name_or_falls_back", () => {
+    // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-PANE_DISPLAY_FILTER]: FORMAT_DISPLAY_SPEC_LABEL
+    expect(formatDisplaySpecLabel(null)).toBe("(none)");
+    expect(formatDisplaySpecLabel(undefined)).toBe("(none)");
+    expect(formatDisplaySpecLabel("spec-1")).toBe("spec-1");
+    expect(
+      formatDisplaySpecLabel("spec-1", (id) => (id === "spec-1" ? "Photos" : undefined)),
+    ).toBe("Photos");
+  });
+
+  it("WORKSPACE_SNAPSHOT_SUMMARY_includes_note_save_time_sort_and_filters", () => {
+    // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_GUI]: WORKSPACE_SNAPSHOT_SUMMARY with options
+    const snapshot = captureWorkspaceSnapshot({
+      ...baseSnapshot,
+      sharedSort: { sortBy: "size", sortDirection: "desc", sortDirsFirst: false },
+      panes: [
+        {
+          ...baseSnapshot.panes[0],
+          displaySpecId: "spec-abc",
+        },
+        baseSnapshot.panes[1],
+      ],
+    });
+    const description = buildMeshUpdateDescription(snapshot, "my workspace note");
+    const s = workspaceSnapshotSummary(snapshot, {
+      description,
+      updatedAt: "2026-05-22T15:30:00.000Z",
+      resolveDisplaySpecName: (id) => (id === "spec-abc" ? "Hide dotfiles" : undefined),
+    });
+    expect(s.note).toBe("my workspace note");
+    expect(s.mostRecentSaveTime).toBe("2026-05-22T15:30:00.000Z");
+    expect(s.sharedSortLabel).toBe("size desc");
+    expect(s.panes[0]?.displayFilterLabel).toBe("Hide dotfiles");
+    expect(s.panes[1]?.displayFilterLabel).toBe("(none)");
+    expect(s.panes[0]?.sortLabel).toBe("size desc");
   });
 
   it("CAPTURE_SNAPSHOT_normalizes_config_style_tile_layout", () => {

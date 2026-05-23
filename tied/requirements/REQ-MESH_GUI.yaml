@@ -13,6 +13,10 @@ REQ-MESH_GUI:
   satisfaction_criteria:
     - criterion: menu_reaches_schedule_export_history_archive_settings
     - criterion: mesh_list_displays_mesh_name_state_and_depot_count
+    - criterion: mesh_list_displays_note_and_most_recent_save_time
+      description: Mesh list Note column shows extractNotePrefixFromDescription(description); Most recent save time column shows formatDateTime(updatedAt); testids mesh-list-note and mesh-list-updated-at
+    - criterion: mesh_list_sortable_column_headers_toggle_order
+      description: SortableHeader buttons toggle client sortColumn/sortDirection per column with aria-sort; testids mesh-list-sort-*
     - criterion: plan_page_approves_session_without_starting_sync
     - criterion: sync_page_starts_approved_session_from_sessionStorage_handoff
     - criterion: terminology_aligns_with_docs_mesh_platform_vocabulary

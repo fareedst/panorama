@@ -186,9 +186,11 @@ export function diffWorkspaceSnapshots(
   push("focusIndex", saved.focusIndex + 1, current.focusIndex + 1);
   push("linkedMode", saved.linkedMode ? "on" : "off", current.linkedMode ? "on" : "off");
   push("comparisonMode", saved.comparisonMode, current.comparisonMode);
-  const fmtSort = (s: PaneSortSettings) =>
-    `${s.sortBy} ${s.sortDirection}${s.sortDirsFirst ? " dirs-first" : ""}`;
-  push("sharedSort", fmtSort(saved.sharedSort), fmtSort(current.sharedSort));
+  push(
+    "sharedSort",
+    formatPaneSortSettings(saved.sharedSort),
+    formatPaneSortSettings(current.sharedSort),
+  );
   push("paneCount", saved.panes.length, current.panes.length);
 
   const maxPanes = Math.max(saved.panes.length, current.panes.length);
@@ -394,24 +396,74 @@ function depotOnlySnapshot(paths: string[]): WorkspaceSnapshot {
   };
 }
 
+export type WorkspaceSnapshotSummaryPane = {
+  path: string;
+  sortLabel: string;
+  displayFilterLabel: string;
+};
+
 export type WorkspaceSnapshotSummary = {
   layout: LayoutType;
   focusIndex: number;
   linkedMode: boolean;
   comparisonMode: ComparisonMode;
   panePaths: string[];
+  note: string;
+  mostRecentSaveTime: string | null;
+  sharedSortLabel: string;
+  panes: WorkspaceSnapshotSummaryPane[];
 };
+
+export type WorkspaceSnapshotSummaryOptions = {
+  description?: string;
+  updatedAt?: string;
+  resolveDisplaySpecName?: (specId: string) => string | undefined;
+};
+
+// [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-FILE_SORTING_ADVANCED] FORMAT_PANE_SORT_SETTINGS
+/** Human-readable pane or shared sort for mesh detail and diff. */
+export function formatPaneSortSettings(settings: PaneSortSettings): string {
+  return `${settings.sortBy} ${settings.sortDirection}${settings.sortDirsFirst ? " dirs-first" : ""}`;
+}
+
+// [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-PANE_DISPLAY_FILTER] FORMAT_DISPLAY_SPEC_LABEL
+/** Label for snapshot display spec id; optional resolver maps catalog id to name. */
+export function formatDisplaySpecLabel(
+  displaySpecId: string | null | undefined,
+  resolveDisplaySpecName?: (specId: string) => string | undefined,
+): string {
+  if (displaySpecId == null || displaySpecId === "") {
+    return "(none)";
+  }
+  const resolved = resolveDisplaySpecName?.(displaySpecId);
+  return resolved?.trim() ? resolved : displaySpecId;
+}
 
 // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] WORKSPACE_SNAPSHOT_SUMMARY
 export function workspaceSnapshotSummary(
   snapshot: WorkspaceSnapshot,
+  options?: WorkspaceSnapshotSummaryOptions,
 ): WorkspaceSnapshotSummary {
+  const resolveDisplaySpecName = options?.resolveDisplaySpecName;
+  const panes: WorkspaceSnapshotSummaryPane[] = snapshot.panes.map((p) => ({
+    path: p.path,
+    sortLabel: formatPaneSortSettings({
+      sortBy: p.sortBy,
+      sortDirection: p.sortDirection,
+      sortDirsFirst: p.sortDirsFirst,
+    }),
+    displayFilterLabel: formatDisplaySpecLabel(p.displaySpecId, resolveDisplaySpecName),
+  }));
   return {
     layout: snapshot.layout,
     focusIndex: snapshot.focusIndex,
     linkedMode: snapshot.linkedMode,
     comparisonMode: snapshot.comparisonMode,
     panePaths: snapshot.panes.map((p) => p.path),
+    note: extractNotePrefixFromDescription(options?.description),
+    mostRecentSaveTime: options?.updatedAt?.trim() ? options.updatedAt : null,
+    sharedSortLabel: formatPaneSortSettings(snapshot.sharedSort),
+    panes,
   };
 }
 

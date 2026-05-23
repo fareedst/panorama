@@ -204,25 +204,50 @@ RESTORE_LAYOUT_IN_WORKSPACE_VIEW(meshId, meshRestorePending, restoreLayout, rest
   layout toolbar picker (view.layout) reflects layoutState; header layout select removed
 ```
 
-## WORKSPACE_SNAPSHOT_SUMMARY
-# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_GUI]
-# how: Derive layout/focus/linked/comparison/panePaths from parsed snapshot for mesh detail UI.
+## FORMAT_PANE_SORT_SETTINGS
+# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-FILE_SORTING_ADVANCED]
+# how: Human-readable pane or shared sort label for mesh detail summary and DIFF_SAVED_VS_CURRENT sharedSort rows.
 
 ```
-WORKSPACE_SNAPSHOT_SUMMARY(snapshot):
-  RETURN { layout, focusIndex, linkedMode, comparisonMode, panePaths[] }
+FORMAT_PANE_SORT_SETTINGS(settings):
+  RETURN "{sortBy} {sortDirection}" plus " dirs-first" when sortDirsFirst
+```
+
+## FORMAT_DISPLAY_SPEC_LABEL
+# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-PANE_DISPLAY_FILTER]
+# how: Label snapshot displaySpecId for mesh detail; optional resolver maps catalog id to name, else id, else "(none)".
+
+```
+FORMAT_DISPLAY_SPEC_LABEL(displaySpecId, resolve):
+  IF no id THEN "(none)" ELSE resolve(id) OR id
+```
+
+## WORKSPACE_SNAPSHOT_SUMMARY
+# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_GUI] [REQ-FILE_SORTING_ADVANCED] [REQ-PANE_DISPLAY_FILTER]
+# how: Derive layout/focus/linked/comparison/panePaths plus note, save time, shared sort, and per-pane sort/display filter labels for mesh detail UI.
+
+```
+WORKSPACE_SNAPSHOT_SUMMARY(snapshot, options):
+  note = extractNotePrefixFromDescription(options.description)
+  mostRecentSaveTime = options.updatedAt
+  sharedSortLabel = FORMAT_PANE_SORT_SETTINGS(snapshot.sharedSort)
+  FOR each pane IN snapshot.panes:
+    pane.sortLabel = FORMAT_PANE_SORT_SETTINGS(pane sort fields)
+    pane.displayFilterLabel = FORMAT_DISPLAY_SPEC_LABEL(pane.displaySpecId, options.resolveDisplaySpecName)
+  RETURN { layout, focusIndex, linkedMode, comparisonMode, panePaths[], note, mostRecentSaveTime, sharedSortLabel, panes[] }
 ```
 
 ## MESH_DETAIL_RESTORE_LINK
 # [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_GUI] [IMPL-EXTERNAL_LINKS] [REQ-NAVIGATION_LINKS]
-# how: When mesh has depots, render Open in File Manager NewTabLink to /files?meshId= (target=_blank, rel, a11y); workspace-snapshot tag shows summary section.
+# how: When mesh has depots, render Open in File Manager NewTabLink to /files?meshId= (target=_blank, rel, a11y); workspace-snapshot tag shows summary via WorkspaceSnapshotSummaryList.
 
 ```
 MESH_DETAIL_RESTORE_LINK(meshId, mesh):
   IF mesh.depots.length > 0 THEN
     RENDER NewTabLink href=/files?meshId={meshId} testid=open-workspace-from-mesh target=_blank rel=noopener noreferrer aria-label disclosure
   IF tag workspace-snapshot AND parsed snapshot THEN
-    RENDER summary testid=workspace-snapshot-summary from WORKSPACE_SNAPSHOT_SUMMARY
+    summary = WORKSPACE_SNAPSHOT_SUMMARY(parsed, { description: mesh.description, updatedAt: mesh.updatedAt, resolveDisplaySpecName from getDisplaySpecStore })
+    RENDER WorkspaceSnapshotSummaryList inside section testid=workspace-snapshot-summary
 ```
 
 ## WORKSPACE_HEADER_MESH_LINK

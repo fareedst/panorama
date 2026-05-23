@@ -5,12 +5,14 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { NewTabLink } from "@/components/NewTabLink";
+import { getDisplaySpecStore } from "@/lib/display-spec-store";
 import { MeshDetailNav } from "../layout";
 import {
   WORKSPACE_SNAPSHOT_TAG,
   parseWorkspaceSnapshotFromMesh,
   workspaceSnapshotSummary,
 } from "@/lib/workspace-mesh-bridge";
+import { WorkspaceSnapshotSummaryList } from "./WorkspaceSnapshotSummaryList";
 
 type DepotRow = { id: string; name: string; kind: string; root?: string };
 type LinkRow = {
@@ -30,6 +32,7 @@ type MeshDetail = {
     links: LinkRow[];
   };
   status: string;
+  updatedAt?: string;
 };
 
 export function MeshDetailClient({ meshId }: { meshId: string }) {
@@ -128,11 +131,19 @@ export function MeshDetailClient({ meshId }: { meshId: string }) {
       accessMode: "read_write" as const,
     })),
   });
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-PANE_DISPLAY_FILTER]
+  // how: resolveDisplaySpecName from getDisplaySpecStore maps catalog id to display name in summary.
+  const displaySpecStore = getDisplaySpecStore();
   const workspaceSummary = parsedSnapshot
-    ? workspaceSnapshotSummary(parsedSnapshot)
+    ? workspaceSnapshotSummary(parsedSnapshot, {
+        description: data.mesh.description,
+        updatedAt: data.updatedAt,
+        resolveDisplaySpecName: (id) => displaySpecStore.get(id)?.name,
+      })
     : null;
 
-  // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] MESH_DETAIL_RESTORE_LINK + WORKSPACE_SNAPSHOT_SUMMARY
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_GUI]
+  // how: MESH_DETAIL_RESTORE_LINK NewTabLink plus WorkspaceSnapshotSummaryList when workspace-snapshot tag present.
   const showDescriptionLine =
     data.mesh.description &&
     !isWorkspaceSnapshot &&
@@ -160,17 +171,7 @@ export function MeshDetailClient({ meshId }: { meshId: string }) {
           data-testid="workspace-snapshot-summary"
         >
           <h2 className="text-lg font-medium text-zinc-100">Workspace snapshot</h2>
-          <ul className="mt-2 list-inside list-disc space-y-1">
-            <li>Layout: {workspaceSummary.layout}</li>
-            <li>Focus pane: {workspaceSummary.focusIndex + 1}</li>
-            <li>Linked: {workspaceSummary.linkedMode ? "on" : "off"}</li>
-            <li>Comparison: {workspaceSummary.comparisonMode}</li>
-            {workspaceSummary.panePaths.map((p, i) => (
-              <li key={`pane-${i}-${p}`}>
-                Pane {i + 1}: {p}
-              </li>
-            ))}
-          </ul>
+          <WorkspaceSnapshotSummaryList summary={workspaceSummary} />
         </section>
       )}
       <p className="mt-2 text-sm text-zinc-500" data-testid="mesh-detail-status">
