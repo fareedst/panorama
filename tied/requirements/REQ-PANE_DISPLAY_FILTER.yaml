@@ -1,0 +1,40 @@
+REQ-PANE_DISPLAY_FILTER:
+  name: Pane Display Filter Specs
+  category: Functional
+  priority: P1
+  status: Implemented
+  description: Users can create named display filter specs with ordered include/exclude glob rules, apply a spec per pane by stable id, and have saved edits refresh all panes using that spec. Hidden entries are not shown, selectable, or included in mark-all or batch operations. Specs are display filters only, not access control.
+  rationale:
+    why: Reduce visual noise in large directory trees without implying security boundaries
+    problems_solved:
+      - Accidental batch ops on invisible files
+      - Clutter from build artifacts and dependencies
+      - Inconsistent filters across panes
+    benefits:
+      - Cross-pane sync on save
+      - Reusable named profiles
+      - Server-side listing filter and bulk path validation via displaySpecId
+  satisfaction_criteria:
+    - criterion: Active spec name visible in pane UI
+    - criterion: Create, save, select, edit, rename, duplicate, and delete named specs
+    - criterion: Hidden items excluded from marks and batch operations
+    - criterion: Invalid patterns rejected with clear feedback
+    - criterion: Pane shows only items allowed by active spec
+    - criterion: Two panes sharing a spec refresh after save
+  traceability:
+    architecture:
+      - ARCH-DISPLAY_FILTER_ENGINE
+      - ARCH-DISPLAY_SPEC_STORE
+    implementation:
+      - IMPL-DISPLAY_FILTER_API
+      - IMPL-DISPLAY_FILTER_ENGINE
+      - IMPL-DISPLAY_SPEC_STORE
+      - IMPL-PANE_DISPLAY_FILTER_UI
+  related_requirements:
+    depends_on:
+      - REQ-BULK_FILE_OPS
+      - REQ-FILE_LISTING
+      - REQ-FILE_MARKING_WEB
+      - REQ-MULTI_PANE_LAYOUT
+    related_to:
+      - REQ-WORKSPACE_MESH_BRIDGE

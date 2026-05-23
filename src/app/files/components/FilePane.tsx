@@ -12,6 +12,8 @@ import type { PaneBounds } from "@/lib/files.layout";
 import type { FilesColumnConfig, FileColumnId } from "@/lib/config.types";
 import { formatSize, getSortLabel, getSortDirectionSymbol, formatDateTime, formatAge, type SortCriterion, type SortDirection } from "@/lib/files.utils";
 import ContextMenu from "./ContextMenu";
+import type { DisplayFilterSpec } from "@/lib/display-filter.types";
+import { DisplaySpecSelector } from "./DisplaySpecSelector";
 
 interface FilePaneProps {
   /** Current directory path */
@@ -66,6 +68,16 @@ interface FilePaneProps {
   columns: FilesColumnConfig[];
   /** Test ID for automation */
   "data-testid"?: string;
+  /** [REQ-PANE_DISPLAY_FILTER] Catalog of saved display specs */
+  displaySpecs?: DisplayFilterSpec[];
+  activeDisplaySpecId?: string | null;
+  activeDisplaySpecName?: string | null;
+  hiddenCount?: number;
+  rawFileCount?: number;
+  recentSpecIds?: string[];
+  onDisplaySpecSelect?: (specId: string | null) => void;
+  onManageDisplaySpecs?: () => void;
+  filterEmptyMessage?: string;
 }
 
 /**
@@ -99,6 +111,15 @@ export default function FilePane({
   onNavigateParent, // [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
   columns, // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
   "data-testid": dataTestId,
+  displaySpecs = [],
+  activeDisplaySpecId = null,
+  activeDisplaySpecName = null,
+  hiddenCount = 0,
+  rawFileCount = 0,
+  recentSpecIds = [],
+  onDisplaySpecSelect,
+  onManageDisplaySpecs,
+  filterEmptyMessage = "No visible items — the active filter may be hiding files in this folder.",
 }: FilePaneProps) {
   // [IMPL-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] Context menu state
   const [contextMenu, setContextMenu] = useState<{
@@ -360,13 +381,14 @@ export default function FilePane({
       // [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION]: switch focusIndex when user clicks pane via FilePane onFocusRequest onMouseDown
       onMouseDown={() => onFocusRequest?.()}
     >
-      {/* Header with path */}
+      {/* Header with path and display spec [REQ-PANE_DISPLAY_FILTER] */}
       <div className={`
         px-3 py-2 border-b border-zinc-200 dark:border-zinc-700
         bg-zinc-50 dark:bg-zinc-800
-        font-mono text-sm truncate flex items-center
+        font-mono text-sm flex flex-col gap-1
         ${focused ? "text-blue-600 dark:text-blue-400" : "text-zinc-600 dark:text-zinc-400"}
       `}>
+        <div className="flex items-center truncate w-full">
         <span className="flex-1 truncate">{path}</span>
         {/* [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Link indicator */}
         {linked && (
@@ -388,13 +410,32 @@ export default function FilePane({
             ..
           </button>
         )}
+        {onDisplaySpecSelect && onManageDisplaySpecs && (
+          <DisplaySpecSelector
+            specs={displaySpecs}
+            activeSpecId={activeDisplaySpecId}
+            recentSpecIds={recentSpecIds}
+            onSelect={onDisplaySpecSelect}
+            onManage={onManageDisplaySpecs}
+          />
+        )}
+        </div>
+        {activeDisplaySpecName && (
+          <div
+            className="text-xs text-amber-700 dark:text-amber-400 truncate"
+            data-testid="pane-display-filter-indicator"
+          >
+            Filter: {activeDisplaySpecName}
+            {hiddenCount > 0 ? ` · Hidden: ${hiddenCount}` : ""}
+          </div>
+        )}
       </div>
       
       {/* File list */}
       <div ref={fileListRef} className="flex-1 overflow-y-auto">
         {files.length === 0 ? (
           <div className="p-4 text-center text-zinc-500 dark:text-zinc-400">
-            Empty directory
+            {rawFileCount > 0 ? filterEmptyMessage : "Empty directory"}
           </div>
         ) : (
           <div className="font-mono text-sm">

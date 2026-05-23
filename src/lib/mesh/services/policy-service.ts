@@ -1,6 +1,7 @@
 // [IMPL-MESH_POLICY] [REQ-MESH_PLATFORM]: Filter and path mapping — phase 7
 
 import type { Filter, Policy } from "../domain";
+import { globMatch } from "@/lib/glob-match";
 
 export type PathMapping = { fromPrefix: string; toPrefix: string };
 
@@ -31,13 +32,6 @@ export function pathMatchesFilter(path: string, filters: Filter[]): boolean {
     return false;
   }
   return included;
-}
-
-function globMatch(path: string, pattern: string): boolean {
-  const regex = new RegExp(
-    `^${pattern.replace(/\./g, "\\.").replace(/\*/g, ".*").replace(/\?/g, ".")}$`,
-  );
-  return regex.test(path);
 }
 
 export function applyPathMapping(path: string, mappings: PathMapping[]): string {

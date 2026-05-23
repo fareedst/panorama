@@ -40,6 +40,8 @@ const ACTION_ICON_MAP: Record<string, string> = {
   'view.sort': 'sort',
   'view.comparison': 'compare',
   'view.hidden': 'eye',
+  'view.displaySpec': 'filter',
+  'view.displaySpec.none': 'filter',
   'link.toggle': 'link',
   
   // Preview

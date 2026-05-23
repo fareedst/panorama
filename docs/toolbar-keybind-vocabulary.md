@@ -47,6 +47,8 @@
 | Command palette | “Command Palette” | `command.palette` | Ctrl+P |
 | Save workspace as mesh | “Save workspace as mesh” (Mesh group) | `copy.workspaceMesh.saveDialogTitle` | `mesh.saveWorkspace` (Ctrl+Shift+M) | `handleSaveWorkspaceAsMesh` / update via dialog ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)) |
 | Diff workspace vs saved | “Diff” (header + Mesh group) | `copy.workspaceMesh.diffButton` | `mesh.diffWorkspace` | `WorkspaceDiffDialog` ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)) |
+| Manage display specs | “Manage display specs…” (dialog title from copy) | `copy.displaySpec.*` | `view.displaySpec` | `DisplaySpecManagerDialog` ([REQ-PANE_DISPLAY_FILTER](../tied/requirements/REQ-PANE_DISPLAY_FILTER.yaml)) |
+| Clear display filter | “No filter” (pane selector) | — | `view.displaySpec.none` | `handleSetActiveDisplaySpec(focusIndex, null)` |
 
 ### Action namespace prefixes (stable)
 
@@ -55,7 +57,7 @@
 | `navigate.*` | Directory cursor, enter, parent, tab, home |
 | `file.*` | copy, move, delete, rename, **copyAll**, **moveAll** |
 | `mark.*` | marking ([file-marking-vocabulary.md](file-marking-vocabulary.md)) |
-| `view.*` | sort, comparison mode, hidden files |
+| `view.*` | sort, comparison mode, hidden files, display filter specs (`view.displaySpec`, `view.displaySpec.none`) |
 | `link.*` | linked mode toggle |
 | `pane.*` | add, remove, refresh, refresh-all |
 | `search.*` | finder vs content search |
@@ -106,6 +108,8 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 - **singleRow** — compact merged toolbar horizontal layout flag
 - **mesh.diffWorkspace** — workspace Mesh group + header Diff; disabled without saved baseline
 - **mesh.saveWorkspace** — Ctrl+Shift+M; workspace Mesh toolbar group (update or save-as-new)
+- **view.displaySpec** — open display spec manager dialog
+- **view.displaySpec.none** — clear active display spec on focused pane
 - **Pane toolbar** — `toolbars.pane`
 - **System toolbar** — `toolbars.system`
 - **Toolbar compact mode** — single merged top row; icon-only buttons

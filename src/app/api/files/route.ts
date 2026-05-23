@@ -3,6 +3,9 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { listDirectory, getUserHomeDirectory, sortFiles } from "@/lib/files.data";
+import { filterFileStats } from "@/lib/display-filter-engine";
+import { validateOperationSourcesForDisplaySpec } from "@/lib/display-filter-api-validate";
+import { serverGetDisplaySpec } from "@/lib/display-spec-store-server";
 import { logger } from "@/lib/logger";
 
 /**
@@ -12,23 +15,39 @@ import { logger } from "@/lib/logger";
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const path = searchParams.get("path") || getUserHomeDirectory();
+    const dirPath = searchParams.get("path") || getUserHomeDirectory();
+    const displaySpecId = searchParams.get("displaySpecId");
     
-    logger.debug(["IMPL-FILES_API", "REQ-DIRECTORY_NAVIGATION"], `API request to list directory: ${path}`);
+    logger.debug(["IMPL-FILES_API", "REQ-DIRECTORY_NAVIGATION"], `API request to list directory: ${dirPath}`);
     
     // Validate path (prevent directory traversal)
-    if (path.includes("..")) {
-      logger.warn(["IMPL-FILES_API", "REQ-DIRECTORY_NAVIGATION"], `Invalid path detected: ${path}`);
+    if (dirPath.includes("..")) {
+      logger.warn(["IMPL-FILES_API", "REQ-DIRECTORY_NAVIGATION"], `Invalid path detected: ${dirPath}`);
       return NextResponse.json(
         { error: "Invalid path" },
         { status: 400 }
       );
     }
     
-    const files = await listDirectory(path);
-    const sortedFiles = sortFiles(files, "Name", true);
+    const rawFiles = await listDirectory(dirPath);
+    const spec = displaySpecId ? await serverGetDisplaySpec(displaySpecId) : null;
+    if (displaySpecId && !spec) {
+      return NextResponse.json(
+        { error: "Display spec not found", specError: true },
+        { status: 400 },
+      );
+    }
+    const { files: filtered, hiddenCount } = filterFileStats(rawFiles, spec);
+    const sortedFiles = sortFiles(filtered, "Name", true);
     
-    logger.info(["IMPL-FILES_API", "REQ-DIRECTORY_NAVIGATION"], `Successfully returned ${sortedFiles.length} files for ${path}`);
+    logger.info(["IMPL-FILES_API", "REQ-DIRECTORY_NAVIGATION"], `Successfully returned ${sortedFiles.length} files for ${dirPath}`);
+    if (displaySpecId) {
+      return NextResponse.json({
+        files: sortedFiles,
+        hiddenCount,
+        totalCount: rawFiles.length,
+      });
+    }
     return NextResponse.json(sortedFiles);
   } catch (error) {
     logger.error(["IMPL-FILES_API", "REQ-DIRECTORY_NAVIGATION"], `Failed to list directory`, { error: String(error) });
@@ -58,6 +77,7 @@ export async function POST(request: NextRequest) {
     operation = body.operation;
     src = body.src;
     dest = body.dest;
+    const displaySpecId = body.displaySpecId as string | undefined;
     
     logger.debug(["IMPL-FILES_API", "REQ-FILE_OPERATIONS"], `API file operation request`, { operation, src, dest });
     
@@ -89,9 +109,20 @@ export async function POST(request: NextRequest) {
     
     // Import operations dynamically to avoid loading on GET
     const { copyFile, moveFile, deleteFile, renameFile, bulkCopy, bulkMove, bulkDelete } = await import("@/lib/files.data");
+
+    const assertSourcesVisible = async (sources: string[]) => {
+      const err = await validateOperationSourcesForDisplaySpec(sources, displaySpecId);
+      if (err) {
+        logger.warn(["IMPL-DISPLAY_FILTER_API", "REQ-PANE_DISPLAY_FILTER"], err);
+        return NextResponse.json({ error: err }, { status: 400 });
+      }
+      return null;
+    };
     
     switch (operation) {
-      case "copy":
+      case "copy": {
+        const blocked = await assertSourcesVisible([src!]);
+        if (blocked) return blocked;
         if (!dest) {
           logger.warn(["IMPL-FILES_API", "REQ-FILE_OPERATIONS"], `Copy operation missing destination`, { src });
           return NextResponse.json({ error: "Destination required" }, { status: 400 });
@@ -99,8 +130,11 @@ export async function POST(request: NextRequest) {
         await copyFile(src!, dest);
         logger.info(["IMPL-FILES_API", "REQ-FILE_OPERATIONS"], `Successfully copied file`, { src, dest });
         break;
+      }
       
-      case "move":
+      case "move": {
+        const blocked = await assertSourcesVisible([src!]);
+        if (blocked) return blocked;
         if (!dest) {
           logger.warn(["IMPL-FILES_API", "REQ-FILE_OPERATIONS"], `Move operation missing destination`, { src });
           return NextResponse.json({ error: "Destination required" }, { status: 400 });
@@ -108,13 +142,19 @@ export async function POST(request: NextRequest) {
         await moveFile(src!, dest);
         logger.info(["IMPL-FILES_API", "REQ-FILE_OPERATIONS"], `Successfully moved file`, { src, dest });
         break;
+      }
       
-      case "delete":
+      case "delete": {
+        const blocked = await assertSourcesVisible([src!]);
+        if (blocked) return blocked;
         await deleteFile(src!);
         logger.info(["IMPL-FILES_API", "REQ-FILE_OPERATIONS"], `Successfully deleted file`, { src });
         break;
+      }
       
-      case "rename":
+      case "rename": {
+        const blocked = await assertSourcesVisible([src!]);
+        if (blocked) return blocked;
         if (!dest) {
           logger.warn(["IMPL-FILES_API", "REQ-FILE_OPERATIONS"], `Rename operation missing new name`, { src });
           return NextResponse.json({ error: "New name required" }, { status: 400 });
@@ -122,6 +162,7 @@ export async function POST(request: NextRequest) {
         await renameFile(src!, dest);
         logger.info(["IMPL-FILES_API", "REQ-FILE_OPERATIONS"], `Successfully renamed file`, { src, dest });
         break;
+      }
       
       case "bulk-copy": {
         // [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]
@@ -134,6 +175,8 @@ export async function POST(request: NextRequest) {
           logger.warn(["IMPL-BULK_OPS", "REQ-BULK_FILE_OPS"], `Bulk copy missing destination`);
           return NextResponse.json({ error: "Destination directory required" }, { status: 400 });
         }
+        const blocked = await assertSourcesVisible(sources);
+        if (blocked) return blocked;
         
         const result = await bulkCopy(sources, dest);
         logger.info(["IMPL-BULK_OPS", "REQ-BULK_FILE_OPS"], `Bulk copy completed`, { 
@@ -154,6 +197,8 @@ export async function POST(request: NextRequest) {
           logger.warn(["IMPL-BULK_OPS", "REQ-BULK_FILE_OPS"], `Bulk move missing destination`);
           return NextResponse.json({ error: "Destination directory required" }, { status: 400 });
         }
+        const blockedMove = await assertSourcesVisible(sources);
+        if (blockedMove) return blockedMove;
         
         const result = await bulkMove(sources, dest);
         logger.info(["IMPL-BULK_OPS", "REQ-BULK_FILE_OPS"], `Bulk move completed`, {
@@ -170,6 +215,8 @@ export async function POST(request: NextRequest) {
           logger.warn(["IMPL-BULK_OPS", "REQ-BULK_FILE_OPS"], `Bulk delete missing sources`);
           return NextResponse.json({ error: "Sources array required" }, { status: 400 });
         }
+        const blockedDel = await assertSourcesVisible(sources);
+        if (blockedDel) return blockedDel;
         
         const result = await bulkDelete(sources);
         logger.info(["IMPL-BULK_OPS", "REQ-BULK_FILE_OPS"], `Bulk delete completed`, {
@@ -197,6 +244,8 @@ export async function POST(request: NextRequest) {
           logger.warn(["IMPL-NSYNC_ENGINE", "REQ-NSYNC_MULTI_TARGET"], `Sync-all missing destinations`);
           return NextResponse.json({ error: "Destinations array required" }, { status: 400 });
         }
+        const blockedSync = await assertSourcesVisible(sources);
+        if (blockedSync) return blockedSync;
         
         // Import SyncEngine dynamically
         const { SyncEngine } = await import("@/lib/sync");

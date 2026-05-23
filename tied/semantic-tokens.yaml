@@ -2943,3 +2943,96 @@ IMPL-MESH_HARDENING:
   metadata:
     registered: "2026-05-19T00:00:00.000Z"
     last_updated: "2026-05-19T00:00:00.000Z"
+REQ-PANE_DISPLAY_FILTER:
+  type: REQ
+  name: Pane Display Filter Specs
+  status: Implemented
+  cross_references:
+    - ARCH-DISPLAY_FILTER_ENGINE
+    - ARCH-DISPLAY_SPEC_STORE
+    - IMPL-DISPLAY_FILTER_API
+    - IMPL-DISPLAY_FILTER_ENGINE
+    - IMPL-DISPLAY_SPEC_STORE
+    - IMPL-PANE_DISPLAY_FILTER_UI
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-PANE_DISPLAY_FILTER.yaml
+  metadata:
+    registered: "2026-05-22T00:00:00.000Z"
+    last_updated: "2026-05-22T00:00:00.000Z"
+ARCH-DISPLAY_FILTER_ENGINE:
+  type: ARCH
+  name: Display Filter Rule Engine
+  status: Accepted
+  cross_references:
+    - IMPL-DISPLAY_FILTER_API
+    - IMPL-DISPLAY_FILTER_ENGINE
+    - REQ-PANE_DISPLAY_FILTER
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-DISPLAY_FILTER_ENGINE.yaml
+  metadata:
+    registered: "2026-05-22T00:00:00.000Z"
+    last_updated: "2026-05-22T00:00:00.000Z"
+ARCH-DISPLAY_SPEC_STORE:
+  type: ARCH
+  name: Display Spec Catalog Store
+  status: Accepted
+  cross_references:
+    - IMPL-DISPLAY_FILTER_API
+    - IMPL-DISPLAY_SPEC_STORE
+    - REQ-PANE_DISPLAY_FILTER
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-DISPLAY_SPEC_STORE.yaml
+  metadata:
+    registered: "2026-05-22T00:00:00.000Z"
+    last_updated: "2026-05-22T00:00:00.000Z"
+IMPL-DISPLAY_FILTER_ENGINE:
+  type: IMPL
+  name: Display Filter Engine Implementation
+  status: Active
+  cross_references:
+    - REQ-PANE_DISPLAY_FILTER
+    - ARCH-DISPLAY_FILTER_ENGINE
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-DISPLAY_FILTER_ENGINE.yaml
+  metadata:
+    registered: "2026-05-22T00:00:00.000Z"
+    last_updated: "2026-05-22T00:00:00.000Z"
+IMPL-DISPLAY_SPEC_STORE:
+  type: IMPL
+  name: Display Spec Catalog Store
+  status: Active
+  cross_references:
+    - REQ-PANE_DISPLAY_FILTER
+    - ARCH-DISPLAY_SPEC_STORE
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-DISPLAY_SPEC_STORE.yaml
+  metadata:
+    registered: "2026-05-22T00:00:00.000Z"
+    last_updated: "2026-05-22T00:00:00.000Z"
+IMPL-DISPLAY_FILTER_API:
+  type: IMPL
+  name: Display Filter API
+  status: Active
+  cross_references:
+    - ARCH-DISPLAY_FILTER_ENGINE
+    - ARCH-DISPLAY_SPEC_STORE
+    - IMPL-DISPLAY_FILTER_ENGINE
+    - REQ-PANE_DISPLAY_FILTER
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-DISPLAY_FILTER_API.yaml
+  metadata:
+    registered: "2026-05-22T00:00:00.000Z"
+    last_updated: "2026-05-22T00:00:00.000Z"
+IMPL-PANE_DISPLAY_FILTER_UI:
+  type: IMPL
+  name: Pane Display Filter UI
+  status: Active
+  cross_references:
+    - IMPL-DISPLAY_FILTER_ENGINE
+    - IMPL-DISPLAY_SPEC_STORE
+    - REQ-PANE_DISPLAY_FILTER
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-PANE_DISPLAY_FILTER_UI.yaml
+  metadata:
+    registered: "2026-05-22T00:00:00.000Z"
+    last_updated: "2026-05-22T00:00:00.000Z"

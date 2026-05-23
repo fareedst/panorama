@@ -1,0 +1,24 @@
+IMPL-PANE_DISPLAY_FILTER_UI:
+  name: Pane Display Filter UI
+  status: Active
+  cross_references:
+    - IMPL-DISPLAY_FILTER_ENGINE
+    - IMPL-DISPLAY_SPEC_STORE
+    - REQ-PANE_DISPLAY_FILTER
+  essence_pseudocode_path: implementation-decisions/IMPL-PANE_DISPLAY_FILTER_UI-pseudocode.md
+  implementation_approach:
+    summary: Pane selector, manager dialog, rule editor, WorkspaceView integration
+    details:
+      - config/files.yaml copy and keybinds
+      - DisplaySpecManagerDialog.tsx
+      - DisplaySpecRuleEditor.tsx
+      - FilePane header selector and indicator
+  traceability:
+    requirements:
+      - REQ-PANE_DISPLAY_FILTER
+    implementation:
+      - IMPL-DISPLAY_FILTER_ENGINE
+      - IMPL-DISPLAY_SPEC_STORE
+  related_decisions:
+    see_also:
+      - docs/pane-display-filter-vocabulary.md

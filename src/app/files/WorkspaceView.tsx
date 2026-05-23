@@ -47,6 +47,17 @@ import {
 } from "./components/SaveWorkspaceMeshDialog";
 import { WorkspaceDiffDialog } from "./components/WorkspaceDiffDialog";
 import { NewTabLink } from "@/components/NewTabLink";
+import { getDisplaySpecStore, type DisplaySpecStore } from "@/lib/display-spec-store";
+import {
+  ensureDisplaySpecOnServer,
+  syncDisplaySpecCatalogToServer,
+} from "@/lib/display-spec-sync";
+import {
+  buildPaneFromRawListing,
+  fetchDirectoryListing,
+  type PaneWithDisplayFilter,
+} from "@/lib/pane-display-filter";
+import { DisplaySpecManagerDialog } from "./components/DisplaySpecManagerDialog";
 import {
   applyMaxPanesLimit,
   appendSnapshotLayoutWarnings,
@@ -59,16 +70,7 @@ import {
   type WorkspaceSnapshot,
 } from "@/lib/workspace-mesh-bridge";
 
-interface PaneState {
-  path: string;
-  files: FileStat[];
-  cursor: number;
-  marks: Set<string>;
-  // [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED] Sort settings
-  sortBy: SortCriterion;
-  sortDirection: SortDirection;
-  sortDirsFirst: boolean;
-}
+type PaneState = PaneWithDisplayFilter;
 
 // [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] Pane initial state from server
 interface PaneInitialState {
@@ -82,6 +84,7 @@ export type RestorePaneMeta = {
   sortDirection: SortDirection;
   sortDirsFirst: boolean;
   cursor: number;
+  displaySpecId?: string | null;
 };
 
 /** [IMPL-WORKSPACE_MESH_BRIDGE] Workspace-level UI restored from mesh */
@@ -161,7 +164,7 @@ function buildPaneStatesFromInitial(
       meta?.cursor !== undefined
         ? Math.min(meta.cursor, Math.max(0, files.length - 1))
         : 0;
-    return {
+    const base: PaneState = {
       path: pane.path,
       files,
       cursor,
@@ -169,7 +172,13 @@ function buildPaneStatesFromInitial(
       sortBy,
       sortDirection,
       sortDirsFirst,
+      activeDisplaySpecId: meta?.displaySpecId ?? null,
+      loadedSpecVersion: null,
+      hiddenCount: 0,
+      rawFileCount: files.length,
     };
+    const store = getDisplaySpecStore();
+    return buildPaneFromRawListing(files, base, store, { preserveMarks: true });
   });
 }
 
@@ -265,6 +274,45 @@ export default function WorkspaceView({
   const [linkedMode, setLinkedMode] = useState<boolean>(
     () => restoreUi?.linkedMode ?? layoutConfig.defaultLinkedMode ?? true,
   );
+
+  // [REQ-PANE_DISPLAY_FILTER] [IMPL-DISPLAY_SPEC_STORE] [IMPL-PANE_DISPLAY_FILTER_UI]
+  const [displaySpecStore] = useState<DisplaySpecStore>(() => getDisplaySpecStore());
+  const [catalogSpecs, setCatalogSpecs] = useState(() => displaySpecStore.list());
+  const [displaySpecManagerOpen, setDisplaySpecManagerOpen] = useState(false);
+  const [recentSpecIds, setRecentSpecIds] = useState<string[]>([]);
+  const [specDeletedNotice, setSpecDeletedNotice] = useState<string | null>(null);
+
+  useEffect(() => {
+    void syncDisplaySpecCatalogToServer(displaySpecStore);
+  }, [displaySpecStore]);
+
+  useEffect(() => {
+    const unsub = displaySpecStore.subscribe((ev) => {
+      setCatalogSpecs(displaySpecStore.list());
+      void syncDisplaySpecCatalogToServer(displaySpecStore);
+      if (ev.type === "deleted") {
+        setPanes((prev) =>
+          prev.map((p) =>
+            p.activeDisplaySpecId === ev.specId
+              ? { ...p, activeDisplaySpecId: null, hiddenCount: 0, loadedSpecVersion: null }
+              : p,
+          ),
+        );
+        setSpecDeletedNotice("A display spec was deleted; affected panes now use No filter.");
+      }
+    });
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "panorama.displaySpecs.v1") {
+        displaySpecStore.load();
+        setCatalogSpecs(displaySpecStore.list());
+      }
+    };
+    window.addEventListener("storage", onStorage);
+    return () => {
+      unsub();
+      window.removeEventListener("storage", onStorage);
+    };
+  }, [displaySpecStore]);
 
   // [REQ-TOOLBAR_SYSTEM] [REQ-MULTI_PANE_LAYOUT] [IMPL-TOOLBAR_COMPONENT] [IMPL-LAYOUT_CALCULATOR] [ARCH-TOOLBAR_LAYOUT] WORKSPACE_TOOLBAR_DISPLAY_MODE: session toolbarExpanded (not persisted)
   const [toolbarExpanded, setToolbarExpanded] = useState(true);
@@ -391,6 +439,7 @@ export default function WorkspaceView({
         sortDirection: p.sortDirection,
         sortDirsFirst: p.sortDirsFirst,
         cursor: p.cursor,
+        displaySpecId: p.activeDisplaySpecId,
       })),
     });
   }, [layout, focusIndex, linkedMode, comparisonMode, panes]);
@@ -604,6 +653,106 @@ export default function WorkspaceView({
     
     return buildEnhancedComparisonIndex(panes.map(p => p.files));
   }, [panes, comparisonMode]);
+
+  const pushRecentSpec = useCallback((specId: string | null) => {
+    if (!specId) return;
+    setRecentSpecIds((prev) => [specId, ...prev.filter((id) => id !== specId)].slice(0, 5));
+  }, []);
+
+  const countPanesUsingSpec = useCallback(
+    (specId: string) => panes.filter((p) => p.activeDisplaySpecId === specId).length,
+    [panes],
+  );
+
+  /** [IMPL-PANE_DISPLAY_FILTER_UI] REFRESH_PANES_USING_SPEC — re-list panes sharing activeDisplaySpecId */
+  const refreshPanesUsingSpec = useCallback(
+    async (specId: string) => {
+      const indices = panes
+        .map((p, i) => (p.activeDisplaySpecId === specId ? i : -1))
+        .filter((i) => i >= 0);
+      for (const idx of indices) {
+        const pane = panes[idx];
+        try {
+          await ensureDisplaySpecOnServer(displaySpecStore.get(specId));
+          const listing = await fetchDirectoryListing(pane.path, pane.activeDisplaySpecId);
+          setPanes((prev) => {
+            const updated = [...prev];
+            const restored = globalDirectoryHistory.restoreCursorPosition(
+              idx,
+              pane.path,
+              listing.files.map((f) => f.name),
+            );
+            updated[idx] = buildPaneFromRawListing(
+              listing.files,
+              { ...updated[idx] },
+              displaySpecStore,
+              {
+                preserveMarks: true,
+                serverPreFiltered: listing.serverPreFiltered,
+                hiddenCount: listing.hiddenCount,
+                totalCount: listing.totalCount,
+              },
+            );
+            updated[idx].cursor = restored.cursor;
+            return updated;
+          });
+        } catch (err) {
+          console.error("DEBUG: refreshPanesUsingSpec failed", err);
+        }
+      }
+    },
+    [panes, displaySpecStore],
+  );
+
+  /** [IMPL-PANE_DISPLAY_FILTER_UI] SET_ACTIVE_SPEC — select spec, sync server, refetch listing */
+  const handleSetActiveDisplaySpec = useCallback(
+    async (paneIndex: number, specId: string | null) => {
+      if (specId && !displaySpecStore.get(specId)) {
+        setSpecDeletedNotice("Display spec is no longer available; using No filter.");
+        specId = null;
+      }
+      pushRecentSpec(specId);
+      setPanes((prev) => {
+        const updated = [...prev];
+        updated[paneIndex] = {
+          ...updated[paneIndex],
+          activeDisplaySpecId: specId,
+        };
+        return updated;
+      });
+      const pane = panes[paneIndex];
+      if (specId) {
+        await ensureDisplaySpecOnServer(displaySpecStore.get(specId));
+      }
+      const listing = await fetchDirectoryListing(pane.path, specId);
+      setPanes((prev) => {
+        const updated = [...prev];
+        updated[paneIndex] = buildPaneFromRawListing(
+          listing.files,
+          { ...updated[paneIndex], activeDisplaySpecId: specId },
+          displaySpecStore,
+          {
+            preserveMarks: false,
+            serverPreFiltered: listing.serverPreFiltered,
+            hiddenCount: listing.hiddenCount,
+            totalCount: listing.totalCount,
+          },
+        );
+        return updated;
+      });
+    },
+    [panes, displaySpecStore, pushRecentSpec],
+  );
+
+  useEffect(() => {
+    if (!displaySpecManagerOpen) return;
+    const unsub = displaySpecStore.subscribe((ev) => {
+      if (ev.type === "updated") {
+        void refreshPanesUsingSpec(ev.spec.id);
+      }
+    });
+    return unsub;
+  }, [displaySpecManagerOpen, displaySpecStore, refreshPanesUsingSpec]);
   
   // Handle navigation into directory
   // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
@@ -627,43 +776,38 @@ export default function WorkspaceView({
         );
       }
       
-      // Fetch new directory contents via API
-      const response = await fetch(`/api/files?path=${encodeURIComponent(newPath)}`);
-      
-      if (!response.ok) {
-        console.error("Failed to list directory:", newPath);
-        return;
+      // [IMPL-DISPLAY_FILTER_API] [REQ-PANE_DISPLAY_FILTER] Fetch listing (filtered when spec active)
+      if (pane.activeDisplaySpecId) {
+        await ensureDisplaySpecOnServer(displaySpecStore.get(pane.activeDisplaySpecId));
       }
+      const listing = await fetchDirectoryListing(newPath, pane.activeDisplaySpecId);
       
-      const newFiles: FileStat[] = await response.json();
-      
-      // [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED]
-      // Apply current pane's sort settings
-      const sortedFiles = sortFiles(
-        newFiles,
-        pane.sortBy,
-        pane.sortDirection,
-        pane.sortDirsFirst
-      );
-      
-      // Restore cursor position if returning to previously visited directory
       const restored = globalDirectoryHistory.restoreCursorPosition(
         paneIndex,
         newPath,
-        sortedFiles.map((f) => f.name)
+        listing.files.map((f) => f.name),
       );
       
       setPanes((prev) => {
         const updated = [...prev];
-        updated[paneIndex] = {
-          path: newPath,
-          files: sortedFiles,
-          cursor: restored.cursor,
-          marks: new Set<string>(),
-          sortBy: pane.sortBy,
-          sortDirection: pane.sortDirection,
-          sortDirsFirst: pane.sortDirsFirst,
-        };
+        const built = buildPaneFromRawListing(
+          listing.files,
+          {
+            ...updated[paneIndex],
+            path: newPath,
+            sortBy: pane.sortBy,
+            sortDirection: pane.sortDirection,
+            sortDirsFirst: pane.sortDirsFirst,
+          },
+          displaySpecStore,
+          {
+            preserveMarks: false,
+            serverPreFiltered: listing.serverPreFiltered,
+            hiddenCount: listing.hiddenCount,
+            totalCount: listing.totalCount,
+          },
+        );
+        updated[paneIndex] = { ...built, cursor: restored.cursor };
         return updated;
       });
       
@@ -773,7 +917,7 @@ export default function WorkspaceView({
     } catch (error) {
       console.error("Error navigating:", error);
     }
-  }, [panes, linkedMode]);
+  }, [panes, linkedMode, displaySpecStore]);
 
   
   // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: sync cursor to same filename in all panes when linkedMode ON
@@ -849,7 +993,7 @@ export default function WorkspaceView({
     });
   }, []);
   
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: mark every file in pane on Shift+M via handleMarkAll
+  // [IMPL-FILE_MARKING] [REQ-PANE_DISPLAY_FILTER] MarkAll — marks only visible pane.files (filtered when spec active)
   const handleMarkAll = useCallback((paneIndex: number) => {
     setPanes((prev) => {
       const updated = [...prev];
@@ -990,30 +1134,43 @@ export default function WorkspaceView({
     const sourcePane = panes[focusIndex];
     
     try {
-      // Fetch files for the new pane (same directory as focused pane)
-      const response = await fetch(`/api/files?path=${encodeURIComponent(sourcePane.path)}`);
-      if (response.ok) {
-        const files: FileStat[] = await response.json();
-        
-        // Create new pane with same settings as source
-        const newPane: PaneState = {
+      if (sourcePane.activeDisplaySpecId) {
+        await ensureDisplaySpecOnServer(displaySpecStore.get(sourcePane.activeDisplaySpecId));
+      }
+      const listing = await fetchDirectoryListing(
+        sourcePane.path,
+        sourcePane.activeDisplaySpecId,
+      );
+      const newPane = buildPaneFromRawListing(
+        listing.files,
+        {
           path: sourcePane.path,
-          files: sortFiles([...files], sourcePane.sortBy, sourcePane.sortDirection, sourcePane.sortDirsFirst),
+          files: listing.files,
           cursor: 0,
           marks: new Set<string>(),
           sortBy: sourcePane.sortBy,
           sortDirection: sourcePane.sortDirection,
           sortDirsFirst: sourcePane.sortDirsFirst,
-        };
-        
-        setPanes((prev) => [...prev, newPane]);
+          activeDisplaySpecId: sourcePane.activeDisplaySpecId,
+          loadedSpecVersion: null,
+          hiddenCount: 0,
+          rawFileCount: listing.totalCount,
+        },
+        displaySpecStore,
+        {
+          preserveMarks: false,
+          serverPreFiltered: listing.serverPreFiltered,
+          hiddenCount: listing.hiddenCount,
+          totalCount: listing.totalCount,
+        },
+      );
+      setPanes((prev) => [...prev, newPane]);
         // Set focus to the new pane
-        setFocusIndex(panes.length);
-      }
+      setFocusIndex(panes.length);
     } catch (error) {
       console.error("Failed to add pane:", error);
     }
-  }, [panes, focusIndex, layoutConfig]);
+  }, [panes, focusIndex, layoutConfig, displaySpecStore]);
   
   /**
    * Remove a pane from the workspace
@@ -1058,6 +1215,14 @@ export default function WorkspaceView({
   /**
    * Get files to operate on: marked files if any, otherwise cursor file
    */
+  const displaySpecPayload = useCallback(
+    (paneIndex: number) => {
+      const id = panes[paneIndex]?.activeDisplaySpecId;
+      return id ? { displaySpecId: id } : {};
+    },
+    [panes],
+  );
+
   const getOperationFiles = useCallback((paneIndex: number): string[] => {
     const pane = panes[paneIndex];
     
@@ -1156,6 +1321,7 @@ export default function WorkspaceView({
               operation: "bulk-copy",
               sources,
               dest: destDir,
+              ...displaySpecPayload(focusIndex),
             }),
           });
           
@@ -1186,7 +1352,7 @@ export default function WorkspaceView({
         }
       },
     });
-  }, [panes, focusIndex, getOperationFiles, confirmDialog, progressDialog, handleNavigate, handleClearMarks]);
+  }, [panes, focusIndex, getOperationFiles, confirmDialog, progressDialog, handleNavigate, handleClearMarks, displaySpecPayload]);
   
   /**
    * Execute bulk move operation
@@ -1266,6 +1432,7 @@ export default function WorkspaceView({
               operation: "bulk-move",
               sources,
               dest: destDir,
+              ...displaySpecPayload(focusIndex),
             }),
           });
           
@@ -1296,7 +1463,7 @@ export default function WorkspaceView({
         }
       },
     });
-  }, [panes, focusIndex, getOperationFiles, confirmDialog, progressDialog, handleNavigate, handleClearMarks]);
+  }, [panes, focusIndex, getOperationFiles, confirmDialog, progressDialog, handleNavigate, handleClearMarks, displaySpecPayload]);
   
   /**
    * Execute bulk delete operation
@@ -1333,6 +1500,7 @@ export default function WorkspaceView({
             body: JSON.stringify({
               operation: "bulk-delete",
               sources,
+              ...displaySpecPayload(focusIndex),
             }),
           });
           
@@ -1362,7 +1530,7 @@ export default function WorkspaceView({
         }
       },
     });
-  }, [panes, focusIndex, getOperationFiles, confirmDialog, progressDialog, handleNavigate, handleClearMarks]);
+  }, [panes, focusIndex, getOperationFiles, confirmDialog, progressDialog, handleNavigate, handleClearMarks, displaySpecPayload]);
 
   // [IMPL-NSYNC_ENGINE] [REQ-NSYNC_MULTI_TARGET] Helper to get other visible pane directories
   /**
@@ -1427,6 +1595,7 @@ export default function WorkspaceView({
               move: false,
               compareMethod: "size-mtime",
               verify: false,
+              ...displaySpecPayload(focusIndex),
             }),
           });
           
@@ -1456,7 +1625,7 @@ export default function WorkspaceView({
         }
       },
     });
-  }, [panes, focusIndex, getOperationFiles, getOtherPaneDirs, confirmDialog, progressDialog, handleNavigate, handleClearMarks]);
+  }, [panes, focusIndex, getOperationFiles, getOtherPaneDirs, confirmDialog, progressDialog, handleNavigate, handleClearMarks, displaySpecPayload]);
 
   // [IMPL-NSYNC_ENGINE] [REQ-NSYNC_MULTI_TARGET] Move to all other panes
   /**
@@ -1510,6 +1679,7 @@ export default function WorkspaceView({
               move: true,
               compareMethod: "size-mtime",
               verify: false,
+              ...displaySpecPayload(focusIndex),
             }),
           });
           
@@ -1539,7 +1709,7 @@ export default function WorkspaceView({
         }
       },
     });
-  }, [panes, focusIndex, getOperationFiles, getOtherPaneDirs, confirmDialog, progressDialog, handleNavigate, handleClearMarks]);
+  }, [panes, focusIndex, getOperationFiles, getOtherPaneDirs, confirmDialog, progressDialog, handleNavigate, handleClearMarks, displaySpecPayload]);
 
   // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [IMPL-MOUSE_SUPPORT] Rename single file (keyboard r or context menu)
   const handleRenameConfirm = useCallback(
@@ -1550,7 +1720,12 @@ export default function WorkspaceView({
       fetch("/api/files", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ operation: "rename", src: filePath, dest: newPath }),
+        body: JSON.stringify({
+          operation: "rename",
+          src: filePath,
+          dest: newPath,
+          ...displaySpecPayload(paneIndex),
+        }),
       })
         .then((res) => {
           if (!res.ok) return res.json().then((j: { error?: string }) => { throw new Error(j.error || res.statusText); });
@@ -1562,7 +1737,7 @@ export default function WorkspaceView({
           alert(`Rename failed: ${String(e)}`);
         });
     },
-    [handleNavigate]
+    [handleNavigate, displaySpecPayload]
   );
 
   // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
@@ -1820,6 +1995,14 @@ export default function WorkspaceView({
       setLinkedMode((prev) => !prev);
     });
     
+    handlers.set("view.displaySpec", () => {
+      setDisplaySpecManagerOpen(true);
+    });
+
+    handlers.set("view.displaySpec.none", () => {
+      void handleSetActiveDisplaySpec(focusIndex, null);
+    });
+    
     handlers.set("view.hidden", () => {
       // TODO: Implement hidden files toggle
       console.info("[IMPL-KEYBINDS] Hidden files toggle not yet implemented");
@@ -1906,7 +2089,7 @@ export default function WorkspaceView({
     });
     
     return handlers;
-  }, [panes, focusIndex, navigateToParent, handleNavigate, handleBulkCopy, handleBulkMove, handleBulkDelete, handleAddPane, handleRemovePane, handleClearMarks, handleCursorMove, handleToggleMark, handleMarkAll, handleInvertMarks, handleCopyAll, handleMoveAll]);
+  }, [panes, focusIndex, navigateToParent, handleNavigate, handleBulkCopy, handleBulkMove, handleBulkDelete, handleAddPane, handleRemovePane, handleClearMarks, handleCursorMove, handleToggleMark, handleMarkAll, handleInvertMarks, handleCopyAll, handleMoveAll, handleSetActiveDisplaySpec]);
 
   const actionHandlers = useMemo(() => {
     const merged = new Map(workspaceActionHandlers);
@@ -2107,6 +2290,21 @@ export default function WorkspaceView({
                 )}
               </div>
             )}
+            {specDeletedNotice && (
+              <p
+                className="mt-1 text-sm text-amber-700 dark:text-amber-400 flex items-center gap-2"
+                data-testid="display-spec-deleted-notice"
+              >
+                {specDeletedNotice}
+                <button
+                  type="button"
+                  className="underline text-xs"
+                  onClick={() => setSpecDeletedNotice(null)}
+                >
+                  Dismiss
+                </button>
+              </p>
+            )}
           </div>
 
           {/* [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] DIFF_SAVED_VS_CURRENT — header Diff control */}
@@ -2259,6 +2457,20 @@ export default function WorkspaceView({
             onNavigateParent={() => navigateToParent(index)} // [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
             columns={columns} // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
             onRename={(file) => setRenameDialog({ isOpen: true, filePath: file.path, fileName: file.name, paneIndex: index })}
+            displaySpecs={catalogSpecs}
+            activeDisplaySpecId={pane.activeDisplaySpecId}
+            activeDisplaySpecName={
+              catalogSpecs.find((s) => s.id === pane.activeDisplaySpecId)?.name ?? null
+            }
+            hiddenCount={pane.hiddenCount}
+            rawFileCount={pane.rawFileCount}
+            recentSpecIds={recentSpecIds}
+            onDisplaySpecSelect={(specId) => void handleSetActiveDisplaySpec(index, specId)}
+            onManageDisplaySpecs={() => setDisplaySpecManagerOpen(true)}
+            filterEmptyMessage={
+              copy.displayFilter?.filterEmpty ??
+              "No visible items — the active filter may be hiding files in this folder."
+            }
           />
         ))}
       </div>
@@ -2354,6 +2566,18 @@ export default function WorkspaceView({
         createSubmitLabel={workspaceMeshCopy?.createSubmitLabel}
         onClose={() => setSaveMeshDialogOpen(false)}
         onSave={handleSaveWorkspaceAsMesh}
+      />
+
+      <DisplaySpecManagerDialog
+        isOpen={displaySpecManagerOpen}
+        onClose={() => setDisplaySpecManagerOpen(false)}
+        store={displaySpecStore}
+        panesUsingSpec={countPanesUsingSpec}
+        onSaved={(spec) => {
+          pushRecentSpec(spec.id);
+          setCatalogSpecs(displaySpecStore.list());
+        }}
+        onDeleted={() => setCatalogSpecs(displaySpecStore.list())}
       />
 
       <WorkspaceDiffDialog

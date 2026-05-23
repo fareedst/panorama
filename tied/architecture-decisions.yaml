@@ -2760,3 +2760,17 @@ ARCH-WORKSPACE_MESH_BRIDGE:
     - ARCH-MESH_LAYERED
     - REQ-WORKSPACE_MESH_BRIDGE
   detail_file: architecture-decisions/ARCH-WORKSPACE_MESH_BRIDGE.yaml
+ARCH-DISPLAY_FILTER_ENGINE:
+  name: Display Filter Rule Engine
+  status: Accepted
+  cross_references:
+    - REQ-PANE_DISPLAY_FILTER
+    - IMPL-DISPLAY_FILTER_ENGINE
+  detail_file: architecture-decisions/ARCH-DISPLAY_FILTER_ENGINE.yaml
+ARCH-DISPLAY_SPEC_STORE:
+  name: Display Spec Catalog Store
+  status: Accepted
+  cross_references:
+    - REQ-PANE_DISPLAY_FILTER
+    - IMPL-DISPLAY_SPEC_STORE
+  detail_file: architecture-decisions/ARCH-DISPLAY_SPEC_STORE.yaml

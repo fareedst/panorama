@@ -6,7 +6,9 @@ import { sortFiles, type SortCriterion, type SortDirection } from "./files.utils
 import type { Mesh } from "./mesh/domain";
 
 export const WORKSPACE_SNAPSHOT_TAG = "workspace-snapshot";
-export const WORKSPACE_SNAPSHOT_VERSION = 1 as const;
+export const WORKSPACE_SNAPSHOT_VERSION = 2 as const;
+/** Legacy meshes may store version 1 snapshots without displaySpecId. */
+export const WORKSPACE_SNAPSHOT_VERSION_LEGACY = 1 as const;
 
 export type WorkspaceSnapshotPane = {
   path: string;
@@ -14,6 +16,8 @@ export type WorkspaceSnapshotPane = {
   sortDirection: SortDirection;
   sortDirsFirst: boolean;
   cursor: number;
+  /** [REQ-PANE_DISPLAY_FILTER] Active display filter spec id (v2+). */
+  displaySpecId?: string | null;
 };
 
 export type WorkspaceSnapshot = {
@@ -60,7 +64,7 @@ export type DepotSyncOp =
 export type DepotForSync = { id: string; name: string; root: string };
 
 // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] CAPTURE_SNAPSHOT
-/** Build v1 snapshot from live workspace pane state. */
+/** Build v2 snapshot from live workspace pane state. */
 export function captureWorkspaceSnapshot(input: WorkspaceCaptureInput): WorkspaceSnapshot {
   return {
     version: WORKSPACE_SNAPSHOT_VERSION,
@@ -186,6 +190,9 @@ export function diffWorkspaceSnapshots(
     push(`Pane ${n} sortDirection`, sp.sortDirection, cp.sortDirection);
     push(`Pane ${n} sortDirsFirst`, sp.sortDirsFirst, cp.sortDirsFirst);
     push(`Pane ${n} cursor`, sp.cursor, cp.cursor);
+    const sd = sp.displaySpecId ?? "(none)";
+    const cd = cp.displaySpecId ?? "(none)";
+    push(`Pane ${n} displaySpec`, sd, cd);
   }
   return changes;
 }
@@ -222,7 +229,11 @@ function extractSnapshotRecord(parsed: unknown): Record<string, unknown> | null 
   if (isRecord(parsed.workspaceSnapshot)) {
     return parsed.workspaceSnapshot;
   }
-  if (Number(parsed.version) === WORKSPACE_SNAPSHOT_VERSION && Array.isArray(parsed.panes)) {
+  const v = Number(parsed.version);
+  if (
+    (v === WORKSPACE_SNAPSHOT_VERSION || v === WORKSPACE_SNAPSHOT_VERSION_LEGACY) &&
+    Array.isArray(parsed.panes)
+  ) {
     return parsed;
   }
   return null;
@@ -248,11 +259,13 @@ function parseDescriptionJson(description: string | undefined): WorkspaceSnapsho
   }
 }
 
-function validateWorkspaceSnapshot(raw: unknown): WorkspaceSnapshot | null {
+/** Validate and normalize a workspace snapshot from API input (v1 legacy or v2). */
+export function validateWorkspaceSnapshot(raw: unknown): WorkspaceSnapshot | null {
   if (!isRecord(raw)) {
     return null;
   }
-  if (Number(raw.version) !== WORKSPACE_SNAPSHOT_VERSION) {
+  const version = Number(raw.version);
+  if (version !== WORKSPACE_SNAPSHOT_VERSION && version !== WORKSPACE_SNAPSHOT_VERSION_LEGACY) {
     return null;
   }
   if (!Array.isArray(raw.panes) || raw.panes.length === 0) {
@@ -263,12 +276,19 @@ function validateWorkspaceSnapshot(raw: unknown): WorkspaceSnapshot | null {
     if (!isRecord(p) || typeof p.path !== "string" || !p.path.trim()) {
       return null;
     }
+    const displaySpecId =
+      version >= WORKSPACE_SNAPSHOT_VERSION && typeof p.displaySpecId === "string"
+        ? p.displaySpecId
+        : p.displaySpecId === null
+          ? null
+          : undefined;
     panes.push({
       path: p.path,
       sortBy: (p.sortBy as SortCriterion) ?? "name",
       sortDirection: (p.sortDirection as SortDirection) ?? "asc",
       sortDirsFirst: typeof p.sortDirsFirst === "boolean" ? p.sortDirsFirst : true,
       cursor: typeof p.cursor === "number" && p.cursor >= 0 ? p.cursor : 0,
+      ...(displaySpecId !== undefined ? { displaySpecId } : {}),
     });
   }
   // [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-MULTI_PANE_LAYOUT] NORMALIZE_LAYOUT within PARSE_SNAPSHOT_FROM_MESH
@@ -379,6 +399,7 @@ export type WorkspaceRestorePaneMeta = {
   sortDirection: SortDirection;
   sortDirsFirst: boolean;
   cursor: number;
+  displaySpecId?: string | null;
 };
 
 /** Workspace-level UI for restore (matches WorkspaceView RestoreUiState). */
@@ -467,6 +488,7 @@ export async function buildWorkspaceRestoreBundle(
     sortDirection: p.sortDirection,
     sortDirsFirst: p.sortDirsFirst,
     cursor: p.cursor,
+    displaySpecId: p.displaySpecId ?? null,
   }));
   return {
     initialPanes,

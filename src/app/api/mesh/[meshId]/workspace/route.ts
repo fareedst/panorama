@@ -10,7 +10,7 @@ import { toDtoMesh } from "@/lib/mesh/domain";
 import {
   buildMeshPatchPayload,
   planDepotSync,
-  type WorkspaceSnapshot,
+  validateWorkspaceSnapshot,
 } from "@/lib/workspace-mesh-bridge";
 
 type Params = { params: Promise<{ meshId: string }> };
@@ -18,18 +18,8 @@ type Params = { params: Promise<{ meshId: string }> };
 type PutBody = {
   name?: string;
   note?: string;
-  snapshot?: WorkspaceSnapshot;
+  snapshot?: unknown;
 };
-
-function isWorkspaceSnapshot(v: unknown): v is WorkspaceSnapshot {
-  return (
-    typeof v === "object" &&
-    v !== null &&
-    Number((v as WorkspaceSnapshot).version) === 1 &&
-    Array.isArray((v as WorkspaceSnapshot).panes) &&
-    (v as WorkspaceSnapshot).panes.length > 0
-  );
-}
 
 // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_CRUD]
 // how: buildMeshPatchPayload + planDepotSync depot ops after metadata patch
@@ -45,8 +35,9 @@ export async function PUT(request: Request, { params }: Params) {
   } catch {
     return jsonError(400, "invalid_json", "Request body must be JSON");
   }
-  if (!isWorkspaceSnapshot(body.snapshot)) {
-    return jsonError(400, "invalid_snapshot", "snapshot must be a valid workspace snapshot v1");
+  const snapshot = validateWorkspaceSnapshot(body.snapshot);
+  if (!snapshot) {
+    return jsonError(400, "invalid_snapshot", "snapshot must be a valid workspace snapshot");
   }
 
   const rt = getRuntime();
@@ -58,7 +49,7 @@ export async function PUT(request: Request, { params }: Params) {
   const patch = buildMeshPatchPayload({
     name: body.name,
     note: body.note,
-    snapshot: body.snapshot,
+    snapshot,
     existingDescription: record.mesh.description,
   });
 
@@ -73,7 +64,7 @@ export async function PUT(request: Request, { params }: Params) {
     name: d.name,
     root: d.root,
   }));
-  const ops = planDepotSync(existingDepots, body.snapshot.panes);
+  const ops = planDepotSync(existingDepots, snapshot.panes);
 
   // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_CRUD]
   // how: apply planDepotSync update|add|remove in order

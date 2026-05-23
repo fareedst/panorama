@@ -60,6 +60,11 @@ copy:
     clearMarks: "Clear marks"
     markAll: "Mark all"
     invertMarks: "Invert marks"
+
+  # [REQ-PANE_DISPLAY_FILTER] [IMPL-PANE_DISPLAY_FILTER_UI]
+  displayFilter:
+    filterEmpty: "No visible items — the active filter may be hiding files in this folder."
+    managerTitle: "Display filter specs"
   
   # [REQ-FILES_CONFIG_COMPLETE] Help dialog
   help:
@@ -231,6 +236,14 @@ keybindings:
     action: "view.comparison"
     description: "Toggle comparison mode (name/size/time)"
     category: "view-sort"
+
+  - key: "f"
+    modifiers:
+      shift: true
+      ctrl: true
+    action: "view.displaySpec"
+    description: "Manage display filter specs"
+    category: "view-sort"
   
   # [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Linked pane navigation
   - key: "l"
@@ -389,6 +402,7 @@ toolbars:
         actions:
           - "view.sort"
           - "view.comparison"
+          - "view.displaySpec"
           - "link.toggle"
       - name: "Pane Management"
         actions:

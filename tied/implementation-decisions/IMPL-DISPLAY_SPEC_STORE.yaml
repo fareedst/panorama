@@ -1,0 +1,20 @@
+IMPL-DISPLAY_SPEC_STORE:
+  name: Display Spec Store Implementation
+  status: Active
+  cross_references:
+    - REQ-PANE_DISPLAY_FILTER
+    - ARCH-DISPLAY_SPEC_STORE
+  essence_pseudocode_path: implementation-decisions/IMPL-DISPLAY_SPEC_STORE-pseudocode.md
+  implementation_approach:
+    summary: localStorage catalog with CRUD, duplicate, version bump, subscribe
+    details:
+      - src/lib/display-spec-store.ts
+      - Max 200 rules per spec
+  traceability:
+    requirements:
+      - REQ-PANE_DISPLAY_FILTER
+    architecture:
+      - ARCH-DISPLAY_SPEC_STORE
+  related_decisions:
+    see_also:
+      - docs/pane-display-filter-vocabulary.md

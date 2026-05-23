@@ -487,4 +487,40 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
     
     expect(screen.queryByText("🔗")).not.toBeInTheDocument();
   });
+
+  it("PANE_HEADER_SELECTOR shows active spec name and hidden count [REQ-PANE_DISPLAY_FILTER] [IMPL-PANE_DISPLAY_FILTER_UI]", () => {
+    render(
+      <FilePane
+        path="/home/user"
+        files={mockFiles}
+        cursor={0}
+        marks={new Set()}
+        bounds={mockBounds}
+        focused={true}
+        onNavigate={mockOnNavigate}
+        onCursorMove={mockOnCursorMove}
+        onToggleMark={mockOnToggleMark}
+        columns={mockColumns}
+        activeDisplaySpecId="spec-1"
+        activeDisplaySpecName="No logs"
+        hiddenCount={3}
+        displaySpecs={[
+          {
+            id: "spec-1",
+            name: "No logs",
+            version: 1,
+            createdAt: "2024-01-01T00:00:00.000Z",
+            updatedAt: "2024-01-01T00:00:00.000Z",
+            rules: [],
+          },
+        ]}
+        onDisplaySpecSelect={vi.fn()}
+        onManageDisplaySpecs={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText(/Filter: No logs/)).toBeInTheDocument();
+    expect(screen.getByText(/Hidden: 3/)).toBeInTheDocument();
+    expect(screen.getByTestId("pane-display-spec-selector")).toBeInTheDocument();
+  });
 });

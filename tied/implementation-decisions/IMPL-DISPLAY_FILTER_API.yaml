@@ -1,0 +1,23 @@
+IMPL-DISPLAY_FILTER_API:
+  name: Display Filter API
+  status: Active
+  cross_references:
+    - ARCH-DISPLAY_FILTER_ENGINE
+    - IMPL-DISPLAY_FILTER_ENGINE
+    - REQ-PANE_DISPLAY_FILTER
+  essence_pseudocode_path: implementation-decisions/IMPL-DISPLAY_FILTER_API-pseudocode.md
+  implementation_approach:
+    summary: REST display-specs CRUD and files route enforcement
+    details:
+      - GET /api/files?displaySpecId=
+      - POST validates sources against visible set
+      - src/app/api/display-specs/
+  traceability:
+    requirements:
+      - REQ-PANE_DISPLAY_FILTER
+    architecture:
+      - ARCH-DISPLAY_FILTER_ENGINE
+      - ARCH-DISPLAY_SPEC_STORE
+  related_decisions:
+    see_also:
+      - docs/pane-display-filter-vocabulary.md

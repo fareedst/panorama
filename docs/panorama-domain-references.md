@@ -13,6 +13,7 @@ Pick the **preferred term** from the linked vocabulary file before naming pseudo
 | P0 | [cross-pane-comparison-vocabulary.md](cross-pane-comparison-vocabulary.md) | **Comparison index**, shared filenames, visual comparison modes, size/time coloring |
 | P1 | [linked-navigation-vocabulary.md](linked-navigation-vocabulary.md) | **Linked mode**, synchronized directory/cursor/sort across panes |
 | P1 | [file-marking-vocabulary.md](file-marking-vocabulary.md) | **Marks** (per-pane selection sets), bulk operation source resolution |
+| P1 | [pane-display-filter-vocabulary.md](pane-display-filter-vocabulary.md) | **Display specs** (named pane filters), active spec, catalog sync — not Mesh Policy |
 | P1 | [toolbar-keybind-vocabulary.md](toolbar-keybind-vocabulary.md) | **Toolbar** tiers (workspace / pane / system), `keybindings` **actions**, `data-testid` |
 | P2 | [mesh-platform-vocabulary.md](mesh-platform-vocabulary.md) | **Mesh** sync platform (depot, sync link, session, plan) — separate from file-manager NSYNC; **cross-surface links** open Mesh ↔ File Manager in new tabs |
 

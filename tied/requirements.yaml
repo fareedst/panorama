@@ -3095,3 +3095,9 @@ REQ-WORKSPACE_MESH_BRIDGE:
     - REQ-MESH_PLATFORM
     - REQ-MULTI_PANE_LAYOUT
   detail_file: requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml
+REQ-PANE_DISPLAY_FILTER:
+  name: Pane Display Filter Specs
+  category: Functional
+  priority: P1
+  status: Implemented
+  detail_file: requirements/REQ-PANE_DISPLAY_FILTER.yaml

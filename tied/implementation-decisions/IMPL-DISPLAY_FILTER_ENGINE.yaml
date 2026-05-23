@@ -1,0 +1,22 @@
+IMPL-DISPLAY_FILTER_ENGINE:
+  name: Display Filter Engine Implementation
+  status: Active
+  cross_references:
+    - REQ-PANE_DISPLAY_FILTER
+    - ARCH-DISPLAY_FILTER_ENGINE
+  essence_pseudocode_path: implementation-decisions/IMPL-DISPLAY_FILTER_ENGINE-pseudocode.md
+  implementation_approach:
+    summary: Pure TS modules for glob match, rule evaluation, pane listing apply, selection reconcile
+    details:
+      - src/lib/display-filter-engine.ts
+      - src/lib/display-filter.types.ts
+      - src/lib/glob-match.ts
+      - Unit tests before UI integration
+  traceability:
+    requirements:
+      - REQ-PANE_DISPLAY_FILTER
+    architecture:
+      - ARCH-DISPLAY_FILTER_ENGINE
+  related_decisions:
+    see_also:
+      - docs/pane-display-filter-vocabulary.md

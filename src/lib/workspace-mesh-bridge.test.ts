@@ -341,6 +341,27 @@ describe("REQ-WORKSPACE_MESH_BRIDGE [IMPL-WORKSPACE_MESH_BRIDGE]", () => {
     expect(parseWorkspaceSnapshotFromMesh(mesh)?.layout).toBe("OneRow");
   });
 
+  it("PARSE_SNAPSHOT_FROM_MESH_round_trips_displaySpecId_v2", () => {
+    const snapshot = captureWorkspaceSnapshot({
+      ...baseSnapshot,
+      panes: [
+        {
+          ...baseSnapshot.panes[0],
+          displaySpecId: "spec-abc",
+        },
+      ],
+    });
+    expect(snapshot.version).toBe(WORKSPACE_SNAPSHOT_VERSION);
+    const payload = buildMeshCreatePayload({ name: "Filter", snapshot });
+    const mesh: Pick<Mesh, "description" | "tags" | "depots"> = {
+      description: payload.description as string,
+      tags: [WORKSPACE_SNAPSHOT_TAG],
+      depots: [],
+    };
+    const parsed = parseWorkspaceSnapshotFromMesh(mesh);
+    expect(parsed?.panes[0].displaySpecId).toBe("spec-abc");
+  });
+
   it("PARSE_SNAPSHOT_FROM_MESH_accepts_root_level_snapshot_without_wrapper", () => {
     const mesh: Pick<Mesh, "description" | "tags" | "depots"> = {
       description: JSON.stringify({

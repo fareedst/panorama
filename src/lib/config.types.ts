@@ -256,6 +256,11 @@ export interface FilesCopyConfig {
     markAll?: string;
     invertMarks?: string;
   };
+  /** [REQ-PANE_DISPLAY_FILTER] Display filter spec UI copy */
+  displayFilter?: {
+    filterEmpty?: string;
+    managerTitle?: string;
+  };
   // [REQ-FILES_CONFIG_COMPLETE] Help dialog copy
   help?: {
     title?: string;

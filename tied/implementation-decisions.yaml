@@ -4159,3 +4159,33 @@ IMPL-MESH_HARDENING:
     - REQ-MESH_HARDENING
     - REQ-MESH_PLATFORM
   detail_file: implementation-decisions/IMPL-MESH_HARDENING.yaml
+IMPL-DISPLAY_FILTER_ENGINE:
+  name: Display Filter Engine Implementation
+  status: Active
+  cross_references:
+    - REQ-PANE_DISPLAY_FILTER
+    - ARCH-DISPLAY_FILTER_ENGINE
+  detail_file: implementation-decisions/IMPL-DISPLAY_FILTER_ENGINE.yaml
+IMPL-DISPLAY_SPEC_STORE:
+  name: Display Spec Store Implementation
+  status: Active
+  cross_references:
+    - REQ-PANE_DISPLAY_FILTER
+    - ARCH-DISPLAY_SPEC_STORE
+  detail_file: implementation-decisions/IMPL-DISPLAY_SPEC_STORE.yaml
+IMPL-PANE_DISPLAY_FILTER_UI:
+  name: Pane Display Filter UI
+  status: Active
+  cross_references:
+    - IMPL-DISPLAY_FILTER_ENGINE
+    - IMPL-DISPLAY_SPEC_STORE
+    - REQ-PANE_DISPLAY_FILTER
+  detail_file: implementation-decisions/IMPL-PANE_DISPLAY_FILTER_UI.yaml
+IMPL-DISPLAY_FILTER_API:
+  name: Display Filter API
+  status: Active
+  cross_references:
+    - ARCH-DISPLAY_FILTER_ENGINE
+    - IMPL-DISPLAY_FILTER_ENGINE
+    - REQ-PANE_DISPLAY_FILTER
+  detail_file: implementation-decisions/IMPL-DISPLAY_FILTER_API.yaml

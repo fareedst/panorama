@@ -19,7 +19,7 @@
 | --- | --- |
 | **Mark** (noun) | “selection”, “checkbox state” — store is `pane.marks: Set<string>` keyed by **`file.name`** |
 | **Marked file** | File whose `name` is in `pane.marks` |
-| **Marked count** | Footer `[markedCount/totalCount]` — not “selected count” in REQ text |
+| **Marked count** | Footer `[markedCount/totalCount]` — **totalCount** is visible file count when a display spec is active |
 | **Toggle mark** | `mark.toggle` — **M** key |
 | **Mark and advance** | `mark.toggle-cursor` — **Space** (mark then move cursor down) |
 | **Mark all** | `mark.all` — **Shift+M** |
@@ -46,6 +46,7 @@
 - **Empty directory** — Mark keys on empty listing: no error, no footer count.
 - **Multi-mark workflow** — Sequential mark.all → invert → clear is valid UX.
 - **Bulk operation** — Uses `getOperationFiles(focusIndex)` before NSYNC or API bulk routes.
+- **Visible-only marks** — When a [display spec](pane-display-filter-vocabulary.md) is active, `pane.files` is the filtered visible set; mark-all and footer **total** count visible items only.
 
 ## Pseudo-code block names
 

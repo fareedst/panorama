@@ -12,12 +12,30 @@ NORMALIZE_LAYOUT(value):
 ```
 
 ## CAPTURE_SNAPSHOT
-# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MULTI_PANE_LAYOUT]
-# how: Copy layout, focus, linked, comparison, and per-pane path/sort/cursor into WorkspaceSnapshot v1; layout via NORMALIZE_LAYOUT.
+# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MULTI_PANE_LAYOUT] [REQ-PANE_DISPLAY_FILTER]
+# how: Copy layout, focus, linked, comparison, and per-pane path/sort/cursor into WorkspaceSnapshot; v2+ includes displaySpecId per pane; layout via NORMALIZE_LAYOUT.
 
 ```
 CAPTURE_SNAPSHOT(workspaceState):
-  RETURN { version: 1, layout: NORMALIZE_LAYOUT(layout) ?? Tile, focusIndex, linkedMode, comparisonMode, panes[] }
+  INPUT: workspace panes with activeDisplaySpecId per pane
+  OUTPUT: WorkspaceSnapshot { version, layout, focusIndex, linkedMode, comparisonMode, panes[] }
+  version := 2 when any pane has display filter fields else 1
+  FOR each pane IN workspace.panes:
+    paneEntry := { path, sortBy, sortDirection, sortDirsFirst, cursor, displaySpecId: pane.activeDisplaySpecId ?? null }
+  RETURN { version, layout: NORMALIZE_LAYOUT(layout) ?? Tile, focusIndex, linkedMode, comparisonMode, panes: paneEntries }
+```
+
+## PARSE_DISPLAY_SPEC_ID_FROM_SNAPSHOT_PANE
+# [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-PANE_DISPLAY_FILTER] [REQ-WORKSPACE_MESH_BRIDGE]
+# how: v2+ snapshots persist displaySpecId per pane; v1 omits field (undefined on restore).
+
+```
+PARSE_DISPLAY_SPEC_ID_FROM_SNAPSHOT_PANE(snapshotVersion, paneJson):
+  INPUT: snapshot version number, pane object from JSON
+  OUTPUT: displaySpecId string|null|undefined
+  IF snapshotVersion >= 2 AND typeof pane.displaySpecId = "string" THEN RETURN pane.displaySpecId
+  IF snapshotVersion >= 2 AND pane.displaySpecId IS null THEN RETURN null
+  RETURN undefined
 ```
 
 ## BUILD_MESH_PAYLOAD
