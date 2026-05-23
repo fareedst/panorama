@@ -33,6 +33,11 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 | **Workspace header banner** | Top `<header>` strip — title, status row, Diff, cross-surface nav, layout selector |
 | **Workspace header status row** | `workspace-header-status` — groups loaded name, restore warnings, and bootstrap errors below title |
 | **Layout normalization** | Map config/UI aliases to canonical `LayoutType` — `normalizeLayoutType`, pseudo block `NORMALIZE_LAYOUT` ([IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml)) |
+| **Mesh restore pending** | Server did not hydrate panes; client will rehydrate from `/api/mesh/:meshId` | prop `meshRestorePending` |
+| **Client mesh rehydrate** | One-shot client fetch + full snapshot apply in `WorkspaceView` | `RESTORE_LAYOUT_IN_WORKSPACE_VIEW` |
+| **Client restored from mesh** | Client recovery after server `getMesh` miss | state `clientRestoredFromMesh` |
+| **Workspace restore pending** | In-progress client rehydrate banner | `data-testid="workspace-restore-pending"` |
+| **Workspace restore bundle** | Hydrated restore props from snapshot | `buildWorkspaceRestoreBundle` / `BUILD_WORKSPACE_RESTORE_BUNDLE` |
 
 ## Naming bridge
 
@@ -64,8 +69,13 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 - **Save workspace as mesh** — Toolbar action `mesh.saveWorkspace` (Ctrl+Shift+M); update current mesh when loaded via `meshId`, or save as new ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)).
 - **Diff workspace** — `mesh.diffWorkspace` / header **Diff** button compares live state to saved snapshot (`diffWorkspaceSnapshots`).
 - **Loaded workspace name** — Header `workspace-loaded-name` when `/files?meshId=` resolves a mesh; replaces the former green success line on successful restore.
-- **Workspace restore warning** — Amber `workspace-restore-warning` when partial restore succeeded (`restoredFromMesh` with `restoreWarning`, e.g. maxPanes truncation).
-- **Workspace restore error** — Red `workspace-restore-error` when mesh bootstrap failed (`restoreWarning` without `restoredFromMesh`, e.g. mesh not found).
+- **Mesh restore pending** — `meshRestorePending` defers default startup panes; client runs full rehydrate when server `getMesh` misses the mesh.
+- **Client mesh rehydrate** — `WorkspaceView` fetches `/api/mesh/:meshId` and applies `buildWorkspaceRestoreBundle` with `listDirectoryViaFilesApi`.
+- **Client restored from mesh** — `clientRestoredFromMesh` after successful client rehydrate; header uses amber warning with API recovery prefix.
+- **Workspace restore pending** — `workspace-restore-pending` while `meshRehydrating` is true.
+- **Workspace restore bundle** — `WorkspaceRestoreBundle` from `buildWorkspaceRestoreBundle` (initial panes + restore UI props).
+- **Workspace restore warning** — Amber `workspace-restore-warning` when partial server restore or client recovery succeeded (`restoredFromMesh` or `clientRestoredFromMesh` with warning text).
+- **Workspace restore error** — Red `workspace-restore-error` only when `restoreWarning` is set, server did not restore, client has not recovered, and rehydrate is not in progress.
 - **Workspace header banner** — Compact top header (`px-4 py-2`) with title, `workspace-header-status` row (`data-testid="workspace-header-status"`), Diff, cross-surface nav, and layout selector.
 - **Workspace header status row** — `workspace-header-status` container below title; holds loaded name, warnings, and errors.
 - **Layout normalization** — `normalizeLayoutType` at snapshot capture, parse, Files page restore, and `WorkspaceView` init so stored aliases (e.g. `oneRow`, `"One Row"`) round-trip to canonical layout geometry.
@@ -95,14 +105,20 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 | Update existing workspace | `UPDATE_EXISTING_WORKSPACE` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Diff saved vs current | `DIFF_SAVED_VS_CURRENT` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Apply max panes on restore | `APPLY_MAX_PANES_LIMIT` | IMPL-WORKSPACE_MESH_BRIDGE |
+| Append snapshot layout warnings | `APPEND_SNAPSHOT_LAYOUT_WARNINGS` | IMPL-WORKSPACE_MESH_BRIDGE |
+| Build workspace restore bundle | `BUILD_WORKSPACE_RESTORE_BUNDLE` | IMPL-WORKSPACE_MESH_BRIDGE |
+| List directory via files API (client) | `LIST_DIRECTORY_VIA_FILES_API` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Header link to Mesh | `WORKSPACE_HEADER_MESH_LINK` | IMPL-WORKSPACE_MESH_BRIDGE |
 
 ## Alphabetical index
 
+- **Client mesh rehydrate** — client full restore when server bootstrap misses mesh
+- **Client restored from mesh** — `clientRestoredFromMesh` after API recovery
 - **Cross-surface link** — new-tab Mesh ↔ File Manager navigation (`NewTabLink`)
 - **Diff workspace** — `mesh.diffWorkspace` / header **Diff**; `diffWorkspaceSnapshots` vs saved baseline
 - **Files page** — server entry; loads config + initial directory data
 - **Focus** — `focusIndex`
+- **Mesh restore pending** — `meshRestorePending`; skip default startup panes
 - **Loaded workspace name** — header `workspace-loaded-name` when `/files?meshId=` resolves; no redundant success message
 - **Layout normalization** — `normalizeLayoutType` / `NORMALIZE_LAYOUT`
 - **Layout type** — `tile`, `oneRow`, `oneColumn`, `fullscreen`
@@ -116,8 +132,10 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 - **Workspace header banner** — compact title + status row + controls
 - **Workspace header status row** — `workspace-header-status`; loaded name, warnings, errors
 - **Workspace header cross-surface nav** — header `workspace-cross-surface-nav`, **Mesh Sync** link
-- **Workspace restore error** — `workspace-restore-error` (bootstrap failure)
-- **Workspace restore warning** — `workspace-restore-warning` (partial restore)
+- **Workspace restore bundle** — `buildWorkspaceRestoreBundle` output
+- **Workspace restore error** — `workspace-restore-error` (unrecovered bootstrap failure)
+- **Workspace restore pending** — `workspace-restore-pending` during client rehydrate
+- **Workspace restore warning** — `workspace-restore-warning` (partial or client recovery)
 - **Workspace snapshot** — v1 JSON in mesh `description.workspaceSnapshot` (see [mesh-platform-vocabulary.md](mesh-platform-vocabulary.md))
 
 ## See also

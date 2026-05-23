@@ -3,12 +3,14 @@ REQ-WORKSPACE_MESH_BRIDGE:
   category: Functional
   priority: P1
   status: Implemented
-  description: Store file-manager workspace layout (pane paths, layout, focus, linked/comparison, per-pane sort/cursor) as a mesh with workspace-snapshot tag and JSON in description (optional human note before JSON); restore via /files?meshId= with maxPanes truncation warning when applicable. Compact workspace header status row shows loaded mesh name (workspace-loaded-name) without redundant success message; partial-restore warnings are amber; bootstrap failures are red. Layout type round-trips via normalization of config/UI aliases. Mesh and File Manager cross-surface links open in new tabs with security attributes and assistive disclosure.
+  description: Store file-manager workspace layout (pane paths, layout, focus, linked/comparison, per-pane sort/cursor) as a mesh with workspace-snapshot tag and JSON in description (optional human note before JSON); restore via /files?meshId= with maxPanes truncation warning when applicable. When server getMesh misses the mesh, client rehydrates from GET /api/mesh/:meshId (meshRestorePending). Compact workspace header status row shows loaded mesh name (workspace-loaded-name) without redundant success message; workspace-restore-pending during client rehydrate; partial-restore and client-recovery warnings are amber; bootstrap failures are red only until client recovery completes. Layout type round-trips via normalization of config/UI aliases. Mesh and File Manager cross-surface links open in new tabs with security attributes and assistive disclosure.
   satisfaction_criteria:
     - criterion: mesh_detail_open_file_manager_in_new_tab_with_a11y
     - criterion: mesh_detail_shows_workspace_snapshot_summary_and_open_in_file_manager
     - criterion: mesh_sync_links_not_inferred_from_linked_mode_on_save
+    - criterion: restore_client_rehydrates_when_server_mesh_missing
     - criterion: restore_rehydrates_pane_count_paths_and_ui_state_from_mesh
+      description: When server getMesh fails, meshRestorePending defers default panes; client fetch restores pane count, paths, layout, focus, linked/comparison; amber workspace-restore-warning (not persistent red error) after clientRestoredFromMesh
     - criterion: restore_respects_max_panes_with_warning
       description: maxPanes truncation surfaces amber workspace-restore-warning in workspace-header-status (not error styling)
     - criterion: save_description_may_prefix_optional_note_before_snapshot_json
@@ -20,7 +22,7 @@ REQ-WORKSPACE_MESH_BRIDGE:
     - criterion: workspace_name_shown_when_loaded
       description: loaded mesh name in workspace-loaded-name; no duplicate green success line when name is shown
     - criterion: workspace_restore_error_when_mesh_missing
-      description: bootstrap failure surfaces red workspace-restore-error when restoreWarning is set and restoredFromMesh is false
+      description: red workspace-restore-error only when restoreWarning is set, restoredFromMesh is false, clientRestoredFromMesh is false, and mesh rehydrate is not in progress
   validation_criteria:
     - method: Vitest
       coverage: src/lib/workspace-mesh-bridge.test.ts
@@ -73,6 +75,6 @@ REQ-WORKSPACE_MESH_BRIDGE:
       date: "2026-05-21T00:00:00.000Z"
       author: AI Agent
     last_updated:
-      date: "2026-05-22T18:00:00.000Z"
+      date: "2026-05-22T20:00:00.000Z"
       author: AI Agent
-      reason: LEAP — compact header status row, warning vs error criteria, loaded name without redundant success
+      reason: LEAP — client rehydrate when server mesh missing; refined error vs warning criteria

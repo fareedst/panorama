@@ -42,7 +42,9 @@
 | **Saved snapshot baseline** | Parsed snapshot from loaded mesh `description`; compared to live workspace for diff badge ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)) |
 | **Workspace update** | In-place save of current file-manager state to an existing mesh | `PUT /api/mesh/:meshId/workspace` | `UPDATE_EXISTING_WORKSPACE` |
 | **Workspace diff** | Compare live workspace to saved baseline | `mesh.diffWorkspace`, `WorkspaceDiffDialog` | `DIFF_SAVED_VS_CURRENT` |
-| **Open in File Manager** | Mesh detail restore entry (new tab) | `/files?meshId=` | `IMPL-WORKSPACE_MESH_BRIDGE` restore |
+| **Open in File Manager** | Mesh detail restore entry (new tab) | `/files?meshId=` | `IMPL-WORKSPACE_MESH_BRIDGE` restore (server bootstrap + client rehydrate fallback) |
+| **Mesh restore pending** | Server `getMesh` miss; client rehydrates | prop `meshRestorePending` on Files page | `RESTORE_ON_FILES_PAGE` |
+| **Client mesh rehydrate** | Client `/api/mesh/:meshId` full restore | `RESTORE_LAYOUT_IN_WORKSPACE_VIEW` | `IMPL-WORKSPACE_MESH_BRIDGE` |
 | **Cross-surface link** | New-tab navigation between Mesh GUI and File Manager workspace; `target="_blank"`, `rel="noopener noreferrer"`, screen-reader disclosure |
 | **Open mesh from workspace** | File Manager header nav to Mesh | `/mesh` or `/mesh/:meshId` | `open-mesh-from-workspace` |
 
@@ -127,7 +129,9 @@
 - **Mesh** — top-level sync configuration
 - **Mesh runtime** — orchestration facade
 - **Open mesh from workspace** — header `open-mesh-from-workspace` to `/mesh` or `/mesh/:meshId`
-- **Open in File Manager** — mesh detail restore to `/files?meshId=` (new tab)
+- **Client mesh rehydrate** — when server bootstrap misses mesh, workspace client fetches mesh API and hydrates panes
+- **Mesh restore pending** — `/files?meshId=` with server miss defers default panes until client rehydrate
+- **Open in File Manager** — mesh detail restore to `/files?meshId=` (new tab); dual-path server + client restore
 - **Sync link** — depot-to-depot link
 - **Session progress** — completed/failed/total counters during run
 - **Sync session** — plan execution instance

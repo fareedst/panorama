@@ -54,6 +54,53 @@ APPLY_MAX_PANES_LIMIT(snapshot, maxPanes):
   RETURN { snapshot, truncated }
 ```
 
+## APPEND_SNAPSHOT_LAYOUT_WARNINGS
+# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MULTI_PANE_LAYOUT]
+# how: Detect Tile layout fallbacks from mesh description; append layout-specific restoreWarning without duplicating maxPanes text.
+
+```
+APPEND_SNAPSHOT_LAYOUT_WARNINGS(limited, description, existingWarning):
+  INPUT: limited WorkspaceSnapshot, description string, existingWarning string|null
+  OUTPUT: restoreWarning string|null
+  restoreWarning = existingWarning
+  IF limited.layout is Tile AND description non-empty AND description lacks "layout": field THEN
+    append Layout was not stored in this mesh snapshot; using Tile. Save the workspace again to preserve layout.
+  ELSE IF limited.layout is Tile AND description contains "{" AND lacks workspaceSnapshot THEN
+    append Workspace snapshot JSON could not be read; using Tile layout. Save the workspace again.
+  RETURN restoreWarning
+```
+
+## BUILD_WORKSPACE_RESTORE_BUNDLE
+# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-FILE_MANAGER_PAGE]
+# how: Hydrate initialPanes by listing each snapshot pane path; build restoreLayout, restoreUi, restorePaneMeta from limited snapshot.
+
+```
+BUILD_WORKSPACE_RESTORE_BUNDLE(limited, listDir):
+  INPUT: limited WorkspaceSnapshot, listDir(path) -> FileStat[]
+  OUTPUT: WorkspaceRestoreBundle { initialPanes, restoreLayout, restoreUi, restorePaneMeta, snapshot }
+  FOR each pane IN limited.panes:
+    files = listDir(pane.path)
+    sortedFiles = sortFiles(files, pane.sortBy, pane.sortDirection, pane.sortDirsFirst)
+    initialPanes.push({ path: pane.path, files: sortedFiles })
+  restoreLayout = NORMALIZE_LAYOUT(limited.layout) ?? Tile
+  restoreUi = { layout: restoreLayout, focusIndex, linkedMode, comparisonMode from limited }
+  restorePaneMeta = map pane sort/cursor fields
+  RETURN bundle with snapshot = limited
+```
+
+## LIST_DIRECTORY_VIA_FILES_API
+# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-FILE_MANAGER_PAGE]
+# how: Client-only listDir for RESTORE_LAYOUT_IN_WORKSPACE_VIEW when meshRestorePending; GET /api/files?path= encoded path.
+
+```
+LIST_DIRECTORY_VIA_FILES_API(path):
+  INPUT: path string
+  OUTPUT: FileStat[]
+  response = FETCH GET /api/files?path={encodeURIComponent(path)}
+  IF NOT response.ok THEN THROW Failed to list directory
+  RETURN JSON array of FileStat
+```
+
 ## RESTORE_ON_FILES_PAGE
 # [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-FILE_MANAGER_PAGE]
 # how: export dynamic force-dynamic; searchParams.meshId → getMesh → APPLY_MAX_PANES_LIMIT → listDirectory per path → restoreLayout via NORMALIZE_LAYOUT; layout restoreWarning when JSON lacks layout or is unreadable; pass meshId + key remount to WorkspaceView; restoredFromMesh skips paneN URL hydration.
@@ -61,28 +108,33 @@ APPLY_MAX_PANES_LIMIT(snapshot, maxPanes):
 ```
 RESTORE_ON_FILES_PAGE(meshId):
   EXPORT dynamic = force-dynamic
+  restoredFromMesh = false
   IF meshId missing THEN skip restore
   record = getMesh(meshId)
   IF record missing THEN
     restoreWarning = Mesh not found on server; MESH_DATA_DIR shared across processes
-    PASS meshId to WorkspaceView (restoredFromMesh false)
-  snapshot = PARSE_SNAPSHOT_FROM_MESH(mesh)
-  IF snapshot missing THEN
-    restoreWarning = snapshot unreadable; pane layout may use defaults
-    PASS meshId
-  { snapshot, truncated } = APPLY_MAX_PANES_LIMIT(snapshot, layout.maxPanes)
-  IF truncated THEN append restoreWarning maxPanes message
-  IF snapshot.layout is Tile AND description lacks layout field THEN append layout not stored warning
-  IF snapshot.layout is Tile AND description JSON invalid THEN append snapshot unreadable layout warning
-  initialPanes = listDirectory for each snapshot.panes[].path
-  restoreLayout = NORMALIZE_LAYOUT(snapshot.layout) ?? Tile
-  restoreUi.layout = restoreLayout
-  PASS meshId, key={meshId ?? files-workspace}, restoreUi, restoreLayout, restorePaneMeta, restoredFromMesh, restoreWarning to WorkspaceView
+    restoredFromMesh = false
+  ELSE
+    loadedMeshName = record.mesh.name
+    parsed = PARSE_SNAPSHOT_FROM_MESH(record.mesh)
+    IF parsed missing THEN
+      restoreWarning = snapshot unreadable; pane layout may use defaults
+    ELSE
+      { snapshot: limited, truncated } = APPLY_MAX_PANES_LIMIT(parsed, layout.maxPanes)
+      IF truncated THEN append restoreWarning maxPanes message
+      restoreWarning = APPEND_SNAPSHOT_LAYOUT_WARNINGS(limited, record.mesh.description, restoreWarning)
+      bundle = BUILD_WORKSPACE_RESTORE_BUNDLE(limited, listDirectory)
+      initialPanes = bundle.initialPanes
+      restoreLayout, restoreUi, restorePaneMeta, loadedSnapshot from bundle
+      restoredFromMesh = true
+  meshRestorePending = meshId present AND NOT restoredFromMesh
+  IF initialPanes empty AND NOT meshRestorePending THEN default startup panes from config
+  PASS meshId, key={meshId ?? files-workspace}, meshRestorePending, restoreUi, restoreLayout, restorePaneMeta, restoredFromMesh, restoreWarning to WorkspaceView
 ```
 
 ## RESTORE_LAYOUT_IN_WORKSPACE_VIEW
 # [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MULTI_PANE_LAYOUT]
-# how: resolveInitialWorkspaceLayout for useState init; useEffect sync restoreLayout prop; client fetch /api/mesh/:meshId once (layoutRehydratedRef) when meshId set; DEBUG traces on rehydrate path.
+# how: resolveInitialWorkspaceLayout for useState init; useEffect sync restoreLayout and restoreUi; client fetch /api/mesh/:meshId once (meshRehydratedRef); full snapshot apply when meshRestorePending; layout-only when server restored; DEBUG traces on rehydrate path.
 
 ```
 resolveInitialWorkspaceLayout(restoredFromMesh, restoreLayout, restoreUi, layoutConfig):
@@ -91,19 +143,32 @@ resolveInitialWorkspaceLayout(restoredFromMesh, restoreLayout, restoreUi, layout
   IF restoredFromMesh THEN RETURN Tile
   RETURN NORMALIZE_LAYOUT(layoutConfig.default) ?? Tile
 
-RESTORE_LAYOUT_IN_WORKSPACE_VIEW(meshId, restoreLayout, restoreUi, restoredFromMesh, layoutConfig):
+RESTORE_LAYOUT_IN_WORKSPACE_VIEW(meshId, meshRestorePending, restoreLayout, restoreUi, restoredFromMesh, layoutConfig):
   layoutState = resolveInitialWorkspaceLayout(...)
   useState layout = layoutState
+  meshRehydrating = meshRestorePending initially
+  clientRestoredFromMesh = false
   useEffect WHEN restoreLayout prop changes THEN setLayout(NORMALIZE_LAYOUT(restoreLayout))
-  IF meshId present AND NOT layoutRehydratedRef THEN
-    layoutRehydratedRef = true
+  useEffect WHEN restoredFromMesh AND restoreUi THEN sync focusIndex, linkedMode, comparisonMode
+  IF meshId present AND NOT meshRehydratedRef THEN
+    meshRehydratedRef = true
     FETCH /api/mesh/{meshId}
     parsed = PARSE_SNAPSHOT_FROM_MESH(response.mesh)
-    IF parsed THEN setSavedSnapshot(parsed)
-    # how: apply layout from fetch only when server did not pass restoreLayout (avoid clobbering user edits)
-    IF parsed.layout AND NOT restoreLayout AND NOT restoreUi.layout THEN
-      setLayout(NORMALIZE_LAYOUT(parsed.layout)) with DEBUG log
-    ELSE skip layout apply with DEBUG log
+    { snapshot: limited, truncated } = APPLY_MAX_PANES_LIMIT(parsed, maxPanes)
+    clientRestoreWarning = APPEND_SNAPSHOT_LAYOUT_WARNINGS(limited, mesh.description, restoreWarning prop)
+    IF meshRestorePending THEN
+      bundle = BUILD_WORKSPACE_RESTORE_BUNDLE(limited, listDirectoryViaFilesApi)
+      setPanes, setLayout, setFocusIndex, setLinkedMode, setComparisonMode, setSavedSnapshot from bundle
+      setEffectiveRestoreWarning(clientRestoreWarning)
+      clientRestoredFromMesh = true
+      meshRehydrating = false
+    ELSE
+      setSavedSnapshot(limited)
+      IF NOT restoreLayout AND NOT restoreUi.layout THEN setLayout from limited
+      meshRehydrating = false
+    ON fetch failure AND meshRestorePending THEN bootstrap default panes via GET /api/files; meshRehydrating = false
+  WORKSPACE_HEADER_STATUS: red error only when restoreWarning AND NOT restoredFromMesh AND NOT clientRestoredFromMesh AND NOT meshRehydrating; amber when restoredFromMesh OR clientRestoredFromMesh
+  workspace-restore-pending while meshRehydrating
   calculateLayout uses layout for pane bounds (Tile, OneRow, OneColumn, Fullscreen)
   workspace-layout-select data-testid reflects layoutState
 ```
@@ -178,14 +243,15 @@ SHOW_LOADED_WORKSPACE_NAME(meshId, record):
 # how: Compact banner status row (workspace-header-status) below title; groups loaded name, warnings, and errors.
 
 ```
-WORKSPACE_HEADER_STATUS(loadedMeshName, restoreWarning, restoredFromMesh):
-  IF loadedMeshName OR restoreWarning OR (restoredFromMesh AND NOT loadedMeshName AND NOT restoreWarning) THEN
+WORKSPACE_HEADER_STATUS(loadedMeshName, restoreWarning, restoredFromMesh, clientRestoredFromMesh, meshRehydrating):
+  IF loadedMeshName OR restoreWarning OR meshRehydrating OR (restoredFromMesh AND NOT loadedMeshName AND NOT restoreWarning) THEN
     RENDER workspace-header-status
-    # how: amber warning when partial restore succeeded (RESTORE_ON_FILES_PAGE sets restoredFromMesh + restoreWarning).
-    IF restoreWarning AND restoredFromMesh THEN workspace-restore-warning (amber)
-    # how: red error when server bootstrap failed (RESTORE_ON_FILES_PAGE sets restoreWarning without restoredFromMesh).
-    IF restoreWarning AND NOT restoredFromMesh THEN workspace-restore-error (red)
-    # how: green fallback only when restoredFromMesh with no name and no warning to surface.
+    IF meshRehydrating THEN workspace-restore-pending
+    # how: amber when server partial restore OR client recovered after server miss.
+    IF restoreWarning AND (restoredFromMesh OR clientRestoredFromMesh) THEN workspace-restore-warning (amber)
+    # how: when clientRestoredFromMesh and NOT restoredFromMesh prefix Workspace restored via API (server bootstrap missed mesh data).
+    # how: red only while server failed and client has not recovered and not still rehydrating.
+    IF restoreWarning AND NOT restoredFromMesh AND NOT clientRestoredFromMesh AND NOT meshRehydrating THEN workspace-restore-error (red)
     IF restoredFromMesh AND NOT restoreWarning AND NOT loadedMeshName THEN workspace-restored-from-mesh (fallback only)
 ```
 

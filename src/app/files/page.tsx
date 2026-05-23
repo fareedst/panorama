@@ -3,7 +3,6 @@
 // [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE]: Restore workspace from ?meshId=
 
 import { listDirectory, getUserHomeDirectory, sortFiles as sortFilesData } from "@/lib/files.data";
-import { sortFiles as sortFilesUtils } from "@/lib/files.utils";
 import { getFilesConfig } from "@/lib/config";
 import WorkspaceView, {
   type RestorePaneMeta,
@@ -14,10 +13,12 @@ import path from "path";
 import { getRuntime } from "@/lib/mesh/api/mesh-api-helpers";
 import {
   applyMaxPanesLimit,
+  appendSnapshotLayoutWarnings,
+  buildWorkspaceRestoreBundle,
   parseWorkspaceSnapshotFromMesh,
   type WorkspaceSnapshot,
 } from "@/lib/workspace-mesh-bridge";
-import { normalizeLayoutType, type LayoutType } from "@/lib/files.layout";
+import type { LayoutType } from "@/lib/files.layout";
 
 // [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_ON_FILES_PAGE — per-request meshId (not static /files shell).
 export const dynamic = "force-dynamic";
@@ -84,46 +85,18 @@ export default async function FilesPage({
         if (truncated) {
           restoreWarning = `Restored first ${limited.panes.length} pane(s) due to maxPanes limit.`;
         }
-        // how: surface restoreWarning when snapshot JSON lacks layout or is unreadable (Tile fallback).
-        const desc = record.mesh.description ?? "";
-        if (limited.layout === "Tile" && desc.length > 0 && !/"layout"\s*:/.test(desc)) {
-          const layoutWarn =
-            "Layout was not stored in this mesh snapshot; using Tile. Save the workspace again to preserve layout.";
-          restoreWarning = restoreWarning ? `${restoreWarning} ${layoutWarn}` : layoutWarn;
-        } else if (
-          limited.layout === "Tile" &&
-          desc.includes("{") &&
-          !desc.includes("workspaceSnapshot")
-        ) {
-          const layoutWarn =
-            "Workspace snapshot JSON could not be read; using Tile layout. Save the workspace again.";
-          restoreWarning = restoreWarning ? `${restoreWarning} ${layoutWarn}` : layoutWarn;
-        }
-        for (const pane of limited.panes) {
-          const files = await listDirectory(pane.path);
-          const sortedFiles = sortFilesUtils(
-            files,
-            pane.sortBy,
-            pane.sortDirection,
-            pane.sortDirsFirst,
-          );
-          initialPanes.push({ path: pane.path, files: sortedFiles });
-        }
-        restoreLayout = normalizeLayoutType(limited.layout) ?? "Tile";
-        restoreUi = {
-          layout: restoreLayout,
-          focusIndex: limited.focusIndex,
-          linkedMode: limited.linkedMode,
-          comparisonMode: limited.comparisonMode,
-        };
-        restorePaneMeta = limited.panes.map((p) => ({
-          sortBy: p.sortBy,
-          sortDirection: p.sortDirection,
-          sortDirsFirst: p.sortDirsFirst,
-          cursor: p.cursor,
-        }));
+        restoreWarning = appendSnapshotLayoutWarnings(
+          limited,
+          record.mesh.description ?? "",
+          restoreWarning,
+        );
+        const bundle = await buildWorkspaceRestoreBundle(limited, listDirectory);
+        initialPanes.push(...bundle.initialPanes);
+        restoreLayout = bundle.restoreLayout;
+        restoreUi = bundle.restoreUi;
+        restorePaneMeta = bundle.restorePaneMeta;
         restoredFromMesh = true;
-        loadedSnapshot = limited;
+        loadedSnapshot = bundle.snapshot;
       } else {
         restoreWarning =
           "Workspace snapshot could not be read from this mesh; pane layout may use defaults. Save the workspace again or open mesh detail to verify.";
@@ -134,7 +107,11 @@ export default async function FilesPage({
     }
   }
 
-  if (initialPanes.length === 0) {
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_ON_FILES_PAGE
+  // how: meshRestorePending when meshId present but server did not hydrate panes; defer default startup panes.
+  const meshRestorePending = Boolean(meshId && !restoredFromMesh);
+
+  if (initialPanes.length === 0 && !meshRestorePending) {
     const homeDir = getUserHomeDirectory();
     const paneCount = layout.defaultPaneCount || 1;
 
@@ -177,6 +154,7 @@ export default async function FilesPage({
       restoreWarning={restoreWarning}
       loadedMeshName={loadedMeshName}
       loadedSnapshot={loadedSnapshot}
+      meshRestorePending={meshRestorePending}
     />
   );
 }

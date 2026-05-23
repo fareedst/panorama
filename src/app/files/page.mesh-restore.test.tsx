@@ -71,7 +71,8 @@ describe("REQ-WORKSPACE_MESH_BRIDGE FilesPage RESTORE_ON_FILES_PAGE [IMPL-WORKSP
     expect((props.loadedSnapshot as { layout: string } | undefined)?.layout).toBe("OneRow");
   });
 
-  // [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_ON_FILES_PAGE — how: missing mesh surfaces restoreWarning and passes meshId without restore.
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_ON_FILES_PAGE
+  // how: missing mesh sets restoreWarning, meshRestorePending=true, empty initialPanes (client will rehydrate).
   it("sets_restoreWarning_when_meshId_not_found_on_server", async () => {
     const element = await FilesPage({
       searchParams: Promise.resolve({ meshId: "mesh-does-not-exist" }),
@@ -82,5 +83,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE FilesPage RESTORE_ON_FILES_PAGE [IMPL-WORKSP
     expect(props.restoreLayout).toBeUndefined();
     expect(String(props.restoreWarning)).toContain("Mesh not found on server");
     expect(props.meshId).toBe("mesh-does-not-exist");
+    expect(props.meshRestorePending).toBe(true);
+    expect((props.initialPanes as unknown[]).length).toBe(0);
   });
 });

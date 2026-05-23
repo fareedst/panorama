@@ -1,8 +1,8 @@
 // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_PLATFORM] [REQ-MULTI_PANE_LAYOUT]: Workspace ↔ mesh snapshot bridge
 
-import type { ComparisonMode } from "./files.types";
+import type { ComparisonMode, FileStat } from "./files.types";
 import { normalizeLayoutType, type LayoutType } from "./files.layout";
-import type { SortCriterion, SortDirection } from "./files.utils";
+import { sortFiles, type SortCriterion, type SortDirection } from "./files.utils";
 import type { Mesh } from "./mesh/domain";
 
 export const WORKSPACE_SNAPSHOT_TAG = "workspace-snapshot";
@@ -370,5 +370,109 @@ export function applyMaxPanesLimit(
       focusIndex: Math.min(snapshot.focusIndex, panes.length - 1),
     },
     truncated: true,
+  };
+}
+
+/** Per-pane metadata for workspace restore (matches WorkspaceView RestorePaneMeta). */
+export type WorkspaceRestorePaneMeta = {
+  sortBy: SortCriterion;
+  sortDirection: SortDirection;
+  sortDirsFirst: boolean;
+  cursor: number;
+};
+
+/** Workspace-level UI for restore (matches WorkspaceView RestoreUiState). */
+export type WorkspaceRestoreUi = {
+  layout: LayoutType;
+  focusIndex: number;
+  linkedMode: boolean;
+  comparisonMode: ComparisonMode;
+};
+
+export type WorkspaceRestorePaneInitial = {
+  path: string;
+  files: FileStat[];
+};
+
+/** [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_ON_FILES_PAGE — hydrated restore bundle from snapshot. */
+export type WorkspaceRestoreBundle = {
+  initialPanes: WorkspaceRestorePaneInitial[];
+  restoreLayout: LayoutType;
+  restoreUi: WorkspaceRestoreUi;
+  restorePaneMeta: WorkspaceRestorePaneMeta[];
+  snapshot: WorkspaceSnapshot;
+};
+
+// [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_ON_FILES_PAGE
+/** Append layout-related restore warnings from mesh description (Tile fallback detection). */
+export function appendSnapshotLayoutWarnings(
+  limited: WorkspaceSnapshot,
+  description: string,
+  existingWarning: string | null,
+): string | null {
+  let restoreWarning = existingWarning;
+  const desc = description ?? "";
+  if (limited.layout === "Tile" && desc.length > 0 && !/"layout"\s*:/.test(desc)) {
+    const layoutWarn =
+      "Layout was not stored in this mesh snapshot; using Tile. Save the workspace again to preserve layout.";
+    restoreWarning = restoreWarning ? `${restoreWarning} ${layoutWarn}` : layoutWarn;
+  } else if (
+    limited.layout === "Tile" &&
+    desc.includes("{") &&
+    !desc.includes("workspaceSnapshot")
+  ) {
+    const layoutWarn =
+      "Workspace snapshot JSON could not be read; using Tile layout. Save the workspace again.";
+    restoreWarning = restoreWarning ? `${restoreWarning} ${layoutWarn}` : layoutWarn;
+  }
+  return restoreWarning;
+}
+
+// [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_ON_FILES_PAGE
+/** List directory via GET /api/files (client mesh rehydrate). */
+export async function listDirectoryViaFilesApi(path: string): Promise<FileStat[]> {
+  const response = await fetch(`/api/files?path=${encodeURIComponent(path)}`);
+  if (!response.ok) {
+    throw new Error(`Failed to list directory: ${path}`);
+  }
+  return (await response.json()) as FileStat[];
+}
+
+// [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_ON_FILES_PAGE
+/** Build initial panes + restore props from a limited snapshot; listDir hydrates file rows. */
+export async function buildWorkspaceRestoreBundle(
+  snapshot: WorkspaceSnapshot,
+  listDir: (path: string) => Promise<FileStat[]>,
+): Promise<WorkspaceRestoreBundle> {
+  const initialPanes: WorkspaceRestorePaneInitial[] = [];
+  for (const pane of snapshot.panes) {
+    const files = await listDir(pane.path);
+    const sortedFiles = sortFiles(
+      files,
+      pane.sortBy,
+      pane.sortDirection,
+      pane.sortDirsFirst,
+    );
+    initialPanes.push({ path: pane.path, files: sortedFiles });
+  }
+  const restoreLayout = normalizeLayoutType(snapshot.layout) ?? "Tile";
+  const restoreUi: WorkspaceRestoreUi = {
+    layout: restoreLayout,
+    focusIndex: snapshot.focusIndex,
+    linkedMode: snapshot.linkedMode,
+    comparisonMode: snapshot.comparisonMode,
+  };
+  const restorePaneMeta: WorkspaceRestorePaneMeta[] = snapshot.panes.map((p) => ({
+    sortBy: p.sortBy,
+    sortDirection: p.sortDirection,
+    sortDirsFirst: p.sortDirsFirst,
+    cursor: p.cursor,
+  }));
+  return {
+    initialPanes,
+    restoreLayout,
+    restoreUi,
+    restorePaneMeta,
+    snapshot,
   };
 }

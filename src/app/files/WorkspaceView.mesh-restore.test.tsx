@@ -857,4 +857,200 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
       expect(screen.queryByTestId("workspace-diff-change-count")).not.toBeInTheDocument();
     });
   });
+
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_LAYOUT_IN_WORKSPACE_VIEW
+  // how: meshRestorePending triggers client full rehydrate; amber warning after clientRestoredFromMesh, no red error.
+  it("RESTORE_FROM_MESH_client_full_rehydrate_when_meshRestorePending", async () => {
+    const snapshot = captureWorkspaceSnapshot({
+      layout: "OneRow",
+      focusIndex: 1,
+      linkedMode: false,
+      comparisonMode: "off",
+      panes: [
+        {
+          path: "/saved/pane0",
+          sortBy: "name",
+          sortDirection: "asc",
+          sortDirsFirst: true,
+          cursor: 0,
+        },
+        {
+          path: "/saved/pane1",
+          sortBy: "name",
+          sortDirection: "asc",
+          sortDirsFirst: true,
+          cursor: 0,
+        },
+      ],
+    });
+    const payload = buildMeshCreatePayload({ name: "Client full restore", snapshot });
+    const meshId = "mesh-client-full-restore";
+    const apiBody = {
+      mesh: {
+        id: meshId,
+        name: "Client full restore",
+        description: payload.description as string,
+        tags: ["workspace-snapshot"],
+        depots: (payload.depots as { root: string }[]).map((d, i) => ({
+          id: `d${i}`,
+          name: `Pane ${i + 1}`,
+          kind: "local",
+          root: d.root,
+        })),
+      },
+    };
+
+    (global.fetch as ReturnType<typeof vi.fn>).mockImplementation(
+      async (input: RequestInfo | URL) => {
+        const url = typeof input === "string" ? input : input.toString();
+        if (url.includes(`/api/mesh/${meshId}`)) {
+          return { ok: true, json: async () => apiBody } as Response;
+        }
+        if (url.includes(encodeURIComponent("/saved/pane0"))) {
+          return { ok: true, json: async () => mockPaneFiles("/saved/pane0") } as Response;
+        }
+        if (url.includes(encodeURIComponent("/saved/pane1"))) {
+          return { ok: true, json: async () => mockPaneFiles("/saved/pane1") } as Response;
+        }
+        return { ok: true, json: async () => [] } as Response;
+      },
+    );
+
+    render(
+      <WorkspaceView
+        initialPanes={[]}
+        keybindings={mockKeybindings}
+        copy={mockCopy}
+        layout={{ ...mockLayout, defaultLinkedMode: true }}
+        columns={mockColumns}
+        meshId={meshId}
+        meshRestorePending
+        restoreWarning="Mesh not found on server; workspace paths and layout may not restore."
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId("pane-0")).toBeInTheDocument();
+      expect(screen.getByTestId("pane-1")).toBeInTheDocument();
+      expect(screen.getByTestId("workspace-layout-select")).toHaveValue("OneRow");
+    });
+
+    expect(screen.getByTestId("pane-1").closest(".border-2")).toHaveClass("border-blue-500");
+    expect(screen.queryByText(/🔗.*Linked/)).not.toBeInTheDocument();
+    expect(screen.queryByTestId("workspace-restore-error")).not.toBeInTheDocument();
+    expect(screen.getByTestId("workspace-restore-warning")).toHaveTextContent(
+      "Workspace restored via API",
+    );
+    expect(screen.queryByTestId("workspace-diff-change-count")).not.toBeInTheDocument();
+  });
+
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] WORKSPACE_HEADER_STATUS
+  // how: workspace-restore-pending visible while client rehydrate fetch is in flight.
+  it("WORKSPACE_HEADER_STATUS_shows_restore_pending_during_client_rehydrate", async () => {
+    const snapshot = captureWorkspaceSnapshot({
+      layout: "Tile",
+      focusIndex: 0,
+      linkedMode: false,
+      comparisonMode: "off",
+      panes: [
+        {
+          path: "/pending/pane0",
+          sortBy: "name",
+          sortDirection: "asc",
+          sortDirsFirst: true,
+          cursor: 0,
+        },
+      ],
+    });
+    const payload = buildMeshCreatePayload({ name: "Pending banner", snapshot });
+    const meshId = "mesh-pending-banner";
+    const apiBody = {
+      mesh: {
+        id: meshId,
+        name: "Pending banner",
+        description: payload.description as string,
+        tags: ["workspace-snapshot"],
+        depots: (payload.depots as { root: string }[]).map((d, i) => ({
+          id: `d${i}`,
+          name: `Pane ${i + 1}`,
+          kind: "local",
+          root: d.root,
+        })),
+      },
+    };
+
+    let resolveMesh: (value: Response) => void = () => {};
+    const meshPromise = new Promise<Response>((resolve) => {
+      resolveMesh = resolve;
+    });
+
+    (global.fetch as ReturnType<typeof vi.fn>).mockImplementation(
+      async (input: RequestInfo | URL) => {
+        const url = typeof input === "string" ? input : input.toString();
+        if (url.includes(`/api/mesh/${meshId}`)) {
+          return meshPromise;
+        }
+        if (url.includes(encodeURIComponent("/pending/pane0"))) {
+          return { ok: true, json: async () => mockPaneFiles("/pending/pane0") } as Response;
+        }
+        return { ok: true, json: async () => [] } as Response;
+      },
+    );
+
+    render(
+      <WorkspaceView
+        initialPanes={[]}
+        keybindings={mockKeybindings}
+        copy={mockCopy}
+        layout={mockLayout}
+        columns={mockColumns}
+        meshId={meshId}
+        meshRestorePending
+        restoreWarning="Mesh not found on server."
+      />,
+    );
+
+    expect(screen.getByTestId("workspace-restore-pending")).toBeInTheDocument();
+    expect(screen.queryByTestId("workspace-restore-error")).not.toBeInTheDocument();
+
+    resolveMesh({ ok: true, json: async () => apiBody } as Response);
+
+    await waitFor(() => {
+      expect(screen.queryByTestId("workspace-restore-pending")).not.toBeInTheDocument();
+      expect(screen.getByTestId("pane-0")).toBeInTheDocument();
+    });
+  });
+
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] WORKSPACE_HEADER_STATUS
+  // how: red workspace-restore-error when mesh fetch fails and client cannot recover.
+  it("WORKSPACE_HEADER_STATUS_shows_restore_error_when_client_rehydrate_fails", async () => {
+    const meshId = "mesh-rehydrate-fail";
+    (global.fetch as ReturnType<typeof vi.fn>).mockImplementation(
+      async (input: RequestInfo | URL) => {
+        const url = typeof input === "string" ? input : input.toString();
+        if (url.includes(`/api/mesh/${meshId}`) || url.includes("/api/files")) {
+          return { ok: false, status: 500 } as Response;
+        }
+        return { ok: true, json: async () => [] } as Response;
+      },
+    );
+
+    render(
+      <WorkspaceView
+        initialPanes={[]}
+        keybindings={mockKeybindings}
+        copy={mockCopy}
+        layout={mockLayout}
+        columns={mockColumns}
+        meshId={meshId}
+        meshRestorePending
+        restoreWarning="Mesh not found on server."
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId("workspace-restore-error")).toBeInTheDocument();
+    });
+    expect(screen.queryByTestId("workspace-restore-warning")).not.toBeInTheDocument();
+  });
 });

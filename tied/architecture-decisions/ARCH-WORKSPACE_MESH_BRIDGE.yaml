@@ -1,10 +1,11 @@
 ARCH-WORKSPACE_MESH_BRIDGE:
   name: Workspace Mesh Bridge Architecture
   status: Accepted
-  decision: 'Bridge workspace and mesh via a pure module (workspace-mesh-bridge.ts): pane paths map to local depots; UI state lives in mesh description JSON (workspaceSnapshot v1) and tag workspace-snapshot. File manager and mesh remain separate surfaces. Restore uses force-dynamic FilesPage server bootstrap (restoreLayout, restoreUi, restoreWarning) plus optional client GET /api/mesh/:meshId rehydrate when props are missing. Layout aliases normalize to canonical LayoutType at capture, parse, and WorkspaceView init. Cross-surface navigation uses NewTabLink (target=_blank, rel, a11y disclosure) between Mesh detail and workspace header.'
+  decision: 'Bridge workspace and mesh via a pure module (workspace-mesh-bridge.ts): pane paths map to local depots; UI state lives in mesh description JSON (workspaceSnapshot v1) and tag workspace-snapshot. File manager and mesh remain separate surfaces. Restore uses force-dynamic FilesPage server bootstrap plus client full rehydrate when meshRestorePending (server getMesh miss). Optional client GET /api/mesh/:meshId applies layout-only or full bundle. Layout aliases normalize to canonical LayoutType at capture, parse, and WorkspaceView init. Cross-surface navigation uses NewTabLink (target=_blank, rel, a11y disclosure) between Mesh detail and workspace header.'
   implementation_approach:
     summary: Pure bridge module, POST /api/mesh, /files?meshId= restore with dual server/client layout channels
     details:
+      - 'Dual-path restore: server RESTORE_ON_FILES_PAGE bootstrap plus client full rehydrate when meshRestorePending (server getMesh miss, client GET /api/mesh/:meshId).'
       - applyMaxPanesLimit truncates restored panes; FilesPage surfaces restoreWarning including layout unreadable cases
       - Compact workspace header banner (WORKSPACE_HEADER_STATUS); status row groups loaded name, amber warnings (restoredFromMesh + restoreWarning), and red errors (bootstrap failure)
       - diffWorkspaceSnapshots compares live state to saved baseline; mesh.diffWorkspace toolbar action
@@ -18,7 +19,9 @@ ARCH-WORKSPACE_MESH_BRIDGE:
       - PUT /api/mesh/:meshId/workspace updates description snapshot and syncs depots via planDepotSync
       - Restore precedence over paneN URL query when meshId bootstrap applies (restoredFromMesh)
       - restoreLayout prop plus client meshId fetch for RSC/multi-worker layout rehydrate
+      - Shared pure helpers buildWorkspaceRestoreBundle and appendSnapshotLayoutWarnings used by FilesPage and WorkspaceView.
       - Successful workspace update save sets savedSnapshot to the exact captured snapshot so diff badge clears immediately
+      - WORKSPACE_HEADER_STATUS shows workspace-restore-pending during client rehydrate; red workspace-restore-error only when client has not recovered; amber warning after clientRestoredFromMesh.
   traceability:
     requirements:
       - REQ-WORKSPACE_MESH_BRIDGE
@@ -51,6 +54,6 @@ ARCH-WORKSPACE_MESH_BRIDGE:
       date: "2026-05-21T00:00:00.000Z"
       author: AI Agent
     last_updated:
-      date: "2026-05-22T18:00:00.000Z"
+      date: "2026-05-22T20:00:00.000Z"
       author: AI Agent
-      reason: LEAP — compact header banner, WORKSPACE_HEADER_STATUS warning vs error semantics
+      reason: LEAP — dual-path restore and client mesh rehydrate fallback

@@ -14,9 +14,12 @@ import {
   planDepotSync,
   depotPathsFromMesh,
   applyMaxPanesLimit,
+  appendSnapshotLayoutWarnings,
+  buildWorkspaceRestoreBundle,
   workspaceSnapshotSummary,
   type WorkspaceCaptureInput,
 } from "./workspace-mesh-bridge";
+import type { FileStat } from "./files.types";
 import type { Mesh } from "./mesh/domain";
 
 const baseSnapshot = captureWorkspaceSnapshot({
@@ -156,6 +159,89 @@ describe("REQ-WORKSPACE_MESH_BRIDGE [IMPL-WORKSPACE_MESH_BRIDGE]", () => {
     expect(truncated).toBe(true);
     expect(snapshot.panes).toHaveLength(1);
     expect(snapshot.focusIndex).toBe(0);
+  });
+
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] APPEND_SNAPSHOT_LAYOUT_WARNINGS
+  it("APPEND_SNAPSHOT_LAYOUT_WARNINGS_when_tile_without_layout_field", () => {
+    const tileSnapshot = captureWorkspaceSnapshot({
+      layout: "Tile",
+      focusIndex: 0,
+      linkedMode: false,
+      comparisonMode: "off",
+      panes: [
+        {
+          path: "/tmp/a",
+          sortBy: "name",
+          sortDirection: "asc",
+          sortDirsFirst: true,
+          cursor: 0,
+        },
+      ],
+    });
+    const warn = appendSnapshotLayoutWarnings(
+      tileSnapshot,
+      '{"workspaceSnapshot":{"version":1,"focusIndex":0}}',
+      null,
+    );
+    expect(warn).toContain("Layout was not stored");
+  });
+
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] APPEND_SNAPSHOT_LAYOUT_WARNINGS
+  it("APPEND_SNAPSHOT_LAYOUT_WARNINGS_when_tile_and_unreadable_snapshot_json", () => {
+    const tileSnapshot = captureWorkspaceSnapshot({
+      layout: "Tile",
+      focusIndex: 0,
+      linkedMode: false,
+      comparisonMode: "off",
+      panes: [
+        {
+          path: "/tmp/a",
+          sortBy: "name",
+          sortDirection: "asc",
+          sortDirsFirst: true,
+          cursor: 0,
+        },
+      ],
+    });
+    const warn = appendSnapshotLayoutWarnings(
+      tileSnapshot,
+      '{"layout":"Tile","broken":true}',
+      "Existing.",
+    );
+    expect(warn).toContain("Existing.");
+    expect(warn).toContain("Workspace snapshot JSON could not be read");
+  });
+
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] BUILD_WORKSPACE_RESTORE_BUNDLE
+  it("BUILD_WORKSPACE_RESTORE_BUNDLE_hydrates_panes_and_restore_props", async () => {
+    const filesA: FileStat[] = [
+      {
+        name: "a.txt",
+        path: "/tmp/a/a.txt",
+        isDirectory: false,
+        size: 1,
+        mtime: new Date("2024-01-01"),
+        extension: "txt",
+      },
+    ];
+    const filesB: FileStat[] = [
+      {
+        name: "b.txt",
+        path: "/tmp/b/b.txt",
+        isDirectory: false,
+        size: 2,
+        mtime: new Date("2024-01-02"),
+        extension: "txt",
+      },
+    ];
+    const listDir = async (p: string) => (p === "/tmp/a" ? filesA : filesB);
+    const bundle = await buildWorkspaceRestoreBundle(baseSnapshot, listDir);
+    expect(bundle.initialPanes).toHaveLength(2);
+    expect(bundle.initialPanes[0]?.path).toBe("/tmp/a");
+    expect(bundle.restoreUi.focusIndex).toBe(1);
+    expect(bundle.restoreUi.linkedMode).toBe(true);
+    expect(bundle.restoreLayout).toBe("OneRow");
+    expect(bundle.restorePaneMeta[0]?.cursor).toBe(2);
   });
 
   it("WORKSPACE_SNAPSHOT_SUMMARY_lists_paths", () => {

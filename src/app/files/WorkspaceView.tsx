@@ -48,9 +48,13 @@ import {
 import { WorkspaceDiffDialog } from "./components/WorkspaceDiffDialog";
 import { NewTabLink } from "@/components/NewTabLink";
 import {
+  applyMaxPanesLimit,
+  appendSnapshotLayoutWarnings,
   buildMeshCreatePayload,
+  buildWorkspaceRestoreBundle,
   captureWorkspaceSnapshot,
   diffWorkspaceSnapshots,
+  listDirectoryViaFilesApi,
   parseWorkspaceSnapshotFromMesh,
   type WorkspaceSnapshot,
 } from "@/lib/workspace-mesh-bridge";
@@ -132,6 +136,8 @@ interface WorkspaceViewProps {
   loadedMeshName?: string;
   /** [REQ-WORKSPACE_MESH_BRIDGE] Baseline snapshot for diff/update */
   loadedSnapshot?: WorkspaceSnapshot;
+  /** [REQ-WORKSPACE_MESH_BRIDGE] Server missed mesh; client will rehydrate from /api/mesh */
+  meshRestorePending?: boolean;
 }
 
 /**
@@ -182,6 +188,7 @@ export default function WorkspaceView({
   restoreWarning = null,
   loadedMeshName: loadedMeshNameProp,
   loadedSnapshot: loadedSnapshotProp,
+  meshRestorePending = false,
 }: WorkspaceViewProps) {
   const workspaceMeshCopy = copy.workspaceMesh;
   const router = useRouter();
@@ -201,7 +208,17 @@ export default function WorkspaceView({
   const [layout, setLayout] = useState<LayoutType>(() =>
     resolveInitialWorkspaceLayout(restoredFromMesh, restoreLayout, restoreUi, layoutConfig),
   );
-  const layoutRehydratedRef = useRef(false);
+  const meshRehydratedRef = useRef(false);
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_LAYOUT_IN_WORKSPACE_VIEW
+  // how: meshRehydrating true while client full rehydrate runs; suppress red error until recovery completes.
+  const [meshRehydrating, setMeshRehydrating] = useState(meshRestorePending);
+  const [clientRestoredFromMesh, setClientRestoredFromMesh] = useState(false);
+  const [effectiveRestoreWarning, setEffectiveRestoreWarning] = useState<string | null>(
+    restoreWarning ?? null,
+  );
+  useEffect(() => {
+    setEffectiveRestoreWarning(restoreWarning ?? null);
+  }, [restoreWarning]);
   const [focusIndex, setFocusIndex] = useState(() => restoreUi?.focusIndex ?? 0);
   // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Track scroll triggers for linked pane synchronization
   const [scrollTriggers, setScrollTriggers] = useState<Map<number, number>>(new Map());
@@ -338,6 +355,16 @@ export default function WorkspaceView({
     }
   }, [restoreLayout]);
 
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_ON_FILES_PAGE — sync restoreUi when server restored from mesh.
+  useEffect(() => {
+    if (!restoredFromMesh || !restoreUi) {
+      return;
+    }
+    setFocusIndex(restoreUi.focusIndex);
+    setLinkedMode(restoreUi.linkedMode);
+    setComparisonMode(restoreUi.comparisonMode);
+  }, [restoredFromMesh, restoreUi]);
+
   useEffect(() => {
     setLoadedMeshName(loadedMeshNameProp);
   }, [loadedMeshNameProp]);
@@ -377,18 +404,23 @@ export default function WorkspaceView({
     return diffWorkspaceSnapshots(savedSnapshot, captureCurrentSnapshot());
   }, [savedSnapshot, captureCurrentSnapshot]);
 
-  // [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_LAYOUT_IN_WORKSPACE_VIEW — client fetch /api/mesh/:meshId once (layoutRehydratedRef).
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_LAYOUT_IN_WORKSPACE_VIEW — client fetch /api/mesh/:meshId once (meshRehydratedRef).
   useEffect(() => {
-    if (!meshId || layoutRehydratedRef.current) {
+    if (!meshId || meshRehydratedRef.current) {
       return;
     }
-    layoutRehydratedRef.current = true;
+    meshRehydratedRef.current = true;
 
     void (async () => {
+      const needsFullRestore = meshRestorePending;
       try {
         const res = await fetch(`/api/mesh/${meshId}`);
         if (!res.ok) {
-          console.debug("DEBUG: mesh layout rehydrate fetch failed", res.status, meshId);
+          console.debug("DEBUG: mesh rehydrate fetch failed", res.status, meshId);
+          if (needsFullRestore) {
+            await bootstrapDefaultPanesFromApi();
+          }
+          setMeshRehydrating(false);
           return;
         }
         const data = (await res.json()) as {
@@ -401,7 +433,11 @@ export default function WorkspaceView({
         };
         const mesh = data.mesh;
         if (!mesh) {
-          console.debug("DEBUG: mesh layout rehydrate missing mesh in response", meshId);
+          console.debug("DEBUG: mesh rehydrate missing mesh in response", meshId);
+          if (needsFullRestore) {
+            await bootstrapDefaultPanesFromApi();
+          }
+          setMeshRehydrating(false);
           return;
         }
         if (mesh.name) {
@@ -421,42 +457,110 @@ export default function WorkspaceView({
             accessMode: "read_write" as const,
           })),
         });
-        if (parsed) {
-          setSavedSnapshot(parsed);
-        }
-        const normalized = normalizeLayoutType(parsed?.layout);
-        if (!normalized) {
-          console.debug("DEBUG: mesh layout rehydrate no layout in snapshot", meshId);
+        if (!parsed) {
+          console.debug("DEBUG: mesh rehydrate no snapshot in mesh", meshId);
+          if (needsFullRestore) {
+            await bootstrapDefaultPanesFromApi();
+          }
+          setMeshRehydrating(false);
           return;
         }
-        // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_LAYOUT_IN_WORKSPACE_VIEW
-        // how: skip client layout overwrite when server already passed restoreLayout (avoids clobbering user edits after async fetch)
-        if (restoreLayout || restoreUi?.layout) {
+
+        const { snapshot: limited, truncated } = applyMaxPanesLimit(
+          parsed,
+          layoutConfig.maxPanes ?? 0,
+        );
+        if (truncated) {
           console.debug(
-            "DEBUG: mesh layout rehydrate skipped layout apply (server restoreLayout prop)",
-            normalized,
+            "DEBUG: mesh rehydrate truncated panes",
+            limited.panes.length,
             meshId,
           );
-          return;
         }
-        console.debug(
-          "DEBUG: mesh layout rehydrate applying",
-          normalized,
-          "serverProps",
-          restoreLayout ?? restoreUi?.layout ?? "none",
+        // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] APPEND_SNAPSHOT_LAYOUT_WARNINGS
+        const clientRestoreWarning = appendSnapshotLayoutWarnings(
+          limited,
+          mesh.description ?? "",
+          restoreWarning ?? null,
         );
-        setLayout((prev) => (prev === normalized ? prev : normalized));
+
+        if (needsFullRestore) {
+          console.debug("DEBUG: mesh rehydrate applying full workspace snapshot", meshId);
+          const bundle = await buildWorkspaceRestoreBundle(limited, listDirectoryViaFilesApi);
+          setPanes(buildPaneStatesFromInitial(bundle.initialPanes, bundle.restorePaneMeta));
+          setLayout(bundle.restoreLayout);
+          setFocusIndex(bundle.restoreUi.focusIndex);
+          setLinkedMode(bundle.restoreUi.linkedMode);
+          setComparisonMode(bundle.restoreUi.comparisonMode);
+          setSavedSnapshot(bundle.snapshot);
+          setEffectiveRestoreWarning(clientRestoreWarning);
+          setClientRestoredFromMesh(true);
+        } else {
+          setSavedSnapshot(limited);
+          const normalized = normalizeLayoutType(limited.layout);
+          if (!normalized) {
+            console.debug("DEBUG: mesh rehydrate no layout in snapshot", meshId);
+            setMeshRehydrating(false);
+            return;
+          }
+          // how: skip client layout overwrite when server already passed restoreLayout (avoids clobbering user edits after async fetch)
+          if (restoreLayout || restoreUi?.layout) {
+            console.debug(
+              "DEBUG: mesh rehydrate skipped layout apply (server restoreLayout prop)",
+              normalized,
+              meshId,
+            );
+            setMeshRehydrating(false);
+            return;
+          }
+          console.debug("DEBUG: mesh rehydrate applying layout only", normalized, meshId);
+          setLayout((prev) => (prev === normalized ? prev : normalized));
+        }
+        setMeshRehydrating(false);
       } catch (err) {
-        console.debug("DEBUG: mesh layout rehydrate error", meshId, err);
+        console.debug("DEBUG: mesh rehydrate error", meshId, err);
+        if (needsFullRestore) {
+          try {
+            await bootstrapDefaultPanesFromApi();
+          } catch (bootstrapErr) {
+            console.debug("DEBUG: mesh rehydrate default bootstrap failed", bootstrapErr);
+          }
+        }
+        setMeshRehydrating(false);
       }
     })();
-  }, [meshId, restoreLayout, restoreUi?.layout]);
+
+    // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_LAYOUT_IN_WORKSPACE_VIEW
+    // how: when mesh fetch fails during meshRestorePending, bootstrap default pane count from GET /api/files home listing.
+    async function bootstrapDefaultPanesFromApi() {
+      const response = await fetch("/api/files");
+      if (!response.ok) {
+        throw new Error("Failed to list home directory");
+      }
+      const files = (await response.json()) as FileStat[];
+      const homePath = files[0]?.path ? path.dirname(files[0].path) : "/";
+      const paneCount = layoutConfig.defaultPaneCount || 1;
+      const defaults: PaneInitialState[] = Array.from({ length: paneCount }, () => ({
+        path: homePath,
+        files: [...files],
+      }));
+      setPanes(buildPaneStatesFromInitial(defaults));
+    }
+  }, [
+    meshId,
+    meshRestorePending,
+    restoreWarning,
+    restoreLayout,
+    restoreUi?.layout,
+    layoutConfig.defaultPaneCount,
+    layoutConfig.maxPanes,
+  ]);
 
   // Initialize panes from URL query parameters (for E2E testing and deep linking)
   // Query params: ?pane0=/path/to/dir&pane1=/another/path&pane2=/third/path
-  // [IMPL-WORKSPACE_MESH_BRIDGE] Skip when server restored from meshId
+  // [IMPL-WORKSPACE_MESH_BRIDGE] Skip when server or client restored from meshId
   useEffect(() => {
-    if (restoredFromMesh) {
+    if (restoredFromMesh || clientRestoredFromMesh || meshRehydrating) {
       return;
     }
     const searchParams = new URLSearchParams(window.location.search);
@@ -480,7 +584,7 @@ export default function WorkspaceView({
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [restoredFromMesh]); // Run only once on mount
+  }, [restoredFromMesh, clientRestoredFromMesh, meshRehydrating]); // Run only once on mount
   
   // [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: measured workspace-area dimensions → calculateLayout
   const bounds = calculateLayout(
@@ -1945,8 +2049,9 @@ export default function WorkspaceView({
               File Manager
             </h1>
             {(loadedMeshName ||
-              restoreWarning ||
-              (restoredFromMesh && !restoreWarning && !loadedMeshName)) && (
+              effectiveRestoreWarning ||
+              meshRehydrating ||
+              (restoredFromMesh && !effectiveRestoreWarning && !loadedMeshName)) && (
               <div
                 className="mt-0.5 space-y-0.5"
                 data-testid="workspace-header-status"
@@ -1960,26 +2065,39 @@ export default function WorkspaceView({
                     {workspaceMeshCopy?.loadedLabel ?? "Workspace"}: {loadedMeshName}
                   </p>
                 )}
-                {/* [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] WORKSPACE_HEADER_STATUS — how: amber warning when partial restore succeeded */}
-                {restoreWarning && restoredFromMesh && (
+                {meshRehydrating && (
+                  <p
+                    className="text-sm text-zinc-600 dark:text-zinc-400"
+                    data-testid="workspace-restore-pending"
+                  >
+                    Restoring workspace…
+                  </p>
+                )}
+                {/* [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] WORKSPACE_HEADER_STATUS — how: amber warning when partial or client restore succeeded */}
+                {effectiveRestoreWarning && (restoredFromMesh || clientRestoredFromMesh) && (
                   <p
                     className="text-sm text-amber-700 dark:text-amber-300"
                     data-testid="workspace-restore-warning"
                   >
-                    {restoreWarning}
+                    {clientRestoredFromMesh && !restoredFromMesh
+                      ? `Workspace restored via API (server bootstrap missed mesh data). ${effectiveRestoreWarning}`
+                      : effectiveRestoreWarning}
                   </p>
                 )}
-                {/* [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] WORKSPACE_HEADER_STATUS — how: red error when server bootstrap failed */}
-                {restoreWarning && !restoredFromMesh && (
+                {/* [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] WORKSPACE_HEADER_STATUS — how: red error when server bootstrap failed and client rehydrate has not recovered */}
+                {effectiveRestoreWarning &&
+                  !restoredFromMesh &&
+                  !clientRestoredFromMesh &&
+                  !meshRehydrating && (
                   <p
                     className="text-sm text-red-700 dark:text-red-400"
                     data-testid="workspace-restore-error"
                   >
-                    {restoreWarning}
+                    {effectiveRestoreWarning}
                   </p>
                 )}
                 {/* [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] WORKSPACE_HEADER_STATUS — how: green fallback when restoredFromMesh with no name or warning */}
-                {restoredFromMesh && !restoreWarning && !loadedMeshName && (
+                {restoredFromMesh && !effectiveRestoreWarning && !loadedMeshName && (
                   <p
                     className="text-sm text-emerald-700 dark:text-emerald-400"
                     data-testid="workspace-restored-from-mesh"
@@ -2107,6 +2225,14 @@ export default function WorkspaceView({
         data-testid="workspace-area"
         className="flex-1 min-h-0 relative overflow-hidden"
       >
+        {meshRehydrating && panes.length === 0 && (
+          <div
+            className="absolute inset-0 flex items-center justify-center text-sm text-zinc-600 dark:text-zinc-400"
+            data-testid="workspace-mesh-restore-loading"
+          >
+            Restoring workspace…
+          </div>
+        )}
         {panes.map((pane, index) => (
           <FilePane
             key={`pane-${index}`}
