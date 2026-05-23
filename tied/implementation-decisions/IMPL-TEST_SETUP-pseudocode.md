@@ -67,6 +67,22 @@ PROCEDURE IMPL-TEST_SETUP_MockWindowMatchMedia(context)
   CALL Mock window.matchMedia
   ON invalid input OR missing data THEN RETURN without mutation
 
+## ResizeObserverPolyfill
+
+// [IMPL-TEST_SETUP] [IMPL-LAYOUT_CALCULATOR] [REQ-MULTI_PANE_LAYOUT] [REQ-BUILD_SYSTEM]: how global ResizeObserver polyfill in setup.ts enables useElementSize and WorkspaceView layout tests in jsdom
+
+CONTRACT ResizeObserverPolyfill
+  INPUT: Vitest/jsdom environment without native ResizeObserver
+  OUTPUT: global ResizeObserver that observes element clientWidth/clientHeight on observe()
+  DATA: src/test/setup.ts install before component tests run
+
+PROCEDURE IMPL-TEST_SETUP_ResizeObserverPolyfill(context)
+  IF globalThis.ResizeObserver is undefined
+  THEN install polyfill class with observe disconnect unobserve
+  ON observe READ HTMLElement clientWidth and clientHeight
+  INVOKE callback with contentRect matching client dimensions
+  // how: WorkspaceView.toolbar-compact and useElementSize tests rely on observer or per-test mocks
+
 ## FunctionalLocalStorage
 
 // [IMPL-TEST_SETUP] [IMPL-FILE_SEARCH] [REQ-BUILD_SYSTEM]: Replace non-functional Node 22 global localStorage with in-memory Storage for Vitest/jsdom.
@@ -78,7 +94,7 @@ PROCEDURE IMPL-TEST_SETUP_FunctionalLocalStorage()
 
 ## CodeLocations
 
-// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: Implementing files map — `src/test/setup.ts` (testing-library, localStorage shim, next/font mock, matchMedia).
+// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: Implementing files map — `src/test/setup.ts` (testing-library, localStorage shim, ResizeObserver polyfill, next/font mock, matchMedia).
 
 ## ErrorHandling
 

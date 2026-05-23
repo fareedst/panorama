@@ -1,12 +1,14 @@
 // [REQ-TOOLBAR_SYSTEM] [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] WORKSPACE_TOOLBAR_DISPLAY_MODE
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent, within } from "@testing-library/react";
+import { render, screen, fireEvent, within, waitFor } from "@testing-library/react";
 import WorkspaceView from "./WorkspaceView";
 import type { FileStat } from "@/lib/files.types";
 import type { FilesLayoutConfig, ToolbarsConfig } from "@/lib/config.types";
 
 global.fetch = vi.fn();
+
+let mockWorkspaceHeight = 620;
 
 const mockKeybindings = [
   {
@@ -75,6 +77,8 @@ const mockToolbars: ToolbarsConfig = {
 
 describe("[REQ-TOOLBAR_SYSTEM] IMPL-TOOLBAR_COMPONENT_WorkspaceToolbarDisplayMode", () => {
   beforeEach(() => {
+    mockWorkspaceHeight = 620;
+
     Object.defineProperty(window, "innerWidth", {
       writable: true,
       configurable: true,
@@ -85,6 +89,39 @@ describe("[REQ-TOOLBAR_SYSTEM] IMPL-TOOLBAR_COMPONENT_WorkspaceToolbarDisplayMod
       configurable: true,
       value: 800,
     });
+
+    vi.stubGlobal(
+      "ResizeObserver",
+      class MockResizeObserver {
+        private callback: ResizeObserverCallback;
+
+        constructor(callback: ResizeObserverCallback) {
+          this.callback = callback;
+        }
+
+        observe(element: Element) {
+          Object.defineProperty(element, "clientWidth", {
+            value: 1000,
+            configurable: true,
+          });
+          Object.defineProperty(element, "clientHeight", {
+            get: () => mockWorkspaceHeight,
+            configurable: true,
+          });
+          this.callback(
+            [
+              {
+                contentRect: { width: 1000, height: mockWorkspaceHeight },
+              } as ResizeObserverEntry,
+            ],
+            this as unknown as ResizeObserver,
+          );
+        }
+
+        disconnect() {}
+      },
+    );
+
     vi.clearAllMocks();
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
       ok: true,
@@ -93,6 +130,7 @@ describe("[REQ-TOOLBAR_SYSTEM] IMPL-TOOLBAR_COMPONENT_WorkspaceToolbarDisplayMod
   });
 
   afterEach(() => {
+    vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
 
@@ -130,6 +168,23 @@ describe("[REQ-TOOLBAR_SYSTEM] IMPL-TOOLBAR_COMPONENT_WorkspaceToolbarDisplayMod
       "title",
       "Copy files (C)",
     );
+  });
+
+  // [IMPL-TOOLBAR_COMPONENT] [IMPL-LAYOUT_CALCULATOR] WORKSPACE_TOOLBAR_DISPLAY_MODE: pane height follows workspace-area remeasure on compact toggle
+  it("resizes pane height when toolbar compact toggle changes workspace area size", async () => {
+    renderWithToolbars();
+
+    const pane = screen.getByTestId("pane-0");
+    await waitFor(() => {
+      expect(pane).toHaveStyle({ height: "620px" });
+    });
+
+    mockWorkspaceHeight = 560;
+    fireEvent.click(screen.getByTestId("toolbar-compact-toggle"));
+
+    await waitFor(() => {
+      expect(pane).toHaveStyle({ height: "560px" });
+    });
   });
 
   it("places toggle on pane toolbar when workspace tier is not top", () => {

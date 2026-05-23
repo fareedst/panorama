@@ -78,6 +78,7 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 - **Merged toolbar config** — Runtime concat of enabled top-position tier groups via `mergeTopToolbarConfigs` (`src/lib/toolbar.utils.ts`).
 - **Toggle placement rule** — Compact toggle on the **first visible top tier** in order workspace → pane → system (`showWorkspaceTop`, `showPaneTop`, `showSystemTop` in `WorkspaceView`).
 - **leadingContent** — Renders before the first group; vertical separator when groups follow.
+- **Workspace area remeasure** — Compact/expanded toggle changes vertical chrome; `useElementSize` on `workspace-area` updates `containerHeight` and pane bounds ([REQ-MULTI_PANE_LAYOUT](../tied/requirements/REQ-MULTI_PANE_LAYOUT.yaml)).
 
 ## Pseudo-code block names
 
@@ -112,6 +113,8 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 - **Toolbar expanded mode** — three-tier layout with keystroke badges
 - **Toolbar test id** — `toolbar-{action}`
 - **Workspace toolbar** — `toolbars.workspace`
+- **Workspace area** — measured flex region; `data-testid="workspace-area"`
+- **useElementSize** — ResizeObserver hook feeding pane layout (`src/lib/useElementSize.ts`)
 
 ## See also
 

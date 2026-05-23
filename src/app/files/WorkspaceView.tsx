@@ -40,6 +40,7 @@ import { SystemToolbar } from "./components/SystemToolbar";
 import { Toolbar } from "./components/Toolbar";
 import { ToolbarCompactToggle } from "./components/ToolbarCompactToggle";
 import { mergeTopToolbarConfigs } from "@/lib/toolbar.utils";
+import { useElementSize } from "@/lib/useElementSize";
 import {
   SaveWorkspaceMeshDialog,
   type WorkspaceMeshSaveMode,
@@ -202,8 +203,6 @@ export default function WorkspaceView({
   );
   const layoutRehydratedRef = useRef(false);
   const [focusIndex, setFocusIndex] = useState(() => restoreUi?.focusIndex ?? 0);
-  const [containerWidth, setContainerWidth] = useState(800);
-  const [containerHeight, setContainerHeight] = useState(600);
   // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Track scroll triggers for linked pane synchronization
   const [scrollTriggers, setScrollTriggers] = useState<Map<number, number>>(new Map());
   
@@ -250,8 +249,14 @@ export default function WorkspaceView({
     () => restoreUi?.linkedMode ?? layoutConfig.defaultLinkedMode ?? true,
   );
 
-  // [REQ-TOOLBAR_SYSTEM] [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] WORKSPACE_TOOLBAR_DISPLAY_MODE: session toolbarExpanded (not persisted)
+  // [REQ-TOOLBAR_SYSTEM] [REQ-MULTI_PANE_LAYOUT] [IMPL-TOOLBAR_COMPONENT] [IMPL-LAYOUT_CALCULATOR] [ARCH-TOOLBAR_LAYOUT] WORKSPACE_TOOLBAR_DISPLAY_MODE: session toolbarExpanded (not persisted)
   const [toolbarExpanded, setToolbarExpanded] = useState(true);
+  // [IMPL-LAYOUT_CALCULATOR] [IMPL-TOOLBAR_COMPONENT] WORKSPACE_AREA_MEASUREMENT: flex workspace-area ref for pane bounds
+  const workspaceAreaRef = useRef<HTMLDivElement>(null);
+  const { width: containerWidth, height: containerHeight } = useElementSize(workspaceAreaRef, [
+    toolbarExpanded,
+    toolbars?.enabled,
+  ]);
 
   // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] STORE_FROM_WORKSPACE_UI / DIFF_SAVED_VS_CURRENT
   const [saveMeshDialogOpen, setSaveMeshDialogOpen] = useState(false);
@@ -447,20 +452,6 @@ export default function WorkspaceView({
     })();
   }, [meshId, restoreLayout, restoreUi?.layout]);
 
-  // Update container dimensions on mount and resize
-  useEffect(() => {
-    const updateDimensions = () => {
-      // Get container dimensions (subtract header/footer height)
-      setContainerWidth(window.innerWidth);
-      setContainerHeight(window.innerHeight - 120); // Reserve space for header
-    };
-    
-    updateDimensions();
-    window.addEventListener("resize", updateDimensions);
-    
-    return () => window.removeEventListener("resize", updateDimensions);
-  }, []);
-
   // Initialize panes from URL query parameters (for E2E testing and deep linking)
   // Query params: ?pane0=/path/to/dir&pane1=/another/path&pane2=/third/path
   // [IMPL-WORKSPACE_MESH_BRIDGE] Skip when server restored from meshId
@@ -491,7 +482,7 @@ export default function WorkspaceView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [restoredFromMesh]); // Run only once on mount
   
-  // Calculate pane bounds
+  // [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: measured workspace-area dimensions → calculateLayout
   const bounds = calculateLayout(
     containerWidth,
     containerHeight,
@@ -2110,13 +2101,11 @@ export default function WorkspaceView({
         </>
       )}
       
-      {/* Workspace area */}
+      {/* Workspace area — measured via useElementSize for pane bounds [REQ-MULTI_PANE_LAYOUT] [REQ-TOOLBAR_SYSTEM] */}
       <div
-        className="flex-1 relative overflow-hidden"
-        style={{
-          width: `${containerWidth}px`,
-          height: `${containerHeight}px`,
-        }}
+        ref={workspaceAreaRef}
+        data-testid="workspace-area"
+        className="flex-1 min-h-0 relative overflow-hidden"
       >
         {panes.map((pane, index) => (
           <FilePane

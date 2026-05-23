@@ -8,9 +8,9 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 
 | Kind | Tokens / artifacts |
 | --- | --- |
-| REQ | [REQ-FILE_MANAGER_PAGE](../tied/requirements/REQ-FILE_MANAGER_PAGE.yaml), [REQ-MULTI_PANE_LAYOUT](../tied/requirements/REQ-MULTI_PANE_LAYOUT.yaml), [REQ-DIRECTORY_NAVIGATION](../tied/requirements/REQ-DIRECTORY_NAVIGATION.yaml), [REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml) |
+| REQ | [REQ-FILE_MANAGER_PAGE](../tied/requirements/REQ-FILE_MANAGER_PAGE.yaml), [REQ-MULTI_PANE_LAYOUT](../tied/requirements/REQ-MULTI_PANE_LAYOUT.yaml), [REQ-TOOLBAR_SYSTEM](../tied/requirements/REQ-TOOLBAR_SYSTEM.yaml), [REQ-DIRECTORY_NAVIGATION](../tied/requirements/REQ-DIRECTORY_NAVIGATION.yaml), [REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml) |
 | ARCH | [ARCH-FILE_MANAGER_HIERARCHY](../tied/architecture-decisions/ARCH-FILE_MANAGER_HIERARCHY.yaml), [ARCH-PANE_LIFECYCLE](../tied/architecture-decisions/ARCH-PANE_LIFECYCLE.yaml) |
-| IMPL | [IMPL-FILE_MANAGER_PAGE](../tied/implementation-decisions/IMPL-FILE_MANAGER_PAGE.yaml), [IMPL-WORKSPACE_VIEW](../tied/implementation-decisions/IMPL-WORKSPACE_VIEW.yaml), [IMPL-FILE_PANE](../tied/implementation-decisions/IMPL-FILE_PANE.yaml), [IMPL-PANE_MANAGEMENT](../tied/implementation-decisions/IMPL-PANE_MANAGEMENT.yaml), [IMPL-LAYOUT_CALCULATOR](../tied/implementation-decisions/IMPL-LAYOUT_CALCULATOR.yaml), [IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml) |
+| IMPL | [IMPL-FILE_MANAGER_PAGE](../tied/implementation-decisions/IMPL-FILE_MANAGER_PAGE.yaml), [IMPL-WORKSPACE_VIEW](../tied/implementation-decisions/IMPL-WORKSPACE_VIEW.yaml), [IMPL-FILE_PANE](../tied/implementation-decisions/IMPL-FILE_PANE.yaml), [IMPL-PANE_MANAGEMENT](../tied/implementation-decisions/IMPL-PANE_MANAGEMENT.yaml), [IMPL-LAYOUT_CALCULATOR](../tied/implementation-decisions/IMPL-LAYOUT_CALCULATOR.yaml), [IMPL-TOOLBAR_COMPONENT](../tied/implementation-decisions/IMPL-TOOLBAR_COMPONENT.yaml), [IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml) |
 | Pseudo-code | `tied/implementation-decisions/IMPL-*-pseudocode.md` for the IMPL tokens above |
 
 ## Preferred term vs synonyms
@@ -24,6 +24,9 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 | **Files page** | “file manager page”, `src/app/files/page.tsx` (server component) |
 | **Layout type** | “layout mode” — values `tile`, `oneRow`, `oneColumn`, `fullscreen` |
 | **Pane bounds** | `PaneBounds` — pixel `x`, `y`, `width`, `height` from layout calculator |
+| **Workspace area** | Flex region below header/toolbars; `data-testid="workspace-area"`; `flex-1 min-h-0` |
+| **Container dimensions** | `containerWidth` / `containerHeight` — measured client box passed to `calculateLayout` (not viewport) |
+| **useElementSize** | Hook in `src/lib/useElementSize.ts` — ResizeObserver on workspace area |
 | **Pane management** | “add/remove split” — gated by `layout.allowPaneManagement` and `layout.maxPanes` |
 | **Cross-surface link** | New-tab link between File Manager workspace and Mesh GUI ([mesh-platform-vocabulary.md](mesh-platform-vocabulary.md)) |
 | **Workspace header cross-surface nav** | Header `<nav>` with Mesh Sync link; not pane toolbar |
@@ -41,6 +44,8 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 | Default pane count | — | `layout.defaultPaneCount` | — | startup pane array length |
 | Max panes | “Maximum number of panes reached” | `layout.maxPanes` (`0` = no limit) | — | validation in `handleAddPane` |
 | Layout: tile | “Tile” | `layout.default: tile` | — | `LayoutType` / `calculateLayout` |
+| Workspace area | (flex region below toolbars) | — | — | `workspace-area`, `workspaceAreaRef`, `useElementSize` |
+| Container dimensions | — | — | — | `containerWidth`, `containerHeight` |
 | Focused pane | (visual focus ring) | — | `navigate.tab` | `focusIndex`, `setFocusIndex` |
 | Mesh Sync (header) | “Mesh Sync” | — | — | `open-mesh-from-workspace`, `NewTabLink` |
 
@@ -51,6 +56,9 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 - **Focus** — Exactly one pane index (`focusIndex`) receives keyboard/file-operation commands unless linked mode propagates navigation ([linked-navigation-vocabulary.md](linked-navigation-vocabulary.md)).
 - **Pane lifecycle** — Add/remove panes with constraints; see [IMPL-PANE_MANAGEMENT](../tied/implementation-decisions/IMPL-PANE_MANAGEMENT.yaml).
 - **Layout calculator** — Maps container size + layout type + pane count → `PaneBounds[]` (`src/lib/files.layout.ts`).
+- **Workspace area** — `flex-1 min-h-0` DOM region holding panes; measured via `useElementSize` on `workspaceAreaRef` (`data-testid="workspace-area"`).
+- **Container dimensions** — `containerWidth` and `containerHeight` from workspace-area `clientWidth`/`clientHeight`, not `window.innerWidth` or fixed chrome subtraction.
+- **useElementSize** — ResizeObserver hook; re-measures when toolbar display deps change ([IMPL-LAYOUT_CALCULATOR](../tied/implementation-decisions/IMPL-LAYOUT_CALCULATOR.yaml), [IMPL-TOOLBAR_COMPONENT](../tied/implementation-decisions/IMPL-TOOLBAR_COMPONENT.yaml)).
 - **Startup paths** — `startup.mode` (`configured` \| `last` \| `home`) and `startup.paths.paneN` in `config/files.yaml`.
 - **Parent navigation** — `navigate.parent` / Parent `..` button; must route through `handleNavigate` / `navigateToParent` for linked sync.
 - **Save workspace as mesh** — Toolbar action `mesh.saveWorkspace` (Ctrl+Shift+M); update current mesh when loaded via `meshId`, or save as new ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)).
@@ -73,6 +81,7 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 | Add pane | `AddPane` → `IMPL-PANE_MANAGEMENT_AddPane` | IMPL-PANE_MANAGEMENT |
 | Remove pane | `RemovePane` → `IMPL-PANE_MANAGEMENT_RemovePane` | IMPL-PANE_MANAGEMENT |
 | Layout: tile / one row / column / fullscreen | `Tile`, `OneRow`, `OneColumn`, `Fullscreen` | IMPL-LAYOUT_CALCULATOR |
+| Workspace area measurement | `WORKSPACE_AREA_MEASUREMENT` → `IMPL-LAYOUT_CALCULATOR_WorkspaceAreaMeasurement` | IMPL-LAYOUT_CALCULATOR (+ IMPL-TOOLBAR_COMPONENT display mode) |
 | File row render + scroll | `RenderFileRows`, `ScrollToCursor` | IMPL-FILE_PANE |
 | Layout normalization | `NORMALIZE_LAYOUT` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Capture workspace snapshot | `CAPTURE_SNAPSHOT` | IMPL-WORKSPACE_MESH_BRIDGE |

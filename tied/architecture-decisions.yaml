@@ -1026,6 +1026,7 @@ ARCH-LAYOUT_ALGORITHMS:
       - 'OneRow: All panes equal width horizontally'
       - 'Tile: First pane left 50%, others stacked vertically right 50%'
       - Return PaneBounds[] with x, y, width, height for each pane
+      - WorkspaceView supplies containerWidth/containerHeight from measured workspace-area client box (not viewport heuristics)
   traceability:
     requirements:
       - REQ-MULTI_PANE_LAYOUT
@@ -2340,6 +2341,7 @@ ARCH-TOOLBAR_LAYOUT:
       - 'PaneToolbar: actions on focused pane'
       - 'SystemToolbar: independent actions'
       - 'WorkspaceToolbar: actions affecting all panes'
+      - Compact/expanded toolbar height changes trigger workspace-area remeasure (ResizeObserver + explicit deps) so pane bounds update
   traceability:
     requirements:
       - REQ-TOOLBAR_SYSTEM

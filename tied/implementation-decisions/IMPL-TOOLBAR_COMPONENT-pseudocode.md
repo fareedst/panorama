@@ -56,14 +56,17 @@ PROCEDURE IMPL-TOOLBAR_COMPONENT_MergeTopToolbars(context)
 
 ## WORKSPACE_TOOLBAR_DISPLAY_MODE
 
-// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM]: how: WorkspaceView branches on toolbarExpanded; expanded renders up to three top tiers with toggle on first visible tier; compact renders single merged Toolbar with showKeystroke=false and singleRow
+// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM] [REQ-MULTI_PANE_LAYOUT]: how: WorkspaceView branches on toolbarExpanded; expanded renders up to three top tiers with toggle on first visible tier; compact renders single merged Toolbar with showKeystroke=false and singleRow; pane bounds use useElementSize(ResizeObserver) on workspace-area ref so toolbar height changes re-layout panes instead of clipping bottom
 
 CONTRACT WorkspaceToolbarDisplayMode
   INPUT: toolbars config, toolbarExpanded boolean, mergedToolbarConfig from mergeTopToolbarConfigs
-  OUTPUT: one or three top toolbars plus toggle placement on first visible tier
-  DATA: showWorkspaceTop, showPaneTop, showSystemTop, toolbarCompactToggle element
+  OUTPUT: one or three top toolbars plus toggle placement on first visible tier; workspace-area measured dimensions feed calculateLayout
+  DATA: showWorkspaceTop, showPaneTop, showSystemTop, toolbarCompactToggle element, workspaceAreaRef, useElementSize deps include toolbarExpanded
 
 PROCEDURE IMPL-TOOLBAR_COMPONENT_WorkspaceToolbarDisplayMode(context)
+  ATTACH workspaceAreaRef to flex-1 min-h-0 workspace container (no fixed pixel height)
+  MEASURE workspace area via useElementSize(workspaceAreaRef, [toolbarExpanded, toolbars.enabled])
+  PASS measured width/height to calculateLayout for FilePane bounds
   IF toolbarExpanded THEN
     RENDER WorkspaceToolbar WHEN showWorkspaceTop WITH leadingContent toggle
     RENDER PaneToolbar WHEN showPaneTop WITH leadingContent toggle IF workspace tier not top
@@ -79,7 +82,7 @@ PROCEDURE IMPL-TOOLBAR_COMPONENT_WorkspaceToolbarDisplayMode(context)
 
 // [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [ARCH-TOOLBAR_ACTIONS] [REQ-TOOLBAR_SYSTEM]: map implementing and verifying source files for this IMPL
 
-// src/app/files/components/ToolbarCompactToggle.tsx, Toolbar.tsx, ToolbarButton.tsx, WorkspaceToolbar.tsx, PaneToolbar.tsx, SystemToolbar.tsx, src/lib/toolbar.utils.ts, src/app/files/WorkspaceView.tsx; tests toolbar.utils.test.ts, Toolbar*.test.tsx, WorkspaceView.toolbar-compact.test.tsx
+// src/app/files/components/ToolbarCompactToggle.tsx, Toolbar.tsx, ToolbarButton.tsx, WorkspaceToolbar.tsx, PaneToolbar.tsx, SystemToolbar.tsx, src/lib/toolbar.utils.ts, src/lib/useElementSize.ts, src/app/files/WorkspaceView.tsx; tests toolbar.utils.test.ts, useElementSize.test.ts, Toolbar*.test.tsx, WorkspaceView.toolbar-compact.test.tsx
 
 ## ErrorHandling
 

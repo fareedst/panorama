@@ -1842,10 +1842,12 @@ IMPL-LAYOUT_CALCULATOR:
   type: IMPL
   name: Layout Calculation Algorithms
   status: Implemented
-  description: Layout Calculation Algorithms
+  description: Pure layout algorithms plus workspace-area measurement feeding calculateLayout
   cross_references:
     - ARCH-LAYOUT_ALGORITHMS
+    - IMPL-TOOLBAR_COMPONENT
     - REQ-MULTI_PANE_LAYOUT
+    - REQ-TOOLBAR_SYSTEM
   source_index: implementation-decisions.yaml
   detail_file: implementation-decisions/IMPL-LAYOUT_CALCULATOR.yaml
   metadata:

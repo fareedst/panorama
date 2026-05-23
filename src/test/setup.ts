@@ -59,6 +59,30 @@ function installTestLocalStorage(): void {
 
 installTestLocalStorage();
 
+// [IMPL-TEST_SETUP] [IMPL-LAYOUT_CALCULATOR] [REQ-MULTI_PANE_LAYOUT] ResizeObserverPolyfill: ResizeObserver for jsdom (useElementSize, WorkspaceView)
+if (typeof globalThis.ResizeObserver === 'undefined') {
+  globalThis.ResizeObserver = class ResizeObserverPolyfill {
+    private callback: ResizeObserverCallback;
+
+    constructor(callback: ResizeObserverCallback) {
+      this.callback = callback;
+    }
+
+    observe(element: Element) {
+      const width = element instanceof HTMLElement ? element.clientWidth : 0;
+      const height = element instanceof HTMLElement ? element.clientHeight : 0;
+      this.callback(
+        [{ contentRect: { width, height } } as ResizeObserverEntry],
+        this as unknown as ResizeObserver,
+      );
+    }
+
+    unobserve() {}
+
+    disconnect() {}
+  } as unknown as typeof ResizeObserver;
+}
+
 // [IMPL-TEST_SETUP] Mock scrollIntoView for FilePane scroll tests
 // scrollIntoView is not available in jsdom test environment
 Element.prototype.scrollIntoView = vi.fn();

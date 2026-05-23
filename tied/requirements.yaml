@@ -1048,6 +1048,7 @@ REQ-MULTI_PANE_LAYOUT:
       - Optimized layouts for different tasks
   satisfaction_criteria:
     - criterion: Layout can be changed dynamically
+    - criterion: Pane bounds reflect available workspace area (toolbar and header aware), not fixed viewport heuristics
     - criterion: Support 2-4 panes in any layout
     - criterion: Support OneColumn layout (all panes vertical)
     - criterion: Support OneRow layout (all panes horizontal)
@@ -1057,6 +1058,8 @@ REQ-MULTI_PANE_LAYOUT:
       coverage: Each layout type renders correctly with 2, 3, 4 panes
     - method: Geometric testing
       coverage: Pane bounds calculated correctly, no overlaps (62 tests)
+    - method: Integration tests
+      coverage: useElementSize and WorkspaceView toolbar compact toggle update pane geometry from measured workspace-area
   traceability:
     architecture:
       - ARCH-LAYOUT_ALGORITHMS
@@ -2432,6 +2435,7 @@ REQ-TOOLBAR_SYSTEM:
     - criterion: All 36+ keybinding actions represented in configurable toolbars
     - criterion: Button states (active/disabled) reflect current workspace state
     - criterion: Buttons sized to prevent overflow even with 12+ actions per toolbar
+    - criterion: Compact/expanded toolbar toggle does not clip panes; pane geometry updates when workspace area size changes
     - criterion: Each button displays icon (when available) + keyboard shortcut in compact format; label text only shown as fallback when no icon exists
     - criterion: Toolbar button actions dispatch to same handlers as keyboard shortcuts
     - criterion: Toolbar rendering does not impact file manager responsiveness
@@ -2443,7 +2447,7 @@ REQ-TOOLBAR_SYSTEM:
     - method: Component tests
       coverage: Button rendering, group layout, keystroke display, ToolbarCompactToggle aria-pressed, showKeystroke=false badge hide with tooltip shortcut retention, mergeTopToolbarConfigs tier order
     - method: Integration tests
-      coverage: WorkspaceView toolbar compact/expanded branch, toggle placement on first visible top tier, merged single-row compact toolbar, action dispatch and configuration changes
+      coverage: WorkspaceView toolbar compact/expanded branch, toggle placement on first visible top tier, merged single-row compact toolbar, action dispatch and configuration changes, pane height remeasure on compact toggle via workspace-area
     - method: Accessibility tests
       coverage: ARIA labels, keyboard navigation, focus management, toolbar-compact-toggle aria-pressed
     - method: Manual testing

@@ -129,6 +129,23 @@ PROCEDURE IMPL-LAYOUT_CALCULATOR_ExportedPaneBoundsInterfaceX(context)
   // height)
   CALL height)
 
+## WORKSPACE_AREA_MEASUREMENT
+
+// [IMPL-LAYOUT_CALCULATOR] [IMPL-TOOLBAR_COMPONENT] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT] [REQ-TOOLBAR_SYSTEM]: how WorkspaceView supplies measured workspace-area client width/height to calculateLayout; pure files.layout.ts unchanged
+
+CONTRACT WorkspaceAreaMeasurement
+  INPUT: workspaceAreaRef on flex-1 min-h-0 container (data-testid workspace-area)
+  OUTPUT: containerWidth, containerHeight for calculateLayout
+  DATA: useElementSize hook, ResizeObserver, deps toolbarExpanded and toolbars.enabled
+
+PROCEDURE IMPL-LAYOUT_CALCULATOR_WorkspaceAreaMeasurement(context)
+  ATTACH workspaceAreaRef to workspace flex region below header and toolbars
+  MEASURE clientWidth and clientHeight via useElementSize(ResizeObserver + window resize)
+  ON zero client dimensions in jsdom THEN fallback viewport minus JSDOM_FALLBACK_CHROME_HEIGHT
+  RE-MEASURE when toolbarExpanded or toolbars.enabled changes (explicit effect deps)
+  PASS measured width and height to calculateLayout in WorkspaceView
+  KEEP calculateLayout and layout algorithms in src/lib/files.layout.ts pure
+
 ## ImplementedCalculateLayoutContainerWidthContainerHeight
 
 // [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: Implemented calculateLayout(containerWidth, containerHeight, numPanes, layoutType)
@@ -154,6 +171,10 @@ PROCEDURE IMPL-LAYOUT_CALCULATOR_ImplementedCalculateLayoutContainerWidthContain
 
 // FILE: src/lib/files.layout.ts — Layout calculation algorithms
 // FILE: src/lib/files.layout.test.ts — Layout tests (62 tests)
+// FILE: src/lib/useElementSize.ts — workspace-area measurement hook
+// FILE: src/lib/useElementSize.test.ts — useElementSize unit tests
+// FILE: src/app/files/WorkspaceView.tsx — consumer: workspaceAreaRef, useElementSize, calculateLayout
+// FUNCTION: useElementSize in src/lib/useElementSize.ts
 // FUNCTION: calculateLayout in src/lib/files.layout.ts
 // FUNCTION: calculateTileLayout in src/lib/files.layout.ts
 // FUNCTION: calculateOneRowLayout in src/lib/files.layout.ts

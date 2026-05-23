@@ -3,7 +3,9 @@ IMPL-LAYOUT_CALCULATOR:
   status: Implemented
   cross_references:
     - ARCH-LAYOUT_ALGORITHMS
+    - IMPL-TOOLBAR_COMPONENT
     - REQ-MULTI_PANE_LAYOUT
+    - REQ-TOOLBAR_SYSTEM
   decision: Pure TypeScript functions calculate PaneBounds[] from container dimensions and layout type
   rationale:
     why: Pure functions calculate pane bounds for different layout types
@@ -27,6 +29,7 @@ IMPL-LAYOUT_CALCULATOR:
       - Exported LayoutType = 'Tile' | 'OneRow' | 'OneColumn' | 'Fullscreen'
       - Exported PaneBounds interface (x, y, width, height)
       - Implemented calculateLayout(containerWidth, containerHeight, numPanes, layoutType)
+      - WorkspaceView measures flex workspace-area via useElementSize; container dimensions feed calculateLayout (toolbar-aware, not viewport heuristics)
   code_locations:
     files:
       - path: src/lib/files.layout.ts
@@ -39,7 +42,16 @@ IMPL-LAYOUT_CALCULATOR:
         lines:
           - 1
           - 365
+      - path: src/lib/useElementSize.ts
+        description: Workspace-area measurement hook (ResizeObserver)
+      - path: src/lib/useElementSize.test.ts
+        description: useElementSize unit tests
+      - path: src/app/files/WorkspaceView.tsx
+        description: Consumer — workspaceAreaRef, useElementSize, calculateLayout
     functions:
+      - name: useElementSize
+        file: src/lib/useElementSize.ts
+        description: Track element client width/height for pane layout
       - name: calculateLayout
         file: src/lib/files.layout.ts
         description: Calculate pane bounds for layout type
@@ -57,7 +69,9 @@ IMPL-LAYOUT_CALCULATOR:
       - ARCH-LAYOUT_ALGORITHMS
     requirements:
       - REQ-MULTI_PANE_LAYOUT
-    tests: []
+      - REQ-TOOLBAR_SYSTEM
+    tests:
+      - src/lib/useElementSize.test.ts
     code_annotations:
       - IMPL-LAYOUT_CALCULATOR
   related_decisions:
@@ -70,9 +84,9 @@ IMPL-LAYOUT_CALCULATOR:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-19T16:06:42.636Z"
+      date: "2026-05-22T12:00:00.000Z"
       author: AI Agent
-      reason: IMPL essence_pseudocode retrofit all 58
+      reason: LEAP — workspace-area measurement via useElementSize for calculateLayout inputs
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

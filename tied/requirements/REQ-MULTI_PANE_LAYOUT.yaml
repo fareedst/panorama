@@ -17,6 +17,7 @@ REQ-MULTI_PANE_LAYOUT:
       - Optimized layouts for different tasks
   satisfaction_criteria:
     - criterion: Layout can be changed dynamically
+    - criterion: Pane bounds reflect available workspace area (toolbar and header aware), not fixed viewport heuristics
     - criterion: Support 2-4 panes in any layout
     - criterion: Support OneColumn layout (all panes vertical)
     - criterion: Support OneRow layout (all panes horizontal)
@@ -26,6 +27,8 @@ REQ-MULTI_PANE_LAYOUT:
       coverage: Each layout type renders correctly with 2, 3, 4 panes
     - method: Geometric testing
       coverage: Pane bounds calculated correctly, no overlaps (62 tests)
+    - method: Integration tests
+      coverage: useElementSize and WorkspaceView toolbar compact toggle update pane geometry from measured workspace-area
   traceability:
     architecture:
       - ARCH-LAYOUT_ALGORITHMS
@@ -46,9 +49,9 @@ REQ-MULTI_PANE_LAYOUT:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-07T00:00:00.000Z
+      date: "2026-05-22T12:00:00.000Z"
       author: AI Agent
-      reason: Implementation complete, 62 layout tests passing
+      reason: LEAP — workspace-area measurement for pane bounds
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

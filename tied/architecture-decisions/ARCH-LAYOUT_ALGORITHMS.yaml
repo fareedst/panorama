@@ -31,6 +31,7 @@ ARCH-LAYOUT_ALGORITHMS:
       - 'OneRow: All panes equal width horizontally'
       - 'Tile: First pane left 50%, others stacked vertically right 50%'
       - Return PaneBounds[] with x, y, width, height for each pane
+      - WorkspaceView supplies containerWidth/containerHeight from measured workspace-area client box (not viewport heuristics)
   traceability:
     requirements:
       - REQ-MULTI_PANE_LAYOUT
@@ -51,9 +52,9 @@ ARCH-LAYOUT_ALGORITHMS:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-07T00:00:00.000Z
+      date: "2026-05-22T12:00:00.000Z"
       author: AI Agent
-      reason: Initial creation
+      reason: LEAP — measured workspace-area dimensions feed calculateLayout
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

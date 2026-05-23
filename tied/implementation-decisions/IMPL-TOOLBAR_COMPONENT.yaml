@@ -4,6 +4,8 @@ IMPL-TOOLBAR_COMPONENT:
   cross_references:
     - ARCH-TOOLBAR_ACTIONS
     - ARCH-TOOLBAR_LAYOUT
+    - IMPL-LAYOUT_CALCULATOR
+    - REQ-MULTI_PANE_LAYOUT
     - REQ-TOOLBAR_SYSTEM
   decision: React components for toolbar system including base and specialized toolbars with compact icon-only button design
   rationale:
@@ -16,6 +18,7 @@ IMPL-TOOLBAR_COMPONENT:
       - mergeTopToolbarConfigs merges enabled top-position tiers for compact single-row layout
       - ToolbarButton showKeystroke prop hides badge while preserving tooltip shortcuts
       - ToolbarCompactToggle leading control toggles session compact/expanded display
+      - useElementSize on workspace-area ref remeasures pane bounds when toolbar compact/expanded toggles
   code_locations:
     files:
       - path: src/app/files/components/ToolbarCompactToggle.tsx
@@ -32,8 +35,12 @@ IMPL-TOOLBAR_COMPONENT:
         description: System tier wrapper
       - path: src/lib/toolbar.utils.ts
         description: MERGE_TOP_TOOLBARS mergeTopToolbarConfigs
+      - path: src/lib/useElementSize.ts
+        description: Workspace-area ResizeObserver measurement for pane layout
+      - path: src/lib/useElementSize.test.ts
+        description: useElementSize unit tests
       - path: src/app/files/WorkspaceView.tsx
-        description: WORKSPACE_TOOLBAR_DISPLAY_MODE compact/expanded branch
+        description: WORKSPACE_TOOLBAR_DISPLAY_MODE compact/expanded branch; workspaceAreaRef and useElementSize
     functions:
       - name: mergeTopToolbarConfigs
         file: src/lib/toolbar.utils.ts
@@ -45,12 +52,14 @@ IMPL-TOOLBAR_COMPONENT:
       - ARCH-TOOLBAR_ACTIONS
     requirements:
       - REQ-TOOLBAR_SYSTEM
+      - REQ-MULTI_PANE_LAYOUT
     tests:
       - src/app/files/components/Toolbar.test.tsx
       - src/app/files/components/ToolbarButton.test.tsx
       - src/app/files/components/ToolbarCompactToggle.test.tsx
       - src/app/files/WorkspaceView.toolbar-compact.test.tsx
       - src/lib/toolbar.utils.test.ts
+      - src/lib/useElementSize.test.ts
     code_annotations:
       - IMPL-TOOLBAR_COMPONENT
   related_decisions:
@@ -62,5 +71,5 @@ IMPL-TOOLBAR_COMPONENT:
     last_updated:
       date: "2026-05-22T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — toolbar compact toggle and mergeTopToolbarConfigs
+      reason: LEAP — workspace-area measurement for pane layout on compact/expanded toggle
   essence_pseudocode_path: implementation-decisions/IMPL-TOOLBAR_COMPONENT-pseudocode.md

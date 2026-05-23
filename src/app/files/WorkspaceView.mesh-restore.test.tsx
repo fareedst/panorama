@@ -119,7 +119,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
 
     await waitFor(() => {
       const pane2 = screen.getByTestId("pane-2");
-      // Tile: third pane stacks in right column (container height 680 = innerHeight - 120)
+      // Tile: third pane stacks in right column (container height 680 via jsdom fallback)
       expect(pane2).toHaveStyle({ top: "340px" });
     });
   });
