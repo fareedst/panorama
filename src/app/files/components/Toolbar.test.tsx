@@ -80,6 +80,24 @@ describe("[REQ-TOOLBAR_SYSTEM] Toolbar", () => {
   });
 
   // [IMPL-TOOLBAR_COMPONENT] WORKSPACE_TOOLBAR_DISPLAY_MODE: singleRow applies horizontal scroll layout
+  it("renders toolbar-only action from actionsMeta without keybinding", () => {
+    render(
+      <Toolbar
+        config={{
+          enabled: true,
+          position: "top",
+          groups: [{ name: "Layout", actions: ["view.columns"] }],
+        }}
+        onAction={vi.fn()}
+        actionsMeta={{
+          "view.columns": { description: "Reorder file columns", icon: "columns" },
+        }}
+      />,
+    );
+
+    expect(screen.getByTestId("toolbar-view.columns")).toBeInTheDocument();
+  });
+
   it("applies singleRow flex-nowrap layout when singleRow is true", () => {
     const { container } = render(
       <Toolbar config={baseConfig} onAction={vi.fn()} singleRow className="toolbar-compact" />,

@@ -52,7 +52,7 @@ function compareMeshes(a: MeshRow, b: MeshRow, column: SortColumn, direction: So
 }
 
 // [IMPL-MESH_GUI] [ARCH-MESH_LAYERED] [REQ-MESH_GUI]
-// how: SortableHeader toggles sortColumn/sortDirection; aria-sort on active column; testids mesh-list-sort-*.
+// how: SortableHeader toggles sortColumn/sortDirection; aria-sort on <th> for active column; testids mesh-list-sort-*.
 function SortableHeader({
   label,
   column,
@@ -72,12 +72,11 @@ function SortableHeader({
   const ariaSort = isActive ? (direction === "asc" ? "ascending" : "descending") : "none";
   const indicator = isActive ? (direction === "asc" ? " ↑" : " ↓") : "";
   return (
-    <th className="py-2">
+    <th className="py-2" aria-sort={ariaSort}>
       <button
         type="button"
         className="text-left font-normal hover:text-zinc-300"
         onClick={() => onSort(column)}
-        aria-sort={ariaSort}
         data-testid={testId}
       >
         {label}

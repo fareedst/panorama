@@ -27,6 +27,30 @@ PROCEDURE IMPL-FILE_PANE_RenderFileRows(context)
   // APPLY comparison color classes from enhanced index
   CALL APPLY comparison color classes from enhanced index
 
+## TABULAR_FILE_ROW_GRID
+
+// [IMPL-FILE_PANE] [IMPL-FILE_COLUMN_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [REQ-FILE_LISTING]: how: file rows render as CSS grid with aligned metadata columns; no file-row-grid-header
+
+```
+PROCEDURE TABULAR_FILE_ROW_GRID(context)
+  visibleColumns := getVisibleFileColumns(columns)
+  measuredWidths := metadataColumnWidths OR measureFileMetadataColumnWidths(files, visibleColumns)
+  metadataGridTemplate := buildFileRowGridTemplate(visibleColumnIds, measuredWidths)
+  rowGridTemplate := "auto auto " + metadataGridTemplate
+  FOR each file RENDER grid row data-testid=file-row-grid with renderColumn cells data-testid=file-column-{id}
+```
+
+## METADATA_COLUMN_WIDTHS_PROP
+
+// [IMPL-FILE_PANE] [IMPL-FILE_COLUMN_CONFIG] [IMPL-WORKSPACE_VIEW] [REQ-MULTI_PANE_LAYOUT] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: optional metadataColumnWidths from workspace skips per-pane measure for OneColumn shared alignment
+
+```
+PROCEDURE METADATA_COLUMN_WIDTHS_PROP(context)
+  INPUT: metadataColumnWidths?: MeasuredFileColumnWidths from WorkspaceView
+  IF provided THEN use for buildFileRowGridTemplate
+  ELSE measureFileMetadataColumnWidths(files, visibleColumns) in useMemo per pane
+```
+
 ## ScrollToCursor
 
 // [IMPL-FILE_PANE] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-FILE_LISTING] [REQ-DIRECTORY_NAVIGATION]: scrollIntoView when scrollTrigger prop changes from linked sync

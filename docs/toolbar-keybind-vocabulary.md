@@ -27,6 +27,8 @@
 | **Active action** | Toolbar button pressed/highlighted state (`activeActions` Set) |
 | **Disabled action** | Context-gated (`disabledActions` Set) — e.g. copy with no marks |
 | **Toolbar test id** | `data-testid="toolbar-{action}"` e.g. `toolbar-file.copyAll` |
+| **Toolbar-only action** | Listed in `toolbars.actions` in `config/files.yaml`; no `keybindings` row required |
+| **toolbars.actions** | Catalog of `description`, optional `icon` / `label` for mouse-only toolbar buttons |
 | **Toolbar compact mode** | Single merged top row; icon-only buttons (no keystroke badges) |
 | **Toolbar expanded mode** | Default three-tier layout with keystroke badges on each button |
 | **Toolbar compact toggle** | Leading control on first top toolbar; `data-testid="toolbar-compact-toggle"` |
@@ -50,6 +52,7 @@
 | Manage display specs | “Manage display specs…” (dialog title from copy) | `copy.displaySpec.*` | `view.displaySpec` | `DisplaySpecManagerDialog` ([REQ-PANE_DISPLAY_FILTER](../tied/requirements/REQ-PANE_DISPLAY_FILTER.yaml)) |
 | Clear display filter | “No filter” (pane selector) | — | `view.displaySpec.none` | `handleSetActiveDisplaySpec(focusIndex, null)` |
 | Choose workspace layout | Layout pop-over | `copy.layouts.*` | `view.layout` (Ctrl+Shift+L) | `LayoutPickerPopover`, `setLayout` |
+| Column order | “Column order” dialog | `copy.columns.*` + `toolbars.actions.view.columns` | `view.columns` (no keybind) | `ColumnOrderDialog`, `setFileColumns` |
 
 ### Action namespace prefixes (stable)
 
@@ -58,7 +61,7 @@
 | `navigate.*` | Directory cursor, enter, parent, tab, home |
 | `file.*` | copy, move, delete, rename, **copyAll**, **moveAll** |
 | `mark.*` | marking ([file-marking-vocabulary.md](file-marking-vocabulary.md)) |
-| `view.*` | sort, layout picker (`view.layout`), comparison mode, hidden files, display filter specs (`view.displaySpec`, `view.displaySpec.none`) |
+| `view.*` | sort, layout picker (`view.layout`), column order dialog (`view.columns`, toolbar-only), comparison mode, hidden files, display filter specs (`view.displaySpec`, `view.displaySpec.none`) |
 | `link.*` | linked mode toggle |
 | `pane.*` | add, remove, refresh, refresh-all |
 | `search.*` | finder vs content search |
@@ -73,7 +76,8 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 
 - **Configuration-driven toolbar** — Groups and action lists in YAML; no hardcoded button order in React.
 - **Shared dispatch** — Toolbar `onAction(action)` and keyboard layer call the same handler map in `WorkspaceView`.
-- **deriveToolbarButton** — Resolves icon, label, shortcut display from action + registry (`src/lib/toolbar.utils.ts`).
+- **deriveToolbarButton** — Resolves icon, label, shortcut from keybinding registry, else `toolbars.actions` metadata (`src/lib/toolbar.utils.ts`). Keybinding wins when both exist.
+- **Toolbar-only action** — `toolbars.actions.{actionId}` supplies button metadata without registering a keyboard shortcut.
 - **ToolbarButton** — Compact icon + keystroke badge component (`ToolbarButton.tsx`).
 - **mesh.saveWorkspace** — Workspace toolbar action; icon `network` in `toolbar.utils.ts`; opens save dialog (update current mesh when `meshId` set, else POST `/api/mesh`).
 - **mesh.diffWorkspace** — Compare live workspace to saved snapshot; icon `git-compare`; disabled without loaded snapshot.

@@ -4,7 +4,7 @@
 "use client";
 
 import { Toolbar } from "./Toolbar";
-import type { ToolbarConfig } from "@/lib/config.types";
+import type { ToolbarActionMeta, ToolbarConfig } from "@/lib/config.types";
 
 export interface SystemToolbarProps {
   config: ToolbarConfig;
@@ -13,6 +13,8 @@ export interface SystemToolbarProps {
   disabledActions?: Set<string>;
   showKeystroke?: boolean;
   leadingContent?: React.ReactNode;
+  /** [IMPL-TOOLBAR_COMPONENT] [REQ-TOOLBAR_SYSTEM] toolbars.actions for toolbar-only actions (ACTIONS_META_PASS_THROUGH) */
+  actionsMeta?: Record<string, ToolbarActionMeta>;
 }
 
 /**
@@ -27,6 +29,7 @@ export function SystemToolbar({
   disabledActions,
   showKeystroke,
   leadingContent,
+  actionsMeta,
 }: SystemToolbarProps) {
   return (
     <Toolbar
@@ -36,6 +39,7 @@ export function SystemToolbar({
       disabledActions={disabledActions}
       showKeystroke={showKeystroke}
       leadingContent={leadingContent}
+      actionsMeta={actionsMeta}
       className="system-toolbar"
     />
   );

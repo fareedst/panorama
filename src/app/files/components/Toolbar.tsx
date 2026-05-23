@@ -5,7 +5,7 @@
 
 import { getKeybindingRegistry } from "@/lib/files.keybinds";
 import { deriveToolbarButton } from "@/lib/toolbar.utils";
-import type { ToolbarConfig } from "@/lib/config.types";
+import type { ToolbarActionMeta, ToolbarConfig } from "@/lib/config.types";
 import { ToolbarGroup } from "./ToolbarGroup";
 import { ToolbarButton } from "./ToolbarButton";
 
@@ -21,6 +21,8 @@ export interface ToolbarProps {
   leadingContent?: React.ReactNode;
   /** Force single-row layout with horizontal scroll. [REQ-TOOLBAR_SYSTEM] */
   singleRow?: boolean;
+  /** [REQ-TOOLBAR_SYSTEM] Metadata for actions without keybindings */
+  actionsMeta?: Record<string, ToolbarActionMeta>;
 }
 
 /**
@@ -37,6 +39,7 @@ export function Toolbar({
   showKeystroke = true,
   leadingContent,
   singleRow = false,
+  actionsMeta,
 }: ToolbarProps) {
   const registry = getKeybindingRegistry();
 
@@ -71,7 +74,11 @@ export function Toolbar({
           showSeparator={groupIndex > 0 || Boolean(leadingContent)}
         >
           {group.actions.map((action) => {
-            const buttonProps = deriveToolbarButton(action, registry.keybindings);
+            const buttonProps = deriveToolbarButton(
+              action,
+              registry.keybindings,
+              actionsMeta,
+            );
             if (!buttonProps) return null;
 
             return (

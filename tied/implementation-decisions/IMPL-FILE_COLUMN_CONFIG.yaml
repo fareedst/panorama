@@ -5,92 +5,95 @@ IMPL-FILE_COLUMN_CONFIG:
     - ARCH-CONFIG_DRIVEN_UI
     - IMPL-FILE_PANE
     - IMPL-FILES_CONFIG
+    - IMPL-TOOLBAR_COMPONENT
+    - IMPL-WORKSPACE_MESH_BRIDGE
+    - IMPL-WORKSPACE_VIEW
     - REQ-CONFIG_DRIVEN_FILE_MANAGER
     - REQ-FILE_LISTING
-  decision: Extended config system with FilesColumnConfig type, added formatDateTime utility, and refactored FilePane to render columns dynamically based on configuration
+    - REQ-MULTI_PANE_LAYOUT
+    - REQ-TOOLBAR_SYSTEM
+    - REQ-WORKSPACE_MESH_BRIDGE
+  decision: Config-driven file metadata columns with tabular CSS grid rows, content-measured Size/Time ch tracks, workspace column-order dialog (view.columns), OneColumn shared metadata widths, and mesh workspace snapshot v4 fileColumns persistence.
   rationale:
     why: Implements configurable column display for file panes to meet user requirement for customizable file metadata display order and format
     problems_solved:
       - Column display not integrated with existing YAML configuration system
+      - Column order was YAML-only with no in-session reorder or mesh restore
+      - Flex rows did not align metadata across panes in OneColumn layout
       - Hard-coded column order (checkbox, icon, name, size, mtime) cannot be changed
       - No way to hide/show specific columns based on user preference
-      - Time format was simplified (toLocaleDateString) instead of full timestamp
     benefits:
       - 'Default order optimized for most recent changes: mtime, size, name'
       - 'Users can hide unwanted columns (visible: false)'
-      - Consistent YYYY-MM-DD HH:MM:SS time format
+      - Column order dialog via toolbar view.columns (no shortcut)
       - Full integration with existing config-driven architecture
-      - Users can configure column order via config/files.yaml
+      - Mesh snapshot v4 round-trips fileColumns
+      - Tabular grid aligns metadata; Name column flex remainder
   implementation_approach:
-    summary: Extended config system with FilesColumnConfig type, added formatDateTime utility, and refactored FilePane to render columns dynamically based on configuration
+    summary: file-columns.ts helpers; FilePane CSS grid; ColumnOrderDialog; WorkspaceView state; mesh v4 capture/parse/diff
     details:
-      - Added columns section to config/files.yaml with visibility control
-      - Added default columns configuration (mtime, size, name) to DEFAULT_FILES_CONFIG
-      - Added FileColumnId type and FilesColumnConfig interface to config.types.ts
-      - Checkbox and directory icon remain fixed, columns render in config order
-      - Columns with visible:false are filtered out
-      - Created formatDateTime utility function for YYYY-MM-DD HH:MM:SS formatting
-      - Extended FilesConfig interface with optional columns array
-      - Refactored FilePane rendering to use dynamic column generation via renderColumn helper
-      - Threaded columns prop through page.tsx → WorkspaceView.tsx → FilePane.tsx
+      - captureWorkspaceSnapshot version 4 includes fileColumns; parse v1–v3 omit uses YAML defaults
+      - config/files.yaml columns and copy.columns; toolbars.actions.view.columns for toolbar-only metadata
+      - deriveToolbarButton falls back to toolbars.actions when no keybinding
+      - FilePane tabular rows (file-row-grid) without listing header row; optional metadataColumnWidths from workspace
+      - src/lib/file-columns.ts — getVisibleFileColumns, reorderFileColumns, normalizeFileColumns, measure widths, buildFileRowGridTemplate, formatFileColumnCell, formatFileColumnsLabel
+      - WorkspaceView fileColumns state; view.columns opens ColumnOrderDialog; OneColumn shared metadata ch
   code_locations:
     files:
-      - path: src/lib/config.types.ts
-        description: Added FileColumnId type, FilesColumnConfig interface, columns to FilesConfig
-        lines:
-          - 464
-          - 471
-      - path: src/lib/config.ts
-        description: Added default columns array to DEFAULT_FILES_CONFIG
-        lines:
-          - 473
-          - 479
       - path: config/files.yaml
-        description: Added columns configuration section
-        lines:
-          - 332
-          - 341
-      - path: src/lib/files.utils.ts
-        description: Added formatDateTime function for YYYY-MM-DD HH:MM:SS format
-        lines:
-          - 42
-          - 57
-      - path: src/app/files/page.tsx
-        description: Extract and pass columns config to WorkspaceView
-        lines:
-          - 28
-          - 36
-          - 72
-      - path: src/app/files/WorkspaceView.tsx
-        description: Accept columns prop and forward to FilePane
-        lines:
-          - 1296
-          - 60
-          - 74
+        description: columns defaults, copy.columns, toolbars.actions.view.columns
+      - path: src/lib/config.types.ts
+        description: FileColumnId, FilesColumnConfig, ToolbarActionMeta
+      - path: src/lib/file-columns.ts
+        description: Column helpers and grid measurement
+      - path: src/lib/file-columns.test.ts
+        description: Unit tests for file-columns module
+      - path: src/lib/toolbar.utils.ts
+        description: deriveToolbarButton actionsMeta fallback
+      - path: src/lib/workspace-mesh-bridge.ts
+        description: Snapshot v4 fileColumns capture, parse, diff, summary label
+      - path: src/app/files/components/ColumnOrderDialog.tsx
+        description: Column reorder dialog
+      - path: src/app/files/components/ColumnOrderDialog.test.tsx
+        description: Dialog unit tests
       - path: src/app/files/components/FilePane.tsx
-        description: Accept columns prop, added renderColumn helper, dynamic column rendering
-        lines:
-          - 13
-          - 280
-          - 323
-          - 369
-          - 6
-          - 63
-          - 93
+        description: Tabular grid file rows
+      - path: src/app/files/components/FilePane.test.tsx
+        description: Grid and width tests
+      - path: src/app/files/WorkspaceView.tsx
+        description: fileColumns state, handlers, OneColumn shared widths
     functions:
-      - name: formatDateTime
-        file: src/lib/files.utils.ts
-        description: Formats Date or ISO string to YYYY-MM-DD HH:MM:SS with zero-padding
+      - name: normalizeFileColumns
+        file: src/lib/file-columns.ts
+        description: Merge snapshot or raw column array with YAML defaults
+      - name: buildFileRowGridTemplate
+        file: src/lib/file-columns.ts
+        description: Build CSS grid template for metadata columns
       - name: renderColumn
         file: src/app/files/components/FilePane.tsx
-        description: Helper function that renders a single column based on FileColumnId
+        description: Render single metadata cell by FileColumnId
   traceability:
     architecture:
       - ARCH-CONFIG_DRIVEN_UI
+      - ARCH-TOOLBAR_ACTIONS
+      - ARCH-WORKSPACE_MESH_BRIDGE
     requirements:
       - REQ-CONFIG_DRIVEN_FILE_MANAGER
       - REQ-FILE_LISTING
-    tests: []
+      - REQ-MULTI_PANE_LAYOUT
+      - REQ-TOOLBAR_SYSTEM
+      - REQ-WORKSPACE_MESH_BRIDGE
+    tests:
+      - src/app/files/components/ColumnOrderDialog.test.tsx
+      - src/app/files/components/FilePane.test.tsx
+      - src/app/files/components/Toolbar.test.tsx
+      - src/app/files/components/ToolbarButton.test.tsx
+      - src/app/files/WorkspaceView.file-columns.test.tsx
+      - src/app/files/WorkspaceView.mesh-restore.test.tsx
+      - src/app/mesh/components/WorkspaceSnapshotSummaryList.test.tsx
+      - src/lib/file-columns.test.ts
+      - src/lib/toolbar.utils.test.ts
+      - src/lib/workspace-mesh-bridge.test.ts
     code_annotations:
       - IMPL-FILE_COLUMN_CONFIG
       - REQ-CONFIG_DRIVEN_FILE_MANAGER
@@ -102,15 +105,18 @@ IMPL-FILE_COLUMN_CONFIG:
     supersedes: []
     see_also:
       - IMPL-FILES_CONFIG_COMPLETE
+      - IMPL-TOOLBAR_COMPONENT
+      - IMPL-WORKSPACE_MESH_BRIDGE
+      - IMPL-WORKSPACE_VIEW
   metadata:
     created:
       date: 2026-02-08T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-19T16:06:42.636Z"
+      date: "2026-05-23T00:00:00.000Z"
       author: AI Agent
-      reason: IMPL essence_pseudocode retrofit all 58
+      reason: LEAP — tabular columns, column-order dialog, mesh snapshot v4, toolbar-only view.columns
     last_validated:
-      date: 2026-02-08T00:00:00.000Z
+      date: "2026-05-23T00:00:00.000Z"
       validator: AI Agent
-      result: pass - all tests passing (593 passed), formatDateTime unit tests pass, column rendering works correctly
+      result: pending vitest gate

@@ -33,7 +33,13 @@ import ProgressDialog from "./components/ProgressDialog";
 import GotoDialog from "./components/GotoDialog";
 import BookmarkDialog from "./components/BookmarkDialog";
 import SortDialog from "./components/SortDialog";
+import { ColumnOrderDialog } from "./components/ColumnOrderDialog";
 import { LayoutPickerPopover } from "./components/LayoutPickerPopover";
+import {
+  getVisibleFileColumns,
+  measureFileMetadataColumnWidthsForPanes,
+  normalizeFileColumns,
+} from "@/lib/file-columns";
 import RenameDialog from "./components/RenameDialog";
 import { InfoPanel } from "./components/InfoPanel";
 import { PreviewPanel } from "./components/PreviewPanel";
@@ -359,6 +365,12 @@ export default function WorkspaceView({
   }>({
     isOpen: false,
   });
+
+  // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER] Workspace file column order (mesh v4 + session)
+  const [fileColumns, setFileColumns] = useState(() =>
+    normalizeFileColumns(loadedSnapshotProp?.fileColumns, columns),
+  );
+  const [columnOrderDialogOpen, setColumnOrderDialogOpen] = useState(false);
   
   // [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW] Preview panel state
   const [previewPanel, setPreviewPanel] = useState<{
@@ -454,6 +466,7 @@ export default function WorkspaceView({
       linkedMode,
       comparisonMode,
       sharedSort,
+      fileColumns,
       panes: panes.map((p) => ({
         path: p.path,
         sortBy: p.sortBy,
@@ -463,7 +476,7 @@ export default function WorkspaceView({
         displaySpecId: p.activeDisplaySpecId,
       })),
     });
-  }, [layout, focusIndex, linkedMode, comparisonMode, sharedSort, panes]);
+  }, [layout, focusIndex, linkedMode, comparisonMode, sharedSort, fileColumns, panes]);
 
   // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] DIFF_SAVED_VS_CURRENT
   // how: diffWorkspaceSnapshots(savedSnapshot, current) drives header badge and WorkspaceDiffDialog rows
@@ -563,6 +576,7 @@ export default function WorkspaceView({
           setLinkedMode(bundle.restoreUi.linkedMode);
           setComparisonMode(bundle.restoreUi.comparisonMode);
           setSharedSort(bundle.restoreUi.sharedSort);
+          setFileColumns(normalizeFileColumns(bundle.snapshot.fileColumns, columns));
           setSavedSnapshot(bundle.snapshot);
           setEffectiveRestoreWarning(clientRestoreWarning);
           setClientRestoredFromMesh(true);
@@ -586,6 +600,9 @@ export default function WorkspaceView({
           }
           console.debug("DEBUG: mesh rehydrate applying layout only", normalized, meshId);
           setLayout((prev) => (prev === normalized ? prev : normalized));
+          if (limited.fileColumns?.length) {
+            setFileColumns(normalizeFileColumns(limited.fileColumns, columns));
+          }
         }
         setMeshRehydrating(false);
       } catch (err) {
@@ -625,6 +642,7 @@ export default function WorkspaceView({
     restoreUi?.layout,
     layoutConfig.defaultPaneCount,
     layoutConfig.maxPanes,
+    columns,
   ]);
 
   // Initialize panes from URL query parameters (for E2E testing and deep linking)
@@ -664,6 +682,15 @@ export default function WorkspaceView({
     panes.length,
     layout
   );
+
+  // [IMPL-FILE_COLUMN_CONFIG] [REQ-MULTI_PANE_LAYOUT] OneColumn: shared Size/Time ch across stacked panes
+  const sharedMetadataColumnWidths = useMemo(() => {
+    if (layout !== "OneColumn") return undefined;
+    return measureFileMetadataColumnWidthsForPanes(
+      panes.map((p) => p.files),
+      getVisibleFileColumns(fileColumns),
+    );
+  }, [layout, panes, fileColumns]);
 
   // [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]
   // Build enhanced comparison index when panes change
@@ -1997,6 +2024,11 @@ export default function WorkspaceView({
     handlers.set("view.sort", () => {
       setSortDialog({ isOpen: true });
     });
+
+    // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER] view.columns — column order dialog (no shortcut)
+    handlers.set("view.columns", () => {
+      setColumnOrderDialogOpen(true);
+    });
     
     handlers.set("view.comparison", () => {
       if (panes.length < 2) {
@@ -2387,6 +2419,7 @@ export default function WorkspaceView({
                   activeActions={activeActions}
                   disabledActions={disabledActions}
                   leadingContent={toolbarCompactToggle}
+                  actionsMeta={toolbars.actions}
                 />
               )}
 
@@ -2397,6 +2430,7 @@ export default function WorkspaceView({
                   activeActions={activeActions}
                   disabledActions={disabledActions}
                   leadingContent={!showWorkspaceTop ? toolbarCompactToggle : undefined}
+                  actionsMeta={toolbars.actions}
                 />
               )}
 
@@ -2409,6 +2443,7 @@ export default function WorkspaceView({
                   leadingContent={
                     !showWorkspaceTop && !showPaneTop ? toolbarCompactToggle : undefined
                   }
+                  actionsMeta={toolbars.actions}
                 />
               )}
             </>
@@ -2422,6 +2457,7 @@ export default function WorkspaceView({
                 leadingContent={toolbarCompactToggle}
                 showKeystroke={false}
                 singleRow
+                actionsMeta={toolbars.actions}
                 className="toolbar-compact"
               />
             )
@@ -2467,7 +2503,8 @@ export default function WorkspaceView({
             // [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION]: switch focusIndex when user clicks pane via FilePane onFocusRequest onMouseDown
             onFocusRequest={() => setFocusIndex(index)}
             onNavigateParent={() => navigateToParent(index)} // [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
-            columns={columns} // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
+            columns={fileColumns} // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
+            metadataColumnWidths={sharedMetadataColumnWidths}
             onRename={(file) => setRenameDialog({ isOpen: true, filePath: file.path, fileName: file.name, paneIndex: index })}
             displaySpecs={catalogSpecs}
             activeDisplaySpecId={pane.activeDisplaySpecId}
@@ -2576,6 +2613,14 @@ export default function WorkspaceView({
         labels={copy.layouts}
         onSelect={setLayout}
         onClose={() => setLayoutPickerOpen(false)}
+      />
+
+      <ColumnOrderDialog
+        isOpen={columnOrderDialogOpen}
+        columns={fileColumns}
+        labels={copy.columns}
+        onApply={setFileColumns}
+        onClose={() => setColumnOrderDialogOpen(false)}
       />
 
       <SortDialog

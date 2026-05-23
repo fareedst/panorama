@@ -543,4 +543,86 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
     expect(screen.getByText(/Hidden: 3/)).toBeInTheDocument();
     expect(screen.getByTestId("pane-display-spec-selector")).toBeInTheDocument();
   });
+
+  it("renders columns in configured order in grid [IMPL-FILE_COLUMN_CONFIG]", () => {
+    const orderedColumns = [
+      { id: "name" as const, visible: true },
+      { id: "size" as const, visible: true },
+      { id: "mtime" as const, visible: true, format: "age" as const },
+    ];
+    const { container } = render(
+      <FilePane
+        path="/home/user"
+        files={[mockFiles[1]]}
+        cursor={0}
+        marks={new Set()}
+        bounds={mockBounds}
+        focused={true}
+        onNavigate={mockOnNavigate}
+        onCursorMove={mockOnCursorMove}
+        columns={orderedColumns}
+      />,
+    );
+    const row = container.querySelector('[data-testid="file-row-grid"]');
+    expect(row).toBeTruthy();
+    const cells = row?.querySelectorAll("[data-testid^='file-column-']");
+    expect(cells?.[0]).toHaveAttribute("data-testid", "file-column-name");
+    expect(cells?.[1]).toHaveAttribute("data-testid", "file-column-size");
+    expect(cells?.[2]).toHaveAttribute("data-testid", "file-column-mtime");
+  });
+
+  it("does not render column header row [IMPL-FILE_COLUMN_CONFIG]", () => {
+    render(
+      <FilePane
+        path="/home/user"
+        files={[mockFiles[1]]}
+        cursor={0}
+        marks={new Set()}
+        bounds={mockBounds}
+        focused={true}
+        onNavigate={mockOnNavigate}
+        onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
+      />,
+    );
+    expect(screen.queryByTestId("file-row-grid-header")).not.toBeInTheDocument();
+  });
+
+  it("per-pane measure uses ch tracks for size and mtime [IMPL-FILE_COLUMN_CONFIG]", () => {
+    const { container } = render(
+      <FilePane
+        path="/home/user"
+        files={[mockFiles[1]]}
+        cursor={0}
+        marks={new Set()}
+        bounds={mockBounds}
+        focused={true}
+        onNavigate={mockOnNavigate}
+        onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
+      />,
+    );
+    const row = container.querySelector('[data-testid="file-row-grid"]') as HTMLElement;
+    expect(row.style.gridTemplateColumns).toMatch(/\d+ch/);
+    expect(row.style.gridTemplateColumns).toContain("minmax(0, 1fr)");
+  });
+
+  it("uses injected metadataColumnWidths for grid tracks [IMPL-FILE_COLUMN_CONFIG]", () => {
+    const { container } = render(
+      <FilePane
+        path="/home/user"
+        files={[mockFiles[0]]}
+        cursor={0}
+        marks={new Set()}
+        bounds={mockBounds}
+        focused={true}
+        onNavigate={mockOnNavigate}
+        onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
+        metadataColumnWidths={{ size: 20, mtime: 22 }}
+      />,
+    );
+    const row = container.querySelector('[data-testid="file-row-grid"]') as HTMLElement;
+    expect(row.style.gridTemplateColumns).toBe("auto auto 22ch 20ch minmax(0, 1fr)");
+  });
 });

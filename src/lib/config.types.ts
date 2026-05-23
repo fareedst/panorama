@@ -224,6 +224,17 @@ export interface FilesCopyConfig {
     sharedButton?: string;
     shareButton?: string;
   };
+  /** [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER] File list column labels */
+  columns?: {
+    columnOrderTitle?: string;
+    mtimeLabel?: string;
+    sizeLabel?: string;
+    nameLabel?: string;
+    moveUp?: string;
+    moveDown?: string;
+    apply?: string;
+    cancel?: string;
+  };
   operations?: {
     copy?: string;
     move?: string;
@@ -426,12 +437,21 @@ export interface ToolbarConfig {
   buttons?: ToolbarButtonOverride[];
 }
 
+/** Metadata for toolbar actions without a keyboard shortcut [REQ-TOOLBAR_SYSTEM] */
+export interface ToolbarActionMeta {
+  description: string;
+  label?: string;
+  icon?: string;
+}
+
 /** Top-level toolbars configuration */
 export interface ToolbarsConfig {
   enabled: boolean;
   workspace: ToolbarConfig;
   pane: ToolbarConfig;
   system: ToolbarConfig;
+  /** Mouse-only (or future) actions: icon/label/description when no keybinding row */
+  actions?: Record<string, ToolbarActionMeta>;
 }
 
 /** Toolbar theme configuration */

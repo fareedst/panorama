@@ -8,9 +8,9 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 
 | Kind | Tokens / artifacts |
 | --- | --- |
-| REQ | [REQ-FILE_MANAGER_PAGE](../tied/requirements/REQ-FILE_MANAGER_PAGE.yaml), [REQ-MULTI_PANE_LAYOUT](../tied/requirements/REQ-MULTI_PANE_LAYOUT.yaml), [REQ-TOOLBAR_SYSTEM](../tied/requirements/REQ-TOOLBAR_SYSTEM.yaml), [REQ-DIRECTORY_NAVIGATION](../tied/requirements/REQ-DIRECTORY_NAVIGATION.yaml), [REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml), [REQ-PANE_DISPLAY_FILTER](../tied/requirements/REQ-PANE_DISPLAY_FILTER.yaml) |
-| ARCH | [ARCH-FILE_MANAGER_HIERARCHY](../tied/architecture-decisions/ARCH-FILE_MANAGER_HIERARCHY.yaml), [ARCH-PANE_LIFECYCLE](../tied/architecture-decisions/ARCH-PANE_LIFECYCLE.yaml) |
-| IMPL | [IMPL-FILE_MANAGER_PAGE](../tied/implementation-decisions/IMPL-FILE_MANAGER_PAGE.yaml), [IMPL-WORKSPACE_VIEW](../tied/implementation-decisions/IMPL-WORKSPACE_VIEW.yaml), [IMPL-FILE_PANE](../tied/implementation-decisions/IMPL-FILE_PANE.yaml), [IMPL-PANE_MANAGEMENT](../tied/implementation-decisions/IMPL-PANE_MANAGEMENT.yaml), [IMPL-LAYOUT_CALCULATOR](../tied/implementation-decisions/IMPL-LAYOUT_CALCULATOR.yaml), [IMPL-TOOLBAR_COMPONENT](../tied/implementation-decisions/IMPL-TOOLBAR_COMPONENT.yaml), [IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml) |
+| REQ | [REQ-FILE_MANAGER_PAGE](../tied/requirements/REQ-FILE_MANAGER_PAGE.yaml), [REQ-MULTI_PANE_LAYOUT](../tied/requirements/REQ-MULTI_PANE_LAYOUT.yaml), [REQ-CONFIG_DRIVEN_FILE_MANAGER](../tied/requirements/REQ-CONFIG_DRIVEN_FILE_MANAGER.yaml), [REQ-TOOLBAR_SYSTEM](../tied/requirements/REQ-TOOLBAR_SYSTEM.yaml), [REQ-DIRECTORY_NAVIGATION](../tied/requirements/REQ-DIRECTORY_NAVIGATION.yaml), [REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml), [REQ-PANE_DISPLAY_FILTER](../tied/requirements/REQ-PANE_DISPLAY_FILTER.yaml) |
+| ARCH | [ARCH-FILE_MANAGER_HIERARCHY](../tied/architecture-decisions/ARCH-FILE_MANAGER_HIERARCHY.yaml), [ARCH-PANE_LIFECYCLE](../tied/architecture-decisions/ARCH-PANE_LIFECYCLE.yaml), [ARCH-CONFIG_DRIVEN_UI](../tied/architecture-decisions/ARCH-CONFIG_DRIVEN_UI.yaml) |
+| IMPL | [IMPL-FILE_MANAGER_PAGE](../tied/implementation-decisions/IMPL-FILE_MANAGER_PAGE.yaml), [IMPL-FILE_COLUMN_CONFIG](../tied/implementation-decisions/IMPL-FILE_COLUMN_CONFIG.yaml), [IMPL-WORKSPACE_VIEW](../tied/implementation-decisions/IMPL-WORKSPACE_VIEW.yaml), [IMPL-FILE_PANE](../tied/implementation-decisions/IMPL-FILE_PANE.yaml), [IMPL-PANE_MANAGEMENT](../tied/implementation-decisions/IMPL-PANE_MANAGEMENT.yaml), [IMPL-LAYOUT_CALCULATOR](../tied/implementation-decisions/IMPL-LAYOUT_CALCULATOR.yaml), [IMPL-TOOLBAR_COMPONENT](../tied/implementation-decisions/IMPL-TOOLBAR_COMPONENT.yaml), [IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml) |
 | Pseudo-code | `tied/implementation-decisions/IMPL-*-pseudocode.md` for the IMPL tokens above |
 
 ## Preferred term vs synonyms
@@ -36,6 +36,11 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 | **Workspace header cross-surface nav** | Header `<nav>` with Mesh Sync link; not pane toolbar |
 | **Workspace header banner** | Top `<header>` strip — title, status row, Diff, cross-surface nav (no layout control) |
 | **Shared sort** | Workspace-wide default sort (`sharedSort`); persisted in snapshot v3; shown on mesh detail as **Shared sort** in workspace snapshot summary |
+| **File column** | Metadata field in pane listing: `mtime`, `size`, or `name` (`FileColumnId`) |
+| **File column order** | Workspace `fileColumns` array order; YAML default; overridable via `view.columns` dialog; persisted in snapshot v4 `fileColumns` |
+| **Tabular file row** | CSS grid row in `FilePane` (`file-row-grid`) with aligned column cells; no listing header row |
+| **Content-measured file columns** | `fileColumnWidthMode: contentFixed` — Size/Time fixed `ch` from max formatted cell text; Name `minmax(0, 1fr)` remainder |
+| **OneColumn shared file column widths** | `metadataColumnWidths` from workspace max Size/Time across all panes when layout is `OneColumn`; Name `minmax(0, 1fr)` per pane |
 | **Mesh detail snapshot sort** | Per-pane sort lines in `workspace-snapshot-summary` | `formatPaneSortSettings` | `WORKSPACE_SNAPSHOT_SUMMARY` |
 | **Share sort** | Sort menu action — copy focused pane sort into `sharedSort` |
 | **Apply shared sort** | Sort menu **Shared** — apply `sharedSort` to focused pane only |
@@ -64,6 +69,8 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 | Mesh Sync (header) | “Mesh Sync” | — | — | `open-mesh-from-workspace`, `NewTabLink` |
 | Shared sort | Sort menu **Shared** / **Share** | `copy.sort.sharedButton` / `shareButton` | — | `sharedSort`, `setSharedSort` |
 | Layout toolbar picker | Layout pop-over options | `copy.layouts.*` | `view.layout` (Ctrl+Shift+L) | `LayoutPickerPopover`, `layoutPickerOpen` |
+| Column order dialog | “Column order” | `copy.columns.*` | `view.columns` (no shortcut) | `ColumnOrderDialog`, `columnOrderDialogOpen`, `fileColumns` |
+| File columns (config) | Column visibility/format defaults | `columns` in `config/files.yaml` | — | `FilesColumnConfig[]` |
 
 ## Named concepts
 
@@ -109,6 +116,11 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 | Layout: tile / one row / column / fullscreen | `Tile`, `OneRow`, `OneColumn`, `Fullscreen` | IMPL-LAYOUT_CALCULATOR |
 | Workspace area measurement | `WORKSPACE_AREA_MEASUREMENT` → `IMPL-LAYOUT_CALCULATOR_WorkspaceAreaMeasurement` | IMPL-LAYOUT_CALCULATOR (+ IMPL-TOOLBAR_COMPONENT display mode) |
 | File row render + scroll | `RenderFileRows`, `ScrollToCursor` | IMPL-FILE_PANE |
+| Tabular file row grid | `TABULAR_FILE_ROW_GRID` | IMPL-FILE_PANE, IMPL-FILE_COLUMN_CONFIG |
+| Measure file column widths | `MEASURE_FILE_COLUMN_WIDTHS` | IMPL-FILE_COLUMN_CONFIG |
+| OneColumn shared metadata widths | `SHARED_METADATA_WIDTHS_ONECOLUMN` | IMPL-WORKSPACE_VIEW, IMPL-FILE_COLUMN_CONFIG |
+| Column order dialog | `COLUMN_ORDER_DIALOG` | IMPL-WORKSPACE_VIEW, IMPL-FILE_COLUMN_CONFIG |
+| Snapshot v4 file columns | `SNAPSHOT_V4_FILE_COLUMNS` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Layout normalization | `NORMALIZE_LAYOUT` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Capture workspace snapshot | `CAPTURE_SNAPSHOT` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Build mesh create payload | `BUILD_MESH_PAYLOAD` | IMPL-WORKSPACE_MESH_BRIDGE |
@@ -158,7 +170,11 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 - **Workspace restore error** — `workspace-restore-error` (unrecovered bootstrap failure)
 - **Workspace restore pending** — `workspace-restore-pending` during client rehydrate
 - **Workspace restore warning** — `workspace-restore-warning` (partial or client recovery)
-- **Workspace snapshot** — v1/v2/v3 JSON in mesh `description.workspaceSnapshot`; v2 adds per-pane `displaySpecId`; v3 adds `sharedSort` (see [mesh-platform-vocabulary.md](mesh-platform-vocabulary.md), [pane-display-filter-vocabulary.md](pane-display-filter-vocabulary.md))
+- **Workspace snapshot** — v1/v2/v3/v4 JSON in mesh `description.workspaceSnapshot`; v2 adds per-pane `displaySpecId`; v3 adds `sharedSort`; v4 adds `fileColumns` (see [mesh-platform-vocabulary.md](mesh-platform-vocabulary.md), [pane-display-filter-vocabulary.md](pane-display-filter-vocabulary.md))
+- **File column order** — `fileColumns` on workspace state; restored from mesh v4; reordered via toolbar `view.columns` dialog
+- **Tabular file row** — `FilePane` grid layout with `file-column-{id}` cells only (no column name header row)
+- **Content-measured file columns** — non-OneColumn layouts size Time/Size from listing content per pane, Name fills remainder
+- **OneColumn shared file column widths** — workspace-wide max Size/Time `ch` passed to every pane for vertical alignment; Name still flex remainder
 - **Active display spec** — `activeDisplaySpecId` on pane state
 - **Hidden item count** — `hiddenCount` when a display spec is active
 - **Loaded spec version** — `loadedSpecVersion` after catalog apply

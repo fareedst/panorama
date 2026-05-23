@@ -25,6 +25,28 @@ PROCEDURE IMPL-TOOLBAR_COMPONENT_MainBehavior(context)
   CALL STEP 1: React components for toolbar system including base and specialized toolbars with compact icon-only button design
   ON error LOG diagnostic with token refs
 
+## ACTIONS_META_PASS_THROUGH
+
+// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_ACTIONS] [REQ-TOOLBAR_SYSTEM] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [IMPL-FILE_COLUMN_CONFIG]: how: WorkspaceView passes toolbars.actions to Toolbar via actionsMeta on workspace/pane/system tiers and compact merged row
+
+```
+PROCEDURE ACTIONS_META_PASS_THROUGH(context)
+  Toolbar props include actionsMeta?: Record<string, ToolbarActionMeta>
+  FOR each action in group.actions CALL deriveToolbarButton(action, keybindings, actionsMeta)
+  WorkspaceToolbar PaneToolbar SystemToolbar forward actionsMeta unchanged
+```
+
+## DERIVE_TOOLBAR_BUTTON_FALLBACK
+
+// [IMPL-TOOLBAR_COMPONENT] [IMPL-TOOLBAR_CONFIG] [ARCH-TOOLBAR_ACTIONS] [REQ-TOOLBAR_SYSTEM]: how: deriveToolbarButton uses keybinding registry first; else toolbars.actions description/icon/label for toolbar-only actions such as view.columns
+
+```
+PROCEDURE DERIVE_TOOLBAR_BUTTON_FALLBACK(context)
+  IF keybinding exists for action THEN icon label shortcut from registry
+  ELSE IF actionsMeta[action] THEN use description icon label; shortcut undefined
+  ToolbarButton renders icon-only when no shortcut; title from description
+```
+
 ## TOOLBAR_COMPACT_TOGGLE
 
 // [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM]: how: leading toggle on first top toolbar switches session toolbarExpanded state; expanded shows three tiers with keystroke badges; compact shows merged single row icon-only; tooltips unchanged

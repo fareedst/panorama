@@ -1,168 +1,133 @@
 # IMPL-FILE_COLUMN_CONFIG essence pseudocode
 
-// [IMPL-FILE_COLUMN_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [REQ-FILE_LISTING]: Top-level Configurable File Column Display: Extended config system with FilesColumnConfig type, added formatDateTime utility, and refactored FilePane to render columns dynamically based on configuration
+// [IMPL-FILE_COLUMN_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [REQ-FILE_LISTING]: Configurable file metadata columns — YAML defaults, workspace state, tabular grid, column-order dialog, mesh snapshot v4.
 
 ## Summary contract
 
 // [IMPL-FILE_COLUMN_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [REQ-FILE_LISTING]: bound module inputs, outputs, and shared data for all runtime blocks below
 
+```
 CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-FILE_COLUMN_CONFIG
-  DATA: state and configuration per implementation_approach
+  INPUT: FilesColumnConfig[] from config/files.yaml columns; workspace fileColumns state; pane files[] per FilePane
+  OUTPUT: visible column order; CSS grid template; formatted cells; normalized snapshot fileColumns
+  DATA: FileColumnId (mtime|size|name); FilesColumnConfig { id, visible?, format? }; MeasuredFileColumnWidths
+```
 
-## AddedColumnsSectionTo
+## ConfigAndTypes
 
-// [IMPL-FILE_COLUMN_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [REQ-FILE_LISTING]: Added columns section to config/files.yaml with visibility control
+// [IMPL-FILE_COLUMN_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: columns in config/files.yaml and FilesConfig; FileColumnId and FilesColumnConfig in config.types.ts; copy.columns labels for dialog
 
-CONTRACT AddedColumnsSectionTo
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+```
+CONFIG_AND_TYPES:
+  columns[] in config/files.yaml — default order mtime, size, name; visible and mtime format
+  copy.columns — columnOrderTitle, mtimeLabel, sizeLabel, nameLabel, moveUp, moveDown, apply, cancel
+  DEFAULT_FILES_CONFIG.columns mirrors YAML defaults
+```
 
-PROCEDURE IMPL-FILE_COLUMN_CONFIG_AddedColumnsSectionTo(context)
-  // Added columns section to config/files.yaml with visibility control
-  CALL Added columns section to config/files.yaml with visibility control
-  ON invalid input OR missing data THEN RETURN without mutation
+## FileColumnsModule
 
-## AddedDefaultColumnsConfiguration
+// [IMPL-FILE_COLUMN_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [REQ-WORKSPACE_MESH_BRIDGE]: how: src/lib/file-columns.ts — visibility, reorder, normalize, measure, grid template, cell format, summary label
 
-// [IMPL-FILE_COLUMN_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [REQ-FILE_LISTING]: Added default columns configuration (mtime, size, name) to DEFAULT_FILES_CONFIG
+```
+PROCEDURE FileColumnsModule(context)
+  visibleIds := getVisibleFileColumns(fileColumns).map(c => c.id)
+  measured := metadataColumnWidths OR measureFileMetadataColumnWidths(files, visibleColumns)
+  gridTemplate := buildFileRowGridTemplate(visibleIds, measured)
+  formatFileColumnCell(file, columnId, columns) — name text; size empty for directories; mtime age or absolute
+  normalizeFileColumns(raw, yamlDefaults) — invalid ids dropped; merge visibility/format from defaults
+  reorderFileColumns(columns, orderedIds) — preserve config fields per id
+  formatFileColumnsLabel(columns) — human label for mesh summary and diff
+  RETURN gridTemplate, visibleIds, normalized columns
+```
 
-CONTRACT AddedDefaultColumnsConfiguration
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+## MeasureFileColumnWidths
 
-PROCEDURE IMPL-FILE_COLUMN_CONFIG_AddedDefaultColumnsConfiguration(context)
-  // Added default columns configuration (mtime
-  CALL Added default columns configuration (mtime
-  // size
-  CALL size
-  // name) to DEFAULT_FILES_CONFIG
-  CALL name) to DEFAULT_FILES_CONFIG
+// [IMPL-FILE_COLUMN_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [REQ-FILE_LISTING]: how: scan formatted size/mtime strings; fixed ch tracks with padding; name uses minmax(0, 1fr) in grid builder
 
-## AddedFileColumnIdTypeAnd
+```
+PROCEDURE MeasureFileColumnWidths(context)
+  FOR each visible size OR mtime column IN pane.files
+    maxLen := max formatted cell length across files (minimum track)
+    EMIT measured[id] := maxLen + cell padding in ch units
+  buildFileRowGridTemplate: size/mtime as "{n}ch"; name as "minmax(0, 1fr)"
+```
 
-// [IMPL-FILE_COLUMN_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [REQ-FILE_LISTING]: Added FileColumnId type and FilesColumnConfig interface to config.types.ts
+## SharedMetadataWidthsOneColumn
 
-CONTRACT AddedFileColumnIdTypeAnd
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+// [IMPL-FILE_COLUMN_CONFIG] [IMPL-WORKSPACE_VIEW] [REQ-MULTI_PANE_LAYOUT] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: OneColumn layout passes workspace max Size/Time ch to every FilePane via metadataColumnWidths
 
-PROCEDURE IMPL-FILE_COLUMN_CONFIG_AddedFileColumnIdTypeAnd(context)
-  // Added FileColumnId type
-  CALL Added FileColumnId type
-  // FilesColumnConfig interface to config.types.ts
-  CALL FilesColumnConfig interface to config.types.ts
+```
+PROCEDURE SharedMetadataWidthsOneColumn(context)
+  IF layout = OneColumn THEN
+    shared := measureFileMetadataColumnWidthsForPanes(panes.map(p => p.files), visibleColumns)
+    PASS shared AS metadataColumnWidths to each FilePane
+  ELSE
+    omit metadataColumnWidths; FilePane measures per pane
+```
 
-## CheckboxAndDirectoryIcon
+## TabularFileRowGrid
 
-// [IMPL-FILE_COLUMN_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [REQ-FILE_LISTING]: Checkbox and directory icon remain fixed, columns render in config order
+// [IMPL-FILE_COLUMN_CONFIG] [IMPL-FILE_PANE] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [REQ-FILE_LISTING]: how: FilePane rows use CSS grid; checkbox and folder icon fixed; no listing header row
 
-CONTRACT CheckboxAndDirectoryIcon
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+```
+PROCEDURE TabularFileRowGrid(context)
+  rowGridTemplate := "auto auto " + metadataGridTemplate
+  FOR each file row
+    RENDER data-testid=file-row-grid style gridTemplateColumns=rowGridTemplate
+    RENDER checkbox + folder icon slot + renderColumn per visible column
+    data-testid=file-column-{id} on each metadata cell
+```
 
-PROCEDURE IMPL-FILE_COLUMN_CONFIG_CheckboxAndDirectoryIcon(context)
-  // Checkbox
-  CALL Checkbox
-  // directory icon remain fixed
-  CALL directory icon remain fixed
-  // columns render in config order
-  CALL columns render in config order
+## ColumnOrderDialog
 
-## ColumnsWithVisible
+// [IMPL-FILE_COLUMN_CONFIG] [IMPL-WORKSPACE_VIEW] [IMPL-TOOLBAR_COMPONENT] [REQ-TOOLBAR_SYSTEM] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: view.columns opens dialog; Up/Down reorder visible columns; Apply calls reorderFileColumns and setFileColumns
 
-// [IMPL-FILE_COLUMN_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [REQ-FILE_LISTING]: false are filtered out
+```
+PROCEDURE ColumnOrderDialog(context)
+  ON view.columns SET columnOrderDialogOpen true
+  draft order := visible column ids only
+  ON Apply SET fileColumns := reorderFileColumns(fileColumns, draftOrder); onClose
+  ON Cancel OR overlay OR Escape onClose without onApply
+  labels from copy.columns; data-testid column-order-dialog, column-order-apply, column-order-up-{id}, column-order-down-{id}
+```
 
-CONTRACT ColumnsWithVisible
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+## SnapshotV4FileColumns
 
-PROCEDURE IMPL-FILE_COLUMN_CONFIG_ColumnsWithVisible(context)
-  // false are filtered out
-  CALL false are filtered out
-  ON invalid input OR missing data THEN RETURN without mutation
+// [IMPL-FILE_COLUMN_CONFIG] [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE]: how: captureWorkspaceSnapshot version 4 includes fileColumns; parse v1–v3 omit uses YAML defaults; diff compares formatFileColumnsLabel
 
-## CreatedFormatDateTimeUtilityFunction
-
-// [IMPL-FILE_COLUMN_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [REQ-FILE_LISTING]: MM:SS formatting
-
-CONTRACT CreatedFormatDateTimeUtilityFunction
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FILE_COLUMN_CONFIG_CreatedFormatDateTimeUtilityFunction(context)
-  // MM:SS formatting
-  CALL MM:SS formatting
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## ExtendedFilesConfigInterfaceWith
-
-// [IMPL-FILE_COLUMN_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [REQ-FILE_LISTING]: Extended FilesConfig interface with optional columns array
-
-CONTRACT ExtendedFilesConfigInterfaceWith
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FILE_COLUMN_CONFIG_ExtendedFilesConfigInterfaceWith(context)
-  // Extended FilesConfig interface with optional columns array
-  CALL Extended FilesConfig interface with optional columns array
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## RefactoredFilePaneRenderingTo
-
-// [IMPL-FILE_COLUMN_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [REQ-FILE_LISTING]: Refactored FilePane rendering to use dynamic column generation via renderColumn helper
-
-CONTRACT RefactoredFilePaneRenderingTo
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FILE_COLUMN_CONFIG_RefactoredFilePaneRenderingTo(context)
-  // Refactored FilePane rendering to use dynamic column generation via renderColumn helper
-  CALL Refactored FilePane rendering to use dynamic column generation via renderColumn helper
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## ThreadedColumnsPropThrough
-
-// [IMPL-FILE_COLUMN_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [REQ-FILE_LISTING]: Threaded columns prop through page.tsx → WorkspaceView.tsx → FilePane.tsx
-
-CONTRACT ThreadedColumnsPropThrough
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FILE_COLUMN_CONFIG_ThreadedColumnsPropThrough(context)
-  // Threaded columns prop through page.tsx → WorkspaceView.tsx → FilePane.tsx
-  CALL Threaded columns prop through page.tsx → WorkspaceView.tsx → FilePane.tsx
-  ON invalid input OR missing data THEN RETURN without mutation
+```
+PROCEDURE SnapshotV4FileColumns(context)
+  ON capture EMIT version 4 with fileColumns deep-copied from workspace state
+  ON parse version >= 4 AND raw.fileColumns NORMALIZE via normalizeFileColumns(raw, yamlDefaults)
+  ON parse v1–v3 OMIT fileColumns; WorkspaceView uses YAML defaults on restore
+  ON diff EMIT field fileColumns when labels differ
+```
 
 ## CodeLocations
 
-// [IMPL-FILE_COLUMN_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [REQ-FILE_LISTING]: map implementing and verifying source files for this IMPL
+// [IMPL-FILE_COLUMN_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: map implementing and verifying source files for this IMPL
 
-// FILE: src/lib/config.types.ts — Added FileColumnId type, FilesColumnConfig interface, columns to FilesConfig
-// FILE: src/lib/config.ts — Added default columns array to DEFAULT_FILES_CONFIG
-// FILE: config/files.yaml — Added columns configuration section
-// FILE: src/lib/files.utils.ts — Added formatDateTime function for YYYY-MM-DD HH:MM:SS format
-// FILE: src/app/files/page.tsx — Extract and pass columns config to WorkspaceView
-// FILE: src/app/files/WorkspaceView.tsx — Accept columns prop and forward to FilePane
-// FILE: src/app/files/components/FilePane.tsx — Accept columns prop, added renderColumn helper, dynamic column rendering
-// FUNCTION: formatDateTime in src/lib/files.utils.ts
-// FUNCTION: renderColumn in src/app/files/components/FilePane.tsx
+```
+// FILE: config/files.yaml — columns defaults; copy.columns; toolbars.actions.view.columns
+// FILE: src/lib/config.types.ts — FileColumnId, FilesColumnConfig, ToolbarActionMeta
+// FILE: src/lib/file-columns.ts — column helpers and grid measurement
+// FILE: src/lib/file-columns.test.ts — unit tests
+// FILE: src/app/files/components/FilePane.tsx — tabular grid rows
+// FILE: src/app/files/components/FilePane.test.tsx — grid and width tests
+// FILE: src/app/files/components/ColumnOrderDialog.tsx — reorder UI
+// FILE: src/app/files/components/ColumnOrderDialog.test.tsx — dialog tests
+// FILE: src/app/files/WorkspaceView.tsx — fileColumns state, view.columns handler, OneColumn shared widths
+// FILE: src/lib/workspace-mesh-bridge.ts — v4 capture/parse/diff/summary label
+// FILE: src/lib/toolbar.utils.ts — deriveToolbarButton fallback to toolbars.actions
+```
 
 ## ErrorHandling
 
-// [IMPL-FILE_COLUMN_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [REQ-FILE_LISTING]: surface recoverable failures without breaking pane invariants
+// [IMPL-FILE_COLUMN_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: invalid snapshot column ids fall back to YAML defaults without breaking pane render
 
+```
 PROCEDURE IMPL-FILE_COLUMN_CONFIG_on_error(context, error)
   LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
+  ON invalid fileColumns raw THEN normalizeFileColumns(null, yamlDefaults)
   ELSE propagate error to caller
+```

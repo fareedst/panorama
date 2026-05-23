@@ -12,18 +12,19 @@ NORMALIZE_LAYOUT(value):
 ```
 
 ## CAPTURE_SNAPSHOT
-# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MULTI_PANE_LAYOUT] [REQ-PANE_DISPLAY_FILTER] [REQ-FILE_SORTING_ADVANCED]
-# how: Copy layout, focus, linked, comparison, sharedSort, and per-pane path/sort/cursor into WorkspaceSnapshot v3; v2+ displaySpecId per pane; layout via NORMALIZE_LAYOUT.
+# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MULTI_PANE_LAYOUT] [REQ-PANE_DISPLAY_FILTER] [REQ-FILE_SORTING_ADVANCED] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [IMPL-FILE_COLUMN_CONFIG]
+# how: Copy layout, focus, linked, comparison, sharedSort, fileColumns, and per-pane path/sort/cursor into WorkspaceSnapshot v4; v2+ displaySpecId per pane; layout via NORMALIZE_LAYOUT.
 
 ```
 CAPTURE_SNAPSHOT(workspaceState):
-  INPUT: workspace panes with activeDisplaySpecId per pane
-  OUTPUT: WorkspaceSnapshot { version, layout, focusIndex, linkedMode, comparisonMode, panes[] }
-  version := 3 (always on capture)
+  INPUT: workspace panes with activeDisplaySpecId per pane; workspace fileColumns
+  OUTPUT: WorkspaceSnapshot { version, layout, focusIndex, linkedMode, comparisonMode, sharedSort, fileColumns, panes[] }
+  version := 4 (always on capture)
   sharedSort := workspace.sharedSort ?? DEFAULT_PANE_SORT
+  fileColumns := deep copy workspace.fileColumns
   FOR each pane IN workspace.panes:
     paneEntry := { path, sortBy, sortDirection, sortDirsFirst, cursor, displaySpecId: pane.activeDisplaySpecId ?? null }
-  RETURN { version, layout: NORMALIZE_LAYOUT(layout) ?? Tile, focusIndex, linkedMode, comparisonMode, sharedSort, panes: paneEntries }
+  RETURN { version, layout: NORMALIZE_LAYOUT(layout) ?? Tile, focusIndex, linkedMode, comparisonMode, sharedSort, fileColumns, panes: paneEntries }
 ```
 
 ## PARSE_DISPLAY_SPEC_ID_FROM_SNAPSHOT_PANE
@@ -51,14 +52,29 @@ BUILD_MESH_PAYLOAD(name, snapshot, note?):
 ```
 
 ## PARSE_SNAPSHOT_FROM_MESH
-# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_DOMAIN_MODEL]
-# how: Parse description JSON (after optional note prefix); else depot-only fallback from mesh.depots roots; null when tag present but invalid JSON and no depots.
+# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_DOMAIN_MODEL] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [IMPL-FILE_COLUMN_CONFIG]
+# how: Parse description JSON (after optional note prefix); v4 fileColumns via normalizeFileColumns; v1–v3 omit fileColumns; else depot-only fallback; null when tag present but invalid JSON and no depots.
 
 ```
 PARSE_SNAPSHOT_FROM_MESH(mesh):
-  IF valid JSON in description THEN RETURN snapshot with NORMALIZE_LAYOUT(layout)
+  IF valid JSON in description THEN
+    version := snapshot.version
+    sharedSort := PARSE_SHARED_SORT(version, raw.sharedSort)
+    fileColumns := IF version >= 4 AND raw.fileColumns THEN normalizeFileColumns(raw.fileColumns, DEFAULT_FILE_COLUMNS) ELSE undefined
+    RETURN snapshot with NORMALIZE_LAYOUT(layout), sharedSort, optional fileColumns
   IF mesh.depots non-empty THEN RETURN depot-only defaults
   RETURN null
+```
+
+## SNAPSHOT_V4_FILE_COLUMNS
+# [IMPL-WORKSPACE_MESH_BRIDGE] [IMPL-FILE_COLUMN_CONFIG] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
+# how: validateWorkspaceSnapshot accepts v1–v4; diffWorkspaceSnapshots compares formatFileColumnsLabel for fileColumns field
+
+```
+SNAPSHOT_V4_FILE_COLUMNS:
+  WORKSPACE_SNAPSHOT_VERSION := 4
+  ON diff saved vs current WHEN fileColumns labels differ EMIT change field fileColumns
+  ON buildWorkspaceRestoreBundle INCLUDE fileColumns in restoreUi when present on parsed snapshot
 ```
 
 ## APPLY_MAX_PANES_LIMIT
@@ -223,18 +239,19 @@ FORMAT_DISPLAY_SPEC_LABEL(displaySpecId, resolve):
 ```
 
 ## WORKSPACE_SNAPSHOT_SUMMARY
-# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_GUI] [REQ-FILE_SORTING_ADVANCED] [REQ-PANE_DISPLAY_FILTER]
-# how: Derive layout/focus/linked/comparison/panePaths plus note, save time, shared sort, and per-pane sort/display filter labels for mesh detail UI.
+# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_GUI] [REQ-FILE_SORTING_ADVANCED] [REQ-PANE_DISPLAY_FILTER] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [IMPL-FILE_COLUMN_CONFIG]
+# how: Derive layout/focus/linked/comparison/panePaths plus note, save time, shared sort, file columns label, and per-pane sort/display filter labels for mesh detail UI.
 
 ```
 WORKSPACE_SNAPSHOT_SUMMARY(snapshot, options):
   note = extractNotePrefixFromDescription(options.description)
   mostRecentSaveTime = options.updatedAt
   sharedSortLabel = FORMAT_PANE_SORT_SETTINGS(snapshot.sharedSort)
+  fileColumnsLabel = IF snapshot.fileColumns?.length THEN formatFileColumnsLabel(snapshot.fileColumns) ELSE undefined
   FOR each pane IN snapshot.panes:
     pane.sortLabel = FORMAT_PANE_SORT_SETTINGS(pane sort fields)
     pane.displayFilterLabel = FORMAT_DISPLAY_SPEC_LABEL(pane.displaySpecId, options.resolveDisplaySpecName)
-  RETURN { layout, focusIndex, linkedMode, comparisonMode, panePaths[], note, mostRecentSaveTime, sharedSortLabel, panes[] }
+  RETURN { layout, focusIndex, linkedMode, comparisonMode, panePaths[], note, mostRecentSaveTime, sharedSortLabel, fileColumnsLabel, panes[] }
 ```
 
 ## MESH_DETAIL_RESTORE_LINK

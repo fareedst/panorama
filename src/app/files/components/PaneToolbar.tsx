@@ -4,7 +4,7 @@
 "use client";
 
 import { Toolbar } from "./Toolbar";
-import type { ToolbarConfig } from "@/lib/config.types";
+import type { ToolbarActionMeta, ToolbarConfig } from "@/lib/config.types";
 
 export interface PaneToolbarProps {
   config: ToolbarConfig;
@@ -13,6 +13,8 @@ export interface PaneToolbarProps {
   disabledActions?: Set<string>;
   showKeystroke?: boolean;
   leadingContent?: React.ReactNode;
+  /** [IMPL-TOOLBAR_COMPONENT] [REQ-TOOLBAR_SYSTEM] toolbars.actions metadata for toolbar-only buttons (ACTIONS_META_PASS_THROUGH) */
+  actionsMeta?: Record<string, ToolbarActionMeta>;
 }
 
 /**
@@ -27,6 +29,7 @@ export function PaneToolbar({
   disabledActions,
   showKeystroke,
   leadingContent,
+  actionsMeta,
 }: PaneToolbarProps) {
   return (
     <Toolbar
@@ -36,6 +39,7 @@ export function PaneToolbar({
       disabledActions={disabledActions}
       showKeystroke={showKeystroke}
       leadingContent={leadingContent}
+      actionsMeta={actionsMeta}
       className="pane-toolbar"
     />
   );

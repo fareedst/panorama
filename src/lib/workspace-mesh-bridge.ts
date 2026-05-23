@@ -10,9 +10,13 @@ import {
   type SortDirection,
 } from "./files.utils";
 import type { Mesh } from "./mesh/domain";
+import type { FilesColumnConfig } from "./config.types";
+import { DEFAULT_FILE_COLUMNS, formatFileColumnsLabel, normalizeFileColumns } from "./file-columns";
 
 export const WORKSPACE_SNAPSHOT_TAG = "workspace-snapshot";
-export const WORKSPACE_SNAPSHOT_VERSION = 3 as const;
+export const WORKSPACE_SNAPSHOT_VERSION = 4 as const;
+/** Legacy meshes may store version 3 snapshots without fileColumns. */
+export const WORKSPACE_SNAPSHOT_VERSION_V3 = 3 as const;
 /** Legacy meshes may store version 2 snapshots without sharedSort. */
 export const WORKSPACE_SNAPSHOT_VERSION_V2 = 2 as const;
 /** Legacy meshes may store version 1 snapshots without displaySpecId. */
@@ -20,6 +24,7 @@ export const WORKSPACE_SNAPSHOT_VERSION_LEGACY = 1 as const;
 
 const ACCEPTED_SNAPSHOT_VERSIONS = [
   WORKSPACE_SNAPSHOT_VERSION,
+  WORKSPACE_SNAPSHOT_VERSION_V3,
   WORKSPACE_SNAPSHOT_VERSION_V2,
   WORKSPACE_SNAPSHOT_VERSION_LEGACY,
 ] as const;
@@ -42,6 +47,8 @@ export type WorkspaceSnapshot = {
   comparisonMode: ComparisonMode;
   /** [REQ-FILE_SORTING_ADVANCED] [REQ-WORKSPACE_MESH_BRIDGE] Workspace-wide default sort for panes */
   sharedSort: PaneSortSettings;
+  /** [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER] v4+ file column order/visibility */
+  fileColumns?: FilesColumnConfig[];
   panes: WorkspaceSnapshotPane[];
 };
 
@@ -52,6 +59,8 @@ export type WorkspaceCaptureInput = {
   comparisonMode: ComparisonMode;
   /** Defaults to DEFAULT_PANE_SORT when omitted */
   sharedSort?: PaneSortSettings;
+  /** [IMPL-FILE_COLUMN_CONFIG] Defaults to DEFAULT_FILE_COLUMNS when omitted */
+  fileColumns?: FilesColumnConfig[];
   panes: WorkspaceSnapshotPane[];
 };
 
@@ -81,8 +90,8 @@ export type DepotSyncOp =
 
 export type DepotForSync = { id: string; name: string; root: string };
 
-// [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] CAPTURE_SNAPSHOT
-/** Build v2 snapshot from live workspace pane state. */
+// [IMPL-WORKSPACE_MESH_BRIDGE] [IMPL-FILE_COLUMN_CONFIG] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] CAPTURE_SNAPSHOT / SNAPSHOT_V4_FILE_COLUMNS
+/** Build v4 snapshot from live workspace pane state (includes fileColumns). */
 export function captureWorkspaceSnapshot(input: WorkspaceCaptureInput): WorkspaceSnapshot {
   return {
     version: WORKSPACE_SNAPSHOT_VERSION,
@@ -91,6 +100,7 @@ export function captureWorkspaceSnapshot(input: WorkspaceCaptureInput): Workspac
     linkedMode: input.linkedMode,
     comparisonMode: input.comparisonMode,
     sharedSort: { ...(input.sharedSort ?? DEFAULT_PANE_SORT) },
+    fileColumns: (input.fileColumns ?? DEFAULT_FILE_COLUMNS).map((c) => ({ ...c })),
     panes: input.panes.map((p) => ({ ...p })),
   };
 }
@@ -190,6 +200,11 @@ export function diffWorkspaceSnapshots(
     "sharedSort",
     formatPaneSortSettings(saved.sharedSort),
     formatPaneSortSettings(current.sharedSort),
+  );
+  push(
+    "fileColumns",
+    formatFileColumnsLabel(saved.fileColumns ?? []),
+    formatFileColumnsLabel(current.fileColumns ?? []),
   );
   push("paneCount", saved.panes.length, current.panes.length);
 
@@ -334,9 +349,13 @@ export function validateWorkspaceSnapshot(raw: unknown): WorkspaceSnapshot | nul
   const validComparison: ComparisonMode[] = ["off", "name", "size", "time"];
   // [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] v3 uses PARSE_SHARED_SORT; v1/v2 default shared sort
   const sharedSort =
-    version >= WORKSPACE_SNAPSHOT_VERSION && raw.sharedSort !== undefined
+    version >= WORKSPACE_SNAPSHOT_VERSION_V3 && raw.sharedSort !== undefined
       ? parseSharedSort(raw.sharedSort)
       : { ...DEFAULT_PANE_SORT };
+  const fileColumns =
+    version >= WORKSPACE_SNAPSHOT_VERSION && raw.fileColumns !== undefined
+      ? normalizeFileColumns(raw.fileColumns, DEFAULT_FILE_COLUMNS)
+      : undefined;
   return {
     version: WORKSPACE_SNAPSHOT_VERSION,
     layout,
@@ -347,6 +366,7 @@ export function validateWorkspaceSnapshot(raw: unknown): WorkspaceSnapshot | nul
     linkedMode: Boolean(raw.linkedMode),
     comparisonMode: validComparison.includes(comparison) ? comparison : "off",
     sharedSort,
+    ...(fileColumns !== undefined ? { fileColumns } : {}),
     panes,
   };
 }
@@ -411,6 +431,7 @@ export type WorkspaceSnapshotSummary = {
   note: string;
   mostRecentSaveTime: string | null;
   sharedSortLabel: string;
+  fileColumnsLabel?: string;
   panes: WorkspaceSnapshotSummaryPane[];
 };
 
@@ -463,6 +484,9 @@ export function workspaceSnapshotSummary(
     note: extractNotePrefixFromDescription(options?.description),
     mostRecentSaveTime: options?.updatedAt?.trim() ? options.updatedAt : null,
     sharedSortLabel: formatPaneSortSettings(snapshot.sharedSort),
+    fileColumnsLabel: snapshot.fileColumns?.length
+      ? formatFileColumnsLabel(snapshot.fileColumns)
+      : undefined,
     panes,
   };
 }

@@ -6,11 +6,18 @@
 
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import type { FileStat, ComparisonMode, EnhancedCompareState } from "@/lib/files.types";
 import type { PaneBounds } from "@/lib/files.layout";
 import type { FilesColumnConfig, FileColumnId } from "@/lib/config.types";
-import { formatSize, getSortLabel, getSortDirectionSymbol, formatDateTime, formatAge, type SortCriterion, type SortDirection } from "@/lib/files.utils";
+import {
+  buildFileRowGridTemplate,
+  formatFileColumnCell,
+  getVisibleFileColumns,
+  measureFileMetadataColumnWidths,
+  type MeasuredFileColumnWidths,
+} from "@/lib/file-columns";
+import { getSortLabel, getSortDirectionSymbol, type SortCriterion, type SortDirection } from "@/lib/files.utils";
 import ContextMenu from "./ContextMenu";
 import type { DisplayFilterSpec } from "@/lib/display-filter.types";
 import { DisplaySpecSelector } from "./DisplaySpecSelector";
@@ -66,6 +73,8 @@ interface FilePaneProps {
   onNavigateParent?: () => void;
   /** [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER] Column configuration */
   columns: FilesColumnConfig[];
+  /** [IMPL-FILE_COLUMN_CONFIG] [REQ-MULTI_PANE_LAYOUT] OneColumn workspace-wide Size/Time ch (skips per-pane measure) */
+  metadataColumnWidths?: MeasuredFileColumnWidths;
   /** Test ID for automation */
   "data-testid"?: string;
   /** [REQ-PANE_DISPLAY_FILTER] Catalog of saved display specs */
@@ -110,6 +119,7 @@ export default function FilePane({
   onFocusRequest,
   onNavigateParent, // [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
   columns, // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
+  metadataColumnWidths,
   "data-testid": dataTestId,
   displaySpecs = [],
   activeDisplaySpecId = null,
@@ -309,51 +319,67 @@ export default function FilePane({
     }
   };
 
+  // [IMPL-FILE_PANE] [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER] TABULAR_FILE_ROW_GRID — how: CSS grid template from measured or injected metadata widths
+  const visibleColumns = getVisibleFileColumns(columns);
+  const visibleColumnIds = visibleColumns.map((c) => c.id);
+  // [IMPL-FILE_PANE] [IMPL-FILE_COLUMN_CONFIG] METADATA_COLUMN_WIDTHS_PROP — how: workspace OneColumn passes metadataColumnWidths to skip per-pane measure
+  const measuredWidths = useMemo(
+    () =>
+      metadataColumnWidths ??
+      measureFileMetadataColumnWidths(files, getVisibleFileColumns(columns)),
+    [metadataColumnWidths, files, columns],
+  );
+  const metadataGridTemplate = buildFileRowGridTemplate(visibleColumnIds, measuredWidths);
+  const rowGridTemplate = metadataGridTemplate
+    ? `auto auto ${metadataGridTemplate}`
+    : "auto auto";
+
   // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
   // Render a single column based on column ID
   const renderColumn = (columnId: FileColumnId, file: FileStat) => {
+    const cellClass = "px-2 truncate tabular-nums";
+    const displayText = formatFileColumnCell(file, columnId, columns);
+
     switch (columnId) {
       case "name":
         return (
           <span
             key="name"
+            data-testid="file-column-name"
             className={`
-              flex-1 truncate
+              ${cellClass}
               ${file.isDirectory
                 ? "text-blue-600 dark:text-blue-400 font-semibold"
                 : "text-zinc-900 dark:text-zinc-100"
               }
             `}
           >
-            {file.name}
+            {displayText}
           </span>
         );
-      
+
       case "size":
-        // Hide size for directories
-        if (file.isDirectory) return null;
         return (
-          <span key="size" className="text-zinc-500 dark:text-zinc-400 text-xs">
-            {formatSize(file.size)}
+          <span
+            key="size"
+            data-testid="file-column-size"
+            className={`${cellClass} text-zinc-500 dark:text-zinc-400 text-xs`}
+          >
+            {displayText}
           </span>
         );
-      
-      case "mtime": {
-        // [IMPL-FILE_AGE_DISPLAY] [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
-        // Support both "age" (relative time) and "absolute" (YYYY-MM-DD HH:MM:SS) formats
-        const column = columns.find(c => c.id === "mtime");
-        const format = column?.format || "age";  // Default to age
-        const displayTime = format === "age" 
-          ? formatAge(file.mtime) 
-          : formatDateTime(file.mtime);
-        
+
+      case "mtime":
         return (
-          <span key="mtime" className="text-zinc-500 dark:text-zinc-400 text-xs">
-            {displayTime}
+          <span
+            key="mtime"
+            data-testid="file-column-mtime"
+            className={`${cellClass} text-zinc-500 dark:text-zinc-400 text-xs`}
+          >
+            {displayText}
           </span>
         );
-      }
-      
+
       default:
         return null;
     }
@@ -438,7 +464,7 @@ export default function FilePane({
             {rawFileCount > 0 ? filterEmptyMessage : "Empty directory"}
           </div>
         ) : (
-          <div className="font-mono text-sm">
+          <div className="font-mono text-sm" data-testid="file-list-table">
             {files.map((file, index) => {
               const isCursor = cursor >= 0 && index === cursor; // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Handle cursor=-1
               const isMarked = marks.has(file.name);
@@ -450,7 +476,7 @@ export default function FilePane({
                   draggable={true}
                   onDragStart={(e) => handleDragStart(e, file, index)}
                   className={`
-                    px-3 py-1 flex items-center gap-2 cursor-pointer
+                    px-3 py-1 grid items-center cursor-pointer
                     transition-colors
                     ${comparisonClass || (
                       isCursor
@@ -463,6 +489,8 @@ export default function FilePane({
                   onClick={() => handleFileClick(index)}
                   onDoubleClick={() => handleFileDoubleClick(file)}
                   onContextMenu={(e) => handleContextMenu(e, file, index)}
+                  data-testid="file-row-grid"
+                  style={{ gridTemplateColumns: rowGridTemplate }}
                 >
                   {/* Mark checkbox [IMPL-FILE_MARKING] [REQ-FILE_MARKING_WEB] */}
                   <input
@@ -470,20 +498,20 @@ export default function FilePane({
                     checked={isMarked}
                     onChange={() => {}} // Controlled input
                     onClick={(e) => handleMarkToggle(file.name, e)}
-                    className="w-4 h-4"
+                    className="w-4 h-4 justify-self-start"
                   />
                   
                   {/* Directory indicator */}
-                  {file.isDirectory && (
-                    <span className="text-blue-600 dark:text-blue-400 font-bold">
-                      📁
-                    </span>
-                  )}
+                  <span className="w-4 text-center justify-self-start">
+                    {file.isDirectory ? (
+                      <span className="text-blue-600 dark:text-blue-400 font-bold" aria-hidden>
+                        📁
+                      </span>
+                    ) : null}
+                  </span>
                   
-                  {/* [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER] Dynamic columns */}
-                  {columns
-                    .filter(col => col.visible !== false)
-                    .map(col => renderColumn(col.id, file))}
+                  {/* [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER] Tabular columns */}
+                  {visibleColumns.map((col) => renderColumn(col.id, file))}
                 </div>
               );
             })}

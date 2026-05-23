@@ -91,6 +91,7 @@ function getIconPath(name: string): React.ReactNode | null {
     'x-circle': <><circle cx="12" cy="12" r="10" /><path d="m15 9-6 6M9 9l6 6" /></>,
     
     // View & Sort
+    'columns': <><rect width="7" height="18" x="3" y="3" rx="1" /><rect width="7" height="18" x="14" y="3" rx="1" /></>,
     'sort': <><path d="m3 16 4 4 4-4M7 20V4M21 8l-4-4-4 4M17 4v16" /></>,
     'compare': <><circle cx="18" cy="18" r="3" /><circle cx="6" cy="6" r="3" /><path d="M13 6h3a2 2 0 0 1 2 2v7M11 18H8a2 2 0 0 1-2-2V9" /></>,
     'eye': <><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></>,

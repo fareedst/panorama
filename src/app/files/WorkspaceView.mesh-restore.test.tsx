@@ -42,6 +42,8 @@ const mockLayout: FilesLayoutConfig = {
 };
 
 const mockColumns = [
+  { id: "mtime" as const, visible: true, format: "age" as const },
+  { id: "size" as const, visible: true },
   { id: "name" as const, visible: true },
 ];
 
@@ -530,6 +532,59 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
       expect(screen.getByTestId("pane-1")).toHaveStyle({ left: "500px" });
     });
     openLayoutPickerAndExpectSelected("OneRow");
+  });
+
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [IMPL-FILE_COLUMN_CONFIG] SNAPSHOT_V4_FILE_COLUMNS — loadedSnapshot fileColumns restore column cell order
+  it("RESTORE_FROM_MESH_applies_fileColumns_from_loaded_snapshot", async () => {
+    const snapshot = captureWorkspaceSnapshot({
+      layout: "Tile",
+      focusIndex: 0,
+      linkedMode: false,
+      comparisonMode: "off",
+      fileColumns: [
+        { id: "name", visible: true },
+        { id: "size", visible: true },
+        { id: "mtime", visible: true, format: "age" },
+      ],
+      panes: [
+        {
+          path: "/pane0",
+          sortBy: "name",
+          sortDirection: "asc",
+          sortDirsFirst: true,
+          cursor: 0,
+        },
+      ],
+    });
+
+    render(
+      <WorkspaceView
+        initialPanes={[{ path: "/pane0", files: mockPaneFiles("/pane0") }]}
+        keybindings={mockKeybindings}
+        copy={mockCopy}
+        layout={mockLayout}
+        columns={mockColumns}
+        toolbars={mockToolbars}
+        loadedSnapshot={snapshot}
+        restoredFromMesh
+        restoreUi={{
+          layout: "Tile",
+          focusIndex: 0,
+          linkedMode: false,
+          comparisonMode: "off",
+          sharedSort: { sortBy: "name", sortDirection: "asc", sortDirsFirst: true },
+        }}
+      />,
+    );
+
+    await waitFor(() => {
+      const pane = screen.getByTestId("pane-0");
+      const row = pane.querySelector('[data-testid="file-row-grid"]');
+      const cells = row?.querySelectorAll("[data-testid^='file-column-']");
+      expect(cells?.[0]).toHaveAttribute("data-testid", "file-column-name");
+      expect(cells?.[1]).toHaveAttribute("data-testid", "file-column-size");
+      expect(cells?.[2]).toHaveAttribute("data-testid", "file-column-mtime");
+    });
   });
 
   // [REQ-WORKSPACE_MESH_BRIDGE] restore_rehydrates_pane_count_paths_and_ui_state — how: restoreUi focusIndex selects focused pane.

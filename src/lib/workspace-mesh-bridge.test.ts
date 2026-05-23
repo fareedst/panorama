@@ -54,6 +54,55 @@ describe("REQ-WORKSPACE_MESH_BRIDGE [IMPL-WORKSPACE_MESH_BRIDGE]", () => {
     expect(baseSnapshot.panes).toHaveLength(2);
     expect(baseSnapshot.layout).toBe("OneRow");
     expect(baseSnapshot.sharedSort.sortBy).toBe("mtime");
+    expect(baseSnapshot.fileColumns?.map((c) => c.id)).toEqual(["mtime", "size", "name"]);
+  });
+
+  // [IMPL-FILE_COLUMN_CONFIG] [REQ-WORKSPACE_MESH_BRIDGE] v4 fileColumns round-trip
+  it("PARSE_SNAPSHOT_FROM_MESH_v4_round_trips_fileColumns", () => {
+    const snapshot = captureWorkspaceSnapshot({
+      layout: "Tile",
+      focusIndex: 0,
+      linkedMode: false,
+      comparisonMode: "off",
+      fileColumns: [
+        { id: "name", visible: true },
+        { id: "mtime", visible: true, format: "absolute" },
+        { id: "size", visible: false },
+      ],
+      panes: [
+        {
+          path: "/tmp/a",
+          sortBy: "name",
+          sortDirection: "asc",
+          sortDirsFirst: true,
+          cursor: 0,
+        },
+      ],
+    });
+    expect(snapshot.version).toBe(4);
+    const payload = buildMeshCreatePayload({ name: "Cols", snapshot });
+    const mesh: Pick<Mesh, "description" | "tags" | "depots"> = {
+      description: payload.description as string,
+      tags: [WORKSPACE_SNAPSHOT_TAG],
+      depots: [],
+    };
+    const parsed = parseWorkspaceSnapshotFromMesh(mesh);
+    expect(parsed?.fileColumns?.map((c) => c.id)).toEqual(["name", "mtime", "size"]);
+    expect(parsed?.fileColumns?.find((c) => c.id === "mtime")?.format).toBe("absolute");
+    expect(parsed?.fileColumns?.find((c) => c.id === "size")?.visible).toBe(false);
+  });
+
+  it("diffWorkspaceSnapshots_reports_fileColumns_change", () => {
+    const current = captureWorkspaceSnapshot({
+      ...baseSnapshot,
+      fileColumns: [
+        { id: "name", visible: true },
+        { id: "size", visible: true },
+        { id: "mtime", visible: true },
+      ],
+    });
+    const changes = diffWorkspaceSnapshots(baseSnapshot, current);
+    expect(changes.some((c) => c.field === "fileColumns")).toBe(true);
   });
 
   // [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] PARSE_SHARED_SORT — v2 snapshots default sharedSort to DEFAULT_PANE_SORT

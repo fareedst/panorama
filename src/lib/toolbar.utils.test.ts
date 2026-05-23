@@ -1,6 +1,7 @@
 // [REQ-TOOLBAR_SYSTEM] [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] MERGE_TOP_TOOLBARS
 import { describe, it, expect } from "vitest";
-import { mergeTopToolbarConfigs } from "./toolbar.utils";
+import { deriveToolbarButton, mergeTopToolbarConfigs } from "./toolbar.utils";
+import type { KeybindingConfig } from "./config.types";
 import type { ToolbarsConfig } from "./config.types";
 
 function makeTier(
@@ -15,6 +16,59 @@ function makeTier(
     groups: [{ name, actions }],
   };
 }
+
+describe("[REQ-TOOLBAR_SYSTEM] deriveToolbarButton", () => {
+  const keybindings: KeybindingConfig[] = [
+    {
+      key: "c",
+      action: "file.copy",
+      description: "Copy files",
+      category: "file-operations",
+    },
+  ];
+
+  it("resolves props from keybinding when present", () => {
+    const props = deriveToolbarButton("file.copy", keybindings);
+    expect(props).toMatchObject({
+      action: "file.copy",
+      description: "Copy files",
+      keystroke: "C",
+    });
+  });
+
+  it("resolves props from toolbars.actions when no keybinding", () => {
+    const props = deriveToolbarButton("view.columns", keybindings, {
+      "view.columns": { description: "Reorder file columns", icon: "columns" },
+    });
+    expect(props).toMatchObject({
+      action: "view.columns",
+      description: "Reorder file columns",
+      icon: "columns",
+      keystroke: "",
+    });
+  });
+
+  it("prefers keybinding over toolbars.actions when both exist", () => {
+    const withBoth: KeybindingConfig[] = [
+      ...keybindings,
+      {
+        key: "x",
+        action: "view.columns",
+        description: "Columns shortcut",
+        category: "view-sort",
+      },
+    ];
+    const props = deriveToolbarButton("view.columns", withBoth, {
+      "view.columns": { description: "Reorder file columns" },
+    });
+    expect(props?.description).toBe("Columns shortcut");
+    expect(props?.keystroke).toBe("X");
+  });
+
+  it("returns null when neither keybinding nor actions meta exists", () => {
+    expect(deriveToolbarButton("unknown.action", keybindings)).toBeNull();
+  });
+});
 
 describe("[REQ-TOOLBAR_SYSTEM] IMPL-TOOLBAR_COMPONENT_MergeTopToolbars", () => {
   it("concatenates enabled top-position tiers in workspace → pane → system order", () => {

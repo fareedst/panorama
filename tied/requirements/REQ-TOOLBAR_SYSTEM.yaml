@@ -24,6 +24,7 @@ REQ-TOOLBAR_SYSTEM:
     - criterion: Compact/expanded toolbar toggle does not clip panes; pane geometry updates when workspace area size changes
     - criterion: Each button displays icon (when available) + keyboard shortcut in compact format; label text only shown as fallback when no icon exists
     - criterion: Toolbar button actions dispatch to same handlers as keyboard shortcuts
+    - criterion: Toolbar group actions listed under toolbars.actions render without a keybinding row
     - criterion: Toolbar rendering does not impact file manager responsiveness
     - criterion: Toolbar styling follows existing theme system in config/theme.yaml
     - criterion: Toolbar visibility, position, and button selection configurable via config/files.yaml
@@ -50,6 +51,7 @@ REQ-TOOLBAR_SYSTEM:
       - src/app/files/components/Toolbar.test.tsx
       - src/app/files/components/ToolbarButton.test.tsx
       - src/app/files/components/ToolbarCompactToggle.test.tsx
+      - src/app/files/WorkspaceView.file-columns.test.tsx
       - src/app/files/WorkspaceView.toolbar-compact.test.tsx
       - src/lib/toolbar.utils.test.ts
     code_annotations:

@@ -4,7 +4,7 @@ ARCH-TOOLBAR_ACTIONS:
   cross_references:
     - REQ-TOOLBAR_SYSTEM
     - REQ-KEYBOARD_SHORTCUTS_COMPLETE
-  decision: Toolbar buttons derive all metadata (icon, label, keystroke, description) from the existing keybinding registry, ensuring consistent behavior between toolbar clicks and keyboard shortcuts.
+  decision: Toolbar buttons derive metadata (icon, label, keystroke, description) from the keybinding registry when present; otherwise from toolbars.actions in config/files.yaml for toolbar-only actions (e.g. view.columns), ensuring consistent dispatch while supporting mouse-only controls without duplicate keybinding rows.
   rationale:
     why: Derive button metadata from keybinding registry to ensure consistency
     problems_solved:
@@ -22,10 +22,12 @@ ARCH-TOOLBAR_ACTIONS:
         - Duplication
       rejected_reason: Single source of truth critical
   implementation_approach:
-    summary: Derive icon, label, keystroke from keybinding registry
+    summary: Derive icon, label, keystroke from keybinding registry or toolbars.actions fallback
     details:
-      - ACTION_ICON_MAP for icon mapping
+      - ACTION_ICON_MAP for icon mapping when keybinding supplies action only
+      - deriveToolbarButton prefers keybinding registry; falls back to toolbars.actions description/icon/label
       - handleToolbarAction dispatch to existing handlers
+      - view.columns toolbar-only action uses toolbars.actions metadata; opens ColumnOrderDialog without keybinding row
       - view.layout workspace toolbar action opens LayoutPickerPopover (icon layout-grid, Ctrl+Shift+L); replaces header layout select
   traceability:
     requirements:
@@ -46,9 +48,9 @@ ARCH-TOOLBAR_ACTIONS:
       date: 2026-02-08T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-22T22:00:00.000Z"
+      date: "2026-05-23T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — view.layout layout picker action
+      reason: LEAP — toolbars.actions fallback for toolbar-only view.columns
     last_validated:
       date: 2026-02-08T00:00:00.000Z
       validator: AI Agent

@@ -1,0 +1,73 @@
+# CITDP change-analysis record — tabular file columns + column-order dialog + snapshot v4
+# change_request_id: REQ-CONFIG_DRIVEN_FILE_MANAGER (file column table slice)
+CITDP-FILE_COLUMN_TABLE:
+  record_identity:
+    change_request_id: REQ-CONFIG_DRIVEN_FILE_MANAGER
+    title: File pane tabular columns, column-order dialog, mesh snapshot v4 fileColumns
+    recorded_at: 2026-05-23
+    workspace_root: /Users/fareed/Documents/dev/node/panorama
+    tied_context:
+      requirements:
+        - REQ-CONFIG_DRIVEN_FILE_MANAGER
+        - REQ-FILE_LISTING
+        - REQ-MULTI_PANE_LAYOUT
+        - REQ-TOOLBAR_SYSTEM
+        - REQ-WORKSPACE_MESH_BRIDGE
+      architecture:
+        - ARCH-CONFIG_DRIVEN_UI
+        - ARCH-WORKSPACE_MESH_BRIDGE
+      implementation:
+        - IMPL-FILE_COLUMN_CONFIG
+        - IMPL-FILE_PANE
+        - IMPL-TOOLBAR_COMPONENT
+        - IMPL-WORKSPACE_MESH_BRIDGE
+        - IMPL-WORKSPACE_VIEW
+  change_definition:
+    current_behavior_prior: |
+      File rows use flex layout; column order is YAML-only; mesh snapshot v3 has no fileColumns.
+    desired_behavior: |
+      CSS grid aligns mtime/size/name without a listing header row; Size and Time tracks use content-measured
+      fixed ch widths and Name uses the remaining pane width (per-pane measure); OneColumn layout uses workspace-wide max
+      Size/Time ch shared by all panes (stacked alignment) with Name flex remainder; view.columns dialog reorders columns;
+      snapshot v4 persists fileColumns on mesh save/restore.
+    unchanged_behavior: |
+      Column visibility and mtime format remain config/files.yaml; no keyboard shortcut for column dialog.
+    non_goals:
+      - Column visibility toggles in dialog
+      - mtime format toggle in dialog
+    success_criteria:
+      - No column header row in file listing (labels only in column-order dialog copy)
+      - OneColumn shared Size/Time ch across panes; Name remainder per pane
+      - Size and Time fixed ch tracks from measured cell text; Name minmax(0, 1fr) remainder
+      - Tabular rows with padded aligned columns
+      - Toolbar view.columns opens reorder dialog
+      - v4 snapshot round-trip for fileColumns
+  impact_analysis:
+    tied_tokens_affected:
+      - IMPL-FILE_COLUMN_CONFIG
+      - IMPL-WORKSPACE_MESH_BRIDGE
+      - REQ-CONFIG_DRIVEN_FILE_MANAGER
+      - REQ-WORKSPACE_MESH_BRIDGE
+    modules_or_boundaries: |
+      src/lib/file-columns.ts; FilePane; WorkspaceView; workspace-mesh-bridge; ColumnOrderDialog
+  risk_analysis:
+    risks:
+      - id: RISK-001
+        description: Snapshot version bump may confuse legacy v3 meshes without fileColumns
+        mitigation: Parse v1-v3 without fileColumns; caller falls back to YAML defaults
+      - id: RISK-002
+        description: Narrow OneColumn panes may truncate name when shared Size/Time ch consume width
+        mitigation: truncate + tabular-nums; per-pane measure on non-OneColumn layouts
+  test_strategy:
+    summary: |
+      Unit tests file-columns.ts and workspace-mesh-bridge v4; FilePane grid tests;
+      ColumnOrderDialog and WorkspaceView handler tests.
+  completion_criteria:
+    verification_gate_notes: Vitest pass; bunx tsc -b; tied_validate_consistency
+  leap_feedback:
+    divergences_from_analysis: OneColumn uses workspace-shared Size/Time ch not equal 1fr per column
+    tied_stack_updates_required:
+      - IMPL-FILE_COLUMN_CONFIG-pseudocode.md SHARED_METADATA_WIDTHS_ONECOLUMN
+      - REQ-CONFIG_DRIVEN_FILE_MANAGER one_column criterion
+    record_status: complete
+    e2e_only_reason: N/A — ColumnOrderDialog and toolbar view.columns covered by Vitest composition; no Playwright required

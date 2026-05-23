@@ -38,14 +38,19 @@ export function ToolbarButton({
 }: ToolbarButtonProps) {
   // [REQ-TOOLBAR_SYSTEM] Only show label if no icon present
   const showLabel = !icon;
-  
+  const hasKeystroke = keystroke.trim().length > 0;
+  const title = hasKeystroke ? `${description} (${keystroke})` : description;
+  const ariaLabel = hasKeystroke
+    ? `${description} - Keyboard shortcut: ${keystroke}`
+    : description;
+
   return (
     <button
       data-testid={`toolbar-${action}`}
       onClick={onClick}
       disabled={disabled}
-      title={`${description} (${keystroke})`}
-      aria-label={`${description} - Keyboard shortcut: ${keystroke}`}
+      title={title}
+      aria-label={ariaLabel}
       className={`
         flex items-center gap-1 px-1.5 py-1 text-xs rounded
         transition-colors duration-150
@@ -58,7 +63,7 @@ export function ToolbarButton({
     >
       {icon && <Icon name={icon} size={16} className="flex-shrink-0" />}
       {showLabel && <span className="font-medium">{label}</span>}
-      {showKeystroke && (
+      {showKeystroke && hasKeystroke && (
         <span
           className="px-1 py-0.5 text-xs rounded bg-gray-200 dark:bg-gray-700 font-mono"
           aria-hidden="true"

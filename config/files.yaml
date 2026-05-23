@@ -26,6 +26,17 @@ copy:
   sort:
     sharedButton: "Shared"
     shareButton: "Share"
+
+  # [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
+  columns:
+    columnOrderTitle: "Column order"
+    mtimeLabel: "Modified"
+    sizeLabel: "Size"
+    nameLabel: "Name"
+    moveUp: "Up"
+    moveDown: "Down"
+    apply: "Apply"
+    cancel: "Cancel"
   
   # File operations
   operations:
@@ -404,6 +415,12 @@ columns:
 toolbars:
   # Global enable/disable
   enabled: true
+
+  # [REQ-TOOLBAR_SYSTEM] Toolbar-only actions (no keybinding row required)
+  actions:
+    view.columns:
+      description: "Reorder file columns"
+      icon: columns
   
   # Workspace toolbar - actions affecting all panes
   workspace:
@@ -414,6 +431,7 @@ toolbars:
         actions:
           - "view.layout"
           - "view.sort"
+          - "view.columns"
           - "view.comparison"
           - "view.displaySpec"
           - "link.toggle"

@@ -4,7 +4,7 @@
 "use client";
 
 import { Toolbar } from "./Toolbar";
-import type { ToolbarConfig } from "@/lib/config.types";
+import type { ToolbarActionMeta, ToolbarConfig } from "@/lib/config.types";
 
 export interface WorkspaceToolbarProps {
   config: ToolbarConfig;
@@ -14,6 +14,8 @@ export interface WorkspaceToolbarProps {
   showKeystroke?: boolean;
   leadingContent?: React.ReactNode;
   singleRow?: boolean;
+  /** [IMPL-TOOLBAR_COMPONENT] [REQ-TOOLBAR_SYSTEM] toolbars.actions for toolbar-only actions (ACTIONS_META_PASS_THROUGH) */
+  actionsMeta?: Record<string, ToolbarActionMeta>;
 }
 
 /**
@@ -29,6 +31,7 @@ export function WorkspaceToolbar({
   showKeystroke,
   leadingContent,
   singleRow,
+  actionsMeta,
 }: WorkspaceToolbarProps) {
   return (
     <Toolbar
@@ -39,6 +42,7 @@ export function WorkspaceToolbar({
       showKeystroke={showKeystroke}
       leadingContent={leadingContent}
       singleRow={singleRow}
+      actionsMeta={actionsMeta}
       className="workspace-toolbar"
     />
   );

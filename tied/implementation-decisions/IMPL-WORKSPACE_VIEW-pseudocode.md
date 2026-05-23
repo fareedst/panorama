@@ -41,6 +41,40 @@ PROCEDURE IMPL-WORKSPACE_VIEW_KeybindingInit(context)
   // REGISTER navigation marking bulk view handlers including view.layout
   CALL REGISTER navigation marking bulk view handlers
 
+## FILE_COLUMNS_STATE
+
+// [IMPL-WORKSPACE_VIEW] [IMPL-FILE_COLUMN_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [REQ-WORKSPACE_MESH_BRIDGE]: how: workspace fileColumns state initialized from YAML or loadedSnapshot; included in captureWorkspaceSnapshot for mesh v4
+
+```
+PROCEDURE FILE_COLUMNS_STATE(context)
+  fileColumns := useState(() => normalizeFileColumns(loadedSnapshotProp?.fileColumns, columns))
+  ON mesh restore setFileColumns(normalizeFileColumns(bundle.snapshot.fileColumns, columns))
+  ON limited client rehydrate WHEN limited.fileColumns setFileColumns(normalizeFileColumns(...))
+  PASS fileColumns to each FilePane as columns prop
+```
+
+## COLUMN_ORDER_DIALOG_HANDLER
+
+// [IMPL-WORKSPACE_VIEW] [IMPL-FILE_COLUMN_CONFIG] [IMPL-TOOLBAR_COMPONENT] [REQ-TOOLBAR_SYSTEM] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: view.columns handler opens ColumnOrderDialog; Apply updates fileColumns; no keyboard shortcut
+
+```
+PROCEDURE COLUMN_ORDER_DIALOG_HANDLER(context)
+  handlers.set("view.columns", () => setColumnOrderDialogOpen(true))
+  RENDER ColumnOrderDialog isOpen=columnOrderDialogOpen columns=fileColumns labels=copy.columns onApply=setFileColumns
+  PASS toolbars.actions as actionsMeta to Toolbar tiers for view.columns button metadata
+```
+
+## SHARED_METADATA_WIDTHS_ONECOLUMN
+
+// [IMPL-WORKSPACE_VIEW] [IMPL-FILE_COLUMN_CONFIG] [REQ-MULTI_PANE_LAYOUT] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: useMemo when layout is OneColumn computes measureFileMetadataColumnWidthsForPanes across all pane files
+
+```
+PROCEDURE SHARED_METADATA_WIDTHS_ONECOLUMN(context)
+  IF layout !== OneColumn THEN metadataColumnWidths := undefined
+  ELSE metadataColumnWidths := measureFileMetadataColumnWidthsForPanes(panes.map(p => p.files), getVisibleFileColumns(fileColumns))
+  PASS metadataColumnWidths to each FilePane
+```
+
 ## LayoutToolbarPicker
 
 // [IMPL-WORKSPACE_VIEW] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-TOOLBAR_LAYOUT] [REQ-MULTI_PANE_LAYOUT] [REQ-TOOLBAR_SYSTEM] [REQ-WORKSPACE_MESH_BRIDGE]: workspace layout selection via toolbar view.layout pop-over

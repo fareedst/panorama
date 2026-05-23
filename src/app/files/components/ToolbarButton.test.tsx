@@ -30,4 +30,33 @@ describe("[REQ-TOOLBAR_SYSTEM] ToolbarButton", () => {
       "Copy files (C)",
     );
   });
+
+  it("omits keystroke from title and aria-label when keystroke is empty", () => {
+    render(
+      <ToolbarButton
+        {...defaultProps}
+        action="view.columns"
+        keystroke=""
+        description="Reorder file columns"
+      />,
+    );
+    const btn = screen.getByTestId("toolbar-view.columns");
+    expect(btn).toHaveAttribute("title", "Reorder file columns");
+    expect(btn).toHaveAttribute("aria-label", "Reorder file columns");
+    expect(screen.queryByText("C")).not.toBeInTheDocument();
+  });
+
+  it("does not render empty keystroke badge in expanded mode", () => {
+    render(
+      <ToolbarButton
+        {...defaultProps}
+        action="view.columns"
+        keystroke=""
+        description="Reorder file columns"
+        showKeystroke
+      />,
+    );
+    const btn = screen.getByTestId("toolbar-view.columns");
+    expect(btn.querySelector(".font-mono")).toBeNull();
+  });
 });

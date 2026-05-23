@@ -1,7 +1,12 @@
 // [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [ARCH-TOOLBAR_ACTIONS] [REQ-TOOLBAR_SYSTEM]: Top-level Toolbar React Component Implementation: React components for toolbar system including base and specialized toolbars with compact icon-only button design
 // Utility functions for toolbar button derivation and formatting
 
-import type { KeybindingConfig, ToolbarConfig, ToolbarsConfig } from "./config.types";
+import type {
+  KeybindingConfig,
+  ToolbarActionMeta,
+  ToolbarConfig,
+  ToolbarsConfig,
+} from "./config.types";
 
 export interface DerivedButtonProps {
   action: string;
@@ -39,6 +44,7 @@ const ACTION_ICON_MAP: Record<string, string> = {
   // View & Sort
   'view.layout': 'layout-grid',
   'view.sort': 'sort',
+  'view.columns': 'columns',
   'view.comparison': 'compare',
   'view.hidden': 'eye',
   'view.displaySpec': 'filter',
@@ -155,26 +161,39 @@ export function formatKeystroke(keybinding: KeybindingConfig): string {
 
 /**
  * Derive complete toolbar button props from action and keybinding registry
- * [ARCH-TOOLBAR_ACTIONS] [IMPL-TOOLBAR_COMPONENT]
+ * [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_ACTIONS] [REQ-TOOLBAR_SYSTEM] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
+ * how: keybinding registry wins; else toolbars.actions metadata for toolbar-only actions (DERIVE_TOOLBAR_BUTTON_FALLBACK)
  */
 export function deriveToolbarButton(
   action: string,
-  registry: KeybindingConfig[]
+  registry: KeybindingConfig[],
+  actionsMeta?: Record<string, ToolbarActionMeta>,
 ): DerivedButtonProps | null {
-  const keybinding = registry.find(kb => kb.action === action);
-  
-  if (!keybinding) {
-    console.warn(`[REQ-TOOLBAR_SYSTEM] No keybinding found for action: ${action}`);
-    return null;
+  const keybinding = registry.find((kb) => kb.action === action);
+
+  if (keybinding) {
+    return {
+      action,
+      icon: deriveIconFromAction(action),
+      label: deriveLabelFromDescription(keybinding.description),
+      keystroke: formatKeystroke(keybinding),
+      description: keybinding.description,
+    };
   }
 
-  return {
-    action,
-    icon: deriveIconFromAction(action),
-    label: deriveLabelFromDescription(keybinding.description),
-    keystroke: formatKeystroke(keybinding),
-    description: keybinding.description,
-  };
+  const meta = actionsMeta?.[action];
+  if (meta) {
+    return {
+      action,
+      icon: meta.icon ?? deriveIconFromAction(action),
+      label: meta.label ?? deriveLabelFromDescription(meta.description),
+      keystroke: "",
+      description: meta.description,
+    };
+  }
+
+  console.warn(`[REQ-TOOLBAR_SYSTEM] No keybinding or toolbars.actions entry for: ${action}`);
+  return null;
 }
 
 // [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM] MERGE_TOP_TOOLBARS: how: concat enabled top-position workspace, pane, system groups for compact single-row render
