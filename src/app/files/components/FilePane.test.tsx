@@ -258,6 +258,26 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
     
     expect(screen.getByText("Empty directory")).toBeInTheDocument();
   });
+
+  // [IMPL-SORT_FILTER] [REQ-FILE_SORTING_ADVANCED]: footer hidden when empty listing and no marks/hidden
+  it("should not render footer when directory empty and no marks [REQ-FILE_SORTING_ADVANCED]", () => {
+    render(
+      <FilePane
+        path="/home/user/empty"
+        files={[]}
+        cursor={0}
+        marks={new Set()}
+        bounds={mockBounds}
+        focused={true}
+        onNavigate={mockOnNavigate}
+        onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
+      />,
+    );
+
+    expect(screen.queryByText(/Sort:/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/\d+ \/ \d+/)).not.toBeInTheDocument();
+  });
   
   it("should display file count in footer", () => {
     render(

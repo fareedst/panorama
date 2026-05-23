@@ -34,7 +34,11 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 | **Pane management** | “add/remove split” — gated by `layout.allowPaneManagement` and `layout.maxPanes` |
 | **Cross-surface link** | New-tab link between File Manager workspace and Mesh GUI ([mesh-platform-vocabulary.md](mesh-platform-vocabulary.md)) |
 | **Workspace header cross-surface nav** | Header `<nav>` with Mesh Sync link; not pane toolbar |
-| **Workspace header banner** | Top `<header>` strip — title, status row, Diff, cross-surface nav, layout selector |
+| **Workspace header banner** | Top `<header>` strip — title, status row, Diff, cross-surface nav (no layout control) |
+| **Shared sort** | Workspace-wide default sort (`sharedSort`); persisted in snapshot v3 |
+| **Share sort** | Sort menu action — copy focused pane sort into `sharedSort` |
+| **Apply shared sort** | Sort menu **Shared** — apply `sharedSort` to focused pane only |
+| **Layout toolbar picker** | `view.layout` → `LayoutPickerPopover`; replaces header layout `<select>` |
 | **Workspace header status row** | `workspace-header-status` — groups loaded name, restore warnings, and bootstrap errors below title |
 | **Layout normalization** | Map config/UI aliases to canonical `LayoutType` — `normalizeLayoutType`, pseudo block `NORMALIZE_LAYOUT` ([IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml)) |
 | **Mesh restore pending** | Server did not hydrate panes; client will rehydrate from `/api/mesh/:meshId` | prop `meshRestorePending` |
@@ -57,6 +61,8 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 | Container dimensions | — | — | — | `containerWidth`, `containerHeight` |
 | Focused pane | (visual focus ring) | — | `navigate.tab` | `focusIndex`, `setFocusIndex` |
 | Mesh Sync (header) | “Mesh Sync” | — | — | `open-mesh-from-workspace`, `NewTabLink` |
+| Shared sort | Sort menu **Shared** / **Share** | `copy.sort.sharedButton` / `shareButton` | — | `sharedSort`, `setSharedSort` |
+| Layout toolbar picker | Layout pop-over options | `copy.layouts.*` | `view.layout` (Ctrl+Shift+L) | `LayoutPickerPopover`, `layoutPickerOpen` |
 
 ## Named concepts
 
@@ -82,11 +88,14 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 - **Workspace restore bundle** — `WorkspaceRestoreBundle` from `buildWorkspaceRestoreBundle` (initial panes + restore UI props).
 - **Workspace restore warning** — Amber `workspace-restore-warning` when partial server restore or client recovery succeeded (`restoredFromMesh` or `clientRestoredFromMesh` with warning text).
 - **Workspace restore error** — Red `workspace-restore-error` only when `restoreWarning` is set, server did not restore, client has not recovered, and rehydrate is not in progress.
-- **Workspace header banner** — Compact top header (`px-4 py-2`) with title, `workspace-header-status` row (`data-testid="workspace-header-status"`), Diff, cross-surface nav, and layout selector.
+- **Workspace header banner** — Compact top header (`px-4 py-2`) with title, `workspace-header-status` row (`data-testid="workspace-header-status"`), Diff, and cross-surface nav (layout via toolbar picker).
+- **Shared sort** — `sharedSort` on workspace state and mesh snapshot v3; default for new panes; **Share** / **Shared** in sort menu.
+- **Layout toolbar picker** — Pop-over from workspace toolbar `view.layout` (`workspace-layout-picker`).
 - **Workspace header status row** — `workspace-header-status` container below title; holds loaded name, warnings, and errors.
 - **Layout normalization** — `normalizeLayoutType` at snapshot capture, parse, Files page restore, and `WorkspaceView` init so stored aliases (e.g. `oneRow`, `"One Row"`) round-trip to canonical layout geometry.
 - **Restore from mesh** — `/files?meshId={id}` hydrates panes from mesh depots and `description` snapshot JSON.
 - **Workspace header cross-surface nav** — `workspace-cross-surface-nav` with **Mesh Sync** `NewTabLink` to `/mesh` or `/mesh/{meshId}` in a new tab.
+- **Workspace keyboard-shortcuts footer** — removed; shortcut discovery uses toolbar keystroke badges (expanded mode), tooltips (compact mode), and system help actions ([toolbar-keybind-vocabulary.md](toolbar-keybind-vocabulary.md)). Linked mode indicator is toolbar `link.toggle` active state, not a footer strip.
 
 ## Pseudo-code block names
 
@@ -115,9 +124,12 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 | Build workspace restore bundle | `BUILD_WORKSPACE_RESTORE_BUNDLE` | IMPL-WORKSPACE_MESH_BRIDGE |
 | List directory via files API (client) | `LIST_DIRECTORY_VIA_FILES_API` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Header link to Mesh | `WORKSPACE_HEADER_MESH_LINK` | IMPL-WORKSPACE_MESH_BRIDGE |
+| Shared sort workspace | `SharedSortWorkspace` | IMPL-SORT_FILTER |
+| Layout toolbar picker | `LAYOUT_TOOLBAR_PICKER` | IMPL-WORKSPACE_VIEW |
 
 ## Alphabetical index
 
+- **Apply shared sort** — Sort menu **Shared** applies `sharedSort` to focused pane only
 - **Client mesh rehydrate** — client full restore when server bootstrap misses mesh
 - **Client restored from mesh** — `clientRestoredFromMesh` after API recovery
 - **Cross-surface link** — new-tab Mesh ↔ File Manager navigation (`NewTabLink`)
@@ -126,6 +138,7 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 - **Focus** — `focusIndex`
 - **Mesh restore pending** — `meshRestorePending`; skip default startup panes
 - **Loaded workspace name** — header `workspace-loaded-name` when `/files?meshId=` resolves; no redundant success message
+- **Layout toolbar picker** — `view.layout` → `workspace-layout-picker` pop-over
 - **Layout normalization** — `normalizeLayoutType` / `NORMALIZE_LAYOUT`
 - **Layout type** — `tile`, `oneRow`, `oneColumn`, `fullscreen`
 - **Pane** — single listing column
@@ -133,6 +146,8 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 - **Pane management** — add/remove panes
 - **Pane state** — per-pane React state object
 - **Restore from mesh** — `/files?meshId=` server bootstrap + client `restoreUi`
+- **Shared sort** — workspace `sharedSort`; snapshot v3; new-pane default
+- **Share sort** — Sort menu **Share** copies draft sort into `sharedSort`
 - **Update workspace** — save dialog update mode when mesh loaded (`PUT` workspace route)
 - **Workspace** — multi-pane client shell
 - **Workspace header banner** — compact title + status row + controls
@@ -142,7 +157,7 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 - **Workspace restore error** — `workspace-restore-error` (unrecovered bootstrap failure)
 - **Workspace restore pending** — `workspace-restore-pending` during client rehydrate
 - **Workspace restore warning** — `workspace-restore-warning` (partial or client recovery)
-- **Workspace snapshot** — v1/v2 JSON in mesh `description.workspaceSnapshot`; v2 adds per-pane `displaySpecId` (see [mesh-platform-vocabulary.md](mesh-platform-vocabulary.md), [pane-display-filter-vocabulary.md](pane-display-filter-vocabulary.md))
+- **Workspace snapshot** — v1/v2/v3 JSON in mesh `description.workspaceSnapshot`; v2 adds per-pane `displaySpecId`; v3 adds `sharedSort` (see [mesh-platform-vocabulary.md](mesh-platform-vocabulary.md), [pane-display-filter-vocabulary.md](pane-display-filter-vocabulary.md))
 - **Active display spec** — `activeDisplaySpecId` on pane state
 - **Hidden item count** — `hiddenCount` when a display spec is active
 - **Loaded spec version** — `loadedSpecVersion` after catalog apply

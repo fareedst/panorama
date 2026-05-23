@@ -1,43 +1,55 @@
-// [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED]: Top-level Client-Side Sort and Filter Functions: Sort functions in files.utils.ts with comparator dispatch
-// Sort dialog component for file manager
-
 "use client";
 
+// [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED]: Sort dialog with workspace Shared/Share actions
+
 import { useState } from "react";
-import type { SortCriterion, SortDirection } from "@/lib/files.utils";
+import {
+  paneSortSettingsEqual,
+  type PaneSortSettings,
+  type SortCriterion,
+  type SortDirection,
+} from "@/lib/files.utils";
 
 interface SortDialogProps {
-  /** Whether dialog is open */
   isOpen: boolean;
-  /** Current sort criterion */
   currentCriterion: SortCriterion;
-  /** Current sort direction */
   currentDirection: SortDirection;
-  /** Whether directories are sorted first */
   currentDirsFirst: boolean;
-  /** Callback when sort settings change */
+  paneSort: PaneSortSettings;
+  sharedSort: PaneSortSettings;
+  sharedButtonLabel?: string;
+  shareButtonLabel?: string;
   onApply: (criterion: SortCriterion, direction: SortDirection, dirsFirst: boolean) => void;
-  /** Callback to close dialog */
+  onApplyShared: () => void;
+  onShareToWorkspace: (settings: PaneSortSettings) => void;
   onClose: () => void;
 }
 
+type SortDialogBodyProps = Omit<SortDialogProps, "isOpen">;
+
 /**
- * SortDialog component - allows user to configure file sorting
- * [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED]
+ * SortDialogBody — draft sort state; remounts when pane sort props change [IMPL-SORT_FILTER]
  */
-export default function SortDialog({
-  isOpen,
+function SortDialogBody({
   currentCriterion,
   currentDirection,
   currentDirsFirst,
+  paneSort,
+  sharedSort,
+  sharedButtonLabel = "Shared",
+  shareButtonLabel = "Share",
   onApply,
+  onApplyShared,
+  onShareToWorkspace,
   onClose,
-}: SortDialogProps) {
+}: SortDialogBodyProps) {
   const [criterion, setCriterion] = useState<SortCriterion>(currentCriterion);
   const [direction, setDirection] = useState<SortDirection>(currentDirection);
   const [dirsFirst, setDirsFirst] = useState(currentDirsFirst);
 
-  if (!isOpen) return null;
+  const paneMatchesShared = paneSortSettingsEqual(paneSort, sharedSort);
+  const shareDisabled = paneMatchesShared;
+  const sharedDisabled = paneMatchesShared;
 
   const handleApply = () => {
     onApply(criterion, direction, dirsFirst);
@@ -57,16 +69,17 @@ export default function SortDialog({
       className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
       onClick={onClose}
       onKeyDown={handleKeyDown}
+      data-testid="sort-dialog-overlay"
     >
       <div
         className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-96 max-w-[90vw]"
+        data-testid="sort-dialog"
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
           Sort Files
         </h2>
 
-        {/* Sort Criterion */}
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
             Sort by:
@@ -96,7 +109,6 @@ export default function SortDialog({
           </div>
         </div>
 
-        {/* Sort Direction */}
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
             Order:
@@ -127,8 +139,7 @@ export default function SortDialog({
           </div>
         </div>
 
-        {/* Directories First */}
-        <div className="mb-6">
+        <div className="mb-4">
           <label className="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded">
             <input
               type="checkbox"
@@ -140,15 +151,46 @@ export default function SortDialog({
           </label>
         </div>
 
-        {/* Buttons */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          <button
+            type="button"
+            data-testid="sort-dialog-shared"
+            disabled={sharedDisabled}
+            onClick={() => {
+              onApplyShared();
+              onClose();
+            }}
+            className="px-3 py-1.5 text-sm border border-zinc-300 dark:border-zinc-600 rounded disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100"
+          >
+            {sharedButtonLabel}
+          </button>
+          <button
+            type="button"
+            data-testid="sort-dialog-share"
+            disabled={shareDisabled}
+            onClick={() => {
+              onShareToWorkspace({
+                sortBy: criterion,
+                sortDirection: direction,
+                sortDirsFirst: dirsFirst,
+              });
+            }}
+            className="px-3 py-1.5 text-sm border border-zinc-300 dark:border-zinc-600 rounded disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100"
+          >
+            {shareButtonLabel}
+          </button>
+        </div>
+
         <div className="flex justify-end space-x-3">
           <button
+            type="button"
             onClick={onClose}
             className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
           >
             Cancel
           </button>
           <button
+            type="button"
             onClick={handleApply}
             className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded transition-colors"
           >
@@ -161,5 +203,19 @@ export default function SortDialog({
         </div>
       </div>
     </div>
+  );
+}
+
+/**
+ * SortDialog — configure file sorting; Share/Shared workspace sort [IMPL-SORT_FILTER] [REQ-FILE_SORTING_ADVANCED]
+ */
+export default function SortDialog({ isOpen, ...props }: SortDialogProps) {
+  if (!isOpen) return null;
+  const { currentCriterion, currentDirection, currentDirsFirst } = props;
+  return (
+    <SortDialogBody
+      key={`${currentCriterion}:${currentDirection}:${currentDirsFirst}`}
+      {...props}
+    />
   );
 }

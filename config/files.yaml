@@ -22,6 +22,10 @@ copy:
     oneRow: "One Row"
     oneColumn: "One Column"
     fullscreen: "Fullscreen"
+
+  sort:
+    sharedButton: "Shared"
+    shareButton: "Share"
   
   # File operations
   operations:
@@ -227,6 +231,14 @@ keybindings:
     category: "marking"
   
   # View & Sort
+  - key: "l"
+    modifiers:
+      ctrl: true
+      shift: true
+    action: "view.layout"
+    description: "Choose workspace layout"
+    category: "view-sort"
+
   - key: "s"
     action: "view.sort"
     description: "Open sort menu"
@@ -400,6 +412,7 @@ toolbars:
     groups:
       - name: "Layout"
         actions:
+          - "view.layout"
           - "view.sort"
           - "view.comparison"
           - "view.displaySpec"

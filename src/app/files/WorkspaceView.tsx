@@ -17,7 +17,14 @@ import { calculateLayout, normalizeLayoutType, type LayoutType } from "@/lib/fil
 import { buildEnhancedComparisonIndex } from "@/lib/files.comparison";
 import { globalDirectoryHistory } from "@/lib/files.history";
 import { globalBookmarkManager } from "@/lib/files.bookmarks";
-import { sortFiles, describeFileComparison, type SortCriterion, type SortDirection } from "@/lib/files.utils";
+import {
+  sortFiles,
+  describeFileComparison,
+  DEFAULT_PANE_SORT,
+  type PaneSortSettings,
+  type SortCriterion,
+  type SortDirection,
+} from "@/lib/files.utils";
 import { initializeKeybindingRegistry, matchKeybinding } from "@/lib/files.keybinds";
 import type { KeybindingConfig, FilesCopyConfig, FilesLayoutConfig, ToolbarsConfig } from "@/lib/config.types";
 import FilePane from "./components/FilePane";
@@ -26,6 +33,7 @@ import ProgressDialog from "./components/ProgressDialog";
 import GotoDialog from "./components/GotoDialog";
 import BookmarkDialog from "./components/BookmarkDialog";
 import SortDialog from "./components/SortDialog";
+import { LayoutPickerPopover } from "./components/LayoutPickerPopover";
 import RenameDialog from "./components/RenameDialog";
 import { InfoPanel } from "./components/InfoPanel";
 import { PreviewPanel } from "./components/PreviewPanel";
@@ -93,6 +101,7 @@ export type RestoreUiState = {
   focusIndex: number;
   linkedMode: boolean;
   comparisonMode: ComparisonMode;
+  sharedSort?: PaneSortSettings;
 };
 
 // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_LAYOUT_IN_WORKSPACE_VIEW — resolveInitialWorkspaceLayout init.
@@ -275,6 +284,14 @@ export default function WorkspaceView({
     () => restoreUi?.linkedMode ?? layoutConfig.defaultLinkedMode ?? true,
   );
 
+  // [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED] [REQ-WORKSPACE_MESH_BRIDGE] SharedSortWorkspace — workspace sharedSort state; restore from mesh snapshot v3
+  const [sharedSort, setSharedSort] = useState<PaneSortSettings>(
+    () => restoreUi?.sharedSort ?? { ...DEFAULT_PANE_SORT },
+  );
+
+  // [IMPL-WORKSPACE_VIEW] [ARCH-TOOLBAR_LAYOUT] [REQ-MULTI_PANE_LAYOUT] [REQ-TOOLBAR_SYSTEM] LAYOUT_TOOLBAR_PICKER — pop-over open flag for view.layout
+  const [layoutPickerOpen, setLayoutPickerOpen] = useState(false);
+
   // [REQ-PANE_DISPLAY_FILTER] [IMPL-DISPLAY_SPEC_STORE] [IMPL-PANE_DISPLAY_FILTER_UI]
   const [displaySpecStore] = useState<DisplaySpecStore>(() => getDisplaySpecStore());
   const [catalogSpecs, setCatalogSpecs] = useState(() => displaySpecStore.list());
@@ -411,6 +428,9 @@ export default function WorkspaceView({
     setFocusIndex(restoreUi.focusIndex);
     setLinkedMode(restoreUi.linkedMode);
     setComparisonMode(restoreUi.comparisonMode);
+    if (restoreUi.sharedSort) {
+      setSharedSort(restoreUi.sharedSort);
+    }
   }, [restoredFromMesh, restoreUi]);
 
   useEffect(() => {
@@ -433,6 +453,7 @@ export default function WorkspaceView({
       focusIndex,
       linkedMode,
       comparisonMode,
+      sharedSort,
       panes: panes.map((p) => ({
         path: p.path,
         sortBy: p.sortBy,
@@ -442,7 +463,7 @@ export default function WorkspaceView({
         displaySpecId: p.activeDisplaySpecId,
       })),
     });
-  }, [layout, focusIndex, linkedMode, comparisonMode, panes]);
+  }, [layout, focusIndex, linkedMode, comparisonMode, sharedSort, panes]);
 
   // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] DIFF_SAVED_VS_CURRENT
   // how: diffWorkspaceSnapshots(savedSnapshot, current) drives header badge and WorkspaceDiffDialog rows
@@ -541,6 +562,7 @@ export default function WorkspaceView({
           setFocusIndex(bundle.restoreUi.focusIndex);
           setLinkedMode(bundle.restoreUi.linkedMode);
           setComparisonMode(bundle.restoreUi.comparisonMode);
+          setSharedSort(bundle.restoreUi.sharedSort);
           setSavedSnapshot(bundle.snapshot);
           setEffectiveRestoreWarning(clientRestoreWarning);
           setClientRestoredFromMesh(true);
@@ -1072,15 +1094,17 @@ export default function WorkspaceView({
   const handleSortChange = (
     criterion: SortCriterion,
     direction: SortDirection,
-    dirsFirst: boolean
+    dirsFirst: boolean,
+    options?: { singlePaneOnly?: boolean },
   ) => {
     setPanes((prev) => {
       const updated = [...prev];
       
-      // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Apply sort to all panes if linked
-      const panesToUpdate = linkedMode && panes.length > 1
-        ? updated.map((_, idx) => idx) // All panes
-        : [focusIndex]; // Just focused pane
+      // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Apply sort to all panes if linked (unless Shared → single pane)
+      const panesToUpdate =
+        options?.singlePaneOnly || !(linkedMode && panes.length > 1)
+          ? [focusIndex]
+          : updated.map((_, idx) => idx);
       
       for (const paneIdx of panesToUpdate) {
         const pane = updated[paneIdx];
@@ -1130,7 +1154,7 @@ export default function WorkspaceView({
       return;
     }
     
-    // Clone the focused pane's state (path and sort settings)
+    // [IMPL-PANE_MANAGEMENT] [IMPL-SORT_FILTER] [REQ-MULTI_PANE_LAYOUT] [REQ-FILE_SORTING_ADVANCED] Add pane — clone path from focus; sort from workspace sharedSort
     const sourcePane = panes[focusIndex];
     
     try {
@@ -1148,9 +1172,9 @@ export default function WorkspaceView({
           files: listing.files,
           cursor: 0,
           marks: new Set<string>(),
-          sortBy: sourcePane.sortBy,
-          sortDirection: sourcePane.sortDirection,
-          sortDirsFirst: sourcePane.sortDirsFirst,
+          sortBy: sharedSort.sortBy,
+          sortDirection: sharedSort.sortDirection,
+          sortDirsFirst: sharedSort.sortDirsFirst,
           activeDisplaySpecId: sourcePane.activeDisplaySpecId,
           loadedSpecVersion: null,
           hiddenCount: 0,
@@ -1170,7 +1194,7 @@ export default function WorkspaceView({
     } catch (error) {
       console.error("Failed to add pane:", error);
     }
-  }, [panes, focusIndex, layoutConfig, displaySpecStore]);
+  }, [panes, focusIndex, layoutConfig, displaySpecStore, sharedSort]);
   
   /**
    * Remove a pane from the workspace
@@ -1965,7 +1989,11 @@ export default function WorkspaceView({
       handleClearMarks(focusIndex);
     });
     
-    // View & Sort
+    // [IMPL-WORKSPACE_VIEW] [ARCH-TOOLBAR_ACTIONS] [REQ-TOOLBAR_SYSTEM] [REQ-MULTI_PANE_LAYOUT] LAYOUT_TOOLBAR_PICKER — view.layout opens layout picker pop-over
+    handlers.set("view.layout", () => {
+      setLayoutPickerOpen(true);
+    });
+
     handlers.set("view.sort", () => {
       setSortDialog({ isOpen: true });
     });
@@ -2152,8 +2180,9 @@ export default function WorkspaceView({
     if (linkedMode) active.add('link.toggle');
     // showHidden not yet implemented - TODO: add when view.hidden is implemented
     if (comparisonMode !== "off") active.add('view.comparison');
+    if (layoutPickerOpen) active.add('view.layout');
     return active;
-  }, [linkedMode, comparisonMode]);
+  }, [linkedMode, comparisonMode, layoutPickerOpen]);
   
   const disabledActions = useMemo(() => {
     const disabled = new Set<string>();
@@ -2343,23 +2372,6 @@ export default function WorkspaceView({
             </NewTabLink>
           </nav>
 
-          {/* Layout selector */}
-          <div className="flex items-center gap-2 shrink-0">
-            <label className="text-sm text-zinc-600 dark:text-zinc-400">
-              Layout:
-            </label>
-            <select
-              data-testid="workspace-layout-select"
-              value={layout}
-              onChange={(e) => setLayout(e.target.value as LayoutType)}
-              className="px-3 py-1 border border-zinc-300 dark:border-zinc-600 rounded bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
-            >
-              <option value="Tile">Tile</option>
-              <option value="OneRow">One Row</option>
-              <option value="OneColumn">One Column</option>
-              <option value="Fullscreen">Fullscreen</option>
-            </select>
-          </div>
         </div>
       </header>
       
@@ -2475,43 +2487,6 @@ export default function WorkspaceView({
         ))}
       </div>
       
-      {/* Keyboard shortcuts help [REQ-KEYBOARD_SHORTCUTS_COMPLETE] */}
-      <footer className="bg-white dark:bg-zinc-900 border-t border-zinc-200 dark:border-zinc-700 p-2">
-        <div className="flex gap-4 text-xs text-zinc-600 dark:text-zinc-400 font-mono">
-          <span>↑↓: Navigate</span>
-          <span>Enter: Open</span>
-          <span>Backspace: Parent</span>
-          <span>Tab: Next Pane</span>
-          <span>M: Mark</span>
-          <span>Space: Mark+Down</span>
-          <span>Shift+M: Mark All</span>
-          <span>Ctrl+M: Invert</span>
-          <span>Esc: Clear Marks</span>
-          <span className="text-blue-600 dark:text-blue-400">C: Copy</span>
-          <span className="text-blue-600 dark:text-blue-400">V: Move</span>
-          <span className="text-red-600 dark:text-red-400">D: Delete</span>
-          <span className="text-blue-600 dark:text-blue-400">R: Rename</span>
-          <span className="text-green-600 dark:text-green-400">G: Goto</span>
-          <span className="text-green-600 dark:text-green-400">B: Bookmark</span>
-          <span className="text-green-600 dark:text-green-400">Ctrl+B: List</span>
-          <span className="text-green-600 dark:text-green-400">Alt+←→: History</span>
-          <span className="text-yellow-600 dark:text-yellow-400">S: Sort</span>
-          <span className="text-cyan-600 dark:text-cyan-400">I: Info</span>
-          <span className="text-cyan-600 dark:text-cyan-400">Q: Preview</span>
-          {panes.length >= 2 && (
-            <span className="text-purple-600 dark:text-purple-400">
-              `: Compare ({comparisonMode})
-            </span>
-          )}
-          {/* [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Link mode indicator */}
-          {linkedMode && panes.length >= 2 && (
-            <span className="text-blue-600 dark:text-blue-400 font-bold">
-              🔗 L: Linked
-            </span>
-          )}
-        </div>
-      </footer>
-      
       {/* [IMPL-BULK_OPS] [IMPL-OVERWRITE_PROMPT] [REQ-BULK_FILE_OPS] Dialogs */}
       <ConfirmDialog
         title={confirmDialog.title}
@@ -2595,12 +2570,37 @@ export default function WorkspaceView({
       />
       
       {/* [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED] Sort dialog */}
+      <LayoutPickerPopover
+        isOpen={layoutPickerOpen}
+        currentLayout={layout}
+        labels={copy.layouts}
+        onSelect={setLayout}
+        onClose={() => setLayoutPickerOpen(false)}
+      />
+
       <SortDialog
         isOpen={sortDialog.isOpen}
         currentCriterion={panes[focusIndex]?.sortBy || "name"}
         currentDirection={panes[focusIndex]?.sortDirection || "asc"}
         currentDirsFirst={panes[focusIndex]?.sortDirsFirst ?? true}
+        paneSort={{
+          sortBy: panes[focusIndex]?.sortBy ?? "name",
+          sortDirection: panes[focusIndex]?.sortDirection ?? "asc",
+          sortDirsFirst: panes[focusIndex]?.sortDirsFirst ?? true,
+        }}
+        sharedSort={sharedSort}
+        sharedButtonLabel={copy.sort?.sharedButton}
+        shareButtonLabel={copy.sort?.shareButton}
         onApply={handleSortChange}
+        onApplyShared={() =>
+          handleSortChange(
+            sharedSort.sortBy,
+            sharedSort.sortDirection,
+            sharedSort.sortDirsFirst,
+            { singlePaneOnly: true },
+          )
+        }
+        onShareToWorkspace={(settings) => setSharedSort(settings)}
         onClose={() => setSortDialog({ isOpen: false })}
       />
       

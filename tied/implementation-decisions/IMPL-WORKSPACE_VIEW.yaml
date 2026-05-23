@@ -21,42 +21,49 @@ IMPL-WORKSPACE_VIEW:
       - Layout coordination
       - Stable component rendering without warnings
   implementation_approach:
-    summary: Client component with unique dialog keys, useMemo keybinding initialization, and API integration
+    summary: Client component with unique dialog keys, useMemo keybinding initialization, layout toolbar picker, sharedSort state, and API integration
     details:
       - 'API integration: Calls GET /api/files?path=... (not /api/files/list)'
       - 'Critical fix: Removed sortFiles import to prevent client-side fs dependency'
-      - 'Dialog keys: finder-open/finder-closed and search-open/search-closed (not shared ''open''/''closed'')'
+      - 'Dialog keys: finder-open/finder-closed and search-open/search-closed (not shared open/closed)'
       - 'Fixed 2026-02-07: Unique keys prevent React duplicate key warnings'
       - 'Keybinding initialization: useMemo (not useEffect) for synchronous setup'
-      - 'State: panes[] (path, files, cursor, marks), layout, focusIndex'
+      - 'Layout toolbar picker: view.layout opens LayoutPickerPopover; header layout select removed'
+      - 'State: panes[] (path, files, cursor, marks), layout, focusIndex, sharedSort, layoutPickerOpen'
       - Calculate pane bounds using layout algorithms
-      - Created src/app/files/WorkspaceView.tsx with 'use client'
-      - Render header (title, layout selector) and panes
+      - Keyboard-shortcuts footer strip removed; linked indicator via toolbar link.toggle active state
+      - sharedSort workspace state; SortDialog Share/Shared wiring; new panes inherit sharedSort
       - Sorting handled server-side (page.tsx and API route)
       - useEffect for keyboard event listeners
   code_locations:
     files:
       - path: src/app/files/WorkspaceView.tsx
-        description: Workspace client component with fixed dialog keys
-        lines:
-          - 1129
-          - 1145
+        description: Workspace client; layout picker, sharedSort, keybindings
+        lines: []
+      - path: src/app/files/components/LayoutPickerPopover.tsx
+        description: Layout toolbar picker pop-over
+        lines: []
     functions:
       - name: WorkspaceView
         file: src/app/files/WorkspaceView.tsx
-        description: Main workspace component with unique dialog keys
+        description: Main workspace component with layout picker and sharedSort
       - name: handleNavigate
         file: src/app/files/WorkspaceView.tsx
         description: Navigate to directory via API call
   traceability:
     architecture:
       - ARCH-FILE_MANAGER_HIERARCHY
+      - ARCH-TOOLBAR_LAYOUT
     requirements:
       - REQ-DIRECTORY_NAVIGATION
+      - REQ-FILE_SORTING_ADVANCED
       - REQ-KEYBOARD_NAVIGATION
       - REQ-MULTI_PANE_LAYOUT
       - REQ-REACT_SSR_STABILITY
-    tests: []
+      - REQ-TOOLBAR_SYSTEM
+    tests:
+      - src/app/files/WorkspaceView.mesh-restore.test.tsx
+      - src/app/files/components/LayoutPickerPopover.test.tsx
     code_annotations:
       - IMPL-WORKSPACE_VIEW
   related_decisions:
@@ -72,9 +79,9 @@ IMPL-WORKSPACE_VIEW:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-19T16:06:42.636Z"
+      date: "2026-05-22T22:00:00.000Z"
       author: AI Agent
-      reason: IMPL essence_pseudocode retrofit all 58
+      reason: LEAP — LAYOUT_TOOLBAR_PICKER and sharedSort state
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

@@ -83,7 +83,7 @@
 - **Mesh runtime** — Facade for authorize → plan → session → execute (`MeshRuntime`).
 - **Mesh repository** — Persistence (`JsonMeshRepository`, `createMeshRepository`).
 - **Role / permission** — `IMPL-MESH_AUTH_can`, `require`; header `parseMeshRole`.
-- **WorkspaceSnapshot v1** — JSON object under `description.workspaceSnapshot`: `version`, `layout`, `focusIndex`, `linkedMode`, `comparisonMode`, `panes[]` (path, sort, cursor per pane); tag `workspace-snapshot` on save ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)).
+- **WorkspaceSnapshot** — JSON object under `description.workspaceSnapshot`; tag `workspace-snapshot` on save ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)). **v1** — base fields (`layout`, `focusIndex`, `linkedMode`, `comparisonMode`, `panes[]` with path/sort/cursor). **v2** — per-pane `displaySpecId`. **v3** — workspace `sharedSort` (`PaneSortSettings`); capture always writes v3; parse accepts v1/v2/v3 and normalizes to v3 (v1/v2 default `sharedSort` to name/asc/dirs-first).
 - **Workspace update** — `PUT /api/mesh/:meshId/workspace` applies `buildMeshPatchPayload` and `planDepotSync` so mesh metadata and depot roots match the captured snapshot ([IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml)).
 - **Saved snapshot baseline** — Client `savedSnapshot` used by `diffWorkspaceSnapshots`; after update save, set to the exact captured snapshot so the diff badge clears without re-parse drift.
 
@@ -139,7 +139,7 @@
 - **Topology** — graph validation/projection
 - **Saved snapshot baseline** — client baseline for workspace diff; cleared on successful update save
 - **Workspace diff** — live vs saved snapshot comparison (`mesh.diffWorkspace`)
-- **Workspace snapshot** — tag `workspace-snapshot`; `description.workspaceSnapshot` v1 JSON
+- **Workspace snapshot** — tag `workspace-snapshot`; `description.workspaceSnapshot` v1/v2/v3 JSON (v2 `displaySpecId`; v3 `sharedSort`)
 - **Workspace update** — `PUT /api/mesh/:meshId/workspace` from file manager
 
 ## See also

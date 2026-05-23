@@ -29,6 +29,7 @@ REQ-TOOLBAR_SYSTEM:
     - criterion: Toolbar visibility, position, and button selection configurable via config/files.yaml
     - criterion: Toolbars adapt to mobile, tablet, and desktop viewports
     - criterion: User can toggle compact single-row icon-only toolbar vs expanded three-tier layout with keystroke badges; tooltips retain keyboard shortcuts in both modes
+    - criterion: Workspace Layout toolbar group includes view.layout with Ctrl+Shift+L keybind opening layout picker pop-over
   validation_criteria:
     - method: Component tests
       coverage: Button rendering, group layout, keystroke display, ToolbarCompactToggle aria-pressed, showKeystroke=false badge hide with tooltip shortcut retention, mergeTopToolbarConfigs tier order
@@ -66,9 +67,9 @@ REQ-TOOLBAR_SYSTEM:
       date: 2026-02-08T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-22T00:00:00.000Z"
+      date: "2026-05-22T22:00:00.000Z"
       author: AI Agent
-      reason: LEAP — pane layout remeasure on toolbar compact/expanded toggle
+      reason: LEAP — view.layout layout picker in workspace toolbar
     last_validated:
       date: 2026-02-08T00:00:00.000Z
       validator: AI Agent

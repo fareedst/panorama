@@ -16,6 +16,21 @@ global.fetch = vi.fn();
 
 const mockKeybindings = [
   { key: "Tab", action: "navigate.tab", description: "Next pane", category: "navigation" as const },
+  {
+    key: "l",
+    modifiers: { ctrl: true, shift: true },
+    action: "view.layout",
+    description: "Choose workspace layout",
+    category: "view-sort" as const,
+  },
+  { key: "s", action: "view.sort", description: "Open sort menu", category: "view-sort" as const },
+  { key: "l", action: "link.toggle", description: "Toggle linked mode", category: "view-sort" as const },
+  {
+    key: "`",
+    action: "view.comparison",
+    description: "Toggle comparison mode",
+    category: "view-sort" as const,
+  },
 ];
 
 const mockLayout: FilesLayoutConfig = {
@@ -32,7 +47,33 @@ const mockColumns = [
 
 const mockCopy = {
   title: "File Manager",
+  layouts: {
+    tile: "Tile",
+    oneRow: "One Row",
+    oneColumn: "One Column",
+    fullscreen: "Fullscreen",
+  },
 };
+
+const mockToolbars = {
+  enabled: true,
+  workspace: {
+    enabled: true,
+    position: "top" as const,
+    groups: [
+      { name: "Layout", actions: ["view.layout", "view.sort", "view.comparison"] },
+    ],
+  },
+  pane: { enabled: false, position: "hidden" as const, groups: [] },
+  system: { enabled: false, position: "hidden" as const, groups: [] },
+};
+
+function openLayoutPickerAndExpectSelected(layout: LayoutType) {
+  fireEvent.click(screen.getByTestId("toolbar-view.layout"));
+  const option = screen.getByTestId(`workspace-layout-option-${layout}`);
+  expect(option.className).toMatch(/bg-blue/);
+  fireEvent.click(screen.getByTestId("workspace-layout-picker-overlay"));
+}
 
 function mockPaneFiles(dir: string): FileStat[] {
   return [
@@ -85,6 +126,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
         copy={mockCopy}
         layout={mockLayout}
         columns={mockColumns}
+        toolbars={mockToolbars}
         restoredFromMesh
         restoreUi={{
           layout: "OneRow",
@@ -100,8 +142,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
       expect(pane2).toHaveStyle({ top: "0px" });
     });
 
-    expect(screen.getByTestId("workspace-layout-select")).toHaveValue("OneRow");
-    expect(screen.getByDisplayValue("One Row")).toBeInTheDocument();
+    openLayoutPickerAndExpectSelected("OneRow");
   });
 
   // [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_LAYOUT_IN_WORKSPACE_VIEW — how: restoredFromMesh without layout props falls back to Tile.
@@ -113,6 +154,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
         copy={mockCopy}
         layout={mockLayout}
         columns={mockColumns}
+        toolbars={mockToolbars}
         restoredFromMesh
       />,
     );
@@ -177,6 +219,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
         copy={mockCopy}
         layout={mockLayout}
         columns={mockColumns}
+        toolbars={mockToolbars}
         restoredFromMesh
         restoreUi={
           parsed
@@ -194,7 +237,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
     await waitFor(() => {
       expect(screen.getByTestId("pane-2")).toHaveStyle({ top: "0px" });
     });
-    expect(screen.getByTestId("workspace-layout-select")).toHaveValue("OneRow");
+    openLayoutPickerAndExpectSelected("OneRow");
   });
 
   // [REQ-WORKSPACE_MESH_BRIDGE] NORMALIZE_LAYOUT — how: oneColumn alias in JSON parses to OneColumn.
@@ -340,15 +383,16 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
           copy={mockCopy}
           layout={mockLayout}
           columns={mockColumns}
+        toolbars={mockToolbars}
           restoredFromMesh
           restoreLayout={parsed!.layout}
         />,
       );
 
-      await waitFor(() => {
-        expect(screen.getByTestId("workspace-layout-select")).toHaveValue(layout);
+      await waitFor(async () => {
+        await assertGeometry();
       });
-      await assertGeometry();
+      openLayoutPickerAndExpectSelected(layout);
     },
   );
 
@@ -408,15 +452,16 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
         copy={mockCopy}
         layout={mockLayout}
         columns={mockColumns}
+        toolbars={mockToolbars}
         meshId={meshId}
         restoredFromMesh
       />,
     );
 
     await waitFor(() => {
-      expect(screen.getByTestId("workspace-layout-select")).toHaveValue("OneRow");
+      expect(screen.getByTestId("pane-1")).toHaveStyle({ left: "500px" });
     });
-    expect(screen.getByTestId("pane-1")).toHaveStyle({ left: "500px" });
+    openLayoutPickerAndExpectSelected("OneRow");
   });
 
   // [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_LAYOUT_IN_WORKSPACE_VIEW — how: meshId fetch rehydrates when restoredFromMesh false.
@@ -475,15 +520,16 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
         copy={mockCopy}
         layout={mockLayout}
         columns={mockColumns}
+        toolbars={mockToolbars}
         meshId={meshId}
         restoredFromMesh={false}
       />,
     );
 
     await waitFor(() => {
-      expect(screen.getByTestId("workspace-layout-select")).toHaveValue("OneRow");
+      expect(screen.getByTestId("pane-1")).toHaveStyle({ left: "500px" });
     });
-    expect(screen.getByTestId("pane-1")).toHaveStyle({ left: "500px" });
+    openLayoutPickerAndExpectSelected("OneRow");
   });
 
   // [REQ-WORKSPACE_MESH_BRIDGE] restore_rehydrates_pane_count_paths_and_ui_state — how: restoreUi focusIndex selects focused pane.
@@ -495,6 +541,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
         copy={mockCopy}
         layout={mockLayout}
         columns={mockColumns}
+        toolbars={mockToolbars}
         restoredFromMesh
         restoreUi={{
           layout: "Tile",
@@ -520,6 +567,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
         copy={mockCopy}
         layout={{ ...mockLayout, defaultLinkedMode: true }}
         columns={mockColumns}
+        toolbars={mockToolbars}
         restoredFromMesh
         restoreUi={{
           layout: "Tile",
@@ -531,7 +579,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
     );
 
     await waitFor(() => {
-      expect(screen.queryByText(/🔗.*Linked/)).not.toBeInTheDocument();
+      expect(screen.queryAllByText("🔗")).toHaveLength(0);
     });
   });
 
@@ -544,6 +592,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
         copy={mockCopy}
         layout={mockLayout}
         columns={mockColumns}
+        toolbars={mockToolbars}
         restoredFromMesh
         restoreUi={{
           layout: "Tile",
@@ -555,7 +604,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
     );
 
     await waitFor(() => {
-      expect(screen.getByText(/Compare \(name\)/)).toBeInTheDocument();
+      expect(screen.getByTestId("toolbar-view.comparison")).toHaveClass(/bg-blue/);
     });
   });
 
@@ -568,6 +617,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
         copy={mockCopy}
         layout={mockLayout}
         columns={mockColumns}
+        toolbars={mockToolbars}
         restoredFromMesh
         restoreUi={{
           layout: "Tile",
@@ -612,6 +662,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
         copy={mockCopy}
         layout={mockLayout}
         columns={mockColumns}
+        toolbars={mockToolbars}
       />,
     );
     const link = screen.getByTestId("open-mesh-from-workspace");
@@ -630,6 +681,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
         copy={mockCopy}
         layout={mockLayout}
         columns={mockColumns}
+        toolbars={mockToolbars}
         meshId="mesh-no-baseline"
       />,
     );
@@ -659,6 +711,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
         copy={mockCopy}
         layout={mockLayout}
         columns={mockColumns}
+        toolbars={mockToolbars}
         meshId="mesh-with-baseline"
         loadedSnapshot={baseline}
       />,
@@ -675,6 +728,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
         copy={mockCopy}
         layout={mockLayout}
         columns={mockColumns}
+        toolbars={mockToolbars}
         meshId="mesh-name-1"
         loadedMeshName="My Saved Workspace"
         restoredFromMesh
@@ -696,6 +750,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
         copy={mockCopy}
         layout={mockLayout}
         columns={mockColumns}
+        toolbars={mockToolbars}
         meshId="mesh-warn-1"
         loadedMeshName="Truncated Workspace"
         restoredFromMesh
@@ -719,6 +774,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
         copy={mockCopy}
         layout={mockLayout}
         columns={mockColumns}
+        toolbars={mockToolbars}
         meshId="mesh-missing-1"
         restoreWarning="Mesh not found on server; workspace paths and layout may not restore."
       />,
@@ -739,6 +795,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
         copy={mockCopy}
         layout={mockLayout}
         columns={mockColumns}
+        toolbars={mockToolbars}
         meshId="mesh-fallback-1"
         restoredFromMesh
       />,
@@ -761,6 +818,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
         copy={mockCopy}
         layout={mockLayout}
         columns={mockColumns}
+        toolbars={mockToolbars}
         meshId="mesh-restore-nav-1"
       />,
     );
@@ -829,6 +887,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
         copy={mockCopy}
         layout={mockLayout}
         columns={mockColumns}
+        toolbars={mockToolbars}
         meshId={meshId}
         loadedMeshName="Test Mesh"
         loadedSnapshot={oneRowSnapshot}
@@ -923,6 +982,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
         copy={mockCopy}
         layout={{ ...mockLayout, defaultLinkedMode: true }}
         columns={mockColumns}
+        toolbars={mockToolbars}
         meshId={meshId}
         meshRestorePending
         restoreWarning="Mesh not found on server; workspace paths and layout may not restore."
@@ -932,11 +992,11 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
     await waitFor(() => {
       expect(screen.getByTestId("pane-0")).toBeInTheDocument();
       expect(screen.getByTestId("pane-1")).toBeInTheDocument();
-      expect(screen.getByTestId("workspace-layout-select")).toHaveValue("OneRow");
     });
+    openLayoutPickerAndExpectSelected("OneRow");
 
     expect(screen.getByTestId("pane-1").closest(".border-2")).toHaveClass("border-blue-500");
-    expect(screen.queryByText(/🔗.*Linked/)).not.toBeInTheDocument();
+    expect(screen.queryAllByText("🔗")).toHaveLength(0);
     expect(screen.queryByTestId("workspace-restore-error")).not.toBeInTheDocument();
     expect(screen.getByTestId("workspace-restore-warning")).toHaveTextContent(
       "Workspace restored via API",
@@ -1004,6 +1064,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
         copy={mockCopy}
         layout={mockLayout}
         columns={mockColumns}
+        toolbars={mockToolbars}
         meshId={meshId}
         meshRestorePending
         restoreWarning="Mesh not found on server."
@@ -1042,6 +1103,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
         copy={mockCopy}
         layout={mockLayout}
         columns={mockColumns}
+        toolbars={mockToolbars}
         meshId={meshId}
         meshRestorePending
         restoreWarning="Mesh not found on server."

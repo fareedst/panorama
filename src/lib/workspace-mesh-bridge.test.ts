@@ -27,6 +27,7 @@ const baseSnapshot = captureWorkspaceSnapshot({
   focusIndex: 1,
   linkedMode: true,
   comparisonMode: "name",
+  sharedSort: { sortBy: "mtime", sortDirection: "desc", sortDirsFirst: false },
   panes: [
     {
       path: "/tmp/a",
@@ -50,6 +51,78 @@ describe("REQ-WORKSPACE_MESH_BRIDGE [IMPL-WORKSPACE_MESH_BRIDGE]", () => {
     expect(baseSnapshot.version).toBe(WORKSPACE_SNAPSHOT_VERSION);
     expect(baseSnapshot.panes).toHaveLength(2);
     expect(baseSnapshot.layout).toBe("OneRow");
+    expect(baseSnapshot.sharedSort.sortBy).toBe("mtime");
+  });
+
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] PARSE_SHARED_SORT — v2 snapshots default sharedSort to DEFAULT_PANE_SORT
+  it("PARSE_SNAPSHOT_FROM_MESH_v2_defaults_sharedSort", () => {
+    const mesh: Pick<Mesh, "description" | "tags" | "depots"> = {
+      description: JSON.stringify({
+        workspaceSnapshot: {
+          version: 2,
+          layout: "Tile",
+          focusIndex: 0,
+          linkedMode: false,
+          comparisonMode: "off",
+          panes: [
+            {
+              path: "/tmp/a",
+              sortBy: "size",
+              sortDirection: "desc",
+              sortDirsFirst: false,
+              cursor: 0,
+            },
+          ],
+        },
+      }),
+      tags: [WORKSPACE_SNAPSHOT_TAG],
+      depots: [],
+    };
+    const parsed = parseWorkspaceSnapshotFromMesh(mesh);
+    expect(parsed?.version).toBe(WORKSPACE_SNAPSHOT_VERSION);
+    expect(parsed?.sharedSort).toEqual({
+      sortBy: "name",
+      sortDirection: "asc",
+      sortDirsFirst: true,
+    });
+  });
+
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-FILE_SORTING_ADVANCED] CAPTURE_SNAPSHOT v3 — sharedSort round-trips in mesh description
+  it("PARSE_SNAPSHOT_FROM_MESH_v3_round_trips_sharedSort", () => {
+    const snapshot = captureWorkspaceSnapshot({
+      layout: "Tile",
+      focusIndex: 0,
+      linkedMode: false,
+      comparisonMode: "off",
+      sharedSort: { sortBy: "extension", sortDirection: "desc", sortDirsFirst: true },
+      panes: [
+        {
+          path: "/tmp/a",
+          sortBy: "name",
+          sortDirection: "asc",
+          sortDirsFirst: true,
+          cursor: 0,
+        },
+      ],
+    });
+    const payload = buildMeshCreatePayload({ name: "Shared", snapshot });
+    const mesh: Pick<Mesh, "description" | "tags" | "depots"> = {
+      description: payload.description as string,
+      tags: [WORKSPACE_SNAPSHOT_TAG],
+      depots: [],
+    };
+    const parsed = parseWorkspaceSnapshotFromMesh(mesh);
+    expect(parsed?.sharedSort).toEqual(snapshot.sharedSort);
+  });
+
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] DIFF_SAVED_VS_CURRENT — diff reports sharedSort field changes
+  it("diffWorkspaceSnapshots_reports_sharedSort_change", () => {
+    const current = captureWorkspaceSnapshot({
+      ...baseSnapshot,
+      sharedSort: { sortBy: "name", sortDirection: "asc", sortDirsFirst: true },
+    });
+    const changes = diffWorkspaceSnapshots(baseSnapshot, current);
+    expect(changes.some((c) => c.field === "sharedSort")).toBe(true);
   });
 
   it("BUILD_MESH_PAYLOAD_maps_panes_to_local_depots", () => {
@@ -240,6 +313,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE [IMPL-WORKSPACE_MESH_BRIDGE]", () => {
     expect(bundle.initialPanes[0]?.path).toBe("/tmp/a");
     expect(bundle.restoreUi.focusIndex).toBe(1);
     expect(bundle.restoreUi.linkedMode).toBe(true);
+    expect(bundle.restoreUi.sharedSort.sortBy).toBe("mtime");
     expect(bundle.restoreLayout).toBe("OneRow");
     expect(bundle.restorePaneMeta[0]?.cursor).toBe(2);
   });

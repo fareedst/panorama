@@ -49,6 +49,7 @@
 | Diff workspace vs saved | “Diff” (header + Mesh group) | `copy.workspaceMesh.diffButton` | `mesh.diffWorkspace` | `WorkspaceDiffDialog` ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)) |
 | Manage display specs | “Manage display specs…” (dialog title from copy) | `copy.displaySpec.*` | `view.displaySpec` | `DisplaySpecManagerDialog` ([REQ-PANE_DISPLAY_FILTER](../tied/requirements/REQ-PANE_DISPLAY_FILTER.yaml)) |
 | Clear display filter | “No filter” (pane selector) | — | `view.displaySpec.none` | `handleSetActiveDisplaySpec(focusIndex, null)` |
+| Choose workspace layout | Layout pop-over | `copy.layouts.*` | `view.layout` (Ctrl+Shift+L) | `LayoutPickerPopover`, `setLayout` |
 
 ### Action namespace prefixes (stable)
 
@@ -57,7 +58,7 @@
 | `navigate.*` | Directory cursor, enter, parent, tab, home |
 | `file.*` | copy, move, delete, rename, **copyAll**, **moveAll** |
 | `mark.*` | marking ([file-marking-vocabulary.md](file-marking-vocabulary.md)) |
-| `view.*` | sort, comparison mode, hidden files, display filter specs (`view.displaySpec`, `view.displaySpec.none`) |
+| `view.*` | sort, layout picker (`view.layout`), comparison mode, hidden files, display filter specs (`view.displaySpec`, `view.displaySpec.none`) |
 | `link.*` | linked mode toggle |
 | `pane.*` | add, remove, refresh, refresh-all |
 | `search.*` | finder vs content search |
@@ -81,6 +82,7 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 - **Toggle placement rule** — Compact toggle on the **first visible top tier** in order workspace → pane → system (`showWorkspaceTop`, `showPaneTop`, `showSystemTop` in `WorkspaceView`).
 - **leadingContent** — Renders before the first group; vertical separator when groups follow.
 - **Workspace area remeasure** — Compact/expanded toggle changes vertical chrome; `useElementSize` on `workspace-area` updates `containerHeight` and pane bounds ([REQ-MULTI_PANE_LAYOUT](../tied/requirements/REQ-MULTI_PANE_LAYOUT.yaml)).
+- **view.layout** — Opens layout picker pop-over (`LayoutPickerPopover`, `workspace-layout-picker`); replaces header layout `<select>`.
 
 ## Pseudo-code block names
 
@@ -95,6 +97,7 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 | Workspace toolbar display | `WORKSPACE_TOOLBAR_DISPLAY_MODE` → `IMPL-TOOLBAR_COMPONENT_WorkspaceToolbarDisplayMode` | IMPL-TOOLBAR_COMPONENT |
 | Save workspace from UI | `STORE_FROM_WORKSPACE_UI` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Diff saved vs current | `DIFF_SAVED_VS_CURRENT` | IMPL-WORKSPACE_MESH_BRIDGE |
+| Layout toolbar picker | `LAYOUT_TOOLBAR_PICKER` | IMPL-WORKSPACE_VIEW |
 
 ## Alphabetical index
 
@@ -110,6 +113,7 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 - **mesh.saveWorkspace** — Ctrl+Shift+M; workspace Mesh toolbar group (update or save-as-new)
 - **view.displaySpec** — open display spec manager dialog
 - **view.displaySpec.none** — clear active display spec on focused pane
+- **view.layout** — workspace layout picker (Ctrl+Shift+L); icon `layout-grid`
 - **Pane toolbar** — `toolbars.pane`
 - **System toolbar** — `toolbars.system`
 - **Toolbar compact mode** — single merged top row; icon-only buttons

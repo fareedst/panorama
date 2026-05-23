@@ -1,4 +1,3 @@
-# ARCH detail — ARCH-SORT_PIPELINE
 ARCH-SORT_PIPELINE:
   name: Multi-Criteria Sort Pipeline Architecture
   status: Active
@@ -96,7 +95,15 @@ ARCH-SORT_PIPELINE:
       3. Directory Priority: Optional layer that runs before primary sort
       4. Immutability: Returns new sorted array, preserves original
       5. Cursor Preservation: Track filename before/after sort to maintain cursor position
-    details: []
+    details:
+      - 'Client-Side Execution: All sorting happens in browser for instant feedback'
+      - 'Comparator Pattern: Separate comparator functions for each criterion'
+      - 'Cursor Preservation: Track filename before/after sort to maintain cursor position'
+      - 'Directory Priority: Optional layer that runs before primary sort'
+      - 'Immutability: Returns new sorted array, preserves original'
+      - 'Workspace sharedSort: PaneSortSettings default for new panes; persisted in mesh snapshot v3'
+      - Sort menu Share copies dialog draft into sharedSort without resorting until Shared is clicked
+      - Sort menu Shared applies sharedSort to focused pane only (singlePaneOnly bypasses linked-all apply)
   traceability:
     requirements:
       - REQ-FILE_SORTING_ADVANCED
@@ -108,6 +115,6 @@ ARCH-SORT_PIPELINE:
       date: "2026-02-07"
       author: AI Agent
     last_updated:
-      date: "2026-02-07"
+      date: "2026-05-22T22:00:00.000Z"
       author: AI Agent
-      reason: Initial creation for Phase 5
+      reason: LEAP — workspace sharedSort and Sort menu Share/Shared actions

@@ -14,27 +14,41 @@ IMPL-SORT_FILTER:
       - Instant sort updates
       - Multiple criteria support
   implementation_approach:
-    summary: Sort functions in files.utils.ts with comparator dispatch
+    summary: Sort functions in files.utils.ts with comparator dispatch; workspace sharedSort Share/Shared in SortDialog
     details:
       - 'Comparators: byName, bySize, byTime, byExtension'
       - 'Directory priority: if (dirsFirst && a.isDir !== b.isDir)'
+      - 'SharedSortWorkspace: Share updates sharedSort; Shared applies to focused pane via singlePaneOnly'
       - Cursor preservation via filename match after sort
+      - New panes inherit sharedSort not focused pane sort
+      - PaneSortSettings, DEFAULT_PANE_SORT, paneSortSettingsEqual for Shared/Share disable logic
       - sortFiles(files, sortBy, ascending, dirsFirst)
   code_locations:
     files:
       - path: src/lib/files.utils.ts
-        description: Sort and filter utilities
+        description: sortFiles, PaneSortSettings, paneSortSettingsEqual
+        lines: []
+      - path: src/app/files/components/SortDialog.tsx
+        description: Share/Shared workspace sort actions
+        lines: []
+      - path: src/app/files/WorkspaceView.tsx
+        description: sharedSort state, handleSortChange singlePaneOnly
         lines: []
     functions:
       - name: sortFiles
         file: src/lib/files.utils.ts
         description: Main sort function with criteria dispatch
+      - name: paneSortSettingsEqual
+        file: src/lib/files.utils.ts
+        description: Equality for Share/Shared button disable
   traceability:
     architecture:
       - ARCH-SORT_PIPELINE
     requirements:
       - REQ-FILE_SORTING_ADVANCED
-    tests: []
+      - REQ-WORKSPACE_MESH_BRIDGE
+    tests:
+      - src/app/files/components/SortDialog.test.tsx
     code_annotations:
       - IMPL-SORT_FILTER
   related_decisions:
@@ -47,9 +61,9 @@ IMPL-SORT_FILTER:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-19T16:06:42.636Z"
+      date: "2026-05-22T22:00:00.000Z"
       author: AI Agent
-      reason: IMPL essence_pseudocode retrofit all 58
+      reason: LEAP — SharedSortWorkspace and SortDialog Share/Shared
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

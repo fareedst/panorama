@@ -12,17 +12,18 @@ NORMALIZE_LAYOUT(value):
 ```
 
 ## CAPTURE_SNAPSHOT
-# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MULTI_PANE_LAYOUT] [REQ-PANE_DISPLAY_FILTER]
-# how: Copy layout, focus, linked, comparison, and per-pane path/sort/cursor into WorkspaceSnapshot; v2+ includes displaySpecId per pane; layout via NORMALIZE_LAYOUT.
+# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MULTI_PANE_LAYOUT] [REQ-PANE_DISPLAY_FILTER] [REQ-FILE_SORTING_ADVANCED]
+# how: Copy layout, focus, linked, comparison, sharedSort, and per-pane path/sort/cursor into WorkspaceSnapshot v3; v2+ displaySpecId per pane; layout via NORMALIZE_LAYOUT.
 
 ```
 CAPTURE_SNAPSHOT(workspaceState):
   INPUT: workspace panes with activeDisplaySpecId per pane
   OUTPUT: WorkspaceSnapshot { version, layout, focusIndex, linkedMode, comparisonMode, panes[] }
-  version := 2 when any pane has display filter fields else 1
+  version := 3 (always on capture)
+  sharedSort := workspace.sharedSort ?? DEFAULT_PANE_SORT
   FOR each pane IN workspace.panes:
     paneEntry := { path, sortBy, sortDirection, sortDirsFirst, cursor, displaySpecId: pane.activeDisplaySpecId ?? null }
-  RETURN { version, layout: NORMALIZE_LAYOUT(layout) ?? Tile, focusIndex, linkedMode, comparisonMode, panes: paneEntries }
+  RETURN { version, layout: NORMALIZE_LAYOUT(layout) ?? Tile, focusIndex, linkedMode, comparisonMode, sharedSort, panes: paneEntries }
 ```
 
 ## PARSE_DISPLAY_SPEC_ID_FROM_SNAPSHOT_PANE
@@ -88,6 +89,18 @@ APPEND_SNAPSHOT_LAYOUT_WARNINGS(limited, description, existingWarning):
   RETURN restoreWarning
 ```
 
+## PARSE_SHARED_SORT
+# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-FILE_SORTING_ADVANCED]
+# how: v3 snapshots persist sharedSort; v1/v2 omit field and default to DEFAULT_PANE_SORT on validate.
+
+```
+PARSE_SHARED_SORT(snapshotVersion, rawSharedSort):
+  INPUT: snapshot version number, sharedSort object from JSON or undefined
+  OUTPUT: PaneSortSettings normalized to valid criterion/direction/dirsFirst
+  IF snapshotVersion >= 3 AND rawSharedSort present THEN RETURN parseSharedSort(rawSharedSort)
+  RETURN copy of DEFAULT_PANE_SORT
+```
+
 ## BUILD_WORKSPACE_RESTORE_BUNDLE
 # [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-FILE_MANAGER_PAGE]
 # how: Hydrate initialPanes by listing each snapshot pane path; build restoreLayout, restoreUi, restorePaneMeta from limited snapshot.
@@ -101,7 +114,7 @@ BUILD_WORKSPACE_RESTORE_BUNDLE(limited, listDir):
     sortedFiles = sortFiles(files, pane.sortBy, pane.sortDirection, pane.sortDirsFirst)
     initialPanes.push({ path: pane.path, files: sortedFiles })
   restoreLayout = NORMALIZE_LAYOUT(limited.layout) ?? Tile
-  restoreUi = { layout: restoreLayout, focusIndex, linkedMode, comparisonMode from limited }
+  restoreUi = { layout: restoreLayout, focusIndex, linkedMode, comparisonMode, sharedSort: limited.sharedSort }
   restorePaneMeta = map pane sort/cursor fields
   RETURN bundle with snapshot = limited
 ```
@@ -167,7 +180,7 @@ RESTORE_LAYOUT_IN_WORKSPACE_VIEW(meshId, meshRestorePending, restoreLayout, rest
   meshRehydrating = meshRestorePending initially
   clientRestoredFromMesh = false
   useEffect WHEN restoreLayout prop changes THEN setLayout(NORMALIZE_LAYOUT(restoreLayout))
-  useEffect WHEN restoredFromMesh AND restoreUi THEN sync focusIndex, linkedMode, comparisonMode
+  useEffect WHEN restoredFromMesh AND restoreUi THEN sync focusIndex, linkedMode, comparisonMode, sharedSort
   IF meshId present AND NOT meshRehydratedRef THEN
     meshRehydratedRef = true
     FETCH /api/mesh/{meshId}
@@ -188,7 +201,7 @@ RESTORE_LAYOUT_IN_WORKSPACE_VIEW(meshId, meshRestorePending, restoreLayout, rest
   WORKSPACE_HEADER_STATUS: red error only when restoreWarning AND NOT restoredFromMesh AND NOT clientRestoredFromMesh AND NOT meshRehydrating; amber when restoredFromMesh OR clientRestoredFromMesh
   workspace-restore-pending while meshRehydrating
   calculateLayout uses layout for pane bounds (Tile, OneRow, OneColumn, Fullscreen)
-  workspace-layout-select data-testid reflects layoutState
+  layout toolbar picker (view.layout) reflects layoutState; header layout select removed
 ```
 
 ## WORKSPACE_SNAPSHOT_SUMMARY
@@ -293,7 +306,7 @@ UPDATE_EXISTING_WORKSPACE(meshId, snapshot, note?, name?):
 
 ```
 DIFF_SAVED_VS_CURRENT(savedSnapshot, current):
-  changes = diffWorkspaceSnapshots(saved, current)
+  changes = diffWorkspaceSnapshots(saved, current)  // includes layout, focus, linked, comparison, sharedSort, pane fields
   RENDER WorkspaceDiffDialog with field / saved / current rows or no-differences message
   DISABLE action WHEN NOT meshId OR NOT savedSnapshot
 ```

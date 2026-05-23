@@ -1,4 +1,3 @@
-# REQ detail — REQ-FILE_SORTING_ADVANCED
 REQ-FILE_SORTING_ADVANCED:
   name: Advanced Multi-Criteria File Sorting
   category: Functional
@@ -30,16 +29,21 @@ REQ-FILE_SORTING_ADVANCED:
     - criterion: Cursor remains on same file after sorting
     - criterion: Each criterion supports ascending/descending
     - criterion: Optional directories-first toggle
+    - criterion: Share and Shared disabled when focused pane sort equals shared sort
     - criterion: Sort by extension (alphabetical)
     - criterion: Sort by modification time (chronological)
     - criterion: Sort by name (alphabetical)
     - criterion: Sort by size (bytes)
     - criterion: Sort menu accessible via S key
+    - criterion: Sort menu Share saves focused pane sort as workspace shared sort
+    - criterion: Sort menu Shared applies workspace shared sort to focused pane only
   validation_criteria:
     - method: Unit tests
       coverage: All sort criteria and directions
     - method: Unit tests
       coverage: Directory prioritization behavior
+    - method: Unit tests
+      coverage: SortDialog Share/Shared disable and callback behavior
     - method: Integration tests
       coverage: Cursor preservation after sort
   traceability:
@@ -55,15 +59,16 @@ REQ-FILE_SORTING_ADVANCED:
       - REQ-FILE_LISTING
     related_to:
       - REQ-FILE_MARKING_WEB
+      - REQ-WORKSPACE_MESH_BRIDGE
     supersedes: []
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-07T00:00:00.000Z
+      date: "2026-05-22T22:00:00.000Z"
       author: AI Agent
-      reason: Initial creation - adapted from Goful REQ-FILE_SORTING for web
+      reason: LEAP — shared sort Share/Shared and SortDialog tests
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

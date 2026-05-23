@@ -20,7 +20,8 @@ test.describe("workspace mesh bridge E2E [REQ-WORKSPACE_MESH_BRIDGE]", () => {
       await expect(page.getByText("marker-b.txt").first()).toBeVisible({ timeout: 15000 });
 
       // [REQ-WORKSPACE_MESH_BRIDGE] Non-Tile layout must round-trip on restore (OneRow vs Tile differs for 2 panes)
-      await page.getByTestId("workspace-layout-select").selectOption("OneRow");
+      await page.getByTestId("toolbar-view.layout").click();
+      await page.getByTestId("workspace-layout-option-OneRow").click();
 
       await page.getByTestId("save-workspace-mesh-dialog").waitFor({ state: "hidden" });
       await page.keyboard.press("Control+Shift+M");
@@ -47,18 +48,14 @@ test.describe("workspace mesh bridge E2E [REQ-WORKSPACE_MESH_BRIDGE]", () => {
       await expect(filesPage.getByText("marker-a.txt").first()).toBeVisible({ timeout: 10000 });
       await expect(filesPage.getByText("marker-b.txt").first()).toBeVisible({ timeout: 10000 });
 
-      await expect(filesPage.getByTestId("workspace-layout-select")).toHaveValue("OneRow", {
-        timeout: 10000,
-      });
+      await filesPage.getByTestId("toolbar-view.layout").click({ timeout: 10000 });
+      await expect(
+        filesPage.getByTestId("workspace-layout-option-OneRow"),
+      ).toHaveClass(/bg-blue/, { timeout: 5000 });
+      await filesPage.getByTestId("workspace-layout-picker-overlay").click();
 
-      const layoutSelect = filesPage.getByTestId("workspace-layout-select");
-      await layoutSelect.selectOption("Tile");
-      await layoutSelect.evaluate((el) => {
-        const select = el as HTMLSelectElement;
-        select.value = "Tile";
-        select.dispatchEvent(new Event("change", { bubbles: true }));
-      });
-      await expect(layoutSelect).toHaveValue("Tile", { timeout: 5000 });
+      await filesPage.getByTestId("toolbar-view.layout").click();
+      await filesPage.getByTestId("workspace-layout-option-Tile").click();
       await expect(filesPage.getByTestId("workspace-diff-header-button")).toBeVisible({
         timeout: 5000,
       });
@@ -89,7 +86,7 @@ test.describe("workspace mesh bridge E2E [REQ-WORKSPACE_MESH_BRIDGE]", () => {
       const pane1Box = await filesPage.getByTestId("pane-1").boundingBox();
       expect(pane0Box).not.toBeNull();
       expect(pane1Box).not.toBeNull();
-      expect(pane1Box!.x).toBeGreaterThan(pane0Box!.x + 10);
+      expect(pane1Box!.y).toBeGreaterThan(pane0Box!.y + 10);
       await expect(page.getByTestId("mesh-detail")).toBeVisible();
       await filesPage.close();
     } finally {

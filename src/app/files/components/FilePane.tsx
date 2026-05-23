@@ -491,7 +491,8 @@ export default function FilePane({
         )}
       </div>
       
-      {/* Footer with cursor position, sort info, and marked count [IMPL-FILE_MARKING] [IMPL-SORT_FILTER] [REQ-FILE_MARKING_WEB] [REQ-FILE_SORTING_ADVANCED] */}
+      {/* Footer — only when listing or marks/hidden provide non-empty status [IMPL-FILE_MARKING] [IMPL-SORT_FILTER] */}
+      {(files.length > 0 || marks.size > 0 || hiddenCount > 0) && (
       <div className={`
         px-3 py-1 border-t border-zinc-200 dark:border-zinc-700
         bg-zinc-50 dark:bg-zinc-800
@@ -519,6 +520,7 @@ export default function FilePane({
           </span>
         )}
       </div>
+      )}
 
       {/* [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] Context menu */}
       {contextMenu && (

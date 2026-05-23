@@ -37,6 +37,7 @@ const ACTION_ICON_MAP: Record<string, string> = {
   'mark.clear': 'x-circle',
   
   // View & Sort
+  'view.layout': 'layout-grid',
   'view.sort': 'sort',
   'view.comparison': 'compare',
   'view.hidden': 'eye',

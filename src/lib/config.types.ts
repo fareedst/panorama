@@ -220,6 +220,10 @@ export interface FilesCopyConfig {
     oneColumn?: string;
     fullscreen?: string;
   };
+  sort?: {
+    sharedButton?: string;
+    shareButton?: string;
+  };
   operations?: {
     copy?: string;
     move?: string;

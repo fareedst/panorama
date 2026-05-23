@@ -15,6 +15,28 @@ export type SortCriterion = "name" | "size" | "mtime" | "extension";
  */
 export type SortDirection = "asc" | "desc";
 
+/** Per-pane or workspace shared sort triple [IMPL-SORT_FILTER] [REQ-FILE_SORTING_ADVANCED] */
+export type PaneSortSettings = {
+  sortBy: SortCriterion;
+  sortDirection: SortDirection;
+  sortDirsFirst: boolean;
+};
+
+export const DEFAULT_PANE_SORT: PaneSortSettings = {
+  sortBy: "name",
+  sortDirection: "asc",
+  sortDirsFirst: true,
+};
+
+/** [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED] SharedSortWorkspace — disable Share/Shared when focused pane sort equals sharedSort */
+export function paneSortSettingsEqual(a: PaneSortSettings, b: PaneSortSettings): boolean {
+  return (
+    a.sortBy === b.sortBy &&
+    a.sortDirection === b.sortDirection &&
+    a.sortDirsFirst === b.sortDirsFirst
+  );
+}
+
 /**
  * Format file size for display
  * [IMPL-FILES_DATA] [REQ-FILE_LISTING]

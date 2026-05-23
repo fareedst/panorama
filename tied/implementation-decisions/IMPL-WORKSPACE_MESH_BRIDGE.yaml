@@ -1,7 +1,7 @@
 IMPL-WORKSPACE_MESH_BRIDGE:
   name: Workspace Mesh Bridge Implementation
   status: Implemented
-  description: workspace-mesh-bridge.ts (capture, parse, diff, planDepotSync, patch payload, appendSnapshotLayoutWarnings, buildWorkspaceRestoreBundle, listDirectoryViaFilesApi), normalizeLayoutType in files.layout, SaveWorkspaceMeshDialog (update/create), WorkspaceDiffDialog, NewTabLink, WorkspaceView store/restore/update/diff with meshRestorePending client full rehydrate, compact header banner with WORKSPACE_HEADER_STATUS (pending, amber warnings, red errors), FilesPage meshId bootstrap, PUT /api/mesh/:meshId/workspace, MeshDetailClient summary and open-workspace NewTabLink. E2E justified for full save/restore/update/diff UI path.
+  description: workspace-mesh-bridge.ts (capture v3 with sharedSort, parseSharedSort, parse, diff, planDepotSync, patch payload, appendSnapshotLayoutWarnings, buildWorkspaceRestoreBundle with sharedSort in restoreUi, listDirectoryViaFilesApi), normalizeLayoutType in files.layout, SaveWorkspaceMeshDialog (update/create), WorkspaceDiffDialog, LayoutPickerPopover via WorkspaceView, NewTabLink, WorkspaceView store/restore/update/diff with meshRestorePending client full rehydrate, compact header banner with WORKSPACE_HEADER_STATUS (pending, amber warnings, red errors), FilesPage meshId bootstrap, PUT /api/mesh/:meshId/workspace, MeshDetailClient summary and open-workspace NewTabLink. E2E justified for full save/restore/update/diff UI path.
   code_locations:
     files:
       - path: src/lib/workspace-mesh-bridge.ts
@@ -48,6 +48,6 @@ IMPL-WORKSPACE_MESH_BRIDGE:
       date: "2026-05-21T00:00:00.000Z"
       author: AI Agent
     last_updated:
-      date: "2026-05-22T20:00:00.000Z"
+      date: "2026-05-22T22:00:00.000Z"
       author: AI Agent
-      reason: LEAP — client mesh rehydrate when server bootstrap misses mesh; shared restore bundle helpers
+      reason: LEAP — snapshot v3 sharedSort and layout toolbar picker

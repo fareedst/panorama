@@ -2,13 +2,27 @@
 
 import type { ComparisonMode, FileStat } from "./files.types";
 import { normalizeLayoutType, type LayoutType } from "./files.layout";
-import { sortFiles, type SortCriterion, type SortDirection } from "./files.utils";
+import {
+  DEFAULT_PANE_SORT,
+  sortFiles,
+  type PaneSortSettings,
+  type SortCriterion,
+  type SortDirection,
+} from "./files.utils";
 import type { Mesh } from "./mesh/domain";
 
 export const WORKSPACE_SNAPSHOT_TAG = "workspace-snapshot";
-export const WORKSPACE_SNAPSHOT_VERSION = 2 as const;
+export const WORKSPACE_SNAPSHOT_VERSION = 3 as const;
+/** Legacy meshes may store version 2 snapshots without sharedSort. */
+export const WORKSPACE_SNAPSHOT_VERSION_V2 = 2 as const;
 /** Legacy meshes may store version 1 snapshots without displaySpecId. */
 export const WORKSPACE_SNAPSHOT_VERSION_LEGACY = 1 as const;
+
+const ACCEPTED_SNAPSHOT_VERSIONS = [
+  WORKSPACE_SNAPSHOT_VERSION,
+  WORKSPACE_SNAPSHOT_VERSION_V2,
+  WORKSPACE_SNAPSHOT_VERSION_LEGACY,
+] as const;
 
 export type WorkspaceSnapshotPane = {
   path: string;
@@ -26,6 +40,8 @@ export type WorkspaceSnapshot = {
   focusIndex: number;
   linkedMode: boolean;
   comparisonMode: ComparisonMode;
+  /** [REQ-FILE_SORTING_ADVANCED] [REQ-WORKSPACE_MESH_BRIDGE] Workspace-wide default sort for panes */
+  sharedSort: PaneSortSettings;
   panes: WorkspaceSnapshotPane[];
 };
 
@@ -34,6 +50,8 @@ export type WorkspaceCaptureInput = {
   focusIndex: number;
   linkedMode: boolean;
   comparisonMode: ComparisonMode;
+  /** Defaults to DEFAULT_PANE_SORT when omitted */
+  sharedSort?: PaneSortSettings;
   panes: WorkspaceSnapshotPane[];
 };
 
@@ -72,6 +90,7 @@ export function captureWorkspaceSnapshot(input: WorkspaceCaptureInput): Workspac
     focusIndex: input.focusIndex,
     linkedMode: input.linkedMode,
     comparisonMode: input.comparisonMode,
+    sharedSort: { ...(input.sharedSort ?? DEFAULT_PANE_SORT) },
     panes: input.panes.map((p) => ({ ...p })),
   };
 }
@@ -167,6 +186,9 @@ export function diffWorkspaceSnapshots(
   push("focusIndex", saved.focusIndex + 1, current.focusIndex + 1);
   push("linkedMode", saved.linkedMode ? "on" : "off", current.linkedMode ? "on" : "off");
   push("comparisonMode", saved.comparisonMode, current.comparisonMode);
+  const fmtSort = (s: PaneSortSettings) =>
+    `${s.sortBy} ${s.sortDirection}${s.sortDirsFirst ? " dirs-first" : ""}`;
+  push("sharedSort", fmtSort(saved.sharedSort), fmtSort(current.sharedSort));
   push("paneCount", saved.panes.length, current.panes.length);
 
   const maxPanes = Math.max(saved.panes.length, current.panes.length);
@@ -230,10 +252,7 @@ function extractSnapshotRecord(parsed: unknown): Record<string, unknown> | null 
     return parsed.workspaceSnapshot;
   }
   const v = Number(parsed.version);
-  if (
-    (v === WORKSPACE_SNAPSHOT_VERSION || v === WORKSPACE_SNAPSHOT_VERSION_LEGACY) &&
-    Array.isArray(parsed.panes)
-  ) {
+  if (ACCEPTED_SNAPSHOT_VERSIONS.includes(v as (typeof ACCEPTED_SNAPSHOT_VERSIONS)[number]) && Array.isArray(parsed.panes)) {
     return parsed;
   }
   return null;
@@ -259,13 +278,29 @@ function parseDescriptionJson(description: string | undefined): WorkspaceSnapsho
   }
 }
 
-/** Validate and normalize a workspace snapshot from API input (v1 legacy or v2). */
+// [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-FILE_SORTING_ADVANCED] PARSE_SHARED_SORT — normalize sharedSort from snapshot JSON; invalid fields fall back to DEFAULT_PANE_SORT
+function parseSharedSort(raw: unknown): PaneSortSettings {
+  if (!isRecord(raw)) {
+    return { ...DEFAULT_PANE_SORT };
+  }
+  const sortBy = raw.sortBy as SortCriterion;
+  const validCriteria: SortCriterion[] = ["name", "size", "mtime", "extension"];
+  const sortDirection = raw.sortDirection as SortDirection;
+  return {
+    sortBy: validCriteria.includes(sortBy) ? sortBy : DEFAULT_PANE_SORT.sortBy,
+    sortDirection: sortDirection === "desc" ? "desc" : "asc",
+    sortDirsFirst:
+      typeof raw.sortDirsFirst === "boolean" ? raw.sortDirsFirst : DEFAULT_PANE_SORT.sortDirsFirst,
+  };
+}
+
+/** Validate and normalize a workspace snapshot from API input (v1/v2 legacy or v3). */
 export function validateWorkspaceSnapshot(raw: unknown): WorkspaceSnapshot | null {
   if (!isRecord(raw)) {
     return null;
   }
   const version = Number(raw.version);
-  if (version !== WORKSPACE_SNAPSHOT_VERSION && version !== WORKSPACE_SNAPSHOT_VERSION_LEGACY) {
+  if (!ACCEPTED_SNAPSHOT_VERSIONS.includes(version as (typeof ACCEPTED_SNAPSHOT_VERSIONS)[number])) {
     return null;
   }
   if (!Array.isArray(raw.panes) || raw.panes.length === 0) {
@@ -277,7 +312,7 @@ export function validateWorkspaceSnapshot(raw: unknown): WorkspaceSnapshot | nul
       return null;
     }
     const displaySpecId =
-      version >= WORKSPACE_SNAPSHOT_VERSION && typeof p.displaySpecId === "string"
+      version >= WORKSPACE_SNAPSHOT_VERSION_V2 && typeof p.displaySpecId === "string"
         ? p.displaySpecId
         : p.displaySpecId === null
           ? null
@@ -295,6 +330,11 @@ export function validateWorkspaceSnapshot(raw: unknown): WorkspaceSnapshot | nul
   const layout = normalizeLayoutType(raw.layout) ?? "Tile";
   const comparison = raw.comparisonMode as ComparisonMode;
   const validComparison: ComparisonMode[] = ["off", "name", "size", "time"];
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] v3 uses PARSE_SHARED_SORT; v1/v2 default shared sort
+  const sharedSort =
+    version >= WORKSPACE_SNAPSHOT_VERSION && raw.sharedSort !== undefined
+      ? parseSharedSort(raw.sharedSort)
+      : { ...DEFAULT_PANE_SORT };
   return {
     version: WORKSPACE_SNAPSHOT_VERSION,
     layout,
@@ -304,6 +344,7 @@ export function validateWorkspaceSnapshot(raw: unknown): WorkspaceSnapshot | nul
         : 0,
     linkedMode: Boolean(raw.linkedMode),
     comparisonMode: validComparison.includes(comparison) ? comparison : "off",
+    sharedSort,
     panes,
   };
 }
@@ -342,6 +383,7 @@ function depotOnlySnapshot(paths: string[]): WorkspaceSnapshot {
     focusIndex: 0,
     linkedMode: false,
     comparisonMode: "off",
+    sharedSort: { ...DEFAULT_PANE_SORT },
     panes: paths.map((path) => ({
       path,
       sortBy: "name",
@@ -408,6 +450,7 @@ export type WorkspaceRestoreUi = {
   focusIndex: number;
   linkedMode: boolean;
   comparisonMode: ComparisonMode;
+  sharedSort: PaneSortSettings;
 };
 
 export type WorkspaceRestorePaneInitial = {
@@ -482,6 +525,7 @@ export async function buildWorkspaceRestoreBundle(
     focusIndex: snapshot.focusIndex,
     linkedMode: snapshot.linkedMode,
     comparisonMode: snapshot.comparisonMode,
+    sharedSort: { ...snapshot.sharedSort },
   };
   const restorePaneMeta: WorkspaceRestorePaneMeta[] = snapshot.panes.map((p) => ({
     sortBy: p.sortBy,

@@ -873,18 +873,18 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
       );
 
       // Initially linked mode ON by default
-      expect(screen.getByText(/🔗.*Linked/)).toBeInTheDocument();
+      expect(screen.getAllByText("🔗").length).toBeGreaterThan(0);
 
       // Press L to disable linked mode
       fireEvent.keyDown(window, { key: "l" });
       await waitFor(() => {
-        expect(screen.queryByText(/🔗.*Linked/)).not.toBeInTheDocument();
+        expect(screen.queryAllByText("🔗")).toHaveLength(0);
       });
 
       // Press L again to re-enable
       fireEvent.keyDown(window, { key: "l" });
       await waitFor(() => {
-        expect(screen.getByText(/🔗.*Linked/)).toBeInTheDocument();
+        expect(screen.getAllByText("🔗").length).toBeGreaterThan(0);
       });
     });
   });
@@ -909,7 +909,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
       );
 
       // Linked mode is ON by default
-      expect(screen.getByText(/🔗.*Linked/)).toBeInTheDocument();
+      expect(screen.getAllByText("🔗").length).toBeGreaterThan(0);
 
       // Move cursor down (to common.txt in pane 1)
       fireEvent.keyDown(window, { key: "ArrowDown" });
@@ -938,7 +938,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
       );
 
       // Linked mode OFF via config
-      expect(screen.queryByText(/🔗.*Linked/)).not.toBeInTheDocument();
+      expect(screen.queryAllByText("🔗")).toHaveLength(0);
 
       // Move cursor down
       fireEvent.keyDown(window, { key: "ArrowDown" });
@@ -976,7 +976,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
       );
 
       // Linked mode ON by default
-      expect(screen.getByText(/🔗.*Linked/)).toBeInTheDocument();
+      expect(screen.getAllByText("🔗").length).toBeGreaterThan(0);
 
       // Cursor starts at 0 (only-in-pane1.txt)
       // This file doesn't exist in pane2, so pane2 cursor should not change
@@ -1016,7 +1016,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
       );
 
       // Linked mode ON by default
-      expect(screen.getByText(/🔗.*Linked/)).toBeInTheDocument();
+      expect(screen.getAllByText("🔗").length).toBeGreaterThan(0);
 
       // Cursor starts at 0 (only-in-pane1.txt)
       // This file doesn't exist in pane2, so pane2 cursor should be set to -1
@@ -1091,7 +1091,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
       );
 
       // Linked mode ON by default
-      expect(screen.getByText(/🔗.*Linked/)).toBeInTheDocument();
+      expect(screen.getAllByText("🔗").length).toBeGreaterThan(0);
 
       // Note: Full sort dialog testing would require mocking the dialog
       // This test validates the linked mode state exists
@@ -1131,7 +1131,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
       );
 
       // Linked mode ON by default
-      expect(screen.getByText(/🔗.*Linked/)).toBeInTheDocument();
+      expect(screen.getAllByText("🔗").length).toBeGreaterThan(0);
 
       // Note: Full auto-disable test requires mocking async navigation with partial failure
       // The implementation in WorkspaceView.tsx lines 313-340 handles this correctly
@@ -1159,7 +1159,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
       // (indicator only shows with 2+ panes)
       await waitFor(() => {
         // Should not show indicator with single pane
-        expect(screen.queryByText(/🔗.*Linked/)).not.toBeInTheDocument();
+        expect(screen.queryAllByText("🔗")).toHaveLength(0);
       });
       
       unmount1();
@@ -1180,7 +1180,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
 
       // With 2 panes, linked mode ON by default shows indicator
       await waitFor(() => {
-        expect(screen.getByText(/🔗.*Linked/)).toBeInTheDocument();
+        expect(screen.getAllByText("🔗").length).toBeGreaterThan(0);
       });
     });
   });
@@ -1226,7 +1226,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
       );
 
       // Linked mode ON by default
-      expect(screen.getByText(/🔗.*Linked/)).toBeInTheDocument();
+      expect(screen.getAllByText("🔗").length).toBeGreaterThan(0);
 
       // Press Backspace to navigate to parent
       fireEvent.keyDown(window, { key: "Backspace" });
@@ -1278,7 +1278,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
         />
       );
 
-      expect(screen.getByText(/🔗.*Linked/)).toBeInTheDocument();
+      expect(screen.getAllByText("🔗").length).toBeGreaterThan(0);
       fireEvent.keyDown(window, { key: "Backspace" });
 
       await waitFor(() => {
@@ -1326,7 +1326,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
         />
       );
 
-      expect(screen.getByText(/🔗.*Linked/)).toBeInTheDocument();
+      expect(screen.getAllByText("🔗").length).toBeGreaterThan(0);
       fireEvent.keyDown(window, { key: "Enter" });
 
       await waitFor(() => {
@@ -1481,7 +1481,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
       );
 
       // Linked mode ON by default
-      expect(screen.getByText(/🔗.*Linked/)).toBeInTheDocument();
+      expect(screen.getAllByText("🔗").length).toBeGreaterThan(0);
 
       // Click the Parent button on first pane
       const parentButtons = await screen.findAllByLabelText("Parent directory");
@@ -1518,7 +1518,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
 
       // Linked mode is ON by default, but indicator should not show with single pane
       await waitFor(() => {
-        expect(screen.queryByText(/🔗.*Linked/)).not.toBeInTheDocument();
+        expect(screen.queryAllByText("🔗")).toHaveLength(0);
       });
     });
   });
@@ -1543,7 +1543,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
       );
 
       // Linked mode should be ON initially
-      expect(screen.getByText(/🔗.*Linked/)).toBeInTheDocument();
+      expect(screen.getAllByText("🔗").length).toBeGreaterThan(0);
     });
 
     it("should initialize linked mode from config as false [REQ-LINKED_PANES]", async () => {
@@ -1561,7 +1561,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
       );
 
       // Linked mode should be OFF initially
-      expect(screen.queryByText(/🔗.*Linked/)).not.toBeInTheDocument();
+      expect(screen.queryAllByText("🔗")).toHaveLength(0);
     });
 
     it("should default to true when config not specified [REQ-LINKED_PANES]", async () => {
@@ -1579,7 +1579,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
       );
 
       // Linked mode should default to ON
-      expect(screen.getByText(/🔗.*Linked/)).toBeInTheDocument();
+      expect(screen.getAllByText("🔗").length).toBeGreaterThan(0);
     });
   });
 
