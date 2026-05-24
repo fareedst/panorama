@@ -30,10 +30,10 @@
 
 ## Naming bridge
 
-| Canonical concept | UI label | Config / API | Keybind action | Code symbol |
-| --- | --- | --- | --- | --- |
-| Copy to all panes | toolbar “Copy to All” | POST `operation: "sync-all"`, `move: false` | `file.copyAll` (Shift+C) | `handleCopyAll` |
-| Move to all panes | toolbar “Move to All” | POST `sync-all`, `move: true` | `file.moveAll` (Shift+V) | `handleMoveAll` |
+| Canonical concept | UI label | Icon name | Config / API | Keybind action | Code symbol |
+| --- | --- | --- | --- | --- | --- |
+| Copy to all panes | toolbar “Copy to All” | `copy-all` | POST `operation: "sync-all"`, `move: false` | `file.copyAll` (Shift+C) | `handleCopyAll` |
+| Move to all panes | toolbar “Move to All” | `move-all` | POST `sync-all`, `move: true` | `file.moveAll` (Shift+V) | `handleMoveAll` |
 | Default compare | — | `compareMethod: "size-mtime"` (body default) | — | `CompareMethod` |
 | Verify destination | — | `verifyDestination` / `verify` | — | post-copy hash check |
 | Hash algorithm | — | `hashAlgorithm`: `blake3`, `sha256`, `xxh3` | — | `HashAlgorithm` |

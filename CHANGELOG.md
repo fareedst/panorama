@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Toolbar icon registry** (`[REQ-TOOLBAR_SYSTEM]`, `[ARCH-TOOLBAR_ACTIONS]`, `[IMPL-TOOLBAR_COMPONENT]`): merged [`lucide-icons.tsx`](src/components/icons/lucide-icons.tsx) + [`panorama-icons.tsx`](src/components/icons/panorama-icons.tsx) in [`registry.ts`](src/components/icons/registry.ts); registered glyphs for compare filters, mesh bridge (`git-compare`, `network`), layout (`layout-grid`), display filter (`filter`), multi-pane **`copy-all`** / **`move-all`**; **`icon-unknown`** fallback for unmapped actions (Help stays `help-circle`); [`registry.test.tsx`](src/components/icons/registry.test.tsx) guards referenced names via `getReferencedToolbarIconNames()`. Vocabulary: [`docs/toolbar-keybind-vocabulary.md`](docs/toolbar-keybind-vocabulary.md), [`docs/cross-pane-visibility-vocabulary.md`](docs/cross-pane-visibility-vocabulary.md), [`docs/nsync-multi-target-vocabulary.md`](docs/nsync-multi-target-vocabulary.md), [`docs/pane-display-filter-vocabulary.md`](docs/pane-display-filter-vocabulary.md), [`docs/mesh-platform-vocabulary.md`](docs/mesh-platform-vocabulary.md).
+
 ### Fixed
 
 - **Toolbar-only actions** (`[REQ-TOOLBAR_SYSTEM]`): `toolbars.actions` in `config/files.yaml` supplies metadata for buttons without keybindings; fixes missing **Column order** (`view.columns`) button in the Layout toolbar.

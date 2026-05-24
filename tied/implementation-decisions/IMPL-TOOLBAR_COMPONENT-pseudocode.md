@@ -36,6 +36,31 @@ PROCEDURE ACTIONS_META_PASS_THROUGH(context)
   WorkspaceToolbar PaneToolbar SystemToolbar forward actionsMeta unchanged
 ```
 
+## ICON_REGISTRY
+
+// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_ACTIONS] [REQ-TOOLBAR_SYSTEM]: how: merge lucide-icons and panorama-icons in registry.ts; Icon component resolves getIconPaths; unmapped names render icon-unknown and warn in development
+
+```
+PROCEDURE ICON_REGISTRY(context)
+  ICON_REGISTRY := merge(LUCIDE_ICONS, PANORAMA_ICONS)
+  getIconPaths(name) RETURNS SVG children or null
+  isIconRegistered(name) RETURNS name in ICON_REGISTRY
+  getReferencedToolbarIconNames() := union(ACTION_ICON_MAP values, TOOLBAR_ACTIONS_ICON_NAMES)
+  deriveIconFromAction(action) RETURNS ACTION_ICON_MAP[action] OR "icon-unknown"
+  Icon(name) IF NOT isIconRegistered(name) THEN warn AND render icon-unknown
+```
+
+### ICON_REGISTRY_NSYNC_MULTI_PANE
+
+// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_ACTIONS] [REQ-TOOLBAR_SYSTEM] [REQ-NSYNC_MULTI_TARGET]: how: ACTION_ICON_MAP maps file.copyAll and file.moveAll to panorama-icons copy-all and move-all so pane toolbar NSYNC actions are distinct from help.show (help-circle)
+
+```
+PROCEDURE ICON_REGISTRY_NSYNC_MULTI_PANE(context)
+  ACTION_ICON_MAP["file.copyAll"] := "copy-all"
+  ACTION_ICON_MAP["file.moveAll"] := "move-all"
+  PANORAMA_ICONS registers copy-all and move-all glyphs
+```
+
 ## DERIVE_TOOLBAR_BUTTON_FALLBACK
 
 // [IMPL-TOOLBAR_COMPONENT] [IMPL-TOOLBAR_CONFIG] [ARCH-TOOLBAR_ACTIONS] [REQ-TOOLBAR_SYSTEM]: how: deriveToolbarButton uses keybinding registry first; else toolbars.actions description/icon/label for toolbar-only actions such as view.columns
@@ -44,6 +69,7 @@ PROCEDURE ACTIONS_META_PASS_THROUGH(context)
 PROCEDURE DERIVE_TOOLBAR_BUTTON_FALLBACK(context)
   IF keybinding exists for action THEN icon label shortcut from registry
   ELSE IF actionsMeta[action] THEN use description icon label; shortcut undefined
+  deriveIconFromAction(unmapped) RETURNS "icon-unknown" NOT "help-circle"
   ToolbarButton renders icon-only when no shortcut; title from description
 ```
 
@@ -104,7 +130,7 @@ PROCEDURE IMPL-TOOLBAR_COMPONENT_WorkspaceToolbarDisplayMode(context)
 
 // [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [ARCH-TOOLBAR_ACTIONS] [REQ-TOOLBAR_SYSTEM]: map implementing and verifying source files for this IMPL
 
-// src/app/files/components/ToolbarCompactToggle.tsx, Toolbar.tsx, ToolbarButton.tsx, WorkspaceToolbar.tsx, PaneToolbar.tsx, SystemToolbar.tsx, src/lib/toolbar.utils.ts, src/lib/useElementSize.ts, src/app/files/WorkspaceView.tsx; tests toolbar.utils.test.ts, useElementSize.test.ts, Toolbar*.test.tsx, WorkspaceView.toolbar-compact.test.tsx
+// src/app/files/components/ToolbarCompactToggle.tsx, Toolbar.tsx, ToolbarButton.tsx, WorkspaceToolbar.tsx, PaneToolbar.tsx, SystemToolbar.tsx, src/lib/toolbar.utils.ts, src/components/icons/*, src/components/Icon.tsx, src/lib/useElementSize.ts, src/app/files/WorkspaceView.tsx; tests registry.test.ts, toolbar.utils.test.ts, useElementSize.test.ts, Toolbar*.test.tsx, WorkspaceView.toolbar-compact.test.tsx
 
 ## ErrorHandling
 

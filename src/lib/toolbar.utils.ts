@@ -21,6 +21,8 @@ const ACTION_ICON_MAP: Record<string, string> = {
   // File operations
   'file.copy': 'copy',
   'file.move': 'move',
+  'file.copyAll': 'copy-all',
+  'file.moveAll': 'move-all',
   'file.delete': 'trash',
   'file.rename': 'rename',
   
@@ -96,12 +98,38 @@ const ACTION_ICON_MAP: Record<string, string> = {
   'history.forward': 'redo',
 };
 
+// [ICON_REGISTRY] [ARCH-TOOLBAR_ACTIONS] [REQ-TOOLBAR_SYSTEM]: icon names from config/files.yaml toolbars.actions — keep in sync with YAML
+export const TOOLBAR_ACTIONS_ICON_NAMES: readonly string[] = [
+  "columns",
+  "sliders",
+  "files",
+  "file-minus",
+  "maximize-2",
+  "trending-up",
+  "chevrons-up",
+  "minimize-2",
+  "trending-down",
+  "chevrons-down",
+  "clock",
+  "calendar",
+  "history",
+] as const;
+
 /**
- * Derive icon name from action name
- * [ARCH-TOOLBAR_ACTIONS]
+ * [ICON_REGISTRY] All icon names referenced by ACTION_ICON_MAP and toolbars.actions.
+ * [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_ACTIONS] [REQ-TOOLBAR_SYSTEM]
+ */
+export function getReferencedToolbarIconNames(): string[] {
+  const fromMap = Object.values(ACTION_ICON_MAP);
+  return [...new Set([...fromMap, ...TOOLBAR_ACTIONS_ICON_NAMES])].sort();
+}
+
+/**
+ * [ICON_REGISTRY] Derive icon name from action; unmapped actions use icon-unknown (not help-circle).
+ * [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_ACTIONS] [REQ-TOOLBAR_SYSTEM]
  */
 export function deriveIconFromAction(action: string): string {
-  return ACTION_ICON_MAP[action] || 'help-circle';
+  return ACTION_ICON_MAP[action] || "icon-unknown";
 }
 
 /**

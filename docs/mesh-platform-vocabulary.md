@@ -41,7 +41,8 @@
 | **Workspace snapshot** | Tag `workspace-snapshot`; UI state JSON in `description.workspaceSnapshot` ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)) |
 | **Saved snapshot baseline** | Parsed snapshot from loaded mesh `description`; compared to live workspace for diff badge ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)) |
 | **Workspace update** | In-place save of current file-manager state to an existing mesh | `PUT /api/mesh/:meshId/workspace` | `UPDATE_EXISTING_WORKSPACE` |
-| **Workspace diff** | Compare live workspace to saved baseline | `mesh.diffWorkspace`, `WorkspaceDiffDialog` | `DIFF_SAVED_VS_CURRENT` |
+| **Workspace diff** | Compare live workspace to saved baseline; workspace toolbar icon `git-compare` | `mesh.diffWorkspace`, `WorkspaceDiffDialog` | `DIFF_SAVED_VS_CURRENT` |
+| **Save workspace as mesh** | Persist file-manager layout to mesh; workspace toolbar icon `network` | `mesh.saveWorkspace` | `STORE_FROM_WORKSPACE_UI` |
 | **Open in File Manager** | Mesh detail restore entry (new tab) | `/files?meshId=` | `IMPL-WORKSPACE_MESH_BRIDGE` restore (server bootstrap + client rehydrate fallback) |
 | **Mesh restore pending** | Server `getMesh` miss; client rehydrates | prop `meshRestorePending` on Files page | `RESTORE_ON_FILES_PAGE` |
 | **Client mesh rehydrate** | Client `/api/mesh/:meshId` full restore | `RESTORE_LAYOUT_IN_WORKSPACE_VIEW` | `IMPL-WORKSPACE_MESH_BRIDGE` |

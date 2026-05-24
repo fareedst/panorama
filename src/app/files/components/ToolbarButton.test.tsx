@@ -1,4 +1,4 @@
-// [REQ-TOOLBAR_SYSTEM] [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT]
+// [REQ-TOOLBAR_SYSTEM] [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [ARCH-TOOLBAR_ACTIONS]
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { ToolbarButton } from "./ToolbarButton";
@@ -58,5 +58,22 @@ describe("[REQ-TOOLBAR_SYSTEM] ToolbarButton", () => {
     );
     const btn = screen.getByTestId("toolbar-view.columns");
     expect(btn.querySelector(".font-mono")).toBeNull();
+  });
+
+  // [ICON_REGISTRY] [REQ-NSYNC_MULTI_TARGET]: registered copy-all icon renders without icon-unknown fallback
+  it("renders registered copy-all icon via Icon without fallback attribute", () => {
+    render(
+      <ToolbarButton
+        {...defaultProps}
+        action="file.copyAll"
+        icon="copy-all"
+        label="Copy to All"
+        description="Copy to all panes"
+      />,
+    );
+    const btn = screen.getByTestId("toolbar-file.copyAll");
+    const svg = btn.querySelector("svg");
+    expect(svg).toBeTruthy();
+    expect(svg?.getAttribute("data-icon-fallback")).toBeNull();
   });
 });

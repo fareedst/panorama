@@ -37,6 +37,28 @@
 | Unsaved draft | “Draft” | `isCrossPaneVisibilityDraftDirty` |
 | Workspace toolbar | Compare filters group | `view.compareFilter.*` |
 
+## Toolbar icon names
+
+Compare filter toolbar **Action** ids map to **Icon name** values in `toolbars.actions` / `ACTION_ICON_MAP` (see [toolbar-keybind-vocabulary.md](toolbar-keybind-vocabulary.md)):
+
+| Action | Icon name |
+| --- | --- |
+| `view.compareFilter.thresholds` | `sliders` |
+| `view.compareFilter.sharedAll` | `files` |
+| `view.compareFilter.missingSome` | `file-minus` |
+| `view.compareFilter.sizeLargestAll` | `maximize-2` |
+| `view.compareFilter.sizeLargestSome` | `trending-up` |
+| `view.compareFilter.sizeGtThreshold` | `chevrons-up` |
+| `view.compareFilter.sizeSmallestAll` | `minimize-2` |
+| `view.compareFilter.sizeSmallestSome` | `trending-down` |
+| `view.compareFilter.sizeLtThreshold` | `chevrons-down` |
+| `view.compareFilter.timeLatestAll` | `clock` |
+| `view.compareFilter.timeLatestSome` | `clock` |
+| `view.compareFilter.timeGtThreshold` | `calendar` |
+| `view.compareFilter.timeEarliestAll` | `history` |
+| `view.compareFilter.timeEarliestSome` | `history` |
+| `view.compareFilter.timeLtThreshold` | `calendar` |
+
 ## Pseudo-code blocks
 
 | Concept | UPPER_SNAKE | IMPL |

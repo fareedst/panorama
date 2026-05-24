@@ -36,6 +36,11 @@
 | **Session toolbar display state** | `toolbarExpanded` in `WorkspaceView` (session-only, not URL/mesh); default `false` (compact); synonym: toolbar display mode |
 | **Tri-state toolbar button** | Compare filter criterion toggle — `inactive` \| `include` \| `exclude`; `data-tri-state` on `TriStateToolbarButton` |
 | **singleRow** | `Toolbar` prop: one horizontal row with overflow scroll (compact merged layout) |
+| **Icon name** | Kebab-case string passed to `Icon` (e.g. `layout-grid`, `copy-all`) |
+| **Icon registry** | `src/components/icons/registry.ts` — merged `lucide-icons` + `panorama-icons` SVG definitions |
+| **Panorama icons** | `panorama-icons.tsx` — app-specific glyphs (compare filters, mesh, multi-pane file ops) |
+| **ACTION_ICON_MAP** | Action → icon name when a keybinding exists (`src/lib/toolbar.utils.ts`) |
+| **icon-unknown** | Fallback glyph for unmapped actions (not **Help**; `help.show` uses `help-circle`) |
 
 ## Naming bridge
 
@@ -46,7 +51,8 @@
 | System toolbar | help/search | `toolbars.system` | same |
 | Action dispatch | button click | action string | `handlers.set("file.copyAll", …)` |
 | Shortcut badge | on button | via `deriveToolbarButton` + registry | `getKeybindingRegistry()` |
-| Copy to all | icon + Shift+C | `file.copyAll` in pane group | `handleCopyAll` |
+| Copy to all | icon `copy-all` + Shift+C | `file.copyAll` in pane group | `handleCopyAll` |
+| Move to all | icon `move-all` + Shift+V | `file.moveAll` in pane group | `handleMoveAll` |
 | Command palette | “Command Palette” | `command.palette` | Ctrl+P |
 | Save workspace as mesh | “Save workspace as mesh” (Mesh group) | `copy.workspaceMesh.saveDialogTitle` | `mesh.saveWorkspace` (Ctrl+Shift+M) | `handleSaveWorkspaceAsMesh` / update via dialog ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)) |
 | Diff workspace vs saved | “Diff” (header + Mesh group) | `copy.workspaceMesh.diffButton` | `mesh.diffWorkspace` | `WorkspaceDiffDialog` ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)) |
@@ -92,6 +98,14 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 - **view.layout** — Opens layout picker pop-over (`LayoutPickerPopover`, `workspace-layout-picker`); replaces header layout `<select>`.
 - **view.compareFilter.*** — Tri-state compare filter toolbar actions; see [cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md).
 - **view.compareFilter.thresholds** — Opens size/time threshold dialog for gt/lt compare criteria.
+- **Icon registry** — `getIconPaths` / `isIconRegistered` in `src/components/icons/registry.ts`; `getReferencedToolbarIconNames()` in `toolbar.utils.ts` for test coverage.
+
+### Adding toolbar icons
+
+1. Add SVG paths to [`src/components/icons/panorama-icons.tsx`](../src/components/icons/panorama-icons.tsx) (app-specific) or [`lucide-icons.tsx`](../src/components/icons/lucide-icons.tsx) (generic).
+2. Map the **Action** in `ACTION_ICON_MAP` (`toolbar.utils.ts`) and/or `toolbars.actions.{id}.icon` in `config/files.yaml`.
+3. If adding a toolbar-only action icon, append the name to `TOOLBAR_ACTIONS_ICON_NAMES` in `toolbar.utils.ts` (keep in sync with YAML).
+4. Run `bun run test` — `registry.test.ts` fails when a referenced name is missing from the registry.
 
 ## Pseudo-code block names
 
@@ -109,10 +123,16 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 | Save workspace from UI | `STORE_FROM_WORKSPACE_UI` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Diff saved vs current | `DIFF_SAVED_VS_CURRENT` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Layout toolbar picker | `LAYOUT_TOOLBAR_PICKER` | IMPL-WORKSPACE_VIEW |
+| Icon registry lookup | `ICON_REGISTRY` | IMPL-TOOLBAR_COMPONENT |
 
 ## Alphabetical index
 
 - **Action** — `category.action` string ID
+- **ACTION_ICON_MAP** — action → icon name map
+- **Icon name** — kebab-case `Icon` registry key
+- **Icon registry** — merged SVG definitions for toolbar
+- **icon-unknown** — unmapped action fallback icon
+- **Panorama icons** — app-specific registry module
 - **Active action** — toolbar highlight set
 - **Disabled action** — toolbar grayed set
 - **Keybinding** — YAML shortcut row

@@ -15,6 +15,7 @@ IMPL-TOOLBAR_COMPONENT:
   implementation_approach:
     summary: React components for toolbar system including base and specialized toolbars with compact icon-only button design
     details:
+      - Icon registry in src/components/icons (lucide-icons, panorama-icons, registry.ts); getReferencedToolbarIconNames for test coverage
       - mergeTopToolbarConfigs merges enabled top-position tiers for compact single-row layout
       - ToolbarButton showKeystroke prop hides badge while preserving tooltip shortcuts
       - ToolbarCompactToggle leading control toggles session compact/expanded display
@@ -34,7 +35,17 @@ IMPL-TOOLBAR_COMPONENT:
       - path: src/app/files/components/SystemToolbar.tsx
         description: System tier wrapper
       - path: src/lib/toolbar.utils.ts
-        description: MERGE_TOP_TOOLBARS mergeTopToolbarConfigs
+        description: MERGE_TOP_TOOLBARS mergeTopToolbarConfigs; ACTION_ICON_MAP; getReferencedToolbarIconNames
+      - path: src/components/icons/registry.ts
+        description: ICON_REGISTRY merged SVG definitions; isIconRegistered
+      - path: src/components/icons/panorama-icons.tsx
+        description: Panorama-specific toolbar glyphs
+      - path: src/components/icons/lucide-icons.tsx
+        description: Generic Lucide-style toolbar glyphs
+      - path: src/components/Icon.tsx
+        description: Toolbar Icon wrapper; warns on missing registry names
+      - path: src/components/icons/registry.test.tsx
+        description: Registry completeness vs referenced toolbar icon names
       - path: src/lib/useElementSize.ts
         description: Workspace-area ResizeObserver measurement for pane layout
       - path: src/lib/useElementSize.test.ts
@@ -58,6 +69,7 @@ IMPL-TOOLBAR_COMPONENT:
       - src/app/files/components/ToolbarButton.test.tsx
       - src/app/files/components/ToolbarCompactToggle.test.tsx
       - src/app/files/WorkspaceView.toolbar-compact.test.tsx
+      - src/components/icons/registry.test.tsx
       - src/lib/toolbar.utils.test.ts
       - src/lib/useElementSize.test.ts
     code_annotations:
@@ -69,7 +81,7 @@ IMPL-TOOLBAR_COMPONENT:
   metadata:
     registered: 2026-02-08T00:00:00.000Z
     last_updated:
-      date: "2026-05-22T00:00:00.000Z"
+      date: "2026-05-24T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — workspace-area measurement for pane layout on compact/expanded toggle
+      reason: LEAP — extensible icon registry for toolbar actions
   essence_pseudocode_path: implementation-decisions/IMPL-TOOLBAR_COMPONENT-pseudocode.md

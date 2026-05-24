@@ -1,6 +1,12 @@
 // [REQ-TOOLBAR_SYSTEM] [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] MERGE_TOP_TOOLBARS
 import { describe, it, expect } from "vitest";
-import { deriveToolbarButton, mergeTopToolbarConfigs } from "./toolbar.utils";
+import {
+  deriveIconFromAction,
+  deriveToolbarButton,
+  getReferencedToolbarIconNames,
+  mergeTopToolbarConfigs,
+} from "./toolbar.utils";
+import { isIconRegistered } from "@/components/icons/registry";
 import type { KeybindingConfig } from "./config.types";
 import type { ToolbarsConfig } from "./config.types";
 
@@ -67,6 +73,36 @@ describe("[REQ-TOOLBAR_SYSTEM] deriveToolbarButton", () => {
 
   it("returns null when neither keybinding nor actions meta exists", () => {
     expect(deriveToolbarButton("unknown.action", keybindings)).toBeNull();
+  });
+
+  it("maps file.copyAll to copy-all icon", () => {
+    const withCopyAll: KeybindingConfig[] = [
+      {
+        key: "c",
+        action: "file.copyAll",
+        description: "Copy to all panes",
+        category: "file-operations",
+        modifiers: { shift: true },
+      },
+    ];
+    const props = deriveToolbarButton("file.copyAll", withCopyAll);
+    expect(props?.icon).toBe("copy-all");
+  });
+
+  it("maps file.moveAll to move-all icon", () => {
+    expect(deriveIconFromAction("file.moveAll")).toBe("move-all");
+  });
+
+  it("uses icon-unknown for unmapped actions", () => {
+    expect(deriveIconFromAction("not.mapped")).toBe("icon-unknown");
+  });
+});
+
+describe("[REQ-TOOLBAR_SYSTEM] getReferencedToolbarIconNames", () => {
+  it("lists only registered icon names", () => {
+    for (const name of getReferencedToolbarIconNames()) {
+      expect(isIconRegistered(name)).toBe(true);
+    }
   });
 });
 

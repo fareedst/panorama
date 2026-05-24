@@ -30,9 +30,9 @@
 
 | Canonical concept | UI label | Keybind | Code |
 | --- | --- | --- | --- |
-| No filter | “No filter” | `view.displaySpec.none` | `activeDisplaySpecId: null` |
+| No filter | “No filter” (toolbar icon `filter`) | `view.displaySpec.none` | `activeDisplaySpecId: null` |
 | Spec selector | (pane header dropdown) | — | `DisplaySpecSelector` |
-| Manage specs | “Manage display specs…” | `view.displaySpec` | `DisplaySpecManagerDialog` |
+| Manage specs | “Manage display specs…” (toolbar icon `filter`) | `view.displaySpec` | `DisplaySpecManagerDialog` |
 | Active indicator | `Filter: {name}` | — | pane header |
 | Hidden count | `Hidden: N` | — | optional |
 | Snapshot display spec (mesh detail) | `Display filter: {name\|id\|(none)}` | — | `formatDisplaySpecLabel`, `getDisplaySpecStore` |

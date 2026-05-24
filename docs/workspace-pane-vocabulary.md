@@ -48,7 +48,7 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 | **Mesh detail snapshot sort** | Per-pane sort lines in `workspace-snapshot-summary` | `formatPaneSortSettings` | `WORKSPACE_SNAPSHOT_SUMMARY` |
 | **Share sort** | Sort menu action — copy focused pane sort into `sharedSort` |
 | **Apply shared sort** | Sort menu **Shared** — apply `sharedSort` to focused pane only |
-| **Layout toolbar picker** | `view.layout` → `LayoutPickerPopover`; replaces header layout `<select>` |
+| **Layout toolbar picker** | `view.layout` → `LayoutPickerPopover` (icon `layout-grid`); replaces header layout `<select>` — see [toolbar-keybind-vocabulary.md](toolbar-keybind-vocabulary.md) |
 | **Workspace header status row** | `workspace-header-status` — groups loaded name, restore warnings, and bootstrap errors below title |
 | **Layout normalization** | Map config/UI aliases to canonical `LayoutType` — `normalizeLayoutType`, pseudo block `NORMALIZE_LAYOUT` ([IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml)) |
 | **Mesh restore pending** | Server did not hydrate panes; client will rehydrate from `/api/mesh/:meshId` | prop `meshRestorePending` |
@@ -61,7 +61,7 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 
 | Canonical concept | UI label | Config key | Keybind action | Code symbol |
 | --- | --- | --- | --- | --- |
-| Workspace toolbar | (group names in YAML) | `toolbars.workspace` | various | `WorkspaceView` + `Toolbar` |
+| Workspace toolbar | (group names in YAML) | `toolbars.workspace` | various | `WorkspaceView` + `Toolbar`; icons via [toolbar-keybind-vocabulary.md](toolbar-keybind-vocabulary.md) (**Icon registry**) |
 | Add pane | “Add Pane” | `copy.paneManagement.addPane` | `pane.add` | `handleAddPane` |
 | Remove pane | “Remove Pane” | `copy.paneManagement.removePane` | `pane.remove` | `handleRemovePane` |
 | Default pane count | — | `layout.defaultPaneCount` | — | startup pane array length |
