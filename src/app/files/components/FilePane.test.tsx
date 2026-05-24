@@ -625,4 +625,55 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
     const row = container.querySelector('[data-testid="file-row-grid"]') as HTMLElement;
     expect(row.style.gridTemplateColumns).toBe("auto auto 22ch 20ch minmax(0, 1fr)");
   });
+
+  // FILE_COLUMN_CONTEXT_MENU_WIRING — [IMPL-FILE_PANE] [IMPL-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION]
+  it("shows file column context menu on file column right-click [REQ-MOUSE_INTERACTION]", () => {
+    render(
+      <FilePane
+        path="/home/user"
+        files={mockFiles}
+        cursor={0}
+        marks={new Set()}
+        bounds={mockBounds}
+        focused={true}
+        onNavigate={mockOnNavigate}
+        onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
+        paneFilesList={[mockFiles]}
+      />,
+    );
+
+    const nameCells = screen.getAllByTestId("file-column-name");
+    fireEvent.contextMenu(nameCells[1]);
+
+    expect(screen.getByTestId("file-column-context-menu")).toBeInTheDocument();
+    expect(screen.getByTestId("file-column-copy-filename")).toBeInTheDocument();
+    expect(mockOnCursorMove).toHaveBeenCalledWith(1);
+  });
+
+  // FILE_COLUMN_CONTEXT_MENU_WIRING — mutual exclusion with row file operations menu
+  it("row context menu does not open when right-clicking a file column cell [REQ-MOUSE_INTERACTION]", () => {
+    render(
+      <FilePane
+        path="/home/user"
+        files={mockFiles}
+        cursor={0}
+        marks={new Set()}
+        bounds={mockBounds}
+        focused={true}
+        onNavigate={mockOnNavigate}
+        onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
+        onCopy={vi.fn()}
+        paneFilesList={[mockFiles]}
+      />,
+    );
+
+    fireEvent.contextMenu(screen.getAllByTestId("file-column-size")[1]);
+
+    expect(screen.getByTestId("file-column-context-menu")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("menu", { name: "File operations menu" }),
+    ).not.toBeInTheDocument();
+  });
 });

@@ -23,19 +23,7 @@ IMPL-WORKSPACE_VIEW:
   implementation_approach:
     summary: Client component with unique dialog keys, useMemo keybinding initialization, layout toolbar picker, sharedSort state, and API integration
     details:
-      - 'API integration: Calls GET /api/files?path=... (not /api/files/list)'
-      - 'Critical fix: Removed sortFiles import to prevent client-side fs dependency'
-      - 'Dialog keys: finder-open/finder-closed and search-open/search-closed (not shared open/closed)'
-      - 'Fixed 2026-02-07: Unique keys prevent React duplicate key warnings'
-      - 'Keybinding initialization: useMemo (not useEffect) for synchronous setup'
-      - 'Layout toolbar picker: view.layout opens LayoutPickerPopover; header layout select removed'
-      - 'State: panes[] (path, files, cursor, marks), layout, focusIndex, sharedSort, layoutPickerOpen'
-      - Calculate pane bounds using layout algorithms
-      - handleNavigate calls MERGE_LISTING_WITH_CROSS_PANE_FIELDS after buildPaneFromRawListing; guards missing paneIndex
-      - Keyboard-shortcuts footer strip removed; linked indicator via toolbar link.toggle active state
-      - sharedSort workspace state; SortDialog Share/Shared wiring; new panes inherit sharedSort
-      - Sorting handled server-side (page.tsx and API route)
-      - useEffect for keyboard event listeners
+      - 'PANE_FILES_LIST_TO_FILEPANE: pass paneFilesList={panes.map(p => p.files)} to each FilePane for cross-pane path clipboard'
   code_locations:
     files:
       - path: src/app/files/WorkspaceView.tsx
@@ -56,17 +44,10 @@ IMPL-WORKSPACE_VIEW:
       - ARCH-FILE_MANAGER_HIERARCHY
       - ARCH-TOOLBAR_LAYOUT
     requirements:
-      - REQ-CROSS_PANE_VISIBILITY
-      - REQ-DIRECTORY_NAVIGATION
-      - REQ-FILE_SORTING_ADVANCED
-      - REQ-KEYBOARD_NAVIGATION
-      - REQ-MULTI_PANE_LAYOUT
-      - REQ-REACT_SSR_STABILITY
-      - REQ-TOOLBAR_SYSTEM
+      - REQ-MOUSE_INTERACTION
+      - REQ-LINKED_PANES
     tests:
-      - src/app/files/components/LayoutPickerPopover.test.tsx
-      - src/app/files/WorkspaceView.cross-pane-visibility.test.tsx
-      - src/app/files/WorkspaceView.mesh-restore.test.tsx
+      - src/app/files/WorkspaceView.file-column-clipboard.test.tsx
     code_annotations:
       - IMPL-WORKSPACE_VIEW
   related_decisions:
@@ -82,9 +63,9 @@ IMPL-WORKSPACE_VIEW:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-22T22:00:00.000Z"
+      date: "2026-05-24T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — LAYOUT_TOOLBAR_PICKER and sharedSort state
+      reason: PANE_FILES_LIST_TO_FILEPANE for file column clipboard
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

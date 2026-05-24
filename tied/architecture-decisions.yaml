@@ -1998,7 +1998,7 @@ ARCH-MOUSE_SUPPORT:
         - Dependency, configuration overhead
       rejected_reason: Simple portal component meets requirements
   implementation_approach:
-    summary: Portal-based context menu, HTML5 drag-drop, existing click handlers
+    summary: Portal-based context menus (row operations and file column clipboard), HTML5 drag-drop, existing click handlers
     details:
       - 'Click: Existing onClick handlers (already implemented)'
       - 'ContextMenu: Portal to document.body, position calculation, outside click dismiss'
@@ -2027,9 +2027,9 @@ ARCH-MOUSE_SUPPORT:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-07T00:00:00.000Z
+      date: "2026-05-24T00:00:00.000Z"
       author: AI Agent
-      reason: Phase 10 implementation complete
+      reason: LEAP — file column clipboard context menu architecture
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

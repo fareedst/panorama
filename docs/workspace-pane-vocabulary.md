@@ -8,9 +8,9 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 
 | Kind | Tokens / artifacts |
 | --- | --- |
-| REQ | [REQ-FILE_MANAGER_PAGE](../tied/requirements/REQ-FILE_MANAGER_PAGE.yaml), [REQ-MULTI_PANE_LAYOUT](../tied/requirements/REQ-MULTI_PANE_LAYOUT.yaml), [REQ-CONFIG_DRIVEN_FILE_MANAGER](../tied/requirements/REQ-CONFIG_DRIVEN_FILE_MANAGER.yaml), [REQ-TOOLBAR_SYSTEM](../tied/requirements/REQ-TOOLBAR_SYSTEM.yaml), [REQ-DIRECTORY_NAVIGATION](../tied/requirements/REQ-DIRECTORY_NAVIGATION.yaml), [REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml), [REQ-PANE_DISPLAY_FILTER](../tied/requirements/REQ-PANE_DISPLAY_FILTER.yaml), [REQ-CROSS_PANE_VISIBILITY](../tied/requirements/REQ-CROSS_PANE_VISIBILITY.yaml) |
-| ARCH | [ARCH-FILE_MANAGER_HIERARCHY](../tied/architecture-decisions/ARCH-FILE_MANAGER_HIERARCHY.yaml), [ARCH-PANE_LIFECYCLE](../tied/architecture-decisions/ARCH-PANE_LIFECYCLE.yaml), [ARCH-CONFIG_DRIVEN_UI](../tied/architecture-decisions/ARCH-CONFIG_DRIVEN_UI.yaml), [ARCH-CROSS_PANE_VISIBILITY](../tied/architecture-decisions/ARCH-CROSS_PANE_VISIBILITY.yaml) |
-| IMPL | [IMPL-FILE_MANAGER_PAGE](../tied/implementation-decisions/IMPL-FILE_MANAGER_PAGE.yaml), [IMPL-FILE_COLUMN_CONFIG](../tied/implementation-decisions/IMPL-FILE_COLUMN_CONFIG.yaml), [IMPL-WORKSPACE_VIEW](../tied/implementation-decisions/IMPL-WORKSPACE_VIEW.yaml), [IMPL-FILE_PANE](../tied/implementation-decisions/IMPL-FILE_PANE.yaml), [IMPL-PANE_MANAGEMENT](../tied/implementation-decisions/IMPL-PANE_MANAGEMENT.yaml), [IMPL-LAYOUT_CALCULATOR](../tied/implementation-decisions/IMPL-LAYOUT_CALCULATOR.yaml), [IMPL-TOOLBAR_COMPONENT](../tied/implementation-decisions/IMPL-TOOLBAR_COMPONENT.yaml), [IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml), [IMPL-CROSS_PANE_VISIBILITY_ENGINE](../tied/implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_ENGINE.yaml), [IMPL-CROSS_PANE_VISIBILITY_UI](../tied/implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_UI.yaml), [IMPL-CROSS_PANE_VISIBILITY_CATALOG](../tied/implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_CATALOG.yaml) |
+| REQ | [REQ-FILE_MANAGER_PAGE](../tied/requirements/REQ-FILE_MANAGER_PAGE.yaml), [REQ-MULTI_PANE_LAYOUT](../tied/requirements/REQ-MULTI_PANE_LAYOUT.yaml), [REQ-CONFIG_DRIVEN_FILE_MANAGER](../tied/requirements/REQ-CONFIG_DRIVEN_FILE_MANAGER.yaml), [REQ-TOOLBAR_SYSTEM](../tied/requirements/REQ-TOOLBAR_SYSTEM.yaml), [REQ-DIRECTORY_NAVIGATION](../tied/requirements/REQ-DIRECTORY_NAVIGATION.yaml), [REQ-MOUSE_INTERACTION](../tied/requirements/REQ-MOUSE_INTERACTION.yaml), [REQ-LINKED_PANES](../tied/requirements/REQ-LINKED_PANES.yaml), [REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml), [REQ-PANE_DISPLAY_FILTER](../tied/requirements/REQ-PANE_DISPLAY_FILTER.yaml), [REQ-CROSS_PANE_VISIBILITY](../tied/requirements/REQ-CROSS_PANE_VISIBILITY.yaml) |
+| ARCH | [ARCH-FILE_MANAGER_HIERARCHY](../tied/architecture-decisions/ARCH-FILE_MANAGER_HIERARCHY.yaml), [ARCH-PANE_LIFECYCLE](../tied/architecture-decisions/ARCH-PANE_LIFECYCLE.yaml), [ARCH-CONFIG_DRIVEN_UI](../tied/architecture-decisions/ARCH-CONFIG_DRIVEN_UI.yaml), [ARCH-MOUSE_SUPPORT](../tied/architecture-decisions/ARCH-MOUSE_SUPPORT.yaml), [ARCH-CROSS_PANE_VISIBILITY](../tied/architecture-decisions/ARCH-CROSS_PANE_VISIBILITY.yaml) |
+| IMPL | [IMPL-FILE_MANAGER_PAGE](../tied/implementation-decisions/IMPL-FILE_MANAGER_PAGE.yaml), [IMPL-FILE_COLUMN_CONFIG](../tied/implementation-decisions/IMPL-FILE_COLUMN_CONFIG.yaml), [IMPL-WORKSPACE_VIEW](../tied/implementation-decisions/IMPL-WORKSPACE_VIEW.yaml), [IMPL-FILE_PANE](../tied/implementation-decisions/IMPL-FILE_PANE.yaml), [IMPL-MOUSE_SUPPORT](../tied/implementation-decisions/IMPL-MOUSE_SUPPORT.yaml), [IMPL-PANE_MANAGEMENT](../tied/implementation-decisions/IMPL-PANE_MANAGEMENT.yaml), [IMPL-LAYOUT_CALCULATOR](../tied/implementation-decisions/IMPL-LAYOUT_CALCULATOR.yaml), [IMPL-TOOLBAR_COMPONENT](../tied/implementation-decisions/IMPL-TOOLBAR_COMPONENT.yaml), [IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml), [IMPL-CROSS_PANE_VISIBILITY_ENGINE](../tied/implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_ENGINE.yaml), [IMPL-CROSS_PANE_VISIBILITY_UI](../tied/implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_UI.yaml), [IMPL-CROSS_PANE_VISIBILITY_CATALOG](../tied/implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_CATALOG.yaml) |
 | Pseudo-code | `tied/implementation-decisions/IMPL-*-pseudocode.md` for the IMPL tokens above |
 
 ## Preferred term vs synonyms
@@ -49,6 +49,12 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 | **Tabular file row** | CSS grid row in `FilePane` (`file-row-grid`) with aligned column cells; no listing header row |
 | **Content-measured file columns** | `fileColumnWidthMode: contentFixed` — Size/Time fixed `ch` from max formatted cell text; Name `minmax(0, 1fr)` remainder |
 | **OneColumn shared file column widths** | `metadataColumnWidths` from workspace max Size/Time across all panes when layout is `OneColumn`; Name `minmax(0, 1fr)` per pane |
+| **File column context menu** | Clipboard menu on metadata cells (`FileColumnContextMenu`); not the row **file operations context menu** (`ContextMenu`, `aria-label="File operations menu"`) |
+| **File column clipboard menu** | UI actions: Copy filename / Copy path / Copy paths in all panes |
+| **Pane files list** | `paneFilesList` — workspace `panes[].files` passed into `FilePane` for cross-pane path lookup |
+| **Cross-pane path resolution** | `resolveCrossPanePathsForFilename` — match by **cursor filename** (`file.name`) across pane listings; see [linked-navigation-vocabulary.md](linked-navigation-vocabulary.md) |
+| **Cross-pane path entry** | `CrossPanePathEntry { paneIndex, path }` |
+| **Cross-pane path clipboard text** | `formatCrossPanePathsForClipboard` — `Pane N: /path` lines (1-based label) |
 | **Mesh detail snapshot sort** | Per-pane sort lines in `workspace-snapshot-summary` | `formatPaneSortSettings` | `WORKSPACE_SNAPSHOT_SUMMARY` |
 | **Share sort** | Sort menu action — copy focused pane sort into `sharedSort` |
 | **Apply shared sort** | Sort menu **Shared** — apply `sharedSort` to focused pane only |
@@ -84,6 +90,8 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 | Layout toolbar picker | Layout pop-over options | `copy.layouts.*` | `view.layout` (Ctrl+Shift+L) | `LayoutPickerPopover`, `layoutPickerOpen` |
 | Column order dialog | “Column order” | `copy.columns.*` | `view.columns` (no shortcut) | `ColumnOrderDialog`, `columnOrderDialogOpen`, `fileColumns` |
 | File columns (config) | Column visibility/format defaults | `columns` in `config/files.yaml` | — | `FilesColumnConfig[]` |
+| File column clipboard menu | Copy filename / Copy path / Copy paths in all panes | — | — | `FileColumnContextMenu`, `file-column-context-menu` |
+| Pane files list | — | — | — | `paneFilesList`, `PANE_FILES_LIST_TO_FILEPANE` |
 | Compare filter preset | “No compare filter” / preset name | — | — | `CrossPaneVisibilitySelector`, `activeCrossPaneVisibilityId` |
 | Manage compare filters | “Manage compare filters…” | — | — | `CrossPaneVisibilityManagerDialog` |
 
@@ -126,6 +134,8 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 - **Restore from mesh** — `/files?meshId={id}` hydrates panes from mesh depots and `description` snapshot JSON.
 - **Workspace header cross-surface nav** — `workspace-cross-surface-nav` with **Mesh Sync** `NewTabLink` to `/mesh` or `/mesh/{meshId}` in a new tab.
 - **Workspace keyboard-shortcuts footer** — removed; shortcut discovery uses toolbar keystroke badges (expanded mode), tooltips (compact mode), and system help actions ([toolbar-keybind-vocabulary.md](toolbar-keybind-vocabulary.md)). Linked mode indicator is toolbar `link.toggle` active state, not a footer strip.
+- **File column context menu** — Right-click on name/size/mtime cells opens `FileColumnContextMenu` (clipboard-only); mutually exclusive with row file-operations `ContextMenu` ([REQ-MOUSE_INTERACTION](../tied/requirements/REQ-MOUSE_INTERACTION.yaml), [IMPL-MOUSE_SUPPORT](../tied/implementation-decisions/IMPL-MOUSE_SUPPORT.yaml)).
+- **Cross-pane path clipboard** — When the same basename appears in multiple pane listings, **Copy paths in all panes** writes labeled absolute paths; uses **cursor filename** match key regardless of **linked mode** ([REQ-LINKED_PANES](../tied/requirements/REQ-LINKED_PANES.yaml)).
 
 ## Pseudo-code block names
 
@@ -164,6 +174,10 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 | Header link to Mesh | `WORKSPACE_HEADER_MESH_LINK` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Shared sort workspace | `SharedSortWorkspace` | IMPL-SORT_FILTER |
 | Layout toolbar picker | `LAYOUT_TOOLBAR_PICKER` | IMPL-WORKSPACE_VIEW |
+| Column clipboard helpers | `FILE_COLUMN_CLIPBOARD` | IMPL-MOUSE_SUPPORT |
+| Column context menu UI | `FILE_COLUMN_CONTEXT_MENU` | IMPL-MOUSE_SUPPORT |
+| Column right-click wiring | `FILE_COLUMN_CONTEXT_MENU_WIRING` | IMPL-FILE_PANE |
+| Workspace pane listings prop | `PANE_FILES_LIST_PROP`, `PANE_FILES_LIST_TO_FILEPANE` | IMPL-FILE_PANE, IMPL-WORKSPACE_VIEW |
 
 ## Alphabetical index
 
@@ -171,6 +185,8 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 - **Client mesh rehydrate** — client full restore when server bootstrap misses mesh
 - **Client restored from mesh** — `clientRestoredFromMesh` after API recovery
 - **Cross-surface link** — new-tab Mesh ↔ File Manager navigation (`NewTabLink`)
+- **Cross-pane path clipboard** — labeled absolute paths when basename exists in multiple pane listings
+- **Cross-pane path resolution** — `resolveCrossPanePathsForFilename` by cursor filename
 - **Diff workspace** — `mesh.diffWorkspace` / header **Diff**; `diffWorkspaceSnapshots` vs saved baseline
 - **Files page** — server entry; loads config + initial directory data
 - **Focus** — `focusIndex`
@@ -180,6 +196,7 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 - **Layout normalization** — `normalizeLayoutType` / `NORMALIZE_LAYOUT`
 - **Layout type** — `tile`, `oneRow`, `oneColumn`, `fullscreen`
 - **Pane** — single listing column
+- **Pane files list** — `paneFilesList` from workspace `panes[].files`
 - **Pane bounds** — geometry for CSS placement
 - **Pane management** — add/remove/reorder panes (swap, cycle, pane order dialog)
 - **Cycle panes** — `pane.cycle` / `pane.cyclePrev` rotate `panes[]`
@@ -200,6 +217,8 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 - **Workspace restore warning** — `workspace-restore-warning` (partial or client recovery)
 - **Workspace snapshot** — v1/v2/v3/v4 JSON in mesh `description.workspaceSnapshot`; v2 adds per-pane `displaySpecId`; v3 adds `sharedSort`; v4 adds `fileColumns` (see [mesh-platform-vocabulary.md](mesh-platform-vocabulary.md), [pane-display-filter-vocabulary.md](pane-display-filter-vocabulary.md))
 - **File column order** — `fileColumns` on workspace state; restored from mesh v4; reordered via toolbar `view.columns` dialog
+- **File column context menu** — clipboard menu on metadata cells; not row file-operations menu
+- **File column clipboard menu** — Copy filename / Copy path / Copy paths in all panes
 - **Tabular file row** — `FilePane` grid layout with `file-column-{id}` cells only (no column name header row)
 - **Content-measured file columns** — non-OneColumn layouts size Time/Size from listing content per pane, Name fills remainder
 - **OneColumn shared file column widths** — workspace-wide max Size/Time `ch` passed to every pane for vertical alignment; Name still flex remainder

@@ -75,6 +75,16 @@ PROCEDURE SHARED_METADATA_WIDTHS_ONECOLUMN(context)
   PASS metadataColumnWidths to each FilePane
 ```
 
+## PANE_FILES_LIST_TO_FILEPANE
+
+// [IMPL-WORKSPACE_VIEW] [IMPL-FILE_PANE] [REQ-MOUSE_INTERACTION] [REQ-LINKED_PANES]: how: pass workspace pane listings into each FilePane for cross-pane path clipboard resolution
+
+```
+PROCEDURE PANE_FILES_LIST_TO_FILEPANE(context)
+  FOR each FilePane in panes map
+    PASS paneFilesList={panes.map(p => p.files)} prop
+```
+
 ## HandleNavigate
 
 // [IMPL-WORKSPACE_VIEW] [IMPL-CROSS_PANE_VISIBILITY_CATALOG] [ARCH-CROSS_PANE_VISIBILITY] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-DIRECTORY_NAVIGATION] [REQ-CROSS_PANE_VISIBILITY]: how: fetch listing, build pane with new path, merge visibility fields via MERGE_LISTING_WITH_CROSS_PANE_FIELDS

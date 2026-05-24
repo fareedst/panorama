@@ -8,17 +8,43 @@ IMPL-MOUSE_SUPPORT:
   rationale:
     why: Mouse and Touch Interaction Implementation
   implementation_approach:
-    summary: Mouse and Touch Interaction Implementation
-    details: []
+    summary: Portal context menus, HTML5 drag-drop, click handlers, and file column clipboard menu on metadata cells
+    details:
+      - 'ContextMenu: row file operations (copy, move, delete, rename)'
+      - 'file-column-clipboard.ts: format and resolveCrossPanePathsForFilename by cursor filename'
+      - 'FileColumnContextMenu: clipboard-only on file column cells (filename, path, cross-pane paths)'
   code_locations:
-    files: []
-    functions: []
+    files:
+      - path: src/lib/file-column-clipboard.ts
+        description: FILE_COLUMN_CLIPBOARD formatters and cross-pane path resolution
+      - path: src/lib/file-column-clipboard.test.ts
+        description: Unit tests for file-column-clipboard
+      - path: src/app/files/components/FileColumnContextMenu.tsx
+        description: FILE_COLUMN_CONTEXT_MENU portal component
+      - path: src/app/files/components/FileColumnContextMenu.test.tsx
+        description: FileColumnContextMenu component unit tests
+      - path: src/app/files/components/ContextMenu.tsx
+        description: Row file operations context menu
+    functions:
+      - name: formatCursorFilenameForClipboard
+        file: src/lib/file-column-clipboard.ts
+        description: Returns file.name for clipboard
+      - name: resolveCrossPanePathsForFilename
+        file: src/lib/file-column-clipboard.ts
+        description: Cross-pane path resolution by basename
+      - name: FileColumnContextMenu
+        file: src/app/files/components/FileColumnContextMenu.tsx
+        description: File column clipboard context menu
   traceability:
     requirements:
+      - REQ-DIRECTORY_NAVIGATION
+      - REQ-LINKED_PANES
       - REQ-MOUSE_INTERACTION
     architecture:
       - ARCH-MOUSE_SUPPORT
-    tests: []
+    tests:
+      - src/lib/file-column-clipboard.test.ts
+      - src/app/files/components/FileColumnContextMenu.test.tsx
     code_annotations:
       - ARCH-MOUSE_SUPPORT
       - IMPL-MOUSE_SUPPORT
@@ -28,9 +54,9 @@ IMPL-MOUSE_SUPPORT:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-19T16:06:42.636Z"
+      date: "2026-05-24T00:00:00.000Z"
       author: AI Agent
-      reason: IMPL essence_pseudocode retrofit all 58
+      reason: FILE_COLUMN_CLIPBOARD and FILE_COLUMN_CONTEXT_MENU pseudo-code and implementation
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

@@ -2641,16 +2641,7 @@ IMPL-MOUSE_SUPPORT:
     - ARCH-MOUSE_SUPPORT
     - REQ-MOUSE_INTERACTION
   technical_approach:
-    summary: Integrated mouse and touch support via context menu component, HTML5 drag-drop, and existing click handlers
-    components:
-      - name: ContextMenu Component
-        path: src/app/files/components/ContextMenu.tsx
-        lines: 198
-        description: Portal-rendered context menu with operation discovery
-      - name: FilePane Mouse Integration
-        path: src/app/files/components/FilePane.tsx
-        lines_added: 150
-        description: Added mouse event handlers and drag-drop support
+    summary: Context menus (row operations and file column clipboard), HTML5 drag-drop, click handlers
   implementation_details:
     context_menu:
       - Accessible ARIA labels and roles
@@ -2745,9 +2736,9 @@ IMPL-MOUSE_SUPPORT:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-08T00:00:00.000Z
+      date: "2026-05-24T00:00:00.000Z"
       author: AI Agent
-      reason: Added mouse-click-to-focus functionality via onFocusRequest callback prop in FilePane, with onMouseDown handler on pane container for focus bubbling
+      reason: FILE_COLUMN_CLIPBOARD and FILE_COLUMN_CONTEXT_MENU
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

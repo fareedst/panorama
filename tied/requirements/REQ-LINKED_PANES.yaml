@@ -16,6 +16,7 @@ REQ-LINKED_PANES:
       - Toggle linked mode on/off (L key)
       - Visual indicator in pane headers
   satisfaction_criteria:
+    - criterion: cross_pane_path_clipboard_reuses_cursor_filename — file column cross-pane path copy matches file.name across pane listings regardless of linkedMode
     - criterion: Link groups configurable (future enhancement)
     - criterion: Linked mode persists across directory changes
     - criterion: Linked panes navigate to same subdirectory together (DownwardNavigation)
@@ -31,8 +32,12 @@ REQ-LINKED_PANES:
     architecture:
       - ARCH-LINKED_NAV
     implementation:
+      - IMPL-FILE_PANE
       - IMPL-LINKED_NAV
-    tests: []
+      - IMPL-MOUSE_SUPPORT
+    tests:
+      - src/lib/file-column-clipboard.test.ts
+      - src/app/files/components/FileColumnContextMenu.test.tsx
     code_annotations:
       - REQ-LINKED_PANES
   related_requirements:
@@ -48,9 +53,9 @@ REQ-LINKED_PANES:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-19"
+      date: "2026-05-24T00:00:00.000Z"
       author: AI Agent
-      reason: Link canonical domain vocabulary
+      reason: LEAP — cross-pane path clipboard reuses cursor filename match key
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

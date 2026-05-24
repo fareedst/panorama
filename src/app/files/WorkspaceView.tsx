@@ -2963,6 +2963,9 @@ export default function WorkspaceView({
               copy.displayFilter?.filterEmpty ??
               "No visible items — the active filter may be hiding files in this folder."
             }
+            // PANE_FILES_LIST_TO_FILEPANE — [IMPL-WORKSPACE_VIEW] [IMPL-FILE_PANE] [REQ-MOUSE_INTERACTION] [REQ-LINKED_PANES]
+            // how: pass workspace pane listings for cross-pane path clipboard resolution
+            paneFilesList={panes.map((p) => p.files)}
           />
           );
         })}

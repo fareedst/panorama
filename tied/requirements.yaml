@@ -1789,11 +1789,13 @@ REQ-LINKED_PANES:
       - Toggle linked mode on/off (L key)
       - Visual indicator in pane headers
   satisfaction_criteria:
+    - criterion: cross_pane_path_clipboard_reuses_cursor_filename — file column cross-pane path copy matches file.name across pane listings regardless of linkedMode
     - criterion: Link groups configurable (future enhancement)
     - criterion: Linked mode persists across directory changes
-    - criterion: Linked panes navigate to same subdirectory together
-    - criterion: Toggle linked mode with L key
-    - criterion: Visual indicator shows linked state in pane headers
+    - criterion: Linked panes navigate to same subdirectory together (DownwardNavigation)
+    - criterion: Terminology aligns with docs/linked-navigation-vocabulary.md
+    - criterion: Toggle linked mode with L key (link.toggle)
+    - criterion: Visual indicator shows linked state in pane headers (VisualIndicators)
   validation_criteria:
     - method: Unit tests
       coverage: Link state management and sync logic
@@ -1821,9 +1823,9 @@ REQ-LINKED_PANES:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-07T00:00:00.000Z
+      date: "2026-05-24T00:00:00.000Z"
       author: AI Agent
-      reason: Initial creation - adapted from Goful REQ-LINKED_NAVIGATION for web
+      reason: LEAP — cross-pane path clipboard cursor filename match key
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent
@@ -2202,8 +2204,11 @@ REQ-MOUSE_INTERACTION:
       - Right-click context menu
       - Touch-friendly on tablets
   satisfaction_criteria:
+    - criterion: cross_pane_paths_disabled_when_basename_missing_from_listings — cross-pane copy action disabled when no pane listing contains the basename
     - criterion: Double-click opens/enters file/directory
     - criterion: Drag-and-drop moves/copies files between panes
+    - criterion: file_column_menu_exclusive_with_row_operations_menu — column right-click does not open row file operations menu
+    - criterion: file_column_right_click_shows_clipboard_menu — Copy filename, Copy path, Copy paths in all panes on metadata column cells
     - criterion: Left-click selects file and moves cursor
     - criterion: Right-click shows context menu with operations
     - criterion: Scroll wheel navigates file list
@@ -2219,8 +2224,14 @@ REQ-MOUSE_INTERACTION:
     architecture:
       - ARCH-MOUSE_SUPPORT
     implementation:
+      - IMPL-FILE_PANE
       - IMPL-MOUSE_SUPPORT
-    tests: []
+      - IMPL-WORKSPACE_VIEW
+    tests:
+      - src/app/files/components/FileColumnContextMenu.test.tsx
+      - src/app/files/components/FilePane.test.tsx
+      - src/app/files/WorkspaceView.file-column-clipboard.test.tsx
+      - src/lib/file-column-clipboard.test.ts
     code_annotations:
       - REQ-MOUSE_INTERACTION
   related_requirements:
@@ -2235,9 +2246,9 @@ REQ-MOUSE_INTERACTION:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-07T00:00:00.000Z
+      date: "2026-05-24T00:00:00.000Z"
       author: AI Agent
-      reason: Phase 10 implementation complete
+      reason: LEAP — file column clipboard context menu
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

@@ -1,4 +1,3 @@
-# ARCH detail — ARCH-MOUSE_SUPPORT
 ARCH-MOUSE_SUPPORT:
   name: Mouse and Touch Interaction Architecture
   status: Active
@@ -30,12 +29,15 @@ ARCH-MOUSE_SUPPORT:
         - Dependency, configuration overhead
       rejected_reason: Simple portal component meets requirements
   implementation_approach:
-    summary: Portal-based context menu, HTML5 drag-drop, existing click handlers
+    summary: Portal-based context menus (row operations and file column clipboard), HTML5 drag-drop, existing click handlers
     details:
       - 'Click: Existing onClick handlers (already implemented)'
-      - 'ContextMenu: Portal to document.body, position calculation, outside click dismiss'
+      - 'Column menu mutual exclusion: stopPropagation on column cells; clearing sibling menu state when opening the other menu'
+      - 'ContextMenu: Portal to document.body for row file operations (copy, move, delete, rename)'
+      - 'Cross-pane clipboard: workspace paneFilesList resolves paths by cursor filename (basename), not full-path equality'
       - 'Double-click: Existing onDoubleClick handlers (already implemented)'
       - 'Drag-drop: HTML5 API with custom drag image and modifier key detection'
+      - 'FileColumnContextMenu: Portal clipboard menu on metadata column cells (name, size, mtime); copy filename, absolute path, cross-pane paths'
       - 'Scroll: Native browser overflow-y-auto'
   traceability:
     requirements:
@@ -58,9 +60,9 @@ ARCH-MOUSE_SUPPORT:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-07T00:00:00.000Z
+      date: "2026-05-24T00:00:00.000Z"
       author: AI Agent
-      reason: Phase 10 implementation complete
+      reason: LEAP — file column clipboard context menu architecture
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

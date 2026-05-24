@@ -1,4 +1,3 @@
-# REQ detail — REQ-MOUSE_INTERACTION
 REQ-MOUSE_INTERACTION:
   name: Mouse and Touch Interaction
   category: Functional
@@ -17,25 +16,38 @@ REQ-MOUSE_INTERACTION:
       - Right-click context menu
       - Touch-friendly on tablets
   satisfaction_criteria:
+    - criterion: cross_pane_paths_disabled_when_basename_missing_from_listings — cross-pane copy action disabled when no pane listing contains the basename
     - criterion: Double-click opens/enters file/directory
     - criterion: Drag-and-drop moves/copies files between panes
+    - criterion: file_column_menu_exclusive_with_row_operations_menu — column right-click does not open row file operations menu
+    - criterion: file_column_right_click_shows_clipboard_menu — Copy filename, Copy path, Copy paths in all panes on metadata column cells
     - criterion: Left-click selects file and moves cursor
     - criterion: Right-click shows context menu with operations
     - criterion: Scroll wheel navigates file list
     - criterion: Touch gestures work on tablets
   validation_criteria:
+    - method: Unit tests
+      coverage: file-column-clipboard.ts formatters and cross-pane resolution
+    - method: Component tests
+      coverage: FileColumnContextMenu copy actions and disabled cross-pane state
+    - method: Composition tests
+      coverage: FilePane column right-click wiring; WorkspaceView paneFilesList binding
     - method: Integration tests
       coverage: Mouse event handling
     - method: UI tests
       coverage: Context menu display and actions
-    - method: Touch tests
-      coverage: Touch gesture handling
   traceability:
     architecture:
       - ARCH-MOUSE_SUPPORT
     implementation:
+      - IMPL-FILE_PANE
       - IMPL-MOUSE_SUPPORT
-    tests: []
+      - IMPL-WORKSPACE_VIEW
+    tests:
+      - src/app/files/components/FileColumnContextMenu.test.tsx
+      - src/app/files/components/FilePane.test.tsx
+      - src/app/files/WorkspaceView.file-column-clipboard.test.tsx
+      - src/lib/file-column-clipboard.test.ts
     code_annotations:
       - REQ-MOUSE_INTERACTION
   related_requirements:
@@ -49,9 +61,9 @@ REQ-MOUSE_INTERACTION:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-07T00:00:00.000Z
+      date: "2026-05-24T00:00:00.000Z"
       author: AI Agent
-      reason: Phase 10 implementation complete
+      reason: LEAP — file column clipboard context menu satisfaction criteria
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

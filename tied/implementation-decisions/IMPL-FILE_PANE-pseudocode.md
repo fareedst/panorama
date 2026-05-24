@@ -51,6 +51,32 @@ PROCEDURE METADATA_COLUMN_WIDTHS_PROP(context)
   ELSE measureFileMetadataColumnWidths(files, visibleColumns) in useMemo per pane
 ```
 
+## PANE_FILES_LIST_PROP
+
+// [IMPL-FILE_PANE] [IMPL-WORKSPACE_VIEW] [REQ-MOUSE_INTERACTION] [REQ-LINKED_PANES]: how: optional paneFilesList prop defaults to []; forwarded to FileColumnContextMenu for cross-pane path resolution
+
+```
+PROCEDURE PANE_FILES_LIST_PROP(context)
+  INPUT: paneFilesList?: readonly FileStat[][] from WorkspaceView panes[].files
+  DEFAULT paneFilesList := []
+  PASS paneFilesList to FileColumnContextMenu
+```
+
+## FILE_COLUMN_CONTEXT_MENU_WIRING
+
+// [IMPL-FILE_PANE] [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] [REQ-LINKED_PANES]: how: column cell right-click opens clipboard menu; mutually exclusive with row ContextMenu; moves cursor to clicked row
+
+```
+PROCEDURE FILE_COLUMN_CONTEXT_MENU_WIRING(context)
+  STATE columnContextMenu { x, y, file } separate from contextMenu (row file operations)
+  ON column cell contextMenu → preventDefault; stopPropagation; clear contextMenu
+  IF row index !== cursor THEN onCursorMove(index)
+  SET columnContextMenu at clientX/clientY
+  ON row contextMenu → clear columnContextMenu (mutual exclusion)
+  ATTACH onContextMenu to each renderColumn cell (name, size, mtime) via columnContextProps
+  RENDER FileColumnContextMenu WHEN columnContextMenu set with paneFilesList
+```
+
 ## ScrollToCursor
 
 // [IMPL-FILE_PANE] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-FILE_LISTING] [REQ-DIRECTORY_NAVIGATION]: scrollIntoView when scrollTrigger prop changes from linked sync
@@ -68,9 +94,10 @@ PROCEDURE IMPL-FILE_PANE_ScrollToCursor(context)
 
 // [IMPL-FILE_PANE] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-FILE_LISTING] [REQ-DIRECTORY_NAVIGATION]: map implementing and verifying source files for this IMPL
 
-// FILE: src/app/files/components/FilePane.tsx — File pane component
-// FILE: src/app/files/components/FilePane.test.tsx — File pane tests (12 tests)
+// FILE: src/app/files/components/FilePane.tsx — File pane component; FILE_COLUMN_CONTEXT_MENU_WIRING
+// FILE: src/app/files/components/FilePane.test.tsx — File pane tests including column context menu
 // FUNCTION: FilePane in src/app/files/components/FilePane.tsx
+// FUNCTION: handleColumnContextMenu, renderColumn in FilePane.tsx
 
 ## ErrorHandling
 

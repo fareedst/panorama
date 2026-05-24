@@ -3,8 +3,11 @@ IMPL-FILE_PANE:
   status: Implemented
   cross_references:
     - ARCH-FILE_MANAGER_HIERARCHY
+    - IMPL-MOUSE_SUPPORT
     - REQ-DIRECTORY_NAVIGATION
     - REQ-FILE_LISTING
+    - REQ-LINKED_PANES
+    - REQ-MOUSE_INTERACTION
   decision: Client component renders file list with cursor, marks, comparison colors, and proper date conversion
   rationale:
     why: Individual pane component displays files and handles pane-level interactions with proper date handling
@@ -21,54 +24,55 @@ IMPL-FILE_PANE:
   implementation_approach:
     summary: Client component renders file list with cursor, marks, comparison colors, and proper date conversion
     details:
-      - 'Applies styles: cursor highlight, mark highlight, directory indicators'
-      - 'Critical fix: Import formatSize from files.utils (client-safe) not files.data'
-      - 'Date handling fix: Wrap mtime in new Date() constructor to handle string dates from API'
-      - 'Props: path, files, cursor, marks, bounds, focused, handlers'
-      - 'Type safety fix: Changed event handler from MouseEvent to ChangeEvent'
-      - Absolute positioning with bounds from props
-      - Created src/app/files/components/FilePane.tsx
-      - Renders header with path
-      - Renders scrollable file list with checkboxes
+      - 'FILE_COLUMN_CONTEXT_MENU_WIRING: column cell right-click opens FileColumnContextMenu; mutual exclusion with row ContextMenu'
+      - 'PANE_FILES_LIST_PROP: optional paneFilesList forwarded for cross-pane path clipboard'
   code_locations:
     files:
       - path: src/app/files/components/FilePane.tsx
-        description: File pane component
+        description: File pane component; column context menu wiring
         lines:
           - 1
-          - 174
+          - 670
       - path: src/app/files/components/FilePane.test.tsx
-        description: File pane tests (12 tests)
+        description: File pane tests including column context menu
         lines:
           - 1
-          - 256
+          - 680
     functions:
-      - name: FilePane
+      - name: handleColumnContextMenu
         file: src/app/files/components/FilePane.tsx
-        description: File pane component function
+        description: Column cell right-click handler
+      - name: renderColumn
+        file: src/app/files/components/FilePane.tsx
+        description: Attaches onContextMenu to metadata cells
   traceability:
     architecture:
       - ARCH-FILE_MANAGER_HIERARCHY
+      - ARCH-MOUSE_SUPPORT
     requirements:
-      - REQ-FILE_LISTING
       - REQ-DIRECTORY_NAVIGATION
-    tests: []
+      - REQ-FILE_LISTING
+      - REQ-LINKED_PANES
+      - REQ-MOUSE_INTERACTION
+    tests:
+      - src/app/files/components/FilePane.test.tsx
     code_annotations:
       - IMPL-FILE_PANE
   related_decisions:
     depends_on: []
     supersedes: []
     see_also:
-      - IMPL-WORKSPACE_VIEW
       - IMPL-FILES_UTILS
+      - IMPL-MOUSE_SUPPORT
+      - IMPL-WORKSPACE_VIEW
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-19T16:06:42.636Z"
+      date: "2026-05-24T00:00:00.000Z"
       author: AI Agent
-      reason: IMPL essence_pseudocode retrofit all 58
+      reason: FILE_COLUMN_CONTEXT_MENU_WIRING and PANE_FILES_LIST_PROP
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent
