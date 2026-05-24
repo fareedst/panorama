@@ -9,14 +9,17 @@ IMPL-CROSS_PANE_VISIBILITY_CATALOG:
   implementation_approach:
     summary: cross-pane-visibility-store.ts with CRUD, duplicate, version bump, subscribe
     details:
+      - mergePaneListingWithCrossPaneFields implements MERGE_LISTING_WITH_CROSS_PANE_FIELDS — explicit cross-pane field pick only (never spread full prior pane)
       - Storage key panorama.crossPaneVisibility.v1
       - Unique preset names (case-insensitive)
   traceability:
     requirements:
       - REQ-CROSS_PANE_VISIBILITY
+      - REQ-DIRECTORY_NAVIGATION
     architecture:
       - ARCH-CROSS_PANE_VISIBILITY
     tests:
+      - src/app/files/WorkspaceView.cross-pane-visibility.test.tsx
       - src/lib/cross-pane-visibility-store.test.ts
       - src/lib/pane-cross-pane-visibility.test.ts
   related_decisions:

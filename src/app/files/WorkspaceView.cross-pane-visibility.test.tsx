@@ -28,6 +28,15 @@ const file = (name: string, size: number): FileStat => ({
 const paneA = [file("shared.txt", 100), file("only-a.txt", 1)];
 const paneB = [file("shared.txt", 200), file("only-b.txt", 2)];
 
+const navKeybindings = [
+  {
+    key: "Enter",
+    action: "navigate.enter",
+    description: "Open directory",
+    category: "navigation" as const,
+  },
+];
+
 const mockToolbars: ToolbarsConfig = {
   enabled: true,
   actions: {
@@ -179,6 +188,54 @@ describe("[REQ-CROSS_PANE_VISIBILITY] WorkspaceView cross-pane visibility", () =
 
     await waitFor(() => {
       expect(screen.queryByText("[1 marked]")).not.toBeInTheDocument();
+    });
+  });
+
+  // [IMPL-WORKSPACE_VIEW] [IMPL-CROSS_PANE_VISIBILITY_CATALOG] [ARCH-CROSS_PANE_VISIBILITY] [REQ-DIRECTORY_NAVIGATION] [REQ-CROSS_PANE_VISIBILITY]: how: handleNavigate preserves path after MERGE_LISTING_WITH_CROSS_PANE_FIELDS when panes have visibility fields
+  it("navigate.enter updates pane header path with cross-pane visibility fields on pane", async () => {
+    const parentPath = "/parent";
+    const subdirPath = "/parent/subdir";
+    const parentFiles: FileStat[] = [
+      {
+        name: "subdir",
+        path: subdirPath,
+        isDirectory: true,
+        size: 0,
+        mtime: "2024-01-01T00:00:00.000Z",
+        extension: "",
+      },
+      file("readme.txt", 10),
+    ];
+
+    (global.fetch as ReturnType<typeof vi.fn>).mockImplementation(async (url: string) => {
+      const urlStr = url.toString();
+      if (urlStr.includes(encodeURIComponent(subdirPath))) {
+        return { ok: true, json: async () => [] } as Response;
+      }
+      if (urlStr.includes(encodeURIComponent(parentPath))) {
+        return { ok: true, json: async () => parentFiles } as Response;
+      }
+      return { ok: true, json: async () => [] } as Response;
+    });
+
+    render(
+      <WorkspaceView
+        initialPanes={[{ path: parentPath, files: parentFiles }]}
+        keybindings={navKeybindings}
+        copy={{ title: "FM" }}
+        layout={{ ...mockLayout, defaultPaneCount: 1, defaultLinkedMode: false }}
+        columns={[{ id: "name", visible: true }]}
+        toolbars={mockToolbars}
+      />,
+    );
+
+    const pane0 = screen.getByTestId("pane-0");
+    expect(within(pane0).getByText(parentPath)).toBeInTheDocument();
+
+    fireEvent.keyDown(window, { key: "Enter" });
+
+    await waitFor(() => {
+      expect(within(pane0).getByText(subdirPath)).toBeInTheDocument();
     });
   });
 });

@@ -26,6 +26,8 @@
 | **Mirrored visibility** | Other panes show rows matching focused visible basenames |
 | **Visibility threshold** | `sizeThreshold` / `timeThreshold` for gt/lt criteria |
 | **Snapshot cross-pane visibility** | Per pane: `crossPaneVisibilityId` + optional inline `crossPaneVisibility` on snapshot v5 |
+| **Listing merge** | Combining a fresh directory listing (`PaneWithDisplayFilter`) with persisted cross-pane visibility fields on the pane |
+| **Cross-pane field pick** | Merge copies only visibility catalog fields, never `path`, `files`, `cursor`, or `marks` |
 
 ## Naming bridge
 
@@ -72,14 +74,17 @@ Compare filter toolbar **Action** ids map to **Icon name** values in `toolbars.a
 | Resolve pane state | `RESOLVE_PANE_VISIBILITY` | IMPL-CROSS_PANE_VISIBILITY_CATALOG |
 | Focus-synced toolbar | `SYNC_TOOLBAR_TO_FOCUS` | IMPL-CROSS_PANE_VISIBILITY_UI |
 | Save draft | `SAVE_DRAFT_TO_CATALOG` | IMPL-CROSS_PANE_VISIBILITY_CATALOG |
+| Listing + visibility fields | `MERGE_LISTING_WITH_CROSS_PANE_FIELDS` | IMPL-CROSS_PANE_VISIBILITY_CATALOG |
 
 ## Filter order
 
 1. **Display spec** — `APPLY_PANE_LISTING` / `EVALUATE_ENTRY` → `pane.files`
 2. **Cross-pane visibility** — `applyCrossPaneVisibility` with focused pane draft → `displayFiles`
+3. **Navigation / refresh** — `handleNavigate` rebuilds listing (`path`, `files`) first; **listing merge** attaches visibility fields via **cross-pane field pick** without replacing listing state
 
 ## See also
 
+- [linked-navigation-vocabulary.md](linked-navigation-vocabulary.md) — `handleNavigate`, parent `..`, linked directory navigation
 - [cross-pane-comparison-vocabulary.md](cross-pane-comparison-vocabulary.md)
 - [workspace-pane-vocabulary.md](workspace-pane-vocabulary.md)
 - [toolbar-keybind-vocabulary.md](toolbar-keybind-vocabulary.md)

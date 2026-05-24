@@ -64,3 +64,16 @@ PROCEDURE INLINE_SNAPSHOT_WHEN_DIRTY(paneFields, store)
     RETURN { crossPaneVisibilityId, crossPaneVisibility: paneFields.crossPaneVisibilityDraft }
   RETURN { crossPaneVisibilityId: paneFields.activeCrossPaneVisibilityId }
 ```
+
+## MERGE_LISTING_WITH_CROSS_PANE_FIELDS
+
+// [IMPL-CROSS_PANE_VISIBILITY_CATALOG] [ARCH-CROSS_PANE_VISIBILITY] [REQ-CROSS_PANE_VISIBILITY] [REQ-DIRECTORY_NAVIGATION]: how: after BUILD_PANE_FROM_RAW_LISTING, attach visibility fields without overwriting listing path/files/cursor/marks
+
+```
+PROCEDURE MERGE_LISTING_WITH_CROSS_PANE_FIELDS(listingPane, crossPaneFields)
+  RETURN { ...listingPane,
+           activeCrossPaneVisibilityId: crossPaneFields.activeCrossPaneVisibilityId,
+           crossPaneVisibilityDraft: crossPaneFields.crossPaneVisibilityDraft,
+           crossPaneVisibilityDraftSourceVersion: crossPaneFields.crossPaneVisibilityDraftSourceVersion }
+  // INVARIANT: never spread full prior pane into listingPane
+```

@@ -75,6 +75,21 @@ PROCEDURE SHARED_METADATA_WIDTHS_ONECOLUMN(context)
   PASS metadataColumnWidths to each FilePane
 ```
 
+## HandleNavigate
+
+// [IMPL-WORKSPACE_VIEW] [IMPL-CROSS_PANE_VISIBILITY_CATALOG] [ARCH-CROSS_PANE_VISIBILITY] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-DIRECTORY_NAVIGATION] [REQ-CROSS_PANE_VISIBILITY]: how: fetch listing, build pane with new path, merge visibility fields via MERGE_LISTING_WITH_CROSS_PANE_FIELDS
+
+```
+PROCEDURE HandleNavigate(paneIndex, newPath)
+  INPUT: paneIndex, newPath
+  IF panes[paneIndex] missing THEN RETURN
+  listing := fetchDirectoryListing(newPath, pane.activeDisplaySpecId)
+  built := buildPaneFromRawListing(listing.files, { ...pane, path: newPath }, ...)
+  updated[paneIndex] := MERGE_LISTING_WITH_CROSS_PANE_FIELDS(built, crossPaneFieldsFromPane)
+  APPLY restored cursor from directory history
+  IF linkedMode AND isInitiatingNavigation THEN sync linked panes downward or upward
+```
+
 ## LayoutToolbarPicker
 
 // [IMPL-WORKSPACE_VIEW] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-TOOLBAR_LAYOUT] [REQ-MULTI_PANE_LAYOUT] [REQ-TOOLBAR_SYSTEM] [REQ-WORKSPACE_MESH_BRIDGE]: workspace layout selection via toolbar view.layout pop-over

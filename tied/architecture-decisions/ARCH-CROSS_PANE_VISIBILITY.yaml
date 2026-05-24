@@ -23,6 +23,7 @@ ARCH-CROSS_PANE_VISIBILITY:
       - Build comparison index whenever two or more panes exist for filter criteria
       - Client catalog localStorage persistence panorama.crossPaneVisibility.v1
       - Coloring index still gated by comparisonMode
+      - Listing state (path, files, cursor, marks) owned by directory navigation / display-spec pipeline; cross-pane catalog fields merged via MERGE_LISTING_WITH_CROSS_PANE_FIELDS explicit pick only
       - Per-pane snapshot v5 fields crossPaneVisibilityId and inline crossPaneVisibility
       - RECONCILE_AFTER_VISIBILITY on focused pane marks and cursor
   traceability:

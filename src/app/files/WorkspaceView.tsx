@@ -1034,6 +1034,8 @@ export default function WorkspaceView({
     
     try {
       const pane = panes[paneIndex];
+      // [IMPL-WORKSPACE_VIEW] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-DIRECTORY_NAVIGATION]: how: guard invalid paneIndex during async navigate
+      if (!pane) return;
       
       // Save current cursor position before navigating
       if (pane.files.length > 0 && pane.cursor >= 0 && pane.cursor < pane.files.length) {

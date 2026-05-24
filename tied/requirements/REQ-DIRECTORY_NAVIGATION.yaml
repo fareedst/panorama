@@ -1,4 +1,3 @@
-# REQ detail — REQ-DIRECTORY_NAVIGATION
 REQ-DIRECTORY_NAVIGATION:
   name: Server Filesystem Directory Navigation
   category: Functional
@@ -16,6 +15,7 @@ REQ-DIRECTORY_NAVIGATION:
       - Multiple directory views simultaneously
       - Visual directory browsing
   satisfaction_criteria:
+    - criterion: After navigating into or out of a directory, pane header path and listing reflect the target directory (not reverted by cross-pane visibility merge)
     - criterion: Can navigate into subdirectories (Enter key or click)
     - criterion: Can navigate to parent directory (Backspace key)
     - criterion: Current path displayed in pane header
@@ -28,11 +28,16 @@ REQ-DIRECTORY_NAVIGATION:
   traceability:
     architecture:
       - ARCH-FILESYSTEM_ABSTRACTION
+      - ARCH-CROSS_PANE_VISIBILITY
     implementation:
+      - IMPL-CROSS_PANE_VISIBILITY_CATALOG
       - IMPL-FILE_PANE
       - IMPL-FILES_DATA
       - IMPL-FILES_UTILS
-    tests: []
+      - IMPL-WORKSPACE_VIEW
+    tests:
+      - src/lib/pane-cross-pane-visibility.test.ts
+      - src/app/files/WorkspaceView.cross-pane-visibility.test.tsx
     code_annotations:
       - REQ-DIRECTORY_NAVIGATION
   related_requirements:
@@ -40,6 +45,7 @@ REQ-DIRECTORY_NAVIGATION:
       - REQ-FILE_MANAGER_PAGE
     related_to:
       - REQ-FILE_LISTING
+      - REQ-CROSS_PANE_VISIBILITY
     supersedes: []
   metadata:
     created:

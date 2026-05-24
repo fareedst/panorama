@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Directory navigation with cross-pane visibility** (`[REQ-DIRECTORY_NAVIGATION]`, `[REQ-CROSS_PANE_VISIBILITY]`, `[IMPL-CROSS_PANE_VISIBILITY_CATALOG]`, `[IMPL-WORKSPACE_VIEW]`): `mergePaneListingWithCrossPaneFields` no longer spreads the full prior pane, which had reverted `path` and `files` after `handleNavigate` (broken `..` and folder open). Regression: [`pane-cross-pane-visibility.test.ts`](src/lib/pane-cross-pane-visibility.test.ts), composition: [`WorkspaceView.cross-pane-visibility.test.tsx`](src/app/files/WorkspaceView.cross-pane-visibility.test.tsx). Vocabulary: [`docs/cross-pane-visibility-vocabulary.md`](docs/cross-pane-visibility-vocabulary.md).
+
 - **Toolbar-only actions** (`[REQ-TOOLBAR_SYSTEM]`): `toolbars.actions` in `config/files.yaml` supplies metadata for buttons without keybindings; fixes missing **Column order** (`view.columns`) button in the Layout toolbar.
 
 ### Added

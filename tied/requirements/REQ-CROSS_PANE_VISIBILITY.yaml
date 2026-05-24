@@ -14,6 +14,7 @@ REQ-CROSS_PANE_VISIBILITY:
       - Focused-pane rules with cross-pane mirroring
       - Mesh restore preserves filter state
   satisfaction_criteria:
+    - criterion: Applying or refreshing cross-pane visibility state must not overwrite directory path or raw listing from navigation
     - criterion: Each pane has activeCrossPaneVisibilityId and ephemeral draft until saved
     - criterion: Exclude rules hide files before include evaluation in focused pane
     - criterion: Marks and operations use visibility-filtered listings
@@ -39,5 +40,7 @@ REQ-CROSS_PANE_VISIBILITY:
       - REQ-TOOLBAR_SYSTEM
       - REQ-WORKSPACE_MESH_BRIDGE
     related_to:
-      - REQ-FILE_MARKING_WEB
       - REQ-BULK_FILE_OPS
+      - REQ-DIRECTORY_NAVIGATION
+      - REQ-FILE_MARKING_WEB
+    supersedes: []
