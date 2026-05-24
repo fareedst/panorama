@@ -100,3 +100,15 @@ PROCEDURE IMPL-MESH_GUI_rules(meshId)
 
 PROCEDURE IMPL-MESH_GUI_archive(meshId)
   ON archive-mesh-btn POST archive; REDIRECT to mesh list
+
+## MeshDepotsClient
+
+// [IMPL-MESH_GUI] [IMPL-MESH_DEPOT] [ARCH-MESH_LAYERED] [REQ-MESH_GUI] [REQ-MESH_PLATFORM]
+// how: Per-mesh depots sub-route — fetch mesh, add/remove depots via API, credential reference UI stub; testids mesh-depots, add-depot-*, depot-summary, manage-credentials-btn.
+
+PROCEDURE IMPL-MESH_GUI_depots(meshId)
+  FETCH GET /api/mesh/{meshId}
+  RENDER MeshDetailNav + add-depot-form + depot-summary
+  ON add-depot-btn POST /api/mesh/{meshId}/depots { name, kind, root }
+  ON remove-depot-{id} DELETE /api/mesh/{meshId}/depots/{id}
+  ON manage-credentials-btn POST /api/mesh/credentials with x-mesh-role operator → show credential-denied on 403

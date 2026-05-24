@@ -3,7 +3,7 @@ REQ-MESH_GUI:
   category: Functional
   priority: P1
   status: Implemented
-  description: 'Mesh UI at src/app/mesh: list, detail, topology, plan, sync, conflicts, schedule, export, history, rules, settings. Canonical terms: docs/mesh-platform-vocabulary.md; two-phase plan approve then sync start per IMPL-MESH_GUI-pseudocode.'
+  description: 'Mesh UI at src/app/mesh: list, detail, topology, plan, sync, conflicts, schedule, export, history, rules, settings, per-mesh depots page. Canonical terms: docs/mesh-platform-vocabulary.md; two-phase plan approve then sync start per IMPL-MESH_GUI-pseudocode.'
   rationale:
     why: Deployment plan phases 17-22.
     problems_solved:
@@ -17,6 +17,8 @@ REQ-MESH_GUI:
       description: Mesh list Note column shows extractNotePrefixFromDescription(description); Most recent save time column shows formatDateTime(updatedAt); testids mesh-list-note and mesh-list-updated-at
     - criterion: mesh_list_sortable_column_headers_toggle_order
       description: SortableHeader buttons toggle client sortColumn/sortDirection per column with aria-sort; testids mesh-list-sort-*
+    - criterion: per_mesh_depots_page_supports_depot_crud
+      description: Operator reaches /mesh/:meshId/depots; MeshDepotsClient adds and removes depots via form; testids mesh-depots, add-depot-*, depot-summary, manage-credentials-btn
     - criterion: plan_page_approves_session_without_starting_sync
     - criterion: sync_page_starts_approved_session_from_sessionStorage_handoff
     - criterion: terminology_aligns_with_docs_mesh_platform_vocabulary
@@ -26,6 +28,8 @@ REQ-MESH_GUI:
       coverage: src/app/mesh/components/MeshListClient.test.tsx
     - method: Vitest RTL
       coverage: src/app/mesh/components/MeshDetailClient.test.tsx
+    - method: Vitest RTL
+      coverage: src/app/mesh/components/MeshDepotsClient.test.tsx
     - method: Vitest RTL
       coverage: src/app/mesh/components/PlanViewClient.test.tsx
     - method: Vitest RTL
@@ -50,6 +54,7 @@ REQ-MESH_GUI:
     tests:
       - e2e/mesh-sync.spec.ts
       - src/app/mesh/components/MeshArchiveClient.test.tsx
+      - src/app/mesh/components/MeshDepotsClient.test.tsx
       - src/app/mesh/components/MeshExportClient.test.tsx
       - src/app/mesh/components/MeshListClient.test.tsx
       - src/app/mesh/components/MeshScheduleClient.test.tsx
@@ -65,3 +70,7 @@ REQ-MESH_GUI:
     created:
       date: "2026-05-19T00:00:00.000Z"
       author: AI Agent
+    last_updated:
+      date: "2026-05-24T00:00:00.000Z"
+      author: AI Agent
+      reason: LEAP — per_mesh_depots_page_supports_depot_crud criterion

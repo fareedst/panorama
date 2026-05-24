@@ -273,6 +273,16 @@ WORKSPACE_SNAPSHOT_SUMMARY(snapshot, options):
   RETURN { layout, focusIndex, linkedMode, comparisonMode, panePaths[], note, mostRecentSaveTime, sharedSortLabel, fileColumnsLabel, panes[] }
 ```
 
+## WORKSPACE_SNAPSHOT_SUMMARY_LIST
+# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_GUI] [REQ-CROSS_PANE_VISIBILITY]
+# how: Render workspace-snapshot-summary list; per-pane nested items include Sort, Display filter, and Compare filter (crossPaneVisibilityLabel); omit workspace-level Compare filters aggregate line.
+
+```
+WORKSPACE_SNAPSHOT_SUMMARY_LIST(summary):
+  RENDER note, save time, layout, focus, linked, comparison, shared sort, file columns
+  FOR each pane: RENDER path, sortLabel, displayFilterLabel, Compare filter: crossPaneVisibilityLabel
+```
+
 ## MESH_DETAIL_RESTORE_LINK
 # [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_GUI] [IMPL-EXTERNAL_LINKS] [REQ-NAVIGATION_LINKS]
 # how: When mesh has depots, render Open in File Manager NewTabLink to /files?meshId= (target=_blank, rel, a11y); workspace-snapshot tag shows summary via WorkspaceSnapshotSummaryList.

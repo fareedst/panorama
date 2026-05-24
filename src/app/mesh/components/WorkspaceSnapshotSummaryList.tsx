@@ -1,4 +1,4 @@
-// [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_GUI]: WORKSPACE_SNAPSHOT_SUMMARY UI
+// [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_GUI] [REQ-CROSS_PANE_VISIBILITY]: WORKSPACE_SNAPSHOT_SUMMARY_LIST UI
 
 import type { WorkspaceSnapshotSummary } from "@/lib/workspace-mesh-bridge";
 import { formatDateTime } from "@/lib/files.utils";
@@ -18,9 +18,6 @@ export function WorkspaceSnapshotSummaryList({ summary }: { summary: WorkspaceSn
       <li>Comparison: {summary.comparisonMode}</li>
       <li>Shared sort: {summary.sharedSortLabel}</li>
       {summary.fileColumnsLabel ? <li>File columns: {summary.fileColumnsLabel}</li> : null}
-      {summary.crossPaneVisibilityLabel ? (
-        <li>Compare filters: {summary.crossPaneVisibilityLabel}</li>
-      ) : null}
       {summary.panes.map((pane, i) => (
         <li key={`pane-${i}-${pane.path}`} className="list-none">
           <ul className="ml-4 list-inside list-disc space-y-1">
@@ -29,6 +26,8 @@ export function WorkspaceSnapshotSummaryList({ summary }: { summary: WorkspaceSn
             </li>
             <li>Sort: {pane.sortLabel}</li>
             <li>Display filter: {pane.displayFilterLabel}</li>
+            {/* [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-CROSS_PANE_VISIBILITY] WORKSPACE_SNAPSHOT_SUMMARY_LIST — how: per-pane Compare filter label, not workspace aggregate. */}
+            <li>Compare filter: {pane.crossPaneVisibilityLabel}</li>
           </ul>
         </li>
       ))}

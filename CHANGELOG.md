@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Per-mesh depots page** (`[REQ-MESH_GUI]`, `[IMPL-MESH_GUI]`, `[IMPL-MESH_DEPOT]`): `/mesh/:meshId/depots` with [`MeshDepotsClient`](src/app/mesh/components/MeshDepotsClient.tsx) — depot add/remove and credential-reference stub; tests [`MeshDepotsClient.test.tsx`](src/app/mesh/components/MeshDepotsClient.test.tsx). Vocabulary: [`docs/mesh-platform-vocabulary.md`](docs/mesh-platform-vocabulary.md).
+
+### Changed
+
+- **Mesh snapshot summary compare filters** (`[REQ-WORKSPACE_MESH_BRIDGE]`, `[IMPL-WORKSPACE_MESH_BRIDGE]`): [`WorkspaceSnapshotSummaryList`](src/app/mesh/components/WorkspaceSnapshotSummaryList.tsx) shows **Compare filter** per pane instead of workspace-level **Compare filters** aggregate. Tests: extended [`WorkspaceSnapshotSummaryList.test.tsx`](src/app/mesh/components/WorkspaceSnapshotSummaryList.test.tsx), [`MeshDetailClient.test.tsx`](src/app/mesh/components/MeshDetailClient.test.tsx), [`workspace-mesh-bridge.test.ts`](src/lib/workspace-mesh-bridge.test.ts). Vocabulary: [`docs/cross-pane-visibility-vocabulary.md`](docs/cross-pane-visibility-vocabulary.md).
+
+### Added
+
 - **Toolbar icon registry** (`[REQ-TOOLBAR_SYSTEM]`, `[ARCH-TOOLBAR_ACTIONS]`, `[IMPL-TOOLBAR_COMPONENT]`): merged [`lucide-icons.tsx`](src/components/icons/lucide-icons.tsx) + [`panorama-icons.tsx`](src/components/icons/panorama-icons.tsx) in [`registry.ts`](src/components/icons/registry.ts); registered glyphs for compare filters, mesh bridge (`git-compare`, `network`), layout (`layout-grid`), display filter (`filter`), multi-pane **`copy-all`** / **`move-all`**; **`icon-unknown`** fallback for unmapped actions (Help stays `help-circle`); [`registry.test.tsx`](src/components/icons/registry.test.tsx) guards referenced names via `getReferencedToolbarIconNames()`. Vocabulary: [`docs/toolbar-keybind-vocabulary.md`](docs/toolbar-keybind-vocabulary.md), [`docs/cross-pane-visibility-vocabulary.md`](docs/cross-pane-visibility-vocabulary.md), [`docs/nsync-multi-target-vocabulary.md`](docs/nsync-multi-target-vocabulary.md), [`docs/pane-display-filter-vocabulary.md`](docs/pane-display-filter-vocabulary.md), [`docs/mesh-platform-vocabulary.md`](docs/mesh-platform-vocabulary.md).
 
 ### Fixed

@@ -25,10 +25,10 @@ ARCH-WORKSPACE_MESH_BRIDGE:
       - Shared pure helpers buildWorkspaceRestoreBundle and appendSnapshotLayoutWarnings used by FilesPage and WorkspaceView.
       - Successful workspace update save sets savedSnapshot to the exact captured snapshot so diff badge clears immediately
       - WORKSPACE_HEADER_STATUS shows workspace-restore-pending during client rehydrate; red workspace-restore-error only when client has not recovered; amber warning after clientRestoredFromMesh.
-      - WORKSPACE_SNAPSHOT_SUMMARY accepts mesh description, updatedAt, and optional display-spec name resolver; returns note, save time, shared sort label, file columns label, and per-pane sort/display filter labels
+      - WORKSPACE_SNAPSHOT_SUMMARY accepts mesh description, updatedAt, and optional display-spec name resolver; returns note, save time, shared sort label, file columns label, and per-pane sort/display filter/compare filter labels
       - WorkspaceSnapshot v3 includes sharedSort; v2 displaySpecId; v1 base pane fields
       - WorkspaceSnapshot v4 includes fileColumns; capture always writes v4; validateWorkspaceSnapshot accepts v1/v2/v3/v4; v1–v3 omit fileColumns and callers use YAML defaults
-      - WorkspaceSnapshotSummaryList renders workspace-snapshot-summary on mesh detail
+      - WorkspaceSnapshotSummaryList (WORKSPACE_SNAPSHOT_SUMMARY_LIST) renders workspace-snapshot-summary on mesh detail with per-pane Compare filter labels; no workspace-level Compare filters aggregate line in GUI
   traceability:
     requirements:
       - REQ-WORKSPACE_MESH_BRIDGE
@@ -43,6 +43,7 @@ ARCH-WORKSPACE_MESH_BRIDGE:
       - src/app/files/page.mesh-restore.test.tsx
       - src/app/files/WorkspaceView.mesh-restore.test.tsx
       - src/app/mesh/components/MeshDetailClient.test.tsx
+      - src/app/mesh/components/WorkspaceSnapshotSummaryList.test.tsx
       - src/components/NewTabLink.test.tsx
       - src/lib/files.layout.test.ts
       - src/lib/workspace-mesh-bridge.test.ts
@@ -61,6 +62,6 @@ ARCH-WORKSPACE_MESH_BRIDGE:
       date: "2026-05-21T00:00:00.000Z"
       author: AI Agent
     last_updated:
-      date: "2026-05-23T00:00:00.000Z"
+      date: "2026-05-24T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — workspace snapshot v4 fileColumns capture, parse, diff, and mesh detail summary label
+      reason: LEAP — WORKSPACE_SNAPSHOT_SUMMARY_LIST per-pane Compare filter presentation

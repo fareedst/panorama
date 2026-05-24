@@ -14,6 +14,10 @@ IMPL-MESH_GUI:
         description: Mesh list page
       - path: src/app/mesh/components/MeshListClient.tsx
         description: IMPL-MESH_GUI_list — note and save-time columns, sortable headers (mesh-list-sort-*)
+      - path: src/app/mesh/[meshId]/depots/page.tsx
+        description: IMPL-MESH_GUI_depots — per-mesh depots route
+      - path: src/app/mesh/components/MeshDepotsClient.tsx
+        description: IMPL-MESH_GUI_depots — depot CRUD and credential stub
     functions: []
   traceability:
     architecture:
@@ -22,6 +26,7 @@ IMPL-MESH_GUI:
       - REQ-MESH_GUI
     tests:
       - src/app/mesh/components/MeshListClient.test.tsx
+      - src/app/mesh/components/MeshDepotsClient.test.tsx
     code_annotations:
       - IMPL-MESH_GUI
   related_decisions:
@@ -35,6 +40,6 @@ IMPL-MESH_GUI:
       date: "2026-05-19T00:00:00.000Z"
       author: AI Agent
     last_updated:
-      date: "2026-05-22T23:30:00.000Z"
+      date: "2026-05-24T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — mesh list note, save time, and sortable columns
+      reason: LEAP — per-mesh depots page (IMPL-MESH_GUI_depots)

@@ -130,6 +130,8 @@ describe("REQ-WORKSPACE_MESH_BRIDGE [IMPL-WORKSPACE_MESH_BRIDGE]", () => {
     expect(parsed?.panes[0].crossPaneVisibility?.sizeThreshold).toBe(1024);
     const summary = workspaceSnapshotSummary(parsed!);
     expect(summary.crossPaneVisibilityLabel).toContain("sharedAll:include");
+    // [IMPL-WORKSPACE_MESH_BRIDGE] WORKSPACE_SNAPSHOT_SUMMARY — how: per-pane crossPaneVisibilityLabel for WORKSPACE_SNAPSHOT_SUMMARY_LIST
+    expect(summary.panes[0]?.crossPaneVisibilityLabel).toContain("sharedAll:include");
   });
 
   it("PARSE_SNAPSHOT_FROM_MESH_migrates_legacy_workspace_crossPaneVisibility_to_panes", () => {

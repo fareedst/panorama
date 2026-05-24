@@ -141,4 +141,75 @@ describe("MeshDetailClient [IMPL-MESH_GUI]", () => {
       "Open in File Manager (opens in new tab)",
     );
   });
+
+  it("MESH_DETAIL_RESTORE_LINK_shows_per_pane_compare_filters", async () => {
+    // [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-CROSS_PANE_VISIBILITY]: mesh_detail_snapshot_summary_shows_per_pane_compare_filters via WORKSPACE_SNAPSHOT_SUMMARY_LIST
+    const snapshot = captureWorkspaceSnapshot({
+      layout: "OneColumn",
+      focusIndex: 0,
+      linkedMode: true,
+      comparisonMode: "name",
+      sharedSort: { sortBy: "mtime", sortDirection: "asc", sortDirsFirst: true },
+      panes: [
+        {
+          path: "/tmp/pane-a",
+          sortBy: "mtime",
+          sortDirection: "asc",
+          sortDirsFirst: true,
+          cursor: 0,
+          displaySpecId: "spec-abc",
+          crossPaneVisibilityId: null,
+          crossPaneVisibility: {
+            toggles: { sharedAll: "inactive", missingSome: "exclude", sizeLargestSome: "inactive" },
+            sizeThreshold: null,
+            timeThreshold: null,
+          },
+        },
+        {
+          path: "/tmp/pane-b",
+          sortBy: "size",
+          sortDirection: "desc",
+          sortDirsFirst: true,
+          cursor: 0,
+          displaySpecId: "spec-abc",
+        },
+      ],
+    });
+    const payload = buildMeshCreatePayload({ name: "TwoPane", note: "dual pane", snapshot });
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () =>
+        new Response(
+          JSON.stringify({
+            mesh: {
+              id: "mesh-two-pane",
+              name: "TwoPane",
+              description: payload.description,
+              tags: [WORKSPACE_SNAPSHOT_TAG],
+              depots: [
+                { id: "d1", name: "Pane 1", kind: "local", root: "/tmp/pane-a" },
+                { id: "d2", name: "Pane 2", kind: "local", root: "/tmp/pane-b" },
+              ],
+              links: [],
+            },
+            status: "active",
+            updatedAt: "2026-05-24T16:45:54.799Z",
+          }),
+        ),
+      ),
+    );
+
+    render(<MeshDetailClient meshId="mesh-two-pane" />);
+    await waitFor(() => {
+      expect(screen.getByTestId("workspace-snapshot-summary")).toBeInTheDocument();
+    });
+    const summary = screen.getByTestId("workspace-snapshot-summary");
+    expect(summary).toHaveTextContent("dual pane");
+    expect(summary).toHaveTextContent("/tmp/pane-a");
+    expect(summary).toHaveTextContent("/tmp/pane-b");
+    expect(summary).toHaveTextContent("Display filter: Hide dotfiles");
+    expect(summary).toHaveTextContent("Compare filter: (none) · missingSome:exclude");
+    expect(summary).toHaveTextContent("Compare filter: (none)");
+    expect(summary).not.toHaveTextContent("Compare filters:");
+  });
 });

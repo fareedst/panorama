@@ -1,7 +1,7 @@
 IMPL-WORKSPACE_MESH_BRIDGE:
   name: Workspace Mesh Bridge Implementation
   status: Implemented
-  description: workspace-mesh-bridge.ts (capture v3 with sharedSort, parseSharedSort, parse, diff, planDepotSync, patch payload, appendSnapshotLayoutWarnings, buildWorkspaceRestoreBundle with sharedSort in restoreUi, listDirectoryViaFilesApi, WORKSPACE_SNAPSHOT_SUMMARY, FORMAT_PANE_SORT_SETTINGS, FORMAT_DISPLAY_SPEC_LABEL), normalizeLayoutType in files.layout, SaveWorkspaceMeshDialog (update/create), WorkspaceDiffDialog, LayoutPickerPopover via WorkspaceView, NewTabLink, WorkspaceView store/restore/update/diff with meshRestorePending client full rehydrate, compact header banner with WORKSPACE_HEADER_STATUS (pending, amber warnings, red errors), FilesPage meshId bootstrap, PUT /api/mesh/:meshId/workspace, MeshDetailClient summary wiring and open-workspace NewTabLink, WorkspaceSnapshotSummaryList. E2E justified for full save/restore/update/diff UI path.
+  description: workspace-mesh-bridge.ts (capture v5 with cross-pane visibility, sharedSort, fileColumns, parse, diff, planDepotSync, patch payload, appendSnapshotLayoutWarnings, buildWorkspaceRestoreBundle, listDirectoryViaFilesApi, WORKSPACE_SNAPSHOT_SUMMARY, WORKSPACE_SNAPSHOT_SUMMARY_LIST, FORMAT_PANE_SORT_SETTINGS, FORMAT_DISPLAY_SPEC_LABEL), normalizeLayoutType in files.layout, SaveWorkspaceMeshDialog (update/create), WorkspaceDiffDialog, LayoutPickerPopover via WorkspaceView, NewTabLink, WorkspaceView store/restore/update/diff with meshRestorePending client full rehydrate, compact header banner with WORKSPACE_HEADER_STATUS, FilesPage meshId bootstrap, PUT /api/mesh/:meshId/workspace, MeshDetailClient summary wiring and open-workspace NewTabLink, WorkspaceSnapshotSummaryList per-pane Compare filter labels. E2E justified for full save/restore/update/diff UI path.
   code_locations:
     files:
       - path: src/lib/workspace-mesh-bridge.ts
@@ -23,7 +23,7 @@ IMPL-WORKSPACE_MESH_BRIDGE:
       - path: src/app/mesh/components/MeshDetailClient.tsx
         description: MESH_DETAIL_RESTORE_LINK, WORKSPACE_SNAPSHOT_SUMMARY wiring with display spec resolver
       - path: src/app/mesh/components/WorkspaceSnapshotSummaryList.tsx
-        description: WORKSPACE_SNAPSHOT_SUMMARY presentation on mesh detail
+        description: WORKSPACE_SNAPSHOT_SUMMARY_LIST — per-pane Compare filter labels on mesh detail
     functions: []
   essence_pseudocode_path: implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE-pseudocode.md
   traceability:
@@ -41,6 +41,7 @@ IMPL-WORKSPACE_MESH_BRIDGE:
       - src/app/files/page.mesh-restore.test.tsx
       - src/app/files/WorkspaceView.mesh-restore.test.tsx
       - src/app/mesh/components/MeshDetailClient.test.tsx
+      - src/app/mesh/components/WorkspaceSnapshotSummaryList.test.tsx
       - src/components/NewTabLink.test.tsx
       - src/lib/files.layout.test.ts
       - src/lib/workspace-mesh-bridge.test.ts
@@ -51,6 +52,6 @@ IMPL-WORKSPACE_MESH_BRIDGE:
       date: "2026-05-21T00:00:00.000Z"
       author: AI Agent
     last_updated:
-      date: "2026-05-22T23:30:00.000Z"
+      date: "2026-05-24T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — expanded WORKSPACE_SNAPSHOT_SUMMARY and format helpers
+      reason: LEAP — WORKSPACE_SNAPSHOT_SUMMARY_LIST per-pane Compare filter presentation

@@ -36,6 +36,7 @@
 | Manage presets | “Manage compare filters…” | `CrossPaneVisibilityManagerDialog` |
 | Unsaved draft | “Draft” | `isCrossPaneVisibilityDraftDirty` |
 | Workspace toolbar | Compare filters group | `view.compareFilter.*` |
+| Mesh detail summary (per pane) | **Compare filter:** (singular) | `pane.crossPaneVisibilityLabel`, `formatPaneCrossPaneVisibilitySummary`, `WorkspaceSnapshotSummaryList` |
 
 ## Toolbar icon names
 

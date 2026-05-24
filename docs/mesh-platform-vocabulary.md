@@ -36,6 +36,7 @@
 | **Archived mesh** | Soft-archived mesh hidden from default list; history retained ([REQ-MESH_CRUD](../tied/requirements/REQ-MESH_CRUD.yaml)) |
 | **Per-mesh schedule** | Interval/cron metadata and due detection ([REQ-MESH_SCHEDULE](../tied/requirements/REQ-MESH_SCHEDULE.yaml)) |
 | **Mesh hub route** | Global `/mesh/...` page without `:meshId` (informational shells); mesh **detail** routes use **`/mesh/:meshId/**` |
+| **Per-mesh depots page** | Dedicated `/mesh/:meshId/depots` route for depot CRUD without sync-link editing — contrasts with **Mesh hub route** `/mesh/depots` (informational) and **Overview** depot+link editor on `MeshDetailClient` |
 | **Virtual depot** | Depot `kind: virtual` — **VirtualConnector** synthetic inventory ([REQ-MESH_REAL_CONNECTORS](../tied/requirements/REQ-MESH_REAL_CONNECTORS.yaml)) |
 | **Default connector fallback** | When `kind` is unknown/unregistered — **VirtualConnector** (synthetic stub), not a live filesystem connector |
 | **Workspace snapshot** | Tag `workspace-snapshot`; UI state JSON in `description.workspaceSnapshot` ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)) |
@@ -71,10 +72,11 @@
 | Session progress | active session view | `GET /sessions?sessionId=` | `IMPL-MESH_RUNTIME_getSessionProgress` |
 | Run session | sync action | `runApprovedSession` | `IMPL-MESH_RUNTIME_runApprovedSession` |
 | Depot CRUD | depot editor | depot routes | `IMPL-MESH_DEPOT_*` |
+| Per-mesh depots page | `mesh-depots`, `add-depot-*`, `depot-summary` | `/mesh/:meshId/depots`, `MeshDepotsClient` | `IMPL-MESH_GUI_depots` |
 | Export mesh | export page | `GET /export` | `IMPL-MESH_GUI_export` |
 | Archive mesh | settings, `archive-mesh-btn` | mesh archive API | `IMPL-MESH_GUI_archive` |
 | Schedule | schedule page | schedule routes | `IMPL-MESH_GUI_schedule` |
-| Workspace snapshot summary | `workspace-snapshot-summary` (note, save time, layout, shared sort, **file columns**, per-pane sort, display filters, **compare filters**) | `workspaceSnapshotSummary`, `WorkspaceSnapshotSummaryList`, `fileColumnsLabel`, `crossPaneVisibilityLabel` | `WORKSPACE_SNAPSHOT_SUMMARY` |
+| Workspace snapshot summary | `workspace-snapshot-summary` (note, save time, layout, shared sort, **file columns**, per-pane sort, display filters, **per-pane Compare filter** labels) | `workspaceSnapshotSummary`, `WorkspaceSnapshotSummaryList`, `fileColumnsLabel`, `pane.crossPaneVisibilityLabel` (focused-pane `summary.crossPaneVisibilityLabel` is not rendered in the list) | `WORKSPACE_SNAPSHOT_SUMMARY`, `WORKSPACE_SNAPSHOT_SUMMARY_LIST` |
 | Open workspace from mesh | `open-workspace-from-mesh` | `/files?meshId=` (new tab) | `IMPL-WORKSPACE_MESH_BRIDGE` |
 | Open mesh from workspace | `open-mesh-from-workspace` | `/mesh` or `/mesh/:meshId` (new tab) | `IMPL-WORKSPACE_MESH_BRIDGE` |
 | Update workspace from file manager | save dialog update mode | `PUT /api/mesh/:meshId/workspace` | `UPDATE_EXISTING_WORKSPACE` |
@@ -87,6 +89,7 @@
 - **Sync link** — Connects two depots with direction and filters; validated against mesh depot set.
 - **Policy** — Path filters, safety flags, defaults (`DEFAULT_POLICY`, `VALIDATE_POLICY`).
 - **Mesh hub route** — Global mesh shell page (no `:meshId`); contrasts with **mesh detail** routes.
+- **Per-mesh depots page** — `/mesh/:meshId/depots` with `MeshDepotsClient`; depot add/remove and credential-reference stub; no sync-link editing.
 - **Mesh runtime** — Facade for authorize → plan → session → execute (`MeshRuntime`).
 - **Mesh repository** — Persistence (`JsonMeshRepository`, `createMeshRepository`).
 - **Role / permission** — `IMPL-MESH_AUTH_can`, `require`; header `parseMeshRole`.
@@ -122,6 +125,8 @@
 | Snapshot v4 file columns | `SNAPSHOT_V4_FILE_COLUMNS` | IMPL-WORKSPACE_MESH_BRIDGE, IMPL-FILE_COLUMN_CONFIG |
 | Snapshot v5 cross-pane visibility | `SNAPSHOT_V5_CROSS_PANE_VISIBILITY` | IMPL-WORKSPACE_MESH_BRIDGE, IMPL-CROSS_PANE_VISIBILITY_CATALOG |
 | Workspace snapshot summary (full) | `WORKSPACE_SNAPSHOT_SUMMARY` | IMPL-WORKSPACE_MESH_BRIDGE |
+| Workspace snapshot summary list UI | `WORKSPACE_SNAPSHOT_SUMMARY_LIST` | IMPL-WORKSPACE_MESH_BRIDGE |
+| Per-mesh depots GUI | `IMPL-MESH_GUI_depots` | IMPL-MESH_GUI |
 | Save workspace from UI | `STORE_FROM_WORKSPACE_UI` | IMPL-WORKSPACE_MESH_BRIDGE |
 
 ## Alphabetical index
@@ -130,6 +135,7 @@
 - **Approved session handoff** — Plan → Sync via `sessionStorage`
 - **Archived mesh** — soft-archived; excluded from default list
 - **Mesh hub route** — global `/mesh/...` placeholder without `:meshId`
+- **Per-mesh depots page** — `/mesh/:meshId/depots` depot CRUD without sync links
 - **Credential store API** — `POST /api/mesh/credentials` (masked **credential references** only)
 - **Change set** — approved operations batch
 - **Conflict** — mesh-level resolution item
