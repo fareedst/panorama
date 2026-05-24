@@ -73,7 +73,7 @@
 | Export mesh | export page | `GET /export` | `IMPL-MESH_GUI_export` |
 | Archive mesh | settings, `archive-mesh-btn` | mesh archive API | `IMPL-MESH_GUI_archive` |
 | Schedule | schedule page | schedule routes | `IMPL-MESH_GUI_schedule` |
-| Workspace snapshot summary | `workspace-snapshot-summary` (note, save time, layout, shared sort, **file columns**, per-pane sort, display filters) | `workspaceSnapshotSummary`, `WorkspaceSnapshotSummaryList`, `fileColumnsLabel` | `WORKSPACE_SNAPSHOT_SUMMARY` |
+| Workspace snapshot summary | `workspace-snapshot-summary` (note, save time, layout, shared sort, **file columns**, per-pane sort, display filters, **compare filters**) | `workspaceSnapshotSummary`, `WorkspaceSnapshotSummaryList`, `fileColumnsLabel`, `crossPaneVisibilityLabel` | `WORKSPACE_SNAPSHOT_SUMMARY` |
 | Open workspace from mesh | `open-workspace-from-mesh` | `/files?meshId=` (new tab) | `IMPL-WORKSPACE_MESH_BRIDGE` |
 | Open mesh from workspace | `open-mesh-from-workspace` | `/mesh` or `/mesh/:meshId` (new tab) | `IMPL-WORKSPACE_MESH_BRIDGE` |
 | Update workspace from file manager | save dialog update mode | `PUT /api/mesh/:meshId/workspace` | `UPDATE_EXISTING_WORKSPACE` |
@@ -89,7 +89,7 @@
 - **Mesh runtime** — Facade for authorize → plan → session → execute (`MeshRuntime`).
 - **Mesh repository** — Persistence (`JsonMeshRepository`, `createMeshRepository`).
 - **Role / permission** — `IMPL-MESH_AUTH_can`, `require`; header `parseMeshRole`.
-- **WorkspaceSnapshot** — JSON object under `description.workspaceSnapshot`; tag `workspace-snapshot` on save ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)). **v1** — base fields (`layout`, `focusIndex`, `linkedMode`, `comparisonMode`, `panes[]` with path/sort/cursor). **v2** — per-pane `displaySpecId`. **v3** — workspace `sharedSort` (`PaneSortSettings`). **v4** — workspace `fileColumns` (`FilesColumnConfig[]` order/visibility/format); capture always writes v4; parse accepts v1–v4 and normalizes to v4 (v1/v2 default `sharedSort`; v1–v3 omit `fileColumns` → YAML defaults on restore).
+- **WorkspaceSnapshot** — JSON object under `description.workspaceSnapshot`; tag `workspace-snapshot` on save ([REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)). **v1** — base fields (`layout`, `focusIndex`, `linkedMode`, `comparisonMode`, `panes[]` with path/sort/cursor). **v2** — per-pane `displaySpecId`. **v3** — workspace `sharedSort` (`PaneSortSettings`). **v4** — workspace `fileColumns` (`FilesColumnConfig[]` order/visibility/format). **v5** — per-pane `crossPaneVisibilityId` and optional inline `crossPaneVisibility` ([REQ-CROSS_PANE_VISIBILITY](../tied/requirements/REQ-CROSS_PANE_VISIBILITY.yaml)); capture always writes v5; parse accepts v1–v5 and normalizes to v5 (v1/v2 default `sharedSort`; v1–v3 omit `fileColumns` → YAML defaults on restore; v1–v4 omit cross-pane visibility fields).
 - **Mesh list note** — Optional human text before snapshot JSON; shown in mesh list **Note** column and mesh detail snapshot summary.
 - **Most recent save time** — Mesh record `updatedAt`; shown in mesh list and detail snapshot summary when workspace was last saved.
 - **Sortable mesh list** — Mesh list table headers toggle ascending/descending client-side sort per column.
@@ -119,6 +119,7 @@
 | Format pane sort label | `FORMAT_PANE_SORT_SETTINGS` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Format file columns label | `FORMAT_FILE_COLUMNS_LABEL` | IMPL-WORKSPACE_MESH_BRIDGE, IMPL-FILE_COLUMN_CONFIG |
 | Snapshot v4 file columns | `SNAPSHOT_V4_FILE_COLUMNS` | IMPL-WORKSPACE_MESH_BRIDGE, IMPL-FILE_COLUMN_CONFIG |
+| Snapshot v5 cross-pane visibility | `SNAPSHOT_V5_CROSS_PANE_VISIBILITY` | IMPL-WORKSPACE_MESH_BRIDGE, IMPL-CROSS_PANE_VISIBILITY_CATALOG |
 | Workspace snapshot summary (full) | `WORKSPACE_SNAPSHOT_SUMMARY` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Save workspace from UI | `STORE_FROM_WORKSPACE_UI` | IMPL-WORKSPACE_MESH_BRIDGE |
 
@@ -152,7 +153,7 @@
 - **Topology** — graph validation/projection
 - **Saved snapshot baseline** — client baseline for workspace diff; cleared on successful update save
 - **Workspace diff** — live vs saved snapshot comparison (`mesh.diffWorkspace`)
-- **Workspace snapshot** — tag `workspace-snapshot`; `description.workspaceSnapshot` v1/v2/v3/v4 JSON (v2 `displaySpecId`; v3 `sharedSort`; v4 `fileColumns`)
+- **Workspace snapshot** — tag `workspace-snapshot`; `description.workspaceSnapshot` v1–v5 JSON (v2 `displaySpecId`; v3 `sharedSort`; v4 `fileColumns`; v5 per-pane `crossPaneVisibilityId` / inline `crossPaneVisibility`)
 - **Mesh list note** — description prefix before snapshot JSON
 - **Most recent save time** — mesh `updatedAt` on list and detail
 - **Sortable mesh list** — client-side sortable mesh list columns
@@ -162,3 +163,4 @@
 
 - [panorama-domain-references.md](panorama-domain-references.md)
 - [nsync-multi-target-vocabulary.md](nsync-multi-target-vocabulary.md) — file-manager multi-pane sync (different subsystem)
+- [cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md) — snapshot v5 compare filter fields

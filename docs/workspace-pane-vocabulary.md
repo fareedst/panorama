@@ -2,15 +2,15 @@
 
 ## Scope
 
-Covers the **multi-pane file manager shell**: server **Files page**, client **workspace**, individual **panes**, **focus**, and **layout** geometry. Excludes NSYNC sync algorithms ([nsync-multi-target-vocabulary.md](nsync-multi-target-vocabulary.md)), cross-pane comparison coloring ([cross-pane-comparison-vocabulary.md](cross-pane-comparison-vocabulary.md)), and Mesh platform terms ([mesh-platform-vocabulary.md](mesh-platform-vocabulary.md)). Pane **display filter specs** are defined in [pane-display-filter-vocabulary.md](pane-display-filter-vocabulary.md).
+Covers the **multi-pane file manager shell**: server **Files page**, client **workspace**, individual **panes**, **focus**, and **layout** geometry. Excludes NSYNC sync algorithms ([nsync-multi-target-vocabulary.md](nsync-multi-target-vocabulary.md)), cross-pane comparison coloring ([cross-pane-comparison-vocabulary.md](cross-pane-comparison-vocabulary.md)), and Mesh platform terms ([mesh-platform-vocabulary.md](mesh-platform-vocabulary.md)). Pane **display filter specs** are defined in [pane-display-filter-vocabulary.md](pane-display-filter-vocabulary.md). **Cross-pane visibility** compare filters are defined in [cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md).
 
 ## Traceability
 
 | Kind | Tokens / artifacts |
 | --- | --- |
-| REQ | [REQ-FILE_MANAGER_PAGE](../tied/requirements/REQ-FILE_MANAGER_PAGE.yaml), [REQ-MULTI_PANE_LAYOUT](../tied/requirements/REQ-MULTI_PANE_LAYOUT.yaml), [REQ-CONFIG_DRIVEN_FILE_MANAGER](../tied/requirements/REQ-CONFIG_DRIVEN_FILE_MANAGER.yaml), [REQ-TOOLBAR_SYSTEM](../tied/requirements/REQ-TOOLBAR_SYSTEM.yaml), [REQ-DIRECTORY_NAVIGATION](../tied/requirements/REQ-DIRECTORY_NAVIGATION.yaml), [REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml), [REQ-PANE_DISPLAY_FILTER](../tied/requirements/REQ-PANE_DISPLAY_FILTER.yaml) |
-| ARCH | [ARCH-FILE_MANAGER_HIERARCHY](../tied/architecture-decisions/ARCH-FILE_MANAGER_HIERARCHY.yaml), [ARCH-PANE_LIFECYCLE](../tied/architecture-decisions/ARCH-PANE_LIFECYCLE.yaml), [ARCH-CONFIG_DRIVEN_UI](../tied/architecture-decisions/ARCH-CONFIG_DRIVEN_UI.yaml) |
-| IMPL | [IMPL-FILE_MANAGER_PAGE](../tied/implementation-decisions/IMPL-FILE_MANAGER_PAGE.yaml), [IMPL-FILE_COLUMN_CONFIG](../tied/implementation-decisions/IMPL-FILE_COLUMN_CONFIG.yaml), [IMPL-WORKSPACE_VIEW](../tied/implementation-decisions/IMPL-WORKSPACE_VIEW.yaml), [IMPL-FILE_PANE](../tied/implementation-decisions/IMPL-FILE_PANE.yaml), [IMPL-PANE_MANAGEMENT](../tied/implementation-decisions/IMPL-PANE_MANAGEMENT.yaml), [IMPL-LAYOUT_CALCULATOR](../tied/implementation-decisions/IMPL-LAYOUT_CALCULATOR.yaml), [IMPL-TOOLBAR_COMPONENT](../tied/implementation-decisions/IMPL-TOOLBAR_COMPONENT.yaml), [IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml) |
+| REQ | [REQ-FILE_MANAGER_PAGE](../tied/requirements/REQ-FILE_MANAGER_PAGE.yaml), [REQ-MULTI_PANE_LAYOUT](../tied/requirements/REQ-MULTI_PANE_LAYOUT.yaml), [REQ-CONFIG_DRIVEN_FILE_MANAGER](../tied/requirements/REQ-CONFIG_DRIVEN_FILE_MANAGER.yaml), [REQ-TOOLBAR_SYSTEM](../tied/requirements/REQ-TOOLBAR_SYSTEM.yaml), [REQ-DIRECTORY_NAVIGATION](../tied/requirements/REQ-DIRECTORY_NAVIGATION.yaml), [REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml), [REQ-PANE_DISPLAY_FILTER](../tied/requirements/REQ-PANE_DISPLAY_FILTER.yaml), [REQ-CROSS_PANE_VISIBILITY](../tied/requirements/REQ-CROSS_PANE_VISIBILITY.yaml) |
+| ARCH | [ARCH-FILE_MANAGER_HIERARCHY](../tied/architecture-decisions/ARCH-FILE_MANAGER_HIERARCHY.yaml), [ARCH-PANE_LIFECYCLE](../tied/architecture-decisions/ARCH-PANE_LIFECYCLE.yaml), [ARCH-CONFIG_DRIVEN_UI](../tied/architecture-decisions/ARCH-CONFIG_DRIVEN_UI.yaml), [ARCH-CROSS_PANE_VISIBILITY](../tied/architecture-decisions/ARCH-CROSS_PANE_VISIBILITY.yaml) |
+| IMPL | [IMPL-FILE_MANAGER_PAGE](../tied/implementation-decisions/IMPL-FILE_MANAGER_PAGE.yaml), [IMPL-FILE_COLUMN_CONFIG](../tied/implementation-decisions/IMPL-FILE_COLUMN_CONFIG.yaml), [IMPL-WORKSPACE_VIEW](../tied/implementation-decisions/IMPL-WORKSPACE_VIEW.yaml), [IMPL-FILE_PANE](../tied/implementation-decisions/IMPL-FILE_PANE.yaml), [IMPL-PANE_MANAGEMENT](../tied/implementation-decisions/IMPL-PANE_MANAGEMENT.yaml), [IMPL-LAYOUT_CALCULATOR](../tied/implementation-decisions/IMPL-LAYOUT_CALCULATOR.yaml), [IMPL-TOOLBAR_COMPONENT](../tied/implementation-decisions/IMPL-TOOLBAR_COMPONENT.yaml), [IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml), [IMPL-CROSS_PANE_VISIBILITY_ENGINE](../tied/implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_ENGINE.yaml), [IMPL-CROSS_PANE_VISIBILITY_UI](../tied/implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_UI.yaml), [IMPL-CROSS_PANE_VISIBILITY_CATALOG](../tied/implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_CATALOG.yaml) |
 | Pseudo-code | `tied/implementation-decisions/IMPL-*-pseudocode.md` for the IMPL tokens above |
 
 ## Preferred term vs synonyms
@@ -25,6 +25,10 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 | **Hidden item count** | `hiddenCount` — entries filtered out by active display spec |
 | **Loaded spec version** | `loadedSpecVersion` — catalog version last applied to pane listing |
 | **Snapshot display spec** | `displaySpecId` on workspace snapshot v2 panes — restored with mesh bridge |
+| **Active cross-pane visibility preset** | `activeCrossPaneVisibilityId` — catalog id or null; see [cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md) |
+| **Cross-pane visibility draft** | `crossPaneVisibilityDraft` — ephemeral compare-filter state until saved to catalog |
+| **Cross-pane hidden count** | `crossPaneHiddenByPane[i]` — rows hidden by compare filter after display spec |
+| **Snapshot cross-pane visibility** | v5 per-pane `crossPaneVisibilityId` + optional inline `crossPaneVisibility` |
 | **Files page** | “file manager page”, `src/app/files/page.tsx` (server component) |
 | **Layout type** | “layout mode” — values `tile`, `oneRow`, `oneColumn`, `fullscreen` |
 | **Pane bounds** | `PaneBounds` — pixel `x`, `y`, `width`, `height` from layout calculator |
@@ -71,6 +75,8 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 | Layout toolbar picker | Layout pop-over options | `copy.layouts.*` | `view.layout` (Ctrl+Shift+L) | `LayoutPickerPopover`, `layoutPickerOpen` |
 | Column order dialog | “Column order” | `copy.columns.*` | `view.columns` (no shortcut) | `ColumnOrderDialog`, `columnOrderDialogOpen`, `fileColumns` |
 | File columns (config) | Column visibility/format defaults | `columns` in `config/files.yaml` | — | `FilesColumnConfig[]` |
+| Compare filter preset | “No compare filter” / preset name | — | — | `CrossPaneVisibilitySelector`, `activeCrossPaneVisibilityId` |
+| Manage compare filters | “Manage compare filters…” | — | — | `CrossPaneVisibilityManagerDialog` |
 
 ## Named concepts
 
@@ -80,6 +86,8 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 - **Pane lifecycle** — Add/remove panes with constraints; see [IMPL-PANE_MANAGEMENT](../tied/implementation-decisions/IMPL-PANE_MANAGEMENT.yaml).
 - **Active display spec** — Per-pane `activeDisplaySpecId` selects a named filter catalog entry; `hiddenCount` and `loadedSpecVersion` track apply state ([pane-display-filter-vocabulary.md](pane-display-filter-vocabulary.md)).
 - **Workspace snapshot display spec** — v2+ mesh snapshots persist `displaySpecId` per pane for restore ([REQ-PANE_DISPLAY_FILTER](../tied/requirements/REQ-PANE_DISPLAY_FILTER.yaml), [REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)); mesh detail shows **Display filter** per pane (catalog name when resolvable, else id).
+- **Cross-pane visibility** — Tri-state compare filters applied after display spec; focused pane include/exclude rules; other panes mirror visible basenames ([cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md), [REQ-CROSS_PANE_VISIBILITY](../tied/requirements/REQ-CROSS_PANE_VISIBILITY.yaml)).
+- **Workspace snapshot cross-pane visibility** — v5 per-pane `crossPaneVisibilityId` and inline `crossPaneVisibility` when draft is dirty; mesh detail shows **Compare filter** per pane.
 - **Layout calculator** — Maps container size + layout type + pane count → `PaneBounds[]` (`src/lib/files.layout.ts`).
 - **Workspace area** — `flex-1 min-h-0` DOM region holding panes; measured via `useElementSize` on `workspaceAreaRef` (`data-testid="workspace-area"`).
 - **Container dimensions** — `containerWidth` and `containerHeight` from workspace-area `clientWidth`/`clientHeight`, not `window.innerWidth` or fixed chrome subtraction.

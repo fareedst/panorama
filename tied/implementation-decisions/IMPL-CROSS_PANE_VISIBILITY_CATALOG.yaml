@@ -1,0 +1,24 @@
+IMPL-CROSS_PANE_VISIBILITY_CATALOG:
+  name: Cross-Pane Visibility Catalog
+  status: Planned
+  cross_references:
+    - ARCH-CROSS_PANE_VISIBILITY
+    - IMPL-CROSS_PANE_VISIBILITY_UI
+    - REQ-CROSS_PANE_VISIBILITY
+  decision: Client localStorage catalog stores named CrossPaneVisibilityPreset records; panes reference presets by id and keep ephemeral drafts until saved.
+  implementation_approach:
+    summary: cross-pane-visibility-store.ts with CRUD, duplicate, version bump, subscribe
+    details:
+      - Storage key panorama.crossPaneVisibility.v1
+      - Unique preset names (case-insensitive)
+  traceability:
+    requirements:
+      - REQ-CROSS_PANE_VISIBILITY
+    architecture:
+      - ARCH-CROSS_PANE_VISIBILITY
+    tests:
+      - src/lib/cross-pane-visibility-store.test.ts
+      - src/lib/pane-cross-pane-visibility.test.ts
+  related_decisions:
+    see_also:
+      - docs/cross-pane-visibility-vocabulary.md

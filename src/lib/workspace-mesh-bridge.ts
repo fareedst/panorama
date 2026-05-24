@@ -1,6 +1,10 @@
 // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_PLATFORM] [REQ-MULTI_PANE_LAYOUT]: Workspace ↔ mesh snapshot bridge
 
 import type { ComparisonMode, FileStat } from "./files.types";
+import {
+  normalizeCrossPaneVisibility,
+  type CrossPaneVisibilityState,
+} from "./cross-pane-visibility";
 import { normalizeLayoutType, type LayoutType } from "./files.layout";
 import {
   DEFAULT_PANE_SORT,
@@ -14,7 +18,9 @@ import type { FilesColumnConfig } from "./config.types";
 import { DEFAULT_FILE_COLUMNS, formatFileColumnsLabel, normalizeFileColumns } from "./file-columns";
 
 export const WORKSPACE_SNAPSHOT_TAG = "workspace-snapshot";
-export const WORKSPACE_SNAPSHOT_VERSION = 4 as const;
+export const WORKSPACE_SNAPSHOT_VERSION = 5 as const;
+/** Legacy meshes may store version 4 snapshots without crossPaneVisibility. */
+export const WORKSPACE_SNAPSHOT_VERSION_V4 = 4 as const;
 /** Legacy meshes may store version 3 snapshots without fileColumns. */
 export const WORKSPACE_SNAPSHOT_VERSION_V3 = 3 as const;
 /** Legacy meshes may store version 2 snapshots without sharedSort. */
@@ -24,6 +30,7 @@ export const WORKSPACE_SNAPSHOT_VERSION_LEGACY = 1 as const;
 
 const ACCEPTED_SNAPSHOT_VERSIONS = [
   WORKSPACE_SNAPSHOT_VERSION,
+  WORKSPACE_SNAPSHOT_VERSION_V4,
   WORKSPACE_SNAPSHOT_VERSION_V3,
   WORKSPACE_SNAPSHOT_VERSION_V2,
   WORKSPACE_SNAPSHOT_VERSION_LEGACY,
@@ -37,6 +44,10 @@ export type WorkspaceSnapshotPane = {
   cursor: number;
   /** [REQ-PANE_DISPLAY_FILTER] Active display filter spec id (v2+). */
   displaySpecId?: string | null;
+  /** [REQ-CROSS_PANE_VISIBILITY] Active cross-pane visibility preset id (v5+). */
+  crossPaneVisibilityId?: string | null;
+  /** [REQ-CROSS_PANE_VISIBILITY] Inline draft/ephemeral visibility when unsaved or legacy restore */
+  crossPaneVisibility?: CrossPaneVisibilityState;
 };
 
 export type WorkspaceSnapshot = {
@@ -49,6 +60,8 @@ export type WorkspaceSnapshot = {
   sharedSort: PaneSortSettings;
   /** [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER] v4+ file column order/visibility */
   fileColumns?: FilesColumnConfig[];
+  /** @deprecated Legacy v5 workspace-level blob; migrated to per-pane fields on parse */
+  crossPaneVisibility?: CrossPaneVisibilityState;
   panes: WorkspaceSnapshotPane[];
 };
 
@@ -90,8 +103,8 @@ export type DepotSyncOp =
 
 export type DepotForSync = { id: string; name: string; root: string };
 
-// [IMPL-WORKSPACE_MESH_BRIDGE] [IMPL-FILE_COLUMN_CONFIG] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] CAPTURE_SNAPSHOT / SNAPSHOT_V4_FILE_COLUMNS
-/** Build v4 snapshot from live workspace pane state (includes fileColumns). */
+// [IMPL-WORKSPACE_MESH_BRIDGE] [IMPL-CROSS_PANE_VISIBILITY_CATALOG] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-CROSS_PANE_VISIBILITY] CAPTURE_SNAPSHOT / SNAPSHOT_V5_CROSS_PANE_VISIBILITY: how: capture always writes v5 with per-pane crossPaneVisibility when inline snapshot fields present
+/** Build v5 snapshot from live workspace pane state (includes fileColumns and cross-pane visibility). */
 export function captureWorkspaceSnapshot(input: WorkspaceCaptureInput): WorkspaceSnapshot {
   return {
     version: WORKSPACE_SNAPSHOT_VERSION,
@@ -101,7 +114,18 @@ export function captureWorkspaceSnapshot(input: WorkspaceCaptureInput): Workspac
     comparisonMode: input.comparisonMode,
     sharedSort: { ...(input.sharedSort ?? DEFAULT_PANE_SORT) },
     fileColumns: (input.fileColumns ?? DEFAULT_FILE_COLUMNS).map((c) => ({ ...c })),
-    panes: input.panes.map((p) => ({ ...p })),
+    panes: input.panes.map((p) => ({
+      ...p,
+      ...(p.crossPaneVisibility
+        ? {
+            crossPaneVisibility: {
+              toggles: { ...p.crossPaneVisibility.toggles },
+              sizeThreshold: p.crossPaneVisibility.sizeThreshold,
+              timeThreshold: p.crossPaneVisibility.timeThreshold,
+            },
+          }
+        : {}),
+    })),
   };
 }
 
@@ -177,6 +201,19 @@ export function planDepotSync(
   return ops;
 }
 
+function summarizeCrossPaneVisibilityState(v: CrossPaneVisibilityState | undefined): string {
+  const active = Object.entries(v?.toggles ?? {}).filter(([, s]) => s !== "inactive");
+  if (active.length === 0) return "none";
+  return active.map(([k, s]) => `${k}:${s}`).join(", ");
+}
+
+function formatPaneCrossPaneVisibilitySummary(pane: WorkspaceSnapshotPane): string {
+  const id = pane.crossPaneVisibilityId ?? "(none)";
+  const vis = summarizeCrossPaneVisibilityState(pane.crossPaneVisibility);
+  if (vis !== "none") return `${id} · ${vis}`;
+  return String(id);
+}
+
 // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] DIFF_SAVED_VS_CURRENT
 /** Field-level diff between saved and current workspace snapshots. */
 export function diffWorkspaceSnapshots(
@@ -232,6 +269,11 @@ export function diffWorkspaceSnapshots(
     const sd = sp.displaySpecId ?? "(none)";
     const cd = cp.displaySpecId ?? "(none)";
     push(`Pane ${n} displaySpec`, sd, cd);
+    push(
+      `Pane ${n} compareVisibility`,
+      formatPaneCrossPaneVisibilitySummary(sp),
+      formatPaneCrossPaneVisibilitySummary(cp),
+    );
   }
   return changes;
 }
@@ -275,7 +317,7 @@ function extractSnapshotRecord(parsed: unknown): Record<string, unknown> | null 
   return null;
 }
 
-// PARSE_SNAPSHOT_FROM_MESH — parse description JSON (note prefix allowed)
+// [IMPL-WORKSPACE_MESH_BRIDGE] [IMPL-CROSS_PANE_VISIBILITY_CATALOG] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-CROSS_PANE_VISIBILITY] PARSE_SNAPSHOT_FROM_MESH / SNAPSHOT_V5_CROSS_PANE_VISIBILITY: how: parse v1–v5; migrate legacy workspace crossPaneVisibility to all panes
 function parseDescriptionJson(description: string | undefined): WorkspaceSnapshot | null {
   if (!description?.trim()) {
     return null;
@@ -334,6 +376,18 @@ export function validateWorkspaceSnapshot(raw: unknown): WorkspaceSnapshot | nul
         : p.displaySpecId === null
           ? null
           : undefined;
+    let crossPaneVisibilityId: string | null | undefined;
+    if (version >= WORKSPACE_SNAPSHOT_VERSION) {
+      if (typeof p.crossPaneVisibilityId === "string") {
+        crossPaneVisibilityId = p.crossPaneVisibilityId;
+      } else if (p.crossPaneVisibilityId === null) {
+        crossPaneVisibilityId = null;
+      }
+    }
+    const crossPaneVisibility =
+      version >= WORKSPACE_SNAPSHOT_VERSION && p.crossPaneVisibility !== undefined
+        ? normalizeCrossPaneVisibility(p.crossPaneVisibility)
+        : undefined;
     panes.push({
       path: p.path,
       sortBy: (p.sortBy as SortCriterion) ?? "name",
@@ -341,7 +395,28 @@ export function validateWorkspaceSnapshot(raw: unknown): WorkspaceSnapshot | nul
       sortDirsFirst: typeof p.sortDirsFirst === "boolean" ? p.sortDirsFirst : true,
       cursor: typeof p.cursor === "number" && p.cursor >= 0 ? p.cursor : 0,
       ...(displaySpecId !== undefined ? { displaySpecId } : {}),
+      ...(crossPaneVisibilityId !== undefined ? { crossPaneVisibilityId } : {}),
+      ...(crossPaneVisibility !== undefined ? { crossPaneVisibility } : {}),
     });
+  }
+  const legacyWorkspaceVisibility =
+    version >= WORKSPACE_SNAPSHOT_VERSION && raw.crossPaneVisibility !== undefined
+      ? normalizeCrossPaneVisibility(raw.crossPaneVisibility)
+      : undefined;
+  if (
+    legacyWorkspaceVisibility &&
+    !panes.some((p) => p.crossPaneVisibility !== undefined || p.crossPaneVisibilityId !== undefined)
+  ) {
+    for (let i = 0; i < panes.length; i++) {
+      panes[i] = {
+        ...panes[i],
+        crossPaneVisibility: {
+          toggles: { ...legacyWorkspaceVisibility.toggles },
+          sizeThreshold: legacyWorkspaceVisibility.sizeThreshold,
+          timeThreshold: legacyWorkspaceVisibility.timeThreshold,
+        },
+      };
+    }
   }
   // [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-MULTI_PANE_LAYOUT] NORMALIZE_LAYOUT within PARSE_SNAPSHOT_FROM_MESH
   const layout = normalizeLayoutType(raw.layout) ?? "Tile";
@@ -353,7 +428,7 @@ export function validateWorkspaceSnapshot(raw: unknown): WorkspaceSnapshot | nul
       ? parseSharedSort(raw.sharedSort)
       : { ...DEFAULT_PANE_SORT };
   const fileColumns =
-    version >= WORKSPACE_SNAPSHOT_VERSION && raw.fileColumns !== undefined
+    version >= WORKSPACE_SNAPSHOT_VERSION_V4 && raw.fileColumns !== undefined
       ? normalizeFileColumns(raw.fileColumns, DEFAULT_FILE_COLUMNS)
       : undefined;
   return {
@@ -420,6 +495,7 @@ export type WorkspaceSnapshotSummaryPane = {
   path: string;
   sortLabel: string;
   displayFilterLabel: string;
+  crossPaneVisibilityLabel: string;
 };
 
 export type WorkspaceSnapshotSummary = {
@@ -432,6 +508,7 @@ export type WorkspaceSnapshotSummary = {
   mostRecentSaveTime: string | null;
   sharedSortLabel: string;
   fileColumnsLabel?: string;
+  crossPaneVisibilityLabel?: string;
   panes: WorkspaceSnapshotSummaryPane[];
 };
 
@@ -474,7 +551,9 @@ export function workspaceSnapshotSummary(
       sortDirsFirst: p.sortDirsFirst,
     }),
     displayFilterLabel: formatDisplaySpecLabel(p.displaySpecId, resolveDisplaySpecName),
+    crossPaneVisibilityLabel: formatPaneCrossPaneVisibilitySummary(p),
   }));
+  const focusedPane = snapshot.panes[snapshot.focusIndex];
   return {
     layout: snapshot.layout,
     focusIndex: snapshot.focusIndex,
@@ -487,8 +566,26 @@ export function workspaceSnapshotSummary(
     fileColumnsLabel: snapshot.fileColumns?.length
       ? formatFileColumnsLabel(snapshot.fileColumns)
       : undefined,
+    crossPaneVisibilityLabel: focusedPane
+      ? formatCrossPaneVisibilityLabel(focusedPane.crossPaneVisibility)
+      : undefined,
     panes,
   };
+}
+
+/** [REQ-CROSS_PANE_VISIBILITY] Summary line for mesh detail */
+export function formatCrossPaneVisibilityLabel(
+  state: CrossPaneVisibilityState | undefined,
+): string {
+  if (!state) return "none";
+  const active = Object.entries(state.toggles).filter(([, s]) => s && s !== "inactive");
+  if (active.length === 0 && state.sizeThreshold === null && state.timeThreshold === null) {
+    return "none";
+  }
+  const parts = active.map(([k, s]) => `${k}:${s}`);
+  if (state.sizeThreshold !== null) parts.push(`size>${state.sizeThreshold}`);
+  if (state.timeThreshold !== null) parts.push(`time@${state.timeThreshold}`);
+  return parts.join(", ") || "none";
 }
 
 // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] APPLY_MAX_PANES_LIMIT
@@ -518,6 +615,8 @@ export type WorkspaceRestorePaneMeta = {
   sortDirsFirst: boolean;
   cursor: number;
   displaySpecId?: string | null;
+  crossPaneVisibilityId?: string | null;
+  crossPaneVisibility?: CrossPaneVisibilityState;
 };
 
 /** Workspace-level UI for restore (matches WorkspaceView RestoreUiState). */
@@ -609,6 +708,16 @@ export async function buildWorkspaceRestoreBundle(
     sortDirsFirst: p.sortDirsFirst,
     cursor: p.cursor,
     displaySpecId: p.displaySpecId ?? null,
+    crossPaneVisibilityId: p.crossPaneVisibilityId ?? null,
+    ...(p.crossPaneVisibility
+      ? {
+          crossPaneVisibility: {
+            toggles: { ...p.crossPaneVisibility.toggles },
+            sizeThreshold: p.crossPaneVisibility.sizeThreshold,
+            timeThreshold: p.crossPaneVisibility.timeThreshold,
+          },
+        }
+      : {}),
   }));
   return {
     initialPanes,

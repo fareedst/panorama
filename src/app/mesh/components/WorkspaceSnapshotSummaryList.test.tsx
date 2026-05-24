@@ -23,6 +23,7 @@ describe("WorkspaceSnapshotSummaryList [IMPL-WORKSPACE_MESH_BRIDGE]", () => {
           path: "/tmp",
           sortLabel: "name asc",
           displayFilterLabel: "(none)",
+          crossPaneVisibilityLabel: "(none)",
         },
       ],
     };

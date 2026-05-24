@@ -3036,3 +3036,72 @@ IMPL-PANE_DISPLAY_FILTER_UI:
   metadata:
     registered: "2026-05-22T00:00:00.000Z"
     last_updated: "2026-05-22T00:00:00.000Z"
+REQ-CROSS_PANE_VISIBILITY:
+  type: REQ
+  name: Cross-Pane Visibility Filters
+  status: Planned
+  cross_references:
+    - ARCH-CROSS_PANE_VISIBILITY
+    - IMPL-CROSS_PANE_VISIBILITY_CATALOG
+    - IMPL-CROSS_PANE_VISIBILITY_ENGINE
+    - IMPL-CROSS_PANE_VISIBILITY_UI
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-CROSS_PANE_VISIBILITY.yaml
+  metadata:
+    registered: "2026-05-23T00:00:00.000Z"
+    last_updated: "2026-05-23T00:00:00.000Z"
+ARCH-CROSS_PANE_VISIBILITY:
+  type: ARCH
+  name: Cross-Pane Visibility Architecture
+  status: Planned
+  cross_references:
+    - IMPL-CROSS_PANE_VISIBILITY_CATALOG
+    - IMPL-CROSS_PANE_VISIBILITY_ENGINE
+    - IMPL-CROSS_PANE_VISIBILITY_UI
+    - REQ-CROSS_PANE_VISIBILITY
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-CROSS_PANE_VISIBILITY.yaml
+  metadata:
+    registered: "2026-05-23T00:00:00.000Z"
+    last_updated: "2026-05-23T00:00:00.000Z"
+IMPL-CROSS_PANE_VISIBILITY_ENGINE:
+  type: IMPL
+  name: Cross-Pane Visibility Engine
+  status: Planned
+  cross_references:
+    - ARCH-CROSS_PANE_VISIBILITY
+    - IMPL-COMPARISON_INDEX
+    - REQ-CROSS_PANE_VISIBILITY
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_ENGINE.yaml
+  metadata:
+    registered: "2026-05-23T00:00:00.000Z"
+    last_updated: "2026-05-23T00:00:00.000Z"
+IMPL-CROSS_PANE_VISIBILITY_UI:
+  type: IMPL
+  name: Cross-Pane Visibility UI
+  status: Planned
+  cross_references:
+    - ARCH-CROSS_PANE_VISIBILITY
+    - IMPL-CROSS_PANE_VISIBILITY_CATALOG
+    - IMPL-TOOLBAR_COMPONENT
+    - REQ-CROSS_PANE_VISIBILITY
+    - REQ-TOOLBAR_SYSTEM
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_UI.yaml
+  metadata:
+    registered: "2026-05-23T00:00:00.000Z"
+    last_updated: "2026-05-23T00:00:00.000Z"
+IMPL-CROSS_PANE_VISIBILITY_CATALOG:
+  type: IMPL
+  name: Cross-Pane Visibility Catalog
+  status: Planned
+  cross_references:
+    - ARCH-CROSS_PANE_VISIBILITY
+    - IMPL-CROSS_PANE_VISIBILITY_UI
+    - REQ-CROSS_PANE_VISIBILITY
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_CATALOG.yaml
+  metadata:
+    registered: "2026-05-23T00:00:00.000Z"
+    last_updated: "2026-05-23T00:00:00.000Z"

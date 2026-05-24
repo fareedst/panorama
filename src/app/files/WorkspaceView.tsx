@@ -15,6 +15,34 @@ import path from "path-browserify";
 import type { FileStat, OperationResult, ComparisonMode } from "@/lib/files.types";
 import { calculateLayout, normalizeLayoutType, type LayoutType } from "@/lib/files.layout";
 import { buildEnhancedComparisonIndex } from "@/lib/files.comparison";
+import { reconcilePaneSelection } from "@/lib/display-filter-engine";
+import {
+  applyCrossPaneVisibility,
+  COMPARE_FILTER_CRITERION_IDS,
+  compareFilterActionId,
+  cycleTriState,
+  copyCrossPaneVisibilityState,
+  type CompareFilterCriterionId,
+  type CrossPaneVisibilityState,
+  type TriState,
+} from "@/lib/cross-pane-visibility";
+import {
+  getCrossPaneVisibilityStore,
+  CROSS_PANE_VISIBILITY_STORAGE_KEY,
+  type CrossPaneVisibilityStore,
+} from "@/lib/cross-pane-visibility-store";
+import type { CrossPaneVisibilityPreset } from "@/lib/cross-pane-visibility.types";
+import {
+  initialPaneCrossPaneVisibilityFields,
+  isCrossPaneVisibilityDraftDirty,
+  loadPresetIntoPane,
+  mergePaneListingWithCrossPaneFields,
+  resolvePaneCrossPaneVisibility,
+  snapshotPaneCrossPaneVisibilityFields,
+  type PaneWithCrossPaneVisibility,
+} from "@/lib/pane-cross-pane-visibility";
+import { CompareFilterThresholdDialog } from "./components/CompareFilterThresholdDialog";
+import { CrossPaneVisibilityManagerDialog } from "./components/CrossPaneVisibilityManagerDialog";
 import { globalDirectoryHistory } from "@/lib/files.history";
 import { globalBookmarkManager } from "@/lib/files.bookmarks";
 import {
@@ -84,7 +112,7 @@ import {
   type WorkspaceSnapshot,
 } from "@/lib/workspace-mesh-bridge";
 
-type PaneState = PaneWithDisplayFilter;
+type PaneState = PaneWithCrossPaneVisibility;
 
 // [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] Pane initial state from server
 interface PaneInitialState {
@@ -99,6 +127,8 @@ export type RestorePaneMeta = {
   sortDirsFirst: boolean;
   cursor: number;
   displaySpecId?: string | null;
+  crossPaneVisibilityId?: string | null;
+  crossPaneVisibility?: CrossPaneVisibilityState;
 };
 
 /** [IMPL-WORKSPACE_MESH_BRIDGE] Workspace-level UI restored from mesh */
@@ -168,7 +198,9 @@ interface WorkspaceViewProps {
 function buildPaneStatesFromInitial(
   initialPanes: PaneInitialState[],
   restorePaneMeta?: RestorePaneMeta[],
+  crossPaneStore?: CrossPaneVisibilityStore,
 ): PaneState[] {
+  const cpvStore = crossPaneStore ?? getCrossPaneVisibilityStore();
   return initialPanes.map((pane, i) => {
     const meta = restorePaneMeta?.[i];
     const sortBy = meta?.sortBy ?? "name";
@@ -179,7 +211,15 @@ function buildPaneStatesFromInitial(
       meta?.cursor !== undefined
         ? Math.min(meta.cursor, Math.max(0, files.length - 1))
         : 0;
-    const base: PaneState = {
+    const base: PaneWithDisplayFilter & {
+      path: string;
+      files: FileStat[];
+      cursor: number;
+      marks: Set<string>;
+      sortBy: SortCriterion;
+      sortDirection: SortDirection;
+      sortDirsFirst: boolean;
+    } = {
       path: pane.path,
       files,
       cursor,
@@ -193,7 +233,17 @@ function buildPaneStatesFromInitial(
       rawFileCount: files.length,
     };
     const store = getDisplaySpecStore();
-    return buildPaneFromRawListing(files, base, store, { preserveMarks: true });
+    const withFilter = buildPaneFromRawListing(files, base, store, { preserveMarks: true });
+    return {
+      ...withFilter,
+      ...initialPaneCrossPaneVisibilityFields(
+        {
+          crossPaneVisibilityId: meta?.crossPaneVisibilityId,
+          crossPaneVisibility: meta?.crossPaneVisibility,
+        },
+        cpvStore,
+      ),
+    };
   });
 }
 
@@ -226,8 +276,11 @@ export default function WorkspaceView({
   
   // [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] Initialize panes from server data
   // State
+  const [crossPaneVisibilityStore] = useState<CrossPaneVisibilityStore>(() =>
+    getCrossPaneVisibilityStore(),
+  );
   const [panes, setPanes] = useState<PaneState[]>(() =>
-    buildPaneStatesFromInitial(initialPanes, restorePaneMeta),
+    buildPaneStatesFromInitial(initialPanes, restorePaneMeta, crossPaneVisibilityStore),
   );
   const [layout, setLayout] = useState<LayoutType>(() =>
     resolveInitialWorkspaceLayout(restoredFromMesh, restoreLayout, restoreUi, layoutConfig),
@@ -337,8 +390,48 @@ export default function WorkspaceView({
     };
   }, [displaySpecStore]);
 
-  // [REQ-TOOLBAR_SYSTEM] [REQ-MULTI_PANE_LAYOUT] [IMPL-TOOLBAR_COMPONENT] [IMPL-LAYOUT_CALCULATOR] [ARCH-TOOLBAR_LAYOUT] WORKSPACE_TOOLBAR_DISPLAY_MODE: session toolbarExpanded (not persisted)
-  const [toolbarExpanded, setToolbarExpanded] = useState(true);
+  // [REQ-CROSS_PANE_VISIBILITY] [IMPL-CROSS_PANE_VISIBILITY_CATALOG] [IMPL-CROSS_PANE_VISIBILITY_UI]
+  const [visibilityPresets, setVisibilityPresets] = useState(() =>
+    crossPaneVisibilityStore.list(),
+  );
+  const [crossPaneVisibilityManagerOpen, setCrossPaneVisibilityManagerOpen] = useState(false);
+  const [recentCrossPanePresetIds, setRecentCrossPanePresetIds] = useState<string[]>([]);
+  const [compareFilterPresetDeletedNotice, setCompareFilterPresetDeletedNotice] = useState<
+    string | null
+  >(null);
+  const [compareFilterThresholdOpen, setCompareFilterThresholdOpen] = useState(false);
+
+  useEffect(() => {
+    const unsub = crossPaneVisibilityStore.subscribe((ev) => {
+      setVisibilityPresets(crossPaneVisibilityStore.list());
+      if (ev.type === "deleted") {
+        setPanes((prev) =>
+          prev.map((p) =>
+            p.activeCrossPaneVisibilityId === ev.presetId
+              ? { ...p, ...loadPresetIntoPane(p, null, crossPaneVisibilityStore) }
+              : p,
+          ),
+        );
+        setCompareFilterPresetDeletedNotice(
+          "A compare filter preset was deleted; affected panes now use No compare filter.",
+        );
+      }
+    });
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === CROSS_PANE_VISIBILITY_STORAGE_KEY) {
+        crossPaneVisibilityStore.load();
+        setVisibilityPresets(crossPaneVisibilityStore.list());
+      }
+    };
+    window.addEventListener("storage", onStorage);
+    return () => {
+      unsub();
+      window.removeEventListener("storage", onStorage);
+    };
+  }, [crossPaneVisibilityStore]);
+
+  // [REQ-TOOLBAR_SYSTEM] [REQ-MULTI_PANE_LAYOUT] [IMPL-TOOLBAR_COMPONENT] [IMPL-LAYOUT_CALCULATOR] [ARCH-TOOLBAR_LAYOUT] WORKSPACE_TOOLBAR_DISPLAY_MODE: session toolbarExpanded (not persisted); default compact
+  const [toolbarExpanded, setToolbarExpanded] = useState(false);
   // [IMPL-LAYOUT_CALCULATOR] [IMPL-TOOLBAR_COMPONENT] WORKSPACE_AREA_MEASUREMENT: flex workspace-area ref for pane bounds
   const workspaceAreaRef = useRef<HTMLDivElement>(null);
   const { width: containerWidth, height: containerHeight } = useElementSize(workspaceAreaRef, [
@@ -474,9 +567,19 @@ export default function WorkspaceView({
         sortDirsFirst: p.sortDirsFirst,
         cursor: p.cursor,
         displaySpecId: p.activeDisplaySpecId,
+        ...snapshotPaneCrossPaneVisibilityFields(p, crossPaneVisibilityStore),
       })),
     });
-  }, [layout, focusIndex, linkedMode, comparisonMode, sharedSort, fileColumns, panes]);
+  }, [
+    layout,
+    focusIndex,
+    linkedMode,
+    comparisonMode,
+    sharedSort,
+    fileColumns,
+    panes,
+    crossPaneVisibilityStore,
+  ]);
 
   // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] DIFF_SAVED_VS_CURRENT
   // how: diffWorkspaceSnapshots(savedSnapshot, current) drives header badge and WorkspaceDiffDialog rows
@@ -589,6 +692,10 @@ export default function WorkspaceView({
             return;
           }
           // how: skip client layout overwrite when server already passed restoreLayout (avoids clobbering user edits after async fetch)
+          setFocusIndex(limited.focusIndex);
+          setLinkedMode(limited.linkedMode);
+          setComparisonMode(limited.comparisonMode);
+          setSharedSort({ ...limited.sharedSort });
           if (restoreLayout || restoreUi?.layout) {
             console.debug(
               "DEBUG: mesh rehydrate skipped layout apply (server restoreLayout prop)",
@@ -692,16 +799,117 @@ export default function WorkspaceView({
     );
   }, [layout, panes, fileColumns]);
 
+  // [IMPL-COMPARISON_INDEX] [REQ-CROSS_PANE_VISIBILITY] BUILD_INDEX_FOR_FILTERS — index for compare filters whenever 2+ panes
+  const comparisonIndexForFilters = useMemo(() => {
+    if (panes.length < 2) {
+      return new Map();
+    }
+    return buildEnhancedComparisonIndex(panes.map((p) => p.files));
+  }, [panes]);
+
+  const focusedPane = panes[focusIndex];
+
+  // [IMPL-CROSS_PANE_VISIBILITY_UI] SYNC_TOOLBAR_TO_FOCUS — resolved draft for focused pane
+  const focusedVisibilityState = useMemo(
+    () =>
+      focusedPane
+        ? resolvePaneCrossPaneVisibility(focusedPane)
+        : copyCrossPaneVisibilityState({ toggles: {}, sizeThreshold: null, timeThreshold: null }),
+    [focusedPane],
+  );
+
+  const updateFocusedPaneCrossPaneDraft = useCallback(
+    (updater: (prev: CrossPaneVisibilityState) => CrossPaneVisibilityState) => {
+      setPanes((prev) => {
+        const pane = prev[focusIndex];
+        if (!pane) return prev;
+        const nextDraft = updater(pane.crossPaneVisibilityDraft);
+        const updated = [...prev];
+        updated[focusIndex] = { ...pane, crossPaneVisibilityDraft: nextDraft };
+        return updated;
+      });
+    },
+    [focusIndex],
+  );
+
+  const pushRecentCrossPanePreset = useCallback((presetId: string) => {
+    setRecentCrossPanePresetIds((prev) => {
+      const next = [presetId, ...prev.filter((id) => id !== presetId)];
+      return next.slice(0, 5);
+    });
+  }, []);
+
+  const countPanesUsingCrossPanePreset = useCallback(
+    (presetId: string) =>
+      panes.filter((p) => p.activeCrossPaneVisibilityId === presetId).length,
+    [panes],
+  );
+
+  const handleSetActiveCrossPaneVisibility = useCallback(
+    (paneIndex: number, presetId: string | null) => {
+      if (presetId) {
+        pushRecentCrossPanePreset(presetId);
+      }
+      setPanes((prev) => {
+        const updated = [...prev];
+        const pane = updated[paneIndex];
+        if (!pane) return prev;
+        updated[paneIndex] = {
+          ...pane,
+          ...loadPresetIntoPane(pane, presetId, crossPaneVisibilityStore),
+        };
+        return updated;
+      });
+    },
+    [crossPaneVisibilityStore, pushRecentCrossPanePreset],
+  );
+
+  // [IMPL-CROSS_PANE_VISIBILITY_ENGINE] APPLY cross-pane visibility on listings (after display spec)
+  const crossPaneVisibilityResult = useMemo(
+    () =>
+      applyCrossPaneVisibility(
+        panes.map((p) => p.files),
+        focusIndex,
+        comparisonIndexForFilters,
+        focusedVisibilityState,
+      ),
+    [panes, focusIndex, comparisonIndexForFilters, focusedVisibilityState],
+  );
+
+  // [IMPL-CROSS_PANE_VISIBILITY_ENGINE] RECONCILE_AFTER_VISIBILITY
+  useEffect(() => {
+    const displayFiles = crossPaneVisibilityResult.displayFilesByPane[focusIndex];
+    if (!displayFiles) return;
+    setPanes((prev) => {
+      const pane = prev[focusIndex];
+      if (!pane) return prev;
+      const reconciled = reconcilePaneSelection({
+        ...pane,
+        files: displayFiles,
+      });
+      const marksEqual =
+        reconciled.marks.size === pane.marks.size &&
+        [...reconciled.marks].every((name) => pane.marks.has(name));
+      if (marksEqual && reconciled.cursor === pane.cursor) {
+        return prev;
+      }
+      const updated = [...prev];
+      updated[focusIndex] = {
+        ...pane,
+        marks: reconciled.marks,
+        cursor: reconciled.cursor,
+      };
+      return updated;
+    });
+  }, [crossPaneVisibilityResult, focusIndex]);
+
   // [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]
-  // Build enhanced comparison index when panes change
   const enhancedComparisonIndex = useMemo(() => {
-    // Only build if comparison is enabled and we have multiple panes
     if (comparisonMode === "off" || panes.length < 2) {
       return new Map();
     }
-    
-    return buildEnhancedComparisonIndex(panes.map(p => p.files));
-  }, [panes, comparisonMode]);
+    return comparisonIndexForFilters;
+  }, [comparisonMode, panes.length, comparisonIndexForFilters]);
 
   const pushRecentSpec = useCallback((specId: string | null) => {
     if (!specId) return;
@@ -731,7 +939,7 @@ export default function WorkspaceView({
               pane.path,
               listing.files.map((f) => f.name),
             );
-            updated[idx] = buildPaneFromRawListing(
+            const built = buildPaneFromRawListing(
               listing.files,
               { ...updated[idx] },
               displaySpecStore,
@@ -742,6 +950,7 @@ export default function WorkspaceView({
                 totalCount: listing.totalCount,
               },
             );
+            updated[idx] = mergePaneListingWithCrossPaneFields(built, updated[idx]);
             updated[idx].cursor = restored.cursor;
             return updated;
           });
@@ -776,7 +985,7 @@ export default function WorkspaceView({
       const listing = await fetchDirectoryListing(pane.path, specId);
       setPanes((prev) => {
         const updated = [...prev];
-        updated[paneIndex] = buildPaneFromRawListing(
+        const built = buildPaneFromRawListing(
           listing.files,
           { ...updated[paneIndex], activeDisplaySpecId: specId },
           displaySpecStore,
@@ -787,6 +996,7 @@ export default function WorkspaceView({
             totalCount: listing.totalCount,
           },
         );
+        updated[paneIndex] = mergePaneListingWithCrossPaneFields(built, updated[paneIndex]);
         return updated;
       });
     },
@@ -856,7 +1066,10 @@ export default function WorkspaceView({
             totalCount: listing.totalCount,
           },
         );
-        updated[paneIndex] = { ...built, cursor: restored.cursor };
+        updated[paneIndex] = {
+          ...mergePaneListingWithCrossPaneFields(built, updated[paneIndex]),
+          cursor: restored.cursor,
+        };
         return updated;
       });
       
@@ -974,27 +1187,31 @@ export default function WorkspaceView({
     setPanes((prev) => {
       const updated = [...prev];
       const pane = updated[paneIndex];
-      const clampedCursor = Math.max(0, Math.min(newCursor, pane.files.length - 1));
-      
+      const visibleFiles =
+        crossPaneVisibilityResult.displayFilesByPane[paneIndex] ?? pane.files;
+      const clampedCursor = Math.max(
+        0,
+        Math.min(newCursor, Math.max(0, visibleFiles.length - 1)),
+      );
+
       updated[paneIndex] = {
         ...pane,
         cursor: clampedCursor,
       };
-      
+
       // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Sync cursor to same filename in all panes when linked
-      if (linkedMode && panes.length > 1 && clampedCursor < pane.files.length) {
-        const cursorFilename = pane.files[clampedCursor].name;
-        
-        // Track which panes need scrolling (Map of paneIndex → cursor)
+      if (linkedMode && panes.length > 1 && clampedCursor < visibleFiles.length) {
+        const cursorFilename = visibleFiles[clampedCursor].name;
+
         const triggers = new Map<number, number>();
-        
-        // Sync cursor to matching filename in all other panes
+
         for (let i = 0; i < updated.length; i++) {
-          if (i === paneIndex) continue; // Skip source pane
-          
+          if (i === paneIndex) continue;
+
           const linkedPane = updated[i];
-          // Find matching filename in linked pane
-          const matchIndex = linkedPane.files.findIndex((f) => f.name === cursorFilename);
+          const linkedVisible =
+            crossPaneVisibilityResult.displayFilesByPane[i] ?? linkedPane.files;
+          const matchIndex = linkedVisible.findIndex((f) => f.name === cursorFilename);
           
           if (matchIndex !== -1) {
             // Found matching file, update cursor
@@ -1020,7 +1237,7 @@ export default function WorkspaceView({
       
       return updated;
     });
-  }, [linkedMode, panes.length]);
+  }, [linkedMode, panes.length, crossPaneVisibilityResult]);
   
   // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: toggle single file mark on m key or checkbox click via handleToggleMark
   const handleToggleMark = useCallback((paneIndex: number, filename: string) => {
@@ -1046,37 +1263,41 @@ export default function WorkspaceView({
   const handleMarkAll = useCallback((paneIndex: number) => {
     setPanes((prev) => {
       const updated = [...prev];
-      const marks = new Set(updated[paneIndex].files.map((f) => f.name));
-      
+      const visible =
+        crossPaneVisibilityResult.displayFilesByPane[paneIndex] ??
+        updated[paneIndex].files;
+      const marks = new Set(visible.map((f) => f.name));
+
       updated[paneIndex] = {
         ...updated[paneIndex],
         marks,
       };
       return updated;
     });
-  }, []);
+  }, [crossPaneVisibilityResult]);
   
   // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: symmetric difference of marks on Ctrl+M via handleInvertMarks
   const handleInvertMarks = useCallback((paneIndex: number) => {
     setPanes((prev) => {
       const updated = [...prev];
       const pane = updated[paneIndex];
+      const visible =
+        crossPaneVisibilityResult.displayFilesByPane[paneIndex] ?? pane.files;
       const marks = new Set<string>();
-      
-      // Add files that are NOT currently marked
-      for (const file of pane.files) {
+
+      for (const file of visible) {
         if (!pane.marks.has(file.name)) {
           marks.add(file.name);
         }
       }
-      
+
       updated[paneIndex] = {
         ...updated[paneIndex],
         marks,
       };
       return updated;
     });
-  }, []);
+  }, [crossPaneVisibilityResult]);
   
   // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: remove all marks on Escape via handleClearMarks
   const handleClearMarks = useCallback((paneIndex: number) => {
@@ -1192,7 +1413,7 @@ export default function WorkspaceView({
         sourcePane.path,
         sourcePane.activeDisplaySpecId,
       );
-      const newPane = buildPaneFromRawListing(
+      const built = buildPaneFromRawListing(
         listing.files,
         {
           path: sourcePane.path,
@@ -1215,8 +1436,15 @@ export default function WorkspaceView({
           totalCount: listing.totalCount,
         },
       );
+      const newPane = mergePaneListingWithCrossPaneFields(built, {
+        activeCrossPaneVisibilityId: sourcePane.activeCrossPaneVisibilityId,
+        crossPaneVisibilityDraft: copyCrossPaneVisibilityState(
+          sourcePane.crossPaneVisibilityDraft,
+        ),
+        crossPaneVisibilityDraftSourceVersion:
+          sourcePane.crossPaneVisibilityDraftSourceVersion,
+      });
       setPanes((prev) => [...prev, newPane]);
-        // Set focus to the new pane
       setFocusIndex(panes.length);
     } catch (error) {
       console.error("Failed to add pane:", error);
@@ -1276,23 +1504,22 @@ export default function WorkspaceView({
 
   const getOperationFiles = useCallback((paneIndex: number): string[] => {
     const pane = panes[paneIndex];
-    
+    const visibleFiles =
+      crossPaneVisibilityResult.displayFilesByPane[paneIndex] ?? pane.files;
+
     if (pane.marks.size > 0) {
-      // Use marked files - get full paths
       const markedFiles: string[] = [];
       for (const filename of pane.marks) {
-        const file = pane.files.find((f) => f.name === filename);
+        const file = visibleFiles.find((f) => f.name === filename);
         if (file) {
           markedFiles.push(file.path);
         }
       }
       return markedFiles;
-    } else {
-      // Use cursor file
-      const file = pane.files[pane.cursor];
-      return file ? [file.path] : [];
     }
-  }, [panes]);
+    const file = visibleFiles[pane.cursor];
+    return file ? [file.path] : [];
+  }, [panes, crossPaneVisibilityResult]);
   
   /**
    * Execute bulk copy operation
@@ -1895,8 +2122,46 @@ export default function WorkspaceView({
     handlers.set("pane.refresh-all", () => {
       void Promise.all(panes.map((p, idx) => handleNavigate(idx, p.path)));
     });
+
+    // [REQ-CROSS_PANE_VISIBILITY] [IMPL-CROSS_PANE_VISIBILITY_UI] CYCLE_TRI_STATE + THRESHOLD_DIALOG
+    handlers.set("view.compareFilter.thresholds", () => {
+      setCompareFilterThresholdOpen(true);
+    });
+    for (const criterionId of COMPARE_FILTER_CRITERION_IDS) {
+      handlers.set(compareFilterActionId(criterionId), () => {
+        const thresholdCriteria: CompareFilterCriterionId[] = [
+          "sizeGtThreshold",
+          "sizeLtThreshold",
+          "timeGtThreshold",
+          "timeLtThreshold",
+        ];
+        if (thresholdCriteria.includes(criterionId)) {
+          const needsSize =
+            (criterionId === "sizeGtThreshold" || criterionId === "sizeLtThreshold") &&
+            focusedVisibilityState.sizeThreshold === null;
+          const needsTime =
+            (criterionId === "timeGtThreshold" || criterionId === "timeLtThreshold") &&
+            focusedVisibilityState.timeThreshold === null;
+          if (needsSize || needsTime) {
+            setCompareFilterThresholdOpen(true);
+            return;
+          }
+        }
+        updateFocusedPaneCrossPaneDraft((prev) => {
+          const current = prev.toggles[criterionId] ?? "inactive";
+          return {
+            ...prev,
+            toggles: {
+              ...prev.toggles,
+              [criterionId]: cycleTriState(current),
+            },
+          };
+        });
+      });
+    }
+
     return handlers;
-  }, [panes, handleNavigate]);
+  }, [panes, handleNavigate, focusedVisibilityState, updateFocusedPaneCrossPaneDraft]);
 
   // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
   // Pane-scoped action handlers
@@ -1904,6 +2169,8 @@ export default function WorkspaceView({
     const handlers = new Map<string, () => void>();
     const pane = panes[focusIndex];
     if (!pane) return handlers;
+    const visibleFiles =
+      crossPaneVisibilityResult.displayFilesByPane[focusIndex] ?? pane.files;
 
     // Navigation
     handlers.set("navigate.up", () => {
@@ -1913,13 +2180,13 @@ export default function WorkspaceView({
     });
     
     handlers.set("navigate.down", () => {
-      if (pane.cursor < pane.files.length - 1) {
+      if (pane.cursor < visibleFiles.length - 1) {
         handleCursorMove(focusIndex, pane.cursor + 1);
       }
     });
     
     handlers.set("navigate.enter", () => {
-      const file = pane.files[pane.cursor];
+      const file = visibleFiles[pane.cursor];
       if (file && file.isDirectory) {
         handleNavigate(focusIndex, file.path);
       }
@@ -1934,14 +2201,14 @@ export default function WorkspaceView({
     });
     
     handlers.set("navigate.first", () => {
-      if (pane.files.length > 0) {
+      if (visibleFiles.length > 0) {
         handleCursorMove(focusIndex, 0);
       }
     });
     
     handlers.set("navigate.last", () => {
-      if (pane.files.length > 0) {
-        handleCursorMove(focusIndex, pane.files.length - 1);
+      if (visibleFiles.length > 0) {
+        handleCursorMove(focusIndex, visibleFiles.length - 1);
       }
     });
     
@@ -1973,7 +2240,7 @@ export default function WorkspaceView({
     });
     
     handlers.set("file.rename", () => {
-      const file = pane.files[pane.cursor];
+      const file = visibleFiles[pane.cursor];
       if (file) {
         setRenameDialog({
           isOpen: true,
@@ -1987,10 +2254,10 @@ export default function WorkspaceView({
     // Marking
     // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: mark focused file then advance cursor down one row (Space key)
     handlers.set("mark.toggle", () => {
-      const file = pane.files[pane.cursor];
+      const file = visibleFiles[pane.cursor];
       if (file) {
         handleToggleMark(focusIndex, file.name);
-        if (pane.cursor < pane.files.length - 1) {
+        if (pane.cursor < visibleFiles.length - 1) {
           handleCursorMove(focusIndex, pane.cursor + 1);
         }
       }
@@ -1998,7 +2265,7 @@ export default function WorkspaceView({
     
     // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: toggle single file mark on m key or checkbox click via handleToggleMark
     handlers.set("mark.toggle-cursor", () => {
-      const file = pane.files[pane.cursor];
+      const file = visibleFiles[pane.cursor];
       if (file) {
         handleToggleMark(focusIndex, file.name);
       }
@@ -2070,7 +2337,7 @@ export default function WorkspaceView({
     
     // Preview
     handlers.set("preview.info", () => {
-      const file = pane.files[pane.cursor];
+      const file = visibleFiles[pane.cursor];
       if (file) {
         setPreviewPanel((prev) => {
           if (prev.type === "info" && prev.filePath === file.path) {
@@ -2084,7 +2351,7 @@ export default function WorkspaceView({
     });
     
     handlers.set("preview.content", () => {
-      const file = pane.files[pane.cursor];
+      const file = visibleFiles[pane.cursor];
       if (file && !file.isDirectory) {
         setPreviewPanel((prev) => {
           if (prev.type === "preview" && prev.filePath === file.path) {
@@ -2149,7 +2416,7 @@ export default function WorkspaceView({
     });
     
     return handlers;
-  }, [panes, focusIndex, navigateToParent, handleNavigate, handleBulkCopy, handleBulkMove, handleBulkDelete, handleAddPane, handleRemovePane, handleClearMarks, handleCursorMove, handleToggleMark, handleMarkAll, handleInvertMarks, handleCopyAll, handleMoveAll, handleSetActiveDisplaySpec]);
+  }, [panes, focusIndex, crossPaneVisibilityResult, navigateToParent, handleNavigate, handleBulkCopy, handleBulkMove, handleBulkDelete, handleAddPane, handleRemovePane, handleClearMarks, handleCursorMove, handleToggleMark, handleMarkAll, handleInvertMarks, handleCopyAll, handleMoveAll, handleSetActiveDisplaySpec]);
 
   const actionHandlers = useMemo(() => {
     const merged = new Map(workspaceActionHandlers);
@@ -2213,14 +2480,24 @@ export default function WorkspaceView({
     // showHidden not yet implemented - TODO: add when view.hidden is implemented
     if (comparisonMode !== "off") active.add('view.comparison');
     if (layoutPickerOpen) active.add('view.layout');
+    for (const id of COMPARE_FILTER_CRITERION_IDS) {
+      const state = focusedVisibilityState.toggles[id];
+      if (state === "include" || state === "exclude") {
+        active.add(compareFilterActionId(id));
+      }
+    }
     return active;
-  }, [linkedMode, comparisonMode, layoutPickerOpen]);
+  }, [linkedMode, comparisonMode, layoutPickerOpen, focusedVisibilityState]);
   
   const disabledActions = useMemo(() => {
     const disabled = new Set<string>();
     const focusedPane = panes[focusIndex];
-    
-    if (!focusedPane || focusedPane.files.length === 0) {
+    const focusedVisibleCount =
+      crossPaneVisibilityResult.displayFilesByPane[focusIndex]?.length ??
+      focusedPane?.files.length ??
+      0;
+
+    if (!focusedPane || focusedVisibleCount === 0) {
       // Disable file operations when no files
       disabled.add('file.copy');
       disabled.add('file.move');
@@ -2241,7 +2518,7 @@ export default function WorkspaceView({
       disabled.add('navigate.up');
       disabled.add('navigate.first');
     }
-    if (focusedPane && focusedPane.cursor === focusedPane.files.length - 1) {
+    if (focusedPane && focusedPane.cursor === focusedVisibleCount - 1) {
       disabled.add('navigate.down');
       disabled.add('navigate.last');
     }
@@ -2262,7 +2539,15 @@ export default function WorkspaceView({
     }
     
     return disabled;
-  }, [panes, focusIndex, layoutConfig, meshId, savedSnapshot]);
+  }, [panes, focusIndex, layoutConfig, meshId, savedSnapshot, crossPaneVisibilityResult]);
+
+  const triStateActions = useMemo(() => {
+    const map = new Map<string, TriState>();
+    for (const id of COMPARE_FILTER_CRITERION_IDS) {
+      map.set(compareFilterActionId(id), focusedVisibilityState.toggles[id] ?? "inactive");
+    }
+    return map;
+  }, [focusedVisibilityState]);
 
   const mergedToolbarConfig = useMemo(
     () => (toolbars ? mergeTopToolbarConfigs(toolbars) : null),
@@ -2366,6 +2651,21 @@ export default function WorkspaceView({
                 </button>
               </p>
             )}
+            {compareFilterPresetDeletedNotice && (
+              <p
+                className="mt-1 text-sm text-amber-700 dark:text-amber-400 flex items-center gap-2"
+                data-testid="compare-filter-preset-deleted-notice"
+              >
+                {compareFilterPresetDeletedNotice}
+                <button
+                  type="button"
+                  className="underline text-xs"
+                  onClick={() => setCompareFilterPresetDeletedNotice(null)}
+                >
+                  Dismiss
+                </button>
+              </p>
+            )}
           </div>
 
           {/* [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] DIFF_SAVED_VS_CURRENT — header Diff control */}
@@ -2420,6 +2720,7 @@ export default function WorkspaceView({
                   disabledActions={disabledActions}
                   leadingContent={toolbarCompactToggle}
                   actionsMeta={toolbars.actions}
+                  triStateActions={triStateActions}
                 />
               )}
 
@@ -2458,6 +2759,7 @@ export default function WorkspaceView({
                 showKeystroke={false}
                 singleRow
                 actionsMeta={toolbars.actions}
+                triStateActions={triStateActions}
                 className="toolbar-compact"
               />
             )
@@ -2479,12 +2781,17 @@ export default function WorkspaceView({
             Restoring workspace…
           </div>
         )}
-        {panes.map((pane, index) => (
+        {panes.map((pane, index) => {
+          const displayFiles =
+            crossPaneVisibilityResult.displayFilesByPane[index] ?? pane.files;
+          const crossPaneHidden =
+            crossPaneVisibilityResult.crossPaneHiddenByPane[index] ?? 0;
+          return (
           <FilePane
             key={`pane-${index}`}
             data-testid={`pane-${index}`}
             path={pane.path}
-            files={pane.files}
+            files={displayFiles}
             cursor={pane.cursor}
             marks={pane.marks}
             bounds={bounds[index] || { x: 0, y: 0, width: 0, height: 0 }}
@@ -2511,17 +2818,33 @@ export default function WorkspaceView({
             activeDisplaySpecName={
               catalogSpecs.find((s) => s.id === pane.activeDisplaySpecId)?.name ?? null
             }
-            hiddenCount={pane.hiddenCount}
+            hiddenCount={pane.hiddenCount + crossPaneHidden}
             rawFileCount={pane.rawFileCount}
             recentSpecIds={recentSpecIds}
             onDisplaySpecSelect={(specId) => void handleSetActiveDisplaySpec(index, specId)}
             onManageDisplaySpecs={() => setDisplaySpecManagerOpen(true)}
+            crossPaneVisibilityPresets={visibilityPresets}
+            activeCrossPaneVisibilityId={pane.activeCrossPaneVisibilityId}
+            activeCrossPaneVisibilityName={
+              visibilityPresets.find((p) => p.id === pane.activeCrossPaneVisibilityId)?.name ??
+              null
+            }
+            crossPaneVisibilityDraftDirty={isCrossPaneVisibilityDraftDirty(
+              pane,
+              crossPaneVisibilityStore,
+            )}
+            recentCrossPanePresetIds={recentCrossPanePresetIds}
+            onCrossPaneVisibilitySelect={(presetId) =>
+              void handleSetActiveCrossPaneVisibility(index, presetId)
+            }
+            onManageCrossPaneVisibility={() => setCrossPaneVisibilityManagerOpen(true)}
             filterEmptyMessage={
               copy.displayFilter?.filterEmpty ??
               "No visible items — the active filter may be hiding files in this folder."
             }
           />
-        ))}
+          );
+        })}
       </div>
       
       {/* [IMPL-BULK_OPS] [IMPL-OVERWRITE_PROMPT] [REQ-BULK_FILE_OPS] Dialogs */}
@@ -2590,6 +2913,34 @@ export default function WorkspaceView({
           setCatalogSpecs(displaySpecStore.list());
         }}
         onDeleted={() => setCatalogSpecs(displaySpecStore.list())}
+      />
+
+      <CrossPaneVisibilityManagerDialog
+        isOpen={crossPaneVisibilityManagerOpen}
+        onClose={() => setCrossPaneVisibilityManagerOpen(false)}
+        store={crossPaneVisibilityStore}
+        panesUsingPreset={countPanesUsingCrossPanePreset}
+        focusedDraft={focusedVisibilityState}
+        onSaved={(preset: CrossPaneVisibilityPreset) => {
+          pushRecentCrossPanePreset(preset.id);
+          setVisibilityPresets(crossPaneVisibilityStore.list());
+          void handleSetActiveCrossPaneVisibility(focusIndex, preset.id);
+        }}
+        onDeleted={() => setVisibilityPresets(crossPaneVisibilityStore.list())}
+      />
+
+      <CompareFilterThresholdDialog
+        isOpen={compareFilterThresholdOpen}
+        sizeThreshold={focusedVisibilityState.sizeThreshold}
+        timeThreshold={focusedVisibilityState.timeThreshold}
+        onClose={() => setCompareFilterThresholdOpen(false)}
+        onApply={(sizeThreshold, timeThreshold) => {
+          updateFocusedPaneCrossPaneDraft((prev) => ({
+            ...prev,
+            sizeThreshold,
+            timeThreshold,
+          }));
+        }}
       />
 
       <WorkspaceDiffDialog

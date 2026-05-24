@@ -8,6 +8,8 @@ import { deriveToolbarButton } from "@/lib/toolbar.utils";
 import type { ToolbarActionMeta, ToolbarConfig } from "@/lib/config.types";
 import { ToolbarGroup } from "./ToolbarGroup";
 import { ToolbarButton } from "./ToolbarButton";
+import { TriStateToolbarButton } from "./TriStateToolbarButton";
+import type { TriState } from "@/lib/cross-pane-visibility";
 
 export interface ToolbarProps {
   config: ToolbarConfig;
@@ -23,6 +25,8 @@ export interface ToolbarProps {
   singleRow?: boolean;
   /** [REQ-TOOLBAR_SYSTEM] Metadata for actions without keybindings */
   actionsMeta?: Record<string, ToolbarActionMeta>;
+  /** [REQ-CROSS_PANE_VISIBILITY] Tri-state compare filter actions */
+  triStateActions?: Map<string, TriState>;
 }
 
 /**
@@ -40,6 +44,7 @@ export function Toolbar({
   leadingContent,
   singleRow = false,
   actionsMeta,
+  triStateActions,
 }: ToolbarProps) {
   const registry = getKeybindingRegistry();
 
@@ -80,6 +85,24 @@ export function Toolbar({
               actionsMeta,
             );
             if (!buttonProps) return null;
+
+            const triState = triStateActions?.get(action);
+            if (triState !== undefined) {
+              return (
+                <TriStateToolbarButton
+                  key={action}
+                  action={action}
+                  icon={buttonProps.icon}
+                  label={buttonProps.label}
+                  description={buttonProps.description}
+                  keystroke={buttonProps.keystroke}
+                  triState={triState}
+                  onClick={() => onAction(action)}
+                  disabled={disabledActions.has(action)}
+                  showKeystroke={showKeystroke}
+                />
+              );
+            }
 
             return (
               <ToolbarButton

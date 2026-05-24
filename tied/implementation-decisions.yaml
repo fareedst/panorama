@@ -4189,3 +4189,27 @@ IMPL-DISPLAY_FILTER_API:
     - IMPL-DISPLAY_FILTER_ENGINE
     - REQ-PANE_DISPLAY_FILTER
   detail_file: implementation-decisions/IMPL-DISPLAY_FILTER_API.yaml
+IMPL-CROSS_PANE_VISIBILITY_ENGINE:
+  name: Cross-Pane Visibility Engine
+  status: Planned
+  cross_references:
+    - ARCH-CROSS_PANE_VISIBILITY
+    - IMPL-COMPARISON_INDEX
+    - REQ-CROSS_PANE_VISIBILITY
+  detail_file: implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_ENGINE.yaml
+IMPL-CROSS_PANE_VISIBILITY_UI:
+  name: Cross-Pane Visibility UI
+  status: Planned
+  cross_references:
+    - ARCH-CROSS_PANE_VISIBILITY
+    - IMPL-TOOLBAR_COMPONENT
+    - REQ-CROSS_PANE_VISIBILITY
+  detail_file: implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_UI.yaml
+IMPL-CROSS_PANE_VISIBILITY_CATALOG:
+  name: Cross-Pane Visibility Catalog
+  status: Planned
+  cross_references:
+    - ARCH-CROSS_PANE_VISIBILITY
+    - IMPL-CROSS_PANE_VISIBILITY_UI
+    - REQ-CROSS_PANE_VISIBILITY
+  detail_file: implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_CATALOG.yaml

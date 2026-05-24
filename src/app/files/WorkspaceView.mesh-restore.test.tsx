@@ -663,6 +663,120 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
     });
   });
 
+  it("PARTIAL_MESH_REHYDRATE_applies_comparisonMode_when_server_already_restored_layout", async () => {
+    const snapshot = captureWorkspaceSnapshot({
+      layout: "Tile",
+      focusIndex: 0,
+      linkedMode: false,
+      comparisonMode: "size",
+      panes: [
+        { path: "/pane0", sortBy: "name", sortDirection: "asc", sortDirsFirst: true, cursor: 0 },
+        { path: "/pane1", sortBy: "name", sortDirection: "asc", sortDirsFirst: true, cursor: 0 },
+      ],
+    });
+    const payload = buildMeshCreatePayload({ name: "Mesh", snapshot });
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        mesh: {
+          name: "Mesh",
+          description: payload.description as string,
+          tags: ["workspace-snapshot"],
+          depots: [],
+        },
+      }),
+    } as Response);
+
+    render(
+      <WorkspaceView
+        meshId="mesh-partial"
+        initialPanes={twoInitialPanes}
+        keybindings={mockKeybindings}
+        copy={mockCopy}
+        layout={mockLayout}
+        columns={mockColumns}
+        toolbars={mockToolbars}
+        restoredFromMesh
+        restoreLayout="Tile"
+        restoreUi={{
+          layout: "Tile",
+          focusIndex: 0,
+          linkedMode: false,
+          comparisonMode: "off",
+        }}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId("toolbar-view.comparison")).toHaveClass(/bg-blue/);
+    });
+  });
+
+  // [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE] SNAPSHOT_V5_CROSS_PANE_VISIBILITY: how: restorePaneMeta inline crossPaneVisibility applies tri-state toolbar
+  it("RESTORE_FROM_MESH_applies_crossPaneVisibility_via_restorePaneMeta", async () => {
+    const toolbarsWithCompare = {
+      ...mockToolbars,
+      actions: {
+        "view.compareFilter.sharedAll": { description: "Shared all", icon: "files" },
+      },
+      workspace: {
+        ...mockToolbars.workspace,
+        groups: [
+          ...mockToolbars.workspace.groups,
+          {
+            name: "Compare filters",
+            actions: ["view.compareFilter.sharedAll"],
+          },
+        ],
+      },
+    };
+
+    render(
+      <WorkspaceView
+        initialPanes={twoInitialPanes}
+        keybindings={mockKeybindings}
+        copy={mockCopy}
+        layout={mockLayout}
+        columns={mockColumns}
+        toolbars={toolbarsWithCompare}
+        restoredFromMesh
+        restoreUi={{
+          layout: "Tile",
+          focusIndex: 0,
+          linkedMode: false,
+          comparisonMode: "off",
+        }}
+        restorePaneMeta={[
+          {
+            sortBy: "name",
+            sortDirection: "asc",
+            sortDirsFirst: true,
+            cursor: 0,
+            crossPaneVisibilityId: null,
+            crossPaneVisibility: {
+              toggles: { sharedAll: "include" },
+              sizeThreshold: null,
+              timeThreshold: null,
+            },
+          },
+          {
+            sortBy: "name",
+            sortDirection: "asc",
+            sortDirsFirst: true,
+            cursor: 0,
+          },
+        ]}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId("toolbar-view.compareFilter.sharedAll")).toHaveAttribute(
+        "data-tri-state",
+        "include",
+      );
+    });
+  });
+
   // [REQ-WORKSPACE_MESH_BRIDGE] restore_rehydrates — how: restorePaneMeta cursor highlights correct file row.
   it("RESTORE_FROM_MESH_applies_cursor_via_restorePaneMeta", async () => {
     render(

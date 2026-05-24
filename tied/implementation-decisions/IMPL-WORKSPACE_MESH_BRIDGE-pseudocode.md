@@ -12,18 +12,19 @@ NORMALIZE_LAYOUT(value):
 ```
 
 ## CAPTURE_SNAPSHOT
-# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MULTI_PANE_LAYOUT] [REQ-PANE_DISPLAY_FILTER] [REQ-FILE_SORTING_ADVANCED] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [IMPL-FILE_COLUMN_CONFIG]
-# how: Copy layout, focus, linked, comparison, sharedSort, fileColumns, and per-pane path/sort/cursor into WorkspaceSnapshot v4; v2+ displaySpecId per pane; layout via NORMALIZE_LAYOUT.
+# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MULTI_PANE_LAYOUT] [REQ-PANE_DISPLAY_FILTER] [REQ-FILE_SORTING_ADVANCED] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [REQ-CROSS_PANE_VISIBILITY] [IMPL-FILE_COLUMN_CONFIG] [IMPL-CROSS_PANE_VISIBILITY_CATALOG]
+# how: Copy layout, focus, linked, comparison, sharedSort, fileColumns, and per-pane path/sort/cursor/displaySpecId/crossPaneVisibility into WorkspaceSnapshot v5; layout via NORMALIZE_LAYOUT.
 
 ```
 CAPTURE_SNAPSHOT(workspaceState):
-  INPUT: workspace panes with activeDisplaySpecId per pane; workspace fileColumns
+  INPUT: workspace panes with activeDisplaySpecId and cross-pane visibility fields per pane; workspace fileColumns
   OUTPUT: WorkspaceSnapshot { version, layout, focusIndex, linkedMode, comparisonMode, sharedSort, fileColumns, panes[] }
-  version := 4 (always on capture)
+  version := 5 (always on capture)
   sharedSort := workspace.sharedSort ?? DEFAULT_PANE_SORT
   fileColumns := deep copy workspace.fileColumns
   FOR each pane IN workspace.panes:
-    paneEntry := { path, sortBy, sortDirection, sortDirsFirst, cursor, displaySpecId: pane.activeDisplaySpecId ?? null }
+    visFields := INLINE_SNAPSHOT_WHEN_DIRTY(pane cross-pane fields, crossPaneVisibilityStore)
+    paneEntry := { path, sortBy, sortDirection, sortDirsFirst, cursor, displaySpecId: pane.activeDisplaySpecId ?? null, ...visFields }
   RETURN { version, layout: NORMALIZE_LAYOUT(layout) ?? Tile, focusIndex, linkedMode, comparisonMode, sharedSort, fileColumns, panes: paneEntries }
 ```
 
@@ -52,8 +53,8 @@ BUILD_MESH_PAYLOAD(name, snapshot, note?):
 ```
 
 ## PARSE_SNAPSHOT_FROM_MESH
-# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_DOMAIN_MODEL] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [IMPL-FILE_COLUMN_CONFIG]
-# how: Parse description JSON (after optional note prefix); v4 fileColumns via normalizeFileColumns; v1–v3 omit fileColumns; else depot-only fallback; null when tag present but invalid JSON and no depots.
+# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_DOMAIN_MODEL] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [REQ-CROSS_PANE_VISIBILITY] [IMPL-FILE_COLUMN_CONFIG] [IMPL-CROSS_PANE_VISIBILITY_CATALOG]
+# how: Parse description JSON (after optional note prefix); v5 crossPaneVisibility per pane; v4 fileColumns; v1–v3 omit newer fields; migrate legacy workspace-level crossPaneVisibility to all panes; else depot-only fallback.
 
 ```
 PARSE_SNAPSHOT_FROM_MESH(mesh):
@@ -61,9 +62,26 @@ PARSE_SNAPSHOT_FROM_MESH(mesh):
     version := snapshot.version
     sharedSort := PARSE_SHARED_SORT(version, raw.sharedSort)
     fileColumns := IF version >= 4 AND raw.fileColumns THEN normalizeFileColumns(raw.fileColumns, DEFAULT_FILE_COLUMNS) ELSE undefined
-    RETURN snapshot with NORMALIZE_LAYOUT(layout), sharedSort, optional fileColumns
+  FOR each pane WHEN version >= 5:
+    crossPaneVisibilityId := pane.crossPaneVisibilityId when present
+    crossPaneVisibility := normalizeCrossPaneVisibility(pane.crossPaneVisibility) when present
+  IF version >= 5 AND legacy raw.crossPaneVisibility THEN migrate to each pane
+    RETURN snapshot with NORMALIZE_LAYOUT(layout), sharedSort, optional fileColumns, per-pane visibility fields
   IF mesh.depots non-empty THEN RETURN depot-only defaults
   RETURN null
+```
+
+## SNAPSHOT_V5_CROSS_PANE_VISIBILITY
+# [IMPL-WORKSPACE_MESH_BRIDGE] [IMPL-CROSS_PANE_VISIBILITY_CATALOG] [ARCH-WORKSPACE_MESH_BRIDGE] [ARCH-CROSS_PANE_VISIBILITY] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-CROSS_PANE_VISIBILITY]
+# how: captureWorkspaceSnapshot v5 includes per-pane crossPaneVisibilityId and inline crossPaneVisibility when draft dirty; parse accepts v1–v5; WORKSPACE_SNAPSHOT_SUMMARY shows crossPaneVisibilityLabel
+
+```
+SNAPSHOT_V5_CROSS_PANE_VISIBILITY:
+  WORKSPACE_SNAPSHOT_VERSION := 5
+  ON capture FOR each pane APPLY INLINE_SNAPSHOT_WHEN_DIRTY
+  ON parse WHEN version >= 5 READ crossPaneVisibilityId and crossPaneVisibility per pane
+  ON parse legacy workspace crossPaneVisibility MIGRATE to all panes
+  ON summary formatPaneCrossPaneVisibilitySummary -> crossPaneVisibilityLabel
 ```
 
 ## SNAPSHOT_V4_FILE_COLUMNS
@@ -239,8 +257,8 @@ FORMAT_DISPLAY_SPEC_LABEL(displaySpecId, resolve):
 ```
 
 ## WORKSPACE_SNAPSHOT_SUMMARY
-# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_GUI] [REQ-FILE_SORTING_ADVANCED] [REQ-PANE_DISPLAY_FILTER] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [IMPL-FILE_COLUMN_CONFIG]
-# how: Derive layout/focus/linked/comparison/panePaths plus note, save time, shared sort, file columns label, and per-pane sort/display filter labels for mesh detail UI.
+# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_GUI] [REQ-FILE_SORTING_ADVANCED] [REQ-PANE_DISPLAY_FILTER] [REQ-CROSS_PANE_VISIBILITY] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [IMPL-FILE_COLUMN_CONFIG]
+# how: Derive layout/focus/linked/comparison/panePaths plus note, save time, shared sort, file columns label, and per-pane sort/display filter/compare filter labels for mesh detail UI.
 
 ```
 WORKSPACE_SNAPSHOT_SUMMARY(snapshot, options):
@@ -251,6 +269,7 @@ WORKSPACE_SNAPSHOT_SUMMARY(snapshot, options):
   FOR each pane IN snapshot.panes:
     pane.sortLabel = FORMAT_PANE_SORT_SETTINGS(pane sort fields)
     pane.displayFilterLabel = FORMAT_DISPLAY_SPEC_LABEL(pane.displaySpecId, options.resolveDisplaySpecName)
+    pane.crossPaneVisibilityLabel = formatPaneCrossPaneVisibilitySummary(pane)
   RETURN { layout, focusIndex, linkedMode, comparisonMode, panePaths[], note, mostRecentSaveTime, sharedSortLabel, fileColumnsLabel, panes[] }
 ```
 

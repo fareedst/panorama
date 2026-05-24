@@ -78,7 +78,7 @@ PROCEDURE IMPL-TOOLBAR_COMPONENT_MergeTopToolbars(context)
 
 ## WORKSPACE_TOOLBAR_DISPLAY_MODE
 
-// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM] [REQ-MULTI_PANE_LAYOUT]: how: WorkspaceView branches on toolbarExpanded; expanded renders up to three top tiers with toggle on first visible tier; compact renders single merged Toolbar with showKeystroke=false and singleRow; pane bounds use useElementSize(ResizeObserver) on workspace-area ref so toolbar height changes re-layout panes instead of clipping bottom
+// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM] [REQ-MULTI_PANE_LAYOUT]: how: WorkspaceView useState(false) defaults to compact; expanded renders up to three top tiers with toggle on first visible tier; compact renders single merged Toolbar with showKeystroke=false and singleRow; pane bounds use useElementSize on workspace-area ref
 
 CONTRACT WorkspaceToolbarDisplayMode
   INPUT: toolbars config, toolbarExpanded boolean, mergedToolbarConfig from mergeTopToolbarConfigs

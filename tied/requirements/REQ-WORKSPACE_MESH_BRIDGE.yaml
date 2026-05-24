@@ -3,22 +3,28 @@ REQ-WORKSPACE_MESH_BRIDGE:
   category: Functional
   priority: P1
   status: Implemented
-  description: Store file-manager workspace layout (pane paths, layout, focus, linked/comparison, per-pane sort/cursor/display filter, workspace shared sort, workspace file column order) as a mesh with workspace-snapshot tag and JSON in description (optional human note before JSON); snapshot v4 includes fileColumns; v3 includes sharedSort; restore via /files?meshId= with maxPanes truncation warning when applicable. When server getMesh misses the mesh, client rehydrates from GET /api/mesh/:meshId (meshRestorePending) including fileColumns when present. Mesh detail workspace-snapshot-summary shows note, most recent save time, shared sort, file columns label, per-pane sort, and display filter labels via WORKSPACE_SNAPSHOT_SUMMARY. Compact workspace header status row shows loaded mesh name (workspace-loaded-name) without redundant success message; workspace-restore-pending during client rehydrate; partial-restore and client-recovery warnings are amber; bootstrap failures are red only until client recovery completes. Layout type round-trips via normalization of config/UI aliases. Mesh and File Manager cross-surface links open in new tabs with security attributes and assistive disclosure.
+  description: Store file-manager workspace layout (pane paths, layout, focus, linked/comparison, per-pane sort/cursor/display filter/cross-pane visibility, workspace shared sort, workspace file column order) as a mesh with workspace-snapshot tag and JSON in description (optional human note before JSON); snapshot v5 includes per-pane crossPaneVisibilityId and inline crossPaneVisibility when draft is dirty; v4 includes fileColumns; v3 includes sharedSort; restore via /files?meshId= with maxPanes truncation warning when applicable. When server getMesh misses the mesh, client rehydrates from GET /api/mesh/:meshId (meshRestorePending) including fileColumns and cross-pane visibility when present. Mesh detail workspace-snapshot-summary shows note, most recent save time, shared sort, file columns label, per-pane sort, display filter labels, and compare filter labels via WORKSPACE_SNAPSHOT_SUMMARY. Compact workspace header status row shows loaded mesh name (workspace-loaded-name) without redundant success message; workspace-restore-pending during client rehydrate; partial-restore and client-recovery warnings are amber; bootstrap failures are red only until client recovery completes. Layout type round-trips via normalization of config/UI aliases. Mesh and File Manager cross-surface links open in new tabs with security attributes and assistive disclosure.
   satisfaction_criteria:
     - criterion: mesh_detail_open_file_manager_in_new_tab_with_a11y
     - criterion: mesh_detail_shows_workspace_snapshot_summary_and_open_in_file_manager
     - criterion: mesh_detail_snapshot_summary_shows_note_save_time_shared_and_per_pane_sort_and_display_filters
       description: workspace-snapshot-summary shows note from description prefix, most recent save time from updatedAt, shared sort label, file columns label when snapshot has fileColumns, and per-pane sort plus display filter (catalog name when resolvable) via WorkspaceSnapshotSummaryList
+    - criterion: mesh_detail_snapshot_summary_shows_per_pane_compare_filters
+      description: workspace-snapshot-summary shows per-pane crossPaneVisibilityLabel via formatPaneCrossPaneVisibilitySummary when snapshot v5+ has cross-pane visibility fields
+    - criterion: snapshot_v5_persists_cross_pane_visibility
+      description: captureWorkspaceSnapshot v5 includes per-pane crossPaneVisibilityId and inline crossPaneVisibility when draft is dirty; parse accepts v1–v5; legacy workspace-level crossPaneVisibility migrates to all panes
+    - criterion: restore_rehydrates_cross_pane_visibility_from_v5_snapshot
+      description: buildWorkspaceRestoreBundle and client mesh rehydrate apply crossPaneVisibility fields via initialPaneCrossPaneVisibilityFields
     - criterion: snapshot_v4_persists_file_columns
-      description: captureWorkspaceSnapshot v4 includes fileColumns; parse accepts v1/v2/v3/v4; v1–v3 omit fileColumns and restore uses YAML column defaults
+      description: captureWorkspaceSnapshot v5 includes fileColumns; parse accepts v1/v2/v3/v4/v5; v1–v3 omit fileColumns and restore uses YAML column defaults
     - criterion: restore_rehydrates_file_columns_from_v4_snapshot
-      description: buildWorkspaceRestoreBundle and client mesh rehydrate apply fileColumns from parsed v4 snapshot via normalizeFileColumns
+      description: buildWorkspaceRestoreBundle and client mesh rehydrate apply fileColumns from parsed v4+ snapshot via normalizeFileColumns
     - criterion: mesh_sync_links_not_inferred_from_linked_mode_on_save
     - criterion: restore_client_rehydrates_when_server_mesh_missing
     - criterion: restore_rehydrates_pane_count_paths_and_ui_state_from_mesh
-      description: When server getMesh fails, meshRestorePending defers default panes; client fetch restores pane count, paths, layout, focus, linked/comparison, per-pane displaySpecId and sort, sharedSort (v3+; v1/v2 default shared sort), and fileColumns when v4; amber workspace-restore-warning (not persistent red error) after clientRestoredFromMesh
+      description: When server getMesh fails, meshRestorePending defers default panes; client fetch restores pane count, paths, layout, focus, linked/comparison, per-pane displaySpecId, cross-pane visibility (v5+), and sort, sharedSort (v3+; v1/v2 default shared sort), and fileColumns when v4+; amber workspace-restore-warning (not persistent red error) after clientRestoredFromMesh
     - criterion: snapshot_v3_persists_shared_sort
-      description: captureWorkspaceSnapshot v4 includes sharedSort and fileColumns; legacy v3 snapshots parse sharedSort; v1/v2 default shared sort on parse
+      description: captureWorkspaceSnapshot v5 includes sharedSort and fileColumns; legacy v3 snapshots parse sharedSort; v1/v2 default shared sort on parse
     - criterion: restore_respects_max_panes_with_warning
       description: maxPanes truncation surfaces amber workspace-restore-warning in workspace-header-status (not error styling)
     - criterion: save_description_may_prefix_optional_note_before_snapshot_json
@@ -55,8 +61,10 @@ REQ-WORKSPACE_MESH_BRIDGE:
   traceability:
     architecture:
       - ARCH-WORKSPACE_MESH_BRIDGE
+      - ARCH-CROSS_PANE_VISIBILITY
     implementation:
       - IMPL-WORKSPACE_MESH_BRIDGE
+      - IMPL-CROSS_PANE_VISIBILITY_CATALOG
     tests:
       - e2e/workspace-mesh-bridge.spec.ts
       - src/app/api/mesh/[meshId]/workspace/workspace.route.test.ts

@@ -5,6 +5,7 @@
 
 import { Toolbar } from "./Toolbar";
 import type { ToolbarActionMeta, ToolbarConfig } from "@/lib/config.types";
+import type { TriState } from "@/lib/cross-pane-visibility";
 
 export interface WorkspaceToolbarProps {
   config: ToolbarConfig;
@@ -16,6 +17,7 @@ export interface WorkspaceToolbarProps {
   singleRow?: boolean;
   /** [IMPL-TOOLBAR_COMPONENT] [REQ-TOOLBAR_SYSTEM] toolbars.actions for toolbar-only actions (ACTIONS_META_PASS_THROUGH) */
   actionsMeta?: Record<string, ToolbarActionMeta>;
+  triStateActions?: Map<string, TriState>;
 }
 
 /**
@@ -32,6 +34,7 @@ export function WorkspaceToolbar({
   leadingContent,
   singleRow,
   actionsMeta,
+  triStateActions,
 }: WorkspaceToolbarProps) {
   return (
     <Toolbar
@@ -43,6 +46,7 @@ export function WorkspaceToolbar({
       leadingContent={leadingContent}
       singleRow={singleRow}
       actionsMeta={actionsMeta}
+      triStateActions={triStateActions}
       className="workspace-toolbar"
     />
   );

@@ -421,6 +421,51 @@ toolbars:
     view.columns:
       description: "Reorder file columns"
       icon: columns
+    view.compareFilter.thresholds:
+      description: "Set compare filter size/time thresholds"
+      icon: sliders
+    view.compareFilter.sharedAll:
+      description: "Shared filename in all panes"
+      icon: files
+    view.compareFilter.missingSome:
+      description: "Name missing from some panes"
+      icon: file-minus
+    view.compareFilter.sizeLargestAll:
+      description: "Larger than all panes"
+      icon: maximize-2
+    view.compareFilter.sizeLargestSome:
+      description: "Larger than some panes"
+      icon: trending-up
+    view.compareFilter.sizeGtThreshold:
+      description: "Larger than specified size"
+      icon: chevrons-up
+    view.compareFilter.sizeSmallestAll:
+      description: "Smaller than all panes"
+      icon: minimize-2
+    view.compareFilter.sizeSmallestSome:
+      description: "Smaller than some panes"
+      icon: trending-down
+    view.compareFilter.sizeLtThreshold:
+      description: "Smaller than specified size"
+      icon: chevrons-down
+    view.compareFilter.timeLatestAll:
+      description: "Newer than all panes"
+      icon: clock
+    view.compareFilter.timeLatestSome:
+      description: "Newer than some panes"
+      icon: clock
+    view.compareFilter.timeGtThreshold:
+      description: "Newer than specified time"
+      icon: calendar
+    view.compareFilter.timeEarliestAll:
+      description: "Older than all panes"
+      icon: history
+    view.compareFilter.timeEarliestSome:
+      description: "Older than some panes"
+      icon: history
+    view.compareFilter.timeLtThreshold:
+      description: "Older than specified time"
+      icon: calendar
   
   # Workspace toolbar - actions affecting all panes
   workspace:
@@ -435,6 +480,23 @@ toolbars:
           - "view.comparison"
           - "view.displaySpec"
           - "link.toggle"
+      - name: "Compare filters"
+        actions:
+          - "view.compareFilter.thresholds"
+          - "view.compareFilter.sharedAll"
+          - "view.compareFilter.missingSome"
+          - "view.compareFilter.sizeLargestAll"
+          - "view.compareFilter.sizeLargestSome"
+          - "view.compareFilter.sizeGtThreshold"
+          - "view.compareFilter.sizeSmallestAll"
+          - "view.compareFilter.sizeSmallestSome"
+          - "view.compareFilter.sizeLtThreshold"
+          - "view.compareFilter.timeLatestAll"
+          - "view.compareFilter.timeLatestSome"
+          - "view.compareFilter.timeGtThreshold"
+          - "view.compareFilter.timeEarliestAll"
+          - "view.compareFilter.timeEarliestSome"
+          - "view.compareFilter.timeLtThreshold"
       - name: "Pane Management"
         actions:
           - "pane.add"

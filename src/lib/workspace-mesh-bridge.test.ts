@@ -19,6 +19,7 @@ import {
   appendSnapshotLayoutWarnings,
   buildWorkspaceRestoreBundle,
   workspaceSnapshotSummary,
+  validateWorkspaceSnapshot,
   type WorkspaceCaptureInput,
 } from "./workspace-mesh-bridge";
 import type { FileStat } from "./files.types";
@@ -79,7 +80,7 @@ describe("REQ-WORKSPACE_MESH_BRIDGE [IMPL-WORKSPACE_MESH_BRIDGE]", () => {
         },
       ],
     });
-    expect(snapshot.version).toBe(4);
+    expect(snapshot.version).toBe(WORKSPACE_SNAPSHOT_VERSION);
     const payload = buildMeshCreatePayload({ name: "Cols", snapshot });
     const mesh: Pick<Mesh, "description" | "tags" | "depots"> = {
       description: payload.description as string,
@@ -90,6 +91,81 @@ describe("REQ-WORKSPACE_MESH_BRIDGE [IMPL-WORKSPACE_MESH_BRIDGE]", () => {
     expect(parsed?.fileColumns?.map((c) => c.id)).toEqual(["name", "mtime", "size"]);
     expect(parsed?.fileColumns?.find((c) => c.id === "mtime")?.format).toBe("absolute");
     expect(parsed?.fileColumns?.find((c) => c.id === "size")?.visible).toBe(false);
+  });
+
+  // [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE] SNAPSHOT_V5_CROSS_PANE_VISIBILITY: how: v5 round-trip per-pane crossPaneVisibility fields
+  it("PARSE_SNAPSHOT_FROM_MESH_v5_round_trips_per_pane_crossPaneVisibility", () => {
+    const vis = {
+      toggles: { sharedAll: "include" as const, missingSome: "exclude" as const },
+      sizeThreshold: 1024,
+      timeThreshold: "2024-06-01T12:00:00.000Z",
+    };
+    const snapshot = captureWorkspaceSnapshot({
+      layout: "Tile",
+      focusIndex: 0,
+      linkedMode: false,
+      comparisonMode: "size",
+      panes: [
+        {
+          path: "/tmp/a",
+          sortBy: "name",
+          sortDirection: "asc",
+          sortDirsFirst: true,
+          cursor: 0,
+          crossPaneVisibilityId: null,
+          crossPaneVisibility: vis,
+        },
+      ],
+    });
+    expect(snapshot.version).toBe(5);
+    expect(snapshot.panes[0].crossPaneVisibility?.toggles.sharedAll).toBe("include");
+    const payload = buildMeshCreatePayload({ name: "Vis", snapshot });
+    const mesh: Pick<Mesh, "description" | "tags" | "depots"> = {
+      description: payload.description as string,
+      tags: [WORKSPACE_SNAPSHOT_TAG],
+      depots: [],
+    };
+    const parsed = parseWorkspaceSnapshotFromMesh(mesh);
+    expect(parsed?.panes[0].crossPaneVisibility?.toggles.sharedAll).toBe("include");
+    expect(parsed?.panes[0].crossPaneVisibility?.sizeThreshold).toBe(1024);
+    const summary = workspaceSnapshotSummary(parsed!);
+    expect(summary.crossPaneVisibilityLabel).toContain("sharedAll:include");
+  });
+
+  it("PARSE_SNAPSHOT_FROM_MESH_migrates_legacy_workspace_crossPaneVisibility_to_panes", () => {
+    const raw = {
+      version: 5,
+      layout: "Tile",
+      focusIndex: 0,
+      linkedMode: false,
+      comparisonMode: "off",
+      sharedSort: { sortBy: "name", sortDirection: "asc", sortDirsFirst: true },
+      crossPaneVisibility: {
+        toggles: { sharedAll: "include" },
+        sizeThreshold: null,
+        timeThreshold: null,
+      },
+      panes: [
+        {
+          path: "/a",
+          sortBy: "name",
+          sortDirection: "asc",
+          sortDirsFirst: true,
+          cursor: 0,
+        },
+        {
+          path: "/b",
+          sortBy: "name",
+          sortDirection: "asc",
+          sortDirsFirst: true,
+          cursor: 0,
+        },
+      ],
+    };
+    const parsed = validateWorkspaceSnapshot(raw);
+    expect(parsed?.panes[0].crossPaneVisibility?.toggles.sharedAll).toBe("include");
+    expect(parsed?.panes[1].crossPaneVisibility?.toggles.sharedAll).toBe("include");
+    expect(parsed?.crossPaneVisibility).toBeUndefined();
   });
 
   it("diffWorkspaceSnapshots_reports_fileColumns_change", () => {

@@ -40,7 +40,8 @@ kill_tcp_server () {
   lsof -tiTCP:$1 | tee /dev/tty | xargs kill -1
 }
 
-cd /Users/fareed/Documents/dev/node/panorama
+# cd /Users/fareed/Documents/dev/node/panorama
+cd "$MARKSCOPE_DOCS_DIR/.."
 export MESH_DATA_DIR
 ```
 

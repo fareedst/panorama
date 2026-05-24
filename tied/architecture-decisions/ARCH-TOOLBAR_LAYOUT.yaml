@@ -29,7 +29,7 @@ ARCH-TOOLBAR_LAYOUT:
     summary: Three toolbar types (workspace, pane, system) with configurable position and button groups
     details:
       - 'Configurable position: top, bottom, hidden, per-pane'
-      - 'Optional toolbar compact mode: user-toggle single merged top row with icon-only buttons (session state); expanded mode remains default three-tier layout with keystroke badges'
+      - 'Optional toolbar compact mode: session starts compact (single merged top row, icon-only); user-toggle expands to three-tier layout with keystroke badges via toolbar-compact-toggle'
       - 'PaneToolbar: actions on focused pane'
       - 'SystemToolbar: independent actions'
       - 'WorkspaceToolbar: actions affecting all panes'

@@ -1,0 +1,43 @@
+REQ-CROSS_PANE_VISIBILITY:
+  name: Cross-Pane Visibility Filters
+  category: Functional
+  priority: P1
+  status: Planned
+  description: Tri-state toolbar filters use the comparison index to show or hide files in the focused pane (include/exclude rules) and mirror visible basenames in other panes. Named presets live in a client catalog; each pane selects an active preset or edits an ephemeral draft until saved. Workspace toolbar reflects the focused pane. Marks and batch operations apply to visible files only. Per-pane selection persists in workspace snapshot v5.
+  rationale:
+    why: Users need to narrow multi-pane listings by cross-pane name/size/time roles without leaving the file manager
+    problems_solved:
+      - No quick filter for shared or divergent files across panes
+      - Clutter when comparing directories
+    benefits:
+      - Composable with display specs
+      - Focused-pane rules with cross-pane mirroring
+      - Mesh restore preserves filter state
+  satisfaction_criteria:
+    - criterion: Each pane has activeCrossPaneVisibilityId and ephemeral draft until saved
+    - criterion: Exclude rules hide files before include evaluation in focused pane
+    - criterion: Marks and operations use visibility-filtered listings
+    - criterion: Named cross-pane visibility presets support catalog CRUD
+    - criterion: Other panes show rows only for basenames visible in the focused pane
+    - criterion: Per-pane crossPaneVisibilityId and inline state round-trip in workspace snapshot v5
+    - criterion: Size and time thresholds configurable via dialog
+    - criterion: Toolbar tri-state toggles cycle inactive, include, exclude per criterion
+    - criterion: When any include toggle is active, files must match at least one include or be hidden
+    - criterion: Workspace toolbar tri-states reflect focused pane on focusIndex change
+  traceability:
+    architecture:
+      - ARCH-CROSS_PANE_VISIBILITY
+    implementation:
+      - IMPL-CROSS_PANE_VISIBILITY_CATALOG
+      - IMPL-CROSS_PANE_VISIBILITY_ENGINE
+      - IMPL-CROSS_PANE_VISIBILITY_UI
+  related_requirements:
+    depends_on:
+      - REQ-CROSS_PANE_COMPARISON
+      - REQ-MULTI_PANE_LAYOUT
+      - REQ-PANE_DISPLAY_FILTER
+      - REQ-TOOLBAR_SYSTEM
+      - REQ-WORKSPACE_MESH_BRIDGE
+    related_to:
+      - REQ-FILE_MARKING_WEB
+      - REQ-BULK_FILE_OPS

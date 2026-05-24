@@ -3101,3 +3101,9 @@ REQ-PANE_DISPLAY_FILTER:
   priority: P1
   status: Implemented
   detail_file: requirements/REQ-PANE_DISPLAY_FILTER.yaml
+REQ-CROSS_PANE_VISIBILITY:
+  name: Cross-Pane Visibility Filters
+  category: Functional
+  priority: P1
+  status: Planned
+  detail_file: requirements/REQ-CROSS_PANE_VISIBILITY.yaml

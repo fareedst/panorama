@@ -113,3 +113,4 @@ tmp
 docs/.markscope-preview-cache
 data
 .mesh-data-local
+.tied-payloads

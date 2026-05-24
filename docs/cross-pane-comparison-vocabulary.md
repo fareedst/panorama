@@ -8,9 +8,9 @@
 
 | Kind | Tokens / artifacts |
 | --- | --- |
-| REQ | [REQ-CROSS_PANE_COMPARISON](../tied/requirements/REQ-CROSS_PANE_COMPARISON.yaml), [REQ-FILE_COMPARISON_VISUAL](../tied/requirements/REQ-FILE_COMPARISON_VISUAL.yaml) |
-| ARCH | [ARCH-COMPARISON_INDEX](../tied/architecture-decisions/ARCH-COMPARISON_INDEX.yaml), [ARCH-COMPARISON_COLORING](../tied/architecture-decisions/ARCH-COMPARISON_COLORING.yaml) |
-| IMPL | [IMPL-COMPARISON_INDEX](../tied/implementation-decisions/IMPL-COMPARISON_INDEX.yaml), [IMPL-COMPARISON_COLORS](../tied/implementation-decisions/IMPL-COMPARISON_COLORS.yaml), [IMPL-FILE_PANE](../tied/implementation-decisions/IMPL-FILE_PANE.yaml) |
+| REQ | [REQ-CROSS_PANE_COMPARISON](../tied/requirements/REQ-CROSS_PANE_COMPARISON.yaml), [REQ-FILE_COMPARISON_VISUAL](../tied/requirements/REQ-FILE_COMPARISON_VISUAL.yaml), [REQ-CROSS_PANE_VISIBILITY](../tied/requirements/REQ-CROSS_PANE_VISIBILITY.yaml) |
+| ARCH | [ARCH-COMPARISON_INDEX](../tied/architecture-decisions/ARCH-COMPARISON_INDEX.yaml), [ARCH-COMPARISON_COLORING](../tied/architecture-decisions/ARCH-COMPARISON_COLORING.yaml), [ARCH-CROSS_PANE_VISIBILITY](../tied/architecture-decisions/ARCH-CROSS_PANE_VISIBILITY.yaml) |
+| IMPL | [IMPL-COMPARISON_INDEX](../tied/implementation-decisions/IMPL-COMPARISON_INDEX.yaml), [IMPL-COMPARISON_COLORS](../tied/implementation-decisions/IMPL-COMPARISON_COLORS.yaml), [IMPL-FILE_PANE](../tied/implementation-decisions/IMPL-FILE_PANE.yaml), [IMPL-CROSS_PANE_VISIBILITY_ENGINE](../tied/implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_ENGINE.yaml) |
 | Pseudo-code | [IMPL-COMPARISON_INDEX-pseudocode.md](../tied/implementation-decisions/IMPL-COMPARISON_INDEX-pseudocode.md), [IMPL-COMPARISON_COLORS-pseudocode.md](../tied/implementation-decisions/IMPL-COMPARISON_COLORS-pseudocode.md) |
 
 ## Preferred term vs synonyms
@@ -25,6 +25,7 @@
 | **Size comparison** (visual) | `SizeComparison`: `equal`, `smallest`, `largest`, `null` — row CSS classes |
 | **Time comparison** (visual) | `TimeComparison`: `equal`, `earliest`, `latest`, `null` |
 | **Unique file** | Appears in only one pane — no `CompareState` entry (not “orphan” in Mesh sense) |
+| **Filter comparison index** | `buildEnhancedComparisonIndex` when `panes.length >= 2` for compare filters — independent of `comparisonMode` coloring ([REQ-CROSS_PANE_VISIBILITY](../tied/requirements/REQ-CROSS_PANE_VISIBILITY.yaml)) |
 
 ## Naming bridge
 
@@ -41,6 +42,7 @@
 - **Comparison index** — Map from **filename** → per-pane stats for names present in **two or more** panes; `ComparisonIndex.get(paneIndex, filename)`.
 - **Shared filenames** — `getSharedFilenames()` — drives which rows participate in cross-pane styling.
 - **Comparison mode off** — No cross-pane coloring; listing still works.
+- **Filter comparison index** — Built whenever two or more panes exist for cross-pane visibility criteria; coloring index remains gated by `comparisonMode` ([cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md)).
 - **Pane index** — Numeric index into workspace `panes[]`; parallel arrays in `CompareState.panes`.
 
 Row algorithms: [IMPL-COMPARISON_COLORS-pseudocode.md](../tied/implementation-decisions/IMPL-COMPARISON_COLORS-pseudocode.md).
@@ -50,6 +52,7 @@ Row algorithms: [IMPL-COMPARISON_COLORS-pseudocode.md](../tied/implementation-de
 | Preferred term / concept | UPPER_SNAKE block | Owning IMPL |
 | --- | --- | --- |
 | Build comparison map | `BuildEnhancedIndex` → `IMPL-COMPARISON_INDEX_BuildEnhancedIndex` | IMPL-COMPARISON_INDEX |
+| Build index for compare filters | `BUILD_INDEX_FOR_FILTERS` | IMPL-WORKSPACE_VIEW, IMPL-CROSS_PANE_VISIBILITY_ENGINE |
 | Size delta CSS classes | `SizeComparison` → `IMPL-COMPARISON_COLORS_SizeComparison` | IMPL-COMPARISON_COLORS |
 | Mtime delta CSS classes | `TimeComparison` → `IMPL-COMPARISON_COLORS_TimeComparison` | IMPL-COMPARISON_COLORS |
 
@@ -68,4 +71,5 @@ Row algorithms: [IMPL-COMPARISON_COLORS-pseudocode.md](../tied/implementation-de
 
 - [panorama-domain-references.md](panorama-domain-references.md)
 - [workspace-pane-vocabulary.md](workspace-pane-vocabulary.md)
+- [cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md)
 - [nsync-multi-target-vocabulary.md](nsync-multi-target-vocabulary.md) — `CompareMethod` for sync skip

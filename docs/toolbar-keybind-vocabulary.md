@@ -8,7 +8,7 @@
 
 | Kind | Tokens / artifacts |
 | --- | --- |
-| REQ | [REQ-TOOLBAR_SYSTEM](../tied/requirements/REQ-TOOLBAR_SYSTEM.yaml), [REQ-TOOLBAR_CONFIG](../tied/requirements/REQ-TOOLBAR_CONFIG.yaml), [REQ-KEYBOARD_SHORTCUTS_COMPLETE](../tied/requirements/REQ-KEYBOARD_SHORTCUTS_COMPLETE.yaml), [REQ-KEYBOARD_NAVIGATION](../tied/requirements/REQ-KEYBOARD_NAVIGATION.yaml), [REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml) |
+| REQ | [REQ-TOOLBAR_SYSTEM](../tied/requirements/REQ-TOOLBAR_SYSTEM.yaml), [REQ-TOOLBAR_CONFIG](../tied/requirements/REQ-TOOLBAR_CONFIG.yaml), [REQ-KEYBOARD_SHORTCUTS_COMPLETE](../tied/requirements/REQ-KEYBOARD_SHORTCUTS_COMPLETE.yaml), [REQ-KEYBOARD_NAVIGATION](../tied/requirements/REQ-KEYBOARD_NAVIGATION.yaml), [REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml), [REQ-CROSS_PANE_VISIBILITY](../tied/requirements/REQ-CROSS_PANE_VISIBILITY.yaml) |
 | ARCH | [ARCH-TOOLBAR_LAYOUT](../tied/architecture-decisions/ARCH-TOOLBAR_LAYOUT.yaml), [ARCH-TOOLBAR_ACTIONS](../tied/architecture-decisions/ARCH-TOOLBAR_ACTIONS.yaml), [ARCH-KEYBIND_SYSTEM](../tied/architecture-decisions/ARCH-KEYBIND_SYSTEM.yaml) |
 | IMPL | [IMPL-TOOLBAR_COMPONENT](../tied/implementation-decisions/IMPL-TOOLBAR_COMPONENT.yaml), [IMPL-TOOLBAR_CONFIG](../tied/implementation-decisions/IMPL-TOOLBAR_CONFIG.yaml), [IMPL-KEYBINDS](../tied/implementation-decisions/IMPL-KEYBINDS.yaml) |
 | Pseudo-code | [IMPL-TOOLBAR_COMPONENT-pseudocode.md](../tied/implementation-decisions/IMPL-TOOLBAR_COMPONENT-pseudocode.md), [IMPL-KEYBINDS-pseudocode.md](../tied/implementation-decisions/IMPL-KEYBINDS-pseudocode.md) |
@@ -29,11 +29,12 @@
 | **Toolbar test id** | `data-testid="toolbar-{action}"` e.g. `toolbar-file.copyAll` |
 | **Toolbar-only action** | Listed in `toolbars.actions` in `config/files.yaml`; no `keybindings` row required |
 | **toolbars.actions** | Catalog of `description`, optional `icon` / `label` for mouse-only toolbar buttons |
-| **Toolbar compact mode** | Single merged top row; icon-only buttons (no keystroke badges) |
-| **Toolbar expanded mode** | Default three-tier layout with keystroke badges on each button |
+| **Toolbar compact mode** | Default session layout — single merged top row; icon-only buttons (no keystroke badges) |
+| **Toolbar expanded mode** | User-toggled three-tier layout with keystroke badges on each button |
 | **Toolbar compact toggle** | Leading control on first top toolbar; `data-testid="toolbar-compact-toggle"` |
 | **leadingContent** | Optional slot before the first button group (toggle, future chrome); passed to `Toolbar` / tier wrappers |
-| **Session toolbar display state** | `toolbarExpanded` in `WorkspaceView` (session-only, not URL/mesh); synonym: toolbar display mode |
+| **Session toolbar display state** | `toolbarExpanded` in `WorkspaceView` (session-only, not URL/mesh); default `false` (compact); synonym: toolbar display mode |
+| **Tri-state toolbar button** | Compare filter criterion toggle — `inactive` \| `include` \| `exclude`; `data-tri-state` on `TriStateToolbarButton` |
 | **singleRow** | `Toolbar` prop: one horizontal row with overflow scroll (compact merged layout) |
 
 ## Naming bridge
@@ -53,6 +54,8 @@
 | Clear display filter | “No filter” (pane selector) | — | `view.displaySpec.none` | `handleSetActiveDisplaySpec(focusIndex, null)` |
 | Choose workspace layout | Layout pop-over | `copy.layouts.*` | `view.layout` (Ctrl+Shift+L) | `LayoutPickerPopover`, `setLayout` |
 | Column order | “Column order” dialog | `copy.columns.*` + `toolbars.actions.view.columns` | `view.columns` (no keybind) | `ColumnOrderDialog`, `setFileColumns` |
+| Compare filter thresholds | Threshold dialog | `toolbars.actions.view.compareFilter.thresholds` | — (toolbar-only) | `CompareFilterThresholdDialog` ([REQ-CROSS_PANE_VISIBILITY](../tied/requirements/REQ-CROSS_PANE_VISIBILITY.yaml)) |
+| Compare filter criterion | Tri-state toolbar button | `toolbars.actions.view.compareFilter.*` | — (toolbar-only) | `TriStateToolbarButton`, `CYCLE_TRI_STATE` |
 
 ### Action namespace prefixes (stable)
 
@@ -61,7 +64,7 @@
 | `navigate.*` | Directory cursor, enter, parent, tab, home |
 | `file.*` | copy, move, delete, rename, **copyAll**, **moveAll** |
 | `mark.*` | marking ([file-marking-vocabulary.md](file-marking-vocabulary.md)) |
-| `view.*` | sort, layout picker (`view.layout`), column order dialog (`view.columns`, toolbar-only), comparison mode, hidden files, display filter specs (`view.displaySpec`, `view.displaySpec.none`) |
+| `view.*` | sort, layout picker (`view.layout`), column order dialog (`view.columns`, toolbar-only), comparison mode, hidden files, display filter specs (`view.displaySpec`, `view.displaySpec.none`), compare filters (`view.compareFilter.*`, toolbar-only) |
 | `link.*` | linked mode toggle |
 | `pane.*` | add, remove, refresh, refresh-all |
 | `search.*` | finder vs content search |
@@ -87,6 +90,8 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 - **leadingContent** — Renders before the first group; vertical separator when groups follow.
 - **Workspace area remeasure** — Compact/expanded toggle changes vertical chrome; `useElementSize` on `workspace-area` updates `containerHeight` and pane bounds ([REQ-MULTI_PANE_LAYOUT](../tied/requirements/REQ-MULTI_PANE_LAYOUT.yaml)).
 - **view.layout** — Opens layout picker pop-over (`LayoutPickerPopover`, `workspace-layout-picker`); replaces header layout `<select>`.
+- **view.compareFilter.*** — Tri-state compare filter toolbar actions; see [cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md).
+- **view.compareFilter.thresholds** — Opens size/time threshold dialog for gt/lt compare criteria.
 
 ## Pseudo-code block names
 
@@ -99,6 +104,8 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 | Toolbar compact toggle | `TOOLBAR_COMPACT_TOGGLE` → `IMPL-TOOLBAR_COMPONENT_ToolbarCompactToggle` | IMPL-TOOLBAR_COMPONENT |
 | Merge top toolbars | `MERGE_TOP_TOOLBARS` → `IMPL-TOOLBAR_COMPONENT_MergeTopToolbars` | IMPL-TOOLBAR_COMPONENT |
 | Workspace toolbar display | `WORKSPACE_TOOLBAR_DISPLAY_MODE` → `IMPL-TOOLBAR_COMPONENT_WorkspaceToolbarDisplayMode` | IMPL-TOOLBAR_COMPONENT |
+| Tri-state compare filter click | `CYCLE_TRI_STATE` | IMPL-CROSS_PANE_VISIBILITY_UI |
+| Compare filter thresholds | `THRESHOLD_DIALOG` | IMPL-CROSS_PANE_VISIBILITY_UI |
 | Save workspace from UI | `STORE_FROM_WORKSPACE_UI` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Diff saved vs current | `DIFF_SAVED_VS_CURRENT` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Layout toolbar picker | `LAYOUT_TOOLBAR_PICKER` | IMPL-WORKSPACE_VIEW |
@@ -122,7 +129,9 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 - **System toolbar** — `toolbars.system`
 - **Toolbar compact mode** — single merged top row; icon-only buttons
 - **Toolbar compact toggle** — `toolbar-compact-toggle`
-- **Toolbar expanded mode** — three-tier layout with keystroke badges
+- **Toolbar expanded mode** — user-toggled three-tier layout with keystroke badges
+- **view.compareFilter.*** — tri-state compare filter toolbar actions (toolbar-only)
+- **view.compareFilter.thresholds** — compare filter size/time threshold dialog
 - **Toolbar test id** — `toolbar-{action}`
 - **Workspace toolbar** — `toolbars.workspace`
 - **Workspace area** — measured flex region; `data-testid="workspace-area"`
@@ -133,3 +142,4 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 - [panorama-domain-references.md](panorama-domain-references.md) — behavior inventories pointer
 - [linked-navigation-vocabulary.md](linked-navigation-vocabulary.md) — `link.toggle`
 - [nsync-multi-target-vocabulary.md](nsync-multi-target-vocabulary.md) — `file.copyAll` / `file.moveAll`
+- [cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md) — `view.compareFilter.*` tri-state filters

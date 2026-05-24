@@ -21,6 +21,8 @@ import { getSortLabel, getSortDirectionSymbol, type SortCriterion, type SortDire
 import ContextMenu from "./ContextMenu";
 import type { DisplayFilterSpec } from "@/lib/display-filter.types";
 import { DisplaySpecSelector } from "./DisplaySpecSelector";
+import { CrossPaneVisibilitySelector } from "./CrossPaneVisibilitySelector";
+import type { CrossPaneVisibilityPreset } from "@/lib/cross-pane-visibility.types";
 
 interface FilePaneProps {
   /** Current directory path */
@@ -87,6 +89,14 @@ interface FilePaneProps {
   onDisplaySpecSelect?: (specId: string | null) => void;
   onManageDisplaySpecs?: () => void;
   filterEmptyMessage?: string;
+  /** [REQ-CROSS_PANE_VISIBILITY] Compare filter presets */
+  crossPaneVisibilityPresets?: CrossPaneVisibilityPreset[];
+  activeCrossPaneVisibilityId?: string | null;
+  activeCrossPaneVisibilityName?: string | null;
+  crossPaneVisibilityDraftDirty?: boolean;
+  recentCrossPanePresetIds?: string[];
+  onCrossPaneVisibilitySelect?: (presetId: string | null) => void;
+  onManageCrossPaneVisibility?: () => void;
 }
 
 /**
@@ -130,6 +140,13 @@ export default function FilePane({
   onDisplaySpecSelect,
   onManageDisplaySpecs,
   filterEmptyMessage = "No visible items — the active filter may be hiding files in this folder.",
+  crossPaneVisibilityPresets = [],
+  activeCrossPaneVisibilityId = null,
+  activeCrossPaneVisibilityName = null,
+  crossPaneVisibilityDraftDirty = false,
+  recentCrossPanePresetIds = [],
+  onCrossPaneVisibilitySelect,
+  onManageCrossPaneVisibility,
 }: FilePaneProps) {
   // [IMPL-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] Context menu state
   const [contextMenu, setContextMenu] = useState<{
@@ -445,14 +462,42 @@ export default function FilePane({
             onManage={onManageDisplaySpecs}
           />
         )}
+        {onCrossPaneVisibilitySelect && onManageCrossPaneVisibility && (
+          <CrossPaneVisibilitySelector
+            presets={crossPaneVisibilityPresets}
+            activePresetId={activeCrossPaneVisibilityId}
+            recentPresetIds={recentCrossPanePresetIds}
+            draftDirty={crossPaneVisibilityDraftDirty}
+            onSelect={onCrossPaneVisibilitySelect}
+            onManage={onManageCrossPaneVisibility}
+          />
+        )}
         </div>
-        {activeDisplaySpecName && (
+        {(activeDisplaySpecName ||
+          activeCrossPaneVisibilityName ||
+          crossPaneVisibilityDraftDirty ||
+          activeCrossPaneVisibilityId) && (
           <div
             className="text-xs text-amber-700 dark:text-amber-400 truncate"
             data-testid="pane-display-filter-indicator"
           >
-            Filter: {activeDisplaySpecName}
-            {hiddenCount > 0 ? ` · Hidden: ${hiddenCount}` : ""}
+            {activeDisplaySpecName ? (
+              <>
+                Filter: {activeDisplaySpecName}
+                {hiddenCount > 0 ? ` · Hidden: ${hiddenCount}` : ""}
+              </>
+            ) : null}
+            {(crossPaneVisibilityDraftDirty ||
+              activeCrossPaneVisibilityName ||
+              activeCrossPaneVisibilityId) && (
+              <>
+                {activeDisplaySpecName ? " · " : ""}
+                Compare:{" "}
+                {crossPaneVisibilityDraftDirty
+                  ? "Draft"
+                  : (activeCrossPaneVisibilityName ?? "Preset")}
+              </>
+            )}
           </div>
         )}
       </div>

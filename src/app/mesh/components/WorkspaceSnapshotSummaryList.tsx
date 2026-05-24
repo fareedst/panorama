@@ -18,6 +18,9 @@ export function WorkspaceSnapshotSummaryList({ summary }: { summary: WorkspaceSn
       <li>Comparison: {summary.comparisonMode}</li>
       <li>Shared sort: {summary.sharedSortLabel}</li>
       {summary.fileColumnsLabel ? <li>File columns: {summary.fileColumnsLabel}</li> : null}
+      {summary.crossPaneVisibilityLabel ? (
+        <li>Compare filters: {summary.crossPaneVisibilityLabel}</li>
+      ) : null}
       {summary.panes.map((pane, i) => (
         <li key={`pane-${i}-${pane.path}`} className="list-none">
           <ul className="ml-4 list-inside list-disc space-y-1">

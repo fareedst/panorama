@@ -147,15 +147,26 @@ describe("[REQ-TOOLBAR_SYSTEM] IMPL-TOOLBAR_COMPONENT_WorkspaceToolbarDisplayMod
     );
   }
 
-  it("renders three top toolbars when expanded", () => {
+  it("renders one merged compact toolbar by default", () => {
     renderWithToolbars();
-    expect(screen.getAllByRole("toolbar")).toHaveLength(3);
+    const toolbars = screen.getAllByRole("toolbar");
+    expect(toolbars).toHaveLength(1);
+    expect(toolbars[0]).toHaveClass("toolbar-compact");
     expect(screen.getByTestId("toolbar-compact-toggle")).toBeInTheDocument();
+  });
+
+  it("expands to three top toolbars with keystroke badges when toggled", () => {
+    renderWithToolbars();
+
+    fireEvent.click(screen.getByTestId("toolbar-compact-toggle"));
+    expect(screen.getAllByRole("toolbar")).toHaveLength(3);
+    expect(within(screen.getAllByRole("toolbar")[0]).getByText("S")).toBeInTheDocument();
   });
 
   it("collapses to one merged toolbar without keystroke badges when compact", () => {
     renderWithToolbars();
 
+    fireEvent.click(screen.getByTestId("toolbar-compact-toggle"));
     fireEvent.click(screen.getByTestId("toolbar-compact-toggle"));
 
     const toolbars = screen.getAllByRole("toolbar");
@@ -198,6 +209,8 @@ describe("[REQ-TOOLBAR_SYSTEM] IMPL-TOOLBAR_COMPONENT_WorkspaceToolbarDisplayMod
     };
 
     renderWithToolbars(toolbars);
+
+    fireEvent.click(screen.getByTestId("toolbar-compact-toggle"));
 
     const paneToolbar = document.querySelector(".pane-toolbar");
     expect(paneToolbar).not.toBeNull();

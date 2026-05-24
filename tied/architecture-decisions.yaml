@@ -2774,3 +2774,11 @@ ARCH-DISPLAY_SPEC_STORE:
     - REQ-PANE_DISPLAY_FILTER
     - IMPL-DISPLAY_SPEC_STORE
   detail_file: architecture-decisions/ARCH-DISPLAY_SPEC_STORE.yaml
+ARCH-CROSS_PANE_VISIBILITY:
+  name: Cross-Pane Visibility Architecture
+  status: Planned
+  cross_references:
+    - ARCH-COMPARISON_INDEX
+    - ARCH-DISPLAY_FILTER_ENGINE
+    - REQ-CROSS_PANE_VISIBILITY
+  detail_file: architecture-decisions/ARCH-CROSS_PANE_VISIBILITY.yaml

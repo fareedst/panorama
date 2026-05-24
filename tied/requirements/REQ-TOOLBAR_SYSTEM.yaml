@@ -22,14 +22,15 @@ REQ-TOOLBAR_SYSTEM:
     - criterion: Button states (active/disabled) reflect current workspace state
     - criterion: Buttons sized to prevent overflow even with 12+ actions per toolbar
     - criterion: Compact/expanded toolbar toggle does not clip panes; pane geometry updates when workspace area size changes
+    - criterion: Compare filter tri-state toolbar actions (view.compareFilter.*) render via TriStateToolbarButton with data-tri-state attribute
     - criterion: Each button displays icon (when available) + keyboard shortcut in compact format; label text only shown as fallback when no icon exists
+    - criterion: Session starts in compact single-row icon-only toolbar; user can toggle to expanded three-tier layout with keystroke badges; tooltips retain keyboard shortcuts in both modes
     - criterion: Toolbar button actions dispatch to same handlers as keyboard shortcuts
     - criterion: Toolbar group actions listed under toolbars.actions render without a keybinding row
     - criterion: Toolbar rendering does not impact file manager responsiveness
     - criterion: Toolbar styling follows existing theme system in config/theme.yaml
     - criterion: Toolbar visibility, position, and button selection configurable via config/files.yaml
     - criterion: Toolbars adapt to mobile, tablet, and desktop viewports
-    - criterion: User can toggle compact single-row icon-only toolbar vs expanded three-tier layout with keystroke badges; tooltips retain keyboard shortcuts in both modes
     - criterion: Workspace Layout toolbar group includes view.layout with Ctrl+Shift+L keybind opening layout picker pop-over
   validation_criteria:
     - method: Component tests
