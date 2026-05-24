@@ -17,10 +17,13 @@ REQ-MULTI_PANE_LAYOUT:
   satisfaction_criteria:
     - criterion: Layout can be changed dynamically
     - criterion: Pane bounds reflect available workspace area (toolbar and header aware), not fixed viewport heuristics
+    - criterion: Pane order dialog (pane.order) allows arbitrary reorder of panes[]
     - criterion: Support 2-4 panes in any layout
     - criterion: Support OneColumn layout (all panes vertical)
     - criterion: Support OneRow layout (all panes horizontal)
     - criterion: Support Tile layout (first pane left half, others stacked right)
+    - criterion: Three or more panes support neighbor swap (pane.swap / pane.swapPrev) and full-array cycle (pane.cycle / pane.cyclePrev)
+    - criterion: Two panes can be swapped via pane.swap (keyboard and toolbar)
     - criterion: User selects layout via workspace toolbar view.layout pop-over (not header select)
   validation_criteria:
     - method: Visual testing
@@ -32,10 +35,14 @@ REQ-MULTI_PANE_LAYOUT:
   traceability:
     architecture:
       - ARCH-LAYOUT_ALGORITHMS
+      - ARCH-PANE_LIFECYCLE
     implementation:
       - IMPL-LAYOUT_CALCULATOR
+      - IMPL-PANE_MANAGEMENT
       - IMPL-WORKSPACE_VIEW
-    tests: []
+    tests:
+      - src/lib/pane-order.test.ts
+      - src/app/files/WorkspaceView.pane-reorder.test.tsx
     code_annotations:
       - REQ-MULTI_PANE_LAYOUT
   related_requirements:
@@ -49,9 +56,9 @@ REQ-MULTI_PANE_LAYOUT:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-22T22:00:00.000Z"
+      date: "2026-05-24T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — layout toolbar picker replaces header select
+      reason: Add pane reorder satisfaction criteria
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

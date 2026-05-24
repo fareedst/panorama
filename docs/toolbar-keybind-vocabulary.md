@@ -60,6 +60,9 @@
 | Clear display filter | “No filter” (pane selector) | — | `view.displaySpec.none` | `handleSetActiveDisplaySpec(focusIndex, null)` |
 | Choose workspace layout | Layout pop-over | `copy.layouts.*` | `view.layout` (Ctrl+Shift+L) | `LayoutPickerPopover`, `setLayout` |
 | Column order | “Column order” dialog | `copy.columns.*` + `toolbars.actions.view.columns` | `view.columns` (no keybind) | `ColumnOrderDialog`, `setFileColumns` |
+| Swap panes | “Swap panes” | `copy.paneManagement.swapPanes` | `pane.swap` (Ctrl+Shift+S) | `handleSwapFocusedNext` |
+| Cycle panes forward | “Cycle panes forward” | `copy.paneManagement.cycleForward` | `pane.cycle` (Ctrl+Shift+]) | `handleCyclePanes("forward")` |
+| Pane order | “Pane order” dialog | `copy.paneManagement.paneOrderTitle` + `toolbars.actions.pane.order` | `pane.order` (toolbar-only) | `PaneOrderDialog`, `handleApplyPaneOrder` |
 | Compare filter thresholds | Threshold dialog | `toolbars.actions.view.compareFilter.thresholds` | — (toolbar-only) | `CompareFilterThresholdDialog` ([REQ-CROSS_PANE_VISIBILITY](../tied/requirements/REQ-CROSS_PANE_VISIBILITY.yaml)) |
 | Compare filter criterion | Tri-state toolbar button | `toolbars.actions.view.compareFilter.*` | — (toolbar-only) | `TriStateToolbarButton`, `CYCLE_TRI_STATE` |
 
@@ -72,7 +75,7 @@
 | `mark.*` | marking ([file-marking-vocabulary.md](file-marking-vocabulary.md)) |
 | `view.*` | sort, layout picker (`view.layout`), column order dialog (`view.columns`, toolbar-only), comparison mode, hidden files, display filter specs (`view.displaySpec`, `view.displaySpec.none`), compare filters (`view.compareFilter.*`, toolbar-only) |
 | `link.*` | linked mode toggle |
-| `pane.*` | add, remove, refresh, refresh-all |
+| `pane.*` | add, remove, refresh, refresh-all, **swap**, **swapPrev**, **cycle**, **cyclePrev**, **order** |
 | `search.*` | finder vs content search |
 | `history.*` | back / forward |
 | `bookmark.*` | bookmark ops |
@@ -99,6 +102,8 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 - **view.compareFilter.*** — Tri-state compare filter toolbar actions; see [cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md).
 - **view.compareFilter.thresholds** — Opens size/time threshold dialog for gt/lt compare criteria.
 - **Icon registry** — `getIconPaths` / `isIconRegistered` in `src/components/icons/registry.ts`; `getReferencedToolbarIconNames()` in `toolbar.utils.ts` for test coverage.
+- **pane.order** — Toolbar-only pane reorder; icon `bookmark-list`; opens `PaneOrderDialog` (no keybinding row in `config/files.yaml`).
+- **pane.swap** / **pane.cycle** — Workspace Panes group; icons `move` and `refresh-cw`; share handlers with keyboard shortcuts ([workspace-pane-vocabulary.md](workspace-pane-vocabulary.md)).
 
 ### Adding toolbar icons
 
@@ -123,6 +128,11 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 | Save workspace from UI | `STORE_FROM_WORKSPACE_UI` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Diff saved vs current | `DIFF_SAVED_VS_CURRENT` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Layout toolbar picker | `LAYOUT_TOOLBAR_PICKER` | IMPL-WORKSPACE_VIEW |
+| Swap panes | `SwapPanes` → `IMPL-PANE_MANAGEMENT_SwapPanes` | IMPL-PANE_MANAGEMENT |
+| Swap focused neighbor | `SwapFocusedNeighbor` → `IMPL-PANE_MANAGEMENT_SwapFocusedNeighbor` | IMPL-PANE_MANAGEMENT |
+| Cycle panes | `CyclePanes` → `IMPL-PANE_MANAGEMENT_CyclePanes` | IMPL-PANE_MANAGEMENT |
+| Pane order dialog open | `PaneOrderDialogOpen` → `IMPL-PANE_MANAGEMENT_PaneOrderDialogOpen` | IMPL-PANE_MANAGEMENT |
+| Pane order dialog apply | `PaneOrderDialogApply` → `IMPL-PANE_MANAGEMENT_PaneOrderDialogApply` | IMPL-PANE_MANAGEMENT |
 | Icon registry lookup | `ICON_REGISTRY` | IMPL-TOOLBAR_COMPONENT |
 
 ## Alphabetical index
@@ -145,6 +155,9 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 - **view.displaySpec** — open display spec manager dialog
 - **view.displaySpec.none** — clear active display spec on focused pane
 - **view.layout** — workspace layout picker (Ctrl+Shift+L); icon `layout-grid`
+- **pane.cycle** — rotate all panes forward (Ctrl+Shift+]); workspace Panes toolbar group
+- **pane.order** — toolbar-only; opens pane order dialog
+- **pane.swap** — swap focused pane with neighbor (Ctrl+Shift+S); workspace Panes toolbar group
 - **Pane toolbar** — `toolbars.pane`
 - **System toolbar** — `toolbars.system`
 - **Toolbar compact mode** — single merged top row; icon-only buttons

@@ -36,6 +36,10 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 | **Container dimensions** | `containerWidth` / `containerHeight` — measured client box passed to `calculateLayout` (not viewport) |
 | **useElementSize** | Hook in `src/lib/useElementSize.ts` — ResizeObserver on workspace area |
 | **Pane management** | “add/remove split” — gated by `layout.allowPaneManagement` and `layout.maxPanes` |
+| **Pane order** | `panes[]` index = visual slot; reorder via swap, cycle, or dialog |
+| **Swap panes** | `pane.swap` / `pane.swapPrev` — exchange focused pane with neighbor (2-pane: swap 0↔1) |
+| **Cycle panes** | `pane.cycle` / `pane.cyclePrev` — rotate all panes one slot |
+| **Pane order dialog** | `pane.order` → `PaneOrderDialog`; arbitrary reorder like column order |
 | **Cross-surface link** | New-tab link between File Manager workspace and Mesh GUI ([mesh-platform-vocabulary.md](mesh-platform-vocabulary.md)) |
 | **Workspace header cross-surface nav** | Header `<nav>` with Mesh Sync link; not pane toolbar |
 | **Workspace header banner** | Top `<header>` strip — title, status row, Diff, cross-surface nav (no layout control) |
@@ -64,6 +68,11 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 | Workspace toolbar | (group names in YAML) | `toolbars.workspace` | various | `WorkspaceView` + `Toolbar`; icons via [toolbar-keybind-vocabulary.md](toolbar-keybind-vocabulary.md) (**Icon registry**) |
 | Add pane | “Add Pane” | `copy.paneManagement.addPane` | `pane.add` | `handleAddPane` |
 | Remove pane | “Remove Pane” | `copy.paneManagement.removePane` | `pane.remove` | `handleRemovePane` |
+| Swap panes | “Swap panes” | `copy.paneManagement.swapPanes` | `pane.swap` (Ctrl+Shift+S) | `handleSwapPanes`, `handleSwapFocusedNext` |
+| Swap with previous | “Swap with previous” | `copy.paneManagement.swapPrev` | `pane.swapPrev` | `handleSwapFocusedPrev` |
+| Cycle panes forward | “Cycle panes forward” | `copy.paneManagement.cycleForward` | `pane.cycle` (Ctrl+Shift+]) | `handleCyclePanes` |
+| Cycle panes backward | “Cycle panes backward” | `copy.paneManagement.cycleBackward` | `pane.cyclePrev` | `handleCyclePanes` |
+| Pane order dialog | “Pane order” | `copy.paneManagement.paneOrderTitle` | `pane.order` (toolbar-only) | `PaneOrderDialog`, `handleApplyPaneOrder` |
 | Default pane count | — | `layout.defaultPaneCount` | — | startup pane array length |
 | Max panes | “Maximum number of panes reached” | `layout.maxPanes` (`0` = no limit) | — | validation in `handleAddPane` |
 | Layout: tile | “Tile” | `layout.default: tile` | — | `LayoutType` / `calculateLayout` |
@@ -84,6 +93,11 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 - **Pane** — One directory listing with its own path, cursor, marks, and sort; rendered by `FilePane`.
 - **Focus** — Exactly one pane index (`focusIndex`) receives keyboard/file-operation commands unless linked mode propagates navigation ([linked-navigation-vocabulary.md](linked-navigation-vocabulary.md)).
 - **Pane lifecycle** — Add/remove panes with constraints; see [IMPL-PANE_MANAGEMENT](../tied/implementation-decisions/IMPL-PANE_MANAGEMENT.yaml).
+- **Pane order** — `panes[]` index is visual slot; reorder via swap, cycle, or **Pane order** dialog without changing pane state objects.
+- **Swap panes** — `pane.swap` / `pane.swapPrev` exchange focused pane with neighbor (two panes: swap slots 0↔1); focus and directory history follow pane content.
+- **Cycle panes** — `pane.cycle` / `pane.cyclePrev` rotate all panes one slot; focus and history follow content.
+- **Pane order dialog** — `pane.order` (toolbar-only) opens `PaneOrderDialog` for arbitrary reorder (same pattern as column order dialog).
+- **Focus follows pane content on reorder** — `focusIndex` remaps via `pane-order.ts` helpers so the same directory listing stays focused after swap/cycle/apply.
 - **Active display spec** — Per-pane `activeDisplaySpecId` selects a named filter catalog entry; `hiddenCount` and `loadedSpecVersion` track apply state ([pane-display-filter-vocabulary.md](pane-display-filter-vocabulary.md)).
 - **Workspace snapshot display spec** — v2+ mesh snapshots persist `displaySpecId` per pane for restore ([REQ-PANE_DISPLAY_FILTER](../tied/requirements/REQ-PANE_DISPLAY_FILTER.yaml), [REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml)); mesh detail shows **Display filter** per pane (catalog name when resolvable, else id).
 - **Cross-pane visibility** — Tri-state compare filters applied after display spec; focused pane include/exclude rules; other panes mirror visible basenames ([cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md), [REQ-CROSS_PANE_VISIBILITY](../tied/requirements/REQ-CROSS_PANE_VISIBILITY.yaml)).
@@ -121,6 +135,9 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 | Keybinding handler registration | `KeybindingInit` → `IMPL-WORKSPACE_VIEW_KeybindingInit` | IMPL-WORKSPACE_VIEW |
 | Add pane | `AddPane` → `IMPL-PANE_MANAGEMENT_AddPane` | IMPL-PANE_MANAGEMENT |
 | Remove pane | `RemovePane` → `IMPL-PANE_MANAGEMENT_RemovePane` | IMPL-PANE_MANAGEMENT |
+| Swap panes | `SwapPanes` → `IMPL-PANE_MANAGEMENT_SwapPanes` | IMPL-PANE_MANAGEMENT |
+| Cycle panes | `CyclePanes` → `IMPL-PANE_MANAGEMENT_CyclePanes` | IMPL-PANE_MANAGEMENT |
+| Pane order dialog | `PaneOrderDialog` → `IMPL-PANE_MANAGEMENT_PaneOrderDialog` | IMPL-PANE_MANAGEMENT |
 | Layout: tile / one row / column / fullscreen | `Tile`, `OneRow`, `OneColumn`, `Fullscreen` | IMPL-LAYOUT_CALCULATOR |
 | Workspace area measurement | `WORKSPACE_AREA_MEASUREMENT` → `IMPL-LAYOUT_CALCULATOR_WorkspaceAreaMeasurement` | IMPL-LAYOUT_CALCULATOR (+ IMPL-TOOLBAR_COMPONENT display mode) |
 | File row render + scroll | `RenderFileRows`, `ScrollToCursor` | IMPL-FILE_PANE |
@@ -164,7 +181,10 @@ Covers the **multi-pane file manager shell**: server **Files page**, client **wo
 - **Layout type** — `tile`, `oneRow`, `oneColumn`, `fullscreen`
 - **Pane** — single listing column
 - **Pane bounds** — geometry for CSS placement
-- **Pane management** — add/remove panes
+- **Pane management** — add/remove/reorder panes (swap, cycle, pane order dialog)
+- **Cycle panes** — `pane.cycle` / `pane.cyclePrev` rotate `panes[]`
+- **Pane order** — `pane.order` dialog arbitrary reorder
+- **Swap panes** — `pane.swap` / `pane.swapPrev` neighbor exchange
 - **Pane state** — per-pane React state object
 - **Restore from mesh** — `/files?meshId=` server bootstrap + client `restoreUi`
 - **Shared sort** — workspace `sharedSort`; snapshot v3; new-pane default

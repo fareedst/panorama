@@ -198,6 +198,81 @@ export class DirectoryHistory {
     this.histories.delete(paneId);
     this.recentDirs.delete(paneId);
   }
+
+  /**
+   * Swap history between two pane indices when panes swap positions.
+   * [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] [REQ-MULTI_PANE_LAYOUT]
+   */
+  swapPaneHistories(i: number, j: number): void {
+    if (i === j) return;
+    const hi = this.histories.get(i);
+    const hj = this.histories.get(j);
+    if (hi !== undefined) this.histories.set(j, hi);
+    else this.histories.delete(j);
+    if (hj !== undefined) this.histories.set(i, hj);
+    else this.histories.delete(i);
+
+    const ri = this.recentDirs.get(i);
+    const rj = this.recentDirs.get(j);
+    if (ri !== undefined) this.recentDirs.set(j, ri);
+    else this.recentDirs.delete(j);
+    if (rj !== undefined) this.recentDirs.set(i, rj);
+    else this.recentDirs.delete(i);
+  }
+
+  /**
+   * Rotate pane histories when panes[] rotates one slot.
+   * [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYOUT]
+   */
+  rotatePaneHistories(direction: "forward" | "backward", paneCount: number): void {
+    if (paneCount <= 1) return;
+    const historyEntries: (PaneHistory | undefined)[] = [];
+    const recentEntries: (RecentDirectory[] | undefined)[] = [];
+    for (let i = 0; i < paneCount; i++) {
+      historyEntries.push(this.histories.get(i));
+      recentEntries.push(this.recentDirs.get(i));
+    }
+    const rotatedHistories =
+      direction === "forward"
+        ? [...historyEntries.slice(1), historyEntries[0]]
+        : [historyEntries[paneCount - 1], ...historyEntries.slice(0, paneCount - 1)];
+    const rotatedRecents =
+      direction === "forward"
+        ? [...recentEntries.slice(1), recentEntries[0]]
+        : [recentEntries[paneCount - 1], ...recentEntries.slice(0, paneCount - 1)];
+    this.histories.clear();
+    this.recentDirs.clear();
+    for (let i = 0; i < paneCount; i++) {
+      if (rotatedHistories[i] !== undefined) this.histories.set(i, rotatedHistories[i]!);
+      if (rotatedRecents[i] !== undefined) this.recentDirs.set(i, rotatedRecents[i]!);
+    }
+  }
+
+  /**
+   * Reorder pane histories when panes[] is permuted by index order.
+   * order[newIndex] = oldIndex
+   * [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYOUT]
+   */
+  reorderPaneHistories(order: number[]): void {
+    const paneCount = order.length;
+    const historyEntries: (PaneHistory | undefined)[] = [];
+    const recentEntries: (RecentDirectory[] | undefined)[] = [];
+    for (let i = 0; i < paneCount; i++) {
+      historyEntries.push(this.histories.get(i));
+      recentEntries.push(this.recentDirs.get(i));
+    }
+    this.histories.clear();
+    this.recentDirs.clear();
+    for (let newIndex = 0; newIndex < paneCount; newIndex++) {
+      const oldIndex = order[newIndex];
+      if (historyEntries[oldIndex] !== undefined) {
+        this.histories.set(newIndex, historyEntries[oldIndex]!);
+      }
+      if (recentEntries[oldIndex] !== undefined) {
+        this.recentDirs.set(newIndex, recentEntries[oldIndex]!);
+      }
+    }
+  }
 }
 
 /**

@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Pane reorder** (`[REQ-MULTI_PANE_LAYOUT]`, `[ARCH-PANE_LIFECYCLE]`, `[IMPL-PANE_MANAGEMENT]`): swap focused/neighbor panes (`pane.swap`, `pane.swapPrev`), cycle all panes (`pane.cycle`, `pane.cyclePrev`), and **Pane order** dialog (`pane.order`, toolbar-only); directory history permutes with pane content. Modules: [`pane-order.ts`](src/lib/pane-order.ts), [`PaneOrderDialog.tsx`](src/app/files/components/PaneOrderDialog.tsx), [`WorkspaceView`](src/app/files/WorkspaceView.tsx). Tests: [`pane-order.test.ts`](src/lib/pane-order.test.ts), [`files.history.test.ts`](src/lib/files.history.test.ts), [`PaneOrderDialog.test.tsx`](src/app/files/components/PaneOrderDialog.test.tsx), [`WorkspaceView.pane-reorder.test.tsx`](src/app/files/WorkspaceView.pane-reorder.test.tsx). Vocabulary: [`docs/workspace-pane-vocabulary.md`](docs/workspace-pane-vocabulary.md), [`docs/toolbar-keybind-vocabulary.md`](docs/toolbar-keybind-vocabulary.md).
+
 - **Per-mesh depots page** (`[REQ-MESH_GUI]`, `[IMPL-MESH_GUI]`, `[IMPL-MESH_DEPOT]`): `/mesh/:meshId/depots` with [`MeshDepotsClient`](src/app/mesh/components/MeshDepotsClient.tsx) — depot add/remove and credential-reference stub; tests [`MeshDepotsClient.test.tsx`](src/app/mesh/components/MeshDepotsClient.test.tsx). Vocabulary: [`docs/mesh-platform-vocabulary.md`](docs/mesh-platform-vocabulary.md).
 
 ### Changed

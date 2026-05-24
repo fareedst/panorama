@@ -22,6 +22,7 @@ REQ-KEYBOARD_SHORTCUTS_COMPLETE:
     - criterion: Help overlay (? key) displays all shortcuts
     - criterion: Keybindings configurable in files.yaml
     - criterion: Modal dialogs have keyboard navigation
+    - criterion: Pane reorder shortcuts pane.swap, pane.swapPrev, pane.cycle, pane.cyclePrev registered under pane-management category in config/files.yaml
     - criterion: Shortcuts organized by category
   validation_criteria:
     - method: Unit tests

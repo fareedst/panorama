@@ -21,7 +21,9 @@ ARCH-KEYBIND_SYSTEM:
       Implement a **configuration-driven keyboard shortcut system** with a centralized registry, event-driven architecture, and declarative keybinding definitions in YAML configuration.
 
       ---
-    details: []
+    details:
+      - Pane-management category includes pane.add, pane.remove, pane.swap, pane.swapPrev, pane.cycle, pane.cyclePrev (neighbor swap and full-array cycle)
+      - Toolbar-only pane.order has no keybinding row; opens dialog via WorkspaceView handler map
   traceability:
     requirements:
       - REQ-KEYBOARD_SHORTCUTS_COMPLETE

@@ -292,6 +292,17 @@ export interface FilesCopyConfig {
   paneManagement?: {
     addPane?: string;
     removePane?: string;
+    swapPanes?: string;
+    swapPrev?: string;
+    cycleForward?: string;
+    cycleBackward?: string;
+    paneOrderTitle?: string;
+    paneOrderApply?: string;
+    focusedBadge?: string;
+    moveUp?: string;
+    moveDown?: string;
+    cancel?: string;
+    apply?: string;
     maxPanesReached?: string;
     minPanesReached?: string;
     paneManagementDisabled?: string;

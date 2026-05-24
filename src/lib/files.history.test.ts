@@ -251,4 +251,57 @@ describe("DirectoryHistory [REQ-ADVANCED_NAV]", () => {
       expect(recents).toHaveLength(0);
     });
   });
+
+  // [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYOUT] History follows pane content on reorder
+
+  describe("swapPaneHistories [IMPL-PANE_MANAGEMENT]", () => {
+    it("swaps history between pane indices", () => {
+      history.saveCursorPosition(0, "/a", "a.txt", 1, 0);
+      history.saveCursorPosition(1, "/b", "b.txt", 2, 0);
+
+      history.swapPaneHistories(0, 1);
+
+      expect(history.restoreCursorPosition(0, "/b", ["x", "y", "b.txt"]).cursor).toBe(2);
+      expect(history.restoreCursorPosition(1, "/a", ["a.txt"]).cursor).toBe(0);
+    });
+  });
+
+  describe("rotatePaneHistories [IMPL-PANE_MANAGEMENT]", () => {
+    it("rotates histories forward with panes", () => {
+      history.saveCursorPosition(0, "/p0", "p0.txt", 0, 0);
+      history.saveCursorPosition(1, "/p1", "p1.txt", 0, 0);
+      history.saveCursorPosition(2, "/p2", "p2.txt", 0, 0);
+
+      history.rotatePaneHistories("forward", 3);
+
+      expect(history.restoreCursorPosition(0, "/p1", ["p1.txt"]).cursor).toBe(0);
+      expect(history.restoreCursorPosition(2, "/p0", ["p0.txt"]).cursor).toBe(0);
+    });
+
+    // [IMPL-PANE_MANAGEMENT_CyclePanes] [REQ-MULTI_PANE_LAYOUT]
+    it("rotates histories backward with panes", () => {
+      history.saveCursorPosition(0, "/p0", "p0.txt", 0, 0);
+      history.saveCursorPosition(1, "/p1", "p1.txt", 0, 0);
+      history.saveCursorPosition(2, "/p2", "p2.txt", 0, 0);
+
+      history.rotatePaneHistories("backward", 3);
+
+      expect(history.restoreCursorPosition(0, "/p2", ["p2.txt"]).cursor).toBe(0);
+      expect(history.restoreCursorPosition(2, "/p1", ["p1.txt"]).cursor).toBe(0);
+    });
+  });
+
+  describe("reorderPaneHistories [IMPL-PANE_MANAGEMENT]", () => {
+    it("permutes histories by order mapping", () => {
+      history.saveCursorPosition(0, "/a", "a.txt", 0, 0);
+      history.saveCursorPosition(1, "/b", "b.txt", 0, 0);
+      history.saveCursorPosition(2, "/c", "c.txt", 0, 0);
+
+      history.reorderPaneHistories([2, 0, 1]);
+
+      expect(history.restoreCursorPosition(0, "/c", ["c.txt"]).cursor).toBe(0);
+      expect(history.restoreCursorPosition(1, "/a", ["a.txt"]).cursor).toBe(0);
+      expect(history.restoreCursorPosition(2, "/b", ["b.txt"]).cursor).toBe(0);
+    });
+  });
 });

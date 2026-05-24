@@ -13,6 +13,16 @@ import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import path from "path-browserify";
 import type { FileStat, OperationResult, ComparisonMode } from "@/lib/files.types";
+import {
+  swapArrayAt,
+  rotateArray,
+  reorderArrayByIndices,
+  remapFocusIndexAfterSwap,
+  remapFocusIndexAfterRotate,
+  neighborIndexNext,
+  neighborIndexPrev,
+  type RotateDirection,
+} from "@/lib/pane-order";
 import { calculateLayout, normalizeLayoutType, type LayoutType } from "@/lib/files.layout";
 import { buildEnhancedComparisonIndex } from "@/lib/files.comparison";
 import { reconcilePaneSelection } from "@/lib/display-filter-engine";
@@ -62,6 +72,7 @@ import GotoDialog from "./components/GotoDialog";
 import BookmarkDialog from "./components/BookmarkDialog";
 import SortDialog from "./components/SortDialog";
 import { ColumnOrderDialog } from "./components/ColumnOrderDialog";
+import { PaneOrderDialog } from "./components/PaneOrderDialog";
 import { LayoutPickerPopover } from "./components/LayoutPickerPopover";
 import {
   getVisibleFileColumns,
@@ -464,6 +475,7 @@ export default function WorkspaceView({
     normalizeFileColumns(loadedSnapshotProp?.fileColumns, columns),
   );
   const [columnOrderDialogOpen, setColumnOrderDialogOpen] = useState(false);
+  const [paneOrderDialogOpen, setPaneOrderDialogOpen] = useState(false);
   
   // [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW] Preview panel state
   const [previewPanel, setPreviewPanel] = useState<{
@@ -1488,6 +1500,80 @@ export default function WorkspaceView({
       return prev;
     });
   }, [panes, layoutConfig]);
+
+  /**
+   * Swap two panes by index; focus and directory history follow pane content.
+   * [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] [REQ-MULTI_PANE_LAYOUT]
+   */
+  const handleSwapPanes = useCallback(
+    (i: number, j: number) => {
+      if (!layoutConfig.allowPaneManagement || panes.length < 2 || i === j) {
+        return;
+      }
+      setPanes((prev) => swapArrayAt(prev, i, j));
+      setFocusIndex((prev) => remapFocusIndexAfterSwap(prev, i, j));
+      globalDirectoryHistory.swapPaneHistories(i, j);
+      setScrollTriggers(new Map());
+    },
+    [panes.length, layoutConfig.allowPaneManagement],
+  );
+
+  // [IMPL-PANE_MANAGEMENT] [ARCH-KEYBIND_SYSTEM] [REQ-MULTI_PANE_LAYOUT]: SwapFocusedNeighbor next
+  const handleSwapFocusedNext = useCallback(() => {
+    if (panes.length === 2) {
+      handleSwapPanes(0, 1);
+      return;
+    }
+    const j = neighborIndexNext(focusIndex, panes.length);
+    handleSwapPanes(focusIndex, j);
+  }, [panes.length, focusIndex, handleSwapPanes]);
+
+  // [IMPL-PANE_MANAGEMENT] [ARCH-KEYBIND_SYSTEM] [REQ-MULTI_PANE_LAYOUT]: SwapFocusedNeighbor prev
+  const handleSwapFocusedPrev = useCallback(() => {
+    if (panes.length === 2) {
+      handleSwapPanes(0, 1);
+      return;
+    }
+    const j = neighborIndexPrev(focusIndex, panes.length);
+    handleSwapPanes(focusIndex, j);
+  }, [panes.length, focusIndex, handleSwapPanes]);
+
+  /**
+   * Rotate all panes one slot; focus and history follow pane content.
+   * [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYOUT]
+   */
+  const handleCyclePanes = useCallback(
+    (direction: RotateDirection) => {
+      if (!layoutConfig.allowPaneManagement || panes.length < 2) {
+        return;
+      }
+      setPanes((prev) => rotateArray(prev, direction));
+      setFocusIndex((prev) =>
+        remapFocusIndexAfterRotate(prev, panes.length, direction),
+      );
+      globalDirectoryHistory.rotatePaneHistories(direction, panes.length);
+      setScrollTriggers(new Map());
+    },
+    [panes.length, layoutConfig.allowPaneManagement],
+  );
+
+  /**
+   * Apply arbitrary pane order from PaneOrderDialog.
+   * [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYOUT] [REQ-TOOLBAR_SYSTEM]
+   */
+  const handleApplyPaneOrder = useCallback(
+    (order: number[]) => {
+      if (!layoutConfig.allowPaneManagement || order.length !== panes.length) {
+        return;
+      }
+      const previousFocusPaneIndex = focusIndex;
+      setPanes((prev) => reorderArrayByIndices(prev, order));
+      setFocusIndex(order.indexOf(previousFocusPaneIndex));
+      globalDirectoryHistory.reorderPaneHistories(order);
+      setScrollTriggers(new Map());
+    },
+    [panes.length, focusIndex, layoutConfig.allowPaneManagement],
+  );
   
   // [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS] Bulk operation handlers
   
@@ -2402,7 +2488,7 @@ export default function WorkspaceView({
       }
     });
     
-    // [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] Pane management
+    // [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] [ARCH-KEYBIND_SYSTEM] [REQ-MULTI_PANE_LAYOUT] Pane management and reorder
     handlers.set("pane.add", () => {
       void handleAddPane();
     });
@@ -2410,13 +2496,33 @@ export default function WorkspaceView({
     handlers.set("pane.remove", () => {
       handleRemovePane(focusIndex);
     });
+
+    handlers.set("pane.swap", () => {
+      handleSwapFocusedNext();
+    });
+
+    handlers.set("pane.swapPrev", () => {
+      handleSwapFocusedPrev();
+    });
+
+    handlers.set("pane.cycle", () => {
+      handleCyclePanes("forward");
+    });
+
+    handlers.set("pane.cyclePrev", () => {
+      handleCyclePanes("backward");
+    });
+
+    handlers.set("pane.order", () => {
+      setPaneOrderDialogOpen(true);
+    });
     
     handlers.set("pane.refresh", () => {
       void handleNavigate(focusIndex, pane.path);
     });
     
     return handlers;
-  }, [panes, focusIndex, crossPaneVisibilityResult, navigateToParent, handleNavigate, handleBulkCopy, handleBulkMove, handleBulkDelete, handleAddPane, handleRemovePane, handleClearMarks, handleCursorMove, handleToggleMark, handleMarkAll, handleInvertMarks, handleCopyAll, handleMoveAll, handleSetActiveDisplaySpec]);
+  }, [panes, focusIndex, crossPaneVisibilityResult, navigateToParent, handleNavigate, handleBulkCopy, handleBulkMove, handleBulkDelete, handleAddPane, handleRemovePane, handleSwapFocusedNext, handleSwapFocusedPrev, handleCyclePanes, handleClearMarks, handleCursorMove, handleToggleMark, handleMarkAll, handleInvertMarks, handleCopyAll, handleMoveAll, handleSetActiveDisplaySpec]);
 
   const actionHandlers = useMemo(() => {
     const merged = new Map(workspaceActionHandlers);
@@ -2530,6 +2636,19 @@ export default function WorkspaceView({
     }
     if (panes.length <= 1) {
       disabled.add('pane.remove');
+      disabled.add('pane.swap');
+      disabled.add('pane.swapPrev');
+      disabled.add('pane.cycle');
+      disabled.add('pane.cyclePrev');
+      disabled.add('pane.order');
+    }
+    // [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYOUT]: disable reorder when pane management off or single pane
+    if (!layoutConfig.allowPaneManagement) {
+      disabled.add('pane.swap');
+      disabled.add('pane.swapPrev');
+      disabled.add('pane.cycle');
+      disabled.add('pane.cyclePrev');
+      disabled.add('pane.order');
     }
 
     // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] DIFF_SAVED_VS_CURRENT
@@ -2972,6 +3091,15 @@ export default function WorkspaceView({
         labels={copy.columns}
         onApply={setFileColumns}
         onClose={() => setColumnOrderDialogOpen(false)}
+      />
+
+      <PaneOrderDialog
+        isOpen={paneOrderDialogOpen}
+        panes={panes}
+        focusIndex={focusIndex}
+        labels={copy.paneManagement}
+        onApply={handleApplyPaneOrder}
+        onClose={() => setPaneOrderDialogOpen(false)}
       />
 
       <SortDialog

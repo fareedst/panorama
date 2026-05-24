@@ -81,6 +81,9 @@ const ACTION_ICON_MAP: Record<string, string> = {
   // Pane management
   'pane.add': 'plus',
   'pane.remove': 'minus',
+  'pane.swap': 'move',
+  'pane.cycle': 'refresh-cw',
+  'pane.order': 'bookmark-list',
   'pane.refresh': 'refresh-cw',
   'pane.refresh-all': 'refresh-ccw',
 

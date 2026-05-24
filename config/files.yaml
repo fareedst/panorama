@@ -97,6 +97,17 @@ copy:
   paneManagement:
     addPane: "Add Pane"
     removePane: "Remove Pane"
+    swapPanes: "Swap panes"
+    swapPrev: "Swap with previous"
+    cycleForward: "Cycle panes forward"
+    cycleBackward: "Cycle panes backward"
+    paneOrderTitle: "Pane order"
+    paneOrderApply: "Apply"
+    focusedBadge: "focused"
+    moveUp: "Up"
+    moveDown: "Down"
+    cancel: "Cancel"
+    apply: "Apply"
     maxPanesReached: "Maximum number of panes reached"
     minPanesReached: "At least one pane must remain"
     paneManagementDisabled: "Pane management is disabled"
@@ -353,6 +364,39 @@ keybindings:
     action: "pane.remove"
     description: "Remove focused pane"
     category: "pane-management"
+
+  - key: "s"
+    modifiers:
+      ctrl: true
+      shift: true
+    action: "pane.swap"
+    description: "Swap panes (or swap focused with next neighbor)"
+    category: "pane-management"
+
+  - key: "s"
+    modifiers:
+      ctrl: true
+      shift: true
+      alt: true
+    action: "pane.swapPrev"
+    description: "Swap focused pane with previous neighbor"
+    category: "pane-management"
+
+  - key: "]"
+    modifiers:
+      ctrl: true
+      shift: true
+    action: "pane.cycle"
+    description: "Cycle panes forward"
+    category: "pane-management"
+
+  - key: "["
+    modifiers:
+      ctrl: true
+      shift: true
+    action: "pane.cyclePrev"
+    description: "Cycle panes backward"
+    category: "pane-management"
   
   - key: "r"
     modifiers:
@@ -466,6 +510,15 @@ toolbars:
     view.compareFilter.timeLtThreshold:
       description: "Older than specified time"
       icon: calendar
+    pane.swap:
+      description: "Swap panes"
+      icon: move
+    pane.cycle:
+      description: "Cycle panes forward"
+      icon: refresh-cw
+    pane.order:
+      description: "Pane order"
+      icon: bookmark-list
   
   # Workspace toolbar - actions affecting all panes
   workspace:
@@ -501,6 +554,9 @@ toolbars:
         actions:
           - "pane.add"
           - "pane.remove"
+          - "pane.swap"
+          - "pane.cycle"
+          - "pane.order"
           - "pane.refresh-all"
       - name: "Mesh"
         actions:

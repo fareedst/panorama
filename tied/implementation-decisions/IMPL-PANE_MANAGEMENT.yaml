@@ -6,7 +6,8 @@ IMPL-PANE_MANAGEMENT:
     - ARCH-PANE_LIFECYCLE
     - REQ-FILES_CONFIG_COMPLETE
     - REQ-MULTI_PANE_LAYOUT
-  decision: Add/remove pane handlers with config validation, keyboard shortcuts, command palette integration
+    - REQ-TOOLBAR_SYSTEM
+  decision: Add/remove/swap/cycle pane handlers with config validation, keyboard shortcuts, pane order dialog, command palette integration
   rationale:
     why: Implements runtime controls for adding and removing file panes to support flexible multi-panel workflows per ARCH-PANE_LIFECYCLE
     problems_solved:
@@ -20,52 +21,63 @@ IMPL-PANE_MANAGEMENT:
       - Keyboard shortcuts integrate with existing keybind system
       - Respects user's maxPanes and allowPaneManagement preferences
   implementation_approach:
-    summary: Add/remove pane handlers with config validation, keyboard shortcuts, command palette integration
+    summary: Add/remove/swap/cycle pane handlers with config validation, keyboard shortcuts, pane order dialog
     details:
-      - 'Command palette actions: pane.add and pane.remove'
-      - 'handleAddPane(): Check allowPaneManagement and maxPanes limit, clone focused pane or create new at home'
-      - 'handleRemovePane(index): Check allowPaneManagement and minimum 1 pane, adjust focusIndex after removal'
-      - 'Keyboard shortcuts: = or Ctrl+= to add, - or Ctrl+- to remove'
-      - 'Type synchronization: Added pane-management category to KeybindingCategory type in files.keybinds.ts, category labels, and validation array'
-      - Config validation ensures layout.allowPaneManagement && panes.length < layout.maxPanes
+      - 'Command palette actions: pane.add, pane.remove, pane.swap, pane.swapPrev, pane.cycle, pane.cyclePrev, pane.order'
+      - 'handleAddPane(): Check allowPaneManagement and maxPanes limit, clone focused pane'
+      - 'handleApplyPaneOrder(order): reorder by index permutation from PaneOrderDialog'
+      - 'handleCyclePanes(direction): rotate panes[], remap focus and history'
+      - 'handleRemovePane(index): Check allowPaneManagement and minimum 1 pane, adjust focusIndex'
+      - 'handleSwapFocusedNext/Prev(): two panes swap 0↔1; else swap focus with neighbor'
+      - 'handleSwapPanes(i,j): swap panes array, remap focusIndex, permute directory history'
+      - 'Keyboard shortcuts: = add, - remove; Ctrl+Shift+S swap; Ctrl+Shift+] cycle forward'
+      - 'pane-order.ts: swapArrayAt, rotateArray, moveArrayAt, focus remap helpers'
       - State updates trigger comparison index rebuild and layout recalculation
   code_locations:
     files:
+      - path: src/lib/pane-order.ts
+        description: Pure pane reorder helpers
+        lines:
+          - 1
+          - 100
+      - path: src/app/files/components/PaneOrderDialog.tsx
+        description: Pane order dialog
+        lines:
+          - 1
+          - 150
+      - path: src/lib/files.history.ts
+        description: swapPaneHistories, rotatePaneHistories, reorderPaneHistories
+        lines:
+          - 190
+          - 280
       - path: src/app/files/WorkspaceView.tsx
-        description: Added handleAddPane and handleRemovePane handlers with keybinding integration
+        description: Pane reorder handlers and keybinding integration
         lines:
-          - 0
-          - 0
-      - path: config/files.yaml
-        description: Added pane management keybindings and copy text
-        lines:
-          - 0
-          - 0
-      - path: src/lib/config.types.ts
-        description: Added pane-management to KeybindingCategory type
-        lines:
-          - 283
-          - 293
-      - path: src/lib/files.keybinds.ts
-        description: Added pane-management to KeybindingCategory type, labels, and validation
-        lines:
-          - 10
-          - 18
+          - 1385
+          - 1550
     functions:
-      - name: handleAddPane
+      - name: handleSwapPanes
         file: src/app/files/WorkspaceView.tsx
-        description: Adds new pane with config validation, clones focused pane state
-      - name: handleRemovePane
+        description: Swap two pane indices with focus and history remap
+      - name: handleCyclePanes
         file: src/app/files/WorkspaceView.tsx
-        description: Removes pane at index with config validation, adjusts focus
+        description: Rotate all panes one slot
+      - name: handleApplyPaneOrder
+        file: src/app/files/WorkspaceView.tsx
+        description: Apply dialog index order to panes[]
   traceability:
     architecture:
       - ARCH-PANE_LIFECYCLE
       - ARCH-KEYBIND_SYSTEM
     requirements:
-      - REQ-MULTI_PANE_LAYOUT
       - REQ-FILES_CONFIG_COMPLETE
-    tests: []
+      - REQ-MULTI_PANE_LAYOUT
+      - REQ-TOOLBAR_SYSTEM
+    tests:
+      - src/app/files/components/PaneOrderDialog.test.tsx
+      - src/app/files/WorkspaceView.pane-reorder.test.tsx
+      - src/lib/files.history.test.ts
+      - src/lib/pane-order.test.ts
     code_annotations:
       - ARCH-PANE_LIFECYCLE
       - IMPL-PANE_MANAGEMENT
@@ -84,9 +96,9 @@ IMPL-PANE_MANAGEMENT:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-19T16:06:42.636Z"
+      date: "2026-05-24T00:00:00.000Z"
       author: AI Agent
-      reason: IMPL essence_pseudocode retrofit all 58
+      reason: Pane reorder operations
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

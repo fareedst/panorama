@@ -1,4 +1,3 @@
-# ARCH detail — ARCH-PANE_LIFECYCLE
 ARCH-PANE_LIFECYCLE:
   name: Multi-Pane Initialization and Management
   status: Active
@@ -40,13 +39,16 @@ ARCH-PANE_LIFECYCLE:
     summary: Server-side multi-pane initialization based on config, client-side pane management with keyboard shortcuts and config validation
     details:
       - 'Add pane: clones focused pane state or creates new pane at home directory'
+      - 'Cycle panes: rotate panes[] one slot; remap focus and history'
+      - 'Pane order dialog: arbitrary reorder via index permutation'
       - 'Remove pane: removes pane from array, adjusts focusIndex if necessary'
-      - 'Startup mode ''configured'': each pane starts at paths.pane1, pane2, etc.'
-      - 'Startup mode ''home'': all panes start at user home directory'
-      - 'Startup mode ''last'': future enhancement using localStorage'
+      - 'Startup mode configured: each pane starts at paths.pane1, pane2, etc.'
+      - 'Startup mode home: all panes start at user home directory'
+      - 'Startup mode last: future enhancement using localStorage'
+      - 'Swap panes: exchange panes[i] and panes[j]; remap focusIndex and directory history'
       - Client WorkspaceView receives initialPanes array instead of single path/files
       - Config validation prevents adding beyond maxPanes or removing last pane
-      - Keyboard shortcuts (+ to add, - to remove) integrated with keybinding system
+      - Keyboard shortcuts (+ add, - remove, pane.swap/cycle reorder) integrated with keybinding system
       - Server initializes array of PaneState objects with appropriate directories
       - Server page reads layout.defaultPaneCount and startup.mode from config
   traceability:
@@ -76,9 +78,9 @@ ARCH-PANE_LIFECYCLE:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-07T00:00:00.000Z
+      date: "2026-05-24T00:00:00.000Z"
       author: AI Agent
-      reason: Initial creation with type synchronization fix
+      reason: Document pane reorder in lifecycle
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent
