@@ -12,11 +12,20 @@
 | ARCH | [ARCH-CROSS_PANE_VISIBILITY](../tied/architecture-decisions/ARCH-CROSS_PANE_VISIBILITY.yaml) |
 | IMPL | [IMPL-CROSS_PANE_VISIBILITY_ENGINE](../tied/implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_ENGINE.yaml), [IMPL-CROSS_PANE_VISIBILITY_UI](../tied/implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_UI.yaml), [IMPL-CROSS_PANE_VISIBILITY_CATALOG](../tied/implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_CATALOG.yaml) |
 
-## Preferred terms
+## See also
 
-| Preferred | Notes |
+- [panorama-domain-references.md](panorama-domain-references.md)
+- [linked-navigation-vocabulary.md](linked-navigation-vocabulary.md) — `handleNavigate`, parent `..`, linked directory navigation
+- [cross-pane-comparison-vocabulary.md](cross-pane-comparison-vocabulary.md)
+- [workspace-pane-vocabulary.md](workspace-pane-vocabulary.md)
+- [toolbar-keybind-vocabulary.md](toolbar-keybind-vocabulary.md)
+- [pane-display-filter-vocabulary.md](pane-display-filter-vocabulary.md)
+
+## Preferred term vs synonyms
+
+| Preferred | Synonyms / notes |
 | --- | --- |
-| **Cross-pane visibility** | Filter layer after display spec on `pane.files` |
+| **Cross-pane visibility** | “compare filter”, filter layer after display spec on `pane.files` |
 | **Visibility catalog** | Named presets in `localStorage` (`panorama.crossPaneVisibility.v1`) |
 | **Active cross-pane visibility preset** | Pane `activeCrossPaneVisibilityId` (null = no preset) |
 | **Visibility draft** | Pane `crossPaneVisibilityDraft` — ephemeral until saved to catalog |
@@ -25,8 +34,8 @@
 | **Focused pane visibility** | Include/exclude evaluated on focused listing |
 | **Mirrored visibility** | Other panes show rows matching focused visible basenames |
 | **Visibility threshold** | `sizeThreshold` / `timeThreshold` for gt/lt criteria |
-| **Snapshot cross-pane visibility** | Per pane: `crossPaneVisibilityId` + optional inline `crossPaneVisibility` on snapshot v5 |
-| **Listing merge** | Combining a fresh directory listing (`PaneWithDisplayFilter`) with persisted cross-pane visibility fields on the pane |
+| **Snapshot cross-pane visibility** | Per pane: `crossPaneVisibilityId` + optional inline `crossPaneVisibility` on snapshot v5 — canonical snapshot terms in [mesh-platform-vocabulary.md](mesh-platform-vocabulary.md) |
+| **Listing merge** | Combining a fresh directory listing with persisted cross-pane visibility fields on the pane |
 | **Cross-pane field pick** | Merge copies only visibility catalog fields, never `path`, `files`, `cursor`, or `marks` |
 
 ## Naming bridge
@@ -62,9 +71,21 @@ Compare filter toolbar **Action** ids map to **Icon name** values in `toolbars.a
 | `view.compareFilter.timeEarliestSome` | `history` |
 | `view.compareFilter.timeLtThreshold` | `calendar` |
 
-## Pseudo-code blocks
+## Filter pipeline terms
 
-| Concept | UPPER_SNAKE | IMPL |
+| Stage | Term | Owning IMPL | Pseudo-code block |
+| --- | --- | --- | --- |
+| Display spec | **Display spec** filtered listing | IMPL-DISPLAY_FILTER_ENGINE | `APPLY_PANE_LISTING`, `EVALUATE_ENTRY` |
+| Cross-pane visibility | **Cross-pane visibility** on focused + mirror | IMPL-CROSS_PANE_VISIBILITY_ENGINE | `EVALUATE_FOCUS_VISIBILITY`, `MIRROR_OTHER_PANES` |
+| Navigation merge | **Listing merge** / **cross-pane field pick** | IMPL-CROSS_PANE_VISIBILITY_CATALOG | `MERGE_LISTING_WITH_CROSS_PANE_FIELDS` |
+
+## Copy coverage
+
+Compare-filter toolbar labels use `toolbars.actions.view.compareFilter.*` metadata and `toolbars.actions` descriptions in `config/files.yaml`. Dialog copy for thresholds uses toolbar action metadata. This glossary is authoritative for criterion ids and tri-state terms. Owning IMPL: [IMPL-CROSS_PANE_VISIBILITY_UI](../tied/implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_UI.yaml).
+
+## Pseudo-code block names
+
+| Preferred term / concept | UPPER_SNAKE block | Owning IMPL |
 | --- | --- | --- |
 | Focused evaluation | `EVALUATE_FOCUS_VISIBILITY` | IMPL-CROSS_PANE_VISIBILITY_ENGINE |
 | Other-pane mirror | `MIRROR_OTHER_PANES` | IMPL-CROSS_PANE_VISIBILITY_ENGINE |
@@ -76,16 +97,17 @@ Compare filter toolbar **Action** ids map to **Icon name** values in `toolbars.a
 | Save draft | `SAVE_DRAFT_TO_CATALOG` | IMPL-CROSS_PANE_VISIBILITY_CATALOG |
 | Listing + visibility fields | `MERGE_LISTING_WITH_CROSS_PANE_FIELDS` | IMPL-CROSS_PANE_VISIBILITY_CATALOG |
 
-## Filter order
+## Alphabetical index
 
-1. **Display spec** — `APPLY_PANE_LISTING` / `EVALUATE_ENTRY` → `pane.files`
-2. **Cross-pane visibility** — `applyCrossPaneVisibility` with focused pane draft → `displayFiles`
-3. **Navigation / refresh** — `handleNavigate` rebuilds listing (`path`, `files`) first; **listing merge** attaches visibility fields via **cross-pane field pick** without replacing listing state
-
-## See also
-
-- [linked-navigation-vocabulary.md](linked-navigation-vocabulary.md) — `handleNavigate`, parent `..`, linked directory navigation
-- [cross-pane-comparison-vocabulary.md](cross-pane-comparison-vocabulary.md)
-- [workspace-pane-vocabulary.md](workspace-pane-vocabulary.md)
-- [toolbar-keybind-vocabulary.md](toolbar-keybind-vocabulary.md)
-- [pane-display-filter-vocabulary.md](pane-display-filter-vocabulary.md)
+- **Active cross-pane visibility preset** — `activeCrossPaneVisibilityId`
+- **Cross-pane field pick** — merge visibility fields only
+- **Cross-pane visibility** — tri-state compare filter layer
+- **Criterion** — `sharedAll`, `missingSome`, size/time roles, …
+- **Focused pane visibility** — include/exclude on focused listing
+- **Listing merge** — attach visibility after navigation listing rebuild
+- **Mirrored visibility** — other panes match focused visible basenames
+- **Snapshot cross-pane visibility** — v5 per-pane fields; see mesh-platform
+- **Tri-state toggle** — `inactive` \| `include` \| `exclude`
+- **Visibility catalog** — `panorama.crossPaneVisibility.v1`
+- **Visibility draft** — `crossPaneVisibilityDraft`
+- **Visibility threshold** — `sizeThreshold`, `timeThreshold`

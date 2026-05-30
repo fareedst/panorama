@@ -1,4 +1,3 @@
-# ARCH detail — ARCH-LINKED_NAV
 ARCH-LINKED_NAV:
   name: Linked Pane Navigation Architecture
   status: Implemented
@@ -86,14 +85,15 @@ ARCH-LINKED_NAV:
     see_also:
       - ARCH-COMPARISON_INDEX
       - ARCH-DIRECTORY_HISTORY
+      - docs/linked-navigation-vocabulary.md
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-09T00:00:00.000Z
+      date: "2026-05-29T00:00:00.000Z"
       author: AI Agent
-      reason: Added Parent .. button in pane header for mouse-based parent navigation with automatic linked mode support
+      reason: LEAP — vocabulary see_also back-link
     last_validated:
       date: 2026-02-08T00:00:00.000Z
       validator: AI Agent

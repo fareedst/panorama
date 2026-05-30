@@ -104,7 +104,7 @@ export function snapshotPaneCrossPaneVisibilityFields(
 
 export type PaneWithCrossPaneVisibility = PaneWithDisplayFilter & PaneCrossPaneVisibilityFields;
 
-// [IMPL-CROSS_PANE_VISIBILITY_CATALOG] [ARCH-CROSS_PANE_VISIBILITY] [REQ-CROSS_PANE_VISIBILITY] [REQ-DIRECTORY_NAVIGATION]: how: listing merge picks only cross-pane visibility fields so navigation/refresh do not revert path or files
+// [IMPL-CROSS_PANE_VISIBILITY_CATALOG] [ARCH-CROSS_PANE_VISIBILITY] [REQ-CROSS_PANE_VISIBILITY] [REQ-DIRECTORY_NAVIGATION]: how: **Listing merge** via **Cross-pane field pick** — attach visibility catalog fields only; navigation/refresh do not revert path or files (docs/cross-pane-visibility-vocabulary.md)
 export function mergePaneListingWithCrossPaneFields(
   listingPane: PaneWithDisplayFilter,
   crossPane: PaneCrossPaneVisibilityFields,

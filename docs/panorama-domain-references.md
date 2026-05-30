@@ -18,6 +18,27 @@ Pick the **preferred term** from the linked vocabulary file before naming pseudo
 | P1 | [toolbar-keybind-vocabulary.md](toolbar-keybind-vocabulary.md) | **Toolbar** tiers (workspace / pane / system), `keybindings` **actions**, `data-testid`; **icon registry** and **`icon-unknown`** fallback |
 | P2 | [mesh-platform-vocabulary.md](mesh-platform-vocabulary.md) | **Mesh** sync platform (depot, sync link, session, plan) — separate from file-manager NSYNC; **cross-surface links** open Mesh ↔ File Manager in new tabs |
 
+## Split/merge policy
+
+- **Split** a glossary when a domain reaches ~15+ named concepts or serves a distinct audience.
+- **Merge** when two areas share one dispatch/order story and splitting would duplicate synonym tables.
+- **Intentional hub:** [workspace-pane-vocabulary.md](workspace-pane-vocabulary.md) consolidates the file-manager shell (layout, restore UX chrome, file columns). **Workspace snapshot** and **cross-surface link** terms are canonical in [mesh-platform-vocabulary.md](mesh-platform-vocabulary.md); workspace-pane links there instead of redefining.
+
+## Authoring guides (not glossaries)
+
+| Guide | Scope |
+| --- | --- |
+| [vocabulary-index-analysis-and-standards.md](vocabulary-index-analysis-and-standards.md) | Meta-guide: mandatory sections, Copy coverage, PR checklist, validation |
+| [tied-domain-vocabulary-research-prompt.md](tied-domain-vocabulary-research-prompt.md) | Agent prompt to reproduce or extend the vocabulary corpus |
+
+## PR acceptance checklist (vocabulary changes)
+
+- [ ] Index row count matches every `docs/*-vocabulary.md` file
+- [ ] Each glossary: Scope, Traceability, See also, Preferred term vs synonyms, Copy coverage, Pseudo-code block names, Alphabetical index
+- [ ] Each glossary cited by ≥1 REQ criterion; owning IMPL `see_also` updated where applicable
+- [ ] `bash scripts/validate-vocabulary.sh` passes
+- [ ] `tied_validate_consistency` passes after TIED YAML changes
+
 ## Behavior inventories (not glossaries)
 
 These list concrete bindings (keys, actions, routes) rather than defining preferred domain nouns:

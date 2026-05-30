@@ -1,4 +1,3 @@
-# ARCH detail — ARCH-COMPARISON_COLORING
 ARCH-COMPARISON_COLORING:
   name: Enhanced Cross-Pane Comparison Coloring
   status: Implemented
@@ -52,14 +51,15 @@ ARCH-COMPARISON_COLORING:
       - IMPL-COMPARISON_COLORS
     see_also:
       - ARCH-CONFIG_DRIVEN_UI
+      - docs/cross-pane-comparison-vocabulary.md
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-07T00:00:00.000Z
+      date: "2026-05-29T00:00:00.000Z"
       author: AI Agent
-      reason: Initial creation - adapted from Goful ARCH-FILE_COMPARISON_ENGINE
+      reason: LEAP — vocabulary see_also back-link
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

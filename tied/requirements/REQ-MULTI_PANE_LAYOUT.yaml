@@ -3,7 +3,7 @@ REQ-MULTI_PANE_LAYOUT:
   category: Functional
   priority: P0
   status: Implemented
-  description: Different layout types optimize screen space for various file management tasks
+  description: 'Different layout types optimize screen space for various file management tasks. Canonical terms: docs/workspace-pane-vocabulary.md; pseudo-code blocks Tile, OneRow, OneColumn, Fullscreen, WORKSPACE_AREA_MEASUREMENT in IMPL-LAYOUT_CALCULATOR-pseudocode.md; AddPane, SwapPanes, CyclePanes in IMPL-PANE_MANAGEMENT-pseudocode.md.'
   rationale:
     why: Different layout types optimize screen space for various file management tasks
     problems_solved:
@@ -22,6 +22,7 @@ REQ-MULTI_PANE_LAYOUT:
     - criterion: Support OneColumn layout (all panes vertical)
     - criterion: Support OneRow layout (all panes horizontal)
     - criterion: Support Tile layout (first pane left half, others stacked right)
+    - criterion: Terminology aligns with docs/workspace-pane-vocabulary.md
     - criterion: Three or more panes support neighbor swap (pane.swap / pane.swapPrev) and full-array cycle (pane.cycle / pane.cyclePrev)
     - criterion: Two panes can be swapped via pane.swap (keyboard and toolbar)
     - criterion: User selects layout via workspace toolbar view.layout pop-over (not header select)
@@ -56,9 +57,9 @@ REQ-MULTI_PANE_LAYOUT:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-24T00:00:00.000Z"
+      date: "2026-05-29T00:00:00.000Z"
       author: AI Agent
-      reason: Add pane reorder satisfaction criteria
+      reason: LEAP — vocabulary standards; workspace-pane glossary criterion
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

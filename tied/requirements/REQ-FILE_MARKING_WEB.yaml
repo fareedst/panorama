@@ -6,7 +6,7 @@ REQ-FILE_MARKING_WEB:
   description: |-
     Users must be able to mark and unmark individual files within a web-based directory listing for batch operations. Marked files are visually distinguished from unmarked files using checkbox icons and background highlighting. The system must support marking/unmarking individual files, toggling marks on all files, and clearing all marks. Mark state must persist when the directory is re-sorted or refreshed, maintaining marks on the same file names. Marked files participate in batch operations (copy, move, delete) as a group.
 
-    This requirement adapts the terminal-based marking system from Goful to work within a React/Next.js web interface, leveraging web-native interactions (checkboxes, mouse clicks) while preserving keyboard-driven workflows.
+    Canonical terms: docs/file-marking-vocabulary.md; pseudo-code blocks MarkToggle, MarkAll, ClearMarks in IMPL-FILE_MARKING-pseudocode.md.
   rationale:
     why: Batch operations on multiple files require a selection mechanism optimized for web interfaces
     problems_solved:
@@ -25,6 +25,7 @@ REQ-FILE_MARKING_WEB:
     - criterion: Mark state persists when directory is re-sorted or refreshed
     - criterion: Marked files visually distinguished with checkbox icon and background color
     - criterion: Parent directory entry (..) cannot be marked
+    - criterion: Terminology aligns with docs/file-marking-vocabulary.md
     - criterion: Users can clear all marks with Escape key
     - criterion: Users can mark all files (Shift+M) and invert marks (Ctrl+M)
     - criterion: Users can mark individual files by toggling with Space key or checkbox click
@@ -58,9 +59,9 @@ REQ-FILE_MARKING_WEB:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-07T00:00:00.000Z
+      date: "2026-05-29T00:00:00.000Z"
       author: AI Agent
-      reason: Initial creation - imported from Goful REQ-FILE_MARKING, adapted for web
+      reason: LEAP — vocabulary standards; file-marking glossary criterion
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

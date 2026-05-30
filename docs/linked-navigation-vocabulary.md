@@ -13,6 +13,12 @@
 | IMPL | [IMPL-LINKED_NAV](../tied/implementation-decisions/IMPL-LINKED_NAV.yaml) |
 | Pseudo-code | [IMPL-LINKED_NAV-pseudocode.md](../tied/implementation-decisions/IMPL-LINKED_NAV-pseudocode.md) |
 
+## See also
+
+- [panorama-domain-references.md](panorama-domain-references.md)
+- [workspace-pane-vocabulary.md](workspace-pane-vocabulary.md)
+- [toolbar-keybind-vocabulary.md](toolbar-keybind-vocabulary.md)
+
 ## Preferred term vs synonyms
 
 | Preferred | Synonyms / notes |
@@ -47,6 +53,10 @@
 - **Parent navigation sync** — Parent button and Backspace use `handleNavigate` so linked rules apply.
 - **Visual indicators** — Link badge in footer and pane headers when linked and ≥2 panes.
 
+## Copy coverage
+
+Linked mode has no dedicated `copy.*` prefix; toolbar `link.toggle` uses keybinding registry labels and tooltips. Config default: `layout.defaultLinkedMode` in `config/files.yaml`. This glossary is authoritative for **Linked mode** vs file **multi-target sync**. Owning IMPL: [IMPL-LINKED_NAV](../tied/implementation-decisions/IMPL-LINKED_NAV.yaml).
+
 ## Pseudo-code block names
 
 | Preferred term / concept | UPPER_SNAKE block | Owning IMPL |
@@ -75,9 +85,3 @@
 - **Link toggle** — `link.toggle`
 - **Single-pane suppression** — hide link UI with one pane
 - **Syncing ref** — re-entrancy guard
-
-## See also
-
-- [panorama-domain-references.md](panorama-domain-references.md)
-- [workspace-pane-vocabulary.md](workspace-pane-vocabulary.md)
-- [toolbar-keybind-vocabulary.md](toolbar-keybind-vocabulary.md)

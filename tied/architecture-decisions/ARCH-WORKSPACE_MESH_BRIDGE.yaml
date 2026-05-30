@@ -56,12 +56,14 @@ ARCH-WORKSPACE_MESH_BRIDGE:
       - ARCH-PANE_LIFECYCLE
     informs:
       - IMPL-WORKSPACE_MESH_BRIDGE
-    see_also: []
+    see_also:
+      - docs/mesh-platform-vocabulary.md
+      - docs/workspace-pane-vocabulary.md
   metadata:
     created:
       date: "2026-05-21T00:00:00.000Z"
       author: AI Agent
     last_updated:
-      date: "2026-05-24T00:00:00.000Z"
+      date: "2026-05-29T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — WORKSPACE_SNAPSHOT_SUMMARY_LIST per-pane Compare filter presentation
+      reason: LEAP — vocabulary see_also back-link

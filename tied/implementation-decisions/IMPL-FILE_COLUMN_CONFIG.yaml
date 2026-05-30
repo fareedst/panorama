@@ -104,6 +104,7 @@ IMPL-FILE_COLUMN_CONFIG:
       - IMPL-FILES_CONFIG
     supersedes: []
     see_also:
+      - docs/workspace-pane-vocabulary.md
       - IMPL-FILES_CONFIG_COMPLETE
       - IMPL-TOOLBAR_COMPONENT
       - IMPL-WORKSPACE_MESH_BRIDGE
@@ -113,9 +114,9 @@ IMPL-FILE_COLUMN_CONFIG:
       date: 2026-02-08T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-23T00:00:00.000Z"
+      date: "2026-05-29T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — tabular columns, column-order dialog, mesh snapshot v4, toolbar-only view.columns
+      reason: LEAP — vocabulary see_also back-link
     last_validated:
       date: "2026-05-23T00:00:00.000Z"
       validator: AI Agent

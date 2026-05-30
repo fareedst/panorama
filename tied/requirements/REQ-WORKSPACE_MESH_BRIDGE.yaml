@@ -3,7 +3,7 @@ REQ-WORKSPACE_MESH_BRIDGE:
   category: Functional
   priority: P1
   status: Implemented
-  description: Store file-manager workspace layout (pane paths, layout, focus, linked/comparison, per-pane sort/cursor/display filter/cross-pane visibility, workspace shared sort, workspace file column order) as a mesh with workspace-snapshot tag and JSON in description (optional human note before JSON); snapshot v5 includes per-pane crossPaneVisibilityId and inline crossPaneVisibility when draft is dirty; v4 includes fileColumns; v3 includes sharedSort; restore via /files?meshId= with maxPanes truncation warning when applicable. When server getMesh misses the mesh, client rehydrates from GET /api/mesh/:meshId (meshRestorePending) including fileColumns and cross-pane visibility when present. Mesh detail workspace-snapshot-summary shows note, most recent save time, shared sort, file columns label, per-pane sort, display filter labels, and per-pane Compare filter labels via WORKSPACE_SNAPSHOT_SUMMARY and WORKSPACE_SNAPSHOT_SUMMARY_LIST (no workspace-level Compare filters aggregate line). Compact workspace header status row shows loaded mesh name (workspace-loaded-name) without redundant success message; workspace-restore-pending during client rehydrate; partial-restore and client-recovery warnings are amber; bootstrap failures are red only until client recovery completes. Layout type round-trips via normalization of config/UI aliases. Mesh and File Manager cross-surface links open in new tabs with security attributes and assistive disclosure.
+  description: 'Store file-manager workspace layout as a mesh with workspace-snapshot tag and JSON in description; restore via /files?meshId= with server bootstrap and client rehydrate fallback. Canonical terms: docs/mesh-platform-vocabulary.md (Workspace snapshot v1–v5, save/diff/update, cross-surface links); file-manager restore UX chrome in docs/workspace-pane-vocabulary.md; pseudo-code blocks CAPTURE_SNAPSHOT, BUILD_WORKSPACE_RESTORE_BUNDLE, WORKSPACE_HEADER_STATUS in IMPL-WORKSPACE_MESH_BRIDGE-pseudocode.md.'
   satisfaction_criteria:
     - criterion: mesh_detail_open_file_manager_in_new_tab_with_a11y
     - criterion: mesh_detail_shows_workspace_snapshot_summary_and_open_in_file_manager
@@ -37,6 +37,7 @@ REQ-WORKSPACE_MESH_BRIDGE:
       description: loaded mesh name in workspace-loaded-name; no duplicate green success line when name is shown
     - criterion: workspace_restore_error_when_mesh_missing
       description: red workspace-restore-error only when restoreWarning is set, restoredFromMesh is false, clientRestoredFromMesh is false, and mesh rehydrate is not in progress
+    - criterion: Terminology aligns with docs/mesh-platform-vocabulary.md and file-manager restore UX in docs/workspace-pane-vocabulary.md
   validation_criteria:
     - method: Vitest
       coverage: src/lib/workspace-mesh-bridge.test.ts
@@ -93,6 +94,6 @@ REQ-WORKSPACE_MESH_BRIDGE:
       date: "2026-05-21T00:00:00.000Z"
       author: AI Agent
     last_updated:
-      date: "2026-05-24T00:00:00.000Z"
+      date: "2026-05-29T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — WORKSPACE_SNAPSHOT_SUMMARY_LIST per-pane Compare filter UI wording
+      reason: LEAP — vocabulary standards; mesh-platform and workspace-pane glossary criterion

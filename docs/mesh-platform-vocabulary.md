@@ -13,6 +13,14 @@
 | IMPL | `IMPL-MESH_*` family — e.g. [IMPL-MESH_DOMAIN_TYPES](../tied/implementation-decisions/IMPL-MESH_DOMAIN_TYPES.yaml), [IMPL-MESH_RUNTIME](../tied/implementation-decisions/IMPL-MESH_RUNTIME.yaml), [IMPL-MESH_CRUD](../tied/implementation-decisions/IMPL-MESH_CRUD.yaml) |
 | Pseudo-code | `tied/implementation-decisions/IMPL-MESH_*-pseudocode.md` |
 
+## See also
+
+- [panorama-domain-references.md](panorama-domain-references.md)
+- [workspace-pane-vocabulary.md](workspace-pane-vocabulary.md) — file-manager restore UX chrome
+- [nsync-multi-target-vocabulary.md](nsync-multi-target-vocabulary.md) — file-manager multi-pane sync (different subsystem)
+- [cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md) — snapshot v5 compare filter fields
+- [pane-display-filter-vocabulary.md](pane-display-filter-vocabulary.md) — snapshot v2 display spec fields
+
 ## Preferred term vs synonyms
 
 | Preferred | Synonyms / notes |
@@ -100,6 +108,10 @@
 - **Workspace update** — `PUT /api/mesh/:meshId/workspace` applies `buildMeshPatchPayload` and `planDepotSync` so mesh metadata and depot roots match the captured snapshot ([IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml)).
 - **Saved snapshot baseline** — Client `savedSnapshot` used by `diffWorkspaceSnapshots`; after update save, set to the exact captured snapshot so the diff badge clears without re-parse drift.
 
+## Copy coverage
+
+Mesh GUI strings: component copy in `src/app/mesh/` and related modules; workspace-bridge dialog copy in `config/files.yaml` → `copy.workspaceMesh.*` (**Save workspace as mesh**, **Diff**, restore warnings). File-manager header **Mesh Sync** link uses workspace chrome copy. This glossary is the **single source** for **Workspace snapshot** v1–v5 and **cross-surface link** terms. Owning IMPL: [IMPL-MESH_GUI](../tied/implementation-decisions/IMPL-MESH_GUI.yaml), [IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml).
+
 ## Pseudo-code block names
 
 | Preferred term / concept | UPPER_SNAKE block | Owning IMPL |
@@ -165,9 +177,9 @@
 - **Most recent save time** — mesh `updatedAt` on list and detail
 - **Sortable mesh list** — client-side sortable mesh list columns
 - **Workspace update** — `PUT /api/mesh/:meshId/workspace` from file manager
-
-## See also
-
-- [panorama-domain-references.md](panorama-domain-references.md)
-- [nsync-multi-target-vocabulary.md](nsync-multi-target-vocabulary.md) — file-manager multi-pane sync (different subsystem)
-- [cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md) — snapshot v5 compare filter fields
+- **Mesh record** — persisted mesh document
+- **Default connector fallback** — VirtualConnector for unknown depot kind
+- **Save workspace as mesh** — `mesh.saveWorkspace` / `STORE_FROM_WORKSPACE_UI`
+- **WorkspaceSnapshot** — v1–v5 JSON schema under mesh description
+- **Policy** — mesh path filters and safety defaults
+- **Virtual depot** — synthetic connector kind

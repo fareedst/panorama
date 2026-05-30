@@ -79,14 +79,15 @@ IMPL-LAYOUT_CALCULATOR:
     supersedes: []
     see_also:
       - IMPL-WORKSPACE_VIEW
+      - docs/workspace-pane-vocabulary.md
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-22T12:00:00.000Z"
+      date: "2026-05-29T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — workspace-area measurement via useElementSize for calculateLayout inputs
+      reason: LEAP — vocabulary see_also back-link
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

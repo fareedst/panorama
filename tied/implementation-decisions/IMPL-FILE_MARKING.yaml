@@ -54,14 +54,15 @@ IMPL-FILE_MARKING:
     supersedes: []
     see_also:
       - IMPL-BULK_OPS
+      - docs/file-marking-vocabulary.md
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-19T16:06:42.636Z"
+      date: "2026-05-29T00:00:00.000Z"
       author: AI Agent
-      reason: IMPL essence_pseudocode retrofit all 58
+      reason: LEAP — vocabulary see_also back-link
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

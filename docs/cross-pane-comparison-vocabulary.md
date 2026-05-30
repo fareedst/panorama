@@ -13,6 +13,13 @@
 | IMPL | [IMPL-COMPARISON_INDEX](../tied/implementation-decisions/IMPL-COMPARISON_INDEX.yaml), [IMPL-COMPARISON_COLORS](../tied/implementation-decisions/IMPL-COMPARISON_COLORS.yaml), [IMPL-FILE_PANE](../tied/implementation-decisions/IMPL-FILE_PANE.yaml), [IMPL-CROSS_PANE_VISIBILITY_ENGINE](../tied/implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_ENGINE.yaml) |
 | Pseudo-code | [IMPL-COMPARISON_INDEX-pseudocode.md](../tied/implementation-decisions/IMPL-COMPARISON_INDEX-pseudocode.md), [IMPL-COMPARISON_COLORS-pseudocode.md](../tied/implementation-decisions/IMPL-COMPARISON_COLORS-pseudocode.md) |
 
+## See also
+
+- [panorama-domain-references.md](panorama-domain-references.md)
+- [workspace-pane-vocabulary.md](workspace-pane-vocabulary.md)
+- [cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md)
+- [nsync-multi-target-vocabulary.md](nsync-multi-target-vocabulary.md) — `CompareMethod` for sync skip
+
 ## Preferred term vs synonyms
 
 | Preferred | Synonyms / notes |
@@ -47,6 +54,10 @@
 
 Row algorithms: [IMPL-COMPARISON_COLORS-pseudocode.md](../tied/implementation-decisions/IMPL-COMPARISON_COLORS-pseudocode.md).
 
+## Copy coverage
+
+Comparison mode has no dedicated `copy.*` block; toolbar `view.comparison` labels come from keybinding registry / tooltips. This glossary is authoritative for **Comparison index** vs NSYNC **Compare method**. Owning IMPL: [IMPL-COMPARISON_INDEX](../tied/implementation-decisions/IMPL-COMPARISON_INDEX.yaml).
+
 ## Pseudo-code block names
 
 | Preferred term / concept | UPPER_SNAKE block | Owning IMPL |
@@ -66,10 +77,4 @@ Row algorithms: [IMPL-COMPARISON_COLORS-pseudocode.md](../tied/implementation-de
 - **Size comparison** — visual size role per pane
 - **Time comparison** — visual mtime role per pane
 - **Unique file** — single-pane only
-
-## See also
-
-- [panorama-domain-references.md](panorama-domain-references.md)
-- [workspace-pane-vocabulary.md](workspace-pane-vocabulary.md)
-- [cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md)
-- [nsync-multi-target-vocabulary.md](nsync-multi-target-vocabulary.md) — `CompareMethod` for sync skip
+- **Filter comparison index** — built for compare filters when ≥2 panes

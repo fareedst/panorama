@@ -3,7 +3,7 @@ REQ-PANE_DISPLAY_FILTER:
   category: Functional
   priority: P1
   status: Implemented
-  description: Users can create named display filter specs with ordered include/exclude glob rules, apply a spec per pane by stable id, and have saved edits refresh all panes using that spec. Hidden entries are not shown, selectable, or included in mark-all or batch operations. Specs are display filters only, not access control.
+  description: 'Users can create named display filter specs with ordered include/exclude glob rules, apply a spec per pane by stable id, and have saved edits refresh all panes using that spec. Hidden entries are not shown, selectable, or included in mark-all or batch operations. Specs are display filters only, not access control. Canonical terms: docs/pane-display-filter-vocabulary.md; pseudo-code blocks EVALUATE_ENTRY, APPLY_PANE_LISTING in IMPL-DISPLAY_FILTER_ENGINE-pseudocode.md.'
   rationale:
     why: Reduce visual noise in large directory trees without implying security boundaries
     problems_solved:
@@ -20,6 +20,7 @@ REQ-PANE_DISPLAY_FILTER:
     - criterion: Hidden items excluded from marks and batch operations
     - criterion: Invalid patterns rejected with clear feedback
     - criterion: Pane shows only items allowed by active spec
+    - criterion: Terminology aligns with docs/pane-display-filter-vocabulary.md
     - criterion: Two panes sharing a spec refresh after save
   traceability:
     architecture:
@@ -38,3 +39,8 @@ REQ-PANE_DISPLAY_FILTER:
       - REQ-MULTI_PANE_LAYOUT
     related_to:
       - REQ-WORKSPACE_MESH_BRIDGE
+  metadata:
+    last_updated:
+      date: "2026-05-29T00:00:00.000Z"
+      author: AI Agent
+      reason: LEAP — vocabulary standards; pane-display-filter glossary criterion

@@ -18,3 +18,11 @@ IMPL-CROSS_PANE_VISIBILITY_ENGINE:
       - ARCH-CROSS_PANE_VISIBILITY
     tests:
       - src/lib/cross-pane-visibility.test.ts
+  related_decisions:
+    see_also:
+      - docs/cross-pane-visibility-vocabulary.md
+  metadata:
+    last_updated:
+      date: "2026-05-29T00:00:00.000Z"
+      author: AI Agent
+      reason: LEAP — vocabulary see_also back-link

@@ -62,6 +62,7 @@ IMPL-FILE_PANE:
     depends_on: []
     supersedes: []
     see_also:
+      - docs/workspace-pane-vocabulary.md
       - IMPL-FILES_UTILS
       - IMPL-MOUSE_SUPPORT
       - IMPL-WORKSPACE_VIEW
@@ -70,9 +71,9 @@ IMPL-FILE_PANE:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-24T00:00:00.000Z"
+      date: "2026-05-29T00:00:00.000Z"
       author: AI Agent
-      reason: FILE_COLUMN_CONTEXT_MENU_WIRING and PANE_FILES_LIST_PROP
+      reason: LEAP — vocabulary see_also back-link
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

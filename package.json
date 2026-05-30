@@ -17,7 +17,8 @@
     "demo:record": "npm run demo:setup && npm run test:e2e && npm run demo:convert",
     "demo:setup": "./scripts/setup_copyall_demo.sh --clean",
     "demo:convert": "./scripts/convert_demo_to_gif.sh",
-    "demo:verify": "./scripts/verify_demo_screenshots.sh"
+    "demo:verify": "./scripts/verify_demo_screenshots.sh",
+    "validate:vocabulary": "bash scripts/validate-vocabulary.sh"
   },
   "dependencies": {
     "@noble/hashes": "^2.0.1",

@@ -13,6 +13,14 @@
 | IMPL | [IMPL-NSYNC_ENGINE](../tied/implementation-decisions/IMPL-NSYNC_ENGINE.yaml), [IMPL-NSYNC_OPERATIONS](../tied/implementation-decisions/IMPL-NSYNC_OPERATIONS.yaml), [IMPL-NSYNC_COMPARE](../tied/implementation-decisions/IMPL-NSYNC_COMPARE.yaml), [IMPL-NSYNC_HASH](../tied/implementation-decisions/IMPL-NSYNC_HASH.yaml), [IMPL-NSYNC_VERIFY](../tied/implementation-decisions/IMPL-NSYNC_VERIFY.yaml), [IMPL-NSYNC_STORE](../tied/implementation-decisions/IMPL-NSYNC_STORE.yaml) |
 | Pseudo-code | [IMPL-NSYNC_ENGINE-pseudocode.md](../tied/implementation-decisions/IMPL-NSYNC_ENGINE-pseudocode.md) |
 
+## See also
+
+- [panorama-domain-references.md](panorama-domain-references.md)
+- [file-marking-vocabulary.md](file-marking-vocabulary.md) — how sources are chosen
+- [workspace-pane-vocabulary.md](workspace-pane-vocabulary.md) — pane / focus
+- [cross-pane-comparison-vocabulary.md](cross-pane-comparison-vocabulary.md) — visual compare vs sync skip
+- [toolbar-keybind-vocabulary.md](toolbar-keybind-vocabulary.md) — `file.copyAll` / `file.moveAll`
+
 ## Preferred term vs synonyms
 
 | Preferred | Synonyms / notes |
@@ -60,6 +68,10 @@
 
 Algorithms: see [IMPL-NSYNC_ENGINE-pseudocode.md](../tied/implementation-decisions/IMPL-NSYNC_ENGINE-pseudocode.md) blocks below — vocabulary only here.
 
+## Copy coverage
+
+Toolbar labels **Copy to All** / **Move to All** use pane toolbar group copy from `config/files.yaml` → `copy` and keybinding registry. API body fields (`compareMethod`, `verifyDestination`) are code symbols, not copy keys. Owning IMPL: [IMPL-NSYNC_ENGINE](../tied/implementation-decisions/IMPL-NSYNC_ENGINE.yaml).
+
 ## Pseudo-code block names
 
 | Preferred term / concept | UPPER_SNAKE block | Owning IMPL |
@@ -85,10 +97,10 @@ Algorithms: see [IMPL-NSYNC_ENGINE-pseudocode.md](../tied/implementation-decisio
 - **Sync observer** — progress callback surface
 - **Sync plan** — upfront totals for UI
 - **Sync-all** — API operation name
-
-## See also
-
-- [panorama-domain-references.md](panorama-domain-references.md)
-- [file-marking-vocabulary.md](file-marking-vocabulary.md) — how sources are chosen
-- [workspace-pane-vocabulary.md](workspace-pane-vocabulary.md) — pane / focus
-- [docs/NSYNC_IMPLEMENTATION_COMPLETE.md](NSYNC_IMPLEMENTATION_COMPLETE.md) — implementation history (non-canonical)
+- **Sync operation** — `sync-all` / `SyncEngine.sync()`
+- **SyncEngine** — orchestration facade
+- **Sync result** — aggregate outcome
+- **Destination result** — per-destination outcome
+- **Error class** — `ErrorClass` enum
+- **Item** — one source path synced to all destinations
+- **Other pane directories** — non-focused pane paths as destinations

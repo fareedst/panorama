@@ -12,11 +12,19 @@
 | ARCH | [ARCH-DISPLAY_FILTER_ENGINE](../tied/architecture-decisions/ARCH-DISPLAY_FILTER_ENGINE.yaml), [ARCH-DISPLAY_SPEC_STORE](../tied/architecture-decisions/ARCH-DISPLAY_SPEC_STORE.yaml) |
 | IMPL | [IMPL-DISPLAY_FILTER_ENGINE](../tied/implementation-decisions/IMPL-DISPLAY_FILTER_ENGINE.yaml), [IMPL-DISPLAY_SPEC_STORE](../tied/implementation-decisions/IMPL-DISPLAY_SPEC_STORE.yaml), [IMPL-PANE_DISPLAY_FILTER_UI](../tied/implementation-decisions/IMPL-PANE_DISPLAY_FILTER_UI.yaml), [IMPL-DISPLAY_FILTER_API](../tied/implementation-decisions/IMPL-DISPLAY_FILTER_API.yaml) |
 
+## See also
+
+- [panorama-domain-references.md](panorama-domain-references.md)
+- [workspace-pane-vocabulary.md](workspace-pane-vocabulary.md) — pane state, mesh snapshot `displaySpecId`
+- [file-marking-vocabulary.md](file-marking-vocabulary.md) — marks operate on **visible** files when a spec is active
+- [toolbar-keybind-vocabulary.md](toolbar-keybind-vocabulary.md) — `view.displaySpec*` actions
+- [cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md) — filter order after display spec
+
 ## Preferred term vs synonyms
 
 | Preferred | Synonyms / notes |
 | --- | --- |
-| **Display spec** | “filter spec”, “pane filter”, `DisplayFilterSpec` — never “Policy” in UI |
+| **Display spec** | “filter spec”, “pane filter”, `DisplayFilterSpec` — never “Policy” in UI; legacy: avoid “access filter” |
 | **Active spec** | Pane’s `activeDisplaySpecId` (null = no filter) |
 | **Spec catalog** | All saved specs; phase 1 `localStorage`, phase 2 API |
 | **Filter rule** | include \| exclude × file \| directory \| both × glob pattern |
@@ -24,7 +32,7 @@
 | **Hidden item count** | `rawCount - visibleCount` when raw listing retained |
 | **Reconcile selection** | Drop marks / clamp cursor after filter apply |
 | **No filter** | `activeDisplaySpecId === null` |
-| **Snapshot display spec** | `displaySpecId` on workspace snapshot pane; mesh detail **Display filter** line | `formatDisplaySpecLabel` | `WORKSPACE_SNAPSHOT_SUMMARY` |
+| **Snapshot display spec** | `displaySpecId` on workspace snapshot pane; mesh detail **Display filter** line via `formatDisplaySpecLabel` / `WORKSPACE_SNAPSHOT_SUMMARY` |
 
 ## Naming bridge
 
@@ -37,9 +45,19 @@
 | Hidden count | `Hidden: N` | — | optional |
 | Snapshot display spec (mesh detail) | `Display filter: {name\|id\|(none)}` | — | `formatDisplaySpecLabel`, `getDisplaySpecStore` |
 
+## Named concepts
+
+- **Display spec** — Named include/exclude glob catalog entry applied per pane by stable id.
+- **Visible-only operations** — Marks and batch ops use filtered `pane.files` when a spec is active.
+- **Cross-pane refresh** — Panes sharing a spec id reload when catalog version changes.
+
+## Copy coverage
+
+User-facing strings: `config/files.yaml` → `copy.displaySpec.*` (manager dialog, validation messages). Toolbar **Manage display specs…** uses `copy.displaySpec` keys and `toolbars.actions.view.displaySpec`. This glossary is authoritative for **Display spec** vs Mesh **Policy**. Owning IMPL: [IMPL-PANE_DISPLAY_FILTER_UI](../tied/implementation-decisions/IMPL-PANE_DISPLAY_FILTER_UI.yaml).
+
 ## Pseudo-code block names
 
-| Concept | UPPER_SNAKE block | Owning IMPL |
+| Preferred term / concept | UPPER_SNAKE block | Owning IMPL |
 | --- | --- | --- |
 | Evaluate entry visibility | `EVALUATE_ENTRY` | IMPL-DISPLAY_FILTER_ENGINE |
 | Apply listing to pane | `APPLY_PANE_LISTING` | IMPL-DISPLAY_FILTER_ENGINE |
@@ -52,11 +70,12 @@
 
 ## Alphabetical index
 
+- **Active spec** — `activeDisplaySpecId`
 - **Display spec** — named include/exclude glob catalog entry
-- **Snapshot display spec** — `displaySpecId` on workspace snapshot pane; mesh detail **Display filter** line via `formatDisplaySpecLabel`
-
-## Related vocabulary
-
-- [workspace-pane-vocabulary.md](workspace-pane-vocabulary.md) — pane state, mesh snapshot `displaySpecId`
-- [file-marking-vocabulary.md](file-marking-vocabulary.md) — marks operate on **visible** files when a spec is active
-- [toolbar-keybind-vocabulary.md](toolbar-keybind-vocabulary.md) — `view.displaySpec*` actions
+- **Filter rule** — include/exclude × file/directory/both × glob
+- **Hidden item count** — filtered-out row count
+- **No filter** — `activeDisplaySpecId === null`
+- **Reconcile selection** — marks/cursor after filter apply
+- **Snapshot display spec** — `displaySpecId` on snapshot pane; mesh detail line
+- **Spec catalog** — saved specs store
+- **Spec version** — catalog bump triggers pane refresh

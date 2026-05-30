@@ -13,6 +13,13 @@
 | IMPL | [IMPL-FILE_MARKING](../tied/implementation-decisions/IMPL-FILE_MARKING.yaml), [IMPL-BULK_OPS](../tied/implementation-decisions/IMPL-BULK_OPS.yaml) |
 | Pseudo-code | [IMPL-FILE_MARKING-pseudocode.md](../tied/implementation-decisions/IMPL-FILE_MARKING-pseudocode.md) |
 
+## See also
+
+- [panorama-domain-references.md](panorama-domain-references.md)
+- [nsync-multi-target-vocabulary.md](nsync-multi-target-vocabulary.md) — sources from marks
+- [workspace-pane-vocabulary.md](workspace-pane-vocabulary.md) — focused pane
+- [pane-display-filter-vocabulary.md](pane-display-filter-vocabulary.md) — visible-only marks
+
 ## Preferred term vs synonyms
 
 | Preferred | Synonyms / notes |
@@ -48,6 +55,10 @@
 - **Bulk operation** — Uses `getOperationFiles(focusIndex)` before NSYNC or API bulk routes.
 - **Visible-only marks** — When a [display spec](pane-display-filter-vocabulary.md) is active, `pane.files` is the filtered visible set; mark-all and footer **total** count visible items only.
 
+## Copy coverage
+
+User-facing strings: `config/files.yaml` → `copy.marking.*` (`markAll`, `invertMarks`, `clearMarks`). Footer marked count uses pane listing state, not a separate copy key. Owning IMPL: [IMPL-FILE_MARKING](../tied/implementation-decisions/IMPL-FILE_MARKING.yaml).
+
 ## Pseudo-code block names
 
 | Preferred term / concept | UPPER_SNAKE block | Owning IMPL |
@@ -74,9 +85,7 @@
 - **Operation files** — resolved paths for ops
 - **Per-pane independence** — no cross-pane marks
 - **Toggle mark** — `mark.toggle`
-
-## See also
-
-- [panorama-domain-references.md](panorama-domain-references.md)
-- [nsync-multi-target-vocabulary.md](nsync-multi-target-vocabulary.md) — sources from marks
-- [workspace-pane-vocabulary.md](workspace-pane-vocabulary.md) — focused pane
+- **Mark and advance** — `mark.toggle-cursor` / Space
+- **Marked file** — name in `pane.marks`
+- **Bulk operation** — uses `getOperationFiles`
+- **Visible-only marks** — counts use filtered listing

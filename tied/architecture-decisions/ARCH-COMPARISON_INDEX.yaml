@@ -1,4 +1,3 @@
-# ARCH detail — ARCH-COMPARISON_INDEX
 ARCH-COMPARISON_INDEX:
   name: Cross-Pane File Comparison Index
   status: Active
@@ -45,14 +44,15 @@ ARCH-COMPARISON_INDEX:
       - IMPL-COMPARISON_INDEX
     see_also:
       - ARCH-FILE_MANAGER_HIERARCHY
+      - docs/cross-pane-comparison-vocabulary.md
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-07T00:00:00.000Z
+      date: "2026-05-29T00:00:00.000Z"
       author: AI Agent
-      reason: Initial creation
+      reason: LEAP — vocabulary see_also back-link
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

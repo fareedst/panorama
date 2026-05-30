@@ -73,14 +73,15 @@ ARCH-PANE_LIFECYCLE:
       - IMPL-FILE_MANAGER_PAGE
     see_also:
       - ARCH-LAYOUT_ALGORITHMS
+      - docs/workspace-pane-vocabulary.md
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-24T00:00:00.000Z"
+      date: "2026-05-29T00:00:00.000Z"
       author: AI Agent
-      reason: Document pane reorder in lifecycle
+      reason: LEAP — vocabulary see_also back-link
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

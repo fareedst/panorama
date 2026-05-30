@@ -3,7 +3,7 @@ REQ-CROSS_PANE_VISIBILITY:
   category: Functional
   priority: P1
   status: Planned
-  description: Tri-state toolbar filters use the comparison index to show or hide files in the focused pane (include/exclude rules) and mirror visible basenames in other panes. Named presets live in a client catalog; each pane selects an active preset or edits an ephemeral draft until saved. Workspace toolbar reflects the focused pane. Marks and batch operations apply to visible files only. Per-pane selection persists in workspace snapshot v5.
+  description: 'Tri-state toolbar filters use the comparison index to show or hide files in the focused pane (include/exclude rules) and mirror visible basenames in other panes. Named presets live in a client catalog; each pane selects an active preset or edits an ephemeral draft until saved. Workspace toolbar reflects the focused pane. Marks and batch operations apply to visible files only. Per-pane selection persists in workspace snapshot v5. Canonical terms: docs/cross-pane-visibility-vocabulary.md; pseudo-code blocks EVALUATE_FOCUS_VISIBILITY, MIRROR_OTHER_PANES in IMPL-CROSS_PANE_VISIBILITY_ENGINE-pseudocode.md.'
   rationale:
     why: Users need to narrow multi-pane listings by cross-pane name/size/time roles without leaving the file manager
     problems_solved:
@@ -22,6 +22,7 @@ REQ-CROSS_PANE_VISIBILITY:
     - criterion: Other panes show rows only for basenames visible in the focused pane
     - criterion: Per-pane crossPaneVisibilityId and inline state round-trip in workspace snapshot v5
     - criterion: Size and time thresholds configurable via dialog
+    - criterion: Terminology aligns with docs/cross-pane-visibility-vocabulary.md
     - criterion: Toolbar tri-state toggles cycle inactive, include, exclude per criterion
     - criterion: When any include toggle is active, files must match at least one include or be hidden
     - criterion: Workspace toolbar tri-states reflect focused pane on focusIndex change
@@ -44,3 +45,8 @@ REQ-CROSS_PANE_VISIBILITY:
       - REQ-DIRECTORY_NAVIGATION
       - REQ-FILE_MARKING_WEB
     supersedes: []
+  metadata:
+    last_updated:
+      date: "2026-05-29T00:00:00.000Z"
+      author: AI Agent
+      reason: LEAP — vocabulary standards; cross-pane-visibility glossary criterion

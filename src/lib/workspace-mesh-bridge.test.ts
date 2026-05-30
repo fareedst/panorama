@@ -1,4 +1,4 @@
-// [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE]: Workspace ↔ mesh bridge unit tests
+// [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE]: **Workspace snapshot** capture/restore and **Workspace restore bundle** unit tests (docs/mesh-platform-vocabulary.md)
 
 import { describe, it, expect } from "vitest";
 import {

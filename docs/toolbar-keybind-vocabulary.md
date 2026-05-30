@@ -13,6 +13,14 @@
 | IMPL | [IMPL-TOOLBAR_COMPONENT](../tied/implementation-decisions/IMPL-TOOLBAR_COMPONENT.yaml), [IMPL-TOOLBAR_CONFIG](../tied/implementation-decisions/IMPL-TOOLBAR_CONFIG.yaml), [IMPL-KEYBINDS](../tied/implementation-decisions/IMPL-KEYBINDS.yaml) |
 | Pseudo-code | [IMPL-TOOLBAR_COMPONENT-pseudocode.md](../tied/implementation-decisions/IMPL-TOOLBAR_COMPONENT-pseudocode.md), [IMPL-KEYBINDS-pseudocode.md](../tied/implementation-decisions/IMPL-KEYBINDS-pseudocode.md) |
 
+## See also
+
+- [panorama-domain-references.md](panorama-domain-references.md) — behavior inventories pointer
+- [linked-navigation-vocabulary.md](linked-navigation-vocabulary.md) — `link.toggle`
+- [nsync-multi-target-vocabulary.md](nsync-multi-target-vocabulary.md) — `file.copyAll` / `file.moveAll`
+- [cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md) — `view.compareFilter.*` tri-state filters
+- [workspace-pane-vocabulary.md](workspace-pane-vocabulary.md) — pane management actions
+
 ## Preferred term vs synonyms
 
 | Preferred | Synonyms / notes |
@@ -112,6 +120,10 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 3. If adding a toolbar-only action icon, append the name to `TOOLBAR_ACTIONS_ICON_NAMES` in `toolbar.utils.ts` (keep in sync with YAML).
 4. Run `bun run test` — `registry.test.ts` fails when a referenced name is missing from the registry.
 
+## Copy coverage
+
+Toolbar button labels and dialog titles: `config/files.yaml` → `copy.paneManagement.*`, `copy.layouts.*`, `copy.columns.*`, `copy.workspaceMesh.*`, `copy.displaySpec.*`, plus `toolbars.actions.*` metadata. Shortcut discovery: expanded toolbar keystroke badges, compact tooltips, and `help.show` / command palette (`help.*`, `command.*`). Authoritative key list: `config/files.yaml` → `keybindings`. Owning IMPL: [IMPL-TOOLBAR_COMPONENT](../tied/implementation-decisions/IMPL-TOOLBAR_COMPONENT.yaml), [IMPL-KEYBINDS](../tied/implementation-decisions/IMPL-KEYBINDS.yaml).
+
 ## Pseudo-code block names
 
 | Preferred term / concept | UPPER_SNAKE block | Owning IMPL |
@@ -138,6 +150,8 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 ## Alphabetical index
 
 - **Action** — `category.action` string ID
+- **Toolbar** — workspace / pane / system tiers
+- **toolbars.actions** — toolbar-only action metadata catalog
 - **ACTION_ICON_MAP** — action → icon name map
 - **Icon name** — kebab-case `Icon` registry key
 - **Icon registry** — merged SVG definitions for toolbar
@@ -169,10 +183,7 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 - **Workspace toolbar** — `toolbars.workspace`
 - **Workspace area** — measured flex region; `data-testid="workspace-area"`
 - **useElementSize** — ResizeObserver hook feeding pane layout (`src/lib/useElementSize.ts`)
-
-## See also
-
-- [panorama-domain-references.md](panorama-domain-references.md) — behavior inventories pointer
-- [linked-navigation-vocabulary.md](linked-navigation-vocabulary.md) — `link.toggle`
-- [nsync-multi-target-vocabulary.md](nsync-multi-target-vocabulary.md) — `file.copyAll` / `file.moveAll`
-- [cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md) — `view.compareFilter.*` tri-state filters
+- **Toolbar-only action** — `toolbars.actions` without keybinding row
+- **deriveToolbarButton** — resolves icon, label, shortcut
+- **Merged toolbar config** — `mergeTopToolbarConfigs`
+- **Tri-state toolbar button** — compare filter criterion toggle

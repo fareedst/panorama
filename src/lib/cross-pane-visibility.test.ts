@@ -32,7 +32,7 @@ describe("[REQ-CROSS_PANE_VISIBILITY] IMPL-CROSS_PANE_VISIBILITY_ENGINE", () => 
   });
 
   it("exclude hides matching files even when include would match", () => {
-    // [IMPL-CROSS_PANE_VISIBILITY_ENGINE] EVALUATE_FOCUS_VISIBILITY: how: exclude wins over include for same file
+    // [IMPL-CROSS_PANE_VISIBILITY_ENGINE] EVALUATE_FOCUS_VISIBILITY: how: **Focused pane visibility** — exclude wins over include for same file
     const panes = [
       [file("a.txt", 100, "2024-01-01"), file("b.txt", 50, "2024-01-02")],
       [file("a.txt", 200, "2024-01-03"), file("b.txt", 50, "2024-01-02")],
@@ -61,7 +61,7 @@ describe("[REQ-CROSS_PANE_VISIBILITY] IMPL-CROSS_PANE_VISIBILITY_ENGINE", () => 
   });
 
   it("mirrors visible basenames to other panes", () => {
-    // [IMPL-CROSS_PANE_VISIBILITY_ENGINE] APPLY_CROSS_PANE_VISIBILITY: how: MIRROR_OTHER_PANES filters non-focused listings
+    // [IMPL-CROSS_PANE_VISIBILITY_ENGINE] APPLY_CROSS_PANE_VISIBILITY: how: **Mirrored visibility** — MIRROR_OTHER_PANES filters non-focused listings to focused visible basenames
     const panes = [
       [file("a.txt", 100, "2024-01-01"), file("b.txt", 50, "2024-01-02")],
       [file("a.txt", 200, "2024-01-03"), file("c.txt", 1, "2024-01-01")],

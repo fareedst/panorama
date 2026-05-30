@@ -55,6 +55,7 @@ IMPL-WORKSPACE_VIEW:
       - IMPL-FILES_API
     supersedes: []
     see_also:
+      - docs/workspace-pane-vocabulary.md
       - IMPL-FILE_PANE
       - IMPL-KEYBINDS
       - IMPL-LAYOUT_CALCULATOR
@@ -63,9 +64,9 @@ IMPL-WORKSPACE_VIEW:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-24T00:00:00.000Z"
+      date: "2026-05-29T00:00:00.000Z"
       author: AI Agent
-      reason: PANE_FILES_LIST_TO_FILEPANE for file column clipboard
+      reason: LEAP — vocabulary see_also back-link
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

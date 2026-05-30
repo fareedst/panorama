@@ -1,4 +1,4 @@
-// [IMPL-CROSS_PANE_VISIBILITY_ENGINE] [ARCH-CROSS_PANE_VISIBILITY] [REQ-CROSS_PANE_VISIBILITY]
+// [IMPL-CROSS_PANE_VISIBILITY_ENGINE] [ARCH-CROSS_PANE_VISIBILITY] [REQ-CROSS_PANE_VISIBILITY]: Filter pipeline stage 2 — **Cross-pane visibility** after **Display spec**; **Focused pane visibility** + **Mirrored visibility** (docs/cross-pane-visibility-vocabulary.md)
 
 import type { FileStat, EnhancedCompareState } from "./files.types";
 
@@ -273,7 +273,7 @@ function hasActiveInclude(state: CrossPaneVisibilityState): boolean {
   );
 }
 
-/** [IMPL-CROSS_PANE_VISIBILITY_ENGINE] EVALUATE_FOCUS_VISIBILITY */
+/** [IMPL-CROSS_PANE_VISIBILITY_ENGINE] EVALUATE_FOCUS_VISIBILITY — **Focused pane visibility** */
 export function isFileVisibleInFocusedPane(
   file: FileStat,
   focusIndex: number,
@@ -305,7 +305,7 @@ export type CrossPaneVisibilityApplyResult = {
   crossPaneHiddenByPane: number[];
 };
 
-/** [IMPL-CROSS_PANE_VISIBILITY_ENGINE] EVALUATE_FOCUS_VISIBILITY + MIRROR_OTHER_PANES */
+/** [IMPL-CROSS_PANE_VISIBILITY_ENGINE] APPLY_CROSS_PANE_VISIBILITY — **Focused pane visibility** + **Mirrored visibility** (filter pipeline stage 2) */
 export function applyCrossPaneVisibility(
   paneFiles: FileStat[][],
   focusIndex: number,

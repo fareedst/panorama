@@ -54,10 +54,13 @@ IMPL-MOUSE_SUPPORT:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-24T00:00:00.000Z"
+      date: "2026-05-29T00:00:00.000Z"
       author: AI Agent
-      reason: FILE_COLUMN_CLIPBOARD and FILE_COLUMN_CONTEXT_MENU pseudo-code and implementation
+      reason: LEAP — vocabulary see_also back-link
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent
       result: pass - 554 tests passing
+  related_decisions:
+    see_also:
+      - docs/workspace-pane-vocabulary.md

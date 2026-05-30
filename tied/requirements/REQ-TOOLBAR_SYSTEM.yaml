@@ -3,7 +3,7 @@ REQ-TOOLBAR_SYSTEM:
   category: Functional
   priority: P1
   status: Implemented
-  description: To improve discoverability and accessibility of file manager operations by providing a visual, mouse-accessible interface alongside keyboard shortcuts
+  description: 'To improve discoverability and accessibility of file manager operations by providing a visual, mouse-accessible interface alongside keyboard shortcuts. Canonical terms: docs/toolbar-keybind-vocabulary.md; pseudo-code blocks CYCLE_TRI_STATE, ICON_REGISTRY, TOOLBAR_COMPACT_TOGGLE in IMPL-TOOLBAR_COMPONENT-pseudocode.md.'
   rationale:
     why: To improve discoverability and accessibility of file manager operations by providing a visual, mouse-accessible interface alongside keyboard shortcuts
     problems_solved:
@@ -26,6 +26,7 @@ REQ-TOOLBAR_SYSTEM:
     - criterion: Each button displays icon (when available) + keyboard shortcut in compact format; label text only shown as fallback when no icon exists
     - criterion: Each toolbar action with an icon mapping renders a registered icon from the icon registry (not the icon-unknown fallback)
     - criterion: Session starts in compact single-row icon-only toolbar; user can toggle to expanded three-tier layout with keystroke badges; tooltips retain keyboard shortcuts in both modes
+    - criterion: Terminology aligns with docs/toolbar-keybind-vocabulary.md
     - criterion: Toolbar button actions dispatch to same handlers as keyboard shortcuts
     - criterion: Toolbar group actions listed under toolbars.actions render without a keybinding row
     - criterion: Toolbar rendering does not impact file manager responsiveness
@@ -74,9 +75,9 @@ REQ-TOOLBAR_SYSTEM:
       date: 2026-02-08T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-24T00:00:00.000Z"
+      date: "2026-05-29T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — pane reorder toolbar actions and pane.order dialog
+      reason: LEAP — vocabulary standards; toolbar glossary criterion
     last_validated:
       date: 2026-02-08T00:00:00.000Z
       validator: AI Agent

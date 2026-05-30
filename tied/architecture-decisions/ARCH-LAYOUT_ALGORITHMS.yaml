@@ -1,4 +1,3 @@
-# ARCH detail — ARCH-LAYOUT_ALGORITHMS
 ARCH-LAYOUT_ALGORITHMS:
   name: Multi-Pane Layout Algorithms
   status: Active
@@ -47,14 +46,15 @@ ARCH-LAYOUT_ALGORITHMS:
       - IMPL-LAYOUT_CALCULATOR
     see_also:
       - ARCH-FILE_MANAGER_HIERARCHY
+      - docs/workspace-pane-vocabulary.md
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-22T12:00:00.000Z"
+      date: "2026-05-29T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — measured workspace-area dimensions feed calculateLayout
+      reason: LEAP — vocabulary see_also back-link
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

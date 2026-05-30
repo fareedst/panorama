@@ -1,10 +1,9 @@
-# REQ detail — REQ-FILE_MANAGER_PAGE
 REQ-FILE_MANAGER_PAGE:
   name: Multi-Pane File Manager Page
   category: Functional
   priority: P0
   status: Implemented
-  description: Provide a terminal-like multi-pane file manager for browsing and managing server filesystem
+  description: 'Provide a terminal-like multi-pane file manager for browsing and managing server filesystem. Canonical terms: docs/workspace-pane-vocabulary.md; pseudo-code blocks AddPane, RemovePane in IMPL-PANE_MANAGEMENT-pseudocode.md.'
   rationale:
     why: Provide a terminal-like multi-pane file manager for browsing and managing server filesystem
     problems_solved:
@@ -21,6 +20,7 @@ REQ-FILE_MANAGER_PAGE:
     - criterion: Keyboard navigation works (arrows, Tab, Enter, Backspace)
     - criterion: Page accessible at /files route
     - criterion: Panes can be added/removed dynamically
+    - criterion: Terminology aligns with docs/workspace-pane-vocabulary.md
   validation_criteria:
     - method: Page testing
       coverage: Page renders without errors at /files
@@ -49,9 +49,9 @@ REQ-FILE_MANAGER_PAGE:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-07T00:00:00.000Z
+      date: "2026-05-29T00:00:00.000Z"
       author: AI Agent
-      reason: Implementation complete with 108 passing tests
+      reason: LEAP — vocabulary standards compliance; workspace-pane glossary criterion
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

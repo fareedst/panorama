@@ -1,10 +1,10 @@
 # IMPL-CROSS_PANE_VISIBILITY_ENGINE essence pseudocode
 
-// [IMPL-CROSS_PANE_VISIBILITY_ENGINE] [ARCH-CROSS_PANE_VISIBILITY] [REQ-CROSS_PANE_VISIBILITY]: how: src/lib/cross-pane-visibility.ts — criterion evaluation and cross-pane mirroring
+// [IMPL-CROSS_PANE_VISIBILITY_ENGINE] [ARCH-CROSS_PANE_VISIBILITY] [REQ-CROSS_PANE_VISIBILITY]: how: Filter pipeline stage 2 — **Cross-pane visibility** on focused listing after **Display spec**; **Focused pane visibility** + **Mirrored visibility** (docs/cross-pane-visibility-vocabulary.md)
 
 ## EVALUATE_FOCUS_VISIBILITY
 
-// [IMPL-CROSS_PANE_VISIBILITY_ENGINE] [ARCH-CROSS_PANE_VISIBILITY] [REQ-CROSS_PANE_VISIBILITY] [REQ-CROSS_PANE_COMPARISON]: how: for each file in focused pane listing, exclude wins; if any include toggle active require match else default visible
+// [IMPL-CROSS_PANE_VISIBILITY_ENGINE] [ARCH-CROSS_PANE_VISIBILITY] [REQ-CROSS_PANE_VISIBILITY] [REQ-CROSS_PANE_COMPARISON]: how: **Focused pane visibility** — for each file in focused listing, exclude wins; if any include toggle active require match else default visible
 
 ```
 PROCEDURE EVALUATE_FOCUS_VISIBILITY(files, focusIndex, state, enhancedIndex, paneCount)
@@ -18,7 +18,7 @@ PROCEDURE EVALUATE_FOCUS_VISIBILITY(files, focusIndex, state, enhancedIndex, pan
 
 ## MIRROR_OTHER_PANES
 
-// [IMPL-CROSS_PANE_VISIBILITY_ENGINE] [ARCH-CROSS_PANE_VISIBILITY] [REQ-CROSS_PANE_VISIBILITY]: how: non-focused panes filter to rows whose file.name is in focused visible set
+// [IMPL-CROSS_PANE_VISIBILITY_ENGINE] [ARCH-CROSS_PANE_VISIBILITY] [REQ-CROSS_PANE_VISIBILITY]: how: **Mirrored visibility** — non-focused panes filter to rows whose file.name is in focused visible set
 
 ```
 PROCEDURE MIRROR_OTHER_PANES(panes, focusIndex, visibleNames)
@@ -28,7 +28,7 @@ PROCEDURE MIRROR_OTHER_PANES(panes, focusIndex, visibleNames)
 
 ## APPLY_CROSS_PANE_VISIBILITY
 
-// [IMPL-CROSS_PANE_VISIBILITY_ENGINE] [ARCH-CROSS_PANE_VISIBILITY] [REQ-CROSS_PANE_VISIBILITY]: how: compose EVALUATE_FOCUS_VISIBILITY then MIRROR_OTHER_PANES; return displayFilesByPane and crossPaneHiddenByPane per pane
+// [IMPL-CROSS_PANE_VISIBILITY_ENGINE] [ARCH-CROSS_PANE_VISIBILITY] [REQ-CROSS_PANE_VISIBILITY]: how: Filter pipeline apply — compose **Focused pane visibility** then **Mirrored visibility**; return displayFilesByPane and crossPaneHiddenByPane per pane
 
 ```
 PROCEDURE APPLY_CROSS_PANE_VISIBILITY(paneFiles, focusIndex, enhancedIndex, state)
