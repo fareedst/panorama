@@ -4,6 +4,7 @@ IMPL-FILE_MARKING:
   cross_references:
     - ARCH-MARKING_STATE
     - REQ-FILE_MARKING_WEB
+    - REQ-PANE_DISPLAY_FILTER
   decision: React useState with Set<string> per pane, keyboard and mouse handlers
   rationale:
     why: Client-side marking with Set<string> provides instant feedback and name-based persistence
@@ -45,7 +46,7 @@ IMPL-FILE_MARKING:
     requirements:
       - REQ-FILE_MARKING_WEB
     tests:
-      - TEST-FILE_MARKING
+      - src/app/files/WorkspaceView.test.tsx
     code_annotations:
       - IMPL-FILE_MARKING
   related_decisions:
@@ -60,9 +61,9 @@ IMPL-FILE_MARKING:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-29T00:00:00.000Z"
+      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — vocabulary see_also back-link
+      reason: Retrofit pseudocode; visible-file mark scope
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

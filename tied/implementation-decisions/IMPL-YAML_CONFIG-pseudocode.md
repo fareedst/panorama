@@ -1,76 +1,81 @@
 # IMPL-YAML_CONFIG essence pseudocode
 
-// [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Top-level YAML Configuration Structure: Define two YAML files: site.yaml and theme.yaml
+## SITE_YAML_SCHEMA
 
-## Summary contract
+// [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: config/site.yaml holds metadata, locale, branding, content, and navigation sections typed as SiteConfig
 
-// [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: bound module inputs, outputs, and shared data for all runtime blocks below
+```
+CONTRACT SiteYamlSchema
+  INPUT: config/site.yaml partial or complete document
+  OUTPUT: SiteConfig shape after merge
+  DATA: metadata (title, description), locale, branding.logo, content (heading, description with {placeholder} tokens), navigation (inlineLinks, buttons, security)
 
-CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-YAML_CONFIG
-  DATA: state and configuration per implementation_approach
+PROCEDURE SITE_YAML_SCHEMA
+  metadata := page title and description for Next.js Metadata API
+  locale := HTML lang attribute value
+  branding.logo := ImageConfig (src, alt, width, height, darkInvert?)
+  content.heading AND content.description := main page copy; description supports {templates} {learning} placeholders
+  navigation.inlineLinks := keyed map for placeholder replacement
+  navigation.buttons := ordered CTA list with variant primary|secondary
+  navigation.security := target and rel for external links
+```
 
-## BothSupportPartialConfigs
+## THEME_YAML_SCHEMA
 
-// [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Both support partial configs with defaults
+// [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: config/theme.yaml holds colors (light/dark modes), fonts, spacing, sizing, overrides, and optional files theme extensions typed as ThemeConfig
 
-CONTRACT BothSupportPartialConfigs
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+```
+CONTRACT ThemeYamlSchema
+  INPUT: config/theme.yaml partial or complete document
+  OUTPUT: ThemeConfig shape after merge
+  DATA: colors.light/dark, fonts.sans/mono, spacing, sizing, overrides, files.fileTypes optional
 
-PROCEDURE IMPL-YAML_CONFIG_BothSupportPartialConfigs(context)
-  // Both support partial configs with defaults
-  CALL Both support partial configs with defaults
-  ON invalid input OR missing data THEN RETURN without mutation
+PROCEDURE THEME_YAML_SCHEMA
+  colors.light AND colors.dark := background, foreground, plus optional custom CSS variable keys
+  fonts.sans AND fonts.mono := CSS variable name and fallback stack
+  spacing.page := paddingY, paddingX Tailwind tokens; contentGap, buttonGap
+  sizing := maxContentWidth, buttonHeight, buttonDesktopWidth tokens
+  overrides := optional ClassOverrides map (empty strings ignored at runtime)
+  files := optional FilesThemeConfig (fileTypes patterns, layout classes) for file manager
+```
 
-## ConfigSiteYamlFor
+## PARTIAL_CONFIG_WITH_DEFAULTS
 
-// [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: config/site.yaml for content (metadata, branding, links)
+// [IMPL-YAML_CONFIG] [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: DEFAULT_SITE_CONFIG and DEFAULT_THEME_CONFIG in config.ts supply fallbacks; getSiteConfig/getThemeConfig deep-merge user YAML then cache
 
-CONTRACT ConfigSiteYamlFor
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+```
+CONTRACT PartialConfigWithDefaults
+  INPUT: user YAML object (possibly empty or partial)
+  OUTPUT: complete SiteConfig or ThemeConfig
+  DATA: deepMerge (nested objects merge; arrays replace entirely; undefined skipped)
 
-PROCEDURE IMPL-YAML_CONFIG_ConfigSiteYamlFor(context)
-  // config/site.yaml for content (metadata
-  CALL config/site.yaml for content (metadata
-  // branding
-  CALL branding
-  // links)
-  CALL links)
+PROCEDURE PARTIAL_CONFIG_WITH_DEFAULTS
+  IF cache hit THEN RETURN cached config
+  userConfig := readYamlFile(config path)
+  merged := deepMerge(DEFAULT_*, userConfig)
+  CACHE merged at module level for server process lifetime
+  RETURN merged
+  ON missing YAML file OR invalid root OR parse error LOG warning AND use DEFAULT_* only
+```
 
-## ConfigThemeYamlFor
+## DEFAULT_CONFIG_STRUCTURE
 
-// [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: config/theme.yaml for styling (colors, spacing, overrides)
+// [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: exported _DEFAULT_SITE_CONFIG and _DEFAULT_THEME_CONFIG mirror original hard-coded template values; tests assert all required fields present
 
-CONTRACT ConfigThemeYamlFor
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+```
+CONTRACT DefaultConfigStructure
+  INPUT: none
+  OUTPUT: DEFAULT_SITE_CONFIG, DEFAULT_THEME_CONFIG constant objects
+  DATA: used when YAML omits keys or file absent
 
-PROCEDURE IMPL-YAML_CONFIG_ConfigThemeYamlFor(context)
-  // config/theme.yaml for styling (colors
-  CALL config/theme.yaml for styling (colors
-  // spacing
-  CALL spacing
-  // overrides)
-  CALL overrides)
+PROCEDURE DEFAULT_CONFIG_STRUCTURE
+  DEFAULT_SITE_CONFIG := metadata, locale, branding, content, navigation with create-next-app baseline values
+  DEFAULT_THEME_CONFIG := colors, fonts, spacing, sizing, overrides empty object
+  EXPOSE defaults to tests via _DEFAULT_SITE_CONFIG and _DEFAULT_THEME_CONFIG for structure assertions
+```
 
 ## CodeLocations
 
 // [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: map implementing and verifying source files for this IMPL
 
-// FILE: config/site.yaml — Site configuration
-// FILE: config/theme.yaml — Theme configuration
-
-## ErrorHandling
-
-// [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: surface recoverable failures without breaking pane invariants
-
-PROCEDURE IMPL-YAML_CONFIG_on_error(context, error)
-  LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
-  ELSE propagate error to caller
+// config/site.yaml, config/theme.yaml, src/lib/config.types.ts SiteConfig/ThemeConfig, src/lib/config.ts DEFAULT_* and getSiteConfig/getThemeConfig, src/lib/config.test.ts IMPL-YAML_CONFIG and Default configs describe blocks

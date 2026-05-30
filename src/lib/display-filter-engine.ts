@@ -23,7 +23,8 @@ function targetMatches(entry: ListingEntry, target: FilterRuleTarget): boolean {
   return !entry.isDirectory;
 }
 
-/** [IMPL-DISPLAY_FILTER_ENGINE] EVALUATE_ENTRY — last enabled matching rule wins; default visible */
+/** [IMPL-DISPLAY_FILTER_ENGINE] [ARCH-DISPLAY_FILTER_ENGINE] [REQ-PANE_DISPLAY_FILTER]
+ *  how: Last enabled matching rule by ascending order wins; default visible when no rule matches; target file|directory|both gates entry type. */
 export function evaluateEntryVisible(
   entry: ListingEntry,
   rules: DisplayFilterRule[],
@@ -43,7 +44,8 @@ export function evaluateEntryVisible(
   return true;
 }
 
-/** [IMPL-DISPLAY_FILTER_ENGINE] APPLY_PANE_LISTING */
+/** [IMPL-DISPLAY_FILTER_ENGINE] [ARCH-DISPLAY_FILTER_ENGINE] [REQ-PANE_DISPLAY_FILTER]
+ *  how: Filter raw directory listing; null spec returns all files with hiddenCount 0. */
 export function filterFileStats(
   files: FileStat[],
   spec: DisplayFilterSpec | null | undefined,
@@ -57,6 +59,8 @@ export function filterFileStats(
   return { files: visible, hiddenCount: files.length - visible.length };
 }
 
+/** [IMPL-DISPLAY_FILTER_ENGINE] [REQ-PANE_DISPLAY_FILTER]
+ *  how: Reject empty patterns and patterns that break globMatch probe. */
 export function validateRulePattern(pattern: string): { ok: boolean; error?: string } {
   const trimmed = pattern.trim();
   if (!trimmed) {
@@ -70,6 +74,8 @@ export function validateRulePattern(pattern: string): { ok: boolean; error?: str
   }
 }
 
+/** [IMPL-DISPLAY_FILTER_ENGINE] [IMPL-DISPLAY_SPEC_STORE] [REQ-PANE_DISPLAY_FILTER]
+ *  how: Enforce unique spec name (case-insensitive), max rules per spec, per-rule pattern validity. */
 export function validateSpec(
   spec: Pick<DisplayFilterSpec, "name" | "rules">,
   existingNames: string[],
@@ -97,7 +103,8 @@ export function validateSpec(
   return { ok: errors.length === 0, errors };
 }
 
-/** [IMPL-DISPLAY_FILTER_ENGINE] RECONCILE_PANE_SELECTION */
+/** [IMPL-DISPLAY_FILTER_ENGINE] [REQ-PANE_DISPLAY_FILTER] [REQ-FILE_MARKING_WEB]
+ *  how: Drop marks not in visible files; clamp cursor to [0, files.length - 1] or 0 when empty. */
 export function reconcilePaneSelection<T extends PaneListingState>(pane: T): T {
   const visibleNames = new Set(pane.files.map((f) => f.name));
   const marks = new Set<string>();

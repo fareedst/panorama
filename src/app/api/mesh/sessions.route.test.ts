@@ -41,7 +41,7 @@ describe("mesh sessions API [IMPL-MESH_API]", () => {
     expect(data.session.id).toBeTruthy();
   });
 
-  // [IMPL-MESH_API] [IMPL-MESH_RUNTIME] [REQ-MESH_API]: GET sessions list and single session with progress
+  // [IMPL-MESH_API] [IMPL-MESH_RUNTIME] [IMPL-MESH_SESSION] [ARCH-MESH_LAYERED] [REQ-MESH_API] [REQ-MESH_PLATFORM]: Session lifecycle and progress over HTTP.
   it("get_sessions_list_and_session_with_progress", async () => {
     const mesh = await createTestMesh("List Mesh");
     const createRes = await sessionPost(
@@ -75,7 +75,7 @@ describe("mesh sessions API [IMPL-MESH_API]", () => {
     expect(oneData.progress).toEqual({ completed: 0, failed: 0, total: 0 });
   });
 
-  // [IMPL-MESH_API] [IMPL-MESH_RUNTIME] [REQ-MESH_API]: POST start uses approved plan when no changeSet
+  // how: POST sessions start — checkExecution on changeSet or approved plan; runApprovedSession returns progress
   it("post_start_with_approved_plan_returns_progress", async () => {
     const rt = getMeshRuntime();
     const mesh = await createTestMesh("Start Mesh");
@@ -137,7 +137,7 @@ describe("mesh sessions API [IMPL-MESH_API]", () => {
     expect(startData.progress.total).toBeGreaterThanOrEqual(0);
   });
 
-  // [IMPL-MESH_API] [IMPL-MESH_RUNTIME] [REQ-MESH_API]: POST cancel signals runtime cancel flag
+  // how: POST sessions cancel — cancelSessionExecution then sessions.cancel
   it("post_cancel_invokes_cancelSessionExecution", async () => {
     const mesh = await createTestMesh("Cancel Mesh");
     const createRes = await sessionPost(

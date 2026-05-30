@@ -70,10 +70,16 @@ IMPL-FILE_SEARCH:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-19T16:06:42.636Z"
+      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: IMPL essence_pseudocode retrofit all 58
+      reason: Retrofit pseudocode; expand test traceability
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent
       result: pass - 523 total tests passing, no SSR errors, production build successful
+  traceability:
+    tests:
+      - src/app/api/files/search/route.test.ts
+      - src/app/files/components/FinderDialog.test.tsx
+      - src/app/files/components/SearchDialog.test.tsx
+      - src/lib/files.search.test.ts

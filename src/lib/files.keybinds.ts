@@ -1,4 +1,4 @@
-// [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
+// [IMPL-KEYBINDS] [ARCH-KEYBIND_SYSTEM] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-REACT_SSR_STABILITY]: Config-driven keybinding registry, validation, event matching, and WorkspaceView dispatch to action handlers
 // Keyboard shortcut system - keybinding registry, parser, and matcher
 // Client-safe module (no Node.js dependencies)
 
@@ -50,10 +50,10 @@ export interface KeybindingRegistry {
 // Module-level registry (singleton pattern)
 let registry: KeybindingRegistry | null = null;
 
+// [IMPL-KEYBINDS] [ARCH-KEYBIND_SYSTEM] [REQ-KEYBOARD_SHORTCUTS_COMPLETE]: how: initializeKeybindingRegistry parses array, validates fields, builds lookup maps
 /**
  * Initialize keybinding registry with keybindings from config
  * Must be called before using other functions (typically from server component)
- * [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
  */
 export function initializeKeybindingRegistry(keybindings: KeybindingConfig[]): void {
   registry = loadKeybindings(keybindings);
@@ -180,10 +180,10 @@ function loadKeybindings(keybindingsConfig: KeybindingConfig[]): KeybindingRegis
   return { keybindings, byAction, byCategory };
 }
 
+// [IMPL-KEYBINDS] [ARCH-KEYBIND_SYSTEM] [REQ-KEYBOARD_SHORTCUTS_COMPLETE]: how: iterate registry order; first matching binding wins; return action or null
 /**
  * Match keyboard event to action name
  * Returns action name if event matches a keybinding, null otherwise
- * [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
  */
 export function matchKeybinding(event: KeyboardEvent): string | null {
   const registry = getKeybindingRegistry();

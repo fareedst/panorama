@@ -46,6 +46,8 @@ describe("display-specs API [IMPL-DISPLAY_FILTER_API]", () => {
   });
 
   it("PUT merges client catalog with stable ids", async () => {
+    // [IMPL-DISPLAY_FILTER_API] [IMPL-DISPLAY_SPEC_STORE] [REQ-PANE_DISPLAY_FILTER]
+    // how: PUT merges client localStorage catalog into server store preserving stable ids.
     const clientSpec = {
       id: "client-uuid-123",
       name: "Client spec",

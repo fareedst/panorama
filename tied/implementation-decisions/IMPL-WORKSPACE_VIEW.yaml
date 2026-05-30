@@ -44,10 +44,19 @@ IMPL-WORKSPACE_VIEW:
       - ARCH-FILE_MANAGER_HIERARCHY
       - ARCH-TOOLBAR_LAYOUT
     requirements:
-      - REQ-MOUSE_INTERACTION
+      - REQ-CONFIG_DRIVEN_FILE_MANAGER
+      - REQ-DIRECTORY_NAVIGATION
+      - REQ-KEYBOARD_NAVIGATION
       - REQ-LINKED_PANES
+      - REQ-MOUSE_INTERACTION
+      - REQ-MULTI_PANE_LAYOUT
+      - REQ-REACT_SSR_STABILITY
+      - REQ-TOOLBAR_SYSTEM
     tests:
+      - src/app/files/components/LayoutPickerPopover.test.tsx
+      - src/app/files/WorkspaceView.cross-pane-visibility.test.tsx
       - src/app/files/WorkspaceView.file-column-clipboard.test.tsx
+      - src/app/files/WorkspaceView.file-columns.test.tsx
     code_annotations:
       - IMPL-WORKSPACE_VIEW
   related_decisions:
@@ -64,10 +73,11 @@ IMPL-WORKSPACE_VIEW:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-29T00:00:00.000Z"
+      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — vocabulary see_also back-link
+      reason: Retrofit essence_pseudocode from WorkspaceView tests
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent
       result: pass - no React warnings, 523 tests passing
+  essence_pseudocode_path: implementation-decisions/IMPL-WORKSPACE_VIEW-pseudocode.md

@@ -13,7 +13,7 @@ import {
 } from "./index";
 import { expectValidationError, refuteValidationError } from "./domain.test-helpers";
 
-// how: VALIDATE_MESH → VALIDATE_SYNC_LINK(meshDepots) — link validation runs after depots; unknown target fails at link layer.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: VALIDATE_MESH → VALIDATE_SYNC_LINK(meshDepots) — link validation runs after depots; unknown target fails at link layer.
 
 describe("IMPL-MESH_DOMAIN_TYPES composition VALIDATE_MESH → VALIDATE_SYNC_LINK [REQ-MESH_DOMAIN_MODEL]", () => {
   it("rejects link whose target depot id was never validated in mesh depots", () => {
@@ -32,7 +32,7 @@ describe("IMPL-MESH_DOMAIN_TYPES composition VALIDATE_MESH → VALIDATE_SYNC_LIN
   });
 });
 
-// how: VALIDATE_MESH → DEFAULT_POLICY when policy omitted — mesh policy binding uses safe defaults.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: VALIDATE_MESH → DEFAULT_POLICY when policy omitted — mesh policy binding uses safe defaults.
 
 describe("IMPL-MESH_DOMAIN_TYPES composition VALIDATE_MESH → DEFAULT_POLICY [REQ-MESH_DOMAIN_MODEL]", () => {
   it("applies default policy when mesh attrs omit policy", () => {
@@ -47,7 +47,7 @@ describe("IMPL-MESH_DOMAIN_TYPES composition VALIDATE_MESH → DEFAULT_POLICY [R
   });
 });
 
-// how: FROM_DTO_MESH → VALIDATE_MESH and TO_DTO_MESH → TO_DTO_* — serialize module delegates deserialization to validators.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: FROM_DTO_MESH → VALIDATE_MESH and TO_DTO_MESH → TO_DTO_* — serialize module delegates deserialization to validators.
 
 describe("IMPL-MESH_DOMAIN_TYPES composition mesh DTO round-trip [REQ-MESH_DOMAIN_MODEL]", () => {
   it("round-trips mesh through toDtoMesh and fromDtoMesh on the public API", () => {
@@ -83,7 +83,7 @@ describe("IMPL-MESH_DOMAIN_TYPES composition mesh DTO round-trip [REQ-MESH_DOMAI
   });
 });
 
-// how: FROM_DTO_CREDENTIAL_REFERENCE → VALIDATE_CREDENTIAL_REFERENCE — deserialize path reuses validator.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: FROM_DTO_CREDENTIAL_REFERENCE → VALIDATE_CREDENTIAL_REFERENCE — deserialize path reuses validator.
 
 describe("IMPL-MESH_DOMAIN_TYPES composition FROM_DTO_CREDENTIAL_REFERENCE [REQ-MESH_DOMAIN_MODEL]", () => {
   it("rejects secret material when deserializing through the public barrel", () => {
@@ -94,7 +94,7 @@ describe("IMPL-MESH_DOMAIN_TYPES composition FROM_DTO_CREDENTIAL_REFERENCE [REQ-
   });
 });
 
-// how: VALIDATE_CHANGE_SET → VALIDATE_SYNC_OPERATION (ordered) — first invalid op aborts with operation error.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: VALIDATE_CHANGE_SET → VALIDATE_SYNC_OPERATION (ordered) — first invalid op aborts with operation error.
 
 describe("IMPL-MESH_DOMAIN_TYPES composition VALIDATE_CHANGE_SET → VALIDATE_SYNC_OPERATION [REQ-MESH_DOMAIN_MODEL]", () => {
   it("fails on second operation when first operation is valid", () => {
@@ -108,7 +108,7 @@ describe("IMPL-MESH_DOMAIN_TYPES composition VALIDATE_CHANGE_SET → VALIDATE_SY
   });
 });
 
-// how: CREATE_MESH_SNAPSHOT → deepCloneMesh — snapshot mesh does not alias live mesh after post-validation mutation.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: CREATE_MESH_SNAPSHOT → deepCloneMesh — snapshot mesh does not alias live mesh after post-validation mutation.
 
 describe("IMPL-MESH_DOMAIN_TYPES composition CREATE_MESH_SNAPSHOT isolation [REQ-MESH_DOMAIN_MODEL]", () => {
   it("isolates snapshot mesh from subsequent live mesh edits", () => {
@@ -124,7 +124,7 @@ describe("IMPL-MESH_DOMAIN_TYPES composition CREATE_MESH_SNAPSHOT isolation [REQ
   });
 });
 
-// how: validateSyncSession consumes MeshSnapshot produced by createMeshSnapshot — session binding without UI.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: validateSyncSession consumes MeshSnapshot produced by createMeshSnapshot — session binding without UI.
 
 describe("IMPL-MESH_DOMAIN_TYPES composition snapshot → session [REQ-MESH_DOMAIN_MODEL]", () => {
   it("accepts session wired to snapshot from createMeshSnapshot", () => {

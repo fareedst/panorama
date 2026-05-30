@@ -24,7 +24,8 @@ export class BookmarkManager {
   }
 
   /**
-   * Load bookmarks from localStorage
+   * [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
+   * how: Hydrate bookmarks from localStorage key nx1-file-bookmarks; empty array on SSR, missing, or corrupt data.
    */
   private loadFromStorage(): void {
     if (typeof window === "undefined") {
@@ -68,8 +69,8 @@ export class BookmarkManager {
   }
 
   /**
-   * Add new bookmark
-   * [REQ-ADVANCED_NAV]
+   * [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
+   * how: Append { id, path, label, created }; persist JSON array; generate unique bm- prefixed id.
    */
   addBookmark(path: string, label: string): Bookmark {
     const bookmark: Bookmark = {
@@ -85,8 +86,8 @@ export class BookmarkManager {
   }
 
   /**
-   * Remove bookmark by ID
-   * [REQ-ADVANCED_NAV]
+   * [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
+   * how: Remove by id; persist; return false when id not found.
    */
   removeBookmark(id: string): boolean {
     const index = this.bookmarks.findIndex((b) => b.id === id);
@@ -100,8 +101,8 @@ export class BookmarkManager {
   }
 
   /**
-   * Update bookmark label
-   * [REQ-ADVANCED_NAV]
+   * [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
+   * how: Change label for existing id; persist; return false when id not found.
    */
   updateBookmark(id: string, label: string): boolean {
     const bookmark = this.bookmarks.find((b) => b.id === id);
@@ -115,15 +116,16 @@ export class BookmarkManager {
   }
 
   /**
-   * Get all bookmarks
-   * [REQ-ADVANCED_NAV]
+   * [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
+   * how: Return shallow copy of bookmarks array preserving insertion order.
    */
   getAllBookmarks(): Bookmark[] {
     return [...this.bookmarks];
   }
 
   /**
-   * Check if path is bookmarked
+   * [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
+   * how: True when any bookmark.path equals given path.
    */
   isBookmarked(path: string): boolean {
     return this.bookmarks.some((b) => b.path === path);

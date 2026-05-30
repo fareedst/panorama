@@ -1,73 +1,56 @@
 # IMPL-FLEX_LAYOUT essence pseudocode
 
-// [IMPL-FLEX_LAYOUT] [ARCH-TAILWIND_V4] [REQ-ROOT_LAYOUT]: Top-level Flexbox Layout Implementation: Use Tailwind flex utilities throughout
+// [IMPL-FLEX_LAYOUT] [ARCH-TAILWIND_V4] [REQ-ROOT_LAYOUT]: Tailwind flexbox utilities for application layout — file-manager UI and root shell use flex, flex-col, flex-row, gap, justify-*, and items-* for pane and dialog structure
 
 ## Summary contract
 
-// [IMPL-FLEX_LAYOUT] [ARCH-TAILWIND_V4] [REQ-ROOT_LAYOUT]: bound module inputs, outputs, and shared data for all runtime blocks below
+// [IMPL-FLEX_LAYOUT] [ARCH-TAILWIND_V4] [REQ-ROOT_LAYOUT]: how: layout composition uses utility classes instead of custom CSS flex rules; primary locus shifted from home page redirect to /files WorkspaceView and dialog components
 
 CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-FLEX_LAYOUT
-  DATA: state and configuration per implementation_approach
+  INPUT: component className strings
+  OUTPUT: responsive flex containers and aligned children
+  DATA: Tailwind v4 flex utilities in JSX className
+  CONTROL: no runtime flex logic — declarative CSS utilities only
 
-## UseFlexFlexCol
+## RootPageRedirect
 
-// [IMPL-FLEX_LAYOUT] [ARCH-TAILWIND_V4] [REQ-ROOT_LAYOUT]: Use flex, flex-col, flex-row
+// [IMPL-FLEX_LAYOUT] [ARCH-TAILWIND_V4] [REQ-ROOT_LAYOUT]: how: src/app/page.tsx no longer renders flex layout; redirects to /files (IMPL-FILE_MANAGER_PAGE sole-purpose entry)
 
-CONTRACT UseFlexFlexCol
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT RootPageRedirect
+  INPUT: GET /
+  OUTPUT: redirect /files
+  DATA: next/navigation redirect()
 
-PROCEDURE IMPL-FLEX_LAYOUT_UseFlexFlexCol(context)
-  // Use flex
-  CALL Use flex
-  // flex-col
-  CALL flex-col
-  // flex-row
-  CALL flex-row
+PROCEDURE IMPL-FLEX_LAYOUT_RootPageRedirect()
+  CALL redirect("/files")
+  ASSERT no flex classNames remain on home page component
 
-## UseGapForSpacing
+## FileManagerFlexContainers
 
-// [IMPL-FLEX_LAYOUT] [ARCH-TAILWIND_V4] [REQ-ROOT_LAYOUT]: Use gap for spacing
+// [IMPL-FLEX_LAYOUT] [ARCH-TAILWIND_V4] [REQ-ROOT_LAYOUT]: how: file manager uses flex-col for workspace shell, flex-row for toolbars and pane rows, gap for spacing, justify/align for dialog footers and centered overlays
 
-CONTRACT UseGapForSpacing
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT FileManagerFlexContainers
+  INPUT: WorkspaceView and files/components JSX
+  OUTPUT: multi-pane grid via flex utilities (flex, flex-1, flex-col, items-center, justify-center, gap-*)
+  DATA: src/app/files/WorkspaceView.tsx, dialog components (BookmarkDialog flex flex-col, modal overlays flex items-center justify-center)
 
-PROCEDURE IMPL-FLEX_LAYOUT_UseGapForSpacing(context)
-  // Use gap for spacing
-  CALL Use gap for spacing
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## UseJustifyAndAlign
-
-// [IMPL-FLEX_LAYOUT] [ARCH-TAILWIND_V4] [REQ-ROOT_LAYOUT]: Use justify and align utilities
-
-CONTRACT UseJustifyAndAlign
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FLEX_LAYOUT_UseJustifyAndAlign(context)
-  // Use justify
-  CALL Use justify
-  // align utilities
-  CALL align utilities
+PROCEDURE IMPL-FLEX_LAYOUT_FileManagerFlexContainers()
+  APPLY flex flex-col on full-height workspace wrapper
+  APPLY flex flex-row OR flex with gap on toolbar groups and pane toolbars
+  APPLY flex items-center justify-center on modal backdrops
+  APPLY flex-1 overflow on scrollable dialog bodies
 
 ## CodeLocations
 
 // [IMPL-FLEX_LAYOUT] [ARCH-TAILWIND_V4] [REQ-ROOT_LAYOUT]: map implementing and verifying source files for this IMPL
 
-// FILE: src/app/page.tsx — Flexbox layouts in home page
+// FILE: src/app/page.tsx — redirect only (historical flex home layout retired)
+// FILE: src/app/files/WorkspaceView.tsx — primary workspace flex shell
+// FILE: src/app/files/components/*.tsx — dialogs and toolbars using flex utilities
 
 ## ErrorHandling
 
-// [IMPL-FLEX_LAYOUT] [ARCH-TAILWIND_V4] [REQ-ROOT_LAYOUT]: surface recoverable failures without breaking pane invariants
+// [IMPL-FLEX_LAYOUT] [ARCH-TAILWIND_V4] [REQ-ROOT_LAYOUT]: how: not applicable — static CSS classes; jsdom tests may use size fallbacks (IMPL-USE_ELEMENT_SIZE) when flex layout reports zero dimensions
 
 PROCEDURE IMPL-FLEX_LAYOUT_on_error(context, error)
-  LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
-  ELSE propagate error to caller
+  NOT APPLICABLE — presentational utilities only

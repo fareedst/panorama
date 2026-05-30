@@ -34,7 +34,7 @@ describe("[TEST-LOGGER_MODULE] Logger Module", () => {
     vi.clearAllMocks();
   });
 
-  // [IMPL-LOGGER_CONFIG] [ARCH-LOGGING_CONFIG] [REQ-LOGGING_CONFIG]: 'true')
+  // [IMPL-LOGGER_CONFIG] [ARCH-LOGGING_CONFIG] [REQ-LOGGING_CONFIG]: how: read ENABLE_LOGGING (default true), LOG_LEVEL (default INFO), LOG_DIR (default os.tmpdir()), CONSOLE_ERRORS (default true) once at module initialization
 
   describe("Configuration [IMPL-LOGGER_CONFIG] [REQ-LOGGING_CONFIG]", () => {
     it("should use default configuration when no environment variables set", async () => {
@@ -75,6 +75,7 @@ describe("[TEST-LOGGER_MODULE] Logger Module", () => {
       expect(config.logDir).toBe("/custom/log/dir");
     });
 
+    // [IMPL-LOGGER_CONFIG] [ARCH-LOGGING_CONFIG] [REQ-LOGGING_CONFIG]: how: map LOG_LEVEL string to enum; unknown values fall back to INFO
     it("should fall back to INFO for invalid log level", async () => {
       process.env.LOG_LEVEL = "INVALID";
       vi.resetModules();
@@ -84,6 +85,8 @@ describe("[TEST-LOGGER_MODULE] Logger Module", () => {
       expect(config.level).toBe(3); // INFO
     });
   });
+
+  // [IMPL-LOGGER_MODULE] [ARCH-LOGGING_SYSTEM] [REQ-LOGGING_SYSTEM]: how: expose fatal/error/warn/info/debug/trace methods mapping to numeric levels FATAL=0 through TRACE=5
 
   describe("Log Levels [REQ-LOGGING_SYSTEM]", () => {
     beforeEach(async () => {
@@ -165,6 +168,8 @@ describe("[TEST-LOGGER_MODULE] Logger Module", () => {
     });
   });
 
+  // [IMPL-LOGGER_CONFIG] [ARCH-LOGGING_CONFIG] [REQ-LOGGING_CONFIG]: how: discard entries whose numeric level is above configured minimum threshold
+
   describe("Log Level Filtering [REQ-LOGGING_CONFIG]", () => {
     it("should not log below configured level", async () => {
       process.env.LOG_LEVEL = "ERROR";
@@ -197,7 +202,7 @@ describe("[TEST-LOGGER_MODULE] Logger Module", () => {
     });
   });
 
-  // [IMPL-LOGGER_TOKENS] [ARCH-LOGGING_SEMANTIC_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS]: (tokens: string | string[], message: string, metadata?: object)
+  // [IMPL-LOGGER_TOKENS] [ARCH-LOGGING_SEMANTIC_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS]: how: all logger methods require tokens as first parameter (string or string array), then message, optional metadata object
 
   describe("Semantic Tokens [IMPL-LOGGER_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS]", () => {
     beforeEach(async () => {
@@ -249,6 +254,8 @@ describe("[TEST-LOGGER_MODULE] Logger Module", () => {
     });
   });
 
+  // [IMPL-LOGGER_MODULE] [ARCH-LOGGING_SYSTEM] [REQ-LOGGING_SYSTEM]: how: append JSON.stringify(metadata) to formatted line when metadata object provided
+
   describe("Metadata [REQ-LOGGING_SYSTEM]", () => {
     beforeEach(async () => {
       process.env.LOG_LEVEL = "TRACE";
@@ -276,6 +283,8 @@ describe("[TEST-LOGGER_MODULE] Logger Module", () => {
       expect(content).not.toContain("{");
     });
   });
+
+  // [IMPL-LOGGER_MODULE] [ARCH-LOGGING_SYSTEM] [REQ-LOGGING_SYSTEM]: how: lazy-create nx1-log timestamped file under logDir with header comment block on first write
 
   describe("File Creation [ARCH-LOGGING_SYSTEM]", () => {
     beforeEach(async () => {
@@ -314,6 +323,8 @@ describe("[TEST-LOGGER_MODULE] Logger Module", () => {
     });
   });
 
+  // [IMPL-LOGGER_CONFIG] [ARCH-LOGGING_CONFIG] [REQ-LOGGING_CONFIG]: how: skip all file and async writes when ENABLE_LOGGING is false
+
   describe("Disabled Logging [REQ-LOGGING_CONFIG]", () => {
     it("should not write when logging disabled", async () => {
       process.env.ENABLE_LOGGING = "false";
@@ -326,6 +337,8 @@ describe("[TEST-LOGGER_MODULE] Logger Module", () => {
       expect(mockedFs.appendFileSync).not.toHaveBeenCalled();
     });
   });
+
+  // [IMPL-LOGGER_MODULE] [ARCH-LOGGING_SYSTEM] [REQ-LOGGING_SYSTEM]: how: appendFileSync for FATAL level; appendFile callback for all other levels
 
   describe("Synchronous vs Asynchronous Writing [ARCH-LOGGING_SYSTEM]", () => {
     beforeEach(async () => {
@@ -352,6 +365,8 @@ describe("[TEST-LOGGER_MODULE] Logger Module", () => {
     });
   });
 
+  // [IMPL-LOGGER_CONFIG] [ARCH-LOGGING_CONFIG] [REQ-LOGGING_CONFIG]: how: mirror ERROR and FATAL entries to console.error when CONSOLE_ERRORS is not false
+
   describe("Console Output [REQ-LOGGING_CONFIG]", () => {
     let consoleLogSpy: ReturnType<typeof vi.spyOn>;
     let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
@@ -370,6 +385,7 @@ describe("[TEST-LOGGER_MODULE] Logger Module", () => {
       consoleErrorSpy.mockRestore();
     });
 
+    // [IMPL-LOGGER_CONFIG] [ARCH-LOGGING_CONFIG] [REQ-LOGGING_CONFIG]: how: emit [LOGGER] Log file created message to console when session file is first created
     it("should output log file path to console on initialization", async () => {
       const { logger } = await import("./logger");
       

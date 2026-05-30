@@ -18,6 +18,19 @@ IMPL-DISPLAY_FILTER_API:
     architecture:
       - ARCH-DISPLAY_FILTER_ENGINE
       - ARCH-DISPLAY_SPEC_STORE
+    tests:
+      - src/app/api/files/display-filter.route.test.ts
+      - src/app/api/display-specs/route.test.ts
+    code_locations:
+      - src/app/api/display-specs/route.ts
+      - src/app/api/files/route.ts
+      - src/lib/display-filter-api-validate.ts
+      - src/lib/display-spec-sync.ts
   related_decisions:
     see_also:
       - docs/pane-display-filter-vocabulary.md
+  metadata:
+    last_updated:
+      date: "2026-05-30T00:00:00.000Z"
+      author: AI Agent
+      reason: Retrofit pseudocode and comment alignment per prompts/2026-05-29

@@ -2,15 +2,15 @@
 
 import type { DomainValidationError } from "./types";
 
-// how: Private helpers in internal.ts (not exported from index.ts); shared by validators and snapshot procedures.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Private helpers in internal.ts (not exported from index.ts); shared by validators and snapshot procedures.
 
-// how: Allocate a new stable string id for entities missing an explicit id.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Allocate a new stable string id for entities missing an explicit id.
 
 export function generateStableId(): string {
   return crypto.randomUUID();
 }
 
-// how: Prefer caller-supplied id when non-empty; otherwise generate a new id.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Prefer caller-supplied id when non-empty; otherwise generate a new id.
 
 export function resolveEntityId(attrs: Record<string, unknown>): string {
   return typeof attrs.id === "string" && attrs.id.length > 0 ? attrs.id : generateStableId();

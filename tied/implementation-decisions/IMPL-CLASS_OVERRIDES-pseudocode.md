@@ -1,83 +1,62 @@
 # IMPL-CLASS_OVERRIDES essence pseudocode
 
-// [IMPL-CLASS_OVERRIDES] [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI]: Top-level Class Overrides Implementation: Use tailwind-merge to merge default and override classes
+// [IMPL-CLASS_OVERRIDES] [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI]: how: theme.yaml overrides section supplies per-element Tailwind classes; getOverride resolves trimmed override strings for component merge
 
-## Summary contract
+## DEFINE_OVERRIDES_SCHEMA
 
-// [IMPL-CLASS_OVERRIDES] [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI]: bound module inputs, outputs, and shared data for all runtime blocks below
+// [IMPL-CLASS_OVERRIDES] [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI]: how: ClassOverrides type and config/theme.yaml overrides keys define optional per-element class strings
 
-CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-CLASS_OVERRIDES
-  DATA: state and configuration per implementation_approach
+```
+CONTRACT DEFINE_OVERRIDES_SCHEMA
+  INPUT: config/theme.yaml overrides block
+  OUTPUT: ClassOverrides map loaded into ThemeConfig.overrides
+  DATA: keys outerContainer, main, heading, paragraph, contentSection, buttonGroup, primaryButton, secondaryButton, inlineLink
 
-## ApplyToComponents
+PROCEDURE IMPL-CLASS_OVERRIDES_DefineOverridesSchema()
+  PARSE theme.yaml overrides section into ClassOverrides
+  ALL keys optional; empty string means use component defaults only
+  tailwind-merge listed as dependency for intelligent utility conflict resolution at apply sites
+```
 
-// [IMPL-CLASS_OVERRIDES] [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI]: Apply to components
+## GET_OVERRIDE
 
-CONTRACT ApplyToComponents
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+// [IMPL-CLASS_OVERRIDES] [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI]: how: lookup override key, trim whitespace, return empty string when undefined or blank
 
-PROCEDURE IMPL-CLASS_OVERRIDES_ApplyToComponents(context)
-  // Apply to components
-  CALL Apply to components
-  ON invalid input OR missing data THEN RETURN without mutation
+```
+CONTRACT GET_OVERRIDE
+  INPUT: overrides ClassOverrides, key keyof ClassOverrides
+  OUTPUT: trimmed override class string or empty string
+  DATA: overrides[key] optional string
 
-## DefineClassOverridesIn
+PROCEDURE IMPL-CLASS_OVERRIDES_GetOverride(overrides, key)
+  raw := overrides[key] ?? ""
+  trimmed := TRIM raw
+  RETURN trimmed
+  // empty trimmed result means caller applies default classes only
+```
 
-// [IMPL-CLASS_OVERRIDES] [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI]: Define class overrides in theme config
+## MERGE_AT_COMPONENT
 
-CONTRACT DefineClassOverridesIn
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+// [IMPL-CLASS_OVERRIDES] [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI]: how: components combine default Tailwind classes with getOverride output via twMerge when override non-empty
 
-PROCEDURE IMPL-CLASS_OVERRIDES_DefineClassOverridesIn(context)
-  // Define class overrides in theme config
-  CALL Define class overrides in theme config
-  ON invalid input OR missing data THEN RETURN without mutation
+```
+CONTRACT MERGE_AT_COMPONENT
+  INPUT: defaultClassString, overrides, overrideKey
+  OUTPUT: final className string with conflicting utilities resolved
+  DATA: twMerge from tailwind-merge package
 
-## InstallTailwindMerge
-
-// [IMPL-CLASS_OVERRIDES] [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI]: Install tailwind-merge
-
-CONTRACT InstallTailwindMerge
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-CLASS_OVERRIDES_InstallTailwindMerge(context)
-  // Install tailwind-merge
-  CALL Install tailwind-merge
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## MergeDefaultClassesWith
-
-// [IMPL-CLASS_OVERRIDES] [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI]: Merge default classes with overrides using twMerge
-
-CONTRACT MergeDefaultClassesWith
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-CLASS_OVERRIDES_MergeDefaultClassesWith(context)
-  // Merge default classes with overrides using twMerge
-  CALL Merge default classes with overrides using twMerge
-  ON invalid input OR missing data THEN RETURN without mutation
+PROCEDURE IMPL-CLASS_OVERRIDES_MergeAtComponent(defaultClasses, overrides, key)
+  override := GetOverride(overrides, key)
+  IF override is empty THEN RETURN defaultClasses
+  RETURN twMerge(defaultClasses, override)
+  // twMerge resolves conflicts so override utilities win over defaults
+```
 
 ## CodeLocations
 
-// [IMPL-CLASS_OVERRIDES] [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI]: map implementing and verifying source files for this IMPL
+// [IMPL-CLASS_OVERRIDES] [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI]: how: map implementing and verifying source files for this IMPL
 
-// FILE: src/app/page.tsx — Class override usage
-
-## ErrorHandling
-
-// [IMPL-CLASS_OVERRIDES] [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI]: surface recoverable failures without breaking pane invariants
-
-PROCEDURE IMPL-CLASS_OVERRIDES_on_error(context, error)
-  LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
-  ELSE propagate error to caller
+// FILE: config/theme.yaml — overrides section schema and default empty values
+// FILE: src/lib/config.types.ts — ClassOverrides interface on ThemeConfig
+// FILE: src/lib/config.ts — getOverride resolver
+// FILE: src/lib/config.test.ts — getOverride trim and key coverage tests

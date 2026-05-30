@@ -1,83 +1,38 @@
 # IMPL-EXTERNAL_LINKS essence pseudocode
 
-// [IMPL-EXTERNAL_LINKS] [ARCH-APP_ROUTER] [REQ-NAVIGATION_LINKS]: Top-level External Links Implementation: Add target='_blank' and rel='noopener noreferrer' to external links
+## NEW_TAB_LINK_RENDER
+# [IMPL-EXTERNAL_LINKS] [ARCH-APP_ROUTER] [REQ-NAVIGATION_LINKS] [REQ-WORKSPACE_MESH_BRIDGE]
+# how: Reusable Next.js Link opens target in new tab with rel noopener noreferrer, prefetch off, and screen-reader disclosure.
 
-## Summary contract
+```
+NEW_TAB_LINK_RENDER(href, children, className, ariaLabel?):
+  INPUT: href string, children ReactNode, optional className, optional ariaLabel override
+  OUTPUT: rendered anchor with security and a11y attributes
+  visibleLabel := TRIM(children) WHEN children is plain string ELSE undefined
+  resolvedAriaLabel := ariaLabel OR (visibleLabel + " (opens in new tab)" when visibleLabel set)
+  RENDER Link with href, target="_blank", rel="noopener noreferrer", prefetch=false
+  RENDER children plus sr-only span " (opens in new tab)"
+  SET aria-label := resolvedAriaLabel when defined
+```
 
-// [IMPL-EXTERNAL_LINKS] [ARCH-APP_ROUTER] [REQ-NAVIGATION_LINKS]: bound module inputs, outputs, and shared data for all runtime blocks below
+## EXPLICIT_ARIA_LABEL_OVERRIDE
+# [IMPL-EXTERNAL_LINKS] [ARCH-APP_ROUTER] [REQ-NAVIGATION_LINKS] [REQ-WORKSPACE_MESH_BRIDGE]
+# how: When children are not plain text, caller supplies ariaLabel for accessible new-tab disclosure.
 
-CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-EXTERNAL_LINKS
-  DATA: state and configuration per implementation_approach
+```
+EXPLICIT_ARIA_LABEL_OVERRIDE(href, ariaLabel, children):
+  INPUT: non-string children (e.g. nested span)
+  OUTPUT: link with aria-label exactly as provided (includes "(opens in new tab)" in label text)
+  SKIP auto-derived label from visible text
+  RENDER same security attributes as NEW_TAB_LINK_RENDER
+```
 
-## AddRelNoopenerNoreferrer
+## CROSS_SURFACE_USAGE
+# [IMPL-EXTERNAL_LINKS] [ARCH-APP_ROUTER] [REQ-NAVIGATION_LINKS] [REQ-WORKSPACE_MESH_BRIDGE]
+# how: WorkspaceView and MeshDetailClient use NewTabLink for Mesh ↔ File Manager navigation in a new tab.
 
-// [IMPL-EXTERNAL_LINKS] [ARCH-APP_ROUTER] [REQ-NAVIGATION_LINKS]: Add rel='noopener noreferrer
-
-CONTRACT AddRelNoopenerNoreferrer
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-EXTERNAL_LINKS_AddRelNoopenerNoreferrer(context)
-  // Add rel='noopener noreferrer
-  CALL Add rel='noopener noreferrer
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## AddTargetBlank
-
-// [IMPL-EXTERNAL_LINKS] [ARCH-APP_ROUTER] [REQ-NAVIGATION_LINKS]: Add target='_blank
-
-CONTRACT AddTargetBlank
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-EXTERNAL_LINKS_AddTargetBlank(context)
-  // Add target='_blank
-  CALL Add target='_blank
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## LoadURLsFromConfig
-
-// [IMPL-EXTERNAL_LINKS] [ARCH-APP_ROUTER] [REQ-NAVIGATION_LINKS]: Load URLs from config
-
-CONTRACT LoadURLsFromConfig
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-EXTERNAL_LINKS_LoadURLsFromConfig(context)
-  // Load URLs from config
-  CALL Load URLs from config
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## UseATagsFor
-
-// [IMPL-EXTERNAL_LINKS] [ARCH-APP_ROUTER] [REQ-NAVIGATION_LINKS]: Use <a> tags for external links
-
-CONTRACT UseATagsFor
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-EXTERNAL_LINKS_UseATagsFor(context)
-  // Use <a> tags for external links
-  CALL Use <a> tags for external links
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## CodeLocations
-
-// [IMPL-EXTERNAL_LINKS] [ARCH-APP_ROUTER] [REQ-NAVIGATION_LINKS]: map implementing and verifying source files for this IMPL
-
-// FILE: src/app/page.tsx — External links in home page
-
-## ErrorHandling
-
-// [IMPL-EXTERNAL_LINKS] [ARCH-APP_ROUTER] [REQ-NAVIGATION_LINKS]: surface recoverable failures without breaking pane invariants
-
-PROCEDURE IMPL-EXTERNAL_LINKS_on_error(context, error)
-  LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
-  ELSE propagate error to caller
+```
+CROSS_SURFACE_USAGE():
+  DATA: href examples /files?meshId=… from mesh detail, /mesh from file manager toolbar
+  OUTPUT: consistent new-tab behavior across internal cross-surface routes (not only external URLs)
+```

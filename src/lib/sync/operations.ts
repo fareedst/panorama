@@ -1,11 +1,11 @@
-// [IMPL-NSYNC_OPERATIONS] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: Top-level File Operations Wrappers: Copy, move, delete operation wrappers ensuring destination directories exist
-// File operation wrappers - copy and move
+// [IMPL-NSYNC_OPERATIONS] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: File operation wrappers — copy with mkdir and attribute preservation; move delegates copy; delete via unlink
 
 import fs from "fs/promises";
 import path from "path";
 import { logger } from "../logger";
 import { preserveCopyAttributes } from "../copyAttributes";
 
+// [IMPL-NSYNC_OPERATIONS] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS] [REQ-COPY_OPERATIONS]: how: ensure dest directory exists recursively, copy bytes, then preserve mtime/mode via preserveCopyAttributes
 /**
  * Copy a file from source to destination
  * [IMPL-NSYNC_OPERATIONS] [REQ-COPY_OPERATIONS]
@@ -24,7 +24,7 @@ export async function copyFile(sourcePath: string, destPath: string): Promise<vo
     
     // Copy the file
     await fs.copyFile(sourcePath, destPath);
-    // [IMPL-COPY_ATTRS] Preserve mode and timestamps where possible
+    // [IMPL-COPY_ATTRS] [REQ-COPY_OPERATIONS] [REQ-FILE_OPERATIONS]: how: after copy apply utimes and chmod from source stat; ignore per-step failures
     await preserveCopyAttributes(sourcePath, destPath);
 
     logger.trace(["IMPL-NSYNC_OPERATIONS"], `Copy completed: ${destPath}`);
@@ -35,6 +35,7 @@ export async function copyFile(sourcePath: string, destPath: string): Promise<vo
   }
 }
 
+// [IMPL-NSYNC_OPERATIONS] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: how: move is copy only — SyncEngine deletes source after all destinations succeed
 /**
  * Move a file from source to destination (copy + delete)
  * [IMPL-NSYNC_OPERATIONS] [REQ-MOVE_SEMANTICS]
@@ -53,6 +54,7 @@ export async function moveFile(sourcePath: string, destPath: string): Promise<vo
   await copyFile(sourcePath, destPath);
 }
 
+// [IMPL-NSYNC_OPERATIONS] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: how: unlink source after successful move to all destinations
 /**
  * Delete a file (used after successful move to all destinations)
  * [IMPL-NSYNC_OPERATIONS] [REQ-MOVE_SEMANTICS]
@@ -72,6 +74,7 @@ export async function deleteFile(filePath: string): Promise<void> {
   }
 }
 
+// [IMPL-NSYNC_OPERATIONS] [REQ-NSYNC_MULTI_TARGET]: how: fs.access probe returns boolean without throwing
 /**
  * Check if a file exists
  * [IMPL-NSYNC_OPERATIONS]
@@ -88,6 +91,7 @@ export async function fileExists(filePath: string): Promise<boolean> {
   }
 }
 
+// [IMPL-NSYNC_OPERATIONS] [REQ-NSYNC_MULTI_TARGET]: how: fs.stat or null when file missing — used by SyncEngine for plan bytes and ItemInfo
 /**
  * Get file stats
  * [IMPL-NSYNC_OPERATIONS]

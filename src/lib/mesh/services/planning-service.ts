@@ -1,4 +1,4 @@
-// [IMPL-MESH_PLANNING] [REQ-MESH_PLATFORM]: Dry-run change planning — phase 10
+// [IMPL-MESH_PLANNING] [ARCH-MESH_LAYERED] [IMPL-MESH_POLICY] [REQ-MESH_PLATFORM] [REQ-MESH_HARDENING]: Dry-run change set from inventory diff with policy filters, path mapping, and optional operation pagination.
 
 import type { ChangeSet, Mesh, SyncOperation } from "../domain";
 import { isDomainValidationError, validateChangeSet } from "../domain";
@@ -19,6 +19,7 @@ function entryMap(snapshot: InventorySnapshot): Map<string, InventorySnapshot["e
 }
 
 export class PlanningService {
+  // [IMPL-MESH_PLANNING] [ARCH-MESH_LAYERED] [IMPL-MESH_POLICY] [REQ-MESH_PLATFORM]: how — diff source vs target inventory snapshots into copy/update/delete operations respecting mesh policy and optional filters/mappings.
   generateDryRunPlan(input: PlanInput): ChangeSet {
     const operations: SyncOperation[] = [];
     const sourceMap = entryMap(input.sourceInventory);
@@ -83,7 +84,7 @@ export class PlanningService {
   }
 }
 
-/** Pagination for oversized change-set responses ([REQ-MESH_HARDENING], prompts phase 29 large_inventory_handling). */
+// [IMPL-MESH_PLANNING] [ARCH-MESH_LAYERED] [REQ-MESH_HARDENING]: how — slice change-set operations for oversized API responses; preserve changeSet id and return pagination metadata.
 export function paginateChangeSetOperations(
   changeSet: ChangeSet,
   operationOffset?: number,

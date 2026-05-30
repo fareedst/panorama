@@ -4,6 +4,7 @@ import { describe, it, expect } from "vitest";
 import { ScheduleService } from "./schedule-service";
 
 describe("ScheduleService [IMPL-MESH_SCHEDULE]", () => {
+  // [IMPL-MESH_SCHEDULE] [ARCH-MESH_LAYERED] [REQ-MESH_SCHEDULE]: how — return stored schedule or default manual enabled with runCount zero.
   it("schedule_can_be_disabled", () => {
     const svc = new ScheduleService();
     const s = svc.disable("mesh-1");

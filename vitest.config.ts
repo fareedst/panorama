@@ -1,5 +1,4 @@
-// [IMPL-TEST_CONFIG] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]
-// Vitest configuration for comprehensive React component testing.
+// [IMPL-TEST_CONFIG] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: Vitest configuration — jsdom environment, global APIs, setup file, coverage thresholds, path aliases
 // Configures jsdom environment, React support, coverage reporting,
 // and test utilities for the Next.js application.
 
@@ -10,18 +9,17 @@ import path from 'path';
 export default defineConfig({
   plugins: [react()],
   test: {
-    // [IMPL-TEST_CONFIG] Use jsdom for DOM simulation in Node.js environment
+    // [IMPL-TEST_CONFIG] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: configure jsdom test environment and Vitest globals for describe/it/expect without per-file imports
     environment: 'jsdom',
-    // [IMPL-TEST_CONFIG] Enable global test APIs (describe, it, expect)
     globals: true,
-    // [IMPL-TEST_CONFIG] Setup file for matchers and mocks
+    // [IMPL-TEST_CONFIG] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM] [IMPL-LOGGER_CONFIG]: load src/test/setup.ts before tests; set CONSOLE_ERRORS false to suppress logger console mirroring unless test resets modules
     setupFiles: ['./src/test/setup.ts'],
-    // [IMPL-TEST_CONFIG] [IMPL-LOGGER_CONFIG] Suppress ERROR/FATAL console mirroring during tests;
+    // [IMPL-TEST_CONFIG] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM] [IMPL-LOGGER_CONFIG] Suppress ERROR/FATAL console mirroring during tests;
     // logger.test.ts uses vi.resetModules() when asserting console behavior.
     env: {
       CONSOLE_ERRORS: 'false',
     },
-    // [IMPL-TEST_CONFIG] Do not inject compiled CSS into jsdom — Tailwind v4 output
+    // [IMPL-TEST_CONFIG] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: disable CSS injection in jsdom; exclude node_modules dist e2e Playwright paths from Vitest discovery
     // (@layer, @property, etc.) triggers "Could not parse CSS stylesheet" in jsdom.
     // Unit tests assert DOM/behavior, not computed styles; E2E covers real CSS.
     css: false,
@@ -32,9 +30,9 @@ export default defineConfig({
       '**/e2e/**',  // Playwright E2E tests
       '**/.{idea,git,cache,output,temp}/**',
     ],
-    // [IMPL-TEST_CONFIG] [REQ-BUILD_SYSTEM] Coverage configuration
+    // [IMPL-TEST_CONFIG] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: v8 coverage on src/app and src/lib with 80% lines/functions/branches/statements thresholds
     coverage: {
-      // [IMPL-TEST_CONFIG] Use v8 for fast coverage (no instrumentation)
+      // [IMPL-TEST_CONFIG] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: how: provider v8, reporters, include/exclude globs, all-files collection
       provider: 'v8',
       // [IMPL-TEST_CONFIG] Multiple report formats for different use cases
       reporter: ['text', 'json', 'html', 'lcov'],
@@ -77,7 +75,7 @@ export default defineConfig({
       },
     },
   },
-  // [IMPL-TEST_CONFIG] Path aliases matching tsconfig.json for consistent imports
+  // [IMPL-TEST_CONFIG] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: resolve @ alias to ./src matching tsconfig for consistent imports in tests
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

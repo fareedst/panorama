@@ -1,4 +1,4 @@
-// [IMPL-MESH_EXECUTOR] [REQ-MESH_PLATFORM]: Executor tests — phase 13
+// [IMPL-MESH_EXECUTOR] [ARCH-MESH_LAYERED] [IMPL-MESH_EVENTS] [REQ-MESH_PLATFORM]: Executor unit tests — connector copy/delete, policy skip, retry attempts, and operation lifecycle events.
 
 import { describe, it, expect } from "vitest";
 import { FakeConnector } from "../connector/fake-connector";

@@ -1,84 +1,54 @@
 # IMPL-FONT_LOADING essence pseudocode
 
-// [IMPL-FONT_LOADING] [ARCH-GOOGLE_FONTS] [ARCH-CSS_VARIABLES_FONTS] [REQ-FONT_SYSTEM]: Top-level Font Loading Implementation: Use next/font/google for Geist fonts with CSS variables
+// [IMPL-FONT_LOADING] [ARCH-GOOGLE_FONTS] [ARCH-CSS_VARIABLES_FONTS] [REQ-FONT_SYSTEM]: Load Geist Sans and Geist Mono via next/font/google with latin subset and CSS variables applied to body in root layout
 
 ## Summary contract
 
-// [IMPL-FONT_LOADING] [ARCH-GOOGLE_FONTS] [ARCH-CSS_VARIABLES_FONTS] [REQ-FONT_SYSTEM]: bound module inputs, outputs, and shared data for all runtime blocks below
+// [IMPL-FONT_LOADING] [ARCH-GOOGLE_FONTS] [ARCH-CSS_VARIABLES_FONTS] [REQ-FONT_SYSTEM]: how: build-time font optimization; variables --font-geist-sans and --font-geist-mono on body alongside antialiased
 
 CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-FONT_LOADING
-  DATA: state and configuration per implementation_approach
+  INPUT: next/font/google Geist and Geist_Mono constructors
+  OUTPUT: CSS variable class names on body element
+  DATA: subsets ["latin"], variable names for sans and mono
+  CONTROL: static import required at build time (cannot be YAML-driven family name)
+
+## ImportGeistFonts
+
+// [IMPL-FONT_LOADING] [ARCH-GOOGLE_FONTS] [ARCH-CSS_VARIABLES_FONTS] [REQ-FONT_SYSTEM]: how: instantiate Geist with variable --font-geist-sans and Geist_Mono with --font-geist-mono; latin subset only
+
+CONTRACT ImportGeistFonts
+  INPUT: next/font/google module
+  OUTPUT: geistSans.variable, geistMono.variable class fragments
+  DATA: Geist({ variable, subsets }), Geist_Mono({ variable, subsets })
+
+PROCEDURE IMPL-FONT_LOADING_ImportGeistFonts()
+  geistSans := Geist({ variable: "--font-geist-sans", subsets: ["latin"] })
+  geistMono := Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] })
 
 ## ApplyToBodyElement
 
-// [IMPL-FONT_LOADING] [ARCH-GOOGLE_FONTS] [ARCH-CSS_VARIABLES_FONTS] [REQ-FONT_SYSTEM]: Apply to body element
+// [IMPL-FONT_LOADING] [ARCH-GOOGLE_FONTS] [ARCH-CSS_VARIABLES_FONTS] [REQ-FONT_SYSTEM]: how: RootLayout body className concatenates both font variable classes and antialiased
 
 CONTRACT ApplyToBodyElement
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+  INPUT: geistSans.variable, geistMono.variable
+  OUTPUT: body element with font CSS variables active for entire app including /files
+  DATA: RootLayout in src/app/layout.tsx
 
-PROCEDURE IMPL-FONT_LOADING_ApplyToBodyElement(context)
-  // Apply to body element
-  CALL Apply to body element
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## ConfigureSubsettingLatin
-
-// [IMPL-FONT_LOADING] [ARCH-GOOGLE_FONTS] [ARCH-CSS_VARIABLES_FONTS] [REQ-FONT_SYSTEM]: Configure subsetting (latin)
-
-CONTRACT ConfigureSubsettingLatin
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FONT_LOADING_ConfigureSubsettingLatin(context)
-  // Configure subsetting (latin)
-  CALL Configure subsetting (latin)
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## CreateCSSVariables
-
-// [IMPL-FONT_LOADING] [ARCH-GOOGLE_FONTS] [ARCH-CSS_VARIABLES_FONTS] [REQ-FONT_SYSTEM]: Create CSS variables
-
-CONTRACT CreateCSSVariables
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FONT_LOADING_CreateCSSVariables(context)
-  // Create CSS variables
-  CALL Create CSS variables
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## ImportGeistSansAnd
-
-// [IMPL-FONT_LOADING] [ARCH-GOOGLE_FONTS] [ARCH-CSS_VARIABLES_FONTS] [REQ-FONT_SYSTEM]: Import Geist_Sans and Geist_Mono from next/font/google
-
-CONTRACT ImportGeistSansAnd
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FONT_LOADING_ImportGeistSansAnd(context)
-  // Import Geist_Sans
-  CALL Import Geist_Sans
-  // Geist_Mono from next/font/google
-  CALL Geist_Mono from next/font/google
+PROCEDURE IMPL-FONT_LOADING_ApplyToBodyElement(children)
+  RETURN html/body structure with body className `${geistSans.variable} ${geistMono.variable} antialiased`
+  RENDER children inside body
 
 ## CodeLocations
 
 // [IMPL-FONT_LOADING] [ARCH-GOOGLE_FONTS] [ARCH-CSS_VARIABLES_FONTS] [REQ-FONT_SYSTEM]: map implementing and verifying source files for this IMPL
 
-// FILE: src/app/layout.tsx — Font loading and application
+// FILE: src/app/layout.tsx — Geist imports and body className
+// FILE: src/app/layout.test.tsx — applies font variables to body test
 
 ## ErrorHandling
 
-// [IMPL-FONT_LOADING] [ARCH-GOOGLE_FONTS] [ARCH-CSS_VARIABLES_FONTS] [REQ-FONT_SYSTEM]: surface recoverable failures without breaking pane invariants
+// [IMPL-FONT_LOADING] [ARCH-GOOGLE_FONTS] [ARCH-CSS_VARIABLES_FONTS] [REQ-FONT_SYSTEM]: how: next/font handles fetch/subset failures at build time; runtime has no font-loading error path
 
 PROCEDURE IMPL-FONT_LOADING_on_error(context, error)
-  LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
-  ELSE propagate error to caller
+  BUILD fails if google font unavailable at compile time
+  RUNTIME: fonts already self-hosted by Next.js optimizer

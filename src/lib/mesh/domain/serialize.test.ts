@@ -14,7 +14,7 @@ import { defaultPolicy } from "./validators";
 import type { CredentialReference, Depot, Mesh, Policy, SyncLink } from "./types";
 import { expectValidationError, refuteValidationError } from "./domain.test-helpers";
 
-// how: Emit id and label only on DTO (no secret field).
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Emit id and label only on DTO (no secret field).
 
 describe("IMPL-MESH_DOMAIN_TYPES_TO_DTO_CREDENTIAL_REFERENCE [REQ-MESH_DOMAIN_MODEL]", () => {
   it("returns id and label only", () => {
@@ -25,7 +25,7 @@ describe("IMPL-MESH_DOMAIN_TYPES_TO_DTO_CREDENTIAL_REFERENCE [REQ-MESH_DOMAIN_MO
   });
 });
 
-// how: Deserialize DTO by delegating to VALIDATE_CREDENTIAL_REFERENCE (intra-IMPL call).
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Deserialize DTO by delegating to VALIDATE_CREDENTIAL_REFERENCE (intra-IMPL call).
 
 describe("IMPL-MESH_DOMAIN_TYPES_FROM_DTO_CREDENTIAL_REFERENCE [REQ-MESH_DOMAIN_MODEL]", () => {
   it("round-trips valid credential DTO", () => {
@@ -42,7 +42,7 @@ describe("IMPL-MESH_DOMAIN_TYPES_FROM_DTO_CREDENTIAL_REFERENCE [REQ-MESH_DOMAIN_
   });
 });
 
-// how: Map validated Depot entity to JSON-safe DTO for mesh serialization.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Map validated Depot entity to JSON-safe DTO for mesh serialization.
 
 describe("IMPL-MESH_DOMAIN_TYPES_TO_DTO_DEPOT [REQ-MESH_DOMAIN_MODEL]", () => {
   it("maps depot fields to DTO", () => {
@@ -64,7 +64,7 @@ describe("IMPL-MESH_DOMAIN_TYPES_TO_DTO_DEPOT [REQ-MESH_DOMAIN_MODEL]", () => {
   });
 });
 
-// how: Map validated SyncLink entity to JSON-safe DTO for mesh serialization.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Map validated SyncLink entity to JSON-safe DTO for mesh serialization.
 
 describe("IMPL-MESH_DOMAIN_TYPES_TO_DTO_SYNC_LINK [REQ-MESH_DOMAIN_MODEL]", () => {
   it("maps link fields to DTO", () => {
@@ -83,7 +83,7 @@ describe("IMPL-MESH_DOMAIN_TYPES_TO_DTO_SYNC_LINK [REQ-MESH_DOMAIN_MODEL]", () =
   });
 });
 
-// how: Map validated Policy entity to JSON-safe DTO embedded in mesh DTO.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Map validated Policy entity to JSON-safe DTO embedded in mesh DTO.
 
 describe("IMPL-MESH_DOMAIN_TYPES_TO_DTO_POLICY [REQ-MESH_DOMAIN_MODEL]", () => {
   it("maps policy fields to plain object", () => {
@@ -97,7 +97,7 @@ describe("IMPL-MESH_DOMAIN_TYPES_TO_DTO_POLICY [REQ-MESH_DOMAIN_MODEL]", () => {
   });
 });
 
-// how: Serialize mesh by mapping depots, links, and policy to DTO parts.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Serialize mesh by mapping depots, links, and policy to DTO parts.
 
 describe("IMPL-MESH_DOMAIN_TYPES_TO_DTO_MESH [REQ-MESH_DOMAIN_MODEL]", () => {
   it("serializes mesh with depots, links, and policy", () => {
@@ -139,7 +139,7 @@ describe("IMPL-MESH_DOMAIN_TYPES_TO_DTO_MESH [REQ-MESH_DOMAIN_MODEL]", () => {
   });
 });
 
-// how: Deserialize mesh DTO by CALL VALIDATE_MESH so invalid_core_objects_are_rejected on FROM_DTO.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Deserialize mesh DTO by CALL VALIDATE_MESH so invalid_core_objects_are_rejected on FROM_DTO.
 
 describe("IMPL-MESH_DOMAIN_TYPES_FROM_DTO_MESH [REQ-MESH_DOMAIN_MODEL]", () => {
   it("reconstructs mesh from valid DTO", () => {

@@ -1,8 +1,9 @@
-// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: Top-level Test Setup Implementation: Create test setup file with utilities and mocks
+// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: Global Vitest setup — jest-dom matchers, functional localStorage, ResizeObserver polyfill, scrollIntoView and Next.js mocks
 // Test setup configuration for Vitest. Loaded before any tests run.
 // Configures @testing-library/jest-dom custom matchers and mocks
 // next/font/google which requires Next.js build context.
 
+// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: import @testing-library/jest-dom to register DOM matchers on expect before any test file runs
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 
@@ -59,7 +60,7 @@ function installTestLocalStorage(): void {
 
 installTestLocalStorage();
 
-// [IMPL-TEST_SETUP] [IMPL-LAYOUT_CALCULATOR] [REQ-MULTI_PANE_LAYOUT] ResizeObserverPolyfill: ResizeObserver for jsdom (useElementSize, WorkspaceView)
+// [IMPL-TEST_SETUP] [IMPL-LAYOUT_CALCULATOR] [REQ-MULTI_PANE_LAYOUT] [REQ-BUILD_SYSTEM]: install ResizeObserver when undefined; observe reads HTMLElement clientWidth/clientHeight into callback contentRect
 if (typeof globalThis.ResizeObserver === 'undefined') {
   globalThis.ResizeObserver = class ResizeObserverPolyfill {
     private callback: ResizeObserverCallback;
@@ -83,11 +84,11 @@ if (typeof globalThis.ResizeObserver === 'undefined') {
   } as unknown as typeof ResizeObserver;
 }
 
-// [IMPL-TEST_SETUP] Mock scrollIntoView for FilePane scroll tests
+// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: stub Element.prototype.scrollIntoView for FilePane scroll tests in jsdom
 // scrollIntoView is not available in jsdom test environment
 Element.prototype.scrollIntoView = vi.fn();
 
-// [IMPL-TEST_SETUP] Mock next/font/google to work in test environment
+// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM] [REQ-FONT_SYSTEM]: vi.mock next/font/google returning className variable style objects matching Geist and Geist_Mono shape
 // next/font requires Next.js webpack context which isn't available in Vitest.
 // This mock returns simple objects with the same structure as real font objects.
 vi.mock('next/font/google', () => ({
@@ -103,7 +104,7 @@ vi.mock('next/font/google', () => ({
   }),
 }));
 
-// [IMPL-WORKSPACE_MESH_BRIDGE] [IMPL-TEST_SETUP]: WorkspaceView uses useRouter for mesh save redirect
+// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM] [IMPL-WORKSPACE_MESH_BRIDGE]: mock next/navigation useRouter push/replace and usePathname /files for WorkspaceView mesh redirect tests
 vi.mock('next/navigation', () => ({
   useRouter: () => ({
     push: vi.fn(),

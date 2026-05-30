@@ -7,3 +7,21 @@ IMPL-MESH_AUTH:
   code_locations:
     files:
       - path: src/lib/mesh/services/authorization-service.ts
+        description: AuthorizationService and parseMeshRole
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-MESH_LAYERED
+    requirements:
+      - REQ-MESH_AUTH
+      - REQ-MESH_PLATFORM
+    tests:
+      - src/lib/mesh/services/authorization-service.test.ts
+      - src/app/api/mesh/route.auth.test.ts
+    code_annotations:
+      - IMPL-MESH_AUTH
+  metadata:
+    last_updated:
+      date: "2026-05-30T00:00:00.000Z"
+      author: AI Agent
+      reason: Retrofit pseudocode and traceability from production/tests

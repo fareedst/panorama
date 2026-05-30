@@ -49,6 +49,8 @@ IMPL-SORT_FILTER:
       - REQ-WORKSPACE_MESH_BRIDGE
     tests:
       - src/app/files/components/SortDialog.test.tsx
+      - src/app/files/WorkspaceView.shared-sort.test.tsx
+      - src/lib/files.utils.test.ts
     code_annotations:
       - IMPL-SORT_FILTER
   related_decisions:
@@ -61,9 +63,9 @@ IMPL-SORT_FILTER:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-22T22:00:00.000Z"
+      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — SharedSortWorkspace and SortDialog Share/Shared
+      reason: Retrofit traceability for sort pseudo-code alignment
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

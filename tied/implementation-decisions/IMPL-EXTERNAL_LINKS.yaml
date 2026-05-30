@@ -23,11 +23,12 @@ IMPL-EXTERNAL_LINKS:
       - Use <a> tags for external links
   code_locations:
     files:
-      - path: src/app/page.tsx
-        description: External links in home page
       - path: src/components/NewTabLink.tsx
-        description: Reusable new-tab link (cross-surface Mesh ↔ File Manager)
-    functions: []
+        description: Reusable new-tab link with security and a11y attributes
+      - path: src/app/files/WorkspaceView.tsx
+        description: Cross-surface Mesh link in file manager toolbar
+      - path: src/app/mesh/components/MeshDetailClient.tsx
+        description: Cross-surface File Manager link from mesh detail
   traceability:
     architecture:
       - ARCH-APP_ROUTER
@@ -41,16 +42,20 @@ IMPL-EXTERNAL_LINKS:
   related_decisions:
     depends_on: []
     supersedes: []
-    see_also: []
+    see_also:
+      - docs/FILE_MANAGER_SOLE_PURPOSE.md
+      - docs/mesh-platform-vocabulary.md
+      - docs/workspace-pane-vocabulary.md
   metadata:
     created:
       date: 2025-11-08T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-22T00:00:00.000Z"
+      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: NewTabLink cross-surface Mesh ↔ File Manager (REQ-WORKSPACE_MESH_BRIDGE)
+      reason: Retrofit essence_pseudocode; NewTabLink is primary locus (page.tsx redirects)
     last_validated:
       date: 2026-02-06T00:00:00.000Z
       validator: AI Agent
       result: pass
+  essence_pseudocode_path: implementation-decisions/IMPL-EXTERNAL_LINKS-pseudocode.md

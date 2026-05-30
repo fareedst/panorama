@@ -1,4 +1,4 @@
-// [IMPL-MESH_API] [ARCH-MESH_LAYERED] [REQ-MESH_API] [REQ-MESH_PLATFORM]: Mesh list and create API routes
+// [IMPL-MESH_API] [ARCH-MESH_LAYERED] [REQ-MESH_API] [REQ-MESH_PLATFORM]: L5 HTTP handlers delegate to MeshRuntime; auth via x-mesh-role; DTOs strip secrets
 
 import {
   getRuntime,
@@ -8,7 +8,7 @@ import {
 } from "@/lib/mesh/api/mesh-api-helpers";
 import { toDtoMesh } from "@/lib/mesh/domain";
 
-// [IMPL-MESH_API] [REQ-MESH_API]: GET — list meshes as DTOs without secrets
+// [IMPL-MESH_API] [IMPL-MESH_CRUD] [ARCH-MESH_LAYERED] [REQ-MESH_API] [REQ-MESH_PLATFORM]: GET lists DTO meshes; POST creates after create_mesh permission and records audit event.
 export async function GET(request: Request) {
   const denied = requirePermission(request, "view_mesh");
   if (denied) {
@@ -28,7 +28,7 @@ export async function GET(request: Request) {
   });
 }
 
-// [IMPL-MESH_API] [REQ-MESH_API]: POST — create mesh after create_mesh permission
+// how: POST branch — require create_mesh, parse JSON, createMesh, record created event, return 201 DTO
 export async function POST(request: Request) {
   const denied = requirePermission(request, "create_mesh");
   if (denied) {

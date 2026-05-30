@@ -290,10 +290,10 @@ REQ-ROOT_LAYOUT:
     last_updated: "2026-02-06"
 REQ-HOME_PAGE:
   type: REQ
-  name: Home Page with Welcome Content
+  name: Root Entry Redirect
   category: Functional
   status: Implemented
-  description: Home Page with Welcome Content
+  description: Root URL redirects to /files; no welcome home page
   cross_references:
     - ARCH-SERVER_COMPONENTS
     - IMPL-HOME_PAGE
@@ -304,13 +304,14 @@ REQ-HOME_PAGE:
     last_updated: "2026-02-06"
 REQ-NAVIGATION_LINKS:
   type: REQ
-  name: External Navigation Links
+  name: Secure New-Tab Navigation Links
   category: Functional
   status: Implemented
-  description: External Navigation Links
+  description: NewTabLink target/rel/a11y; config navigation.security; cross-surface mesh routes
   cross_references:
     - ARCH-APP_ROUTER
     - IMPL-EXTERNAL_LINKS
+    - REQ-WORKSPACE_MESH_BRIDGE
   source_index: requirements.yaml
   detail_file: requirements/REQ-NAVIGATION_LINKS.yaml
   metadata:
@@ -318,12 +319,13 @@ REQ-NAVIGATION_LINKS:
     last_updated: "2026-02-06"
 REQ-BRANDING:
   type: REQ
-  name: Next.js Branding Elements
+  name: Site Branding Configuration
   category: Functional
   status: Implemented
-  description: Next.js Branding Elements
+  description: Site config branding.logo metadata and dark-mode invert contract
   cross_references:
     - ARCH-NEXTJS_FRAMEWORK
+    - IMPL-CONFIG_LOADER
     - IMPL-IMAGE_OPTIMIZATION
   source_index: requirements.yaml
   detail_file: requirements/REQ-BRANDING.yaml
@@ -493,10 +495,10 @@ REQ-CONFIG_DRIVEN_UI:
     last_updated: "2026-02-06"
 REQ-CONFIG_DRIVEN_APPEARANCE:
   type: REQ
-  name: All Page Elements Appearance and Layout from Config
+  name: File Manager Appearance and Layout from Config
   category: Functional
   status: Implemented
-  description: All Page Elements Appearance and Layout from Config
+  description: File manager UI copy, layout, icons, and site metadata from YAML (jobs scope retired)
   cross_references:
     - ARCH-CONFIG_DRIVEN_APPEARANCE
     - ARCH-CONFIG_DRIVEN_UI
@@ -506,7 +508,7 @@ REQ-CONFIG_DRIVEN_APPEARANCE:
   detail_file: requirements/REQ-CONFIG_DRIVEN_APPEARANCE.yaml
   metadata:
     registered: "2025-11-08"
-    last_updated: "2026-02-06"
+    last_updated: "2026-05-29"
 REQ-FILE_MANAGER_PAGE:
   type: REQ
   name: Multi-Pane File Manager Page
@@ -999,7 +1001,7 @@ ARCH-NEXTJS_FRAMEWORK:
   detail_file: architecture-decisions/ARCH-NEXTJS_FRAMEWORK.yaml
   metadata:
     registered: "2025-11-08"
-    last_updated: "2026-02-06"
+    last_updated: "2026-05-30"
 ARCH-REACT_VERSION:
   type: ARCH
   name: React 19.2 with Server Components
@@ -1059,7 +1061,7 @@ ARCH-APP_ROUTER:
   detail_file: architecture-decisions/ARCH-APP_ROUTER.yaml
   metadata:
     registered: "2025-11-08"
-    last_updated: "2026-02-06"
+    last_updated: "2026-05-30"
 ARCH-LAYOUT_PATTERN:
   type: ARCH
   name: Root Layout Pattern
@@ -1085,7 +1087,7 @@ ARCH-SERVER_COMPONENTS:
   detail_file: architecture-decisions/ARCH-SERVER_COMPONENTS.yaml
   metadata:
     registered: "2025-11-08"
-    last_updated: "2026-02-06"
+    last_updated: "2026-05-30"
 ARCH-CSS_VARIABLES:
   type: ARCH
   name: CSS Variables for Dark Mode Theming
@@ -1195,9 +1197,9 @@ ARCH-CLASS_OVERRIDES:
     last_updated: "2026-02-06"
 ARCH-CONFIG_DRIVEN_APPEARANCE:
   type: ARCH
-  name: Config-Driven Appearance for All Pages
+  name: Config-Driven Appearance for File Manager
   status: Active
-  description: Config-Driven Appearance for All Pages
+  description: site.yaml, theme.yaml, files.yaml drive file-manager appearance (jobs retired)
   cross_references:
     - IMPL-CONFIG_DRIVEN_APPEARANCE
     - REQ-CONFIG_DRIVEN_APPEARANCE
@@ -1206,7 +1208,7 @@ ARCH-CONFIG_DRIVEN_APPEARANCE:
   detail_file: architecture-decisions/ARCH-CONFIG_DRIVEN_APPEARANCE.yaml
   metadata:
     registered: "2025-11-08"
-    last_updated: "2026-02-06"
+    last_updated: "2026-05-29"
 ARCH-YAML_DATA_STORAGE:
   type: ARCH
   name: YAML Data Storage Pattern

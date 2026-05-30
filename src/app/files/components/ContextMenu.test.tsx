@@ -113,6 +113,7 @@ describe("[TEST-MOUSE_INTERACTION] ContextMenu Component", () => {
     expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
   });
 
+  // [IMPL-RENAME_DIALOG] [ARCH-KEYBIND_SYSTEM] [REQ-MOUSE_INTERACTION] [REQ-FILE_OPERATIONS]: how: ContextMenu calls onRename(file) with right-clicked file; hidden when marks non-empty
   it("calls onRename with file and onClose when rename clicked", () => {
     render(<ContextMenu {...defaultProps} />);
     

@@ -3,9 +3,9 @@
 
 import fs from "fs/promises";
 
+// [IMPL-COPY_ATTRS] [REQ-COPY_OPERATIONS] [REQ-FILE_OPERATIONS]: how: after copy apply utimes and chmod from source stat; ignore per-step failures
 /**
  * Preserve source file attributes on destination where possible.
- * [IMPL-COPY_ATTRS] [REQ-COPY_OPERATIONS]
  * Does not throw: each step is best-effort so copy still succeeds if
  * chmod/utimes are unsupported or denied (e.g. cross-fs, permissions).
  *

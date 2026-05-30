@@ -1,4 +1,4 @@
-// [REQ-FILE_SORTING_ADVANCED] [IMPL-SORT_FILTER]: SortDialog Shared/Share behavior
+// [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-LINKED_PANES]: workspace sharedSort; SortDialog Share copies draft; Shared applies sharedSort to focused pane only; new panes inherit sharedSort
 
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
@@ -9,7 +9,7 @@ const paneSort = { sortBy: "size" as const, sortDirection: "desc" as const, sort
 const sharedSort = DEFAULT_PANE_SORT;
 
 describe("SortDialog [REQ-FILE_SORTING_ADVANCED]", () => {
-  // [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED] SharedSortWorkspace — disable Share/Shared when pane matches shared
+  // [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED]: paneSortSettingsEqual returns true when sortBy sortDirection sortDirsFirst all match for Share/Shared disable logic
   it("disables Share and Shared when pane sort equals shared sort", () => {
     render(
       <SortDialog
@@ -29,7 +29,7 @@ describe("SortDialog [REQ-FILE_SORTING_ADVANCED]", () => {
     expect(screen.getByTestId("sort-dialog-shared")).toBeDisabled();
   });
 
-  // [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED] SharedSortWorkspace — enable when pane differs from shared
+  // how: pane sort differs from sharedSort so Share and Shared buttons are enabled
   it("enables Share and Shared when pane sort differs from shared", () => {
     render(
       <SortDialog
@@ -49,7 +49,7 @@ describe("SortDialog [REQ-FILE_SORTING_ADVANCED]", () => {
     expect(screen.getByTestId("sort-dialog-shared")).not.toBeDisabled();
   });
 
-  // [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED] [REQ-LINKED_PANES] SharedSortWorkspace — Shared invokes onApplyShared (singlePaneOnly at WorkspaceView)
+  // how: Shared clicked invokes onApplyShared and closes dialog (WorkspaceView wires singlePaneOnly)
   it("calls onApplyShared when Shared is clicked", () => {
     const onApplyShared = vi.fn();
     const onClose = vi.fn();
@@ -72,7 +72,7 @@ describe("SortDialog [REQ-FILE_SORTING_ADVANCED]", () => {
     expect(onClose).toHaveBeenCalled();
   });
 
-  // [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED] SharedSortWorkspace — Share copies draft sort to workspace sharedSort
+  // how: Share clicked passes draft sort triple to onShareToWorkspace without immediate resort
   it("calls onShareToWorkspace with draft settings when Share is clicked", () => {
     const onShare = vi.fn();
     render(

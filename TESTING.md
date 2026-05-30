@@ -64,7 +64,7 @@ When in watch mode, you can use these keyboard shortcuts:
 
 ```bash
 # Run specific test file
-npx vitest run src/app/page.test.tsx
+npx vitest run src/test/integration/app.test.tsx
 
 # Run tests matching pattern
 npx vitest run --testNamePattern="dark mode"
@@ -208,8 +208,11 @@ src/
 ├── app/
 │   ├── layout.tsx              # Application code
 │   ├── layout.test.tsx         # [REQ-ROOT_LAYOUT] [REQ-CONFIG_DRIVEN_UI] tests
-│   ├── page.tsx                # Application code
-│   └── page.test.tsx           # [REQ-HOME_PAGE] [REQ-CONFIG_DRIVEN_UI] tests
+│   ├── page.tsx                # Root redirect to /files [REQ-HOME_PAGE]
+│   └── files/                  # File manager routes and tests
+├── components/
+│   ├── NewTabLink.tsx          # Secure new-tab links [REQ-NAVIGATION_LINKS]
+│   └── NewTabLink.test.tsx     # [IMPL-EXTERNAL_LINKS] [REQ-NAVIGATION_LINKS] tests
 ├── lib/
 │   ├── config.ts               # Config loader module
 │   ├── config.types.ts         # Config TypeScript interfaces
@@ -236,9 +239,9 @@ Unit tests for the configuration system:
 
 Tests placed next to components they test:
 - `src/app/layout.test.tsx` - Layout structure, metadata from config, theme injection
-- `src/app/page.test.tsx` - Content from config, navigation, accessibility
+- `src/components/NewTabLink.test.tsx` - New-tab security (`target`, `rel`) and accessibility disclosure
 
-**Test**: Component rendering with config-driven assertions
+**Test**: Component rendering with config-driven assertions (root `/` redirect is covered in integration tests, not a co-located `page.test.tsx`)
 
 #### 3. Feature Tests (src/test/)
 
@@ -251,7 +254,7 @@ Tests for cross-cutting features:
 #### 4. Integration Tests (src/test/integration/)
 
 Tests for full application behavior:
-- `app.test.tsx` - Complete app rendering with config propagation
+- `app.test.tsx` - App Router structure, layout rendering, root redirect to `/files` [REQ-HOME_PAGE]
 
 **Test**: Multiple components working together, end-to-end config pipeline
 
@@ -267,6 +270,7 @@ Every test follows STDD methodology with semantic token references. Since v0.2.0
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { NewTabLink } from '@/components/NewTabLink';
 import { getSiteConfig, _resetConfigCache } from '../lib/config';
 
 beforeEach(() => {
@@ -278,10 +282,14 @@ const site = getSiteConfig();
 describe('Feature Name [REQ-FEATURE_NAME] [REQ-CONFIG_DRIVEN_UI]', () => {
   it('validates behavior from config [IMPL-IMPLEMENTATION_NAME]', () => {
     // [REQ-FEATURE_NAME] [REQ-CONFIG_DRIVEN_UI] Test description
-    render(<Component />);
+    const site = getSiteConfig();
+    render(<NewTabLink href={site.navigation.buttons[0].href}>Docs</NewTabLink>);
     
     // Assert against config values, not hard-coded strings
-    expect(screen.getByRole('heading')).toHaveTextContent(site.content.heading);
+    expect(screen.getByRole('link')).toHaveAttribute(
+      'rel',
+      site.navigation.security.rel,
+    );
   });
 });
 ```
@@ -292,13 +300,20 @@ describe('Feature Name [REQ-FEATURE_NAME] [REQ-CONFIG_DRIVEN_UI]', () => {
 
 **Examples**:
 ```typescript
-describe('Home Page [REQ-HOME_PAGE]', () => {
-  it('renders without errors [IMPL-HOME_PAGE]', () => {
-    // Test implementation
+describe('Server Component Rendering [ARCH-SERVER_COMPONENTS]', () => {
+  it('root page redirects to file manager [IMPL-HOME_PAGE]', () => {
+    // [IMPL-HOME_PAGE] [REQ-HOME_PAGE]: redirect("/files") — assert documented behavior;
+    // full redirect() flow is E2E-only in unit tests
+    expect(redirectsToFiles).toBe(true);
   });
-  
-  it('displays welcome heading [REQ-HOME_PAGE]', () => {
-    // Test implementation
+});
+
+describe('NewTabLink [IMPL-EXTERNAL_LINKS] [REQ-NAVIGATION_LINKS]', () => {
+  it('sets target and rel for secure new-tab navigation [REQ-NAVIGATION_LINKS]', () => {
+    render(<NewTabLink href="https://example.com">Docs</NewTabLink>);
+    const link = screen.getByRole('link');
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
   });
 });
 ```

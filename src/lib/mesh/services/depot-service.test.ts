@@ -1,4 +1,4 @@
-// [IMPL-MESH_DEPOT] [REQ-MESH_PLATFORM]: Depot CRUD unit tests — phases 3–5
+// [IMPL-MESH_DEPOT] [ARCH-MESH_LAYERED] [IMPL-MESH_CRUD] [REQ-MESH_PLATFORM]: Depot CRUD unit tests — validate add/update/remove, duplicate names, link cleanup, and discoverDepotCapabilities.
 
 import { describe, it, expect } from "vitest";
 import { isDomainValidationError } from "../domain";

@@ -1,4 +1,4 @@
-// [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: Top-level Parallel Bulk Operations with Progress: API routes for bulk operations, Promise.allSettled with progress callbacks
+// [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: client bulk copy/move/delete with confirm and progress dialogs; server Promise.allSettled per source via POST /api/files
 // Progress dialog for bulk operations
 
 "use client";
@@ -41,6 +41,7 @@ export default function ProgressDialog({
   isOpen,
   onClose,
 }: ProgressDialogProps) {
+  // [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: percentage bar, current file while in progress, error list, success/fail summary when complete, Close when done
   if (!isOpen) return null;
   
   const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;

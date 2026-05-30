@@ -1,4 +1,4 @@
-// [REQ-MESH_HARDENING]: Hardening tests — phase 29
+// [IMPL-MESH_HARDENING] [ARCH-MESH_LAYERED] [REQ-MESH_HARDENING] [REQ-MESH_PLATFORM]: Hardening unit tests — default config, retry backoff, concurrency limit, and bandwidth throttle delay.
 
 import { describe, it, expect, vi } from "vitest";
 import {

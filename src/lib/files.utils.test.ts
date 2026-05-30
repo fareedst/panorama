@@ -1,11 +1,11 @@
-// [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED]
+// [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED]: Client-side sort pipeline in files.utils and workspace Shared/Share sort in SortDialog and WorkspaceView
 // Tests for client-safe file utilities
 
 import { describe, test, expect } from "vitest";
 import { formatSize, sortFiles, getSortLabel, getSortDirectionSymbol, formatDateTime, formatAge } from "./files.utils";
 import type { FileStat } from "./files.types";
 
-// Test [REQ-FILE_LISTING] formatSize function
+// [IMPL-FILES_UTILS] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_LISTING]: how: binary scale 1024; units B through TB; zero returns "0 B"; sub-KB shows integer B; larger uses one decimal place
 describe("formatSize - REQ_FILE_LISTING", () => {
   test("formats zero bytes", () => {
     expect(formatSize(0)).toBe("0 B");
@@ -37,7 +37,7 @@ describe("formatSize - REQ_FILE_LISTING", () => {
   });
 });
 
-// Test [REQ-FILE_SORTING_ADVANCED] sortFiles function
+// [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED]: sortFiles copies input, applies dirsFirst directory layer then criterion comparator with asc/desc flip without mutating source array
 describe("sortFiles - REQ_FILE_SORTING_ADVANCED", () => {
   // Helper to create test files
   function createFile(

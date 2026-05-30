@@ -1,38 +1,41 @@
-# REQ detail — REQ-CONFIG_DRIVEN_APPEARANCE
 REQ-CONFIG_DRIVEN_APPEARANCE:
-  name: All Page Elements Appearance and Layout from Config
+  name: File Manager Appearance and Layout from Config
   category: Functional
   priority: P0
   status: Implemented
-  description: For the project to serve as a truly configurable template, ALL page elements must be dictated by configuration
+  description: All file-manager UI copy, layout defaults, theme-driven row icons/classes, and site metadata must be dictated by YAML configuration (site, theme, files). The application root redirects to /files; jobs tracker appearance is out of scope and was removed.
   rationale:
-    why: For the project to serve as a truly configurable template, ALL page elements must be dictated by configuration
+    why: Panorama serves as a configurable file-manager template without hard-coded presentation in components
     problems_solved:
       - Code changes required for customization
-      - Hard-coded classes and copy in components
-      - Incomplete template configurability
+      - Hard-coded classes and copy in file-manager components
+      - Obsolete jobs-page criteria after sole-purpose refactor
     benefits:
-      - Complete configurability
-      - No code changes for customization
-      - True template reusability
+      - Complete file-manager configurability from YAML
+      - No code changes for copy, layout defaults, or file-type icons
+      - Template reusability for other file-manager deployments
   satisfaction_criteria:
-    - criterion: 'Single source of truth: config files'
-    - criterion: Home and root layout use config for all appearance and layout
-    - criterion: Jobs pages use config for all appearance and layout
-    - criterion: Status badge colors defined in config
+    - criterion: 'Single source of truth: config/site.yaml, config/theme.yaml, config/files.yaml'
+    - criterion: File manager (/files) receives copy and layout from getFilesConfig without hard-coded user-facing strings for those fields
+    - criterion: File rows use getFileTypeConfig (theme.files.fileTypes) for icon and iconClass
+    - criterion: No jobs routes or config/jobs.yaml in the repository
+    - criterion: Root layout uses getSiteConfig for document title and description
   validation_criteria:
-    - method: Config testing
-      coverage: Changing config changes appearance without code changes
+    - method: Unit tests
+      coverage: src/lib/config.test.ts asserts merged files config, theme file types, and site metadata from YAML
     - method: Code inspection
-      coverage: No hard-coded user-facing text or layout classes in TSX
+      coverage: WorkspaceView and file UI consume config props; no hard-coded file-manager copy for configured fields
   traceability:
     architecture:
       - ARCH-CONFIG_DRIVEN_UI
       - ARCH-CONFIG_DRIVEN_APPEARANCE
     implementation:
-      - IMPL-CONFIG_LOADER
       - IMPL-CONFIG_DRIVEN_APPEARANCE
-    tests: []
+      - IMPL-CONFIG_LOADER
+      - IMPL-FILES_CONFIG_COMPLETE
+    tests:
+      - src/lib/config.test.ts
+      - src/app/layout.test.tsx
     code_annotations:
       - REQ-CONFIG_DRIVEN_APPEARANCE
   related_requirements:
@@ -45,10 +48,10 @@ REQ-CONFIG_DRIVEN_APPEARANCE:
       date: 2025-11-08T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-06T00:00:00.000Z
+      date: "2026-05-29T00:00:00.000Z"
       author: AI Agent
-      reason: Migration to v1.5.0
+      reason: LEAP align with IMPL/ARCH — file manager scope; jobs criteria removed
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: "2026-05-29T00:00:00.000Z"
       validator: AI Agent
-      result: pass
+      result: pass — satisfaction criteria match production and config tests

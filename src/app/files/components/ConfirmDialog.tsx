@@ -1,4 +1,4 @@
-// [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: Top-level Parallel Bulk Operations with Progress: API routes for bulk operations, Promise.allSettled with progress callbacks
+// [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: client bulk copy/move/delete with confirm and progress dialogs; server Promise.allSettled per source via POST /api/files
 // Confirmation dialog for destructive operations
 
 "use client";
@@ -7,7 +7,7 @@ import { useEffect } from "react";
 
 /**
  * File conflict detail for overwrite confirmation
- * [IMPL-OVERWRITE_PROMPT] [REQ-BULK_FILE_OPS]
+ * [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: scrollable yellow conflict panel lists each name with Existing (target), Selected (source), and comparison italic line
  */
 export interface FileConflict {
   /** Filename that conflicts */
@@ -56,7 +56,7 @@ export default function ConfirmDialog({
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
-  // Handle Escape key
+  // [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: Escape cancels; Enter confirms; optional scrollable conflict list; destructive red confirm for delete
   useEffect(() => {
     if (!isOpen) return;
     
@@ -96,7 +96,7 @@ export default function ConfirmDialog({
           {message}
         </p>
         
-        {/* Conflict Details [IMPL-OVERWRITE_PROMPT] */}
+        {/* [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: scrollable yellow conflict panel lists each name with Existing (target), Selected (source), and comparison italic line */}
         {conflicts && conflicts.length > 0 && (
           <div className="mb-6 border border-yellow-300 dark:border-yellow-700 rounded-md bg-yellow-50 dark:bg-yellow-900/20 p-4">
             <h3 className="text-sm font-semibold text-yellow-900 dark:text-yellow-100 mb-3">

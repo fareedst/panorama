@@ -1,4 +1,4 @@
-// [IMPL-MESH_POLICY] [REQ-MESH_PLATFORM]: Policy and filter tests — phase 7
+// [IMPL-MESH_POLICY] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: Path include/exclude glob filters, prefix path mapping, and delete-policy helpers for mesh sync planning and execution.
 
 import { describe, it, expect } from "vitest";
 import { defaultPolicy } from "../domain";
@@ -16,6 +16,7 @@ describe("PolicyService [IMPL-MESH_POLICY]", () => {
     expect(allowsDelete(policy)).toBe(false);
   });
 
+  // [IMPL-MESH_POLICY] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — evaluate filter list with globMatch; default allow when no filters; exclude match wins over include.
   it("include_filter_matches_expected_paths", () => {
     const filters = [{ mode: "include" as const, pattern: "*.txt" }];
     expect(pathMatchesFilter("/foo.txt", filters)).toBe(true);
@@ -36,6 +37,7 @@ describe("PolicyService [IMPL-MESH_POLICY]", () => {
     expect(pathMatchesFilter("/bad.tmp", filters)).toBe(false);
   });
 
+  // [IMPL-MESH_POLICY] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — rewrite path when it starts with mapping.fromPrefix; first matching mapping wins.
   it("path_mapping_translates_source_to_target", () => {
     const mapped = applyPathMapping("/src/file.txt", [
       { fromPrefix: "/src", toPrefix: "/dst" },
@@ -43,6 +45,7 @@ describe("PolicyService [IMPL-MESH_POLICY]", () => {
     expect(mapped).toBe("/dst/file.txt");
   });
 
+  // [IMPL-MESH_POLICY] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — return true only when policy.deletePolicy = allow.
   it("delete_policy_never_delete", () => {
     expect(allowsDelete(defaultPolicy())).toBe(false);
   });

@@ -1,61 +1,138 @@
 # IMPL-KEYBINDS essence pseudocode
 
-// [IMPL-KEYBINDS] [ARCH-KEYBIND_SYSTEM] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-REACT_SSR_STABILITY]: Top-level Keybinding Registry and Dispatcher: Keybinding registry with useMemo initialization and global keydown handler
+// [IMPL-KEYBINDS] [ARCH-KEYBIND_SYSTEM] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-REACT_SSR_STABILITY]: Config-driven keybinding registry, validation, event matching, and WorkspaceView dispatch to action handlers
 
 ## Summary contract
 
-// [IMPL-KEYBINDS] [ARCH-KEYBIND_SYSTEM] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-REACT_SSR_STABILITY]: bound module inputs, outputs, and shared data for all runtime blocks below
+// [IMPL-KEYBINDS] [ARCH-KEYBIND_SYSTEM] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-REACT_SSR_STABILITY]: how: load keybindings from files.yaml into singleton registry; match keydown to action; handlers Map in WorkspaceView executes actions
 
 CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-KEYBINDS
-  DATA: state and configuration per implementation_approach
+  INPUT: KeybindingConfig[] from server-loaded files config
+  OUTPUT: action string from matchKeybinding OR handler execution
+  DATA: KeybindingRegistry (keybindings, byAction, byCategory); module singleton registry
+  CONTROL: initialize before first render via useMemo; global keydown on window
 
-## LoadRegistry
+## LoadRegistryFromConfig
 
-// [IMPL-KEYBINDS] [ARCH-KEYBIND_SYSTEM] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-REACT_SSR_STABILITY]: parse keybindings yaml into action map
+// [IMPL-KEYBINDS] [ARCH-KEYBIND_SYSTEM] [REQ-KEYBOARD_SHORTCUTS_COMPLETE]: how: initializeKeybindingRegistry parses array, validates fields, builds lookup maps
 
-CONTRACT LoadRegistry
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT LoadRegistryFromConfig
+  INPUT: keybindingsConfig array
+  OUTPUT: KeybindingRegistry stored in module singleton
+  DATA: valid categories list; seenActions; seenKeys for duplicate detection
 
-PROCEDURE IMPL-KEYBINDS_LoadRegistry(context)
-  // READ keybindings config array
-  CALL READ keybindings config array
-  FOR EACH entry VALIDATE unique key plus modifiers
-  // BUILD Map action to handler registration key
-  CALL BUILD Map action to handler registration key
+PROCEDURE IMPL-KEYBINDS_LoadRegistryFromConfig(keybindingsConfig)
+  FOR EACH entry VALIDATE key, action, category required
+  IF category not in allowed set THEN record error
+  IF duplicate action THEN warn last wins
+  IF duplicate key combo THEN warn first match wins
+  BUILD byAction Map action to Keybinding
+  BUILD byCategory Map category to Keybinding[]
+  SET module registry singleton
+  LOG info count and category size
 
-## WorkspaceHandlerMap
+## LazyEmptyRegistryFallback
 
-// [IMPL-KEYBINDS] [ARCH-KEYBIND_SYSTEM] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-REACT_SSR_STABILITY]: WorkspaceView registers handlers per action id
+// [IMPL-KEYBINDS] [ARCH-KEYBIND_SYSTEM] [REQ-KEYBOARD_SHORTCUTS_COMPLETE]: how: getKeybindingRegistry returns empty maps when uninitialized with console warn
 
-CONTRACT WorkspaceHandlerMap
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT LazyEmptyRegistryFallback
+  INPUT: none
+  OUTPUT: empty KeybindingRegistry
+  DATA: registry null check
 
-PROCEDURE IMPL-KEYBINDS_WorkspaceHandlerMap(context)
-  ON useMemo BUILD handlers Map
-  FOR EACH keybinding LOOKUP handler by action string
-  ON keydown DISPATCH to focused handler
+PROCEDURE IMPL-KEYBINDS_LazyEmptyRegistryFallback()
+  IF registry is null
+  LOG warn registry not initialized
+  RETURN empty keybindings and empty maps
+
+## MatchKeybindingToAction
+
+// [IMPL-KEYBINDS] [ARCH-KEYBIND_SYSTEM] [REQ-KEYBOARD_SHORTCUTS_COMPLETE]: how: iterate registry order; first matching binding wins; return action or null
+
+CONTRACT MatchKeybindingToAction
+  INPUT: KeyboardEvent
+  OUTPUT: action string OR null
+  DATA: matchesKeybinding helper
+
+PROCEDURE IMPL-KEYBINDS_MatchKeybindingToAction(event)
+  FOR EACH kb IN registry.keybindings IN order
+    IF matchesKeybinding(event, kb) THEN RETURN kb.action
+  RETURN null
+
+## ModifierAndKeyMatchingRules
+
+// how: single-char keys case-insensitive; special keys case-sensitive; all declared modifiers must match exactly (including absence)
+
+PROCEDURE IMPL-KEYBINDS_ModifierAndKeyMatchingRules(event, binding)
+  IF binding.key length 1 THEN compare lowercased event.key
+  ELSE compare event.key exact to binding.key
+  FOR ctrl shift alt meta IN binding.modifiers
+    REQUIRE event modifier flags equal declared presence
+  RETURN true only if all checks pass
+
+## WorkspaceSynchronousInit
+
+// [IMPL-KEYBINDS] [ARCH-KEYBIND_SYSTEM] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-REACT_SSR_STABILITY]: how: WorkspaceView useMemo calls initializeKeybindingRegistry once per keybindings prop before children render
+
+CONTRACT WorkspaceSynchronousInit
+  INPUT: keybindings prop from files page server component
+  OUTPUT: registry ready for HelpOverlay and CommandPalette
+  DATA: useMemo dependency [keybindings]
+
+PROCEDURE IMPL-KEYBINDS_WorkspaceSynchronousInit(keybindings)
+  useMemo ON mount or keybindings change
+  CALL initializeKeybindingRegistry(keybindings)
+  ASSERT NOT useEffect for init (avoids race with child render)
+
+## GlobalKeydownDispatch
+
+// [IMPL-KEYBINDS] [ARCH-KEYBIND_SYSTEM] [REQ-KEYBOARD_SHORTCUTS_COMPLETE]: how: window keydown listener skips inputs and open modals; preventDefault when handler exists
+
+CONTRACT GlobalKeydownDispatch
+  INPUT: KeyboardEvent, actionHandlers Map
+  OUTPUT: invoked handler side effect OR warn no handler
+  DATA: showHelp, showCommandPalette, showFinderDialog, showSearchDialog flags
+
+PROCEDURE IMPL-KEYBINDS_GlobalKeydownDispatch(event, actionHandlers)
+  IF target is input or textarea THEN RETURN
+  IF help OR command palette OR finder OR search dialog open THEN RETURN
+  action := matchKeybinding(event)
+  IF action is null THEN RETURN
+  handler := actionHandlers.get(action)
+  IF handler exists THEN preventDefault AND call handler
+  ELSE LOG warn no handler for action
+
+## HelpOverlayAndCommandPalette
+
+// [IMPL-KEYBINDS] [ARCH-KEYBIND_SYSTEM] [REQ-KEYBOARD_SHORTCUTS_COMPLETE]: how: HelpOverlay groups by category via getKeybindingsByCategory; CommandPalette fuzzy search; formatKeyCombo for display keys
+
+CONTRACT HelpOverlayAndCommandPalette
+  INPUT: registry after init
+  OUTPUT: categorized help list; palette selection executes handleExecuteAction
+  DATA: getAllCategories, getCategoryLabel, formatKeyCombo
+
+PROCEDURE IMPL-KEYBINDS_HelpOverlayAndCommandPalette()
+  HelpOverlay READ categories from registry
+  USE formatKeyCombo as React key for duplicate actions per action id
+  CommandPalette FILTER keybindings by query AND arrow navigation
+  ON select CALL handleExecuteAction(action) in WorkspaceView
 
 ## CodeLocations
 
-// [IMPL-KEYBINDS] [ARCH-KEYBIND_SYSTEM] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-REACT_SSR_STABILITY]: map implementing and verifying source files for this IMPL
+// [IMPL-KEYBINDS] [ARCH-KEYBIND_SYSTEM] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-REACT_SSR_STABILITY]: map implementing and verifying source files
 
-// FILE: src/lib/files.keybinds.ts — Keybinding registry, matcher, formatters, validation (320 lines)
-// FILE: src/app/files/components/HelpOverlay.tsx — Help overlay component (130 lines)
-// FILE: src/app/files/components/CommandPalette.tsx — Command palette component (220 lines)
-// FILE: src/app/files/WorkspaceView.tsx — useMemo initialization of registry (fixed from useEffect)
-// FILE: config/files.yaml — Keybindings configuration (31 keybindings with valid categories)
+// FILE: src/lib/files.keybinds.ts — registry, matchKeybinding, formatters
+// FILE: src/lib/files.keybinds.test.ts — unit tests for load, match, categories
+// FILE: src/app/files/WorkspaceView.tsx — useMemo init, keydown effect, actionHandlers
+// FILE: src/app/files/components/HelpOverlay.tsx — categorized help UI
+// FILE: src/app/files/components/CommandPalette.tsx — fuzzy command UI
+// FILE: config/files.yaml — keybindings section
 
 ## ErrorHandling
 
-// [IMPL-KEYBINDS] [ARCH-KEYBIND_SYSTEM] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-REACT_SSR_STABILITY]: surface recoverable failures without breaking pane invariants
+// [IMPL-KEYBINDS] [ARCH-KEYBIND_SYSTEM] [REQ-KEYBOARD_SHORTCUTS_COMPLETE]: how: validation errors logged; invalid entries still load where possible; missing handler is warn-only
 
 PROCEDURE IMPL-KEYBINDS_on_error(context, error)
-  LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
-  ELSE propagate error to caller
+  LOG validation errors array on load
+  ON match with no handler LOG warn and do not throw
+  ON uninitialized registry RETURN empty maps

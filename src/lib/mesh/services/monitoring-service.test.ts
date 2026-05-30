@@ -1,4 +1,4 @@
-// [IMPL-MESH_MONITORING] [ARCH-MESH_LAYERED] [REQ-MESH_MONITORING] [REQ-MESH_PLATFORM]: Monitoring summary unit tests
+// [IMPL-MESH_MONITORING] [ARCH-MESH_LAYERED] [REQ-MESH_MONITORING] [REQ-MESH_PLATFORM]: Aggregate operational dashboard summary from mesh records, sync sessions, and pending conflict count.
 
 import { describe, it, expect } from "vitest";
 import { MonitoringService } from "./monitoring-service";
@@ -6,6 +6,7 @@ import { minimalMesh, minimalMeshSnapshot } from "../domain/domain.test-helpers"
 import type { MeshRecord } from "../mesh-record";
 
 describe("MonitoringService [IMPL-MESH_MONITORING]", () => {
+  // [IMPL-MESH_MONITORING] [ARCH-MESH_LAYERED] [REQ-MESH_MONITORING] [REQ-MESH_PLATFORM]: how — count active and failed sessions; pass through pending conflict count; map each mesh record to health row.
   it("monitoring_api_returns_summary", () => {
     const svc = new MonitoringService();
     const mesh = minimalMesh({
@@ -27,6 +28,7 @@ describe("MonitoringService [IMPL-MESH_MONITORING]", () => {
     expect(summary.meshHealth[0]?.name).toBe("Monitored");
   });
 
+  // [IMPL-MESH_MONITORING] [ARCH-MESH_LAYERED] [REQ-MESH_MONITORING] [REQ-MESH_PLATFORM]: how — return sessions sorted by meshSnapshot.capturedAt descending (newest first).
   it("session_history_sorts_by_snapshot_time", () => {
     const svc = new MonitoringService();
     const older = {

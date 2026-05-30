@@ -1,106 +1,87 @@
 # IMPL-TEST_SETUP essence pseudocode
 
-// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: Top-level Test Setup Implementation: Create test setup file with utilities and mocks
-
-## Summary contract
-
-// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: bound module inputs, outputs, and shared data for all runtime blocks below
-
-CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-TEST_SETUP
-  DATA: state and configuration per implementation_approach
+// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: Global Vitest setup — jest-dom matchers, functional localStorage, ResizeObserver polyfill, scrollIntoView and Next.js mocks
 
 ## ConfigureTestingLibrary
 
-// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: Configure testing-library
+// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: import @testing-library/jest-dom to register DOM matchers on expect before any test file runs
 
 CONTRACT ConfigureTestingLibrary
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+  INPUT: Vitest pre-test bootstrap
+  OUTPUT: expect(...).toBeInTheDocument and related matchers available
+  DATA: side-effect import only
 
-PROCEDURE IMPL-TEST_SETUP_ConfigureTestingLibrary(context)
-  // Configure testing-library
-  CALL Configure testing-library
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## CreateTestSetupTs
-
-// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: Create test/setup.ts
-
-CONTRACT CreateTestSetupTs
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-TEST_SETUP_CreateTestSetupTs(context)
-  // Create test/setup.ts
-  CALL Create test/setup.ts
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## MockNextNavigation
-
-// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: Mock next/navigation
-
-CONTRACT MockNextNavigation
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-TEST_SETUP_MockNextNavigation(context)
-  // Mock next/navigation
-  CALL Mock next/navigation
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## MockWindowMatchMedia
-
-// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: Mock window.matchMedia
-
-CONTRACT MockWindowMatchMedia
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-TEST_SETUP_MockWindowMatchMedia(context)
-  // Mock window.matchMedia
-  CALL Mock window.matchMedia
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## ResizeObserverPolyfill
-
-// [IMPL-TEST_SETUP] [IMPL-LAYOUT_CALCULATOR] [REQ-MULTI_PANE_LAYOUT] [REQ-BUILD_SYSTEM]: how global ResizeObserver polyfill in setup.ts enables useElementSize and WorkspaceView layout tests in jsdom
-
-CONTRACT ResizeObserverPolyfill
-  INPUT: Vitest/jsdom environment without native ResizeObserver
-  OUTPUT: global ResizeObserver that observes element clientWidth/clientHeight on observe()
-  DATA: src/test/setup.ts install before component tests run
-
-PROCEDURE IMPL-TEST_SETUP_ResizeObserverPolyfill(context)
-  IF globalThis.ResizeObserver is undefined
-  THEN install polyfill class with observe disconnect unobserve
-  ON observe READ HTMLElement clientWidth and clientHeight
-  INVOKE callback with contentRect matching client dimensions
-  // how: WorkspaceView.toolbar-compact and useElementSize tests rely on observer or per-test mocks
+PROCEDURE IMPL-TEST_SETUP_ConfigureTestingLibrary()
+  IMPORT '@testing-library/jest-dom'
 
 ## FunctionalLocalStorage
 
-// [IMPL-TEST_SETUP] [IMPL-FILE_SEARCH] [REQ-BUILD_SYSTEM]: Replace non-functional Node 22 global localStorage with in-memory Storage for Vitest/jsdom.
+// [IMPL-TEST_SETUP] [IMPL-FILE_SEARCH] [REQ-BUILD_SYSTEM]: replace non-functional Node 22 global localStorage with in-memory Storage for Vitest/jsdom
+
+CONTRACT FunctionalLocalStorage
+  INPUT: globalThis.localStorage and optional window.localStorage
+  OUTPUT: working getItem/setItem/removeItem/clear/key/length for SearchHistory and BookmarkManager tests
+  DATA: createInMemoryLocalStorage record store
 
 PROCEDURE IMPL-TEST_SETUP_FunctionalLocalStorage()
   IF globalThis.localStorage exists AND getItem is not function
-  THEN assign createInMemoryLocalStorage to globalThis.localStorage
-  // how: Enables SearchHistory and BookmarkManager component tests without quota errors.
+    THEN assign createInMemoryLocalStorage() to globalThis.localStorage AND window.localStorage when window defined
+  ELSE IF already functional THEN RETURN without change
+
+## ResizeObserverPolyfill
+
+// [IMPL-TEST_SETUP] [IMPL-LAYOUT_CALCULATOR] [REQ-MULTI_PANE_LAYOUT] [REQ-BUILD_SYSTEM]: install ResizeObserver when undefined; observe reads HTMLElement clientWidth/clientHeight into callback contentRect
+
+CONTRACT ResizeObserverPolyfill
+  INPUT: jsdom without native ResizeObserver
+  OUTPUT: global ResizeObserver class with observe/disconnect/unobserve
+  DATA: used by useElementSize and WorkspaceView.toolbar-compact layout tests
+
+PROCEDURE IMPL-TEST_SETUP_ResizeObserverPolyfill()
+  IF globalThis.ResizeObserver is undefined
+    THEN define class with constructor(callback)
+    ON observe(element) INVOKE callback with contentRect width/height from client dimensions
+    ON unobserve/disconnect NO-OP
+
+## ScrollIntoViewMock
+
+// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: stub Element.prototype.scrollIntoView for FilePane scroll tests in jsdom
+
+CONTRACT ScrollIntoViewMock
+  INPUT: Vitest vi.fn
+  OUTPUT: scrollIntoView callable without jsdom implementation error
+  DATA: Element.prototype.scrollIntoView
+
+PROCEDURE IMPL-TEST_SETUP_ScrollIntoViewMock()
+  ASSIGN Element.prototype.scrollIntoView := vi.fn()
+
+## MockNextFontGoogle
+
+// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM] [REQ-FONT_SYSTEM]: vi.mock next/font/google returning className variable style objects matching Geist and Geist_Mono shape
+
+CONTRACT MockNextFontGoogle
+  INPUT: Vitest module mock registry
+  OUTPUT: RootLayout font imports resolve in unit tests without Next webpack context
+  DATA: Geist → mock-geist-sans + --font-geist-sans; Geist_Mono → mock-geist-mono + --font-geist-mono
+
+PROCEDURE IMPL-TEST_SETUP_MockNextFontGoogle()
+  REGISTER vi.mock('next/font/google') returning factory objects for Geist and Geist_Mono
+
+## MockNextNavigation
+
+// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM] [IMPL-WORKSPACE_MESH_BRIDGE]: mock next/navigation useRouter push/replace and usePathname /files for WorkspaceView mesh redirect tests
+
+CONTRACT MockNextNavigation
+  INPUT: Vitest module mock registry
+  OUTPUT: client components using useRouter do not throw in jsdom
+  DATA: usePathname '/files', useSearchParams empty URLSearchParams, router methods vi.fn
+
+PROCEDURE IMPL-TEST_SETUP_MockNextNavigation()
+  REGISTER vi.mock('next/navigation') with useRouter stub object and fixed pathname
 
 ## CodeLocations
 
-// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: Implementing files map — `src/test/setup.ts` (testing-library, localStorage shim, ResizeObserver polyfill, next/font mock, matchMedia).
+// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: map implementing source for this IMPL
 
-## ErrorHandling
-
-// [IMPL-TEST_SETUP] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: surface recoverable failures without breaking pane invariants
-
-PROCEDURE IMPL-TEST_SETUP_on_error(context, error)
-  LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
-  ELSE propagate error to caller
+// FILE: src/test/setup.ts — all global mocks and polyfills above
+// FILE: src/test/utils.tsx — re-exports Testing Library helpers (see also IMPL-TEST_SETUP consumers)

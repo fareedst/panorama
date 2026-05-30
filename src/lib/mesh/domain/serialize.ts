@@ -10,13 +10,13 @@ import type {
 } from "./types";
 import { validateCredentialReference, validateMesh } from "./validators";
 
-// how: Emit id and label only on DTO (no secret field).
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Emit id and label only on DTO (no secret field).
 
 export function toDtoCredentialReference(ref: CredentialReference): Record<string, unknown> {
   return { id: ref.id, label: ref.label };
 }
 
-// how: Deserialize DTO by delegating to VALIDATE_CREDENTIAL_REFERENCE (intra-IMPL call).
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Deserialize DTO by delegating to VALIDATE_CREDENTIAL_REFERENCE (intra-IMPL call).
 
 export function fromDtoCredentialReference(
   dto: unknown,
@@ -24,7 +24,7 @@ export function fromDtoCredentialReference(
   return validateCredentialReference(dto);
 }
 
-// how: Map validated Depot entity to JSON-safe DTO for mesh serialization.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Map validated Depot entity to JSON-safe DTO for mesh serialization.
 
 export function toDtoDepot(depot: Depot): Record<string, unknown> {
   return {
@@ -37,7 +37,7 @@ export function toDtoDepot(depot: Depot): Record<string, unknown> {
   };
 }
 
-// how: Map validated SyncLink entity to JSON-safe DTO for mesh serialization.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Map validated SyncLink entity to JSON-safe DTO for mesh serialization.
 
 export function toDtoSyncLink(link: SyncLink): Record<string, unknown> {
   return {
@@ -48,14 +48,14 @@ export function toDtoSyncLink(link: SyncLink): Record<string, unknown> {
   };
 }
 
-// how: Map validated Policy entity to JSON-safe DTO embedded in mesh DTO.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Map validated Policy entity to JSON-safe DTO embedded in mesh DTO.
 
 export function toDtoPolicy(policy: Policy): Record<string, unknown> {
   const { deletePolicy, conflictPolicy, retryMaxAttempts, verificationMode } = policy;
   return { deletePolicy, conflictPolicy, retryMaxAttempts, verificationMode };
 }
 
-// how: Serialize mesh by mapping depots, links, and policy to DTO parts.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Serialize mesh by mapping depots, links, and policy to DTO parts.
 
 export function toDtoMesh(mesh: Mesh): Record<string, unknown> {
   return {
@@ -69,7 +69,7 @@ export function toDtoMesh(mesh: Mesh): Record<string, unknown> {
   };
 }
 
-// how: Deserialize mesh DTO by CALL VALIDATE_MESH so invalid_core_objects_are_rejected on FROM_DTO.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Deserialize mesh DTO by CALL VALIDATE_MESH so invalid_core_objects_are_rejected on FROM_DTO.
 
 export function fromDtoMesh(dto: unknown): Mesh | DomainValidationError {
   return validateMesh(dto);

@@ -1,45 +1,45 @@
 # IMPL-ROOT_LAYOUT essence pseudocode
 
-// [IMPL-ROOT_LAYOUT] [ARCH-LAYOUT_PATTERN] [REQ-ROOT_LAYOUT]: Top-level Root Layout Implementation: Create layout.tsx with html/body tags, font variables, and metadata
+// [IMPL-ROOT_LAYOUT] [ARCH-LAYOUT_PATTERN] [REQ-ROOT_LAYOUT]: Root layout server component — metadata export, html/body shell, font variable classes, children slot
 
-## Summary contract
+## ExportMetadataFromSiteConfig
 
-// [IMPL-ROOT_LAYOUT] [ARCH-LAYOUT_PATTERN] [REQ-ROOT_LAYOUT]: bound module inputs, outputs, and shared data for all runtime blocks below
+// [IMPL-ROOT_LAYOUT] [ARCH-LAYOUT_PATTERN] [REQ-ROOT_LAYOUT] [REQ-CONFIG_DRIVEN_UI]: export metadata object from getSiteConfig at module load for Next.js Metadata API
 
-CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-ROOT_LAYOUT
-  DATA: state and configuration per implementation_approach
+CONTRACT ExportMetadataFromSiteConfig
+  INPUT: site config YAML via getSiteConfig()
+  OUTPUT: exported metadata { title, description }
+  DATA: siteConfig.metadata.title, siteConfig.metadata.description
 
-## RootShell
+PROCEDURE IMPL-ROOT_LAYOUT_ExportMetadataFromSiteConfig()
+  siteConfig := getSiteConfig()
+  EXPORT metadata.title := siteConfig.metadata.title
+  EXPORT metadata.description := siteConfig.metadata.description
 
-// [IMPL-ROOT_LAYOUT] [ARCH-LAYOUT_PATTERN] [REQ-ROOT_LAYOUT]: wrap app with fonts theme and children slot
+## RootShellDocumentStructure
 
-CONTRACT RootShell
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+// [IMPL-ROOT_LAYOUT] [ARCH-LAYOUT_PATTERN] [REQ-ROOT_LAYOUT] [REQ-CONFIG_DRIVEN_UI] [REQ-FONT_SYSTEM]: render html lang from site config, head theme style injection, body with Geist font variables and children
 
-PROCEDURE IMPL-ROOT_LAYOUT_RootShell(context)
-  // LOAD root layout metadata
-  CALL LOAD root layout metadata
-  // INJECT theme CSS variables
-  CALL INJECT theme CSS variables
-  // RENDER html body with children
-  CALL RENDER html body with children
+CONTRACT RootShellDocumentStructure
+  INPUT: children ReactNode
+  OUTPUT: html document wrapping all app routes
+  DATA: locale, geistSans.variable, geistMono.variable, themeCss from generateThemeCss(getThemeConfig())
+
+PROCEDURE IMPL-ROOT_LAYOUT_RootShellDocumentStructure(children)
+  themeConfig := getThemeConfig()
+  themeCss := generateThemeCss(themeConfig)
+  locale := getSiteConfig().locale
+  RETURN
+    html lang=locale
+      head
+        style dangerouslySetInnerHTML themeCss
+      body className = geistSans.variable + geistMono.variable + antialiased
+        RENDER children
 
 ## CodeLocations
 
 // [IMPL-ROOT_LAYOUT] [ARCH-LAYOUT_PATTERN] [REQ-ROOT_LAYOUT]: map implementing and verifying source files for this IMPL
 
-// FILE: src/app/layout.tsx — Root layout component
-// FUNCTION: RootLayout in src/app/layout.tsx
-
-## ErrorHandling
-
-// [IMPL-ROOT_LAYOUT] [ARCH-LAYOUT_PATTERN] [REQ-ROOT_LAYOUT]: surface recoverable failures without breaking pane invariants
-
-PROCEDURE IMPL-ROOT_LAYOUT_on_error(context, error)
-  LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
-  ELSE propagate error to caller
+// FILE: src/app/layout.tsx — RootLayout default export and metadata export
+// FILE: src/app/layout.test.tsx — children render, structure, metadata from config
+// FILE: src/test/integration/app.test.tsx — layout composition integration

@@ -1,5 +1,4 @@
-// [REQ-MESH_GUI] [IMPL-MESH_GUI] [ARCH-MESH_LAYERED]: Mesh list component tests
-// [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE]: note and save-time columns from bridge helpers
+// [IMPL-MESH_GUI] [ARCH-MESH_LAYERED] [REQ-MESH_GUI] [REQ-MESH_PLATFORM]: Mesh list component tests — name/status/depot count, note and save time columns, sortable headers, archived filter.
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor, within } from "@testing-library/react";

@@ -1,4 +1,4 @@
-// [IMPL-MESH_LOCAL_CONNECTOR] [REQ-MESH_REAL_CONNECTORS] [REQ-MESH_PLATFORM]: Local FS connector — phase 28
+// [IMPL-MESH_CONNECTOR] [ARCH-MESH_LAYERED] [REQ-MESH_REAL_CONNECTORS] [REQ-MESH_PLATFORM]: Real FS implementation for local depots with basePath confinement.
 
 import {
   existsSync,

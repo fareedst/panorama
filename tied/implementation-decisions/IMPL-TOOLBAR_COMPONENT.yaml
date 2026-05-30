@@ -82,7 +82,7 @@ IMPL-TOOLBAR_COMPONENT:
   metadata:
     registered: 2026-02-08T00:00:00.000Z
     last_updated:
-      date: "2026-05-29T00:00:00.000Z"
+      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — vocabulary see_also back-link
+      reason: Trim stub blocks; align with production toolbar components
   essence_pseudocode_path: implementation-decisions/IMPL-TOOLBAR_COMPONENT-pseudocode.md

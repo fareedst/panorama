@@ -12,7 +12,7 @@ interface DisplaySpecSelectorProps {
   onManage: () => void;
 }
 
-/** [IMPL-PANE_DISPLAY_FILTER_UI] PANE_HEADER_SELECTOR — dropdown for active display spec */
+/** [IMPL-PANE_DISPLAY_FILTER_UI] [REQ-PANE_DISPLAY_FILTER]: how: FilePane shows DisplaySpecSelector dropdown; when active spec show Filter label and optional Hidden count from hiddenCount */
 export function DisplaySpecSelector({
   specs,
   activeSpecId,

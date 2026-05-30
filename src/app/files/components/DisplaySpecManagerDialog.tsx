@@ -30,7 +30,7 @@ function emptyDraft(): Draft {
   return { name: "", description: "", rules: [] };
 }
 
-/** [IMPL-PANE_DISPLAY_FILTER_UI] MANAGER_DIALOG_CRUD — create, save, duplicate, delete catalog specs */
+/** [IMPL-PANE_DISPLAY_FILTER_UI] [IMPL-DISPLAY_SPEC_STORE] [REQ-PANE_DISPLAY_FILTER]: how: DisplaySpecManagerDialog create/save/rename/duplicate/delete; validation errors inline; confirm when spec used by multiple panes */
 function DisplaySpecManagerDialogBody({
   onClose,
   store,

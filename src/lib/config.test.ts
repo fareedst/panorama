@@ -27,7 +27,7 @@ beforeEach(() => {
 // Config loading and defaults
 // ---------------------------------------------------------------------------
 
-// [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Cache parsed configs
+// [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: return cached SiteConfig or load config/site.yaml merged with DEFAULT_SITE_CONFIG then cache
 
 describe("getSiteConfig [REQ-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]", () => {
   it("returns a complete SiteConfig object", () => {
@@ -40,7 +40,7 @@ describe("getSiteConfig [REQ-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]", () => {
     expect(config.navigation).toBeDefined();
   });
 
-  // [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Both support partial configs with defaults
+  // [IMPL-YAML_CONFIG] [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: DEFAULT_SITE_CONFIG and DEFAULT_THEME_CONFIG in config.ts supply fallbacks; getSiteConfig/getThemeConfig deep-merge user YAML then cache
 
   it("loads metadata from config [IMPL-YAML_CONFIG]", () => {
     const config = getSiteConfig();
@@ -48,14 +48,14 @@ describe("getSiteConfig [REQ-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]", () => {
     expect(config.metadata.description).toContain("file manager");
   });
 
-  // [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Both support partial configs with defaults
+  // [IMPL-YAML_CONFIG] [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: DEFAULT_SITE_CONFIG and DEFAULT_THEME_CONFIG in config.ts supply fallbacks; getSiteConfig/getThemeConfig deep-merge user YAML then cache
 
   it("loads locale from config [IMPL-YAML_CONFIG]", () => {
     const config = getSiteConfig();
     expect(config.locale).toBe("en");
   });
 
-  // [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Both support partial configs with defaults
+  // [IMPL-YAML_CONFIG] [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: DEFAULT_SITE_CONFIG and DEFAULT_THEME_CONFIG in config.ts supply fallbacks; getSiteConfig/getThemeConfig deep-merge user YAML then cache
 
   it("loads branding from config [IMPL-YAML_CONFIG]", () => {
     const config = getSiteConfig();
@@ -65,7 +65,7 @@ describe("getSiteConfig [REQ-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]", () => {
     expect(config.branding.logo.height).toBe(20);
   });
 
-  // [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Both support partial configs with defaults
+  // [IMPL-YAML_CONFIG] [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: DEFAULT_SITE_CONFIG and DEFAULT_THEME_CONFIG in config.ts supply fallbacks; getSiteConfig/getThemeConfig deep-merge user YAML then cache
 
   it("loads content from config [IMPL-YAML_CONFIG]", () => {
     const config = getSiteConfig();
@@ -73,7 +73,7 @@ describe("getSiteConfig [REQ-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]", () => {
     expect(config.content.description).toContain("{templates}");
   });
 
-  // [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Both support partial configs with defaults
+  // [IMPL-YAML_CONFIG] [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: DEFAULT_SITE_CONFIG and DEFAULT_THEME_CONFIG in config.ts supply fallbacks; getSiteConfig/getThemeConfig deep-merge user YAML then cache
 
   it("loads navigation from config [IMPL-YAML_CONFIG]", () => {
     const config = getSiteConfig();
@@ -85,7 +85,7 @@ describe("getSiteConfig [REQ-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]", () => {
     expect(config.navigation.security.rel).toBe("noopener noreferrer");
   });
 
-  // [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Cache parsed configs
+  // [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: return cached SiteConfig or load config/site.yaml merged with DEFAULT_SITE_CONFIG then cache
 
   it("caches the result on subsequent calls [IMPL-CONFIG_LOADER]", () => {
     const config1 = getSiteConfig();
@@ -94,7 +94,7 @@ describe("getSiteConfig [REQ-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]", () => {
     expect(config1).toBe(config2);
   });
 
-  // [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Cache parsed configs
+  // [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: test-only reset clears all module caches for isolation between tests
 
   it("returns fresh config after cache reset [IMPL-CONFIG_LOADER]", () => {
     const config1 = getSiteConfig();
@@ -107,7 +107,7 @@ describe("getSiteConfig [REQ-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]", () => {
   });
 });
 
-// [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Cache parsed configs
+// [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: return cached ThemeConfig or load config/theme.yaml merged with DEFAULT_THEME_CONFIG then cache
 
 describe("getThemeConfig [REQ-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]", () => {
   it("returns a complete ThemeConfig object", () => {
@@ -120,7 +120,7 @@ describe("getThemeConfig [REQ-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]", () => {
     expect(config.overrides).toBeDefined();
   });
 
-  // [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Both support partial configs with defaults
+  // [IMPL-YAML_CONFIG] [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: DEFAULT_SITE_CONFIG and DEFAULT_THEME_CONFIG in config.ts supply fallbacks; getSiteConfig/getThemeConfig deep-merge user YAML then cache
 
   it("loads light mode colors [IMPL-YAML_CONFIG]", () => {
     const config = getThemeConfig();
@@ -128,7 +128,7 @@ describe("getThemeConfig [REQ-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]", () => {
     expect(config.colors.light.foreground).toBe("#171717");
   });
 
-  // [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Both support partial configs with defaults
+  // [IMPL-YAML_CONFIG] [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: DEFAULT_SITE_CONFIG and DEFAULT_THEME_CONFIG in config.ts supply fallbacks; getSiteConfig/getThemeConfig deep-merge user YAML then cache
 
   it("loads dark mode colors [IMPL-YAML_CONFIG]", () => {
     const config = getThemeConfig();
@@ -136,7 +136,7 @@ describe("getThemeConfig [REQ-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]", () => {
     expect(config.colors.dark.foreground).toBe("#ededed");
   });
 
-  // [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Both support partial configs with defaults
+  // [IMPL-YAML_CONFIG] [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: DEFAULT_SITE_CONFIG and DEFAULT_THEME_CONFIG in config.ts supply fallbacks; getSiteConfig/getThemeConfig deep-merge user YAML then cache
 
   it("loads font configuration [IMPL-YAML_CONFIG]", () => {
     const config = getThemeConfig();
@@ -145,7 +145,7 @@ describe("getThemeConfig [REQ-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]", () => {
     expect(config.fonts.mono.variable).toBe("--font-geist-mono");
   });
 
-  // [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Both support partial configs with defaults
+  // [IMPL-YAML_CONFIG] [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: DEFAULT_SITE_CONFIG and DEFAULT_THEME_CONFIG in config.ts supply fallbacks; getSiteConfig/getThemeConfig deep-merge user YAML then cache
 
   it("loads spacing configuration [IMPL-YAML_CONFIG]", () => {
     const config = getThemeConfig();
@@ -155,7 +155,7 @@ describe("getThemeConfig [REQ-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]", () => {
     expect(config.spacing.buttonGap).toBe("4");
   });
 
-  // [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Both support partial configs with defaults
+  // [IMPL-YAML_CONFIG] [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: DEFAULT_SITE_CONFIG and DEFAULT_THEME_CONFIG in config.ts supply fallbacks; getSiteConfig/getThemeConfig deep-merge user YAML then cache
 
   it("loads sizing configuration [IMPL-YAML_CONFIG]", () => {
     const config = getThemeConfig();
@@ -164,7 +164,7 @@ describe("getThemeConfig [REQ-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]", () => {
     expect(config.sizing.buttonDesktopWidth).toBe("158px");
   });
 
-  // [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Cache parsed configs
+  // [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: return cached ThemeConfig or load config/theme.yaml merged with DEFAULT_THEME_CONFIG then cache
 
   it("caches the result on subsequent calls [IMPL-CONFIG_LOADER]", () => {
     const config1 = getThemeConfig();
@@ -177,7 +177,7 @@ describe("getThemeConfig [REQ-CONFIG_DRIVEN_UI] [IMPL-CONFIG_LOADER]", () => {
 // Deep merge utility
 // ---------------------------------------------------------------------------
 
-// [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Cache parsed configs
+// [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: deep-merge partial user YAML into defaults without mutating inputs; arrays replace entirely
 
 describe("deepMerge [IMPL-CONFIG_LOADER]", () => {
   it("returns target when source is empty", () => {
@@ -237,7 +237,7 @@ describe("deepMerge [IMPL-CONFIG_LOADER]", () => {
 // generateThemeCss
 // ---------------------------------------------------------------------------
 
-// [IMPL-THEME_INJECTION] [ARCH-THEME_INJECTION] [REQ-CONFIG_DRIVEN_UI]: Generate CSS variable declarations
+// [IMPL-THEME_INJECTION] [ARCH-THEME_INJECTION] [REQ-CONFIG_DRIVEN_UI]: generateThemeCss maps light and dark color entries to :root variables and prefers-color-scheme dark block
 
 describe("generateThemeCss [REQ-CONFIG_DRIVEN_UI] [IMPL-THEME_INJECTION]", () => {
   it("generates valid CSS with light and dark mode variables", () => {
@@ -274,7 +274,7 @@ describe("generateThemeCss [REQ-CONFIG_DRIVEN_UI] [IMPL-THEME_INJECTION]", () =>
 // getOverride
 // ---------------------------------------------------------------------------
 
-// [IMPL-CLASS_OVERRIDES] [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI]: Apply to components
+// [IMPL-CLASS_OVERRIDES] [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI]: how: lookup override key, trim whitespace, return empty string when undefined or blank
 
 describe("getOverride [REQ-CONFIG_DRIVEN_UI] [IMPL-CLASS_OVERRIDES]", () => {
   it("returns empty string for undefined override key", () => {
@@ -349,7 +349,7 @@ describe("Default configs [IMPL-YAML_CONFIG]", () => {
 // Files Configuration Tests [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE]
 // ---------------------------------------------------------------------------
 
-// [IMPL-FILES_CONFIG_COMPLETE] [ARCH-CONFIG_DRIVEN_UI] [REQ-FILES_CONFIG_COMPLETE] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: Added FileTypeConfig, FilesLayoutConfig, FilesStartupConfig TypeScript interfaces
+// [IMPL-FILES_CONFIG_COMPLETE] [ARCH-CONFIG_DRIVEN_UI] [REQ-FILES_CONFIG_COMPLETE] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: config/files.yaml adds marking, help, commandPalette, layout, startup, columns, keybindings beyond base copy section
 
 describe("getFilesConfig [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE]", () => {
   it("returns complete FilesConfig object", () => {
@@ -394,7 +394,7 @@ describe("getFilesConfig [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE
   });
 });
 
-// [IMPL-FILES_CONFIG_COMPLETE] [ARCH-CONFIG_DRIVEN_UI] [REQ-FILES_CONFIG_COMPLETE] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: Added FileTypeConfig, FilesLayoutConfig, FilesStartupConfig TypeScript interfaces
+// [IMPL-FILES_CONFIG_COMPLETE] [ARCH-CONFIG_DRIVEN_UI] [REQ-FILES_CONFIG_COMPLETE] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: directories always use fileTypes.directory; iterate types skipping directory/file keys; glob pattern to case-insensitive regex; first match wins; fallback fileTypes.file or generic defaults
 
 describe("getFileTypeConfig [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE]", () => {
   it("returns directory config for directories", () => {

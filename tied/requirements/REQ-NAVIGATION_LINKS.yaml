@@ -1,50 +1,56 @@
-# REQ detail — REQ-NAVIGATION_LINKS
 REQ-NAVIGATION_LINKS:
-  name: External Navigation Links
+  name: Secure New-Tab Navigation Links
   category: Functional
   priority: P1
   status: Implemented
-  description: External links guide users to additional resources for learning and deployment
+  description: Navigation that opens in a new tab uses a shared NewTabLink component with target=_blank, rel=noopener noreferrer, and screen-reader disclosure. Applies to external URLs and internal cross-surface routes (e.g. Mesh detail to File Manager). Site config navigation.security documents default target and rel. Root home no longer renders inline marketing links.
   rationale:
-    why: External links guide users to additional resources for learning and deployment
+    why: New-tab links must preserve workspace state and prevent tab-nabbing while remaining accessible
     problems_solved:
-      - Lack of guidance to external resources
-      - Security vulnerabilities from improper link handling
+      - Inconsistent or missing rel/target on anchors
+      - Home-page-only link model removed by sole-purpose redirect
     benefits:
-      - Easy access to learning resources
-      - Preserved application state when opening new tabs
-      - Secure external link handling
+      - Config-defined security defaults in site.yaml
+      - Reusable NewTabLink for mesh and file manager surfaces
+      - Testable DOM attributes and aria-label disclosure
   satisfaction_criteria:
-    - criterion: Links have rel='noopener noreferrer' for security
-    - criterion: Links have target='_blank' to open in new tabs
-    - criterion: Links to Templates, Learning Center, Deploy, and Documentation are present
+    - criterion: Cross-surface Mesh and File Manager navigation uses NewTabLink (e.g. mesh restore link, workspace mesh header)
+    - criterion: NewTabLink adds screen-reader disclosure (opens in new tab) via sr-only span and aria-label when applicable
+    - criterion: NewTabLink renders with target=_blank and rel=noopener noreferrer
+    - criterion: Site config navigation.security defines target _blank and rel noopener noreferrer (verified in config.test.ts)
   validation_criteria:
-    - method: Link testing
-      coverage: All links are clickable and navigate correctly
+    - method: Component unit tests
+      coverage: NewTabLink.test.tsx asserts target, rel, and aria-label behavior
+    - method: Config unit tests
+      coverage: config.test.ts asserts navigation.security defaults
     - method: Security validation
-      coverage: Security attributes are present in DOM
+      coverage: Rendered links include noopener noreferrer in DOM
   traceability:
     architecture:
       - ARCH-APP_ROUTER
     implementation:
       - IMPL-EXTERNAL_LINKS
-    tests: []
+    tests:
+      - src/components/NewTabLink.test.tsx
+      - src/lib/config.test.ts
     code_annotations:
       - REQ-NAVIGATION_LINKS
   related_requirements:
     depends_on: []
     related_to:
+      - REQ-CONFIG_DRIVEN_UI
       - REQ-HOME_PAGE
+      - REQ-WORKSPACE_MESH_BRIDGE
     supersedes: []
   metadata:
     created:
       date: 2025-11-08T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-06T00:00:00.000Z
+      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: Migration to v1.5.0
+      reason: LEAP — NewTabLink + config security; retired home-page Templates/Learning links criteria
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: "2026-05-30T00:00:00.000Z"
       validator: AI Agent
       result: pass

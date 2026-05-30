@@ -1,5 +1,4 @@
-// [IMPL-NSYNC_HASH] [ARCH-HASH_VERIFICATION] [REQ-HASH_COMPUTATION]: Top-level Hash Computation Implementation: Hash computation with BLAKE3, SHA-256, XXH3 support and streaming for large files
-// Hash computation module with BLAKE3, SHA256, and XXH3 support
+// [IMPL-NSYNC_HASH] [ARCH-HASH_VERIFICATION] [REQ-HASH_COMPUTATION]: Hash computation with BLAKE3, SHA-256, XXH3 support — buffer read for small files, streaming for large files
 
 import fs from "fs";
 import { blake3 } from "@noble/hashes/blake3.js";
@@ -7,6 +6,7 @@ import { sha256 } from "@noble/hashes/sha2.js";
 import type { HashAlgorithm } from "../sync.types";
 import { logger } from "../logger";
 
+// [IMPL-NSYNC_HASH] [ARCH-HASH_VERIFICATION] [REQ-HASH_COMPUTATION]: how: reject non-files; choose buffer vs stream path by 1 MB threshold
 /**
  * Compute hash of a file using streaming for memory efficiency
  * [IMPL-NSYNC_HASH] [REQ-HASH_COMPUTATION]
@@ -45,6 +45,7 @@ export async function computeFileHash(
   }
 }
 
+// [IMPL-NSYNC_HASH] [ARCH-HASH_VERIFICATION] [REQ-HASH_COMPUTATION]: how: sync hash over in-memory buffer; xxh3 falls back to blake3
 /**
  * Compute hash of a buffer
  * [IMPL-NSYNC_HASH]
@@ -72,6 +73,7 @@ export function computeBufferHash(
   }
 }
 
+// [IMPL-NSYNC_HASH] [ARCH-HASH_VERIFICATION] [REQ-HASH_COMPUTATION] [IMPL-NSYNC_TYPE_SAFETY]: how: createReadStream, incremental hasher update per chunk; string chunks converted to Buffer
 /**
  * Compute hash of a file using streaming
  * [IMPL-NSYNC_HASH] [REQ-HASH_COMPUTATION]
@@ -109,7 +111,7 @@ async function computeStreamHash(
     }
     
     stream.on("data", (chunk: string | Buffer) => {
-      // Convert string to Buffer if needed
+      // [IMPL-NSYNC_TYPE_SAFETY]: how: computeStreamHash data handler normalizes string chunks before hasher.update
       const buffer = typeof chunk === 'string' ? Buffer.from(chunk) : chunk;
       hasher.update(buffer);
     });
@@ -133,6 +135,7 @@ function toHex(bytes: Uint8Array): string {
   return Buffer.from(bytes).toString("hex");
 }
 
+// [IMPL-NSYNC_HASH] [ARCH-HASH_VERIFICATION] [REQ-HASH_COMPUTATION]: how: case-insensitive string equality on hex digests
 /**
  * Verify hash matches expected value
  * [IMPL-NSYNC_HASH]

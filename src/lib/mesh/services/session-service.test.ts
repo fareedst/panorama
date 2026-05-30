@@ -1,4 +1,4 @@
-// [IMPL-MESH_SESSION] [IMPL-MESH_PERSISTENCE] [REQ-MESH_PLATFORM]: Session lifecycle tests — phase 12
+// [IMPL-MESH_SESSION] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: Sync session lifecycle, approved plan storage, and optional JSON persistence
 
 import { describe, it, expect } from "vitest";
 import { mkdtempSync, rmSync, existsSync } from "fs";
@@ -16,6 +16,7 @@ function mesh(name = "Session Mesh") {
 }
 
 describe("SessionService [IMPL-MESH_SESSION]", () => {
+  // [IMPL-MESH_SESSION] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — snapshot mesh at session start; initial state idle; track mesh in activeMeshIds.
   it("session_starts_with_mesh_snapshot", () => {
     const svc = new SessionService();
     const m = mesh();
@@ -115,6 +116,7 @@ describe("SessionService [IMPL-MESH_SESSION]", () => {
 });
 
 describe("SessionService JSON persistence [IMPL-MESH_PERSISTENCE]", () => {
+  // [IMPL-MESH_SESSION] [IMPL-MESH_PERSISTENCE] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — when dataDir or MESH_DATA_DIR set, load and save sync-sessions.json with sessions and approvedPlans.
   it("save_and_load_session_and_approved_plan", () => {
     const dir = mkdtempSync(join(tmpdir(), "mesh-sess-persist-"));
     try {

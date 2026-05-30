@@ -1,4 +1,4 @@
-// [IMPL-MESH_SAFETY] [REQ-MESH_SAFETY] [REQ-MESH_PLATFORM]: Safety guardrails — phase 23
+// [IMPL-MESH_SAFETY] [ARCH-MESH_LAYERED] [REQ-MESH_SAFETY] [REQ-MESH_PLATFORM]: Guardrails before plan generation and execution
 
 import type { ChangeSet, Mesh } from "../domain";
 import { validateTopology } from "./topology-service";
@@ -20,6 +20,7 @@ const LARGE_DELETE_THRESHOLD = 10;
 export class SafetyService {
   private readonly profiles = new Map<string, MeshSafetyProfile>();
 
+  // [IMPL-MESH_SAFETY] [ARCH-MESH_LAYERED] [REQ-MESH_SAFETY]: how — per-mesh profile tracks dry-run completion and successful sync count with defaults when unseen.
   getProfile(meshId: string): MeshSafetyProfile {
     return (
       this.profiles.get(meshId) ?? {
@@ -43,6 +44,7 @@ export class SafetyService {
     });
   }
 
+  // [IMPL-MESH_SAFETY] [IMPL-MESH_TOPOLOGY] [ARCH-MESH_LAYERED] [REQ-MESH_SAFETY]: how — delegate to validateTopology; block when cycle detected.
   checkTopologySafe(mesh: Mesh): SafetyCheckResult {
     const validation = validateTopology(mesh);
     if (validation.hasCycle) {
@@ -55,6 +57,7 @@ export class SafetyService {
     return { allowed: true };
   }
 
+  // [IMPL-MESH_SAFETY] [ARCH-MESH_LAYERED] [REQ-MESH_SAFETY]: how — dry-run always allowed; live plan requires prior dry-run when isDryRun false.
   checkCanGeneratePlan(meshId: string, isDryRun = true): SafetyCheckResult {
     if (isDryRun) {
       return { allowed: true };
@@ -70,6 +73,7 @@ export class SafetyService {
     return { allowed: true };
   }
 
+  // [IMPL-MESH_SAFETY] [ARCH-MESH_LAYERED] [REQ-MESH_SAFETY]: how — enforce dry-run prerequisite, large delete threshold, high-risk confirmation, and quarantine blocks.
   checkCanExecutePlan(
     meshId: string,
     changeSet: ChangeSet,
@@ -120,6 +124,7 @@ export class SafetyService {
 
   private readonly quarantinePaths = new Set<string>();
 
+  // [IMPL-MESH_SAFETY] [ARCH-MESH_LAYERED] [REQ-MESH_SAFETY]: how — add path to quarantine set blocking future execution.
   quarantinePath(path: string): void {
     this.quarantinePaths.add(path);
   }

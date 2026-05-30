@@ -422,7 +422,7 @@ export interface FilesConfig {
   toolbars?: ToolbarsConfig; // [REQ-TOOLBAR_CONFIG] [IMPL-TOOLBAR_CONFIG]
 }
 
-// [IMPL-TOOLBAR_CONFIG] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_CONFIG]
+// [IMPL-TOOLBAR_CONFIG] [ARCH-TOOLBAR_LAYOUT] [ARCH-CONFIG_DRIVEN_UI] [REQ-TOOLBAR_CONFIG]: how: TypeScript interfaces in config.types.ts define toolbar position, groups, per-tier config, and toolbars.actions metadata map
 /** Toolbar position options */
 export type ToolbarPosition = 'top' | 'bottom' | 'hidden' | 'per-pane';
 

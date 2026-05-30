@@ -9,7 +9,7 @@ export interface ToolbarCompactToggleProps {
   onToggle: () => void;
 }
 
-// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM] TOOLBAR_COMPACT_TOGGLE: how: leading UI-only control toggles session toolbarExpanded in WorkspaceView
+// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM]: how: leading toggle on first top toolbar switches session toolbarExpanded state; expanded shows three tiers with keystroke badges; compact shows merged single row icon-only; tooltips unchanged
 /**
  * ToolbarCompactToggle - leading control to switch toolbar compact/expanded modes
  * [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM]

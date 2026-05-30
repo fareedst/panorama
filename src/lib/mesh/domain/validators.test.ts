@@ -24,7 +24,7 @@ import {
   refuteValidationError,
 } from "./domain.test-helpers";
 
-// how: Build structured validation errors with path, code, and message for all VALIDATE_* reject paths.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Build structured validation errors with path, code, and message for all VALIDATE_* reject paths.
 
 describe("IMPL-MESH_DOMAIN_TYPES_MakeValidationError [REQ-MESH_DOMAIN_MODEL]", () => {
   it("returns code, path, and message from inputs", () => {
@@ -42,7 +42,7 @@ describe("IMPL-MESH_DOMAIN_TYPES_MakeValidationError [REQ-MESH_DOMAIN_MODEL]", (
   });
 });
 
-// how: Supply non-destructive policy defaults for policy_has_default_safe_values and mesh policy omission.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Supply non-destructive policy defaults for policy_has_default_safe_values and mesh policy omission.
 
 describe("IMPL-MESH_DOMAIN_TYPES_DEFAULT_POLICY [REQ-MESH_DOMAIN_MODEL]", () => {
   it("returns safe default policy fields", () => {
@@ -56,7 +56,7 @@ describe("IMPL-MESH_DOMAIN_TYPES_DEFAULT_POLICY [REQ-MESH_DOMAIN_MODEL]", () => 
   });
 });
 
-// how: Validate optional inline policy fields on mesh DTOs before accepting a Mesh.policy value.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Validate optional inline policy fields on mesh DTOs before accepting a Mesh.policy value.
 
 describe("IMPL-MESH_DOMAIN_TYPES_VALIDATE_POLICY [REQ-MESH_DOMAIN_MODEL]", () => {
   it("rejects invalid deletePolicy on mesh attrs", () => {
@@ -94,7 +94,7 @@ describe("IMPL-MESH_DOMAIN_TYPES_VALIDATE_POLICY [REQ-MESH_DOMAIN_MODEL]", () =>
   });
 });
 
-// how: Enforce credential_reference_does_not_expose_secret_material at construction and deserialization.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Enforce credential_reference_does_not_expose_secret_material at construction and deserialization.
 
 describe("IMPL-MESH_DOMAIN_TYPES_VALIDATE_CREDENTIAL_REFERENCE [REQ-MESH_DOMAIN_MODEL]", () => {
   it("accepts id and label", () => {
@@ -119,7 +119,7 @@ describe("IMPL-MESH_DOMAIN_TYPES_VALIDATE_CREDENTIAL_REFERENCE [REQ-MESH_DOMAIN_
   });
 });
 
-// how: Enforce depot_requires_name_kind_and_root and DepotKind enum for each depot in a mesh.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Enforce depot_requires_name_kind_and_root and DepotKind enum for each depot in a mesh.
 
 describe("IMPL-MESH_DOMAIN_TYPES_VALIDATE_DEPOT [REQ-MESH_DOMAIN_MODEL]", () => {
   it("accepts valid depot attrs", () => {
@@ -151,7 +151,7 @@ describe("IMPL-MESH_DOMAIN_TYPES_VALIDATE_DEPOT [REQ-MESH_DOMAIN_MODEL]", () => 
   });
 });
 
-// how: Enforce sync_link_requires_valid_source_and_target_depots against mesh depot id set; reject self-loops.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Enforce sync_link_requires_valid_source_and_target_depots against mesh depot id set; reject self-loops.
 
 describe("IMPL-MESH_DOMAIN_TYPES_VALIDATE_SYNC_LINK [REQ-MESH_DOMAIN_MODEL]", () => {
   const depotIds = new Set(["d1", "d2"]);
@@ -191,7 +191,7 @@ describe("IMPL-MESH_DOMAIN_TYPES_VALIDATE_SYNC_LINK [REQ-MESH_DOMAIN_MODEL]", ()
   });
 });
 
-// how: Orchestrate mesh_requires_name, zero-or-more depots, ordered depot-then-link validation, and policy default or VALIDATE_POLICY.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Orchestrate mesh_requires_name, zero-or-more depots, ordered depot-then-link validation, and policy default or VALIDATE_POLICY.
 
 describe("IMPL-MESH_DOMAIN_TYPES_VALIDATE_MESH [REQ-MESH_DOMAIN_MODEL]", () => {
   it("accepts mesh with zero depots", () => {
@@ -223,7 +223,7 @@ describe("IMPL-MESH_DOMAIN_TYPES_VALIDATE_MESH [REQ-MESH_DOMAIN_MODEL]", () => {
   });
 });
 
-// how: Implement sync_session_requires_mesh_snapshot with deep clone and immutable snapshot metadata.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Implement sync_session_requires_mesh_snapshot with deep clone and immutable snapshot metadata.
 
 describe("IMPL-MESH_DOMAIN_TYPES_CREATE_MESH_SNAPSHOT [REQ-MESH_DOMAIN_MODEL]", () => {
   it("returns snapshot with id, capturedAt, and deep-copied mesh", () => {
@@ -238,7 +238,7 @@ describe("IMPL-MESH_DOMAIN_TYPES_CREATE_MESH_SNAPSHOT [REQ-MESH_DOMAIN_MODEL]", 
   });
 });
 
-// how: Enforce sync_session_requires_mesh_snapshot and valid SessionState when state is provided.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Enforce sync_session_requires_mesh_snapshot and valid SessionState when state is provided.
 
 describe("IMPL-MESH_DOMAIN_TYPES_VALIDATE_SYNC_SESSION [REQ-MESH_DOMAIN_MODEL]", () => {
   it("accepts session with meshSnapshot", () => {
@@ -262,7 +262,7 @@ describe("IMPL-MESH_DOMAIN_TYPES_VALIDATE_SYNC_SESSION [REQ-MESH_DOMAIN_MODEL]",
   });
 });
 
-// how: Validate atomic SyncOperation kind and sourcePath for change-set membership.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Validate atomic SyncOperation kind and sourcePath for change-set membership.
 
 describe("IMPL-MESH_DOMAIN_TYPES_VALIDATE_SYNC_OPERATION [REQ-MESH_DOMAIN_MODEL]", () => {
   it("accepts valid operation", () => {
@@ -280,7 +280,7 @@ describe("IMPL-MESH_DOMAIN_TYPES_VALIDATE_SYNC_OPERATION [REQ-MESH_DOMAIN_MODEL]
   });
 });
 
-// how: Preserve change_set_contains_ordered_operations by validating each operation in list order.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Preserve change_set_contains_ordered_operations by validating each operation in list order.
 
 describe("IMPL-MESH_DOMAIN_TYPES_VALIDATE_CHANGE_SET [REQ-MESH_DOMAIN_MODEL]", () => {
   it("preserves operation order", () => {
@@ -299,7 +299,7 @@ describe("IMPL-MESH_DOMAIN_TYPES_VALIDATE_CHANGE_SET [REQ-MESH_DOMAIN_MODEL]", (
   });
 });
 
-// how: Enforce conflict_has_type_participants_and_status with enum checks on type and status.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Enforce conflict_has_type_participants_and_status with enum checks on type and status.
 
 describe("IMPL-MESH_DOMAIN_TYPES_VALIDATE_CONFLICT [REQ-MESH_DOMAIN_MODEL]", () => {
   it("accepts valid conflict", () => {
@@ -327,7 +327,7 @@ describe("IMPL-MESH_DOMAIN_TYPES_VALIDATE_CONFLICT [REQ-MESH_DOMAIN_MODEL]", () 
   });
 });
 
-// how: Phase-1 Filter shape (pattern + include/exclude mode) for later policy engine integration.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Phase-1 Filter shape (pattern + include/exclude mode) for later policy engine integration.
 
 describe("IMPL-MESH_DOMAIN_TYPES_VALIDATE_FILTER [REQ-MESH_DOMAIN_MODEL]", () => {
   it("accepts include filter", () => {
@@ -341,7 +341,7 @@ describe("IMPL-MESH_DOMAIN_TYPES_VALIDATE_FILTER [REQ-MESH_DOMAIN_MODEL]", () =>
   });
 });
 
-// how: Validate SyncEvent audit fields (timestamp, type, subject) for future event-log IMPL.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Validate SyncEvent audit fields (timestamp, type, subject) for future event-log IMPL.
 
 describe("IMPL-MESH_DOMAIN_TYPES_VALIDATE_SYNC_EVENT [REQ-MESH_DOMAIN_MODEL]", () => {
   it("accepts valid event with default empty payload", () => {

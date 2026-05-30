@@ -1,10 +1,10 @@
-// [IMPL-NSYNC_VERIFY] [ARCH-HASH_VERIFICATION] [REQ-VERIFY_DEST]: Top-level Destination Verification Implementation: Destination file verification by recomputing hash and comparing to source
-// Destination verification module - recompute hash and verify
+// [IMPL-NSYNC_VERIFY] [ARCH-HASH_VERIFICATION] [REQ-VERIFY_DEST]: Recompute destination hash after copy and compare to precomputed source hash
 
 import { computeFileHash, verifyHash } from "./hash";
 import type { HashAlgorithm } from "../sync.types";
 import { logger } from "../logger";
 
+// [IMPL-NSYNC_VERIFY] [ARCH-HASH_VERIFICATION] [REQ-VERIFY_DEST]: how: re-hash destination file and compare to source hash via verifyHash
 /**
  * Verify destination file matches source hash
  * [IMPL-NSYNC_VERIFY] [REQ-VERIFY_DEST]
@@ -44,6 +44,7 @@ export async function verifyDestination(
   }
 }
 
+// [IMPL-NSYNC_VERIFY] [ARCH-HASH_VERIFICATION] [REQ-VERIFY_DEST]: how: parallel verifyDestination for each dest path
 /**
  * Verify multiple destinations match source hash
  * [IMPL-NSYNC_VERIFY]

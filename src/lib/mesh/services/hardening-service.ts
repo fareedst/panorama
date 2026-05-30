@@ -1,4 +1,4 @@
-// [IMPL-MESH_HARDENING] [REQ-MESH_HARDENING] [REQ-MESH_PLATFORM]: Concurrency and retry limits — phase 29
+// [IMPL-MESH_HARDENING] [ARCH-MESH_LAYERED] [REQ-MESH_HARDENING] [REQ-MESH_PLATFORM]: Concurrency limiter, exponential retry delay helper, optional outbound bandwidth pacing; optimistic configurationVersion enforced via mesh-record and MeshService.
 
 export type HardeningConfig = {
   maxConcurrentOperations: number;
@@ -6,6 +6,7 @@ export type HardeningConfig = {
   retryBaseDelayMs: number;
 };
 
+// [IMPL-MESH_HARDENING] [ARCH-MESH_LAYERED] [REQ-MESH_HARDENING]: how — default maxConcurrentOperations=4 and retryBaseDelayMs=100; optional maxBandwidthBytesPerSecond for pacing.
 export const DEFAULT_HARDENING: HardeningConfig = {
   maxConcurrentOperations: 4,
   retryBaseDelayMs: 100,
@@ -17,6 +18,7 @@ export class ConcurrencyLimiter {
 
   constructor(private readonly max: number) {}
 
+  // [IMPL-MESH_HARDENING] [ARCH-MESH_LAYERED] [REQ-MESH_HARDENING]: how — queue tasks when active count reaches max; release slot in finally and dequeue next waiter.
   async run<T>(fn: () => Promise<T> | T): Promise<T> {
     if (this.active >= this.max) {
       await new Promise<void>((resolve) => this.queue.push(resolve));
@@ -34,6 +36,7 @@ export class ConcurrencyLimiter {
   }
 }
 
+// [IMPL-MESH_HARDENING] [ARCH-MESH_LAYERED] [REQ-MESH_HARDENING]: how — exponential backoff baseMs * 2^(attempt-1) for attempt ≥ 1.
 export function retryBackoffDelay(attempt: number, baseMs: number): number {
   return baseMs * Math.pow(2, attempt - 1);
 }
@@ -49,7 +52,7 @@ export class HardeningService {
     return retryBackoffDelay(attempt, this.config.retryBaseDelayMs);
   }
 
-  /** Pace outbound-ish bytes after connector operations ([REQ-MESH_HARDENING], prompts phase 29 bandwidth_limits). */
+  /** [IMPL-MESH_HARDENING] [ARCH-MESH_LAYERED] [REQ-MESH_HARDENING]: how — after successful copy/update, sleep ceil(bytes/bps*1000) ms when bandwidth cap configured. */
   async throttleOutboundBytes(approxByteCount: number): Promise<void> {
     const bps = this.config.maxBandwidthBytesPerSecond;
     if (!bps || bps <= 0 || approxByteCount <= 0) {

@@ -1,4 +1,4 @@
-// [REQ-FILE_SEARCH] [ARCH-SEARCH_ENGINE] [IMPL-FILE_SEARCH]
+// [IMPL-FILE_SEARCH] [ARCH-SEARCH_ENGINE] [REQ-FILE_SEARCH] [REQ-REACT_SSR_STABILITY]: Dual-mode search — client finder and server content search with SSR-safe history
 // File search utilities - fuzzy matching, filtering, history management
 // Client-safe module (no Node.js dependencies)
 

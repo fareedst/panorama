@@ -1,4 +1,4 @@
-// [IMPL-MESH_PERSISTENCE] [REQ-MESH_PLATFORM]: JSON file persistence — phase 16
+// [IMPL-MESH_PERSISTENCE] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: JSON file persistence for MeshRecord[] under MESH_DATA_DIR with in-memory cache and repository factory.
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs";
 import { join } from "path";
@@ -9,6 +9,7 @@ export class JsonMeshRepository implements MeshRepository {
   private readonly filePath: string;
   private cache: Map<string, MeshRecord> = new Map();
 
+  // [IMPL-MESH_PERSISTENCE] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — ensure data directory exists; load meshes.json into normalized in-memory map on startup.
   constructor(dataDir: string) {
     if (!existsSync(dataDir)) {
       mkdirSync(dataDir, { recursive: true });
@@ -33,6 +34,7 @@ export class JsonMeshRepository implements MeshRepository {
     writeFileSync(this.filePath, JSON.stringify([...this.cache.values()], null, 2));
   }
 
+  // [IMPL-MESH_PERSISTENCE] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — normalize record, upsert in cache by mesh.id, write full cache array to meshes.json.
   save(record: MeshRecord): void {
     this.cache.set(record.mesh.id, structuredClone(normalizeMeshRecordVersion(record)));
     this.persist();

@@ -1,4 +1,5 @@
-// [REQ-MESH_GUI] [IMPL-MESH_GUI] [IMPL-MESH_DEPOT] [ARCH-MESH_LAYERED]: IMPL-MESH_GUI_depots component tests
+// [IMPL-MESH_GUI] [IMPL-MESH_DEPOT] [ARCH-MESH_LAYERED] [REQ-MESH_GUI] [REQ-MESH_PLATFORM]
+// how: Per-mesh depots sub-route — fetch mesh, add/remove depots via API, credential reference UI stub; testids mesh-depots, add-depot-*, depot-summary, manage-credentials-btn.
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";

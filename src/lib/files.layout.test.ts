@@ -40,6 +40,7 @@ describe("normalizeLayoutType [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_B
   });
 });
 
+// [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: how: given container width/height, pane count, and LayoutType return PaneBounds[]
 describe("calculateLayout [REQ_MULTI_PANE_LAYOUT]", () => {
   const containerWidth = 1000;
   const containerHeight = 600;

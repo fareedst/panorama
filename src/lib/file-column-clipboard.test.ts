@@ -1,5 +1,4 @@
-// [TEST-MOUSE_INTERACTION] [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] [REQ-LINKED_PANES] [REQ-DIRECTORY_NAVIGATION]
-// FILE_COLUMN_CLIPBOARD — how: unit tests for formatters and cross-pane path resolution by cursor filename
+// [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] [REQ-LINKED_PANES] [REQ-DIRECTORY_NAVIGATION]: how — pure helpers format clipboard text and resolve cross-pane paths by cursor filename across workspace pane listings
 
 import { describe, it, expect } from "vitest";
 import type { FileStat } from "@/lib/files.types";
@@ -25,7 +24,7 @@ function file(
   };
 }
 
-describe("[TEST-MOUSE_INTERACTION] FILE_COLUMN_CLIPBOARD", () => {
+describe("FILE_COLUMN_CLIPBOARD [IMPL-MOUSE_SUPPORT]", () => {
   it("formatCursorFilenameForClipboard returns cursor filename (file.name)", () => {
     expect(
       formatCursorFilenameForClipboard(

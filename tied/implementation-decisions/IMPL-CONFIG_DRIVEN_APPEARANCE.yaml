@@ -4,44 +4,48 @@ IMPL-CONFIG_DRIVEN_APPEARANCE:
   cross_references:
     - ARCH-CONFIG_DRIVEN_APPEARANCE
     - REQ-CONFIG_DRIVEN_APPEARANCE
-  decision: 'Implement full config-driven appearance and layout for all pages by: (1) adding a jobs config loader and types for `config/jobs.yaml` (schema + copy); (2) extending `config/theme.yaml` with jobs layout/overrides and status badge class mapping; (3) refactoring all jobs pages and components to consume config (and theme) for layout, copy, and styling—removing every hard-coded layout class and user-facing string from jobs UI.'
+  decision: File-manager appearance and copy come from config/site.yaml, config/theme.yaml, and config/files.yaml via getSiteConfig, getThemeConfig, getFilesConfig, getFilesOverride, and getFileTypeConfig. Jobs tracker UI and jobs config were removed in the file-manager sole-purpose refactor.
   rationale:
-    why: Extends config-driven architecture to all pages including jobs
+    why: File-manager UI must be fully configurable from YAML without hard-coded copy or presentation
     problems_solved:
-      - Hard-coded jobs page layout and copy
-      - Incomplete template configurability
+      - Hard-coded file-manager layout and copy
+      - Obsolete jobs config paths after sole-purpose refactor
     benefits:
-      - All pages fully config-driven
-      - Complete template configurability
+      - File-manager appearance fully config-driven
+      - Template reusable via config edits only
   implementation_approach:
-    summary: Add jobs config loader, extend theme with jobs overrides, refactor jobs UI to use config
+    summary: YAML-driven file manager copy, layout, theme classes, and file-type icons (jobs scope retired)
     details:
-      - Add getJobsConfig() function
-      - Define JobsCopyConfig and JobsThemeOverrides types
-      - Extend theme.yaml with jobs section
-      - Refactor forms to use config
-      - Refactor jobs pages to use config
-      - Refactor JobsTable to receive copy and class props
+      - getFilesConfig supplies WorkspaceView copy and layout
+      - getFileTypeConfig and theme.files.fileTypes drive row icons
+      - getSiteConfig supplies layout metadata
+      - Historical jobs loader and pages removed
   code_locations:
     files:
-      - path: src/lib/jobs.ts
-        description: Jobs config loader
-      - path: src/app/jobs/page.tsx
-        description: Jobs list page using config
-      - path: src/app/jobs/[id]/edit/page.tsx
-        description: Jobs edit page using config
-      - path: config/jobs.yaml
-        description: Jobs configuration
+      - path: src/lib/config.ts
+        description: getFilesConfig, getFilesOverride, getFileTypeConfig
+      - path: config/files.yaml
+        description: File manager copy and layout
+      - path: config/theme.yaml
+        description: Theme and files.fileTypes
+      - path: config/site.yaml
+        description: Site metadata
+      - path: src/app/files/page.tsx
+        description: Server passes config into WorkspaceView
     functions:
-      - name: getJobsConfig
-        file: src/lib/jobs.ts
-        description: Load jobs config
+      - name: getFilesConfig
+        file: src/lib/config.ts
+        description: Merged files config
+      - name: getFileTypeConfig
+        file: src/lib/config.ts
+        description: Icon lookup by filename
   traceability:
     architecture:
       - ARCH-CONFIG_DRIVEN_APPEARANCE
     requirements:
       - REQ-CONFIG_DRIVEN_APPEARANCE
-    tests: []
+    tests:
+      - src/lib/config.test.ts
     code_annotations:
       - REQ-CONFIG_DRIVEN_APPEARANCE
   related_decisions:
@@ -54,10 +58,10 @@ IMPL-CONFIG_DRIVEN_APPEARANCE:
       date: 2025-11-08T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-19T16:06:42.636Z"
+      date: "2026-05-29T00:00:00.000Z"
       author: AI Agent
-      reason: IMPL essence_pseudocode retrofit all 58
+      reason: LEAP jobs retired; pseudocode matches file-manager config
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: "2026-05-29T00:00:00.000Z"
       validator: AI Agent
-      result: pass
+      result: pass — LEAP stack aligned with REQ and ARCH

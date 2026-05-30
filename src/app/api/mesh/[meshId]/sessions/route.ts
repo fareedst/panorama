@@ -1,4 +1,4 @@
-// [IMPL-MESH_API] [ARCH-MESH_LAYERED] [REQ-MESH_API] [REQ-MESH_PLATFORM]: Session API with safety guards
+// [IMPL-MESH_API] [IMPL-MESH_RUNTIME] [IMPL-MESH_SESSION] [ARCH-MESH_LAYERED] [REQ-MESH_API] [REQ-MESH_PLATFORM]: Session lifecycle and progress over HTTP.
 
 import {
   getRuntime,
@@ -10,7 +10,7 @@ import { isDomainValidationError, type ChangeSet } from "@/lib/mesh/domain";
 
 type Params = { params: Promise<{ meshId: string }> };
 
-// [IMPL-MESH_API] [IMPL-MESH_RUNTIME] [REQ-MESH_API]: GET sessions list or single session with progress
+// [IMPL-MESH_API] [IMPL-MESH_RUNTIME] [IMPL-MESH_SESSION] [ARCH-MESH_LAYERED] [REQ-MESH_API] [REQ-MESH_PLATFORM]: Session lifecycle and progress over HTTP.
 export async function GET(request: Request, { params }: Params) {
   const { meshId } = await params;
   const rt = getRuntime();
@@ -47,6 +47,7 @@ export async function POST(request: Request, { params }: Params) {
     return jsonError(404, "mesh_not_found", "Mesh not found");
   }
 
+  // how: POST sessions create — require run_sync, createSession, record lifecycle event, return 201
   if (body.action === "create") {
     const denied = requirePermission(request, "run_sync");
     if (denied) {
@@ -64,6 +65,7 @@ export async function POST(request: Request, { params }: Params) {
     return jsonError(400, "session_id_required", "sessionId is required");
   }
 
+  // how: POST sessions approve — require run_sync, approvePlan with changeSet
   if (body.action === "approve" && body.changeSet) {
     const denied = requirePermission(request, "run_sync");
     if (denied) {
@@ -73,7 +75,7 @@ export async function POST(request: Request, { params }: Params) {
     return Response.json({ approved: true });
   }
 
-  // [IMPL-MESH_API] [IMPL-MESH_RUNTIME] [REQ-MESH_API]: POST sessions start — checkExecution on changeSet or approved plan; runApprovedSession returns progress
+  // how: POST sessions start — checkExecution on changeSet or approved plan; runApprovedSession returns progress
   if (body.action === "start") {
     const denied = requirePermission(request, "run_sync");
     if (denied) {
@@ -127,6 +129,7 @@ export async function POST(request: Request, { params }: Params) {
     });
   }
 
+  // how: POST sessions pause or resume — require pause_cancel_sync, delegate to SessionService
   if (body.action === "pause") {
     const denied = requirePermission(request, "pause_cancel_sync");
     if (denied) {
@@ -147,7 +150,7 @@ export async function POST(request: Request, { params }: Params) {
     return err ?? Response.json({ session: result });
   }
 
-  // [IMPL-MESH_API] [IMPL-MESH_RUNTIME] [REQ-MESH_API]: POST sessions cancel — cancelSessionExecution then sessions.cancel
+  // how: POST sessions cancel — cancelSessionExecution then sessions.cancel
   if (body.action === "cancel") {
     const denied = requirePermission(request, "pause_cancel_sync");
     if (denied) {

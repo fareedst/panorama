@@ -1,4 +1,4 @@
-// [IMPL-MESH_TOPOLOGY] [REQ-MESH_PLATFORM]: Topology unit tests — phase 6
+// [IMPL-MESH_TOPOLOGY] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: Validate mesh link graph, link CRUD helpers, and project nodes/edges for UI
 
 import { describe, it, expect } from "vitest";
 import { validateMesh, isDomainValidationError } from "../domain";
@@ -24,6 +24,7 @@ function meshWithDepots() {
 }
 
 describe("TopologyService [IMPL-MESH_TOPOLOGY]", () => {
+  // [IMPL-MESH_TOPOLOGY] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — build adjacency from sync links including bidirectional reverse edges; detect cycles via DFS; find disconnected depots.
   it("create_one_way_link", () => {
     const mesh = meshWithDepots();
     const updated = addLinkToMesh(mesh, {

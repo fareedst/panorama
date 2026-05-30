@@ -26,6 +26,8 @@ vi.mock("@/lib/files.data", () => ({
 
 const SPECS_FILE = path.join(process.cwd(), "data", "display-specs.json");
 
+// [IMPL-FILES_API] [ARCH-FILE_OPERATIONS_API] [ARCH-LOGGING_SYSTEM] [REQ-DIRECTORY_NAVIGATION] [REQ-FILE_OPERATIONS] [REQ-LOGGING_SYSTEM]: how: GET reads path (default home), rejects .. traversal, lists directory, optionally filters by display spec, sorts by Name with dirs first, returns legacy array or enriched object
+
 describe("GET /api/files with displaySpecId [IMPL-DISPLAY_FILTER_API]", () => {
   beforeEach(async () => {
     try {
@@ -44,6 +46,8 @@ describe("GET /api/files with displaySpecId [IMPL-DISPLAY_FILTER_API]", () => {
   });
 
   it("SERVER_FILTER_LISTING returns filtered listing with hiddenCount", async () => {
+    // [IMPL-DISPLAY_FILTER_API] [IMPL-DISPLAY_FILTER_ENGINE] [ARCH-DISPLAY_FILTER_ENGINE] [REQ-PANE_DISPLAY_FILTER]
+    // how: GET /api/files lists directory then filterFileStats when displaySpecId resolves on server store; legacy array when omitted.
     const spec = await serverCreateDisplaySpec({
       name: "No logs",
       rules: [
@@ -88,6 +92,8 @@ describe("GET /api/files with displaySpecId [IMPL-DISPLAY_FILTER_API]", () => {
   });
 
   it("VALIDATE_OPERATION_PATHS rejects bulk-delete of hidden path", async () => {
+    // [IMPL-DISPLAY_FILTER_API] [IMPL-DISPLAY_FILTER_ENGINE] [REQ-PANE_DISPLAY_FILTER] [REQ-BULK_FILE_OPS]
+    // how: Reject POST operation sources whose basename is not visible under active display spec in parent directory.
     const spec = await serverCreateDisplaySpec({
       name: "No logs",
       rules: [

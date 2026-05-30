@@ -1,4 +1,4 @@
-// [IMPL-MESH_PLANNING] [REQ-MESH_PLATFORM]: Planning tests — phase 10
+// [IMPL-MESH_PLANNING] [ARCH-MESH_LAYERED] [IMPL-MESH_POLICY] [REQ-MESH_PLATFORM] [REQ-MESH_HARDENING]: Dry-run change set from inventory diff with policy filters, path mapping, and optional operation pagination.
 
 import { describe, it, expect } from "vitest";
 import { validateMesh, isDomainValidationError, defaultPolicy } from "../domain";
@@ -20,6 +20,7 @@ function snap(depotId: string, entries: InventorySnapshot["entries"]): Inventory
 describe("PlanningService [IMPL-MESH_PLANNING]", () => {
   const planner = new PlanningService();
 
+  // [IMPL-MESH_PLANNING] [ARCH-MESH_LAYERED] [IMPL-MESH_POLICY] [REQ-MESH_PLATFORM]: how — diff source vs target inventory snapshots into copy/update/delete operations respecting mesh policy and optional filters/mappings.
   it("identical_inventories_generate_empty_change_set", () => {
     const entries = [{ path: "/a.txt", isDirectory: false, size: 1, mtimeMs: 100 }];
     const plan = planner.generateDryRunPlan({
@@ -90,6 +91,7 @@ describe("PlanningService [IMPL-MESH_PLANNING]", () => {
     expect(copy?.targetPath).toBe("/dst/a.txt");
   });
 
+  // [IMPL-MESH_PLANNING] [ARCH-MESH_LAYERED] [REQ-MESH_HARDENING]: how — slice change-set operations for oversized API responses; preserve changeSet id and return pagination metadata.
   it("paginateChangeSetOperations_slices_operations", () => {
     const full = planner.generateDryRunPlan({
       mesh: mesh(),

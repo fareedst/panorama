@@ -1,103 +1,73 @@
 # IMPL-LOGGER_TOKENS essence pseudocode
 
-// [IMPL-LOGGER_TOKENS] [ARCH-LOGGING_SEMANTIC_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS]: Top-level Semantic Token Integration Implementation: TypeScript API requires tokens as first parameter
+// [IMPL-LOGGER_TOKENS] [ARCH-LOGGING_SEMANTIC_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS]: TypeScript logger API requires semantic tokens as first parameter with bracket formatting and dev-only validation
 
 ## Summary contract
 
-// [IMPL-LOGGER_TOKENS] [ARCH-LOGGING_SEMANTIC_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS]: bound module inputs, outputs, and shared data for all runtime blocks below
+// [IMPL-LOGGER_TOKENS] [ARCH-LOGGING_SEMANTIC_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS]: how: every log method accepts tokens before message; formatTokens produces bracketed space-separated token segment in output
 
 CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-LOGGER_TOKENS
-  DATA: state and configuration per implementation_approach
+  INPUT: tokens string OR string[]; message string; optional metadata object
+  OUTPUT: token segment embedded in file and console log lines
+  DATA: SemanticToken type; PREFIX in REQ|ARCH|IMPL|TEST|PROC
+  CONTROL: validation skipped in production NODE_ENV
 
-## AllLogMethods
+## TokenFirstLogMethodSignature
 
-// [IMPL-LOGGER_TOKENS] [ARCH-LOGGING_SEMANTIC_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS]: (tokens: string | string[], message: string, metadata?: object)
+// [IMPL-LOGGER_TOKENS] [ARCH-LOGGING_SEMANTIC_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS]: how: all logger methods require tokens as first parameter (string or string array), then message, optional metadata object
 
-CONTRACT AllLogMethods
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT TokenFirstLogMethodSignature
+  INPUT: tokens SemanticToken | SemanticToken[], message, metadata?
+  OUTPUT: LogEntry.tokens as string array
+  DATA: Logger interface method signatures
 
-PROCEDURE IMPL-LOGGER_TOKENS_AllLogMethods(context)
-  // (tokens: string | string[]
-  CALL (tokens: string | string[]
-  // message: string
-  CALL message: string
-  // metadata?: object)
-  CALL metadata?: object)
+PROCEDURE IMPL-LOGGER_TOKENS_TokenFirstLogMethodSignature(tokens, message, metadata)
+  tokenArray := IF array THEN tokens ELSE [tokens]
+  BUILD LogEntry with tokenArray
+  DELEGATE to writeLog
 
-## Helper
+## FormatTokensBracketWrap
 
-// [IMPL-LOGGER_TOKENS] [ARCH-LOGGING_SEMANTIC_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS]: formatTokens(tokens: string | string[]): string
+// [IMPL-LOGGER_TOKENS] [ARCH-LOGGING_SEMANTIC_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS]: how: normalize to array, wrap each token in brackets if missing, join with spaces for log output
 
-CONTRACT Helper
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT FormatTokensBracketWrap
+  INPUT: single token or array
+  OUTPUT: space-separated bracketed tokens string e.g. "[REQ-LOGGING_SYSTEM] [IMPL-LOGGER_MODULE]"
+  DATA: tokens already starting with "[" preserved without double wrap
 
-PROCEDURE IMPL-LOGGER_TOKENS_Helper(context)
-  // formatTokens(tokens: string | string[]): string
-  CALL formatTokens(tokens: string | string[]): string
-  ON invalid input OR missing data THEN RETURN without mutation
+PROCEDURE IMPL-LOGGER_TOKENS_FormatTokensBracketWrap(tokens)
+  tokenArray := normalize to array
+  IF NODE_ENV !== production THEN FOR EACH token CALL validateToken
+  FOR EACH token IF starts with "[" THEN keep ELSE wrap as "[token]"
+  RETURN join with space
 
-## FormatTokensAsSpace
+## ValidateTokenFormatDevOnly
 
-// [IMPL-LOGGER_TOKENS] [ARCH-LOGGING_SEMANTIC_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS]: Format tokens as space-separated in output
+// [IMPL-LOGGER_TOKENS] [ARCH-LOGGING_SEMANTIC_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS]: how: in non-production NODE_ENV validate token against REQ|ARCH|IMPL|TEST|PROC pattern and console.warn on mismatch
 
-CONTRACT FormatTokensAsSpace
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT ValidateTokenFormatDevOnly
+  INPUT: token string
+  OUTPUT: console.warn when pattern mismatch; no throw; no validation in production
+  DATA: pattern /^\[?(REQ|ARCH|IMPL|TEST|PROC)-[A-Z_0-9]+\]?$/
 
-PROCEDURE IMPL-LOGGER_TOKENS_FormatTokensAsSpace(context)
-  // Format tokens as space-separated in output
-  CALL Format tokens as space-separated in output
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## NoValidationInPROD
-
-// [IMPL-LOGGER_TOKENS] [ARCH-LOGGING_SEMANTIC_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS]: No validation in PROD for performance
-
-CONTRACT NoValidationInPROD
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-LOGGER_TOKENS_NoValidationInPROD(context)
-  // No validation in PROD for performance
-  CALL No validation in PROD for performance
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## ValidateTokenFormatAt
-
-// [IMPL-LOGGER_TOKENS] [ARCH-LOGGING_SEMANTIC_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS]: Validate token format at runtime (DEV mode)
-
-CONTRACT ValidateTokenFormatAt
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-LOGGER_TOKENS_ValidateTokenFormatAt(context)
-  // Validate token format at runtime (DEV mode)
-  CALL Validate token format at runtime (DEV mode)
-  ON invalid input OR missing data THEN RETURN without mutation
+PROCEDURE IMPL-LOGGER_TOKENS_ValidateTokenFormatDevOnly(token)
+  IF NODE_ENV is production THEN RETURN
+  IF token matches pattern THEN RETURN
+  console.warn invalid semantic token format with IMPL-LOGGER_TOKENS tag
 
 ## CodeLocations
 
 // [IMPL-LOGGER_TOKENS] [ARCH-LOGGING_SEMANTIC_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS]: map implementing and verifying source files for this IMPL
 
-// FILE: src/lib/logger.ts — Token formatting and validation
-// FILE: src/lib/logger.types.ts — SemanticToken type
-// FUNCTION: formatTokens in src/lib/logger.ts
-// FUNCTION: validateTokens in src/lib/logger.ts
+// FILE: src/lib/logger.ts — formatTokens, validateToken, log() token normalization
+// FILE: src/lib/logger.types.ts — SemanticToken type and Logger method signatures
+// FILE: src/lib/logger.test.ts — Semantic Tokens describe
+// FUNCTION: formatTokens, validateToken in src/lib/logger.ts
 
 ## ErrorHandling
 
-// [IMPL-LOGGER_TOKENS] [ARCH-LOGGING_SEMANTIC_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS]: surface recoverable failures without breaking pane invariants
+// [IMPL-LOGGER_TOKENS] [ARCH-LOGGING_SEMANTIC_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS]: how: invalid token format warns in development only; logging continues with unvalidated token text
 
 PROCEDURE IMPL-LOGGER_TOKENS_on_error(context, error)
-  LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
-  ELSE propagate error to caller
+  ON invalid format IN dev LOG console.warn CONTINUE write path
+  IN production SKIP validation entirely for performance

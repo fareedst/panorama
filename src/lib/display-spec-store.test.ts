@@ -28,6 +28,8 @@ describe("DisplaySpecStore [IMPL-DISPLAY_SPEC_STORE]", () => {
   });
 
   it("creates and lists specs", () => {
+    // [IMPL-DISPLAY_SPEC_STORE] [REQ-PANE_DISPLAY_FILTER]
+    // how: Validate name/rules; assign uuid id, version 1, timestamps; persist and emit updated event.
     const result = store.create({
       name: "Test Spec",
       rules: [{ id: "r1", action: "exclude", target: "file", pattern: "*.tmp", order: 0, enabled: true }],
@@ -39,6 +41,8 @@ describe("DisplaySpecStore [IMPL-DISPLAY_SPEC_STORE]", () => {
   });
 
   it("CREATE_SPEC rejects invalid rule pattern with clear errors", () => {
+    // [IMPL-DISPLAY_FILTER_ENGINE] [IMPL-DISPLAY_SPEC_STORE] [REQ-PANE_DISPLAY_FILTER]
+    // how: Enforce unique spec name (case-insensitive), max rules per spec, per-rule pattern validity.
     const result = store.create({
       name: "Bad rules",
       rules: [{ id: "r1", action: "exclude", target: "both", pattern: "   ", order: 0, enabled: true }],
@@ -62,6 +66,8 @@ describe("DisplaySpecStore [IMPL-DISPLAY_SPEC_STORE]", () => {
   });
 
   it("increments version on update", () => {
+    // [IMPL-DISPLAY_SPEC_STORE] [REQ-PANE_DISPLAY_FILTER]
+    // how: Merge patch; increment version; reject duplicate names excluding self.
     const created = store.create({
       name: "V",
       rules: [{ id: "r1", action: "exclude", target: "both", pattern: "*.x", order: 0, enabled: true }],
@@ -73,6 +79,8 @@ describe("DisplaySpecStore [IMPL-DISPLAY_SPEC_STORE]", () => {
   });
 
   it("DUPLICATE_SPEC creates a new catalog entry", () => {
+    // [IMPL-DISPLAY_SPEC_STORE] [REQ-PANE_DISPLAY_FILTER]
+    // how: Clone rules with new rule ids; CREATE_SPEC with newName.
     const created = store.create({
       name: "Original",
       rules: [{ id: "r1", action: "exclude", target: "both", pattern: "*.tmp", order: 0, enabled: true }],
@@ -94,6 +102,8 @@ describe("DisplaySpecStore [IMPL-DISPLAY_SPEC_STORE]", () => {
   });
 
   it("notifies subscribers on update", () => {
+    // [IMPL-DISPLAY_SPEC_STORE] [IMPL-PANE_DISPLAY_FILTER_UI] [REQ-PANE_DISPLAY_FILTER]
+    // how: Register listener for updated/deleted; return unsubscribe function.
     const listener = vi.fn();
     store.subscribe(listener);
     const created = store.create({

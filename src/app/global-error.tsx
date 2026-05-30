@@ -1,4 +1,4 @@
-// [IMPL-GLOBAL_ERROR_BOUNDARY] [ARCH-NEXTJS_FRAMEWORK] [REQ-ERROR_HANDLING]: Top-level Global Error Boundary Implementation: Create global-error.tsx with full HTML document for root-level errors
+// [IMPL-GLOBAL_ERROR_BOUNDARY] [ARCH-NEXTJS_FRAMEWORK] [REQ-ERROR_HANDLING]: Root-level Next.js global-error boundary — client component replaces root layout with full HTML document, recovery UI, and optional error digest
 // Global error boundary component that catches errors at the root layout level.
 // This component renders a full HTML document (including <html> and <body>) to
 // replace the root layout when an unexpected error occurs in production.
@@ -6,7 +6,7 @@
 
 "use client";
 
-// [IMPL-GLOBAL_ERROR_BOUNDARY] [ARCH-NEXTJS_FRAMEWORK] [REQ-ERROR_HANDLING]
+// [IMPL-GLOBAL_ERROR_BOUNDARY] [ARCH-NEXTJS_FRAMEWORK] [REQ-ERROR_HANDLING]: how: default export GlobalError marked use client per Next.js App Router convention
 // Global error boundary props interface following Next.js convention.
 // error: The caught error object with optional digest for server-side log matching
 // reset: Function to attempt recovery by re-rendering the error boundary
@@ -15,7 +15,7 @@ interface GlobalErrorProps {
   reset: () => void;
 }
 
-// [IMPL-GLOBAL_ERROR_BOUNDARY] [ARCH-NEXTJS_FRAMEWORK] [REQ-ERROR_HANDLING]
+// [IMPL-GLOBAL_ERROR_BOUNDARY] [ARCH-NEXTJS_FRAMEWORK] [REQ-ERROR_HANDLING]: how: render html lang en, head meta charset and viewport, title, self-contained style block; friendly heading, home link, Try again calls reset(); collapsible details shows message and digest
 // Root-level error boundary component. Renders its own <html> and <body> tags
 // because it replaces the entire root layout when activated. Provides a
 // user-friendly error message and a "Try again" button that calls reset().

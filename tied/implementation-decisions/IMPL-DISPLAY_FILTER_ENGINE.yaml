@@ -17,6 +17,17 @@ IMPL-DISPLAY_FILTER_ENGINE:
       - REQ-PANE_DISPLAY_FILTER
     architecture:
       - ARCH-DISPLAY_FILTER_ENGINE
+    tests:
+      - src/lib/display-filter-engine.test.ts
+    code_locations:
+      - src/lib/display-filter-engine.ts
+      - src/lib/display-filter.types.ts
+      - src/lib/glob-match.ts
   related_decisions:
     see_also:
       - docs/pane-display-filter-vocabulary.md
+  metadata:
+    last_updated:
+      date: "2026-05-30T00:00:00.000Z"
+      author: AI Agent
+      reason: Retrofit pseudocode and comment alignment per prompts/2026-05-29

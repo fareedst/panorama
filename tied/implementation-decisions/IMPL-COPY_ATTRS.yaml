@@ -27,7 +27,8 @@ IMPL-COPY_ATTRS:
     requirements:
       - REQ-COPY_OPERATIONS
       - REQ-FILE_OPERATIONS
-    tests: []
+    tests:
+      - src/lib/sync/engine.test.ts
     code_annotations:
       - IMPL-COPY_ATTRS
   related_decisions:
@@ -40,6 +41,6 @@ IMPL-COPY_ATTRS:
       date: 2026-02-09T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-19T16:06:42.636Z"
+      date: "2026-05-29T00:00:00.000Z"
       author: AI Agent
-      reason: IMPL essence_pseudocode retrofit all 58
+      reason: IMPL essence_pseudocode retrofit 2026-05-29

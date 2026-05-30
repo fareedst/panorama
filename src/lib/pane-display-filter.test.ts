@@ -54,7 +54,7 @@ describe("pane-display-filter [IMPL-PANE_DISPLAY_FILTER_UI]", () => {
     resetDisplaySpecStoreForTests(null);
   });
 
-  it("BUILD_PANE_FROM_RAW_LISTING filters hidden files when spec active", () => {
+  it("BUILD_PANE_FROM_RAW_LISTING filters hidden files when spec active [IMPL-PANE_DISPLAY_FILTER_UI] [IMPL-DISPLAY_FILTER_ENGINE] [REQ-PANE_DISPLAY_FILTER]: how: client-side filter when server did not pre-filter; sort visible files; reconcile or clear marks per preserveMarks flag", () => {
     const created = store.create({
       name: "No logs",
       rules: [

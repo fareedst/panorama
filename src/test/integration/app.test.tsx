@@ -32,8 +32,8 @@ describe('Server Component Rendering [ARCH-SERVER_COMPONENTS]', () => {
     expect(isServerComponent).toBe(true);
   });
 
-  it('root page redirects to file manager [IMPL-FILE_MANAGER_PAGE]', () => {
-    // [ARCH-SERVER_COMPONENTS] Root page redirects to /files
+  it('root page redirects to file manager [IMPL-HOME_PAGE]', () => {
+    // [IMPL-HOME_PAGE] [ARCH-SERVER_COMPONENTS] [REQ-HOME_PAGE]: how: Home() calls redirect("/files") so App Router never paints legacy home UI
     // Note: redirect() can't be tested in unit tests, covered by E2E
     const redirectsToFiles = true;
     expect(redirectsToFiles).toBe(true);
@@ -85,21 +85,22 @@ describe('TypeScript Integration [REQ-TYPESCRIPT]', () => {
   });
 });
 
+// [IMPL-BUILD_SCRIPTS] [ARCH-NEXTJS_FRAMEWORK] [REQ-BUILD_SYSTEM]: how: package.json scripts standardize dev, build, lint, test, and cleanup commands for CI and local workflows
 describe('Build System Integration [REQ-BUILD_SYSTEM]', () => {
   it('supports development mode [REQ-BUILD_SYSTEM]', () => {
-    // [REQ-BUILD_SYSTEM] Documents dev mode support
+    // [IMPL-BUILD_SCRIPTS] [ARCH-NEXTJS_FRAMEWORK] [REQ-BUILD_SYSTEM]: how: dev script runs Next.js development server
     const devScript = 'next dev';
     expect(devScript).toBe('next dev');
   });
 
   it('supports production build [REQ-BUILD_SYSTEM]', () => {
-    // [REQ-BUILD_SYSTEM] Documents build mode support
+    // [IMPL-BUILD_SCRIPTS] [ARCH-NEXTJS_FRAMEWORK] [REQ-BUILD_SYSTEM]: how: build script produces production Next.js output
     const buildScript = 'next build';
     expect(buildScript).toBe('next build');
   });
 
   it('supports testing [REQ-BUILD_SYSTEM]', () => {
-    // [REQ-BUILD_SYSTEM] Documents test support
+    // [IMPL-BUILD_SCRIPTS] [ARCH-NEXTJS_FRAMEWORK] [REQ-BUILD_SYSTEM]: how: test script runs Vitest once in run mode
     const testScript = 'vitest';
     expect(testScript).toBe('vitest');
   });

@@ -1,4 +1,4 @@
-// [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: Top-level Sync Engine Core Implementation: SyncEngine class orchestrates sync loop iterating over sources, syncing each to all destinations in parallel, tracking results, and handling move deletion
+// [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: SyncEngine orchestrates multi-source multi-destination sync with observer callbacks, compare skip, verify, store monitoring, and deferred move deletion
 // SyncEngine tests
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
@@ -31,6 +31,7 @@ describe("SyncEngine", () => {
     await fs.rm(tempDir, { recursive: true, force: true });
   });
 
+  // [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: how: sync() builds plan, iterates sources, syncItem to all destinations in parallel, deletes sources only after all dests succeed when move=true
   it("should sync a file to multiple destinations [REQ-NSYNC_MULTI_TARGET]", async () => {
     // Create source file
     const sourceFile = path.join(sourceDir, "test.txt");
@@ -83,6 +84,7 @@ describe("SyncEngine", () => {
     expect(destStat.mode).toBe(sourceStat.mode);
   });
 
+  // [IMPL-NSYNC_COMPARE] [REQ-COMPARE_METHODS]: how: compareFiles returns true when source and destination are equivalent so SyncEngine can skip copy
   it("should skip unchanged files [REQ-COMPARE_METHODS]", async () => {
     // Create source file
     const sourceFile = path.join(sourceDir, "test.txt");
@@ -108,6 +110,7 @@ describe("SyncEngine", () => {
     expect(result.itemsCompleted).toBe(0);
   });
 
+  // [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: how: onStart(plan), onItemStart, onItemProgress, onItemComplete, onProgress(stats), onFinish(result)
   it("should call observer callbacks [REQ-SDK_OBSERVER]", async () => {
     const sourceFile = path.join(sourceDir, "test.txt");
     await fs.writeFile(sourceFile, "test content");
@@ -133,7 +136,7 @@ describe("SyncEngine", () => {
     expect(calls).toContain("finish");
   });
 
-  // [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: delete source only after all destinations succeed for that item
+  // [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: how: after source loop, delete each source in sourcesToDelete when move AND NOT cancelled AND NOT storeFailureAbort
   it("should handle move semantics [REQ-MOVE_SEMANTICS]", async () => {
     // Create source file
     const sourceFile = path.join(sourceDir, "test.txt");

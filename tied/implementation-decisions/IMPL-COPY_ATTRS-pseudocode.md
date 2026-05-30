@@ -1,44 +1,67 @@
 # IMPL-COPY_ATTRS essence pseudocode
 
-// [IMPL-COPY_ATTRS] [REQ-COPY_OPERATIONS] [REQ-FILE_OPERATIONS]: Top-level Copy Preserve File Attributes: Shared preserveCopyAttributes() after fs.copyFile; stat source then chmod + utimes on dest; each step try/catch so unsupported or denied ops do not fail the copy
+// [IMPL-COPY_ATTRS] [REQ-COPY_OPERATIONS] [REQ-FILE_OPERATIONS]: Shared preserveCopyAttributes() after fs.copyFile; stat source then chmod + utimes on dest; each step try/catch so unsupported or denied ops do not fail the copy
 
 ## Summary contract
 
-// [IMPL-COPY_ATTRS] [REQ-COPY_OPERATIONS] [REQ-FILE_OPERATIONS]: bound module inputs, outputs, and shared data for all runtime blocks below
+// [IMPL-COPY_ATTRS] [REQ-COPY_OPERATIONS] [REQ-FILE_OPERATIONS]: how: best-effort attribute preservation; copy operation success does not depend on chmod/utimes
 
 CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-COPY_ATTRS
-  DATA: state and configuration per implementation_approach
+  INPUT: sourcePath, destPath (dest must exist after copyFile)
+  OUTPUT: dest mode and timestamps aligned with source when OS permits
+  DATA: fs.stat(sourcePath); stat.mode, stat.atime, stat.mtime
+  CONTROL: async; never throws to caller
 
-## PreserveMtimeMode
+## PreserveCopyAttributes
 
-// [IMPL-COPY_ATTRS] [REQ-COPY_OPERATIONS] [REQ-FILE_OPERATIONS]: after copy apply utimes and chmod from source stat
+// [IMPL-COPY_ATTRS] [REQ-COPY_OPERATIONS] [REQ-FILE_OPERATIONS]: how: after copy apply utimes and chmod from source stat; ignore per-step failures
 
-CONTRACT PreserveMtimeMode
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT PreserveCopyAttributes
+  INPUT: sourcePath, destPath
+  OUTPUT: side effect on dest only
+  DATA: source file stat
 
-PROCEDURE IMPL-COPY_ATTRS_PreserveMtimeMode(context)
-  // READ sourceStat mtime atime mode
-  CALL READ sourceStat mtime atime mode
-  CALL fs.utimes on destination with source times
-  CALL fs.chmod on destination with source mode
+PROCEDURE IMPL-COPY_ATTRS_PreserveCopyAttributes(sourcePath, destPath)
+  TRY
+    stat := STAT sourcePath
+    IF stat is not a regular file THEN RETURN
+    TRY
+      CHMOD destPath with stat.mode
+    ON error
+      IGNORE
+    TRY
+      UTIMES destPath with stat.atime, stat.mtime
+    ON error
+      IGNORE
+  ON stat error
+    IGNORE
+
+## CallSitesAfterCopyFile
+
+// [IMPL-COPY_ATTRS] [REQ-COPY_OPERATIONS] [REQ-FILE_OPERATIONS]: how: invoke preserveCopyAttributes immediately after successful copyFile in sync engine and files.data copy paths
+
+CONTRACT CallSitesAfterCopyFile
+  INPUT: completed copyFile(source, dest)
+  OUTPUT: attributes preserved when supported
+  DATA: src/lib/sync/operations.ts, src/lib/files.data.ts
+
+PROCEDURE IMPL-COPY_ATTRS_CallSitesAfterCopyFile(source, dest)
+  AWAIT copyFile(source, dest)
+  AWAIT PreserveCopyAttributes(source, dest)
 
 ## CodeLocations
 
 // [IMPL-COPY_ATTRS] [REQ-COPY_OPERATIONS] [REQ-FILE_OPERATIONS]: map implementing and verifying source files for this IMPL
 
-// FILE: src/lib/copyAttributes.ts — preserveCopyAttributes() helper
-// FILE: src/lib/sync/operations.ts — Called after copyFile
-// FILE: src/lib/files.data.ts — Called after copyFile
+// FILE: src/lib/copyAttributes.ts — preserveCopyAttributes()
+// FILE: src/lib/sync/operations.ts — called after copyFile
+// FILE: src/lib/files.data.ts — called after copyFile
+// FILE: src/lib/sync/engine.test.ts — mtime, atime, mode assertion after sync
 
 ## ErrorHandling
 
-// [IMPL-COPY_ATTRS] [REQ-COPY_OPERATIONS] [REQ-FILE_OPERATIONS]: surface recoverable failures without breaking pane invariants
+// [IMPL-COPY_ATTRS] [REQ-COPY_OPERATIONS] [REQ-FILE_OPERATIONS]: how: all failures swallowed inside procedure; copy remains successful
 
 PROCEDURE IMPL-COPY_ATTRS_on_error(context, error)
-  LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
-  ELSE propagate error to caller
+  LOG optional diagnostic at call site only
+  NEVER propagate from PreserveCopyAttributes

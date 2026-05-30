@@ -1,83 +1,77 @@
 # IMPL-TEST_CONFIG essence pseudocode
 
-// [IMPL-TEST_CONFIG] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: Top-level Vitest Configuration: Configure Vitest with React Testing Library and coverage
+// [IMPL-TEST_CONFIG] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: Vitest configuration — jsdom environment, global APIs, setup file, coverage thresholds, path aliases
 
-## Summary contract
+## VitestEnvironmentAndGlobals
 
-// [IMPL-TEST_CONFIG] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: bound module inputs, outputs, and shared data for all runtime blocks below
+// [IMPL-TEST_CONFIG] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: configure jsdom test environment and Vitest globals for describe/it/expect without per-file imports
 
-CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-TEST_CONFIG
-  DATA: state and configuration per implementation_approach
+CONTRACT VitestEnvironmentAndGlobals
+  INPUT: vitest defineConfig test block
+  OUTPUT: DOM-capable unit test runtime
+  DATA: environment jsdom, globals true
 
-## ConfigureTestEnvironmentJsdom
+PROCEDURE IMPL-TEST_CONFIG_VitestEnvironmentAndGlobals()
+  SET test.environment := "jsdom"
+  SET test.globals := true
 
-// [IMPL-TEST_CONFIG] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: Configure test environment (jsdom)
+## SetupFileAndLoggerEnv
 
-CONTRACT ConfigureTestEnvironmentJsdom
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+// [IMPL-TEST_CONFIG] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM] [IMPL-LOGGER_CONFIG]: load src/test/setup.ts before tests; set CONSOLE_ERRORS false to suppress logger console mirroring unless test resets modules
 
-PROCEDURE IMPL-TEST_CONFIG_ConfigureTestEnvironmentJsdom(context)
-  // Configure test environment (jsdom)
-  CALL Configure test environment (jsdom)
-  ON invalid input OR missing data THEN RETURN without mutation
+CONTRACT SetupFileAndLoggerEnv
+  INPUT: vitest test block
+  OUTPUT: matchers and mocks installed; logger tests control console explicitly
+  DATA: setupFiles ['./src/test/setup.ts'], env.CONSOLE_ERRORS 'false'
 
-## ConfigureTestSetupFile
+PROCEDURE IMPL-TEST_CONFIG_SetupFileAndLoggerEnv()
+  SET test.setupFiles := ['./src/test/setup.ts']
+  SET test.env.CONSOLE_ERRORS := 'false'
 
-// [IMPL-TEST_CONFIG] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: Configure test setup file
+## CssAndExcludePolicy
 
-CONTRACT ConfigureTestSetupFile
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+// [IMPL-TEST_CONFIG] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: disable CSS injection in jsdom; exclude node_modules dist e2e Playwright paths from Vitest discovery
 
-PROCEDURE IMPL-TEST_CONFIG_ConfigureTestSetupFile(context)
-  // Configure test setup file
-  CALL Configure test setup file
-  ON invalid input OR missing data THEN RETURN without mutation
+CONTRACT CssAndExcludePolicy
+  INPUT: vitest test block
+  OUTPUT: unit tests assert DOM/behavior without parsing Tailwind v4 output; Playwright specs not collected
+  DATA: css false, exclude **/e2e/**
 
-## CreateVitestConfigTs
+PROCEDURE IMPL-TEST_CONFIG_CssAndExcludePolicy()
+  SET test.css := false
+  SET test.exclude := node_modules, dist, e2e, cache/temp patterns
 
-// [IMPL-TEST_CONFIG] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: Create vitest.config.ts
+## CoverageThresholds
 
-CONTRACT CreateVitestConfigTs
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+// [IMPL-TEST_CONFIG] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: v8 coverage on src/app and src/lib with 80% lines/functions/branches/statements thresholds
 
-PROCEDURE IMPL-TEST_CONFIG_CreateVitestConfigTs(context)
-  // Create vitest.config.ts
-  CALL Create vitest.config.ts
-  ON invalid input OR missing data THEN RETURN without mutation
+CONTRACT CoverageThresholds
+  INPUT: vitest coverage block
+  OUTPUT: coverage reports text/json/html/lcov; fail CI below 80% on included sources
+  DATA: provider v8, all true, include src/app and src/lib, exclude tests configs setup
 
-## SetUpCoverageWith
+PROCEDURE IMPL-TEST_CONFIG_CoverageThresholds()
+  SET coverage.provider := v8
+  SET coverage.reporter := text, json, html, lcov
+  SET coverage.include := src/app/**, src/lib/**
+  SET coverage.exclude := *.config.*, **/*.test.*, src/test/**, .next, node_modules, **/*.d.ts
+  SET coverage.all := true
+  SET coverage.thresholds lines/functions/branches/statements := 80 each
 
-// [IMPL-TEST_CONFIG] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: Set up coverage with 80% threshold
+## PathAliasResolve
 
-CONTRACT SetUpCoverageWith
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+// [IMPL-TEST_CONFIG] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: resolve @ alias to ./src matching tsconfig for consistent imports in tests
 
-PROCEDURE IMPL-TEST_CONFIG_SetUpCoverageWith(context)
-  // Set up coverage with 80% threshold
-  CALL Set up coverage with 80% threshold
-  ON invalid input OR missing data THEN RETURN without mutation
+CONTRACT PathAliasResolve
+  INPUT: vitest resolve.alias
+  OUTPUT: @/ imports resolve to project src root
+  DATA: @ → path.resolve(__dirname, './src')
+
+PROCEDURE IMPL-TEST_CONFIG_PathAliasResolve()
+  SET resolve.alias['@'] := absolute path to ./src
 
 ## CodeLocations
 
-// [IMPL-TEST_CONFIG] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: map implementing and verifying source files for this IMPL
+// [IMPL-TEST_CONFIG] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: map implementing source for this IMPL
 
-// FILE: vitest.config.ts — Vitest configuration
-
-## ErrorHandling
-
-// [IMPL-TEST_CONFIG] [ARCH-TEST_FRAMEWORK] [REQ-BUILD_SYSTEM]: surface recoverable failures without breaking pane invariants
-
-PROCEDURE IMPL-TEST_CONFIG_on_error(context, error)
-  LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
-  ELSE propagate error to caller
+// FILE: vitest.config.ts — full Vitest and coverage configuration

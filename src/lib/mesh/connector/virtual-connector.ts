@@ -1,4 +1,4 @@
-// [IMPL-MESH_CONNECTOR] [REQ-MESH_REAL_CONNECTORS] [REQ-MESH_PLATFORM]: Virtual connector — synthetic inventory on top of in-memory semantics (deployment plan phases 4, 28)
+// [IMPL-MESH_CONNECTOR] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM] [REQ-MESH_REAL_CONNECTORS]: Derivative FakeConnector seeded with deterministic /virtual/readme.txt or caller-provided stubs for labs.
 
 import type { ConnectorHealth } from "./types";
 import { FakeConnector } from "./fake-connector";

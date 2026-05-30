@@ -1,4 +1,4 @@
-// [IMPL-MESH_CREDENTIAL] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: Credential reference store — no secrets in mask output
+// [IMPL-MESH_CREDENTIAL] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: In-memory credential reference store; L1 validation; mask for display without secrets
 
 import { describe, it, expect } from "vitest";
 import { isDomainValidationError } from "../domain";

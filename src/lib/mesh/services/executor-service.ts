@@ -1,4 +1,4 @@
-// [IMPL-MESH_EXECUTOR] [REQ-MESH_PLATFORM]: Operation execution — phase 13
+// [IMPL-MESH_EXECUTOR] [ARCH-MESH_LAYERED] [IMPL-MESH_EVENTS] [REQ-MESH_PLATFORM]: Execute approved sync operations via source/target connectors; optional EventService emits operation lifecycle events.
 
 import type { Connector, ConnectorError } from "../connector/types";
 import type { ChangeSet, Policy, SyncOperation } from "../domain";
@@ -20,6 +20,7 @@ function isConnectorError(r: unknown): r is ConnectorError {
 export class ExecutorService {
   constructor(private readonly events?: EventService) {}
 
+  // [IMPL-MESH_EXECUTOR] [ARCH-MESH_LAYERED] [IMPL-MESH_POLICY] [IMPL-MESH_EVENTS] [REQ-MESH_PLATFORM]: how — run one SyncOperation through connectors; honor delete policy; emit started/completed/failed events.
   executeOperation(
     operation: SyncOperation,
     source: Connector,
@@ -73,6 +74,7 @@ export class ExecutorService {
     return result;
   }
 
+  // [IMPL-MESH_EXECUTOR] [ARCH-MESH_LAYERED] [IMPL-MESH_DOMAIN_TYPES] [REQ-MESH_PLATFORM]: how — iterate change set operations in order; retry failed (non-skipped) ops up to policy.retryMaxAttempts; record final attempt count per op.
   executeChangeSet(
     changeSet: ChangeSet,
     source: Connector,

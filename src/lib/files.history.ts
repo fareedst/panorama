@@ -39,8 +39,8 @@ export class DirectoryHistory {
   private readonly MAX_RECENT = 20;
 
   /**
-   * Save cursor position before navigating away from directory
-   * [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY]
+   * [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
+   * how: Before leaving a directory, store filename, cursor index, scrollTop, and timestamp in per-pane Map keyed by path; update recent list.
    */
   saveCursorPosition(
     paneId: number,
@@ -67,9 +67,8 @@ export class DirectoryHistory {
   }
 
   /**
-   * Restore cursor position when revisiting directory
-   * Returns cursor index to restore (0 if no history)
-   * [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY]
+   * [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
+   * how: On revisit, prefer filename lookup in listing; fallback to saved index clamped to list bounds; default cursor 0 when no history.
    */
   restoreCursorPosition(
     paneId: number,
@@ -98,9 +97,8 @@ export class DirectoryHistory {
   }
 
   /**
-   * Find cursor position for parent navigation
-   * Returns index of subdirectory in parent list (or 0 if not found)
    * [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
+   * how: When navigating up, locate current directory basename among parent listing directories only.
    */
   findSubdirectoryInParent(
     currentPath: string,
@@ -123,7 +121,8 @@ export class DirectoryHistory {
   }
 
   /**
-   * Add directory to recent list
+   * [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
+   * how: Maintain LRU-ordered recent path list per pane (max 20); revisiting moves path to front.
    */
   private addRecentDirectory(paneId: number, path: string): void {
     let recents = this.recentDirs.get(paneId);
@@ -148,16 +147,16 @@ export class DirectoryHistory {
   }
 
   /**
-   * Get recent directories for pane
-   * [IMPL-DIR_HISTORY] [REQ-ADVANCED_NAV]
+   * [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
+   * how: Maintain LRU-ordered recent path list per pane (max 20); revisiting moves path to front.
    */
   getRecentDirectories(paneId: number): RecentDirectory[] {
     return this.recentDirs.get(paneId) || [];
   }
 
   /**
-   * Navigate to previous directory in recent list
-   * Returns path or null if at start of history
+   * [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
+   * how: Walk recent list relative to current path; back moves toward older entries, forward toward newer.
    */
   navigateBack(paneId: number, currentPath: string): string | null {
     const recents = this.recentDirs.get(paneId);
@@ -174,8 +173,8 @@ export class DirectoryHistory {
   }
 
   /**
-   * Navigate to next directory in recent list
-   * Returns path or null if at end of history
+   * [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
+   * how: Walk recent list relative to current path; back moves toward older entries, forward toward newer.
    */
   navigateForward(paneId: number, currentPath: string): string | null {
     const recents = this.recentDirs.get(paneId);
@@ -192,7 +191,8 @@ export class DirectoryHistory {
   }
 
   /**
-   * Clear history for pane (useful for testing)
+   * [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
+   * how: Remove cursor and recent state for one pane (testing and reset).
    */
   clearHistory(paneId: number): void {
     this.histories.delete(paneId);

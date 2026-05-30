@@ -14,7 +14,7 @@ interface RenameDialogProps {
 
 /**
  * RenameDialog - Modal for renaming a single file
- * [IMPL-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] [REQ-KEYBOARD_SHORTCUTS_COMPLETE]
+ * [IMPL-RENAME_DIALOG] [ARCH-KEYBIND_SYSTEM] [REQ-FILE_OPERATIONS] [REQ-KEYBOARD_SHORTCUTS_COMPLETE]: how: modal with initialName input, focus+select on open, submit trimmed newName, ESC cancels
  */
 export default function RenameDialog({
   isOpen,

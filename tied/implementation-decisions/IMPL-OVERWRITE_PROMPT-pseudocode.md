@@ -1,80 +1,105 @@
 # IMPL-OVERWRITE_PROMPT essence pseudocode
 
-// [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: Top-level Overwrite Confirmation with File Comparison: Detect file conflicts before confirmation, display comparison details in ConfirmDialog
+// [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: Overwrite confirmation for bulk copy/move — detect basename conflicts from pane data, show comparison in ConfirmDialog before POST
 
 ## Summary contract
 
-// [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: bound module inputs, outputs, and shared data for all runtime blocks below
+// [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: shared inputs for conflict detection, message assembly, and dialog rendering blocks below
 
 CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-OVERWRITE_PROMPT
-  DATA: state and configuration per implementation_approach
+  INPUT: source pane paths (marked or cursor), destination pane file listing, layout with two panes minimum
+  OUTPUT: ConfirmDialog with optional FileConflict[] before bulk-copy or bulk-move POST
+  DATA: panes[], focusIndex, destPaneIndex, FileConflict { name, existingSummary, sourceSummary, comparison }
+  CONTROL: no extra API calls — uses existing pane FileStat records only
 
-## DetectConflicts
+## DETECT_CONFLICTS
 
-// [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: before confirm compare source basenames to destination pane file names
+// [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: before confirm, foreach source path compare basename to destination pane file names; build FileConflict when match
 
 CONTRACT DetectConflicts
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+  INPUT: sources[] absolute paths, sourcePane files[], destPane files[]
+  OUTPUT: conflicts[] FileConflict
+  DATA: path.basename for each sourcePath
 
-PROCEDURE IMPL-OVERWRITE_PROMPT_DetectConflicts(context)
+PROCEDURE IMPL-OVERWRITE_PROMPT_DetectConflicts(sources, sourcePane, destPane)
+  SET conflicts := empty array
   FOR EACH sourcePath IN sources
-  SET basename FROM path basename of sourcePath
-  IF dest pane files contains name basename THEN
-  CALL describeFileComparison with source and existing FileStat
-  // APPEND FileConflict with summaries and comparison text
-  CALL APPEND FileConflict with summaries and comparison text
+    SET basename := path basename of sourcePath
+    SET existingFile := destPane.files find where name equals basename
+    IF existingFile is missing THEN CONTINUE
+    SET sourceFile := sourcePane.files find where path equals sourcePath
+    IF sourceFile is missing THEN CONTINUE
+    CALL DescribeFileComparison(sourceFile, existingFile) -> summaries and comparison label
+    APPEND FileConflict { name: basename, existingSummary, sourceSummary, comparison } to conflicts
+  RETURN conflicts
 
-## ConfirmMessage
+## DESCRIBE_FILE_COMPARISON
 
-// [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: append overwrite count to confirm dialog message when conflicts non-empty
-
-CONTRACT ConfirmMessage
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-OVERWRITE_PROMPT_ConfirmMessage(context)
-  // BUILD base message with source count and destDir
-  CALL BUILD base message with source count and destDir
-  IF conflicts.length greater than zero THEN append will be overwritten line
-  // PASS conflicts optional prop to ConfirmDialog
-  CALL PASS conflicts optional prop to ConfirmDialog
-
-## DescribeFileComparison
-
-// [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: utility compares size and mtime for human-readable summary
+// [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: format size and mtime for both files; label size delta and time delta for human-readable comparison string
 
 CONTRACT DescribeFileComparison
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+  INPUT: source FileStat, existing FileStat
+  OUTPUT: { sourceSummary, existingSummary, comparison }
+  DATA: formatSize, formatDateTime; mtime normalized to epoch ms
 
-PROCEDURE IMPL-OVERWRITE_PROMPT_DescribeFileComparison(context)
-  // INPUT sourceFile existingFile FileStat records
-  // COMPUTE size delta and mtime delta
-  CALL COMPUTE size delta and mtime delta
-  RETURN sourceSummary existingSummary comparison label
+PROCEDURE IMPL-OVERWRITE_PROMPT_DescribeFileComparison(source, existing)
+  SET sourceSummary := formatSize(source.size) + ", " + formatDateTime(source.mtime)
+  SET existingSummary := formatSize(existing.size) + ", " + formatDateTime(existing.mtime)
+  IF source.size equals existing.size THEN sizeComparison := "Same size"
+  ELSE IF source.size greater than existing.size THEN sizeComparison := "Source larger (by " + formatSize(delta) + ")"
+  ELSE sizeComparison := "Source smaller (by " + formatSize(delta) + ")"
+  IF abs(sourceTime - existingTime) less than 1000 ms THEN timeComparison := "same date"
+  ELSE IF sourceTime greater than existingTime THEN timeComparison := "source newer"
+  ELSE timeComparison := "source older"
+  SET comparison := sizeComparison + ", " + timeComparison
+  RETURN { sourceSummary, existingSummary, comparison }
+
+## CONFIRM_MESSAGE
+
+// [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: base message shows source count and destDir; append overwrite count line when conflicts non-empty
+
+CONTRACT ConfirmMessage
+  INPUT: operation title (Copy Files | Move Files), sources.length, destDir, conflicts.length
+  OUTPUT: message string, optional conflicts prop
+  DATA: setConfirmDialog state
+
+PROCEDURE IMPL-OVERWRITE_PROMPT_ConfirmMessage(title, sources, destDir, conflicts)
+  SET message := title verb + sources.length + " file(s) to:" + newline + destDir
+  IF conflicts.length greater than zero THEN
+    APPEND newline + conflicts.length + " file(s) will be overwritten." to message
+  OPEN ConfirmDialog with title, message, conflicts when length greater than zero else undefined
+
+## CONFIRM_DIALOG_RENDER
+
+// [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: scrollable yellow conflict panel lists each name with Existing (target), Selected (source), and comparison italic line
+
+CONTRACT ConfirmDialogRender
+  INPUT: conflicts[] FileConflict, isOpen, onConfirm, onCancel
+  OUTPUT: modal UI or null when closed
+  DATA: ConfirmDialog optional conflicts prop; Escape cancels; Enter confirms
+
+PROCEDURE IMPL-OVERWRITE_PROMPT_ConfirmDialogRender(props)
+  IF NOT isOpen THEN RETURN null
+  RENDER message paragraph
+  IF conflicts present AND length greater than zero THEN
+    RENDER warning heading "The following file(s) will be overwritten:"
+    FOR EACH conflict RENDER name, existingSummary, sourceSummary, comparison in scrollable panel
+  RENDER Cancel and Confirm buttons
 
 ## CodeLocations
 
 // [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: map implementing and verifying source files for this IMPL
 
-// FILE: src/app/files/WorkspaceView.tsx — Conflict detection in handleBulkCopy and handleBulkMove
-// FILE: src/app/files/components/ConfirmDialog.tsx — FileConflict interface and rendering
+// FILE: src/app/files/WorkspaceView.tsx — handleBulkCopy, handleBulkMove conflict detection and setConfirmDialog
+// FILE: src/app/files/components/ConfirmDialog.tsx — FileConflict interface and conflict detail rendering
 // FILE: src/lib/files.utils.ts — describeFileComparison utility
-// FUNCTION: describeFileComparison in src/lib/files.utils.ts
-// FUNCTION: handleBulkCopy in src/app/files/WorkspaceView.tsx
-// FUNCTION: handleBulkMove in src/app/files/WorkspaceView.tsx
+// TEST: src/app/files/BulkOperations.test.tsx — Overwrite Prompt describe block
 
 ## ErrorHandling
 
-// [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: surface recoverable failures without breaking pane invariants
+// [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: missing sourceFile stat skips that conflict entry; bulk POST errors surface via alert without breaking pane array
 
 PROCEDURE IMPL-OVERWRITE_PROMPT_on_error(context, error)
   LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
-  ELSE propagate error to caller
+  IF bulk operation fails THEN alert user AND close progress dialog
+  ELSE propagate to caller

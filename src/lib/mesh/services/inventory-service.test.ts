@@ -1,4 +1,4 @@
-// [IMPL-MESH_INVENTORY] [REQ-MESH_PLATFORM]: Inventory scan tests — phase 9
+// [IMPL-MESH_INVENTORY] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: Read-only depot inventory scan via connector health check, listing, and per-file stat metadata.
 
 import { describe, it, expect } from "vitest";
 import { FakeConnector } from "../connector/fake-connector";
@@ -16,6 +16,7 @@ function depot(attrs: object) {
 describe("InventoryService [IMPL-MESH_INVENTORY]", () => {
   const svc = new InventoryService();
 
+  // [IMPL-MESH_INVENTORY] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — verify connector health; list entries from depot root; collect directory rows and file size/mtime from stat (skip stat failures).
   it("scan_empty_depot", () => {
     const conn = new FakeConnector();
     const d = depot({ name: "Empty", kind: "virtual", root: "/" });

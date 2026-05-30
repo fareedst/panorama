@@ -4,19 +4,20 @@
 
 Covers the **multi-pane file manager shell**: server **Files page**, client **workspace**, individual **panes**, **focus**, **layout** geometry, file columns, and file-manager-side restore UX chrome. **Intentional hub** — exceeds ~15 concepts by design; see [panorama-domain-references.md](panorama-domain-references.md) split/merge policy.
 
-Excludes NSYNC sync algorithms ([nsync-multi-target-vocabulary.md](nsync-multi-target-vocabulary.md)), cross-pane comparison coloring ([cross-pane-comparison-vocabulary.md](cross-pane-comparison-vocabulary.md)), Mesh platform domain objects ([mesh-platform-vocabulary.md](mesh-platform-vocabulary.md)), pane **display filter specs** ([pane-display-filter-vocabulary.md](pane-display-filter-vocabulary.md)), and **cross-pane visibility** filters ([cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md)).
+Excludes NSYNC sync algorithms ([nsync-multi-target-vocabulary.md](nsync-multi-target-vocabulary.md)), cross-pane comparison coloring ([cross-pane-comparison-vocabulary.md](cross-pane-comparison-vocabulary.md)), Mesh platform domain objects ([mesh-platform-vocabulary.md](mesh-platform-vocabulary.md)), pane **display filter specs** ([pane-display-filter-vocabulary.md](pane-display-filter-vocabulary.md)), and **cross-pane visibility** filters ([cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md)). Application **root entry redirect** (`/`) is documented here; cross-surface **NewTabLink** component details are canonical in [mesh-platform-vocabulary.md](mesh-platform-vocabulary.md).
 
 ## Traceability
 
 | Kind | Tokens / artifacts |
 | --- | --- |
-| REQ | [REQ-FILE_MANAGER_PAGE](../tied/requirements/REQ-FILE_MANAGER_PAGE.yaml), [REQ-MULTI_PANE_LAYOUT](../tied/requirements/REQ-MULTI_PANE_LAYOUT.yaml), [REQ-CONFIG_DRIVEN_FILE_MANAGER](../tied/requirements/REQ-CONFIG_DRIVEN_FILE_MANAGER.yaml), [REQ-TOOLBAR_SYSTEM](../tied/requirements/REQ-TOOLBAR_SYSTEM.yaml), [REQ-DIRECTORY_NAVIGATION](../tied/requirements/REQ-DIRECTORY_NAVIGATION.yaml), [REQ-MOUSE_INTERACTION](../tied/requirements/REQ-MOUSE_INTERACTION.yaml), [REQ-LINKED_PANES](../tied/requirements/REQ-LINKED_PANES.yaml), [REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml), [REQ-PANE_DISPLAY_FILTER](../tied/requirements/REQ-PANE_DISPLAY_FILTER.yaml), [REQ-CROSS_PANE_VISIBILITY](../tied/requirements/REQ-CROSS_PANE_VISIBILITY.yaml) |
-| ARCH | [ARCH-FILE_MANAGER_HIERARCHY](../tied/architecture-decisions/ARCH-FILE_MANAGER_HIERARCHY.yaml), [ARCH-PANE_LIFECYCLE](../tied/architecture-decisions/ARCH-PANE_LIFECYCLE.yaml), [ARCH-CONFIG_DRIVEN_UI](../tied/architecture-decisions/ARCH-CONFIG_DRIVEN_UI.yaml), [ARCH-MOUSE_SUPPORT](../tied/architecture-decisions/ARCH-MOUSE_SUPPORT.yaml), [ARCH-CROSS_PANE_VISIBILITY](../tied/architecture-decisions/ARCH-CROSS_PANE_VISIBILITY.yaml) |
-| IMPL | [IMPL-FILE_MANAGER_PAGE](../tied/implementation-decisions/IMPL-FILE_MANAGER_PAGE.yaml), [IMPL-FILE_COLUMN_CONFIG](../tied/implementation-decisions/IMPL-FILE_COLUMN_CONFIG.yaml), [IMPL-WORKSPACE_VIEW](../tied/implementation-decisions/IMPL-WORKSPACE_VIEW.yaml), [IMPL-FILE_PANE](../tied/implementation-decisions/IMPL-FILE_PANE.yaml), [IMPL-MOUSE_SUPPORT](../tied/implementation-decisions/IMPL-MOUSE_SUPPORT.yaml), [IMPL-PANE_MANAGEMENT](../tied/implementation-decisions/IMPL-PANE_MANAGEMENT.yaml), [IMPL-LAYOUT_CALCULATOR](../tied/implementation-decisions/IMPL-LAYOUT_CALCULATOR.yaml), [IMPL-TOOLBAR_COMPONENT](../tied/implementation-decisions/IMPL-TOOLBAR_COMPONENT.yaml), [IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml) |
+| REQ | [REQ-FILE_MANAGER_PAGE](../tied/requirements/REQ-FILE_MANAGER_PAGE.yaml), [REQ-HOME_PAGE](../tied/requirements/REQ-HOME_PAGE.yaml), [REQ-BRANDING](../tied/requirements/REQ-BRANDING.yaml), [REQ-MULTI_PANE_LAYOUT](../tied/requirements/REQ-MULTI_PANE_LAYOUT.yaml), [REQ-CONFIG_DRIVEN_FILE_MANAGER](../tied/requirements/REQ-CONFIG_DRIVEN_FILE_MANAGER.yaml), [REQ-TOOLBAR_SYSTEM](../tied/requirements/REQ-TOOLBAR_SYSTEM.yaml), [REQ-DIRECTORY_NAVIGATION](../tied/requirements/REQ-DIRECTORY_NAVIGATION.yaml), [REQ-MOUSE_INTERACTION](../tied/requirements/REQ-MOUSE_INTERACTION.yaml), [REQ-LINKED_PANES](../tied/requirements/REQ-LINKED_PANES.yaml), [REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml), [REQ-PANE_DISPLAY_FILTER](../tied/requirements/REQ-PANE_DISPLAY_FILTER.yaml), [REQ-CROSS_PANE_VISIBILITY](../tied/requirements/REQ-CROSS_PANE_VISIBILITY.yaml) |
+| ARCH | [ARCH-FILE_MANAGER_HIERARCHY](../tied/architecture-decisions/ARCH-FILE_MANAGER_HIERARCHY.yaml), [ARCH-SERVER_COMPONENTS](../tied/architecture-decisions/ARCH-SERVER_COMPONENTS.yaml), [ARCH-PANE_LIFECYCLE](../tied/architecture-decisions/ARCH-PANE_LIFECYCLE.yaml), [ARCH-CONFIG_DRIVEN_UI](../tied/architecture-decisions/ARCH-CONFIG_DRIVEN_UI.yaml), [ARCH-MOUSE_SUPPORT](../tied/architecture-decisions/ARCH-MOUSE_SUPPORT.yaml), [ARCH-CROSS_PANE_VISIBILITY](../tied/architecture-decisions/ARCH-CROSS_PANE_VISIBILITY.yaml) |
+| IMPL | [IMPL-HOME_PAGE](../tied/implementation-decisions/IMPL-HOME_PAGE.yaml), [IMPL-IMAGE_OPTIMIZATION](../tied/implementation-decisions/IMPL-IMAGE_OPTIMIZATION.yaml), [IMPL-FILE_MANAGER_PAGE](../tied/implementation-decisions/IMPL-FILE_MANAGER_PAGE.yaml), [IMPL-FILE_COLUMN_CONFIG](../tied/implementation-decisions/IMPL-FILE_COLUMN_CONFIG.yaml), [IMPL-WORKSPACE_VIEW](../tied/implementation-decisions/IMPL-WORKSPACE_VIEW.yaml), [IMPL-FILE_PANE](../tied/implementation-decisions/IMPL-FILE_PANE.yaml), [IMPL-MOUSE_SUPPORT](../tied/implementation-decisions/IMPL-MOUSE_SUPPORT.yaml), [IMPL-PANE_MANAGEMENT](../tied/implementation-decisions/IMPL-PANE_MANAGEMENT.yaml), [IMPL-LAYOUT_CALCULATOR](../tied/implementation-decisions/IMPL-LAYOUT_CALCULATOR.yaml), [IMPL-TOOLBAR_COMPONENT](../tied/implementation-decisions/IMPL-TOOLBAR_COMPONENT.yaml), [IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml) |
 | Pseudo-code | `tied/implementation-decisions/IMPL-*-pseudocode.md` for the IMPL tokens above |
 
 ## See also
 
+- [FILE_MANAGER_SOLE_PURPOSE.md](FILE_MANAGER_SOLE_PURPOSE.md) — sole-purpose product boundary
 - [panorama-domain-references.md](panorama-domain-references.md)
 - [mesh-platform-vocabulary.md](mesh-platform-vocabulary.md) — **Workspace snapshot** v1–v5, save/diff/update, cross-surface links (canonical)
 - [linked-navigation-vocabulary.md](linked-navigation-vocabulary.md)
@@ -40,6 +41,10 @@ Excludes NSYNC sync algorithms ([nsync-multi-target-vocabulary.md](nsync-multi-t
 | **Cross-pane visibility draft** | `crossPaneVisibilityDraft` — see cross-pane-visibility glossary |
 | **Cross-pane hidden count** | `crossPaneHiddenByPane[i]` — rows hidden by compare filter after display spec |
 | **Files page** | “file manager page”, `src/app/files/page.tsx` (server component) |
+| **Root entry redirect** | “home page”, “welcome page” — `src/app/page.tsx` calls `redirect("/files")`; no renderable root UI ([REQ-HOME_PAGE](../tied/requirements/REQ-HOME_PAGE.yaml)) |
+| **Sole-purpose entry** | Panorama routes visitors from `/` directly to `/files`; see [FILE_MANAGER_SOLE_PURPOSE.md](FILE_MANAGER_SOLE_PURPOSE.md) |
+| **Branding logo** | `config/site.yaml` → `branding.logo` metadata (`src`, `alt`, `width`, `height`); consumed by layout/metadata, not a root page render ([REQ-BRANDING](../tied/requirements/REQ-BRANDING.yaml)) |
+| **darkInvert** | Optional `branding.logo.darkInvert` flag; when true, SVG logos use Tailwind `dark:invert` for dark-mode contrast ([IMPL-IMAGE_OPTIMIZATION](../tied/implementation-decisions/IMPL-IMAGE_OPTIMIZATION.yaml)) |
 | **Layout type** | “layout mode” — values `tile`, `oneRow`, `oneColumn`, `fullscreen` |
 | **Pane bounds** | `PaneBounds` — pixel `x`, `y`, `width`, `height` from layout calculator |
 | **Workspace area** | Flex region below header/toolbars; `data-testid="workspace-area"`; `flex-1 min-h-0` |
@@ -118,12 +123,14 @@ Excludes NSYNC sync algorithms ([nsync-multi-target-vocabulary.md](nsync-multi-t
 
 ## Copy coverage
 
-User-facing strings: `config/files.yaml` → `copy.paneManagement.*`, `copy.layouts.*`, `copy.columns.*`, `copy.sort.*`, `copy.workspaceMesh.*` (save/diff dialogs and restore messages). Header **Mesh Sync** and restore banners use workspace mesh bridge copy keys. This glossary is authoritative for **Workspace**, **Pane**, **Focus**, layout geometry, and file-column UX. Owning IMPL: [IMPL-WORKSPACE_VIEW](../tied/implementation-decisions/IMPL-WORKSPACE_VIEW.yaml), [IMPL-FILE_COLUMN_CONFIG](../tied/implementation-decisions/IMPL-FILE_COLUMN_CONFIG.yaml), [IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml).
+User-facing strings: `config/site.yaml` → `branding.logo` (metadata contract); `config/files.yaml` → `copy.paneManagement.*`, `copy.layouts.*`, `copy.columns.*`, `copy.sort.*`, `copy.workspaceMesh.*` (save/diff dialogs and restore messages). Header **Mesh Sync** and restore banners use workspace mesh bridge copy keys. This glossary is authoritative for **Workspace**, **Pane**, **Focus**, layout geometry, file-column UX, and **root entry redirect**. Owning IMPL: [IMPL-HOME_PAGE](../tied/implementation-decisions/IMPL-HOME_PAGE.yaml), [IMPL-IMAGE_OPTIMIZATION](../tied/implementation-decisions/IMPL-IMAGE_OPTIMIZATION.yaml), [IMPL-WORKSPACE_VIEW](../tied/implementation-decisions/IMPL-WORKSPACE_VIEW.yaml), [IMPL-FILE_COLUMN_CONFIG](../tied/implementation-decisions/IMPL-FILE_COLUMN_CONFIG.yaml), [IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml).
 
 ## Pseudo-code block names
 
 | Preferred term / concept | UPPER_SNAKE block | Owning IMPL |
 | --- | --- | --- |
+| Root redirect to file manager | `RootRedirectToFileManager` → `IMPL-HOME_PAGE_RootRedirectToFileManager` | IMPL-HOME_PAGE |
+| Branding logo config shape | `BrandingLogoConfigShape` → `IMPL-IMAGE_OPTIMIZATION_BrandingLogoConfigShape` | IMPL-IMAGE_OPTIMIZATION |
 | Workspace dialog remount keys | `DialogKeys` → `IMPL-WORKSPACE_VIEW_DialogKeys` | IMPL-WORKSPACE_VIEW |
 | Keybinding handler registration | `KeybindingInit` → `IMPL-WORKSPACE_VIEW_KeybindingInit` | IMPL-WORKSPACE_VIEW |
 | Add pane | `AddPane` → `IMPL-PANE_MANAGEMENT_AddPane` | IMPL-PANE_MANAGEMENT |
@@ -147,6 +154,7 @@ User-facing strings: `config/files.yaml` → `copy.paneManagement.*`, `copy.layo
 
 ## Alphabetical index
 
+- **Branding logo** — `config/site.yaml` → `branding.logo` metadata
 - **Cross-pane visibility draft** — `crossPaneVisibilityDraft`; see cross-pane-visibility glossary
 - **Active cross-pane visibility preset** — see cross-pane-visibility glossary
 - **Active display spec** — see pane-display-filter glossary
@@ -164,6 +172,7 @@ User-facing strings: `config/files.yaml` → `copy.paneManagement.*`, `copy.layo
 - **File column clipboard menu** — Copy filename / path / paths
 - **File column context menu** — metadata cell clipboard menu
 - **File column order** — `fileColumns`; snapshot v4 in mesh-platform
+- **darkInvert** — optional SVG dark-mode invert on branding logo
 - **Files page** — server `/files` entry
 - **Focus** — `focusIndex`
 - **Focus follows pane content on reorder** — remaps after pane reorder
@@ -183,6 +192,8 @@ User-facing strings: `config/files.yaml` → `copy.paneManagement.*`, `copy.layo
 - **Pane order** — visual slot in `panes[]`
 - **Pane order dialog** — `pane.order` / `PaneOrderDialog`
 - **Pane state** — per-pane state object
+- **Root entry redirect** — `/` server redirect to `/files` via `redirect()`
+- **Sole-purpose entry** — file-manager-only product; no welcome home page
 - **Share sort** — copy focused sort to `sharedSort`
 - **Shared sort** — workspace default sort; snapshot v3 in mesh-platform
 - **Swap panes** — `pane.swap` / `pane.swapPrev`

@@ -1,5 +1,4 @@
-// [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: Top-level Sync Engine Core Implementation: SyncEngine class orchestrates sync loop iterating over sources, syncing each to all destinations in parallel, tracking results, and handling move deletion
-// Core sync engine - orchestrates multi-destination sync with observer pattern
+// [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: SyncEngine orchestrates multi-source multi-destination sync with observer callbacks, compare skip, verify, store monitoring, and deferred move deletion
 
 import path from "path";
 import { computeFileHash } from "./hash";
@@ -28,6 +27,7 @@ export class SyncEngine {
   private observer: SyncObserver;
   private storeMonitor: StoreMonitor;
   
+  // [IMPL-NSYNC_TYPE_SAFETY]: how: engine.ts imports ErrorClass and NoopObserver as runtime values (not import type) for enum access and default observer
   constructor(observer?: SyncObserver) {
     this.observer = observer || NoopObserver;
     this.storeMonitor = new StoreMonitor(3); // 3 errors before marking unavailable
@@ -35,6 +35,7 @@ export class SyncEngine {
     logger.debug(["IMPL-NSYNC_ENGINE", "REQ-NSYNC_MULTI_TARGET"], "SyncEngine initialized");
   }
   
+  // [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: how: build SyncPlan with totalBytes from getFileStat, notify onStart, initialize SyncResult, loop sources
   /**
    * Sync files from sources to multiple destinations
    * [IMPL-NSYNC_ENGINE] [REQ-NSYNC_MULTI_TARGET]
@@ -83,7 +84,7 @@ export class SyncEngine {
     for (const source of sources) {
       const stat = await getFileStat(source);
       if (stat) {
-        // Convert bigint to number if needed (Node.js stat.size can be bigint for large files)
+        // [IMPL-NSYNC_TYPE_SAFETY]: how: apply bigint-to-number conversion when accumulating plan.totalBytes, result.bytesCopied, and ItemInfo.size
         plan.totalBytes += typeof stat.size === 'bigint' ? Number(stat.size) : stat.size;
       }
     }
@@ -106,6 +107,7 @@ export class SyncEngine {
     // Track which sources should be deleted (for move)
     const sourcesToDelete = new Set<string>();
     
+    // [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: how: per source check signal.aborted and storeMonitor.hasUnavailableStore before syncItem; merge itemResult into result counters
     // Sync each source to all destinations
     for (const source of sources) {
       // Check for cancellation
@@ -183,6 +185,7 @@ export class SyncEngine {
       this.observer.onProgress(stats);
     }
     
+    // [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: how: after source loop, delete each source in sourcesToDelete when move AND NOT cancelled AND NOT storeFailureAbort
     // Delete sources (if move and all destinations succeeded)
     if (move && !result.cancelled && !result.storeFailureAbort) {
       for (const source of sourcesToDelete) {
@@ -216,6 +219,7 @@ export class SyncEngine {
     return result;
   }
   
+  // [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: how: resolve source stat; compute sourceHash when verify OR compareMethod hash; Promise.all syncToDestination per dest
   /**
    * Sync a single item to all destinations
    * [IMPL-NSYNC_ENGINE]
@@ -297,6 +301,7 @@ export class SyncEngine {
     return itemResult;
   }
   
+  // [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: how: compareFiles skip, copy or moveFile, optional verifyDestination, recordSuccess or classifyError
   /**
    * Sync to a single destination
    * [IMPL-NSYNC_ENGINE]

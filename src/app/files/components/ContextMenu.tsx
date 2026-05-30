@@ -154,7 +154,7 @@ export default function ContextMenu({
         </button>
       )}
 
-      {/* Rename (only for single file, not marked) */}
+      {/* Rename (only for single file, not marked) [IMPL-RENAME_DIALOG] [ARCH-KEYBIND_SYSTEM] [REQ-MOUSE_INTERACTION] [REQ-FILE_OPERATIONS]: how: ContextMenu calls onRename(file) with right-clicked file; hidden when marks non-empty */}
       {marks.size === 0 && onRename && file && (
         <button
           className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"

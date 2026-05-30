@@ -1,4 +1,4 @@
-// [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: Top-level CSS Class-Based Comparison Coloring: Enhance ComparisonIndex, apply CSS classes from theme
+// [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: how: buildEnhancedComparisonIndex classifies size/time deltas; FilePane applies mode-specific CSS classes from classifications
 // Enhanced comparison index logic (client-safe, no Node.js imports)
 
 import type {
@@ -10,8 +10,8 @@ import type {
 } from "./files.types";
 
 /**
+ * [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: how: scan panes for shared filenames; attach sizeComparison and timeComparison arrays per pane entry
  * Build enhanced comparison index with size/time analysis
- * [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]
  * 
  * @param panes - Array of file lists, one per pane
  * @returns Enhanced comparison data with size/time classifications
@@ -78,8 +78,8 @@ export function buildEnhancedComparisonIndex(
 }
 
 /**
+ * [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: how: equal when min=max; else smallest/largest/null for middle values in 3+ panes
  * Analyze size differences across panes
- * [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]
  * 
  * @param sizes - Array of file sizes
  * @returns Size classification for each file
@@ -106,8 +106,8 @@ function analyzeSizes(sizes: number[]): SizeComparison[] {
 }
 
 /**
+ * [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: how: parse string or Date mtimes; equal within 1 second; else earliest/latest/null for middle
  * Analyze time differences across panes
- * [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]
  * 
  * @param mtimes - Array of modification times (Date or string)
  * @returns Time classification for each file

@@ -1,4 +1,4 @@
-// [REQ-MESH_SAFETY]: Safety service unit tests — phase 23
+// [IMPL-MESH_SAFETY] [ARCH-MESH_LAYERED] [REQ-MESH_SAFETY] [REQ-MESH_PLATFORM]: Guardrails before plan generation and execution
 
 import { describe, it, expect, beforeEach } from "vitest";
 import { SafetyService } from "./safety-service";
@@ -11,6 +11,7 @@ describe("SafetyService [IMPL-MESH_SAFETY]", () => {
     safety = new SafetyService();
   });
 
+  // [IMPL-MESH_SAFETY] [ARCH-MESH_LAYERED] [REQ-MESH_SAFETY]: how — enforce dry-run prerequisite, large delete threshold, high-risk confirmation, and quarantine blocks.
   it("first_sync_requires_dry_run", () => {
     const plan: ChangeSet = {
       id: "p1",

@@ -1,4 +1,4 @@
-// [IMPL-MESH_CONNECTOR] [REQ-MESH_PLATFORM]: In-memory fake connector for TDD
+// [IMPL-MESH_CONNECTOR] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: In-memory path → content map for unit tests; base class for VirtualConnector seeding.
 
 import type {
   Connector,

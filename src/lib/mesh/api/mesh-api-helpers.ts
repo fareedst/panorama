@@ -1,4 +1,4 @@
-// [IMPL-MESH_API] [ARCH-MESH_LAYERED] [REQ-MESH_API] [REQ-MESH_PLATFORM]: API helpers — runtime, auth, and service error mapping
+// [IMPL-MESH_API] [ARCH-MESH_LAYERED] [REQ-MESH_API]: Shared helpers wire Next.js Request to getMeshRuntime, X-Mesh-Role parsing, permission gate, and typed error mapping.
 
 import { isDomainValidationError } from "../domain";
 import type { MeshServiceError } from "../services/mesh-service";
@@ -35,6 +35,7 @@ export function requirePermission(
   return null;
 }
 
+// [IMPL-MESH_API] [ARCH-MESH_LAYERED] [REQ-MESH_API]: handleServiceResult — map domain validation to 400, mesh_not_found to 404, stale_configuration to 409
 export function handleServiceResult<T>(
   result: T | MeshServiceError | { code: string; message: string; path?: string },
 ) {

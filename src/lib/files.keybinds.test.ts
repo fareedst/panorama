@@ -1,4 +1,4 @@
-// [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
+// [IMPL-KEYBINDS] [ARCH-KEYBIND_SYSTEM] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-REACT_SSR_STABILITY]: Config-driven keybinding registry, validation, event matching, and WorkspaceView dispatch to action handlers
 // Unit tests for keyboard shortcut system
 
 import { describe, it, expect, beforeEach, vi } from "vitest";

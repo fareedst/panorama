@@ -1,86 +1,59 @@
 # IMPL-CURSOR_BOUNDS_CHECK essence pseudocode
 
-// [IMPL-CURSOR_BOUNDS_CHECK] [REQ-KEYBOARD_NAVIGATION] [REQ-MULTI_PANE_LAYOUT]: Top-level Cursor Bounds Validation Fix: Add cursor >= 0 check to guard condition before accessing pane.files[pane.cursor]
+// [IMPL-CURSOR_BOUNDS_CHECK] [REQ-KEYBOARD_NAVIGATION] [REQ-MULTI_PANE_LAYOUT]: Top-level cursor bounds validation — guard requires cursor >= 0 and cursor < files.length before pane.files[cursor] access in handleNavigate
 
 ## Summary contract
 
-// [IMPL-CURSOR_BOUNDS_CHECK] [REQ-KEYBOARD_NAVIGATION] [REQ-MULTI_PANE_LAYOUT]: bound module inputs, outputs, and shared data for all runtime blocks below
+// [IMPL-CURSOR_BOUNDS_CHECK] [REQ-KEYBOARD_NAVIGATION] [REQ-MULTI_PANE_LAYOUT]: how: prevent undefined currentFile when cursor is -1 during directory navigation (e.g. after CopyAll)
 
 CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-CURSOR_BOUNDS_CHECK
-  DATA: state and configuration per implementation_approach
+  INPUT: pane with files[], cursor index
+  OUTPUT: saveCursorPosition only when cursor indexes a real file row
+  DATA: globalDirectoryHistory.saveCursorPosition(paneIndex, path, fileName, cursor, scrollTop)
+  CONTROL: runs at start of handleNavigate before fetchDirectoryListing
 
-## RootCause
+## InvalidCursorRootCause
 
-// [IMPL-CURSOR_BOUNDS_CHECK] [REQ-KEYBOARD_NAVIGATION] [REQ-MULTI_PANE_LAYOUT]: Guard checked 'cursor < files.length' but not 'cursor >= 0
+// [IMPL-CURSOR_BOUNDS_CHECK] [REQ-KEYBOARD_NAVIGATION] [REQ-MULTI_PANE_LAYOUT]: how: prior guard used only cursor < files.length; cursor -1 passed and pane.files[-1] was undefined
 
-CONTRACT RootCause
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT InvalidCursorRootCause
+  INPUT: pane.cursor = -1, pane.files.length > 0
+  OUTPUT: prior bug — guard true, array access undefined
+  DATA: JavaScript negative index does not throw on length check alone
 
-PROCEDURE IMPL-CURSOR_BOUNDS_CHECK_RootCause(context)
-  // Guard checked 'cursor < files.length' but not 'cursor >= 0
-  CALL Guard checked 'cursor < files.length' but not 'cursor >= 0
-  ON invalid input OR missing data THEN RETURN without mutation
+PROCEDURE IMPL-CURSOR_BOUNDS_CHECK_InvalidCursorRootCause(pane)
+  IF pane.cursor < pane.files.length AND pane.cursor >= 0 IS FALSE
+    WHEN pane.cursor < 0 THEN accessing pane.files[pane.cursor] yields undefined
+    CRASH risk on .name when only upper bound checked
 
-## Solution
+## SaveCursorGuard
 
-// [IMPL-CURSOR_BOUNDS_CHECK] [REQ-KEYBOARD_NAVIGATION] [REQ-MULTI_PANE_LAYOUT]: Add 'cursor >= 0' to guard condition
+// [IMPL-CURSOR_BOUNDS_CHECK] [REQ-KEYBOARD_NAVIGATION] [REQ-MULTI_PANE_LAYOUT]: how: add cursor >= 0 to guard before saveCursorPosition and pane.files[cursor] read
 
-CONTRACT Solution
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT SaveCursorGuard
+  INPUT: paneIndex, pane state
+  OUTPUT: cursor position saved or skipped
+  DATA: currentFile := pane.files[pane.cursor] only when in range [0, files.length - 1]
 
-PROCEDURE IMPL-CURSOR_BOUNDS_CHECK_Solution(context)
-  // Add 'cursor >= 0' to guard condition
-  CALL Add 'cursor >= 0' to guard condition
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## WhenCursor1
-
-// [IMPL-CURSOR_BOUNDS_CHECK] [REQ-KEYBOARD_NAVIGATION] [REQ-MULTI_PANE_LAYOUT]: -1 < 8 evaluates to true, guard passes but pane.files[-1] = undefined
-
-CONTRACT WhenCursor1
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-CURSOR_BOUNDS_CHECK_WhenCursor1(context)
-  // -1 < 8 evaluates to true
-  CALL -1 < 8 evaluates to true
-  // guard passes but pane.files[-1] = undefined
-  CALL guard passes but pane.files[-1] = undefined
-
-## EnsuresCursorIsIn
-
-// [IMPL-CURSOR_BOUNDS_CHECK] [REQ-KEYBOARD_NAVIGATION] [REQ-MULTI_PANE_LAYOUT]: Ensures cursor is in valid range [0, files.length-1] before array access
-
-CONTRACT EnsuresCursorIsIn
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-CURSOR_BOUNDS_CHECK_EnsuresCursorIsIn(context)
-  // Ensures cursor is in valid range [0
-  CALL Ensures cursor is in valid range [0
-  // files.length-1] before array access
-  CALL files.length-1] before array access
+PROCEDURE IMPL-CURSOR_BOUNDS_CHECK_SaveCursorGuard(paneIndex, pane)
+  IF pane.files.length = 0 THEN RETURN
+  IF pane.cursor < 0 OR pane.cursor >= pane.files.length THEN RETURN
+  currentFile := pane.files[pane.cursor]
+  CALL globalDirectoryHistory.saveCursorPosition(
+    paneIndex, pane.path, currentFile.name, pane.cursor, scrollTop)
+  CONTINUE handleNavigate listing fetch and restore
 
 ## CodeLocations
 
 // [IMPL-CURSOR_BOUNDS_CHECK] [REQ-KEYBOARD_NAVIGATION] [REQ-MULTI_PANE_LAYOUT]: map implementing and verifying source files for this IMPL
 
-// FILE: src/app/files/WorkspaceView.tsx — handleNavigate function guard condition for saving cursor position
+// FILE: src/app/files/WorkspaceView.tsx — handleNavigate save-cursor block
 // FUNCTION: handleNavigate in src/app/files/WorkspaceView.tsx
 
 ## ErrorHandling
 
-// [IMPL-CURSOR_BOUNDS_CHECK] [REQ-KEYBOARD_NAVIGATION] [REQ-MULTI_PANE_LAYOUT]: surface recoverable failures without breaking pane invariants
+// [IMPL-CURSOR_BOUNDS_CHECK] [REQ-KEYBOARD_NAVIGATION] [REQ-MULTI_PANE_LAYOUT]: how: skip save when out of range; navigation proceeds without throwing
 
 PROCEDURE IMPL-CURSOR_BOUNDS_CHECK_on_error(context, error)
-  LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
-  ELSE propagate error to caller
+  Guard prevents invalid array access
+  No alternate cursor mutation in this block

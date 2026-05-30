@@ -277,10 +277,7 @@ export default function WorkspaceView({
 }: WorkspaceViewProps) {
   const workspaceMeshCopy = copy.workspaceMesh;
   const router = useRouter();
-  // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
-  // Initialize keybinding registry synchronously before first render
-  // This ensures the registry is available when CommandPalette and HelpOverlay render
-  // Use useMemo to initialize only once and not on every render
+  // [IMPL-KEYBINDS] [ARCH-KEYBIND_SYSTEM] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-REACT_SSR_STABILITY]: how: WorkspaceView useMemo calls initializeKeybindingRegistry once per keybindings prop before children render
   useMemo(() => {
     initializeKeybindingRegistry(keybindings);
   }, [keybindings]);
@@ -359,7 +356,7 @@ export default function WorkspaceView({
     () => restoreUi?.sharedSort ?? { ...DEFAULT_PANE_SORT },
   );
 
-  // [IMPL-WORKSPACE_VIEW] [ARCH-TOOLBAR_LAYOUT] [REQ-MULTI_PANE_LAYOUT] [REQ-TOOLBAR_SYSTEM] LAYOUT_TOOLBAR_PICKER — pop-over open flag for view.layout
+  // [IMPL-WORKSPACE_VIEW] [IMPL-LAYOUT_CALCULATOR] [ARCH-TOOLBAR_LAYOUT] [ARCH-TOOLBAR_ACTIONS] [REQ-MULTI_PANE_LAYOUT] [REQ-TOOLBAR_SYSTEM] [REQ-KEYBOARD_NAVIGATION] [REQ-WORKSPACE_MESH_BRIDGE]: how: view.layout handler opens LayoutPickerPopover; option selects layout and closes; Escape or overlay closes without change; activeActions includes view.layout while open
   const [layoutPickerOpen, setLayoutPickerOpen] = useState(false);
 
   // [REQ-PANE_DISPLAY_FILTER] [IMPL-DISPLAY_SPEC_STORE] [IMPL-PANE_DISPLAY_FILTER_UI]
@@ -378,6 +375,7 @@ export default function WorkspaceView({
       setCatalogSpecs(displaySpecStore.list());
       void syncDisplaySpecCatalogToServer(displaySpecStore);
       if (ev.type === "deleted") {
+        // [IMPL-PANE_DISPLAY_FILTER_UI] [IMPL-DISPLAY_SPEC_STORE] [REQ-PANE_DISPLAY_FILTER]: how: catalog delete event clears activeDisplaySpecId on affected panes and shows notice banner
         setPanes((prev) =>
           prev.map((p) =>
             p.activeDisplaySpecId === ev.specId
@@ -933,7 +931,7 @@ export default function WorkspaceView({
     [panes],
   );
 
-  /** [IMPL-PANE_DISPLAY_FILTER_UI] REFRESH_PANES_USING_SPEC — re-list panes sharing activeDisplaySpecId */
+  /** [IMPL-PANE_DISPLAY_FILTER_UI] [IMPL-DISPLAY_FILTER_ENGINE] [REQ-PANE_DISPLAY_FILTER]: how: on spec version change while manager open, re-list every pane with matching activeDisplaySpecId preserving marks */
   const refreshPanesUsingSpec = useCallback(
     async (specId: string) => {
       const indices = panes
@@ -974,7 +972,7 @@ export default function WorkspaceView({
     [panes, displaySpecStore],
   );
 
-  /** [IMPL-PANE_DISPLAY_FILTER_UI] SET_ACTIVE_SPEC — select spec, sync server, refetch listing */
+  /** [IMPL-PANE_DISPLAY_FILTER_UI] [IMPL-DISPLAY_FILTER_ENGINE] [IMPL-DISPLAY_SPEC_STORE] [REQ-PANE_DISPLAY_FILTER]: how: user selects no filter or catalog spec; sync spec to server; refetch listing and buildPaneFromRawListing with preserveMarks false */
   const handleSetActiveDisplaySpec = useCallback(
     async (paneIndex: number, specId: string | null) => {
       if (specId && !displaySpecStore.get(specId)) {
@@ -1037,7 +1035,7 @@ export default function WorkspaceView({
       // [IMPL-WORKSPACE_VIEW] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-DIRECTORY_NAVIGATION]: how: guard invalid paneIndex during async navigate
       if (!pane) return;
       
-      // Save current cursor position before navigating
+      // [IMPL-CURSOR_BOUNDS_CHECK] [REQ-KEYBOARD_NAVIGATION] [REQ-MULTI_PANE_LAYOUT]: how: add cursor >= 0 to guard before saveCursorPosition and pane.files[cursor] read
       if (pane.files.length > 0 && pane.cursor >= 0 && pane.cursor < pane.files.length) {
         const currentFile = pane.files[pane.cursor];
         globalDirectoryHistory.saveCursorPosition(
@@ -1253,7 +1251,7 @@ export default function WorkspaceView({
     });
   }, [linkedMode, panes.length, crossPaneVisibilityResult]);
   
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: toggle single file mark on m key or checkbox click via handleToggleMark
+  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: m key and checkbox call handleToggleMark without cursor move
   const handleToggleMark = useCallback((paneIndex: number, filename: string) => {
     setPanes((prev) => {
       const updated = [...prev];
@@ -1273,7 +1271,7 @@ export default function WorkspaceView({
     });
   }, []);
   
-  // [IMPL-FILE_MARKING] [REQ-PANE_DISPLAY_FILTER] MarkAll — marks only visible pane.files (filtered when spec active)
+  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB] [REQ-PANE_DISPLAY_FILTER]: how: Shift+M mark.all sets marks to all names in displayFilesByPane when filter active
   const handleMarkAll = useCallback((paneIndex: number) => {
     setPanes((prev) => {
       const updated = [...prev];
@@ -1290,7 +1288,7 @@ export default function WorkspaceView({
     });
   }, [crossPaneVisibilityResult]);
   
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: symmetric difference of marks on Ctrl+M via handleInvertMarks
+  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB] [REQ-PANE_DISPLAY_FILTER]: how: Ctrl+M mark.invert symmetric difference over visible file names only
   const handleInvertMarks = useCallback((paneIndex: number) => {
     setPanes((prev) => {
       const updated = [...prev];
@@ -1351,8 +1349,7 @@ export default function WorkspaceView({
     });
   }, []);
   
-  // [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED]
-  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: apply sort criterion direction dirsFirst to all panes when linked
+  // [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED] [REQ-LINKED_PANES]: handleSortChange updates one or all panes, re-sorts listing, preserves cursor by matching filename after sort
   const handleSortChange = (
     criterion: SortCriterion,
     direction: SortDirection,
@@ -1400,7 +1397,7 @@ export default function WorkspaceView({
   
   /**
    * Add a new pane to the workspace
-   * [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE]
+   * [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] [REQ-MULTI_PANE_LAYOUT] [REQ-FILES_CONFIG_COMPLETE]: how: clone focused pane path and listing into new pane when under maxPanes and management allowed
    */
   const handleAddPane = useCallback(async () => {
     // Check if pane management is allowed
@@ -1467,7 +1464,7 @@ export default function WorkspaceView({
   
   /**
    * Remove a pane from the workspace
-   * [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE]
+   * [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] [REQ-MULTI_PANE_LAYOUT] [REQ-FILES_CONFIG_COMPLETE]: how: splice pane at index and remap focusIndex when removed pane was focused or before focus
    */
   const handleRemovePane = useCallback((paneIndex: number) => {
     // Check if pane management is allowed
@@ -1505,7 +1502,7 @@ export default function WorkspaceView({
 
   /**
    * Swap two panes by index; focus and directory history follow pane content.
-   * [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] [REQ-MULTI_PANE_LAYOUT]
+   * [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] [REQ-MULTI_PANE_LAYOUT]: how: swap panes[i] and panes[j]; remap focusIndex; permute directory history; clear scrollTriggers
    */
   const handleSwapPanes = useCallback(
     (i: number, j: number) => {
@@ -1520,7 +1517,7 @@ export default function WorkspaceView({
     [panes.length, layoutConfig.allowPaneManagement],
   );
 
-  // [IMPL-PANE_MANAGEMENT] [ARCH-KEYBIND_SYSTEM] [REQ-MULTI_PANE_LAYOUT]: SwapFocusedNeighbor next
+  // [IMPL-PANE_MANAGEMENT] [ARCH-KEYBIND_SYSTEM] [REQ-MULTI_PANE_LAYOUT]: how: pane.swap / pane.swapPrev — two panes swap 0↔1; else swap focus with wrapped next/prev neighbor
   const handleSwapFocusedNext = useCallback(() => {
     if (panes.length === 2) {
       handleSwapPanes(0, 1);
@@ -1530,7 +1527,7 @@ export default function WorkspaceView({
     handleSwapPanes(focusIndex, j);
   }, [panes.length, focusIndex, handleSwapPanes]);
 
-  // [IMPL-PANE_MANAGEMENT] [ARCH-KEYBIND_SYSTEM] [REQ-MULTI_PANE_LAYOUT]: SwapFocusedNeighbor prev
+  // [IMPL-PANE_MANAGEMENT] [ARCH-KEYBIND_SYSTEM] [REQ-MULTI_PANE_LAYOUT]: how: pane.swap / pane.swapPrev — two panes swap 0↔1; else swap focus with wrapped next/prev neighbor
   const handleSwapFocusedPrev = useCallback(() => {
     if (panes.length === 2) {
       handleSwapPanes(0, 1);
@@ -1542,7 +1539,7 @@ export default function WorkspaceView({
 
   /**
    * Rotate all panes one slot; focus and history follow pane content.
-   * [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYOUT]
+   * [IMPL-PANE_MANAGEMENT] [ARCH-KEYBIND_SYSTEM] [REQ-MULTI_PANE_LAYOUT]: how: rotate all panes one slot forward or backward; remap focus and directory history
    */
   const handleCyclePanes = useCallback(
     (direction: RotateDirection) => {
@@ -1561,7 +1558,7 @@ export default function WorkspaceView({
 
   /**
    * Apply arbitrary pane order from PaneOrderDialog.
-   * [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYOUT] [REQ-TOOLBAR_SYSTEM]
+   * [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYOUT] [REQ-TOOLBAR_SYSTEM]: how: Apply reorders panes[] by index permutation from dialog; focus follows previous focus pane content
    */
   const handleApplyPaneOrder = useCallback(
     (order: number[]) => {
@@ -1590,6 +1587,7 @@ export default function WorkspaceView({
     [panes],
   );
 
+  // [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: resolve source paths from marked visible files or cursor file in focused pane
   const getOperationFiles = useCallback((paneIndex: number): string[] => {
     const pane = panes[paneIndex];
     const visibleFiles =
@@ -1610,8 +1608,8 @@ export default function WorkspaceView({
   }, [panes, crossPaneVisibilityResult]);
   
   /**
-   * Execute bulk copy operation
-   * [IMPL-BULK_OPS] [IMPL-OVERWRITE_PROMPT] [REQ-BULK_FILE_OPS]
+   * [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: require 2 panes; dest is other pane path; detect overwrite conflicts; confirm then POST bulk-copy; refresh both panes and clear marks
+   * [IMPL-OVERWRITE_PROMPT]
    */
   const handleBulkCopy = useCallback(async () => {
     // Need at least 2 panes for cross-pane copy
@@ -1629,7 +1627,7 @@ export default function WorkspaceView({
     const destPaneIndex = focusIndex === 0 ? 1 : 0;
     const destDir = panes[destPaneIndex].path;
     
-    // [IMPL-OVERWRITE_PROMPT] Detect file conflicts
+    // [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: before confirm, foreach source path compare basename to destination pane file names; build FileConflict when match
     const conflicts: FileConflict[] = [];
     for (const sourcePath of sources) {
       const basename = path.basename(sourcePath);
@@ -1653,7 +1651,7 @@ export default function WorkspaceView({
       }
     }
     
-    // Build message
+    // [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: base message shows source count and destDir; append overwrite count line when conflicts non-empty
     let message = `Copy ${sources.length} file(s) to:\n${destDir}`;
     if (conflicts.length > 0) {
       message += `\n\n${conflicts.length} file(s) will be overwritten.`;
@@ -1721,8 +1719,8 @@ export default function WorkspaceView({
   }, [panes, focusIndex, getOperationFiles, confirmDialog, progressDialog, handleNavigate, handleClearMarks, displaySpecPayload]);
   
   /**
-   * Execute bulk move operation
-   * [IMPL-BULK_OPS] [IMPL-OVERWRITE_PROMPT] [REQ-BULK_FILE_OPS]
+   * [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: same client flow as BulkCopy with operation bulk-move and file.move keybinding (V)
+   * [IMPL-OVERWRITE_PROMPT]
    */
   const handleBulkMove = useCallback(async () => {
     // Need at least 2 panes for cross-pane move
@@ -1740,7 +1738,7 @@ export default function WorkspaceView({
     const destPaneIndex = focusIndex === 0 ? 1 : 0;
     const destDir = panes[destPaneIndex].path;
     
-    // [IMPL-OVERWRITE_PROMPT] Detect file conflicts
+    // [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: before confirm, foreach source path compare basename to destination pane file names; build FileConflict when match
     const conflicts: FileConflict[] = [];
     for (const sourcePath of sources) {
       const basename = path.basename(sourcePath);
@@ -1764,7 +1762,7 @@ export default function WorkspaceView({
       }
     }
     
-    // Build message
+    // [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: base message shows source count and destDir; append overwrite count line when conflicts non-empty
     let message = `Move ${sources.length} file(s) to:\n${destDir}`;
     if (conflicts.length > 0) {
       message += `\n\n${conflicts.length} file(s) will be overwritten.`;
@@ -1832,7 +1830,7 @@ export default function WorkspaceView({
   }, [panes, focusIndex, getOperationFiles, confirmDialog, progressDialog, handleNavigate, handleClearMarks, displaySpecPayload]);
   
   /**
-   * Execute bulk delete operation
+   * [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: destructive confirm then POST bulk-delete; refresh focused pane and clear marks
    */
   const handleBulkDelete = useCallback(async () => {
     const sources = getOperationFiles(focusIndex);
@@ -2077,7 +2075,7 @@ export default function WorkspaceView({
     });
   }, [panes, focusIndex, getOperationFiles, getOtherPaneDirs, confirmDialog, progressDialog, handleNavigate, handleClearMarks, displaySpecPayload]);
 
-  // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [IMPL-MOUSE_SUPPORT] Rename single file (keyboard r or context menu)
+  // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [IMPL-RENAME_DIALOG] [ARCH-KEYBIND_SYSTEM] [REQ-FILE_OPERATIONS]: how: build dest path with path.join(dirname, newName); POST operation rename; on success handleNavigate(paneIndex, dir)
   const handleRenameConfirm = useCallback(
     (filePath: string, paneIndex: number, newName: string) => {
       const dir = path.dirname(filePath);
@@ -2198,6 +2196,7 @@ export default function WorkspaceView({
   );
 
   // [REQ-TOOLBAR_SYSTEM] Workspace-scoped actions (no focused pane required)
+  // [IMPL-WORKSPACE_VIEW] [IMPL-KEYBINDS] [ARCH-KEYBIND_SYSTEM] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-KEYBOARD_NAVIGATION]: how: useMemo builds workspaceActionHandlers and paneActionHandlers maps; merged into actionHandlers; window keydown and handleExecuteAction dispatch through merged map
   const workspaceActionHandlers = useMemo(() => {
     const handlers = new Map<string, () => void>();
     handlers.set("mesh.saveWorkspace", () => setSaveMeshDialogOpen(true));
@@ -2207,6 +2206,7 @@ export default function WorkspaceView({
     handlers.set("command.palette", () => setShowCommandPalette((prev) => !prev));
     handlers.set("search.finder", () => setShowFinderDialog(true));
     handlers.set("search.content", () => setShowSearchDialog(true));
+    // [IMPL-PANE_REFRESH] [ARCH-PANE_REFRESH] [ARCH-KEYBIND_SYSTEM] [REQ-PANE_REFRESH] [REQ-KEYBOARD_SHORTCUTS_COMPLETE]: how: pane.refresh-all uses Promise.all over every pane index calling handleNavigate(idx, p.path)
     handlers.set("pane.refresh-all", () => {
       void Promise.all(panes.map((p, idx) => handleNavigate(idx, p.path)));
     });
@@ -2251,8 +2251,6 @@ export default function WorkspaceView({
     return handlers;
   }, [panes, handleNavigate, focusedVisibilityState, updateFocusedPaneCrossPaneDraft]);
 
-  // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
-  // Pane-scoped action handlers
   const paneActionHandlers = useMemo(() => {
     const handlers = new Map<string, () => void>();
     const pane = panes[focusIndex];
@@ -2310,6 +2308,7 @@ export default function WorkspaceView({
       handleBulkCopy();
     });
     
+    // [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: keybinding v maps to file.move calling handleBulkMove; M reserved for mark.toggle
     handlers.set("file.move", () => {
       handleBulkMove();
     });
@@ -2327,6 +2326,7 @@ export default function WorkspaceView({
       handleBulkDelete();
     });
     
+    // [IMPL-RENAME_DIALOG] [ARCH-KEYBIND_SYSTEM] [REQ-FILE_OPERATIONS] [REQ-KEYBOARD_SHORTCUTS_COMPLETE]: how: file.rename handler reads visibleFiles[pane.cursor]; opens renameDialog with path, name, focusIndex
     handlers.set("file.rename", () => {
       const file = visibleFiles[pane.cursor];
       if (file) {
@@ -2340,7 +2340,7 @@ export default function WorkspaceView({
     });
     
     // Marking
-    // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: mark focused file then advance cursor down one row (Space key)
+    // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: Space keybinding mark.toggle toggles visible cursor file then advances cursor if not last
     handlers.set("mark.toggle", () => {
       const file = visibleFiles[pane.cursor];
       if (file) {
@@ -2351,7 +2351,7 @@ export default function WorkspaceView({
       }
     });
     
-    // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: toggle single file mark on m key or checkbox click via handleToggleMark
+    // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: m key and checkbox call handleToggleMark without cursor move
     handlers.set("mark.toggle-cursor", () => {
       const file = visibleFiles[pane.cursor];
       if (file) {
@@ -2371,7 +2371,6 @@ export default function WorkspaceView({
       handleClearMarks(focusIndex);
     });
     
-    // [IMPL-WORKSPACE_VIEW] [ARCH-TOOLBAR_ACTIONS] [REQ-TOOLBAR_SYSTEM] [REQ-MULTI_PANE_LAYOUT] LAYOUT_TOOLBAR_PICKER — view.layout opens layout picker pop-over
     handlers.set("view.layout", () => {
       setLayoutPickerOpen(true);
     });
@@ -2410,6 +2409,7 @@ export default function WorkspaceView({
       setLinkedMode((prev) => !prev);
     });
     
+    // [IMPL-PANE_DISPLAY_FILTER_UI] [REQ-TOOLBAR_SYSTEM] [REQ-PANE_DISPLAY_FILTER]: how: view.displaySpec opens manager dialog; view.displaySpec.none clears active spec on focused pane
     handlers.set("view.displaySpec", () => {
       setDisplaySpecManagerOpen(true);
     });
@@ -2515,10 +2515,12 @@ export default function WorkspaceView({
       handleCyclePanes("backward");
     });
 
+    // [IMPL-PANE_MANAGEMENT] [REQ-TOOLBAR_SYSTEM] [REQ-MULTI_PANE_LAYOUT]: how: pane.order keybind sets paneOrderDialogOpen true without reordering panes
     handlers.set("pane.order", () => {
       setPaneOrderDialogOpen(true);
     });
     
+    // [IMPL-PANE_REFRESH] [ARCH-PANE_REFRESH] [ARCH-KEYBIND_SYSTEM] [REQ-PANE_REFRESH] [REQ-KEYBOARD_SHORTCUTS_COMPLETE]: how: pane.refresh action calls handleNavigate(focusIndex, pane.path) for focused pane only
     handlers.set("pane.refresh", () => {
       void handleNavigate(focusIndex, pane.path);
     });
@@ -2534,8 +2536,7 @@ export default function WorkspaceView({
     return merged;
   }, [workspaceActionHandlers, paneActionHandlers]);
   
-  // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
-  // Keyboard event handler using keybinding registry
+  // [IMPL-KEYBINDS] [ARCH-KEYBIND_SYSTEM] [REQ-KEYBOARD_SHORTCUTS_COMPLETE]: how: window keydown listener skips inputs and open modals; preventDefault when handler exists
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Skip if typing in input/textarea
@@ -2644,7 +2645,7 @@ export default function WorkspaceView({
       disabled.add('pane.cyclePrev');
       disabled.add('pane.order');
     }
-    // [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYOUT]: disable reorder when pane management off or single pane
+    // [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYOUT] [REQ-TOOLBAR_SYSTEM]: how: disable pane.swap, cycle, order when allowPaneManagement false or fewer than two panes
     if (!layoutConfig.allowPaneManagement) {
       disabled.add('pane.swap');
       disabled.add('pane.swapPrev');
@@ -2928,7 +2929,7 @@ export default function WorkspaceView({
             sortDirsFirst={pane.sortDirsFirst}
             linked={linkedMode && panes.length > 1} // [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
             scrollTrigger={scrollTriggers.get(index)} // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Scroll sync
-            // [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION]: switch focusIndex when user clicks pane via FilePane onFocusRequest onMouseDown
+            // [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION]: how — switch focusIndex when user clicks pane via FilePane onFocusRequest onMouseDown; file row clicks bubble to pane container.
             onFocusRequest={() => setFocusIndex(index)}
             onNavigateParent={() => navigateToParent(index)} // [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
             columns={fileColumns} // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
@@ -3161,6 +3162,7 @@ export default function WorkspaceView({
       />
       
       {/* [REQ-FILE_SEARCH] [ARCH-SEARCH_ENGINE] [IMPL-FILE_SEARCH] Search dialogs */}
+      {/* [IMPL-WORKSPACE_VIEW] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-REACT_SSR_STABILITY] [REQ-FILE_SEARCH]: how: FinderDialog and SearchDialog use distinct open/closed React keys to force remount when toggling visibility and avoid duplicate key warnings */}
       <FinderDialog
         key={showFinderDialog ? "finder-open" : "finder-closed"}
         isOpen={showFinderDialog}

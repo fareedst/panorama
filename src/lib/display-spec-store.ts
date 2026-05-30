@@ -28,6 +28,8 @@ export class DisplaySpecStore {
   }
 
   subscribe(listener: Listener): () => void {
+    // [IMPL-DISPLAY_SPEC_STORE] [IMPL-PANE_DISPLAY_FILTER_UI] [REQ-PANE_DISPLAY_FILTER]
+    // how: Register listener for updated/deleted; return unsubscribe function.
     this.listeners.add(listener);
     return () => this.listeners.delete(listener);
   }
@@ -39,6 +41,8 @@ export class DisplaySpecStore {
   }
 
   load(): void {
+    // [IMPL-DISPLAY_SPEC_STORE] [ARCH-DISPLAY_SPEC_STORE] [REQ-PANE_DISPLAY_FILTER]
+    // how: Hydrate in-memory specs from localStorage key panorama.displaySpecs.v1; empty on parse failure.
     if (!this.storage) {
       this.specs = [];
       return;
@@ -89,6 +93,8 @@ export class DisplaySpecStore {
     description?: string;
     rules: DisplayFilterSpec["rules"];
   }): DisplayFilterSpec | SpecValidationResult {
+    // [IMPL-DISPLAY_SPEC_STORE] [REQ-PANE_DISPLAY_FILTER]
+    // how: Validate name/rules; assign uuid id, version 1, timestamps; persist and emit updated event.
     const validation = this.validate(input);
     if (!validation.ok) return validation;
     const now = new Date().toISOString();
@@ -112,6 +118,8 @@ export class DisplaySpecStore {
     id: string,
     patch: Partial<Pick<DisplayFilterSpec, "name" | "description" | "rules">>,
   ): DisplayFilterSpec | SpecValidationResult | undefined {
+    // [IMPL-DISPLAY_SPEC_STORE] [REQ-PANE_DISPLAY_FILTER]
+    // how: Merge patch; increment version; reject duplicate names excluding self.
     const existing = this.get(id);
     if (!existing) return undefined;
     const next = {
@@ -139,6 +147,8 @@ export class DisplaySpecStore {
   }
 
   duplicate(id: string, newName: string): DisplayFilterSpec | SpecValidationResult | undefined {
+    // [IMPL-DISPLAY_SPEC_STORE] [REQ-PANE_DISPLAY_FILTER]
+    // how: Clone rules with new rule ids; CREATE_SPEC with newName.
     const existing = this.get(id);
     if (!existing) return undefined;
     return this.create({
@@ -149,6 +159,8 @@ export class DisplaySpecStore {
   }
 
   delete(id: string): boolean {
+    // [IMPL-DISPLAY_SPEC_STORE] [REQ-PANE_DISPLAY_FILTER]
+    // how: Remove from catalog; emit deleted; panes fall back via UI subscriber.
     const before = this.specs.length;
     this.specs = this.specs.filter((s) => s.id !== id);
     if (this.specs.length === before) return false;

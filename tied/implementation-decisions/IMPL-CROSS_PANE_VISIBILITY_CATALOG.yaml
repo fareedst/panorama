@@ -1,6 +1,6 @@
 IMPL-CROSS_PANE_VISIBILITY_CATALOG:
   name: Cross-Pane Visibility Catalog
-  status: Planned
+  status: Active
   cross_references:
     - ARCH-CROSS_PANE_VISIBILITY
     - IMPL-CROSS_PANE_VISIBILITY_UI
@@ -25,3 +25,8 @@ IMPL-CROSS_PANE_VISIBILITY_CATALOG:
   related_decisions:
     see_also:
       - docs/cross-pane-visibility-vocabulary.md
+  metadata:
+    last_updated:
+      date: "2026-05-29T00:00:00.000Z"
+      author: AI Agent
+      reason: IMPL essence_pseudocode retrofit 2026-05-29

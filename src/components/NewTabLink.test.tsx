@@ -6,6 +6,8 @@ import { NewTabLink } from "./NewTabLink";
 
 describe("NewTabLink [IMPL-EXTERNAL_LINKS] [REQ-NAVIGATION_LINKS]", () => {
   it("applies target blank rel noopener noreferrer and new-tab disclosure", () => {
+    // [IMPL-EXTERNAL_LINKS] [ARCH-APP_ROUTER] [REQ-NAVIGATION_LINKS] [REQ-WORKSPACE_MESH_BRIDGE]
+    // how: Reusable Next.js Link opens target in new tab with rel noopener noreferrer, prefetch off, and screen-reader disclosure.
     render(
       <NewTabLink href="/files?meshId=m1" data-testid="test-new-tab-link">
         Open in File Manager
@@ -23,6 +25,8 @@ describe("NewTabLink [IMPL-EXTERNAL_LINKS] [REQ-NAVIGATION_LINKS]", () => {
   });
 
   it("uses explicit ariaLabel when children are not plain text", () => {
+    // [IMPL-EXTERNAL_LINKS] [ARCH-APP_ROUTER] [REQ-NAVIGATION_LINKS] [REQ-WORKSPACE_MESH_BRIDGE]
+    // how: When children are not plain text, caller supplies ariaLabel for accessible new-tab disclosure.
     render(
       <NewTabLink
         href="/mesh"

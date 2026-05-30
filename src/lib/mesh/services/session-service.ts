@@ -1,4 +1,4 @@
-// [IMPL-MESH_SESSION] [IMPL-MESH_PERSISTENCE] [REQ-MESH_PLATFORM]: Sync session lifecycle — phase 12; optional JSON persistence when MESH_DATA_DIR is set
+// [IMPL-MESH_SESSION] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: Sync session lifecycle, approved plan storage, and optional JSON persistence
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { join } from "path";
@@ -104,10 +104,12 @@ export class SessionService {
     writeFileSync(path, JSON.stringify(payload, null, 2), "utf-8");
   }
 
+  // [IMPL-MESH_SESSION] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — return mesh ids for sessions not in completed, failed, or cancelled states (CRUD hard-delete guard).
   getActiveMeshIds(): ReadonlySet<string> {
     return this.activeMeshIds;
   }
 
+  // [IMPL-MESH_SESSION] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — snapshot mesh at session start; initial state idle; track mesh in activeMeshIds.
   createSession(mesh: Mesh): SyncSession | DomainValidationError {
     const snapshot = createMeshSnapshot(mesh);
     const session = validateSyncSession({
@@ -127,6 +129,7 @@ export class SessionService {
     return this.sessions.get(sessionId);
   }
 
+  // [IMPL-MESH_SESSION] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — validate state machine transitions; remove mesh from activeMeshIds on terminal states.
   transition(
     sessionId: string,
     nextState: SessionState,
@@ -153,6 +156,7 @@ export class SessionService {
     return updated;
   }
 
+  // [IMPL-MESH_SESSION] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — attach approved ChangeSet to session for executor; does not transition session state.
   approvePlan(sessionId: string, changeSet: ChangeSet): void {
     this.approvedPlans.set(sessionId, changeSet);
     this.persistToDisk();

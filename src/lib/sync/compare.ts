@@ -1,11 +1,11 @@
-// [IMPL-NSYNC_COMPARE] [REQ-COMPARE_METHODS]: Top-level File Comparison Implementation: File comparison using size, mtime, hash methods to skip unchanged files
-// File comparison module with multiple comparison methods
+// [IMPL-NSYNC_COMPARE] [REQ-COMPARE_METHODS]: File comparison module — dispatch compare method to skip unchanged files during sync
 
 import fs from "fs/promises";
 import { computeFileHash, verifyHash } from "./hash";
 import type { CompareMethod, HashAlgorithm } from "../sync.types";
 import { logger } from "../logger";
 
+// [IMPL-NSYNC_COMPARE] [REQ-COMPARE_METHODS]: how: stat both paths in parallel, dispatch on method; any error or missing dest returns false (not equivalent)
 /**
  * Compare two files to determine if they should be considered equivalent
  * [IMPL-NSYNC_COMPARE] [REQ-COMPARE_METHODS]
@@ -71,6 +71,7 @@ export async function compareFiles(
   }
 }
 
+// [IMPL-NSYNC_COMPARE] [REQ-COMPARE_METHODS]: how: exact equality on stat.size
 /**
  * Compare file sizes
  * [IMPL-NSYNC_COMPARE] [REQ-COMPARE_METHODS]
@@ -88,6 +89,7 @@ function compareSize(
   return match;
 }
 
+// [IMPL-NSYNC_COMPARE] [REQ-COMPARE_METHODS]: how: mtime match within 1000 ms tolerance for filesystem resolution variance
 /**
  * Compare file modification times
  * [IMPL-NSYNC_COMPARE] [REQ-COMPARE_METHODS]
@@ -112,6 +114,7 @@ function compareMtime(
   return match;
 }
 
+// [IMPL-NSYNC_COMPARE] [REQ-COMPARE_METHODS] [REQ-HASH_COMPUTATION]: how: compute source and dest hashes in parallel, compare via verifyHash
 /**
  * Compare files by hash
  * [IMPL-NSYNC_COMPARE] [REQ-COMPARE_METHODS] [REQ-HASH_COMPUTATION]

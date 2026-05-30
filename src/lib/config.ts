@@ -20,7 +20,7 @@ import type {
 // Default configurations – used as fallback when YAML values are missing
 // ---------------------------------------------------------------------------
 
-// [IMPL-YAML_CONFIG] [REQ-CONFIG_DRIVEN_UI]
+// [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: DEFAULT_SITE_CONFIG and DEFAULT_THEME_CONFIG in config.ts supply fallbacks; getSiteConfig/getThemeConfig deep-merge user YAML then cache
 // Default site config mirrors the original hard-coded values from page.tsx / layout.tsx
 const DEFAULT_SITE_CONFIG: SiteConfig = {
   metadata: {
@@ -67,7 +67,7 @@ const DEFAULT_SITE_CONFIG: SiteConfig = {
   },
 };
 
-// [IMPL-YAML_CONFIG] [REQ-CONFIG_DRIVEN_UI]
+// [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: config/theme.yaml holds colors (light/dark modes), fonts, spacing, sizing, overrides, and optional files theme extensions typed as ThemeConfig
 // Default theme config mirrors the original hard-coded values from globals.css / page.tsx
 const DEFAULT_THEME_CONFIG: ThemeConfig = {
   colors: {
@@ -110,11 +110,11 @@ const DEFAULT_THEME_CONFIG: ThemeConfig = {
 // Deep merge utility
 // ---------------------------------------------------------------------------
 
+// [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: deep-merge partial user YAML into defaults without mutating inputs; arrays replace entirely
 /**
  * Deep-merges source into target. Arrays are replaced, not concatenated.
  * Returns a new object without mutating either input.
  */
-// [IMPL-CONFIG_LOADER] Helper for merging partial user config with defaults
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function deepMerge<T>(target: T, source: Record<string, any>): T {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -144,11 +144,11 @@ function deepMerge<T>(target: T, source: Record<string, any>): T {
 // YAML file reader
 // ---------------------------------------------------------------------------
 
+// [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: read and parse YAML; missing file, parse error, or non-object root → empty object and log warning
 /**
  * Reads and parses a YAML file. Returns an empty object if the file
  * does not exist (so the defaults are used in full).
  */
-// [IMPL-CONFIG_LOADER] File reader with graceful fallback
 function readYamlFile(filePath: string): Record<string, unknown> {
   logger.debug(["IMPL-CONFIG_LOADER", "REQ-CONFIG_DRIVEN_UI"], `Reading YAML file: ${filePath}`);
   
@@ -179,11 +179,10 @@ let _themeConfig: ThemeConfig | null = null;
 // Public API
 // ---------------------------------------------------------------------------
 
+// [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: return cached SiteConfig or load config/site.yaml merged with DEFAULT_SITE_CONFIG then cache
 /**
  * Returns the resolved site configuration (config/site.yaml merged with defaults).
  * Result is cached at module level for the lifetime of the server process.
- *
- * [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]
  */
 export function getSiteConfig(): SiteConfig {
   if (_siteConfig) return _siteConfig;
@@ -193,11 +192,10 @@ export function getSiteConfig(): SiteConfig {
   return merged;
 }
 
+// [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: return cached ThemeConfig or load config/theme.yaml merged with DEFAULT_THEME_CONFIG then cache
 /**
  * Returns the resolved theme configuration (config/theme.yaml merged with defaults).
  * Result is cached at module level for the lifetime of the server process.
- *
- * [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]
  */
 export function getThemeConfig(): ThemeConfig {
   if (_themeConfig) return _themeConfig;
@@ -207,6 +205,7 @@ export function getThemeConfig(): ThemeConfig {
   return merged;
 }
 
+// [IMPL-THEME_INJECTION] [ARCH-THEME_INJECTION] [REQ-CONFIG_DRIVEN_UI]: generateThemeCss maps light and dark color entries to :root variables and prefers-color-scheme dark block
 /**
  * Generates a CSS string that sets custom properties for light and dark modes
  * from the theme configuration. Intended to be injected via a <style> tag in
@@ -227,10 +226,8 @@ export function generateThemeCss(theme: ThemeConfig): string {
 }
 
 /**
+ * [IMPL-CLASS_OVERRIDES] [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI]: how: lookup override key, trim whitespace, return empty string when undefined or blank
  * Returns the resolved class string for a given override key, or empty string
- * if the override is not defined or blank.
- *
- * [IMPL-CLASS_OVERRIDES] [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI]
  */
 export function getOverride(
   overrides: ClassOverrides,
@@ -342,9 +339,10 @@ const DEFAULT_FILES_CONFIG: FilesConfig = {
 
 let _filesConfig: FilesConfig | null = null;
 
+// [IMPL-TOOLBAR_CONFIG] [IMPL-CONFIG_LOADER] [ARCH-TOOLBAR_LAYOUT] [ARCH-CONFIG_DRIVEN_UI] [REQ-TOOLBAR_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: getFilesConfig reads config/files.yaml toolbars section, deep-merges with DEFAULT_FILES_CONFIG (toolbars omitted in defaults), caches result
+// [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: return cached FilesConfig or load config/files.yaml merged with DEFAULT_FILES_CONFIG then cache
 /**
  * Returns the files configuration, with defaults merged.
- * [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
  */
 export function getFilesConfig(): FilesConfig {
   if (_filesConfig) return _filesConfig;
@@ -353,9 +351,9 @@ export function getFilesConfig(): FilesConfig {
   return _filesConfig;
 }
 
+// [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: trim theme.files.overrides[key] or return empty string when unset
 /**
  * Returns the class string for a files theme override key, or empty string if not set.
- * [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
  */
 export function getFilesOverride(
   overrides: FilesThemeOverrides | undefined,
@@ -364,10 +362,10 @@ export function getFilesOverride(
   return (overrides?.[key] ?? "").trim();
 }
 
+// [IMPL-FILES_CONFIG_COMPLETE] [ARCH-CONFIG_DRIVEN_UI] [REQ-FILES_CONFIG_COMPLETE] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: directories always use fileTypes.directory; iterate types skipping directory/file keys; glob pattern to case-insensitive regex; first match wins; fallback fileTypes.file or generic defaults
 /**
  * Returns the file type configuration for a given filename.
  * Matches against file type patterns in theme.files.fileTypes.
- * [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE]
  */
 export function getFileTypeConfig(
   theme: ThemeConfig,

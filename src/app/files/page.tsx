@@ -69,7 +69,7 @@ export default async function FilesPage({
   let loadedMeshName: string | undefined;
   let loadedSnapshot: WorkspaceSnapshot | undefined;
 
-  // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_ON_FILES_PAGE
+  // [IMPL-FILE_MANAGER_PAGE] [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE]: how: meshId query restores snapshot before default startup panes
   if (meshId) {
     const record = getRuntime().meshService.getMesh(meshId);
     if (record) {
@@ -111,6 +111,7 @@ export default async function FilesPage({
   // how: meshRestorePending when meshId present but server did not hydrate panes; defer default startup panes.
   const meshRestorePending = Boolean(meshId && !restoredFromMesh);
 
+  // [IMPL-FILE_MANAGER_PAGE] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-FILE_MANAGER_PAGE] [REQ-MULTI_PANE_LAYOUT]: how: home or configured paths per pane when no mesh hydration
   if (initialPanes.length === 0 && !meshRestorePending) {
     const homeDir = getUserHomeDirectory();
     const paneCount = layout.defaultPaneCount || 1;

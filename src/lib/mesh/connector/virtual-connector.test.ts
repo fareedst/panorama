@@ -1,4 +1,4 @@
-// [IMPL-MESH_CONNECTOR] [REQ-MESH_PLATFORM]: Virtual connector — phase 4 / 28
+// [IMPL-MESH_CONNECTOR] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM] [REQ-MESH_REAL_CONNECTORS]: Derivative FakeConnector seeded with deterministic /virtual/readme.txt or caller-provided stubs for labs.
 
 import { describe, it, expect } from "vitest";
 import { VirtualConnector } from "./virtual-connector";

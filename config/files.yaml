@@ -404,6 +404,7 @@ keybindings:
     action: "pane.refresh"
     description: "Refresh current pane"
     category: "pane-management"
+  # [IMPL-PANE_REFRESH] [ARCH-PANE_REFRESH] [ARCH-KEYBIND_SYSTEM] [REQ-PANE_REFRESH] [REQ-KEYBOARD_SHORTCUTS_COMPLETE]: how: config/files.yaml registers pane.refresh (Ctrl+R) and pane.refresh-all (Ctrl+Shift+R) in pane-management category
   
   - key: "r"
     modifiers:
@@ -454,8 +455,8 @@ columns:
   - id: "name"
     visible: true
 
-# [REQ-TOOLBAR_CONFIG] [IMPL-TOOLBAR_CONFIG] [ARCH-TOOLBAR_LAYOUT]
-# Toolbar configuration - visual access to all file manager operations
+# [IMPL-TOOLBAR_CONFIG] [ARCH-TOOLBAR_LAYOUT] [ARCH-CONFIG_DRIVEN_UI] [REQ-TOOLBAR_CONFIG]: how: YAML defines workspace, pane, and system tiers each with enabled, position, and named action groups; WorkspaceView renders tiers per IMPL-TOOLBAR_COMPONENT display mode
+# [IMPL-TOOLBAR_CONFIG] [ARCH-TOOLBAR_ACTIONS] [REQ-TOOLBAR_CONFIG] [REQ-TOOLBAR_SYSTEM]: how: toolbars.actions supplies description/icon/label for toolbar-only actions consumed by deriveToolbarButton via actionsMeta prop
 toolbars:
   # Global enable/disable
   enabled: true

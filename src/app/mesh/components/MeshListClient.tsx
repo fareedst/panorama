@@ -1,6 +1,6 @@
 "use client";
 
-// [IMPL-MESH_GUI] [ARCH-MESH_LAYERED] [REQ-MESH_GUI] [REQ-MESH_PLATFORM]: L5 GUI mesh list enriches GET /api/mesh rows.
+// [IMPL-MESH_GUI] [ARCH-MESH_LAYERED] [REQ-MESH_GUI] [REQ-MESH_PLATFORM]: L5 GUI mesh list enriches GET /api/mesh rows with note and save time; POST create; link to mesh detail overview.
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";

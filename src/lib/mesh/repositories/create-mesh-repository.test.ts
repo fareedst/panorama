@@ -1,4 +1,4 @@
-// [IMPL-MESH_PERSISTENCE] [REQ-MESH_PLATFORM]: Repository factory tests
+// [IMPL-MESH_PERSISTENCE] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: JSON file persistence for MeshRecord[] under MESH_DATA_DIR with in-memory cache and repository factory.
 
 import { describe, it, expect, afterEach } from "vitest";
 import { mkdtempSync, rmSync, existsSync } from "fs";
@@ -19,6 +19,7 @@ describe("createMeshRepository [IMPL-MESH_PERSISTENCE]", () => {
     }
   });
 
+  // [IMPL-MESH_PERSISTENCE] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — select JsonMeshRepository when process.env.MESH_DATA_DIR set; otherwise InMemoryMeshRepository.
   it("uses_in_memory_when_env_unset", () => {
     delete process.env.MESH_DATA_DIR;
     const repo = createMeshRepository();

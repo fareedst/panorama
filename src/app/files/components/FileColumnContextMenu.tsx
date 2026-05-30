@@ -1,5 +1,4 @@
-// [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] [REQ-LINKED_PANES] [REQ-DIRECTORY_NAVIGATION]
-// FILE_COLUMN_CONTEXT_MENU — how: portal menu on metadata cell right-click copies filename, absolute path, or cross-pane paths
+// [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] [REQ-LINKED_PANES]: how — portal FileColumnContextMenu on metadata cell right-click; copy filename, absolute path, or cross-pane paths; disable cross-pane action when no listing matches.
 
 "use client";
 
@@ -26,8 +25,7 @@ export interface FileColumnContextMenuProps {
 }
 
 /**
- * FILE_COLUMN_CONTEXT_MENU — [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] [REQ-LINKED_PANES]
- * how: portal-rendered clipboard menu for file column cells; disables cross-pane action when no listing matches basename.
+ * [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] [REQ-LINKED_PANES]: how — portal-rendered clipboard menu for file column cells; disables cross-pane action when no listing matches basename.
  */
 export default function FileColumnContextMenu({
   x,

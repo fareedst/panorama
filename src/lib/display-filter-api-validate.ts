@@ -5,7 +5,9 @@ import { listDirectory } from "./files.data";
 import { filterFileStats } from "./display-filter-engine";
 import { serverGetDisplaySpec } from "./display-spec-store-server";
 
-/** Reject operation sources hidden by displaySpecId in their parent directory. */
+/** Reject operation sources hidden by displaySpecId in their parent directory.
+ *  [IMPL-DISPLAY_FILTER_API] [IMPL-DISPLAY_FILTER_ENGINE] [REQ-PANE_DISPLAY_FILTER] [REQ-BULK_FILE_OPS]
+ *  how: Reject POST operation sources whose basename is not visible under active display spec in parent directory. */
 export async function validateOperationSourcesForDisplaySpec(
   sources: string[],
   displaySpecId: string | undefined | null,

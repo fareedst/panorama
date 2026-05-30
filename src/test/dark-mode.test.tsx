@@ -14,7 +14,8 @@ const theme = getThemeConfig();
 
 describe('Dark Mode CSS Variables [REQ-DARK_MODE] [REQ-CONFIG_DRIVEN_UI]', () => {
   it('defines light mode color variables from config [IMPL-DARK_MODE] [IMPL-THEME_INJECTION]', () => {
-    // [REQ-DARK_MODE] [REQ-CONFIG_DRIVEN_UI] Validates light mode values come from theme config
+    // [IMPL-DARK_MODE] [ARCH-CSS_VARIABLES] [REQ-DARK_MODE] [REQ-CONFIG_DRIVEN_UI]
+    // how: Light/dark palettes come from theme config; generateThemeCss emits prefers-color-scheme media query (IMPL-THEME_INJECTION).
     expect(theme.colors.light.background).toBe('#ffffff');
     expect(theme.colors.light.foreground).toBe('#171717');
   });
@@ -36,7 +37,8 @@ describe('Dark Mode CSS Variables [REQ-DARK_MODE] [REQ-CONFIG_DRIVEN_UI]', () =>
 
 describe('Tailwind Dark Mode Classes [REQ-DARK_MODE]', () => {
   it('supports dark: prefix utility classes [IMPL-DARK_MODE]', () => {
-    // [REQ-DARK_MODE] Documents Tailwind dark mode class pattern
+    // [IMPL-DARK_MODE] [REQ-DARK_MODE]
+    // how: Components use Tailwind dark: prefix utilities paired with light defaults for automatic scheme switching.
     const darkModeClasses = [
       'dark:bg-black',
       'dark:text-zinc-50',
@@ -70,7 +72,7 @@ describe('Tailwind Dark Mode Classes [REQ-DARK_MODE]', () => {
 
 describe('Dark Mode Image Handling [REQ-DARK_MODE] [REQ-BRANDING]', () => {
   it('uses dark:invert for SVG logos [IMPL-IMAGE_OPTIMIZATION]', () => {
-    // [REQ-DARK_MODE] Documents image inversion pattern
+    // [IMPL-IMAGE_OPTIMIZATION] [ARCH-NEXTJS_FRAMEWORK] [REQ-BRANDING] [REQ-DARK_MODE]: how: when darkInvert true, UI applies Tailwind dark:invert on SVG logos for contrast on dark backgrounds
     const invertClass = 'dark:invert';
 
     // Logos should use dark:invert for visibility in dark mode
@@ -80,9 +82,8 @@ describe('Dark Mode Image Handling [REQ-DARK_MODE] [REQ-BRANDING]', () => {
 
 describe('Contrast Ratios [REQ-ACCESSIBILITY] [REQ-DARK_MODE] [REQ-CONFIG_DRIVEN_UI]', () => {
   it('light mode meets WCAG AAA standards [IMPL-DARK_MODE]', () => {
-    // [REQ-ACCESSIBILITY] Validates contrast in light mode
-    // White (#ffffff) on near-black (#171717): 13.5:1 ratio
-    // Exceeds WCAG AAA requirement of 7:1
+    // [IMPL-DARK_MODE] [REQ-DARK_MODE] [REQ-ACCESSIBILITY] [REQ-CONFIG_DRIVEN_UI]
+    // how: Configured light and dark foreground/background pairs exceed WCAG AAA 7:1 contrast.
 
     const lightModeContrast = 13.5; // Calculated ratio
     const wcagAAA = 7.0;

@@ -1,4 +1,4 @@
-// [IMPL-MESH_EVENTS] [IMPL-MESH_PERSISTENCE] [REQ-MESH_PLATFORM]: Event log tests — phase 14
+// [IMPL-MESH_EVENTS] [ARCH-MESH_LAYERED] [IMPL-MESH_PERSISTENCE] [REQ-MESH_PLATFORM]: Event log unit tests — append-only semantics, lifecycle events, and optional JSON persistence reload.
 
 import { describe, it, expect } from "vitest";
 import { mkdtempSync, rmSync, existsSync } from "fs";

@@ -1,9 +1,10 @@
-# ARCH detail — ARCH-APP_ROUTER
 ARCH-APP_ROUTER:
   name: Next.js App Router Pattern
   status: Active
   cross_references:
     - REQ-APP_STRUCTURE
+    - REQ-NAVIGATION_LINKS
+    - REQ-WORKSPACE_MESH_BRIDGE
   decision: Use App Router with src/app/ directory
   rationale:
     why: App Router provides modern routing with server components and improved data fetching
@@ -22,34 +23,42 @@ ARCH-APP_ROUTER:
         - Older pattern
       rejected_reason: App Router is the future of Next.js
   implementation_approach:
-    summary: Use App Router with src/app/ directory
+    summary: App Router with src/app/; NewTabLink for cross-surface new-tab routes
     details:
-      - Create src/app/ directory
-      - Use layout.tsx for layouts
-      - Use page.tsx for routes
+      - Create src/app/ directory with layout.tsx and page.tsx routes
+      - Root / redirects to /files via next/navigation redirect
+      - Shared NewTabLink component for Mesh and File Manager cross-surface links with target _blank and rel noopener noreferrer
+      - Site config navigation.security documents default target and rel
   traceability:
     requirements:
       - REQ-APP_STRUCTURE
+      - REQ-NAVIGATION_LINKS
+      - REQ-WORKSPACE_MESH_BRIDGE
     implementation:
-      - IMPL-ROOT_LAYOUT
+      - IMPL-EXTERNAL_LINKS
       - IMPL-HOME_PAGE
-    tests: []
+      - IMPL-ROOT_LAYOUT
+    tests:
+      - src/components/NewTabLink.test.tsx
+      - src/test/integration/app.test.tsx
     code_annotations:
       - REQ-APP_STRUCTURE
+      - REQ-NAVIGATION_LINKS
   related_decisions:
     depends_on:
       - ARCH-NEXTJS_FRAMEWORK
     informs:
       - ARCH-SERVER_COMPONENTS
-    see_also: []
+    see_also:
+      - docs/mesh-platform-vocabulary.md
   metadata:
     created:
       date: 2025-11-08T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-06T00:00:00.000Z
+      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: Migration to v1.5.0
+      reason: LEAP — NewTabLink cross-surface routing and root redirect
     last_validated:
       date: 2026-02-06T00:00:00.000Z
       validator: AI Agent

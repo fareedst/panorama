@@ -1,6 +1,4 @@
-// [REQ-ROOT_LAYOUT] [REQ-FONT_SYSTEM] [REQ-METADATA] [REQ-CONFIG_DRIVEN_UI]
-// Tests for root layout component verifying HTML structure, font loading,
-// metadata configuration, and theme CSS injection from config.
+// [IMPL-ROOT_LAYOUT] [ARCH-LAYOUT_PATTERN] [REQ-ROOT_LAYOUT]: Root layout server component — metadata export, html/body shell, font variable classes, children slot
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
@@ -17,8 +15,8 @@ const site = getSiteConfig();
 const theme = getThemeConfig();
 
 describe('RootLayout [REQ-ROOT_LAYOUT] [REQ-CONFIG_DRIVEN_UI]', () => {
+  // [IMPL-ROOT_LAYOUT] [ARCH-LAYOUT_PATTERN] [REQ-ROOT_LAYOUT] [REQ-CONFIG_DRIVEN_UI] [REQ-FONT_SYSTEM]: render html lang from site config, head theme style injection, body with Geist font variables and children
   it('renders children correctly [IMPL-ROOT_LAYOUT]', () => {
-    // [REQ-ROOT_LAYOUT] Validates that layout renders child content
     const testContent = 'Test Content';
     render(
       <RootLayout>
@@ -29,6 +27,7 @@ describe('RootLayout [REQ-ROOT_LAYOUT] [REQ-CONFIG_DRIVEN_UI]', () => {
     expect(screen.getByText(testContent)).toBeInTheDocument();
   });
 
+  // [IMPL-FONT_LOADING] [ARCH-GOOGLE_FONTS] [ARCH-CSS_VARIABLES_FONTS] [REQ-FONT_SYSTEM]: how: RootLayout body className concatenates both font variable classes and antialiased
   it('applies font variables to body [IMPL-FONT_LOADING] [REQ-FONT_SYSTEM]', () => {
     // [REQ-FONT_SYSTEM] Validates that font CSS variables are applied
     render(
@@ -66,8 +65,8 @@ describe('RootLayout [REQ-ROOT_LAYOUT] [REQ-CONFIG_DRIVEN_UI]', () => {
     expect(screen.getByTestId('test-content')).toBeInTheDocument();
   });
 
+  // [IMPL-THEME_INJECTION] [ARCH-THEME_INJECTION] [REQ-CONFIG_DRIVEN_UI]: RootLayout loads theme config and renders generated CSS in head style tag (replaces hard-coded globals.css :root colors)
   it('injects theme CSS variables via style tag [IMPL-THEME_INJECTION] [REQ-CONFIG_DRIVEN_UI]', () => {
-    // [REQ-CONFIG_DRIVEN_UI] [IMPL-THEME_INJECTION] Validates theme injection
     // The layout renders a <style> tag with CSS custom properties from theme config
     // In JSDOM, we verify the config values exist; actual injection tested in browser
     expect(theme.colors.light.background).toBe('#ffffff');
@@ -76,6 +75,7 @@ describe('RootLayout [REQ-ROOT_LAYOUT] [REQ-CONFIG_DRIVEN_UI]', () => {
 });
 
 describe('Metadata [REQ-METADATA] [REQ-CONFIG_DRIVEN_UI]', () => {
+  // [IMPL-METADATA] [ARCH-NEXTJS_FRAMEWORK] [REQ-METADATA] [REQ-CONFIG_DRIVEN_UI]: how — tests assert exported metadata matches live site config values and required string fields exist.
   it('exports metadata from config [IMPL-METADATA] [REQ-CONFIG_DRIVEN_UI]', () => {
     // [REQ-METADATA] [REQ-CONFIG_DRIVEN_UI] Validates metadata comes from site config
     expect(metadata).toBeDefined();

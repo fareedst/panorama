@@ -71,6 +71,7 @@ IMPL-LAYOUT_CALCULATOR:
       - REQ-MULTI_PANE_LAYOUT
       - REQ-TOOLBAR_SYSTEM
     tests:
+      - src/lib/files.layout.test.ts
       - src/lib/useElementSize.test.ts
     code_annotations:
       - IMPL-LAYOUT_CALCULATOR
@@ -85,9 +86,9 @@ IMPL-LAYOUT_CALCULATOR:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-29T00:00:00.000Z"
+      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — vocabulary see_also back-link
+      reason: Retrofit essence_pseudocode from files.layout and useElementSize
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

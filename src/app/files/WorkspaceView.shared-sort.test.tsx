@@ -1,4 +1,4 @@
-// [REQ-FILE_SORTING_ADVANCED] [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-SORT_FILTER] [IMPL-WORKSPACE_VIEW]: Workspace shared sort composition
+// [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-LINKED_PANES]: workspace sharedSort; SortDialog Share copies draft; Shared applies sharedSort to focused pane only; new panes inherit sharedSort
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
@@ -82,7 +82,7 @@ describe("WorkspaceView shared sort [REQ-FILE_SORTING_ADVANCED]", () => {
     vi.restoreAllMocks();
   });
 
-  // [IMPL-SORT_FILTER] [REQ-FILE_SORTING_ADVANCED] [REQ-LINKED_PANES] SharedSortWorkspace — Shared applies sharedSort to focused pane only when linked
+  // how: Shared applies sharedSort to focused pane only when linked (second pane keeps prior sort)
   it("Shared applies shared sort to focused pane only when linked [REQ-LINKED_PANES]", async () => {
     render(
       <WorkspaceView
@@ -120,7 +120,7 @@ describe("WorkspaceView shared sort [REQ-FILE_SORTING_ADVANCED]", () => {
     });
   });
 
-  // [IMPL-SORT_FILTER] [REQ-FILE_SORTING_ADVANCED] SharedSortWorkspace — new pane inherits sharedSort after Share
+  // how: after Share updates workspace sharedSort, new pane inherits sharedSort not focused pane sort
   it("new pane inherits workspace sharedSort after Share [REQ-MULTI_PANE_LAYOUT]", async () => {
     render(
       <WorkspaceView

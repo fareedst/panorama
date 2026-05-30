@@ -64,6 +64,7 @@ export class MeshRuntime {
   >();
   private readonly sessionCancelFlags = new Set<string>();
 
+  // [IMPL-MESH_RUNTIME] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — construct repository-backed runtime; instantiate L2 domain services, connector map, and cross-cutting auth/safety/event wiring per layered architecture.
   constructor(meshRepository?: MeshRepository) {
     this.meshRepository = meshRepository ?? createMeshRepository();
     this.meshService = new MeshService(
@@ -73,7 +74,7 @@ export class MeshRuntime {
     this.depotService = new DepotService(this.meshRepository);
   }
 
-  // [IMPL-MESH_RUNTIME] [IMPL-MESH_AUTH] [ARCH-MESH_LAYERED] [REQ-MESH_AUTH]: authorize — delegate to auth service; audit denials
+  // [IMPL-MESH_RUNTIME] [IMPL-MESH_AUTH] [ARCH-MESH_LAYERED] [REQ-MESH_AUTH]: how — delegate to AuthorizationService.require; append auditEntries row when denied.
   authorize(role: MeshRole, permission: MeshPermission) {
     const result = this.auth.require(role, permission);
     if (!result.allowed) {
@@ -97,7 +98,7 @@ export class MeshRuntime {
     }
   }
 
-  // [IMPL-MESH_RUNTIME] [IMPL-MESH_CONNECTOR] [REQ-MESH_REAL_CONNECTORS] [REQ-MESH_PLATFORM]: Depot kind → connector — local FS, remote stub, virtual synthetic, default VirtualConnector (pseudocode IMPL-MESH_RUNTIME_getConnectorForDepot)
+  // [IMPL-MESH_RUNTIME] [IMPL-MESH_CONNECTOR] [ARCH-MESH_LAYERED] [REQ-MESH_REAL_CONNECTORS] [REQ-MESH_PLATFORM]: how — resolve depot kind to connector; cache in connectors map; VirtualConnector as default for unknown kinds without registering.
   getConnectorForDepot(depot: Depot): Connector {
     const existing = this.connectors.get(depot.id);
     if (existing) {
@@ -121,6 +122,7 @@ export class MeshRuntime {
     return new VirtualConnector();
   }
 
+  // [IMPL-MESH_RUNTIME] [IMPL-MESH_TOPOLOGY] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — load mesh record; delegate validateTopology and projectTopologyGraph for API consumers.
   getTopology(meshId: string) {
     const record = this.meshRepository.get(meshId);
     if (!record) {
@@ -132,7 +134,7 @@ export class MeshRuntime {
     };
   }
 
-  // [IMPL-MESH_RUNTIME] [IMPL-MESH_PLANNING] [IMPL-MESH_SAFETY] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: generatePlan — topology check, inventory, dry-run planning
+  // [IMPL-MESH_RUNTIME] [IMPL-MESH_PLANNING] [IMPL-MESH_SAFETY] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — topology safety check, register local connectors, inventory both depots, dry-run planning, recordDryRun when isDryRun.
   generatePlan(
     meshId: string,
     sourceDepotId: string,
@@ -170,6 +172,7 @@ export class MeshRuntime {
     return plan;
   }
 
+  // [IMPL-MESH_RUNTIME] [IMPL-MESH_SAFETY] [ARCH-MESH_LAYERED] [REQ-MESH_SAFETY]: how — delegate plan execution guardrails to SafetyService.checkCanExecutePlan.
   checkExecution(
     meshId: string,
     changeSet: ChangeSet,
@@ -178,17 +181,17 @@ export class MeshRuntime {
     return this.safety.checkCanExecutePlan(meshId, changeSet, { confirmedDestructive });
   }
 
-  // [IMPL-MESH_RUNTIME] [IMPL-MESH_SESSION] [REQ-MESH_PLATFORM]: Expose execution counters for API polling
+  // [IMPL-MESH_RUNTIME] [IMPL-MESH_SESSION] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — expose execution counters for API polling.
   getSessionProgress(sessionId: string) {
     return this.sessionProgress.get(sessionId) ?? { completed: 0, failed: 0, total: 0 };
   }
 
-  // [IMPL-MESH_RUNTIME] [IMPL-MESH_SESSION] [REQ-MESH_E2E_RELEASE]: Signal in-flight runApprovedSession loop to stop
+  // [IMPL-MESH_RUNTIME] [IMPL-MESH_SESSION] [ARCH-MESH_LAYERED] [REQ-MESH_E2E_RELEASE]: how — signal in-flight runApprovedSession loop to stop via sessionCancelFlags.
   cancelSessionExecution(sessionId: string): void {
     this.sessionCancelFlags.add(sessionId);
   }
 
-  // [IMPL-MESH_RUNTIME] [IMPL-MESH_EXECUTOR] [IMPL-MESH_SESSION] [REQ-MESH_E2E_RELEASE]: runApprovedSession — execute plan per link; honor pause/cancel; async when MESH_ASYNC_SYNC
+  // [IMPL-MESH_RUNTIME] [IMPL-MESH_EXECUTOR] [IMPL-MESH_SESSION] [IMPL-MESH_SAFETY] [ARCH-MESH_LAYERED] [REQ-MESH_E2E_RELEASE] [REQ-MESH_PLATFORM]: how — execute approved plan per link; honor pause/cancel; async fire-and-forget when MESH_ASYNC_SYNC; record lifecycle with meshId.
   async runApprovedSession(
     sessionId: string,
     options?: { confirmedDestructive?: boolean },
@@ -284,7 +287,7 @@ export class MeshRuntime {
     return true;
   }
 
-  // [IMPL-MESH_HARDENING] [REQ-MESH_HARDENING]: Retry backoff between attempts + optional outbound bytes pacing ([REQ-MESH_PLATFORM] prompts phase 29)
+  // [IMPL-MESH_RUNTIME] [IMPL-MESH_HARDENING] [IMPL-MESH_EXECUTOR] [ARCH-MESH_LAYERED] [REQ-MESH_HARDENING]: how — execute one operation via ExecutorService with policy.retryMaxAttempts, cancel-aware exponential backoff between failures, outbound byte throttle after successful copy/update.
   private async executeOperationWithBackoffAndThrottle(
     sessionId: string,
     mesh: Mesh,
@@ -350,6 +353,7 @@ export class MeshRuntime {
 
 let globalRuntime: MeshRuntime | undefined;
 
+// [IMPL-MESH_RUNTIME] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — module singleton wiring L5 callers to one MeshRuntime instance; resetMeshRuntime restores fresh instance for isolation tests.
 export function getMeshRuntime(): MeshRuntime {
   if (!globalRuntime) {
     globalRuntime = new MeshRuntime();

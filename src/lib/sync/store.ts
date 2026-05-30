@@ -1,5 +1,4 @@
-// [IMPL-NSYNC_STORE] [ARCH-STORE_MONITORING] [REQ-STORE_FAILURE_DETECT]: Top-level Store Monitoring Implementation: Simplified store failure detection using error streak tracking per destination
-// Simplified store monitoring - track error streaks to detect drive failures
+// [IMPL-NSYNC_STORE] [ARCH-STORE_MONITORING] [REQ-STORE_FAILURE_DETECT]: StoreMonitor tracks StoreUnavailable error streaks per destination directory; abort sync when threshold reached
 
 import path from "path";
 import { ErrorClass } from "../sync.types";
@@ -32,6 +31,7 @@ export class StoreMonitor {
   /** Map of destination directory -> store state */
   private stores: Map<string, StoreState>;
   
+// [IMPL-NSYNC_STORE] [ARCH-STORE_MONITORING] [REQ-STORE_FAILURE_DETECT]: how: SyncEngine creates monitor with threshold 3
   /**
    * Create a new store monitor
    * @param threshold - Number of sequential errors before marking unavailable (default: 3)
@@ -43,6 +43,7 @@ export class StoreMonitor {
     logger.debug(["IMPL-NSYNC_STORE", "REQ-STORE_FAILURE_DETECT"], `Store monitor created with threshold ${threshold}`);
   }
   
+  // [IMPL-NSYNC_STORE] [ARCH-STORE_MONITORING] [REQ-STORE_FAILURE_DETECT]: how: reset errorStreak to zero for store on successful copy or skip
   /**
    * Record a successful operation for a destination
    * [IMPL-NSYNC_STORE]
@@ -60,6 +61,7 @@ export class StoreMonitor {
     }
   }
   
+  // [IMPL-NSYNC_STORE] [ARCH-STORE_MONITORING] [REQ-STORE_FAILURE_DETECT]: how: only ErrorClass.StoreUnavailable increments streak; at threshold mark unavailable
   /**
    * Record an error for a destination
    * [IMPL-NSYNC_STORE] [REQ-STORE_FAILURE_DETECT]
@@ -100,6 +102,7 @@ export class StoreMonitor {
     return state.unavailable;
   }
   
+  // [IMPL-NSYNC_STORE] [ARCH-STORE_MONITORING] [REQ-STORE_FAILURE_DETECT]: how: SyncEngine breaks source loop when any store is unavailable
   /**
    * Check if any store is unavailable
    * [IMPL-NSYNC_STORE] [REQ-STORE_FAILURE_ABORT]
@@ -147,6 +150,7 @@ export class StoreMonitor {
     return path.dirname(destPath);
   }
   
+  // [IMPL-NSYNC_STORE] [ARCH-STORE_MONITORING] [REQ-STORE_FAILURE_DETECT]: how: heuristic on error.message — enoent/enotdir/erofs/eio/ebusy/eagain → StoreUnavailable; eacces/eperm → FileSpecific; default FileSpecific
   /**
    * Classify an error based on error message
    * [IMPL-NSYNC_STORE]

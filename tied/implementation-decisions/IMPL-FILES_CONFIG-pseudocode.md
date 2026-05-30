@@ -1,132 +1,84 @@
 # IMPL-FILES_CONFIG essence pseudocode
 
-// [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: Top-level Files Configuration Loader: Add getFilesConfig() to config.ts, extend types, create config/files.yaml
+// [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: Files configuration loader — types for copy/theme overrides, getFilesConfig with YAML merge and cache, getFilesOverride helper, config/files.yaml and theme.files sections
 
 ## Summary contract
 
-// [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: bound module inputs, outputs, and shared data for all runtime blocks below
+// [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: extends IMPL-CONFIG_LOADER pattern for file-manager-specific YAML; defaults in DEFAULT_FILES_CONFIG; theme.files holds overrides and compare colors
 
 CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-FILES_CONFIG
-  DATA: state and configuration per implementation_approach
+  INPUT: config/files.yaml, config/theme.yaml (via getThemeConfig for overrides)
+  OUTPUT: FilesConfig object, trimmed override class string
+  DATA: _filesConfig cache, deepMerge with DEFAULT_FILES_CONFIG
+  CONTROL: readYamlFile on first getFilesConfig call
 
-## AddedFilesFieldTo
+## TypesAndThemeFilesField
 
-// [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: Added files? field to ThemeConfig interface
+// [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: ThemeConfig gains optional files field; FilesCopyConfig, FilesThemeConfig, FilesThemeOverrides interfaces in config.types.ts
 
-CONTRACT AddedFilesFieldTo
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT TypesAndThemeFilesField
+  INPUT: TypeScript schema definitions
+  OUTPUT: typed access to copy strings and theme.files.overrides keys
+  DATA: config.types.ts FilesCopyConfig, FilesThemeConfig, FilesThemeOverrides, ThemeConfig.files?
 
-PROCEDURE IMPL-FILES_CONFIG_AddedFilesFieldTo(context)
-  // Added files? field to ThemeConfig interface
-  CALL Added files? field to ThemeConfig interface
-  ON invalid input OR missing data THEN RETURN without mutation
+PROCEDURE IMPL-FILES_CONFIG_TypesAndThemeFilesField()
+  DEFINE FilesCopyConfig for UI copy sections
+  DEFINE FilesThemeOverrides for per-element Tailwind class overrides
+  ADD optional files?: FilesThemeConfig to ThemeConfig
 
-## AddedFilesCopyConfigInterfaceTo
+## GetFilesConfig
 
-// [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: Added FilesCopyConfig interface to config.types.ts
+// [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: return cached FilesConfig or load config/files.yaml merged with DEFAULT_FILES_CONFIG then cache
 
-CONTRACT AddedFilesCopyConfigInterfaceTo
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT GetFilesConfig
+  INPUT: none (reads disk once)
+  OUTPUT: merged FilesConfig
+  DATA: DEFAULT_FILES_CONFIG, readYamlFile("config/files.yaml")
 
-PROCEDURE IMPL-FILES_CONFIG_AddedFilesCopyConfigInterfaceTo(context)
-  // Added FilesCopyConfig interface to config.types.ts
-  CALL Added FilesCopyConfig interface to config.types.ts
-  ON invalid input OR missing data THEN RETURN without mutation
+PROCEDURE IMPL-FILES_CONFIG_getFilesConfig()
+  IF _filesConfig cached THEN RETURN _filesConfig
+  loaded := readYamlFile("config/files.yaml") as FilesConfig
+  _filesConfig := deepMerge(DEFAULT_FILES_CONFIG, loaded)
+  RETURN _filesConfig
 
-## AddedFilesThemeConfigAndFilesThemeOverrides
+## GetFilesOverride
 
-// [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: Added FilesThemeConfig and FilesThemeOverrides interfaces
+// [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: trim theme.files.overrides[key] or return empty string when unset
 
-CONTRACT AddedFilesThemeConfigAndFilesThemeOverrides
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT GetFilesOverride
+  INPUT: overrides object, key of FilesThemeOverrides
+  OUTPUT: trimmed class string or ""
 
-PROCEDURE IMPL-FILES_CONFIG_AddedFilesThemeConfigAndFilesThemeOverrides(context)
-  // Added FilesThemeConfig
-  CALL Added FilesThemeConfig
-  // FilesThemeOverrides interfaces
-  CALL FilesThemeOverrides interfaces
+PROCEDURE IMPL-FILES_CONFIG_getFilesOverride(overrides, key)
+  RETURN trim(overrides?.[key] ?? "")
 
-## AddedGetFilesConfigFunctionTo
+## YamlSources
 
-// [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: Added getFilesConfig() function to config.ts
+// [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: config/files.yaml supplies copy section; config/theme.yaml supplies files.overrides and compareColors under theme.files
 
-CONTRACT AddedGetFilesConfigFunctionTo
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT YamlSources
+  INPUT: YAML on disk
+  OUTPUT: partial overrides merged into defaults
+  DATA: config/files.yaml, config/theme.yaml files section
 
-PROCEDURE IMPL-FILES_CONFIG_AddedGetFilesConfigFunctionTo(context)
-  // Added getFilesConfig() function to config.ts
-  CALL Added getFilesConfig() function to config.ts
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## AddedGetFilesOverrideHelperFunction
-
-// [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: Added getFilesOverride() helper function
-
-CONTRACT AddedGetFilesOverrideHelperFunction
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FILES_CONFIG_AddedGetFilesOverrideHelperFunction(context)
-  // Added getFilesOverride() helper function
-  CALL Added getFilesOverride() helper function
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## CreatedConfigFilesYaml
-
-// [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: Created config/files.yaml with copy section
-
-CONTRACT CreatedConfigFilesYaml
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FILES_CONFIG_CreatedConfigFilesYaml(context)
-  // Created config/files.yaml with copy section
-  CALL Created config/files.yaml with copy section
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## ExtendedThemeYamlWith
-
-// [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: Extended theme.yaml with files.overrides and compareColors sections
-
-CONTRACT ExtendedThemeYamlWith
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FILES_CONFIG_ExtendedThemeYamlWith(context)
-  // Extended theme.yaml with files.overrides
-  CALL Extended theme.yaml with files.overrides
-  // compareColors sections
-  CALL compareColors sections
+PROCEDURE IMPL-FILES_CONFIG_YamlSources()
+  ASSERT config/files.yaml exists with copy defaults
+  ASSERT theme.yaml defines files.overrides and compareColors when customized
 
 ## CodeLocations
 
 // [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: map implementing and verifying source files for this IMPL
 
-// FILE: config/files.yaml — Files configuration
-// FILE: config/theme.yaml — Extended with files section
-// FILE: src/lib/config.ts — Config loader with getFilesConfig()
-// FILE: src/lib/config.types.ts — Files config types
-// FUNCTION: getFilesConfig in src/lib/config.ts
-// FUNCTION: getFilesOverride in src/lib/config.ts
+// FILE: config/files.yaml — files copy and keybindings
+// FILE: config/theme.yaml — files.overrides and compareColors
+// FILE: src/lib/config.types.ts — FilesCopyConfig, FilesThemeConfig, FilesThemeOverrides
+// FILE: src/lib/config.ts — DEFAULT_FILES_CONFIG, getFilesConfig, getFilesOverride
+// FILE: src/lib/config.test.ts — getFilesConfig tests (shared with IMPL-FILES_CONFIG_COMPLETE)
 
 ## ErrorHandling
 
-// [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: surface recoverable failures without breaking pane invariants
+// [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: missing YAML yields empty object merged with defaults via IMPL-CONFIG_LOADER readYamlFile
 
 PROCEDURE IMPL-FILES_CONFIG_on_error(context, error)
-  LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
-  ELSE propagate error to caller
+  DELEGATE to IMPL-CONFIG_LOADER empty-file fallback
+  RETURN DEFAULT_FILES_CONFIG merged result

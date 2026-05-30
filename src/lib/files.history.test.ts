@@ -11,7 +11,8 @@ describe("DirectoryHistory [REQ-ADVANCED_NAV]", () => {
     history = new DirectoryHistory();
   });
 
-  // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]: {id, path, label, created}[]
+  // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
+  // how: Before leaving a directory, store filename, cursor index, scrollTop, and timestamp in per-pane Map keyed by path; update recent list.
 
   describe("saveCursorPosition [IMPL-DIR_HISTORY]", () => {
     it("should save cursor position for directory", () => {
@@ -51,11 +52,8 @@ describe("DirectoryHistory [REQ-ADVANCED_NAV]", () => {
     });
   });
 
-  // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]: Map<paneId, Map<path, {cursor, scrollTop, timestamp}>>
-
-  // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]: Map<paneId, Map<path, {cursor, scrollTop, timestamp}>>
-
-  // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]: Map<paneId, Map<path, {cursor, scrollTop, timestamp}>>
+  // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
+  // how: On revisit, prefer filename lookup in listing; fallback to saved index clamped to list bounds; default cursor 0 when no history.
 
   describe("restoreCursorPosition [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY]", () => {
     it("should restore cursor by filename when available", () => {
@@ -104,6 +102,8 @@ describe("DirectoryHistory [REQ-ADVANCED_NAV]", () => {
   });
 
   describe("findSubdirectoryInParent [REQ-ADVANCED_NAV]", () => {
+    // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
+    // how: When navigating up, locate current directory basename among parent listing directories only.
     it("should find subdirectory in parent list", () => {
       const parentFiles = [
         { name: "a", isDirectory: true },
@@ -157,6 +157,8 @@ describe("DirectoryHistory [REQ-ADVANCED_NAV]", () => {
   });
 
   describe("recent directories [REQ-ADVANCED_NAV]", () => {
+    // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
+    // how: Maintain LRU-ordered recent path list per pane (max 20); revisiting moves path to front.
     it("should track recent directories", () => {
       history.saveCursorPosition(0, "/home", "a.txt", 0, 0);
       history.saveCursorPosition(0, "/usr", "b.txt", 0, 0);
@@ -206,6 +208,8 @@ describe("DirectoryHistory [REQ-ADVANCED_NAV]", () => {
   });
 
   describe("navigateBack/Forward [REQ-ADVANCED_NAV]", () => {
+    // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
+    // how: Walk recent list relative to current path; back moves toward older entries, forward toward newer.
     beforeEach(() => {
       history.saveCursorPosition(0, "/home", "a.txt", 0, 0);
       history.saveCursorPosition(0, "/usr", "b.txt", 0, 0);
@@ -240,6 +244,8 @@ describe("DirectoryHistory [REQ-ADVANCED_NAV]", () => {
   });
 
   describe("clearHistory", () => {
+    // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
+    // how: Remove cursor and recent state for one pane (testing and reset).
     it("should clear all history for pane", () => {
       history.saveCursorPosition(0, "/home", "a.txt", 5, 100);
       history.clearHistory(0);

@@ -1,220 +1,154 @@
 # IMPL-FILE_MARKING essence pseudocode
 
-// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: Top-level React State Mark Management: React useState with Set<string> per pane, keyboard and mouse handlers
+// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: Per-pane Set<string> marks in WorkspaceView; keyboard via keybindings; checkbox in FilePane
 
 ## Summary contract
 
 // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: bound module inputs, outputs, and shared data for all runtime blocks below
 
+```
 CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-FILE_MARKING
-  DATA: state and configuration per implementation_approach
+  INPUT: paneIndex; filename; visibleFiles from crossPaneVisibilityResult.displayFilesByPane OR pane.files
+  OUTPUT: updated pane.marks Set; footer [N marked] when marks.size > 0
+  DATA: PaneState.marks Set<string> keyed by file.name; marks independent per pane index
+  CONTROL: keybindings mark.toggle (Space), mark.toggle-cursor (m), mark.all, mark.invert, mark.clear
+```
 
 ## PaneMarkState
 
-// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: initialize per-pane marks as Set of filenames in PaneState
+// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: each pane initializes marks as empty Set; persists across re-sort by filename
 
-CONTRACT PaneMarkState
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+```
+PROCEDURE PaneMarkState(context)
+  DATA pane.marks AS Set<string>
+  ON directory reload RETAIN marks for names still in pane.files
+  SKIP parent directory entry (..) for mark targets
+```
 
-PROCEDURE IMPL-FILE_MARKING_PaneMarkState(context)
-  DATA pane.marks AS Set<string> keyed by file.name
-  ON pane load OR directory refresh RETAIN marks for names still present in files list
-  // SKIP marking parent directory entry (..)
-  CALL SKIP marking parent directory entry (..)
+## MarkToggleCursor
 
-## MarkToggle
+// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: m key and checkbox call handleToggleMark without cursor move
 
-// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: toggle single file mark on m key or checkbox click via handleToggleMark
+```
+PROCEDURE MarkToggleCursor(context)
+  INPUT: paneIndex, filename
+  IF filename IN pane.marks THEN DELETE ELSE ADD
+  IMMUTABLE update pane via setPanes copy with new Set
+  CURSOR unchanged
+```
 
-CONTRACT MarkToggle
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+## MarkToggleAdvance
 
-PROCEDURE IMPL-FILE_MARKING_MarkToggle(context)
-  // INPUT focused file row in active pane
-  IF filename IN pane.marks THEN REMOVE filename ELSE ADD filename
-  // UPDATE footer marked count display
-  CALL UPDATE footer marked count display
+// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: Space keybinding mark.toggle toggles visible cursor file then advances cursor if not last
 
-## MarkWithSpace
+```
+PROCEDURE MarkToggleAdvance(context)
+  INPUT: focusIndex, visibleFiles[pane.cursor]
+  IF no file at cursor THEN RETURN
+  CALL handleToggleMark(focusIndex, file.name)
+  IF cursor < visibleFiles.length - 1 THEN handleCursorMove(focusIndex, cursor + 1)
+```
 
-// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: mark focused file then advance cursor down one row (Space key)
+## MarkAllVisible
 
-CONTRACT MarkWithSpace
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB] [REQ-PANE_DISPLAY_FILTER]: how: Shift+M mark.all sets marks to all names in displayFilesByPane when filter active
 
-PROCEDURE IMPL-FILE_MARKING_MarkWithSpace(context)
-  CALL MarkToggle for cursor file
-  IF cursor not on last file THEN INCREMENT cursor index
-  IF cursor on last file THEN leave cursor unchanged
+```
+PROCEDURE MarkAllVisible(context)
+  visible := crossPaneVisibilityResult.displayFilesByPane[paneIndex] ?? pane.files
+  SET pane.marks := new Set(visible.map(f => f.name))
+```
 
-## MarkAll
+## InvertMarksVisible
 
-// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: mark every file in pane on Shift+M via handleMarkAll
+// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB] [REQ-PANE_DISPLAY_FILTER]: how: Ctrl+M mark.invert symmetric difference over visible file names only
 
-CONTRACT MarkAll
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FILE_MARKING_MarkAll(context)
-  SET pane.marks TO new Set of every file.name in pane.files
-  // UPDATE footer marked count
-  CALL UPDATE footer marked count
-
-## InvertMarks
-
-// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: symmetric difference of marks on Ctrl+M via handleInvertMarks
-
-CONTRACT InvertMarks
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FILE_MARKING_InvertMarks(context)
-  FOR EACH file.name IN pane.files
-  IF name IN pane.marks THEN REMOVE ELSE ADD
-  // UPDATE footer marked count
-  CALL UPDATE footer marked count
+```
+PROCEDURE InvertMarksVisible(context)
+  visible := displayFilesByPane[paneIndex] ?? pane.files
+  newMarks := empty Set
+  FOR EACH file IN visible
+    IF file.name NOT IN pane.marks THEN ADD file.name TO newMarks
+  SET pane.marks := newMarks
+```
 
 ## ClearMarks
 
-// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: remove all marks on Escape via handleClearMarks
+// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: mark.clear replaces marks with empty Set
 
-CONTRACT ClearMarks
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FILE_MARKING_ClearMarks(context)
-  // CLEAR pane.marks
-  CALL CLEAR pane.marks
-  IF marks already empty THEN no error
-  // UPDATE footer marked count to zero
-  CALL UPDATE footer marked count to zero
+```
+PROCEDURE ClearMarks(context)
+  SET pane.marks := new Set()
+  IF already empty THEN no error
+```
 
 ## MarkPersistence
 
-// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: name-based Set survives re-sort and refresh per ARCH-MARKING_STATE
+// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: marks keyed by filename survive sort/filter/reload; pruned when name absent from listing
 
-CONTRACT MarkPersistence
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FILE_MARKING_MarkPersistence(context)
-  ON sort OR filter OR reload files list
-  // MATCH marks by filename string not row index
-  CALL MATCH marks by filename string not row index
-  // DROP marks for names no longer in listing
-  CALL DROP marks for names no longer in listing
+```
+PROCEDURE MarkPersistence(context)
+  ON sort OR filter OR reload MATCH marks by file.name string not row index
+  DROP marks for names no longer in pane.files when listing changes
+```
 
 ## MarkVisualFeedback
 
-// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: checkbox and bg-marked styling in FilePane per theme
+// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: FilePane checkbox checked when marked; row bg-yellow when marked and not comparison-colored
 
-CONTRACT MarkVisualFeedback
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FILE_MARKING_MarkVisualFeedback(context)
-  // RENDER checkbox per file row
-  CALL RENDER checkbox per file row
-  IF WHEN name IN pane.marks THEN checked state AND marked background class
-  // DISPLAY footer as [markedCount/totalCount]
-  CALL DISPLAY footer as [markedCount/totalCount]
+```
+PROCEDURE MarkVisualFeedback(context)
+  RENDER checkbox per row; checked IF name IN marks
+  APPLY marked background class when isMarked AND no comparison override
+  FOOTER show [{marks.size} marked] when marks.size > 0 AND footer visible
+```
 
 ## PerPaneIndependence
 
-// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: each pane maintains isolated mark Set
+// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: each pane index has isolated marks Set; bulk ops use source pane marks only
 
-CONTRACT PerPaneIndependence
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FILE_MARKING_PerPaneIndependence(context)
-  ON pane focus change DO NOT merge marks across panes
-  // BULK operations use marks from source pane only
-  CALL BULK operations use marks from source pane only
+```
+PROCEDURE PerPaneIndependence(context)
+  ON focus change DO NOT merge marks across panes
+  BULK drag uses marks from active pane when marks.size > 0
+```
 
 ## EmptyDirectoryEdgeCases
 
-// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: mark keys on empty listing produce no footer count and no error
+// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: mark keybindings on empty visible list do not throw; footer omits marked segment when no files
 
-CONTRACT EmptyDirectoryEdgeCases
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FILE_MARKING_EmptyDirectoryEdgeCases(context)
-  IF pane.files length is zero THEN omit marked footer text
-  ON m OR Shift+M OR Escape WITH empty files THEN no throw
-
-## MultiMarkWorkflow
-
-// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: compose mark-all, invert, clear, and toggle in one session
-
-CONTRACT MultiMarkWorkflow
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FILE_MARKING_MultiMarkWorkflow(context)
-  // ALLOW sequential mark.toggle-cursor, mark.invert, mark.clear
-  CALL ALLOW sequential mark.toggle-cursor, mark.invert, mark.clear
-  // ALLOW mark.all followed by mark.toggle-cursor to reduce count
-  CALL ALLOW mark.all followed by mark.toggle-cursor to reduce count
+```
+PROCEDURE EmptyDirectoryEdgeCases(context)
+  IF visibleFiles length zero THEN mark handlers no-op
+  FOOTER hidden when files.length zero AND marks.size zero AND hiddenCount zero
+```
 
 ## MarkWithNavigation
 
-// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: preserve marks when cursor moves with arrow keys
+// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: navigate.up/down does not clear marks
 
-CONTRACT MarkWithNavigation
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FILE_MARKING_MarkWithNavigation(context)
-  ON navigate.up OR navigate.down DO NOT clear pane.marks
-  // MARK count unchanged until explicit mark action
-  CALL MARK count unchanged until explicit mark action
-
-## MarkedCountDisplay
-
-// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: DISPLAY footer as [markedCount/totalCount] with highlight class when count greater than zero
-
-CONTRACT MarkedCountDisplay
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FILE_MARKING_MarkedCountDisplay(context)
-  IF marks.size equals zero THEN hide marked footer segment
-  IF marks.size greater than zero THEN show bracketed count with accent class
+```
+PROCEDURE MarkWithNavigation(context)
+  ON cursor move DO NOT mutate pane.marks
+  MARK count unchanged until explicit mark action
+```
 
 ## CodeLocations
 
 // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: map implementing and verifying source files for this IMPL
 
-// FILE: src/app/files/WorkspaceView.tsx — Mark state and handlers
-// FILE: src/app/files/components/FilePane.tsx — Checkbox rendering
-// FUNCTION: handleToggleMark in src/app/files/WorkspaceView.tsx
-// FUNCTION: handleMarkAll in src/app/files/WorkspaceView.tsx
+```
+// FILE: src/app/files/WorkspaceView.tsx — handleToggleMark, handleMarkAll, handleInvertMarks, handleClearMarks, keybinding handlers
+// FILE: src/app/files/components/FilePane.tsx — checkbox and footer marked count
+// FILE: src/app/files/WorkspaceView.test.tsx — TEST-FILE_MARKING / mark behavior tests
+```
 
 ## ErrorHandling
 
-// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: surface recoverable failures without breaking pane invariants
+// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: mark operations never throw on missing cursor file
 
+```
 PROCEDURE IMPL-FILE_MARKING_on_error(context, error)
   LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
-  ELSE propagate error to caller
+  IF no file at cursor THEN RETURN without state mutation
+```

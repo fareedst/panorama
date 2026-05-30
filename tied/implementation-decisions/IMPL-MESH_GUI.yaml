@@ -40,6 +40,6 @@ IMPL-MESH_GUI:
       date: "2026-05-19T00:00:00.000Z"
       author: AI Agent
     last_updated:
-      date: "2026-05-24T00:00:00.000Z"
+      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — per-mesh depots page (IMPL-MESH_GUI_depots)
+      reason: retrofit pseudocode; MeshListClient and MeshDepotsClient comment alignment

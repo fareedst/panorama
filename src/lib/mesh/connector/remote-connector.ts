@@ -1,4 +1,4 @@
-// [IMPL-MESH_CONNECTOR] [REQ-MESH_REAL_CONNECTORS]: Remote connector stub — contract-compliant, no network I/O
+// [IMPL-MESH_CONNECTOR] [REQ-MESH_REAL_CONNECTORS]: Contract-compliant stub; no network I/O in this release.
 
 import type {
   Connector,

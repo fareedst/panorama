@@ -15,6 +15,16 @@ IMPL-DISPLAY_SPEC_STORE:
       - REQ-PANE_DISPLAY_FILTER
     architecture:
       - ARCH-DISPLAY_SPEC_STORE
+    tests:
+      - src/lib/display-spec-store.test.ts
+    code_locations:
+      - src/lib/display-spec-store.ts
+      - src/lib/display-spec-store-server.ts
   related_decisions:
     see_also:
       - docs/pane-display-filter-vocabulary.md
+  metadata:
+    last_updated:
+      date: "2026-05-30T00:00:00.000Z"
+      author: AI Agent
+      reason: Retrofit pseudocode and comment alignment per prompts/2026-05-29

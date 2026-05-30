@@ -5,11 +5,8 @@
 
 @import "tailwindcss";
 
-/* [IMPL-DARK_MODE] [ARCH-TAILWIND_V4] [REQ-TAILWIND_STYLING] [REQ-CONFIG_DRIVEN_UI]
-   Tailwind theme configuration using @theme inline directive (Tailwind v4).
-   Maps CSS variables to Tailwind utilities and includes font variables
-   created by next/font. Color values come from the <style> tag injected
-   by layout.tsx based on config/theme.yaml. */
+/* [IMPL-DARK_MODE] [ARCH-CSS_VARIABLES] [ARCH-TAILWIND_V4] [REQ-DARK_MODE] [REQ-CONFIG_DRIVEN_UI]
+   how: Map injected CSS custom properties to Tailwind v4 theme tokens via @theme inline in globals.css. */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -17,10 +14,8 @@
   --font-mono: var(--font-geist-mono);
 }
 
-/* [IMPL-DARK_MODE] [REQ-GLOBAL_STYLES] [REQ-CONFIG_DRIVEN_UI]
-   Base body styles that apply CSS variables for background and foreground
-   colors. These values are set by the theme config and update automatically
-   based on prefers-color-scheme via the injected style tag. */
+/* [IMPL-DARK_MODE] [ARCH-CSS_VARIABLES] [REQ-DARK_MODE] [REQ-GLOBAL_STYLES] [REQ-CONFIG_DRIVEN_UI]
+   how: Apply --background and --foreground on body; values switch via prefers-color-scheme without JavaScript. */
 body {
   background: var(--background);
   color: var(--foreground);

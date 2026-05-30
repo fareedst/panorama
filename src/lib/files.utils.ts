@@ -1,4 +1,4 @@
-// [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-DIRECTORY_NAVIGATION] [REQ-FILE_OPERATIONS]: Top-level Filesystem Data Layer: Server-only module wraps Node.js fs/promises API with validation
+// [IMPL-FILES_UTILS] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_LISTING]: Client-safe file utilities module — no Node.js imports; formatSize for display; consumed by FilePane and other client components; server re-exports via files.data for backward compatibility
 // Client-safe file utilities (no Node.js dependencies)
 
 import type { FileStat } from "./files.types";
@@ -28,6 +28,7 @@ export const DEFAULT_PANE_SORT: PaneSortSettings = {
   sortDirsFirst: true,
 };
 
+// [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED]: paneSortSettingsEqual returns true when sortBy sortDirection sortDirsFirst all match for Share/Shared disable logic
 /** [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED] SharedSortWorkspace — disable Share/Shared when focused pane sort equals sharedSort */
 export function paneSortSettingsEqual(a: PaneSortSettings, b: PaneSortSettings): boolean {
   return (
@@ -37,10 +38,10 @@ export function paneSortSettingsEqual(a: PaneSortSettings, b: PaneSortSettings):
   );
 }
 
+// [IMPL-FILES_UTILS] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_LISTING]: how: binary scale 1024; units B through TB; zero returns "0 B"; sub-KB shows integer B; larger uses one decimal place
 /**
  * Format file size for display
- * [IMPL-FILES_DATA] [REQ-FILE_LISTING]
- * 
+ *
  * Client-safe utility - no Node.js dependencies
  * 
  * @param bytes - File size in bytes
@@ -147,6 +148,7 @@ export function formatAge(date: Date | string): string {
   return parts.length > 0 ? parts.join(" ") : "0 sec";
 }
 
+// [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED]: sortFiles copies input, applies dirsFirst directory layer then criterion comparator with asc/desc flip without mutating source array
 /**
  * Sort files by multiple criteria
  * [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED]
@@ -252,6 +254,7 @@ function compareExtension(a: FileStat, b: FileStat): number {
   return extResult !== 0 ? extResult : compareName(a, b);
 }
 
+// [IMPL-SORT_FILTER] [REQ-FILE_SORTING_ADVANCED]: getSortLabel and getSortDirectionSymbol map criterion and direction to footer/menu display strings
 /**
  * Get display label for sort criterion
  * [IMPL-SORT_FILTER] [REQ-FILE_SORTING_ADVANCED]
@@ -279,7 +282,7 @@ export function getSortDirectionSymbol(direction: SortDirection): string {
 
 /**
  * Compare two files and describe their size and time differences
- * [IMPL-OVERWRITE_PROMPT] [REQ-BULK_FILE_OPS]
+ * [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: format size and mtime for both files; label size delta and time delta for human-readable comparison string
  * 
  * Used to inform user about overwrite consequences in copy/move operations.
  * 

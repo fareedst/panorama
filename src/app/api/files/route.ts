@@ -8,9 +8,9 @@ import { validateOperationSourcesForDisplaySpec } from "@/lib/display-filter-api
 import { serverGetDisplaySpec } from "@/lib/display-spec-store-server";
 import { logger } from "@/lib/logger";
 
+// [IMPL-FILES_API] [ARCH-FILE_OPERATIONS_API] [ARCH-LOGGING_SYSTEM] [REQ-DIRECTORY_NAVIGATION] [REQ-FILE_OPERATIONS] [REQ-LOGGING_SYSTEM]: how: GET reads path (default home), rejects .. traversal, lists directory, optionally filters by display spec, sorts by Name with dirs first, returns legacy array or enriched object
 /**
  * GET /api/files - List directory contents
- * [IMPL-FILES_API] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-DIRECTORY_NAVIGATION]
  */
 export async function GET(request: NextRequest) {
   try {
@@ -31,6 +31,8 @@ export async function GET(request: NextRequest) {
     
     const rawFiles = await listDirectory(dirPath);
     const spec = displaySpecId ? await serverGetDisplaySpec(displaySpecId) : null;
+    // [IMPL-DISPLAY_FILTER_API] [IMPL-DISPLAY_FILTER_ENGINE] [ARCH-DISPLAY_FILTER_ENGINE] [REQ-PANE_DISPLAY_FILTER]
+    // how: GET /api/files lists directory then filterFileStats when displaySpecId resolves on server store; legacy array when omitted.
     if (displaySpecId && !spec) {
       return NextResponse.json(
         { error: "Display spec not found", specError: true },
@@ -59,9 +61,9 @@ export async function GET(request: NextRequest) {
   }
 }
 
+// [IMPL-FILES_API] [ARCH-FILE_OPERATIONS_API] [ARCH-LOGGING_SYSTEM] [REQ-FILE_OPERATIONS] [REQ-LOGGING_SYSTEM]: how: POST parses JSON body; operation required; src required only for copy/move/delete/rename; reject .. in src/dest when present
 /**
  * POST /api/files - File operations
- * [IMPL-FILES_API] [ARCH-FILE_OPERATIONS_API] [REQ-FILE_OPERATIONS]
  *
  * Operations: copy, move, delete, rename (require src/dest per operation);
  * bulk-copy, bulk-move, bulk-delete (require sources array);
@@ -165,7 +167,7 @@ export async function POST(request: NextRequest) {
       }
       
       case "bulk-copy": {
-        // [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]
+        // [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: POST /api/files cases bulk-copy bulk-move bulk-delete validate sources and dest then delegate to files.data bulk functions
         const sources = body.sources as string[];
         if (!sources || !Array.isArray(sources) || sources.length === 0) {
           logger.warn(["IMPL-BULK_OPS", "REQ-BULK_FILE_OPS"], `Bulk copy missing sources`);
@@ -187,7 +189,7 @@ export async function POST(request: NextRequest) {
       }
       
       case "bulk-move": {
-        // [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]
+        // [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: POST /api/files cases bulk-copy bulk-move bulk-delete validate sources and dest then delegate to files.data bulk functions
         const sources = body.sources as string[];
         if (!sources || !Array.isArray(sources) || sources.length === 0) {
           logger.warn(["IMPL-BULK_OPS", "REQ-BULK_FILE_OPS"], `Bulk move missing sources`);
@@ -209,7 +211,7 @@ export async function POST(request: NextRequest) {
       }
       
       case "bulk-delete": {
-        // [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]
+        // [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: POST /api/files cases bulk-copy bulk-move bulk-delete validate sources and dest then delegate to files.data bulk functions
         const sources = body.sources as string[];
         if (!sources || !Array.isArray(sources) || sources.length === 0) {
           logger.warn(["IMPL-BULK_OPS", "REQ-BULK_FILE_OPS"], `Bulk delete missing sources`);

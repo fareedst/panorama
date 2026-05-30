@@ -22,22 +22,23 @@ IMPL-COMPARISON_COLORS:
       - 'Theme colors: file-manager.comparison section'
   code_locations:
     files:
-      - path: src/lib/files.data.ts
-        description: Enhanced comparison index builder
-        lines: []
+      - path: src/lib/files.comparison.ts
+        description: buildEnhancedComparisonIndex and size/time analyzers
       - path: src/app/files/components/FilePane.tsx
-        description: CSS class application
-        lines: []
+        description: getComparisonClass row styling
+      - path: config/theme.yaml
+        description: files.compareColors reference tokens
     functions:
       - name: buildEnhancedComparisonIndex
-        file: src/lib/files.data.ts
+        file: src/lib/files.comparison.ts
         description: Build comparison with size/time analysis
   traceability:
     architecture:
       - ARCH-COMPARISON_COLORING
     requirements:
       - REQ-FILE_COMPARISON_VISUAL
-    tests: []
+    tests:
+      - src/lib/files.comparison.test.ts
     code_annotations:
       - IMPL-COMPARISON_COLORS
   related_decisions:
@@ -51,9 +52,9 @@ IMPL-COMPARISON_COLORS:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-19T16:06:42.636Z"
+      date: "2026-05-29T00:00:00.000Z"
       author: AI Agent
-      reason: IMPL essence_pseudocode retrofit all 58
+      reason: Retrofit essence_pseudocode from files.comparison.test.ts and FilePane
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

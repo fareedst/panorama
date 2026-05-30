@@ -1,98 +1,57 @@
 # IMPL-FILES_UTILS essence pseudocode
 
-// [IMPL-FILES_UTILS] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_LISTING]: Top-level Client-Safe File Utilities: Created separate files.utils.ts for client-safe utilities like formatSize
+// [IMPL-FILES_UTILS] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_LISTING]: Client-safe file utilities module — no Node.js imports; formatSize for display; consumed by FilePane and other client components; server re-exports via files.data for backward compatibility
 
 ## Summary contract
 
-// [IMPL-FILES_UTILS] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_LISTING]: bound module inputs, outputs, and shared data for all runtime blocks below
+// [IMPL-FILES_UTILS] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_LISTING]: how: isolate display helpers from fs/promises so client bundle never pulls server filesystem code
 
 CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-FILES_UTILS
-  DATA: state and configuration per implementation_approach
+  INPUT: byte counts (formatSize scope for this IMPL)
+  OUTPUT: human-readable size strings
+  DATA: no fs/path/os dependencies in this module
+  CONTROL: client components import from files.utils.ts; files.data.ts re-exports formatSize only
 
-## ClientComponentsFilePaneImport
+## FormatSize
 
-// [IMPL-FILES_UTILS] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_LISTING]: Client components (FilePane) import from files.utils.ts
+// [IMPL-FILES_UTILS] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_LISTING]: how: binary scale 1024; units B through TB; zero returns "0 B"; sub-KB shows integer B; larger uses one decimal place
 
-CONTRACT ClientComponentsFilePaneImport
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT FormatSize
+  INPUT: bytes number
+  OUTPUT: formatted string e.g. "0 B", "500 B", "1.0 KB", "1.5 MB", "1.0 GB", "1.0 TB"
 
-PROCEDURE IMPL-FILES_UTILS_ClientComponentsFilePaneImport(context)
-  // Client components (FilePane) import from files.utils.ts
-  CALL Client components (FilePane) import from files.utils.ts
-  ON invalid input OR missing data THEN RETURN without mutation
+PROCEDURE IMPL-FILES_UTILS_formatSize(bytes)
+  IF bytes equals 0 THEN RETURN "0 B"
+  i := floor(log(bytes) / log(1024))
+  IF i equals 0 THEN RETURN "{bytes} B"
+  size := bytes / 1024^i
+  RETURN "{size toFixed(1)} {units[i]}"
 
-## CreatedSrcLibFiles
+## ClientServerBoundary
 
-// [IMPL-FILES_UTILS] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_LISTING]: Created src/lib/files.utils.ts with no Node.js dependencies
+// [IMPL-FILES_UTILS] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_LISTING]: how: formatSize moved from files.data.ts; files.data re-exports; client UI imports files.utils directly
 
-CONTRACT CreatedSrcLibFiles
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT ClientServerBoundary
+  INPUT: module import graph
+  OUTPUT: client bundle excludes fs/promises
+  DATA: files.utils.ts (client-safe), files.data.ts re-export line
 
-PROCEDURE IMPL-FILES_UTILS_CreatedSrcLibFiles(context)
-  // Created src/lib/files.utils.ts with no Node.js dependencies
-  CALL Created src/lib/files.utils.ts with no Node.js dependencies
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## FilesDataTsRe
-
-// [IMPL-FILES_UTILS] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_LISTING]: files.data.ts re-exports formatSize for server-side consumers
-
-CONTRACT FilesDataTsRe
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FILES_UTILS_FilesDataTsRe(context)
-  // files.data.ts re-exports formatSize for server-side consumers
-  CALL files.data.ts re-exports formatSize for server-side consumers
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## MovedFormatSizeFromFiles
-
-// [IMPL-FILES_UTILS] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_LISTING]: Moved formatSize() from files.data.ts to files.utils.ts
-
-CONTRACT MovedFormatSizeFromFiles
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FILES_UTILS_MovedFormatSizeFromFiles(context)
-  // Moved formatSize() from files.data.ts to files.utils.ts
-  CALL Moved formatSize() from files.data.ts to files.utils.ts
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## ThisPreventsFsPromises
-
-// [IMPL-FILES_UTILS] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_LISTING]: This prevents fs/promises from being pulled into client bundle
-
-CONTRACT ThisPreventsFsPromises
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FILES_UTILS_ThisPreventsFsPromises(context)
-  // This prevents fs/promises from being pulled into client bundle
-  CALL This prevents fs/promises from being pulled into client bundle
-  ON invalid input OR missing data THEN RETURN without mutation
+PROCEDURE IMPL-FILES_UTILS_ClientServerBoundary()
+  ASSERT files.utils.ts has no Node built-in imports
+  ASSERT FilePane and client tests import formatSize from files.utils
+  ASSERT files.data.ts exports formatSize from files.utils for server callers
 
 ## CodeLocations
 
 // [IMPL-FILES_UTILS] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_LISTING]: map implementing and verifying source files for this IMPL
 
-// FILE: src/lib/files.utils.ts — Client-safe utilities (no Node.js dependencies)
-// FUNCTION: formatSize in src/lib/files.utils.ts
+// FILE: src/lib/files.utils.ts — formatSize and other client-safe helpers
+// FILE: src/lib/files.utils.test.ts — formatSize unit tests (describe formatSize - REQ_FILE_LISTING)
+// FILE: src/lib/files.data.ts — re-export formatSize
 
 ## ErrorHandling
 
-// [IMPL-FILES_UTILS] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_LISTING]: surface recoverable failures without breaking pane invariants
+// [IMPL-FILES_UTILS] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_LISTING]: how: pure functions; no recoverable runtime errors beyond numeric input (callers pass file sizes from FileStat)
 
 PROCEDURE IMPL-FILES_UTILS_on_error(context, error)
-  LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
-  ELSE propagate error to caller
+  NOT APPLICABLE — synchronous formatting only

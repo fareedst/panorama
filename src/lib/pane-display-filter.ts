@@ -68,7 +68,7 @@ export async function fetchDirectoryListing(
   };
 }
 
-/** [IMPL-PANE_DISPLAY_FILTER_UI] BUILD_PANE_FROM_RAW_LISTING — filter, sort, reconcile marks */
+/** [IMPL-PANE_DISPLAY_FILTER_UI] [IMPL-DISPLAY_FILTER_ENGINE] [REQ-PANE_DISPLAY_FILTER]: how: client-side filter when server did not pre-filter; sort visible files; reconcile or clear marks per preserveMarks flag */
 export function buildPaneFromRawListing(
   rawFiles: FileStat[],
   pane: PaneWithDisplayFilter,

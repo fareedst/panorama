@@ -38,7 +38,8 @@ describe("BookmarkManager [REQ-ADVANCED_NAV]", () => {
     vi.restoreAllMocks();
   });
 
-  // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]: {id, path, label, created}[]
+  // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
+  // how: Append { id, path, label, created }; persist JSON array; generate unique bm- prefixed id.
 
   describe("addBookmark [IMPL-DIR_HISTORY]", () => {
     it("should add new bookmark", () => {
@@ -69,7 +70,8 @@ describe("BookmarkManager [REQ-ADVANCED_NAV]", () => {
     });
   });
 
-  // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]: {id, path, label, created}[]
+  // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
+  // how: Remove by id; persist; return false when id not found.
 
   describe("removeBookmark [IMPL-DIR_HISTORY]", () => {
     it("should remove bookmark by ID", () => {
@@ -98,7 +100,8 @@ describe("BookmarkManager [REQ-ADVANCED_NAV]", () => {
     });
   });
 
-  // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]: {id, path, label, created}[]
+  // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
+  // how: Change label for existing id; persist; return false when id not found.
 
   describe("updateBookmark [IMPL-DIR_HISTORY]", () => {
     it("should update bookmark label", () => {
@@ -181,6 +184,8 @@ describe("BookmarkManager [REQ-ADVANCED_NAV]", () => {
   });
 
   describe("localStorage persistence", () => {
+    // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
+    // how: Hydrate bookmarks from localStorage key nx1-file-bookmarks; empty array on SSR, missing, or corrupt data.
     it("should load bookmarks from localStorage on init", () => {
       // Manually set localStorage
       const bookmarks = [

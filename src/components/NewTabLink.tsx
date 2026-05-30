@@ -1,4 +1,5 @@
-// [IMPL-EXTERNAL_LINKS] [REQ-NAVIGATION_LINKS] [REQ-WORKSPACE_MESH_BRIDGE]: Secure cross-surface links that open in a new tab with assistive disclosure
+// [IMPL-EXTERNAL_LINKS] [ARCH-APP_ROUTER] [REQ-NAVIGATION_LINKS] [REQ-WORKSPACE_MESH_BRIDGE]
+// how: Reusable Next.js Link opens target in new tab with rel noopener noreferrer, prefetch off, and screen-reader disclosure.
 
 import Link from "next/link";
 import type { ReactNode } from "react";

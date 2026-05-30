@@ -1,7 +1,6 @@
-// [IMPL-LOGGER_MODULE] [ARCH-LOGGING_SYSTEM] [REQ-LOGGING_SYSTEM]: Top-level Logger Module Implementation: Create logger module with session-based file writing and six log levels
+// [IMPL-LOGGER_MODULE] [ARCH-LOGGING_SYSTEM] [REQ-LOGGING_SYSTEM]: Session-based file logger with six severity levels, lazy session file creation, and sync FATAL writes
 // [ARCH-LOGGING_SYSTEM] [ARCH-LOGGING_CONFIG] [ARCH-LOGGING_SEMANTIC_TOKENS]
 // [REQ-LOGGING_SYSTEM] [REQ-LOGGING_CONFIG] [REQ-LOGGING_SEMANTIC_TOKENS]
-// Session-based file logging system with semantic token integration.
 // Server-only module – imports Node.js fs, path, and os.
 
 import fs from "fs";
@@ -22,6 +21,7 @@ import { LogLevel as LogLevelEnum } from "./logger.types";
 // Configuration
 // ---------------------------------------------------------------------------
 
+// [IMPL-LOGGER_CONFIG] [ARCH-LOGGING_CONFIG] [REQ-LOGGING_CONFIG]: how: read ENABLE_LOGGING (default true), LOG_LEVEL (default INFO), LOG_DIR (default os.tmpdir()), CONSOLE_ERRORS (default true) once at module initialization
 /**
  * Parse environment variables and create logging configuration.
  * Called once at module initialization.
@@ -42,6 +42,7 @@ function loadConfig(): LogConfig {
   };
 }
 
+// [IMPL-LOGGER_CONFIG] [ARCH-LOGGING_CONFIG] [REQ-LOGGING_CONFIG]: how: map LOG_LEVEL string to enum; unknown values fall back to INFO
 /**
  * Parse log level string to enum value.
  * Falls back to INFO if invalid.
@@ -80,6 +81,7 @@ const config: LogConfig = loadConfig();
 // File Management
 // ---------------------------------------------------------------------------
 
+// [IMPL-LOGGER_MODULE] [ARCH-LOGGING_SYSTEM] [REQ-LOGGING_SYSTEM]: how: lazy-create nx1-log timestamped file under logDir with header comment block on first write
 /**
  * Initialize log file path with timestamp.
  * Format: nx1-log-YYYY-MM-DD-HH-mm-ss-SSS.log
@@ -114,8 +116,8 @@ function initializeLogFile(): string {
   
   try {
     fs.writeFileSync(config.logFile, header, "utf8");
-    
-    // Output log file path to console for visibility
+
+    // [IMPL-LOGGER_CONFIG] [ARCH-LOGGING_CONFIG] [REQ-LOGGING_CONFIG]: how: emit [LOGGER] Log file created message to console when session file is first created
     console.log(`[LOGGER] Log file created: ${config.logFile}`);
   } catch (error) {
     // If we can't write to log file, fall back to console
@@ -129,6 +131,7 @@ function initializeLogFile(): string {
 // Token Formatting and Validation
 // ---------------------------------------------------------------------------
 
+// [IMPL-LOGGER_TOKENS] [ARCH-LOGGING_SEMANTIC_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS]: how: normalize to array, wrap each token in brackets if missing, join with spaces for log output
 /**
  * Format semantic tokens for log output.
  * Tokens are space-separated and enclosed in brackets.
@@ -150,6 +153,7 @@ function formatTokens(tokens: SemanticToken | SemanticToken[]): string {
     .join(" ");
 }
 
+// [IMPL-LOGGER_TOKENS] [ARCH-LOGGING_SEMANTIC_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS]: how: in non-production NODE_ENV validate token against REQ|ARCH|IMPL|TEST|PROC pattern and console.warn on mismatch
 /**
  * Validate semantic token format (development only).
  * Logs warning if token doesn't match expected pattern.
@@ -167,6 +171,7 @@ function validateToken(token: string): void {
 // Log Entry Formatting
 // ---------------------------------------------------------------------------
 
+// [IMPL-LOGGER_MODULE] [ARCH-LOGGING_SYSTEM] [REQ-LOGGING_SYSTEM]: how: format each entry as [ISO_TIMESTAMP] [LEVEL] [TOKENS] message optional JSON metadata newline
 /**
  * Format log entry as string for file output.
  * Format: [TIMESTAMP] [LEVEL] [TOKENS] message [metadata]
@@ -191,7 +196,8 @@ function formatLogEntry(entry: LogEntry): string {
  * Mirrors ERROR and FATAL logs to console if enabled.
  */
 function writeLog(entry: LogEntry): void {
-  // Skip if logging disabled or below configured level
+  // [IMPL-LOGGER_CONFIG] [ARCH-LOGGING_CONFIG] [REQ-LOGGING_CONFIG]: how: skip all file and async writes when ENABLE_LOGGING is false
+  // [IMPL-LOGGER_CONFIG] [ARCH-LOGGING_CONFIG] [REQ-LOGGING_CONFIG]: how: discard entries whose numeric level is above configured minimum threshold
   if (!config.enabled || entry.level > config.level) {
     return;
   }
@@ -200,7 +206,7 @@ function writeLog(entry: LogEntry): void {
     const logFile = initializeLogFile();
     const formatted = formatLogEntry(entry);
 
-    // Mirror ERROR and FATAL logs to console if enabled
+    // [IMPL-LOGGER_CONFIG] [ARCH-LOGGING_CONFIG] [REQ-LOGGING_CONFIG]: how: mirror ERROR and FATAL entries to console.error when CONSOLE_ERRORS is not false
     if (config.consoleErrors && (entry.level === LogLevelEnum.ERROR || entry.level === LogLevelEnum.FATAL)) {
       const tokens = formatTokens(entry.tokens);
       const metadataStr = entry.metadata ? ` ${JSON.stringify(entry.metadata)}` : "";
@@ -212,11 +218,10 @@ function writeLog(entry: LogEntry): void {
       }
     }
 
+    // [IMPL-LOGGER_MODULE] [ARCH-LOGGING_SYSTEM] [REQ-LOGGING_SYSTEM]: how: appendFileSync for FATAL level; appendFile callback for all other levels
     if (entry.level === LogLevelEnum.FATAL) {
-      // Synchronous write for fatal errors to ensure persistence
       fs.appendFileSync(logFile, formatted, "utf8");
     } else {
-      // Asynchronous write for performance
       fs.appendFile(logFile, formatted, "utf8", (error) => {
         if (error) {
           console.error("[IMPL-LOGGER_MODULE] Failed to write log:", error);
@@ -224,7 +229,7 @@ function writeLog(entry: LogEntry): void {
       });
     }
   } catch (error) {
-    // Fall back to console if file write fails
+    // [IMPL-LOGGER_MODULE] [ARCH-LOGGING_SYSTEM] [REQ-LOGGING_SYSTEM]: how: on file write failure log to console.error and echo formatted entry via console.log
     console.error("[IMPL-LOGGER_MODULE] Log write failed:", error);
     console.log(formatLogEntry(entry));
   }
@@ -234,6 +239,7 @@ function writeLog(entry: LogEntry): void {
 // Logger Implementation
 // ---------------------------------------------------------------------------
 
+// [IMPL-LOGGER_TOKENS] [ARCH-LOGGING_SEMANTIC_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS]: how: all logger methods require tokens as first parameter (string or string array), then message, optional metadata object
 /**
  * Create log entry and write to file.
  */
@@ -254,6 +260,7 @@ function log(
   writeLog(entry);
 }
 
+// [IMPL-LOGGER_MODULE] [ARCH-LOGGING_SYSTEM] [REQ-LOGGING_SYSTEM]: how: expose fatal/error/warn/info/debug/trace methods mapping to numeric levels FATAL=0 through TRACE=5
 /**
  * Default logger instance implementing the Logger interface.
  */
@@ -282,10 +289,12 @@ export const logger: Logger = {
     log(LogLevelEnum.TRACE, tokens, message, metadata);
   },
 
+  // [IMPL-LOGGER_CONFIG] [ARCH-LOGGING_CONFIG] [REQ-LOGGING_CONFIG]: how: export logger.getConfig() returning a frozen readonly copy of runtime configuration
   getConfig() {
     return Object.freeze({ ...config });
   },
 
+  // [IMPL-LOGGER_MODULE] [ARCH-LOGGING_SYSTEM] [REQ-LOGGING_SYSTEM]: how: return current session log file path or null before first write
   getLogFilePath() {
     return config.logFile;
   },
@@ -298,7 +307,7 @@ export const logger: Logger = {
 export { LogLevel, type LogLevelString, type SemanticToken, type LogMetadata } from "./logger.types";
 export type { Logger, LogConfig } from "./logger.types";
 
-// Log initialization message
+// [IMPL-LOGGER_MODULE] [ARCH-LOGGING_SYSTEM] [REQ-LOGGING_SYSTEM]: how: when logging enabled and NODE_ENV is not test, emit info-level initialization message at module load
 if (config.enabled && process.env.NODE_ENV !== "test") {
   logger.info(
     ["IMPL-LOGGER_MODULE", "ARCH-LOGGING_SYSTEM"],

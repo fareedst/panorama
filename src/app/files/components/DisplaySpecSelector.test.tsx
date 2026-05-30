@@ -16,7 +16,7 @@ describe("DisplaySpecSelector [IMPL-PANE_DISPLAY_FILTER_UI]", () => {
     },
   ];
 
-  it("PANE_HEADER_SELECTOR calls onSelect when spec chosen", () => {
+  it("PANE_HEADER_SELECTOR calls onSelect when spec chosen [IMPL-PANE_DISPLAY_FILTER_UI] [REQ-PANE_DISPLAY_FILTER]: how: FilePane shows DisplaySpecSelector dropdown; when active spec show Filter label and optional Hidden count from hiddenCount", () => {
     const onSelect = vi.fn();
     render(
       <DisplaySpecSelector

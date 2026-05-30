@@ -1,6 +1,6 @@
 "use client";
 
-// [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED]: Sort dialog with workspace Shared/Share actions
+// [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-LINKED_PANES]: workspace sharedSort; SortDialog Share copies draft; Shared applies sharedSort to focused pane only; new panes inherit sharedSort
 
 import { useState } from "react";
 import {
@@ -47,6 +47,7 @@ function SortDialogBody({
   const [direction, setDirection] = useState<SortDirection>(currentDirection);
   const [dirsFirst, setDirsFirst] = useState(currentDirsFirst);
 
+  // [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED]: paneSortSettingsEqual returns true when sortBy sortDirection sortDirsFirst all match for Share/Shared disable logic
   const paneMatchesShared = paneSortSettingsEqual(paneSort, sharedSort);
   const shareDisabled = paneMatchesShared;
   const sharedDisabled = paneMatchesShared;
@@ -71,6 +72,7 @@ function SortDialogBody({
       onKeyDown={handleKeyDown}
       data-testid="sort-dialog-overlay"
     >
+      {/* [IMPL-RESPONSIVE_CLASSES] [ARCH-RESPONSIVE_FIRST] [REQ-RESPONSIVE_DESIGN]: file manager dialogs cap panel width and add max-w-[90vw] so narrow viewports do not overflow horizontally */}
       <div
         className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-96 max-w-[90vw]"
         data-testid="sort-dialog"

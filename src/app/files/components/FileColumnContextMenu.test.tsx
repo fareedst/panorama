@@ -1,12 +1,11 @@
-// [TEST-MOUSE_INTERACTION] [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] [REQ-LINKED_PANES]
-// FILE_COLUMN_CONTEXT_MENU — how: component unit tests for clipboard menu actions and disabled cross-pane state
+// [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] [REQ-LINKED_PANES]: how — portal FileColumnContextMenu on metadata cell right-click; copy filename, absolute path, or cross-pane paths; disable cross-pane action when no listing matches.
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import FileColumnContextMenu from "./FileColumnContextMenu";
 import type { FileStat } from "@/lib/files.types";
 
-describe("[TEST-MOUSE_INTERACTION] FILE_COLUMN_CONTEXT_MENU", () => {
+describe("FILE_COLUMN_CONTEXT_MENU [IMPL-MOUSE_SUPPORT]", () => {
   const mockFile: FileStat = {
     name: "shared.txt",
     path: "/left/shared.txt",

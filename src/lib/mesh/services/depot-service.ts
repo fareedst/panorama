@@ -1,4 +1,4 @@
-// [IMPL-MESH_DEPOT] [REQ-MESH_PLATFORM]: Depot CRUD on mesh — phase 3
+// [IMPL-MESH_DEPOT] [ARCH-MESH_LAYERED] [IMPL-MESH_CRUD] [REQ-MESH_PLATFORM]: Depot CRUD embedded in mesh records via MeshRepository; re-validates mesh on save and bumps configurationVersion through nextMeshRecordAfterMeshMutation.
 
 import {
   isDomainValidationError,
@@ -20,6 +20,7 @@ export type DepotCapabilities = {
   supportsArchiveMode: boolean;
 };
 
+// [IMPL-MESH_DEPOT] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — return capability flags per depot kind for planning and connector selection.
 export function discoverDepotCapabilities(kind: Depot["kind"]): DepotCapabilities {
   switch (kind) {
     case "virtual":
@@ -34,6 +35,7 @@ export function discoverDepotCapabilities(kind: Depot["kind"]): DepotCapabilitie
 export class DepotService {
   constructor(private readonly meshRepository: MeshRepository) {}
 
+  // [IMPL-MESH_DEPOT] [ARCH-MESH_LAYERED] [IMPL-MESH_CRUD] [REQ-MESH_PLATFORM]: how — private helpers load MeshRecord from repository and persist validated mesh with configurationVersion bump.
   private loadMesh(meshId: string): MeshRecord | DepotServiceError {
     const record = this.meshRepository.get(meshId);
     if (!record) {
@@ -51,6 +53,7 @@ export class DepotService {
     this.meshRepository.save(nextRecord);
   }
 
+  // [IMPL-MESH_DEPOT] [ARCH-MESH_LAYERED] [IMPL-MESH_DOMAIN_TYPES] [REQ-MESH_PLATFORM]: how — validate depot at L1, reject duplicate names within mesh, append to depots, re-validate full mesh, save record.
   addDepot(meshId: string, attrs: unknown): Depot | DepotServiceError | DomainValidationError {
     const record = this.loadMesh(meshId);
     if ("code" in record) {
@@ -71,6 +74,7 @@ export class DepotService {
     return depot;
   }
 
+  // [IMPL-MESH_DEPOT] [ARCH-MESH_LAYERED] [IMPL-MESH_DOMAIN_TYPES] [REQ-MESH_PLATFORM]: how — merge patch into existing depot by id, re-validate depot entity, replace in depots array, save mesh.
   updateDepot(
     meshId: string,
     depotId: string,
@@ -97,6 +101,7 @@ export class DepotService {
     return depot;
   }
 
+  // [IMPL-MESH_DEPOT] [ARCH-MESH_LAYERED] [IMPL-MESH_DOMAIN_TYPES] [REQ-MESH_PLATFORM]: how — filter depot out by id, drop sync links referencing removed depot, save re-validated mesh.
   removeDepot(meshId: string, depotId: string): DepotServiceError | DomainValidationError | void {
     const record = this.loadMesh(meshId);
     if ("code" in record) {
@@ -109,6 +114,7 @@ export class DepotService {
     return this.saveMesh(record, { ...record.mesh, depots, links });
   }
 
+  // [IMPL-MESH_DEPOT] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — read-only lookup of depot by id without mutation.
   getDepot(meshId: string, depotId: string): Depot | undefined {
     const record = this.meshRepository.get(meshId);
     return record?.mesh.depots.find((d) => d.id === depotId);

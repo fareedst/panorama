@@ -1,6 +1,7 @@
 "use client";
 
-// [IMPL-MESH_GUI] [IMPL-MESH_DEPOT] [ARCH-MESH_LAYERED] [REQ-MESH_GUI] [REQ-MESH_PLATFORM]: IMPL-MESH_GUI_depots — per-mesh depot CRUD view
+// [IMPL-MESH_GUI] [IMPL-MESH_DEPOT] [ARCH-MESH_LAYERED] [REQ-MESH_GUI] [REQ-MESH_PLATFORM]
+// how: Per-mesh depots sub-route — fetch mesh, add/remove depots via API, credential reference UI stub; testids mesh-depots, add-depot-*, depot-summary, manage-credentials-btn.
 
 import { useCallback, useEffect, useState } from "react";
 import { MeshDetailNav } from "../layout";

@@ -70,6 +70,7 @@ export function HelpOverlay({ isOpen, onClose }: HelpOverlayProps) {
 
         {/* Content */}
         <div className="overflow-y-auto p-6 max-h-[calc(90vh-10rem)]">
+          {/* [IMPL-RESPONSIVE_CLASSES] [ARCH-RESPONSIVE_FIRST] [REQ-RESPONSIVE_DESIGN]: Help overlay shortcut categories use grid-cols-1 by default and lg:grid-cols-2 for wide viewports */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {categories.map((category) => (
               <CategorySection key={category} category={category} />

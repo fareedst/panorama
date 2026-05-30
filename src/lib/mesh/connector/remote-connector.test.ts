@@ -1,9 +1,9 @@
-// [IMPL-MESH_CONNECTOR] [REQ-MESH_REAL_CONNECTORS]: Remote connector stub tests
+// [IMPL-MESH_CONNECTOR] [REQ-MESH_REAL_CONNECTORS]: Contract-compliant stub; no network I/O in this release.
 
 import { describe, it, expect } from "vitest";
 import { RemoteConnector } from "./remote-connector";
 
-describe("RemoteConnector [REQ-MESH_REAL_CONNECTORS]", () => {
+describe("RemoteConnector [IMPL-MESH_CONNECTOR]", () => {
   it("remote_connector_reports_unsupported_write", () => {
     const conn = new RemoteConnector("sftp://example/data");
     const err = conn.writeFile("/f.txt", new Uint8Array());

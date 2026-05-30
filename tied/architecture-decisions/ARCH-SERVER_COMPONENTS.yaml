@@ -1,9 +1,9 @@
-# ARCH detail — ARCH-SERVER_COMPONENTS
 ARCH-SERVER_COMPONENTS:
   name: Server Components as Default
   status: Active
   cross_references:
     - REQ-APP_STRUCTURE
+    - REQ-HOME_PAGE
   decision: Use server components by default, client components only when needed
   rationale:
     why: Server components reduce bundle size and improve performance
@@ -16,31 +16,37 @@ ARCH-SERVER_COMPONENTS:
       - Smaller bundles
   alternatives_considered: []
   implementation_approach:
-    summary: Use server components by default, client components only when needed
+    summary: Server components by default; root / is a server redirect to /files
     details:
+      - Add use client directive only for interactivity
       - All components are server components by default
-      - Add 'use client' directive only for interactivity
+      - Root page.tsx calls redirect(/files) without rendering welcome UI per REQ-HOME_PAGE
   traceability:
     requirements:
       - REQ-APP_STRUCTURE
+      - REQ-HOME_PAGE
     implementation:
       - IMPL-HOME_PAGE
-    tests: []
+    tests:
+      - src/test/integration/app.test.tsx
     code_annotations:
       - REQ-APP_STRUCTURE
+      - REQ-HOME_PAGE
   related_decisions:
     depends_on:
       - ARCH-REACT_VERSION
     informs: []
-    see_also: []
+    see_also:
+      - docs/workspace-pane-vocabulary.md
+      - docs/FILE_MANAGER_SOLE_PURPOSE.md
   metadata:
     created:
       date: 2025-11-08T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-06T00:00:00.000Z
+      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: Migration to v1.5.0
+      reason: LEAP — root entry redirect server component pattern
     last_validated:
       date: 2026-02-06T00:00:00.000Z
       validator: AI Agent

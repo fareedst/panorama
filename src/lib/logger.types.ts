@@ -1,4 +1,4 @@
-// [IMPL-LOGGER_MODULE] [ARCH-LOGGING_SYSTEM] [REQ-LOGGING_SYSTEM]: Top-level Logger Module Implementation: Create logger module with session-based file writing and six log levels
+// [IMPL-LOGGER_MODULE] [ARCH-LOGGING_SYSTEM] [REQ-LOGGING_SYSTEM]: Session-based file logger with six severity levels, lazy session file creation, and sync FATAL writes
 // [ARCH-LOGGING_SYSTEM] [REQ-LOGGING_SYSTEM]
 // TypeScript types for the logging system
 

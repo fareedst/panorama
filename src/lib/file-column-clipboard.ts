@@ -1,5 +1,4 @@
-// [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] [REQ-LINKED_PANES] [REQ-DIRECTORY_NAVIGATION]
-// FILE_COLUMN_CLIPBOARD — how: pure helpers format clipboard text and resolve cross-pane paths by cursor filename across workspace pane listings
+// [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] [REQ-LINKED_PANES] [REQ-DIRECTORY_NAVIGATION]: how — pure helpers format clipboard text and resolve cross-pane paths by cursor filename across workspace pane listings
 
 import type { FileStat } from "@/lib/files.types";
 

@@ -1,190 +1,144 @@
 # IMPL-LAYOUT_CALCULATOR essence pseudocode
 
-// [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: Top-level Layout Calculation Algorithms: Pure TypeScript functions calculate PaneBounds[] from container dimensions and layout type
+// [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT] [REQ-TOOLBAR_SYSTEM]: Pure layout algorithms in files.layout.ts plus workspace-area measurement hook feeding calculateLayout from WorkspaceView
 
 ## Summary contract
 
-// [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: bound module inputs, outputs, and shared data for all runtime blocks below
+// [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: how: given container width/height, pane count, and LayoutType return PaneBounds[]; consumer measures flex workspace-area not raw viewport
 
 CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-LAYOUT_CALCULATOR
-  DATA: state and configuration per implementation_approach
+  INPUT: containerWidth, containerHeight, numPanes, layoutType
+  OUTPUT: PaneBounds[] (x, y, width, height per pane)
+  DATA: LayoutType Tile | OneRow | OneColumn | Fullscreen; LAYOUT_ALIASES for config strings
+  CONTROL: invalid dimensions yield zero-size bounds; numPanes < 1 yields []
 
-## Fullscreen
+## NormalizeLayoutTypeFromConfig
 
-// [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: all panes at (0,0) with full dimensions
+// [IMPL-LAYOUT_CALCULATOR] [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT] [REQ-WORKSPACE_MESH_BRIDGE]: how: map mesh/UI aliases to canonical LayoutType
 
-CONTRACT Fullscreen
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT NormalizeLayoutTypeFromConfig
+  INPUT: string or unknown from config snapshot
+  OUTPUT: LayoutType OR null
+  DATA: LAYOUT_ALIASES lowercase keys; canonical names pass through
 
-PROCEDURE IMPL-LAYOUT_CALCULATOR_Fullscreen(context)
-  // all panes at (0
-  CALL all panes at (0
-  // 0) with full dimensions
-  CALL 0) with full dimensions
+PROCEDURE IMPL-LAYOUT_CALCULATOR_NormalizeLayoutTypeFromConfig(value)
+  IF value not non-empty string THEN RETURN null
+  IF value in canonical set THEN RETURN value
+  RETURN LAYOUT_ALIASES lowercased lookup OR null
 
-## HelperFunctions
+## CalculateLayoutDispatch
 
-// [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: getTotalArea, doOverlap for validation
+// [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: how: switch layoutType to tile, one row, one column, fullscreen helpers; default tile
 
-CONTRACT HelperFunctions
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT CalculateLayoutDispatch
+  INPUT: containerWidth, containerHeight, numPanes, layoutType
+  OUTPUT: PaneBounds[]
+  DATA: per-algorithm functions
 
-PROCEDURE IMPL-LAYOUT_CALCULATOR_HelperFunctions(context)
-  // getTotalArea
-  CALL getTotalArea
-  // doOverlap for validation
-  CALL doOverlap for validation
+PROCEDURE IMPL-LAYOUT_CALCULATOR_CalculateLayoutDispatch(w, h, n, layoutType)
+  IF n < 1 THEN RETURN empty array
+  IF w <= 0 OR h <= 0 THEN RETURN n entries zero bounds at origin
+  SWITCH layoutType
+    Tile -> calculateTileLayout
+    OneRow -> calculateOneRowLayout
+    OneColumn -> calculateOneColumnLayout
+    Fullscreen -> calculateFullscreenLayout
+    default -> calculateTileLayout
 
-## OneColumn
+## TileLayoutAlgorithm
 
-// [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: equal height vertically
+// [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: how: pane 0 left 50% full height; panes 1+ stacked in right 50%
 
-CONTRACT OneColumn
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT TileLayoutAlgorithm
+  INPUT: width, height, numPanes
+  OUTPUT: bounds per pane
 
-PROCEDURE IMPL-LAYOUT_CALCULATOR_OneColumn(context)
-  // equal height vertically
-  CALL equal height vertically
-  ON invalid input OR missing data THEN RETURN without mutation
+PROCEDURE IMPL-LAYOUT_CALCULATOR_TileLayoutAlgorithm(width, height, numPanes)
+  IF numPanes is 1 THEN RETURN single fullscreen bounds
+  SET pane0 width floor width/2 full height
+  SPLIT right half vertically among remaining panes equal height slices
+  POSITION right stack x at width/2
 
-## OneRow
+## OneRowLayoutAlgorithm
 
-// [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: equal width horizontally
+// [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: how: divide container width equally across panes; full height each
 
-CONTRACT OneRow
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT OneRowLayoutAlgorithm
+  INPUT: width, height, numPanes
+  OUTPUT: horizontal strip bounds
 
-PROCEDURE IMPL-LAYOUT_CALCULATOR_OneRow(context)
-  // equal width horizontally
-  CALL equal width horizontally
-  ON invalid input OR missing data THEN RETURN without mutation
+PROCEDURE IMPL-LAYOUT_CALCULATOR_OneRowLayoutAlgorithm(width, height, numPanes)
+  paneWidth := floor width / numPanes
+  FOR i IN 0..numPanes-1 SET x i*paneWidth y 0 width paneWidth height full
 
-## Tile
+## OneColumnLayoutAlgorithm
 
-// [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: first pane left 50%, others stacked vertically right 50%
+// [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: how: divide container height equally; full width each
 
-CONTRACT Tile
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT OneColumnLayoutAlgorithm
+  INPUT: width, height, numPanes
+  OUTPUT: vertical stack bounds
 
-PROCEDURE IMPL-LAYOUT_CALCULATOR_Tile(context)
-  // first pane left 50%
-  CALL first pane left 50%
-  // others stacked vertically right 50%
-  CALL others stacked vertically right 50%
+PROCEDURE IMPL-LAYOUT_CALCULATOR_OneColumnLayoutAlgorithm(width, height, numPanes)
+  paneHeight := floor height / numPanes
+  FOR i IN 0..numPanes-1 SET x 0 y i*paneHeight width full height paneHeight
 
-## CreatedSrcLibFiles
+## FullscreenLayoutAlgorithm
 
-// [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: Created src/lib/files.layout.ts
+// [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: how: every pane receives full container bounds (stacked visually; focus shows active)
 
-CONTRACT CreatedSrcLibFiles
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT FullscreenLayoutAlgorithm
+  INPUT: width, height, numPanes
+  OUTPUT: n identical full-area bounds
 
-PROCEDURE IMPL-LAYOUT_CALCULATOR_CreatedSrcLibFiles(context)
-  // Created src/lib/files.layout.ts
-  CALL Created src/lib/files.layout.ts
-  ON invalid input OR missing data THEN RETURN without mutation
+PROCEDURE IMPL-LAYOUT_CALCULATOR_FullscreenLayoutAlgorithm(width, height, numPanes)
+  FOR each pane RETURN x 0 y 0 width height full container
 
-## ExportedLayoutTypeTileOneRow
+## LayoutValidationHelpers
 
-// [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: Exported LayoutType = 'Tile' | 'OneRow' | 'OneColumn' | 'Fullscreen
+// [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: how: getTotalArea sums pane areas; doOverlap detects intersection for tests
 
-CONTRACT ExportedLayoutTypeTileOneRow
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT LayoutValidationHelpers
+  INPUT: PaneBounds[]
+  OUTPUT: numeric area OR boolean overlap
 
-PROCEDURE IMPL-LAYOUT_CALCULATOR_ExportedLayoutTypeTileOneRow(context)
-  // Exported LayoutType = 'Tile' | 'OneRow' | 'OneColumn' | 'Fullscreen
-  CALL Exported LayoutType = 'Tile' | 'OneRow' | 'OneColumn' | 'Fullscreen
-  ON invalid input OR missing data THEN RETURN without mutation
+PROCEDURE IMPL-LAYOUT_CALCULATOR_LayoutValidationHelpers(bounds)
+  getTotalArea SUM width*height per bound
+  doOverlap CHECK any pair intersects excluding edge-touch
 
-## ExportedPaneBoundsInterfaceX
+## WorkspaceAreaMeasurement
 
-// [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: Exported PaneBounds interface (x, y, width, height)
-
-CONTRACT ExportedPaneBoundsInterfaceX
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-LAYOUT_CALCULATOR_ExportedPaneBoundsInterfaceX(context)
-  // Exported PaneBounds interface (x
-  CALL Exported PaneBounds interface (x
-  // width
-  CALL width
-  // height)
-  CALL height)
-
-## WORKSPACE_AREA_MEASUREMENT
-
-// [IMPL-LAYOUT_CALCULATOR] [IMPL-TOOLBAR_COMPONENT] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT] [REQ-TOOLBAR_SYSTEM]: how WorkspaceView supplies measured workspace-area client width/height to calculateLayout; pure files.layout.ts unchanged
+// [IMPL-LAYOUT_CALCULATOR] [IMPL-TOOLBAR_COMPONENT] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT] [REQ-TOOLBAR_SYSTEM]: how: WorkspaceView attaches workspaceAreaRef; useElementSize supplies dimensions to calculateLayout when toolbar state changes
 
 CONTRACT WorkspaceAreaMeasurement
-  INPUT: workspaceAreaRef on flex-1 min-h-0 container (data-testid workspace-area)
-  OUTPUT: containerWidth, containerHeight for calculateLayout
-  DATA: useElementSize hook, ResizeObserver, deps toolbarExpanded and toolbars.enabled
+  INPUT: workspaceAreaRef on flex-1 min-h-0 region data-testid workspace-area
+  OUTPUT: containerWidth, containerHeight state
+  DATA: useElementSize ResizeObserver; deps toolbarExpanded and toolbars.enabled
 
-PROCEDURE IMPL-LAYOUT_CALCULATOR_WorkspaceAreaMeasurement(context)
-  ATTACH workspaceAreaRef to workspace flex region below header and toolbars
-  MEASURE clientWidth and clientHeight via useElementSize(ResizeObserver + window resize)
-  ON zero client dimensions in jsdom THEN fallback viewport minus JSDOM_FALLBACK_CHROME_HEIGHT
-  RE-MEASURE when toolbarExpanded or toolbars.enabled changes (explicit effect deps)
-  PASS measured width and height to calculateLayout in WorkspaceView
-  KEEP calculateLayout and layout algorithms in src/lib/files.layout.ts pure
-
-## ImplementedCalculateLayoutContainerWidthContainerHeight
-
-// [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: Implemented calculateLayout(containerWidth, containerHeight, numPanes, layoutType)
-
-CONTRACT ImplementedCalculateLayoutContainerWidthContainerHeight
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-LAYOUT_CALCULATOR_ImplementedCalculateLayoutContainerWidthContainerHeight(context)
-  // Implemented calculateLayout(containerWidth
-  CALL Implemented calculateLayout(containerWidth
-  // containerHeight
-  CALL containerHeight
-  // numPanes
-  CALL numPanes
-  // layoutType)
-  CALL layoutType)
+PROCEDURE IMPL-LAYOUT_CALCULATOR_WorkspaceAreaMeasurement()
+  ATTACH ref to workspace region below header and toolbars
+  readElementSize USE clientWidth clientHeight
+  IF both zero THEN fallback window innerWidth and innerHeight minus JSDOM_FALLBACK_CHROME_HEIGHT
+  useElementSize OBSERVE element AND window resize AND re-run when deps change
+  PASS width height into calculateLayout for each pane style in WorkspaceView
+  KEEP files.layout.ts functions pure (no DOM)
 
 ## CodeLocations
 
-// [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: map implementing and verifying source files for this IMPL
+// [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: map implementing and verifying source files
 
-// FILE: src/lib/files.layout.ts — Layout calculation algorithms
-// FILE: src/lib/files.layout.test.ts — Layout tests (62 tests)
-// FILE: src/lib/useElementSize.ts — workspace-area measurement hook
-// FILE: src/lib/useElementSize.test.ts — useElementSize unit tests
-// FILE: src/app/files/WorkspaceView.tsx — consumer: workspaceAreaRef, useElementSize, calculateLayout
-// FUNCTION: useElementSize in src/lib/useElementSize.ts
-// FUNCTION: calculateLayout in src/lib/files.layout.ts
-// FUNCTION: calculateTileLayout in src/lib/files.layout.ts
-// FUNCTION: calculateOneRowLayout in src/lib/files.layout.ts
-// FUNCTION: calculateOneColumnLayout in src/lib/files.layout.ts
+// FILE: src/lib/files.layout.ts — calculateLayout, algorithms, helpers, normalizeLayoutType
+// FILE: src/lib/files.layout.test.ts — layout and normalize tests
+// FILE: src/lib/useElementSize.ts — measurement hook
+// FILE: src/lib/useElementSize.test.ts — hook tests
+// FILE: src/app/files/WorkspaceView.tsx — workspaceAreaRef, useElementSize, calculateLayout consumer
+// FILE: src/test/setup.ts — ResizeObserver polyfill for jsdom
 
 ## ErrorHandling
 
-// [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: surface recoverable failures without breaking pane invariants
+// [IMPL-LAYOUT_CALCULATOR] [ARCH-LAYOUT_ALGORITHMS] [REQ-MULTI_PANE_LAYOUT]: how: non-positive container returns zero bounds instead of throw; unknown layout alias returns null at normalize layer
 
 PROCEDURE IMPL-LAYOUT_CALCULATOR_on_error(context, error)
-  LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
-  ELSE propagate error to caller
+  IF numPanes invalid low THEN RETURN []
+  IF measure ref missing THEN dimensions 0 until attach
+  DELEGATE invalid layout string to normalize returning null and caller fallback layout

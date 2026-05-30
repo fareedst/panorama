@@ -11,6 +11,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **TIED three-way traceability retrofit** (`[PROC-IMPL_PSEUDOCODE_TOKENS]`, `[PROC-TIED_FIRST_IMPLEMENTATION]`): 80+ IMPL `essence_pseudocode` sidecars with block leads; literal copy to `src/**` code and Vitest comments; LEAP for **REQ-HOME_PAGE** (root redirect), **REQ-NAVIGATION_LINKS** (NewTabLink), **REQ-BRANDING** (config logo/darkInvert), **REQ-CONFIG_DRIVEN_APPEARANCE** (file-manager-only scope); ARCH **ARCH-CONFIG_DRIVEN_APPEARANCE**, **ARCH-SERVER_COMPONENTS**, **ARCH-APP_ROUTER**, **ARCH-NEXTJS_FRAMEWORK**; nine MESH sidecars completed (**IMPL-MESH_DOMAIN_TYPES**, **IMPL-MESH_AUTH**, **IMPL-MESH_SESSION**, …).
+
+- **Domain vocabulary** ([`docs/workspace-pane-vocabulary.md`](docs/workspace-pane-vocabulary.md), [`docs/mesh-platform-vocabulary.md`](docs/mesh-platform-vocabulary.md)): preferred terms **Root entry redirect**, **Sole-purpose entry**, **Branding logo**, **darkInvert**, **NewTabLink**, **navigation.security**; [`scripts/validate-vocabulary.sh`](scripts/validate-vocabulary.sh) via `bun run validate:vocabulary`.
+
+- **TESTING.md**: documents root redirect integration coverage and NewTabLink co-located tests.
+
+### Added
+
+- **Root redirect E2E** (`[REQ-HOME_PAGE]`, `[IMPL-HOME_PAGE]`): [`e2e/root-redirect.spec.ts`](e2e/root-redirect.spec.ts) asserts `/` resolves to `/files` (redirect not unit-testable).
+
 - **Domain vocabulary standards** (`docs/vocabulary-index-analysis-and-standards.md`, `docs/tied-domain-vocabulary-research-prompt.md`): normalized all nine `docs/*-vocabulary.md` glossaries with **Copy coverage**, mandatory section order, and expanded alphabetical indexes; **Workspace snapshot** terms canonical in [`docs/mesh-platform-vocabulary.md`](docs/mesh-platform-vocabulary.md) with [`docs/workspace-pane-vocabulary.md`](docs/workspace-pane-vocabulary.md) as intentional hub; PR checklist in [`docs/panorama-domain-references.md`](docs/panorama-domain-references.md); `bun run validate:vocabulary` via [`scripts/validate-vocabulary.sh`](scripts/validate-vocabulary.sh).
 
 - **TIED LEAP traceability** (`REQ-FILE_MANAGER_PAGE`, `REQ-MULTI_PANE_LAYOUT`, `REQ-FILE_MARKING_WEB`, `REQ-PANE_DISPLAY_FILTER`, `REQ-TOOLBAR_SYSTEM`, `REQ-CROSS_PANE_VISIBILITY`, `REQ-WORKSPACE_MESH_BRIDGE`): REQ glossary criteria and IMPL/ARCH `see_also` back-links; IMPL pseudo-code and code/test block comments aligned to preferred terms (**Listing merge**, **Cross-pane field pick**, filter pipeline, **Workspace snapshot**, **Workspace restore bundle**) in [`IMPL-CROSS_PANE_VISIBILITY_CATALOG`](tied/implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_CATALOG-pseudocode.md), [`IMPL-CROSS_PANE_VISIBILITY_ENGINE`](tied/implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_ENGINE-pseudocode.md), [`IMPL-WORKSPACE_MESH_BRIDGE`](tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE-pseudocode.md), [`src/lib/pane-cross-pane-visibility.ts`](src/lib/pane-cross-pane-visibility.ts), [`src/lib/cross-pane-visibility.ts`](src/lib/cross-pane-visibility.ts), [`src/lib/workspace-mesh-bridge.ts`](src/lib/workspace-mesh-bridge.ts).

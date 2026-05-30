@@ -1,4 +1,4 @@
-// [IMPL-MESH_POLICY] [REQ-MESH_PLATFORM]: Filter and path mapping — phase 7
+// [IMPL-MESH_POLICY] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: Path include/exclude glob filters, prefix path mapping, and delete-policy helpers for mesh sync planning and execution.
 
 import type { Filter, Policy } from "../domain";
 import { globMatch } from "@/lib/glob-match";
@@ -14,6 +14,7 @@ export function defaultPolicy(): Policy {
   };
 }
 
+// [IMPL-MESH_POLICY] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — evaluate filter list with globMatch; default allow when no filters; exclude match wins over include.
 export function pathMatchesFilter(path: string, filters: Filter[]): boolean {
   let included = filters.length === 0;
   let excluded = false;
@@ -34,6 +35,7 @@ export function pathMatchesFilter(path: string, filters: Filter[]): boolean {
   return included;
 }
 
+// [IMPL-MESH_POLICY] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — rewrite path when it starts with mapping.fromPrefix; first matching mapping wins.
 export function applyPathMapping(path: string, mappings: PathMapping[]): string {
   for (const mapping of mappings) {
     if (path.startsWith(mapping.fromPrefix)) {
@@ -43,6 +45,7 @@ export function applyPathMapping(path: string, mappings: PathMapping[]): string 
   return path;
 }
 
+// [IMPL-MESH_POLICY] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — return true only when policy.deletePolicy = allow.
 export function allowsDelete(policy: Policy): boolean {
   return policy.deletePolicy === "allow";
 }

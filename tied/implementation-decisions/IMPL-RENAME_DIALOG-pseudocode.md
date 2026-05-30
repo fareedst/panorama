@@ -1,142 +1,106 @@
 # IMPL-RENAME_DIALOG essence pseudocode
 
-// [IMPL-RENAME_DIALOG] [ARCH-KEYBIND_SYSTEM] [REQ-FILE_OPERATIONS] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-MOUSE_INTERACTION]: Top-level Rename File Dialog and R-Key Handler: RenameDialog component, rename state in WorkspaceView, file.rename handler and onRename(file) callback; handleRenameConfirm calls POST /api/files rename then refreshes pane
+// [IMPL-RENAME_DIALOG] [ARCH-KEYBIND_SYSTEM] [REQ-FILE_OPERATIONS] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-MOUSE_INTERACTION]: Single-file rename via RenameDialog modal — R keybind and context menu both open dialog; confirm POSTs rename then refreshes pane
 
 ## Summary contract
 
-// [IMPL-RENAME_DIALOG] [ARCH-KEYBIND_SYSTEM] [REQ-FILE_OPERATIONS] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-MOUSE_INTERACTION]: bound module inputs, outputs, and shared data for all runtime blocks below
+// [IMPL-RENAME_DIALOG] [ARCH-KEYBIND_SYSTEM] [REQ-FILE_OPERATIONS] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-MOUSE_INTERACTION]: how: bound module inputs, outputs, and shared data for all runtime blocks below
 
 CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-RENAME_DIALOG
-  DATA: state and configuration per implementation_approach
+  INPUT: cursor file or context-menu target file, paneIndex, newName from dialog
+  OUTPUT: file renamed on disk via POST /api/files; pane listing refreshed
+  DATA: renameDialog state { isOpen, filePath, fileName, paneIndex }; displaySpecPayload for active spec
+  CONTROL: context menu Rename hidden when marks.size greater than zero
 
-## ContextMenu
+## RENAME_DIALOG_UI
 
-// [IMPL-RENAME_DIALOG] [ARCH-KEYBIND_SYSTEM] [REQ-FILE_OPERATIONS] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-MOUSE_INTERACTION]: call onRename(file) instead of onRename(); ContextMenu.test updated to expect onRename(mockFile)
+// [IMPL-RENAME_DIALOG] [ARCH-KEYBIND_SYSTEM] [REQ-FILE_OPERATIONS] [REQ-KEYBOARD_SHORTCUTS_COMPLETE]: how: modal with initialName input, focus+select on open, submit trimmed newName, ESC cancels
 
-CONTRACT ContextMenu
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT RenameDialogUi
+  INPUT: isOpen, initialName, onConfirm(newName), onClose
+  OUTPUT: modal rendered or null when closed
+  DATA: local name state synced from initialName
 
-PROCEDURE IMPL-RENAME_DIALOG_ContextMenu(context)
-  // call onRename(file) instead of onRename()
-  CALL call onRename(file) instead of onRename()
-  // ContextMenu.test updated to expect onRename(mockFile)
-  CALL ContextMenu.test updated to expect onRename(mockFile)
+PROCEDURE IMPL-RENAME_DIALOG_RenameDialogUi()
+  IF NOT isOpen THEN RETURN null
+  ON open FOCUS and SELECT text input
+  ON form submit IF trimmed name non-empty AND differs from initialName THEN onConfirm(trimmed) AND onClose
+  ON submit IF trimmed equals initialName THEN onClose only
+  ON Escape key THEN onClose
+  ON backdrop click THEN onClose
 
-## FileRenameActionHandler
+## FILE_RENAME_KEYBIND
 
-// [IMPL-RENAME_DIALOG] [ARCH-KEYBIND_SYSTEM] [REQ-FILE_OPERATIONS] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-MOUSE_INTERACTION]: get pane.files[pane.cursor]; if file, setRenameDialog with file.path, file.name, focusIndex
+// [IMPL-RENAME_DIALOG] [ARCH-KEYBIND_SYSTEM] [REQ-FILE_OPERATIONS] [REQ-KEYBOARD_SHORTCUTS_COMPLETE]: how: file.rename handler reads visibleFiles[pane.cursor]; opens renameDialog with path, name, focusIndex
 
-CONTRACT FileRenameActionHandler
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT FileRenameKeybind
+  INPUT: focusIndex, visibleFiles, pane.cursor
+  OUTPUT: renameDialog.isOpen true with target file metadata
+  DATA: paneActionHandlers map; key r in file-operations category
 
-PROCEDURE IMPL-RENAME_DIALOG_FileRenameActionHandler(context)
-  // get pane.files[pane.cursor]
-  CALL get pane.files[pane.cursor]
-  // if file
-  CALL if file
-  // setRenameDialog with file.path
-  CALL setRenameDialog with file.path
-  // file.name
-  CALL file.name
-  // focusIndex
-  CALL focusIndex
+PROCEDURE IMPL-RENAME_DIALOG_FileRenameKeybind()
+  SET file := visibleFiles[pane.cursor]
+  IF file missing THEN RETURN
+  SET renameDialog := { isOpen: true, filePath: file.path, fileName: file.name, paneIndex: focusIndex }
 
-## FilePaneOnRename
+## CONTEXT_MENU_RENAME
 
-// [IMPL-RENAME_DIALOG] [ARCH-KEYBIND_SYSTEM] [REQ-FILE_OPERATIONS] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-MOUSE_INTERACTION]: (file: FileStat) => void; pass onRename={(file) => setRenameDialog(...)} so context menu opens dialog for that file
+// [IMPL-RENAME_DIALOG] [ARCH-KEYBIND_SYSTEM] [REQ-MOUSE_INTERACTION] [REQ-FILE_OPERATIONS]: how: ContextMenu calls onRename(file) with right-clicked file; hidden when marks non-empty
 
-CONTRACT FilePaneOnRename
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT ContextMenuRename
+  INPUT: file FileStat, marks Set, onRename callback
+  OUTPUT: rename dialog opened for that file via WorkspaceView setRenameDialog
+  DATA: ContextMenu portal menuitem Rename with R hint in menu only
 
-PROCEDURE IMPL-RENAME_DIALOG_FilePaneOnRename(context)
-  // (file: FileStat) => void
-  CALL (file: FileStat) => void
-  // pass onRename={(file) => setRenameDialog(...)} so context menu opens dialog for that file
-  CALL pass onRename={(file) => setRenameDialog(...)} so context menu opens dialog for that file
+PROCEDURE IMPL-RENAME_DIALOG_ContextMenuRename()
+  IF marks.size greater than zero OR onRename missing OR file missing THEN hide Rename menuitem
+  ON Rename click CALL onRename(file) AND close menu
+  ASSERT onRename invoked with FileStat argument not zero-arity
 
-## Footer
+## FILE_PANE_WIRING
 
-// [IMPL-RENAME_DIALOG] [ARCH-KEYBIND_SYSTEM] [REQ-FILE_OPERATIONS] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-MOUSE_INTERACTION]: added 'R: Rename' hint
+// [IMPL-RENAME_DIALOG] [REQ-MOUSE_INTERACTION] [REQ-FILE_OPERATIONS]: how: FilePane onRename prop (file: FileStat) => void passed from WorkspaceView per pane index
 
-CONTRACT Footer
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT FilePaneWiring
+  INPUT: pane index, file from context menu
+  OUTPUT: setRenameDialog with file.path, file.name, paneIndex
+  DATA: FilePane passes onRename to ContextMenu
 
-PROCEDURE IMPL-RENAME_DIALOG_Footer(context)
-  // added 'R: Rename' hint
-  CALL added 'R: Rename' hint
-  ON invalid input OR missing data THEN RETURN without mutation
+PROCEDURE IMPL-RENAME_DIALOG_FilePaneWiring(index, file)
+  CALL setRenameDialog({ isOpen: true, filePath: file.path, fileName: file.name, paneIndex: index })
 
-## RenameDialogTsx
+## HANDLE_RENAME_CONFIRM
 
-// [IMPL-RENAME_DIALOG] [ARCH-KEYBIND_SYSTEM] [REQ-FILE_OPERATIONS] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-MOUSE_INTERACTION]: modal with initialName input, onConfirm(newName), onClose; ESC to cancel
+// [IMPL-RENAME_DIALOG] [ARCH-KEYBIND_SYSTEM] [REQ-FILE_OPERATIONS]: how: build dest path with path.join(dirname, newName); POST operation rename; on success handleNavigate(paneIndex, dir)
 
-CONTRACT RenameDialogTsx
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT HandleRenameConfirm
+  INPUT: filePath, paneIndex, newName
+  OUTPUT: dialog closed; listing refreshed in parent directory
+  DATA: POST body { operation: rename, src, dest, displaySpecId? }
 
-PROCEDURE IMPL-RENAME_DIALOG_RenameDialogTsx(context)
-  // modal with initialName input
-  CALL modal with initialName input
-  // onConfirm(newName)
-  CALL onConfirm(newName)
-  // onClose
-  CALL onClose
-  // ESC to cancel
-  CALL ESC to cancel
-
-## WorkspaceView
-
-// [IMPL-RENAME_DIALOG] [ARCH-KEYBIND_SYSTEM] [REQ-FILE_OPERATIONS] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-MOUSE_INTERACTION]: renameDialog state { isOpen, filePath, fileName, paneIndex }; handleRenameConfirm(filePath, paneIndex, newName) builds dest path, POST operation rename, handleNavigate(paneIndex, dir)
-
-CONTRACT WorkspaceView
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-RENAME_DIALOG_WorkspaceView(context)
-  // renameDialog state { isOpen
-  CALL renameDialog state { isOpen
-  // filePath
-  CALL filePath
-  // fileName
-  CALL fileName
-  // paneIndex }
-  CALL paneIndex }
-  // handleRenameConfirm(filePath
-  CALL handleRenameConfirm(filePath
-  // paneIndex
-  CALL paneIndex
-  // newName) builds dest path
-  CALL newName) builds dest path
-  // POST operation rename
-  CALL POST operation rename
+PROCEDURE IMPL-RENAME_DIALOG_HandleRenameConfirm(filePath, paneIndex, newName)
+  SET dir := path.dirname(filePath)
+  SET newPath := path.join(dir, newName)
+  CLOSE renameDialog
+  POST /api/files { operation: rename, src: filePath, dest: newPath, ...displaySpecPayload(paneIndex) }
+  IF response not ok THEN parse error AND alert user
+  ELSE CALL handleNavigate(paneIndex, dir)
 
 ## CodeLocations
 
 // [IMPL-RENAME_DIALOG] [ARCH-KEYBIND_SYSTEM] [REQ-FILE_OPERATIONS] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-MOUSE_INTERACTION]: map implementing and verifying source files for this IMPL
 
-// FILE: src/app/files/components/RenameDialog.tsx — Rename modal component
-// FILE: src/app/files/WorkspaceView.tsx — renameDialog state, handleRenameConfirm, file.rename handler, RenameDialog render, onRename to FilePane
-// FILE: src/app/files/components/FilePane.tsx — onRename prop type (file: FileStat) => void
-// FILE: src/app/files/components/ContextMenu.tsx — onRename(file) call and type
-// FUNCTION: handleRenameConfirm in src/app/files/WorkspaceView.tsx
+// FILE: src/app/files/components/RenameDialog.tsx — rename modal component
+// FILE: src/app/files/WorkspaceView.tsx — renameDialog state, handleRenameConfirm, file.rename handler, RenameDialog render
+// FILE: src/app/files/components/FilePane.tsx — onRename prop forwarded to ContextMenu
+// FILE: src/app/files/components/ContextMenu.tsx — onRename(file) menu action
+// TEST: src/app/files/components/ContextMenu.test.tsx — onRename(mockFile) expectation
 
 ## ErrorHandling
 
-// [IMPL-RENAME_DIALOG] [ARCH-KEYBIND_SYSTEM] [REQ-FILE_OPERATIONS] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-MOUSE_INTERACTION]: surface recoverable failures without breaking pane invariants
+// [IMPL-RENAME_DIALOG] [ARCH-KEYBIND_SYSTEM] [REQ-FILE_OPERATIONS]: how: rename POST failure alerts user; dialog already closed; pane listing unchanged until successful navigate
 
 PROCEDURE IMPL-RENAME_DIALOG_on_error(context, error)
   LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
-  ELSE propagate error to caller
+  ALERT "Rename failed:" + error message
+  LEAVE pane listing as before failed POST

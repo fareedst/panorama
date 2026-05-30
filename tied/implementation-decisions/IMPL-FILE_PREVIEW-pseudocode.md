@@ -1,115 +1,108 @@
 # IMPL-FILE_PREVIEW essence pseudocode
 
-// [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW]: Top-level Server-Side Preview API Routes: API routes for preview and info with type detection
+// [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW]: Server preview and info API routes; client PreviewPanel and InfoPanel fetch JSON
 
 ## Summary contract
 
 // [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW]: bound module inputs, outputs, and shared data for all runtime blocks below
 
+```
 CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-FILE_PREVIEW
-  DATA: state and configuration per implementation_approach
+  INPUT: query path (required); preview optional type=text|image|archive
+  OUTPUT: JSON preview payload or file metadata; HTTP 400/403/404/500 on errors
+  DATA: MAX_TEXT_SIZE = 100 * 1024 bytes; extension lists for text/image/archive
+  CONTROL: reject paths containing ".."; fs.stat before read
+```
 
-## Archive
+## DetectFileTypeByExtension
 
-// [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW]: list entries (jszip library)
+// [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW]: how: detectFileType maps extension to text, image, archive, or binary
 
-CONTRACT Archive
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FILE_PREVIEW_Archive(context)
-  // list entries (jszip library)
-  CALL list entries (jszip library)
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## FileType
-
-// [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW]: extension + magic bytes
-
-CONTRACT FileType
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FILE_PREVIEW_FileType(context)
-  // extension + magic bytes
-  CALL extension + magic bytes
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## Image
-
-// [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW]: Next.js Image optimization
-
-CONTRACT Image
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FILE_PREVIEW_Image(context)
-  // Next.js Image optimization
-  CALL Next.js Image optimization
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## Text
-
-// [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW]: first 100KB, encoding detection
-
-CONTRACT Text
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FILE_PREVIEW_Text(context)
-  // first 100KB
-  CALL first 100KB
-  // encoding detection
-  CALL encoding detection
-
-## GETApiFilesInfo
-
-// [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW]: GET /api/files/info?path=... for metadata
-
-CONTRACT GETApiFilesInfo
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FILE_PREVIEW_GETApiFilesInfo(context)
-  // GET /api/files/info?path=..
-  CALL GET /api/files/info?path=..
-  // for metadata
-  CALL for metadata
+```
+PROCEDURE DetectFileTypeByExtension(context)
+  INPUT: filePath
+  EXTRACT ext := lowercase extension
+  IF ext IN textExtensions THEN RETURN "text"
+  IF ext IN imageExtensions THEN RETURN "image"
+  IF ext IN archiveExtensions THEN RETURN "archive"
+  RETURN "binary"
+```
 
 ## GETApiFilesPreview
 
-// [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW]: GET /api/files/preview?path=...&type=text|image|archive
+// [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW]: how: GET /api/files/preview?path=&type= branches by detected or requested type
 
-CONTRACT GETApiFilesPreview
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+```
+PROCEDURE GETApiFilesPreview(context)
+  IF path missing THEN RETURN 400 { error: "Missing path parameter" }
+  IF path contains ".." THEN RETURN 400 { error: "Invalid path" }
+  SET detectedType := DetectFileTypeByExtension(path)
+  SET type := typeParam OR detectedType
+  STAT path; IF NOT isFile THEN RETURN 400 { error: "Path is not a file" }
+  SWITCH type
+    CASE "text":
+      IF size > MAX_TEXT_SIZE THEN
+        READ first MAX_TEXT_SIZE bytes utf8
+        RETURN { type: "text", content, truncated: true, originalSize }
+      ELSE
+        READ full file utf8
+        RETURN { type: "text", content, truncated: false, originalSize }
+    CASE "image":
+      RETURN { type: "image", name, path, size, extension, url: /api/files/raw?path=encoded }
+    CASE "archive":
+      RETURN stub { type: "archive", name, path, size, extension, message: not yet implemented }
+    DEFAULT:
+      RETURN 400 { error: "Unsupported file type for preview", detectedType }
+```
 
-PROCEDURE IMPL-FILE_PREVIEW_GETApiFilesPreview(context)
-  // GET /api/files/preview?path=...&type=text|image|archive
-  CALL GET /api/files/preview?path=...&type=text|image|archive
-  ON invalid input OR missing data THEN RETURN without mutation
+## GETApiFilesInfo
+
+// [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW]: how: GET /api/files/info?path= returns stat metadata and formatted size
+
+```
+PROCEDURE GETApiFilesInfo(context)
+  IF path missing THEN RETURN 400 { error: "Missing path parameter" }
+  IF path contains ".." THEN RETURN 400 { error: "Invalid path" }
+  STAT file
+  BUILD info { name, path, directory, extension, isDirectory, isFile, isSymbolicLink,
+               size, sizeFormatted, created, modified, accessed, mode, uid, gid, blocks?, blksize? }
+  RETURN 200 info JSON
+```
+
+## ClientPreviewPanels
+
+// [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW]: how: WorkspaceView previewPanel state; PreviewPanel and InfoPanel fetch APIs
+
+```
+PROCEDURE ClientPreviewPanels(context)
+  WorkspaceView SET previewPanel { type: preview|info, filePath }
+  PreviewPanel FETCH /api/files/preview with path and type
+  InfoPanel FETCH /api/files/info with path
+  SearchDialog onSelectResult MAY open preview panel with filePath (line highlight future)
+```
 
 ## CodeLocations
 
 // [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW]: map implementing and verifying source files for this IMPL
 
-// FILE: src/app/api/files/preview/route.ts — Preview content endpoint
-// FILE: src/app/api/files/info/route.ts — File metadata endpoint
-// FUNCTION: GET handler in src/app/api/files/preview/route.ts
+```
+// FILE: src/app/api/files/preview/route.ts — GET preview
+// FILE: src/app/api/files/info/route.ts — GET info
+// FILE: src/app/api/files/preview/route.test.ts — preview route tests
+// FILE: src/app/api/files/info/route.test.ts — info route tests
+// FILE: src/app/files/components/PreviewPanel.tsx — client preview UI
+// FILE: src/app/files/components/InfoPanel.tsx — client info UI
+// FILE: src/app/files/WorkspaceView.tsx — preview panel state and render
+```
 
 ## ErrorHandling
 
-// [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW]: surface recoverable failures without breaking pane invariants
+// [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW]: how: map ENOENT→404, EACCES→403, other→500 with logged error
 
+```
 PROCEDURE IMPL-FILE_PREVIEW_on_error(context, error)
   LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
-  ELSE propagate error to caller
+  IF message contains ENOENT THEN RETURN 404 { error: "File not found" }
+  IF message contains EACCES THEN RETURN 403 { error: "Permission denied" }
+  ELSE RETURN 500 { error: "Failed to preview file" } OR "Failed to get file info"
+```

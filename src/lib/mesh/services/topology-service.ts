@@ -1,4 +1,4 @@
-// [IMPL-MESH_TOPOLOGY] [REQ-MESH_PLATFORM]: Topology graph and validation — phase 6
+// [IMPL-MESH_TOPOLOGY] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: Validate mesh link graph, link CRUD helpers, and project nodes/edges for UI
 
 import { isDomainValidationError, validateMesh, type Mesh, type SyncLink } from "../domain";
 
@@ -84,6 +84,7 @@ function findDisconnectedDepots(mesh: Mesh): string[] {
   return mesh.depots.filter((d) => !connected.has(d.id)).map((d) => d.id);
 }
 
+// [IMPL-MESH_TOPOLOGY] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — build adjacency from sync links including bidirectional reverse edges; detect cycles via DFS; find disconnected depots.
 export function validateTopology(mesh: Mesh): TopologyValidation {
   const warnings: string[] = [];
   const hasCycle = detectCycle(mesh);
@@ -102,6 +103,7 @@ export function validateTopology(mesh: Mesh): TopologyValidation {
   };
 }
 
+// [IMPL-MESH_TOPOLOGY] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — map depots to nodes with ok|unreachable status; links to edges with ok|invalid status; include validation warnings.
 export function projectTopologyGraph(mesh: Mesh): TopologyGraph {
   const validation = validateTopology(mesh);
   const disconnected = new Set(validation.disconnectedDepotIds);
@@ -127,6 +129,7 @@ export function projectTopologyGraph(mesh: Mesh): TopologyGraph {
   return { nodes, edges, warnings: validation.warnings };
 }
 
+// [IMPL-MESH_TOPOLOGY] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — append link attrs and re-validate mesh; return domain error when link invalid (missing depot, self-link).
 export function addLinkToMesh(
   mesh: Mesh,
   linkAttrs: unknown,

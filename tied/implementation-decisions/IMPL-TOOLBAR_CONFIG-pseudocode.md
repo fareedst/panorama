@@ -1,41 +1,78 @@
 # IMPL-TOOLBAR_CONFIG essence pseudocode
 
-// [IMPL-TOOLBAR_CONFIG] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_CONFIG]: Top-level Toolbar Configuration Loading: Configuration types and loading utilities for toolbar system
+## TOOLBAR_CONFIG_TYPES
 
-## Summary contract
+// [IMPL-TOOLBAR_CONFIG] [ARCH-TOOLBAR_LAYOUT] [ARCH-CONFIG_DRIVEN_UI] [REQ-TOOLBAR_CONFIG]: how: TypeScript interfaces in config.types.ts define toolbar position, groups, per-tier config, and toolbars.actions metadata map
 
-// [IMPL-TOOLBAR_CONFIG] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_CONFIG]: bound module inputs, outputs, and shared data for all runtime blocks below
+```
+CONTRACT ToolbarConfigTypes
+  INPUT: none (compile-time schema)
+  OUTPUT: ToolbarsConfig, ToolbarConfig, ToolbarGroupConfig, ToolbarActionMeta, ToolbarPosition, ToolbarButtonOverride
+  DATA: ToolbarPosition := top | bottom | hidden | per-pane
 
-CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-TOOLBAR_CONFIG
-  DATA: state and configuration per implementation_approach
+PROCEDURE TOOLBAR_CONFIG_TYPES
+  ToolbarGroupConfig := { name: string, actions: string[] }
+  ToolbarConfig := { enabled, position, groups[], buttons? }
+  ToolbarActionMeta := { description, label?, icon? }
+  ToolbarsConfig := { enabled, workspace: ToolbarConfig, pane: ToolbarConfig, system: ToolbarConfig, actions?: Record<string, ToolbarActionMeta> }
+  FilesConfig.toolbars?: ToolbarsConfig
+```
 
-## MainBehavior
+## LOAD_TOOLBARS_FROM_FILES_YAML
 
-// [IMPL-TOOLBAR_CONFIG] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_CONFIG]: Configuration types and loading utilities for toolbar system
+// [IMPL-TOOLBAR_CONFIG] [IMPL-CONFIG_LOADER] [ARCH-TOOLBAR_LAYOUT] [ARCH-CONFIG_DRIVEN_UI] [REQ-TOOLBAR_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: getFilesConfig reads config/files.yaml toolbars section, deep-merges with DEFAULT_FILES_CONFIG (toolbars omitted in defaults), caches result
 
-CONTRACT MainBehavior
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+```
+CONTRACT LoadToolbarsFromFilesYaml
+  INPUT: config/files.yaml on disk
+  OUTPUT: FilesConfig.toolbars resolved ToolbarsConfig
+  DATA: DEFAULT_FILES_CONFIG (no toolbars key), deepMerge, module cache _filesConfig
 
-PROCEDURE IMPL-TOOLBAR_CONFIG_MainBehavior(context)
-  // STEP 1: Configuration types and loading utilities for toolbar system
-  CALL STEP 1: Configuration types and loading utilities for toolbar system
-  ON error LOG diagnostic with token refs
+PROCEDURE LOAD_TOOLBARS_FROM_FILES_YAML
+  userYaml := readYamlFile("config/files.yaml")
+  merged := deepMerge(DEFAULT_FILES_CONFIG, userYaml)
+  CACHE merged AS _filesConfig
+  RETURN merged.toolbars WHEN present in YAML ELSE undefined
+  ON missing file OR parse error LOG warning AND use defaults-only merge
+```
+
+## TOOLBAR_ACTIONS_META
+
+// [IMPL-TOOLBAR_CONFIG] [ARCH-TOOLBAR_ACTIONS] [REQ-TOOLBAR_CONFIG] [REQ-TOOLBAR_SYSTEM]: how: toolbars.actions supplies description/icon/label for toolbar-only actions (view.columns, compare-filter tri-state, pane.order) consumed by deriveToolbarButton via actionsMeta prop
+
+```
+CONTRACT ToolbarActionsMeta
+  INPUT: toolbars.actions map from YAML
+  OUTPUT: ToolbarActionMeta entries keyed by action id
+  DATA: passed from FilesPage → WorkspaceView → Toolbar tiers as actionsMeta
+
+PROCEDURE TOOLBAR_ACTIONS_META
+  FOR each action id IN toolbars.actions
+    STORE { description, icon?, label? }
+  WorkspaceView passes toolbars.actions unchanged to WorkspaceToolbar, PaneToolbar, SystemToolbar, compact Toolbar
+  deriveToolbarButton(action, keybindings, actionsMeta) uses meta WHEN no keybinding row exists
+```
+
+## THREE_TIER_TOOLBAR_LAYOUT
+
+// [IMPL-TOOLBAR_CONFIG] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_CONFIG] [REQ-TOOLBAR_SYSTEM]: how: YAML defines workspace, pane, and system tiers each with enabled, position, and named action groups; WorkspaceView renders tiers per IMPL-TOOLBAR_COMPONENT display mode
+
+```
+CONTRACT ThreeTierToolbarLayout
+  INPUT: ToolbarsConfig from getFilesConfig
+  OUTPUT: tier visibility and group action lists for UI
+  DATA: workspace tier (layout/mesh), pane tier (file ops), system tier (help/search)
+
+PROCEDURE THREE_TIER_TOOLBAR_LAYOUT
+  IF NOT toolbars.enabled THEN skip all toolbar render
+  FOR tier IN [workspace, pane, system]
+    tier.enabled AND tier.position control which Toolbar wrapper renders
+    tier.groups[] lists action id strings referencing keybindings OR toolbars.actions
+  theme.files.toolbars optional styling keys (ToolbarThemeConfig) for future class overrides
+```
 
 ## CodeLocations
 
-// [IMPL-TOOLBAR_CONFIG] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_CONFIG]: map implementing and verifying source files for this IMPL
+// [IMPL-TOOLBAR_CONFIG] [ARCH-TOOLBAR_LAYOUT] [ARCH-CONFIG_DRIVEN_UI] [REQ-TOOLBAR_CONFIG]: map implementing and verifying source files for this IMPL
 
-// (no code_locations.files recorded in IMPL detail YAML)
-
-## ErrorHandling
-
-// [IMPL-TOOLBAR_CONFIG] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_CONFIG]: surface recoverable failures without breaking pane invariants
-
-PROCEDURE IMPL-TOOLBAR_CONFIG_on_error(context, error)
-  LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
-  ELSE propagate error to caller
+// config/files.yaml toolbars section; src/lib/config.types.ts ToolbarsConfig types; src/lib/config.ts getFilesConfig; src/lib/toolbar.utils.ts deriveToolbarButton actionsMeta fallback; src/app/files/page.tsx passes toolbars prop; tests config.test.ts getFilesConfig, toolbar.utils.test.ts deriveToolbarButton with actionsMeta, WorkspaceView.file-columns.test.tsx mockToolbars

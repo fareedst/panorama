@@ -6,11 +6,7 @@ import fs from "fs/promises";
 import path from "path";
 import { logger } from "@/lib/logger";
 
-/**
- * GET /api/files/info?path=...
- * Returns detailed file metadata
- * [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW]
- */
+// [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW]: how: GET /api/files/info?path= returns stat metadata and formatted size
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;

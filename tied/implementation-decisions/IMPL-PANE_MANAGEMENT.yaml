@@ -76,6 +76,7 @@ IMPL-PANE_MANAGEMENT:
     tests:
       - src/app/files/components/PaneOrderDialog.test.tsx
       - src/app/files/WorkspaceView.pane-reorder.test.tsx
+      - src/lib/config.test.ts
       - src/lib/files.history.test.ts
       - src/lib/pane-order.test.ts
     code_annotations:
@@ -97,10 +98,11 @@ IMPL-PANE_MANAGEMENT:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-29T00:00:00.000Z"
+      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — vocabulary see_also back-link
+      reason: Retrofit essence_pseudocode from production code and tests
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent
       result: pass - build succeeds, 570 tests passing
+  essence_pseudocode_path: implementation-decisions/IMPL-PANE_MANAGEMENT-pseudocode.md

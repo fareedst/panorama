@@ -24,7 +24,7 @@ describe("mesh credentials API [IMPL-MESH_API]", () => {
     expect(res.status).toBe(403);
   });
 
-  // [IMPL-MESH_API] [IMPL-MESH_AUTH] [REQ-MESH_AUTH]: admin creates masked credential reference
+  // how: admin creates credential reference; response returns id and label without secrets
   it("post_credentials_created_for_admin", async () => {
     const res = await POST(
       new Request("http://localhost/api/mesh/credentials", {

@@ -1,6 +1,6 @@
 IMPL-TOOLBAR_CONFIG:
   name: Toolbar Configuration Loading
-  status: Active
+  status: Implemented
   cross_references:
     - REQ-TOOLBAR_CONFIG
     - ARCH-TOOLBAR_LAYOUT
@@ -10,17 +10,34 @@ IMPL-TOOLBAR_CONFIG:
     problems_solved: []
     benefits: []
   implementation_approach:
-    summary: Configuration types and loading utilities for toolbar system
-    details: []
+    summary: Toolbar types and config/files.yaml toolbars section loaded via getFilesConfig
+    details:
+      - 'Three tiers: workspace, pane, system with enabled, position, groups'
+      - toolbars.actions metadata for toolbar-only actions
+      - ToolbarsConfig types in config.types.ts
   code_locations:
-    files: []
-    functions: []
+    files:
+      - path: config/files.yaml
+        description: THREE_TIER_TOOLBAR_LAYOUT and TOOLBAR_ACTIONS_META YAML
+      - path: src/lib/config.types.ts
+        description: TOOLBAR_CONFIG_TYPES interfaces
+      - path: src/lib/config.ts
+        description: LOAD_TOOLBARS_FROM_FILES_YAML via getFilesConfig
+    functions:
+      - name: getFilesConfig
+        file: src/lib/config.ts
   traceability:
     architecture:
       - ARCH-TOOLBAR_LAYOUT
+      - ARCH-CONFIG_DRIVEN_UI
     requirements:
       - REQ-TOOLBAR_CONFIG
-    tests: []
+      - REQ-CONFIG_DRIVEN_FILE_MANAGER
+    tests:
+      - src/app/files/WorkspaceView.file-columns.test.tsx
+      - src/app/files/WorkspaceView.toolbar-compact.test.tsx
+      - src/lib/config.test.ts
+      - src/lib/toolbar.utils.test.ts
     code_annotations:
       - IMPL-TOOLBAR_CONFIG
   related_decisions:
@@ -31,6 +48,7 @@ IMPL-TOOLBAR_CONFIG:
   metadata:
     registered: 2026-02-08T00:00:00.000Z
     last_updated:
-      date: "2026-05-29T00:00:00.000Z"
+      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — vocabulary see_also back-link
+      reason: Retrofit essence_pseudocode from production code
+  essence_pseudocode_path: implementation-decisions/IMPL-TOOLBAR_CONFIG-pseudocode.md

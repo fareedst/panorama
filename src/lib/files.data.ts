@@ -12,10 +12,10 @@ import { preserveCopyAttributes } from "./copyAttributes";
 // Re-export formatSize for backward compatibility
 export { formatSize };
 
+// [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-DIRECTORY_NAVIGATION] [REQ-FILE_OPERATIONS]: how: normalize path, readdir withFileTypes, stat each entry into FileStat, skip unstatable entries, return array (empty on top-level failure)
 /**
  * List directory contents and return file stats
- * [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-DIRECTORY_NAVIGATION]
- * 
+ *
  * @param dirPath - Absolute path to directory
  * @returns Array of file stats, sorted by name
  */
@@ -130,7 +130,7 @@ export async function copyFile(src: string, dest: string): Promise<void> {
   logger.info(["IMPL-FILES_DATA", "REQ-FILE_OPERATIONS"], `Copying file: ${src} -> ${dest}`);
   try {
     await fs.copyFile(src, dest);
-    // [IMPL-COPY_ATTRS] Preserve mode and timestamps where possible
+    // [IMPL-COPY_ATTRS] [REQ-COPY_OPERATIONS] [REQ-FILE_OPERATIONS]: how: after copy apply utimes and chmod from source stat; ignore per-step failures
     await preserveCopyAttributes(src, dest);
     logger.info(["IMPL-FILES_DATA", "REQ-FILE_OPERATIONS"], `Successfully copied file: ${src} -> ${dest}`);
   } catch (error) {
@@ -195,8 +195,8 @@ export async function renameFile(oldPath: string, newPath: string): Promise<void
 }
 
 /**
+ * [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: bulkCopy bulkMove bulkDelete in files.data.ts run Promise.allSettled per source without stopping on first failure
  * Copy multiple files with progress tracking
- * [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]
  * 
  * @param sources - Array of source file paths
  * @param destDir - Destination directory path
@@ -266,8 +266,8 @@ export async function bulkCopy(
 }
 
 /**
+ * [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: bulkCopy bulkMove bulkDelete in files.data.ts run Promise.allSettled per source without stopping on first failure
  * Move multiple files with progress tracking
- * [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]
  * 
  * @param sources - Array of source file paths
  * @param destDir - Destination directory path
@@ -337,8 +337,8 @@ export async function bulkMove(
 }
 
 /**
+ * [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: bulkCopy bulkMove bulkDelete in files.data.ts run Promise.allSettled per source without stopping on first failure
  * Delete multiple files with progress tracking
- * [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]
  * 
  * @param sources - Array of file paths to delete
  * @param onProgress - Optional progress callback
@@ -454,8 +454,8 @@ export function sortFiles(
 }
 
 /**
+ * [IMPL-COMPARISON_INDEX] [ARCH-COMPARISON_INDEX] [REQ-CROSS_PANE_COMPARISON]: how: single pass over pane file lists building Map filename to parallel panes/sizes/mtimes arrays
  * Build comparison index from multiple pane contents
- * [IMPL-COMPARISON_INDEX] [ARCH-COMPARISON_INDEX] [REQ-CROSS_PANE_COMPARISON]
  * 
  * Ported from Goful's comparison index logic
  * 
@@ -491,6 +491,7 @@ export function buildComparisonIndex(panes: FileStat[][]): ComparisonIndex {
   
   // Return ComparisonIndex interface
   return {
+    // [IMPL-COMPARISON_INDEX] [ARCH-COMPARISON_INDEX] [REQ-CROSS_PANE_COMPARISON]: how: return CompareState only when filename exists in 2+ panes AND requested paneIndex is among them
     get(paneIndex: number, filename: string): CompareState | null {
       const state = index.get(filename);
       
@@ -507,6 +508,7 @@ export function buildComparisonIndex(panes: FileStat[][]): ComparisonIndex {
       return state;
     },
     
+    // [IMPL-COMPARISON_INDEX] [ARCH-COMPARISON_INDEX] [REQ-CROSS_PANE_COMPARISON]: how: sorted list of filenames appearing in two or more panes
     getSharedFilenames(): string[] {
       const shared: string[] = [];
       

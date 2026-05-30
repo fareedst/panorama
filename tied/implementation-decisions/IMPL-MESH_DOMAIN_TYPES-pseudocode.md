@@ -4,7 +4,7 @@
 
 ## Summary contract
 
-// how: Declare module-wide synchronous pure-function contract; no I/O imports per ARCH-MESH_DOMAIN L1 boundary.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Declare module-wide synchronous pure-function contract; no I/O imports per ARCH-MESH_DOMAIN L1 boundary.
 
 CONTRACT Summary
   INPUT: raw attribute bags or DTO objects from callers (services, tests)
@@ -14,13 +14,13 @@ CONTRACT Summary
 
 ## InternalHelpers
 
-// how: Private helpers in internal.ts (not exported from index.ts); shared by validators and snapshot procedures.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Private helpers in internal.ts (not exported from index.ts); shared by validators and snapshot procedures.
 
 CONTRACT GenerateStableId
   INPUT: (none)
   OUTPUT: non-empty string id (UUID in TypeScript via crypto.randomUUID)
 
-// how: Allocate a new stable string id for entities missing an explicit id.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Allocate a new stable string id for entities missing an explicit id.
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_generateStableId()
   RETURN new unique string id
@@ -29,7 +29,7 @@ CONTRACT ResolveEntityId
   INPUT: attrs with optional id field
   OUTPUT: attrs.id when non-empty string, else CALL generateStableId()
 
-// how: Prefer caller-supplied id when non-empty; otherwise generate a new id.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Prefer caller-supplied id when non-empty; otherwise generate a new id.
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_resolveEntityId(attrs)
   IF attrs.id is present AND non-empty string THEN RETURN attrs.id
@@ -39,7 +39,7 @@ CONTRACT DeepCloneMesh
   INPUT: Mesh (validated)
   OUTPUT: deep copy of Mesh with no shared nested references (TypeScript: structuredClone)
 
-// how: Deep-clone validated mesh so session snapshots never alias live configuration.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Deep-clone validated mesh so session snapshots never alias live configuration.
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_deepCloneMesh(mesh)
   RETURN deep copy of mesh graph without aliasing nested depots/links/policy
@@ -48,21 +48,21 @@ CONTRACT NowIso
   INPUT: (none)
   OUTPUT: ISO-8601 timestamp string (TypeScript: new Date().toISOString())
 
-// how: Capture snapshot timestamp as ISO-8601 for MeshSnapshot.capturedAt.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Capture snapshot timestamp as ISO-8601 for MeshSnapshot.capturedAt.
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_nowIso()
   RETURN current time as ISO-8601 string
 
 ## DomainValidationError
 
-// how: Build structured validation errors with path, code, and message for all VALIDATE_* reject paths.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Build structured validation errors with path, code, and message for all VALIDATE_* reject paths.
 
 CONTRACT DomainValidationError
   INPUT: field path, machine code, human message
   OUTPUT: DomainValidationError instance
   DATA: code (string), path (string), message (string)
 
-// how: Factory for DomainValidationError; reject empty machine codes at the factory itself.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Factory for DomainValidationError; reject empty machine codes at the factory itself.
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_MakeValidationError(fieldPath, code, message)
   RETURN { code, path: fieldPath, message }
@@ -70,14 +70,14 @@ PROCEDURE IMPL-MESH_DOMAIN_TYPES_MakeValidationError(fieldPath, code, message)
 
 ## DEFAULT_POLICY
 
-// how: Supply non-destructive policy defaults for policy_has_default_safe_values and mesh policy omission.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Supply non-destructive policy defaults for policy_has_default_safe_values and mesh policy omission.
 
 CONTRACT DefaultPolicy
   INPUT: (none)
   OUTPUT: Policy with safe defaults
   DATA: deletePolicy=never, conflictPolicy=prefer_authoritative, retryMaxAttempts=3, verificationMode=size_mtime
 
-// how: Return Policy with delete never, prefer_authoritative conflict, bounded retries, size_mtime verification.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Return Policy with delete never, prefer_authoritative conflict, bounded retries, size_mtime verification.
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_DEFAULT_POLICY()
   RETURN Policy {
@@ -89,14 +89,14 @@ PROCEDURE IMPL-MESH_DOMAIN_TYPES_DEFAULT_POLICY()
 
 ## VALIDATE_POLICY
 
-// how: Validate optional inline policy fields on mesh DTOs before accepting a Mesh.policy value.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Validate optional inline policy fields on mesh DTOs before accepting a Mesh.policy value.
 
 CONTRACT ValidatePolicy
   INPUT: attrs { deletePolicy?, conflictPolicy?, retryMaxAttempts?, verificationMode? }
   OUTPUT: Policy OR DomainValidationError
   DATA: DeletePolicy (never | prompt | allow); ConflictPolicy (prefer_authoritative | prefer_newer | manual); VerificationMode (none | size_mtime | checksum)
 
-// how: Reject invalid policy enums and retry bounds; merge omitted fields with same safe defaults as DEFAULT_POLICY.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Reject invalid policy enums and retry bounds; merge omitted fields with same safe defaults as DEFAULT_POLICY.
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_VALIDATE_POLICY(attrs)
   IF attrs.deletePolicy is present AND attrs.deletePolicy not in (never, prompt, allow) THEN RETURN validation error "policy_delete_invalid"
@@ -119,7 +119,7 @@ CONTRACT ValidateCredentialReference
   OUTPUT: CredentialReference OR DomainValidationError
   DATA: CredentialReference { id, label }
 
-// how: Require non-empty label; resolve id with IMPL-MESH_DOMAIN_TYPES_resolveEntityId when id missing/empty; reject any secret field on domain credential references.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Require non-empty label; resolve id with IMPL-MESH_DOMAIN_TYPES_resolveEntityId when id missing/empty; reject any secret field on domain credential references.
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_VALIDATE_CREDENTIAL_REFERENCE(attrs)
   IF attrs.label is missing OR empty THEN RETURN validation error "credential_label_required"
@@ -129,19 +129,19 @@ PROCEDURE IMPL-MESH_DOMAIN_TYPES_VALIDATE_CREDENTIAL_REFERENCE(attrs)
 
 ## SERIALIZE_CREDENTIAL_REFERENCE
 
-// how: JSON-safe credential DTO mapping; round-trip reuses VALIDATE_CREDENTIAL_REFERENCE on deserialize.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: JSON-safe credential DTO mapping; round-trip reuses VALIDATE_CREDENTIAL_REFERENCE on deserialize.
 
 CONTRACT SerializeCredentialReference
   INPUT: CredentialReference
   OUTPUT: DTO { id, label }
   DATA: (no secret field on DTO)
 
-// how: Emit id and label only on DTO (no secret field).
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Emit id and label only on DTO (no secret field).
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_TO_DTO_CREDENTIAL_REFERENCE(ref)
   RETURN { id: ref.id, label: ref.label }
 
-// how: Deserialize DTO by delegating to VALIDATE_CREDENTIAL_REFERENCE (intra-IMPL call).
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Deserialize DTO by delegating to VALIDATE_CREDENTIAL_REFERENCE (intra-IMPL call).
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_FROM_DTO_CREDENTIAL_REFERENCE(dto)
   CALL IMPL-MESH_DOMAIN_TYPES_VALIDATE_CREDENTIAL_REFERENCE(dto)
@@ -150,14 +150,14 @@ PROCEDURE IMPL-MESH_DOMAIN_TYPES_FROM_DTO_CREDENTIAL_REFERENCE(dto)
 
 ## VALIDATE_DEPOT
 
-// how: Enforce depot_requires_name_kind_and_root and DepotKind enum for each depot in a mesh.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Enforce depot_requires_name_kind_and_root and DepotKind enum for each depot in a mesh.
 
 CONTRACT ValidateDepot
   INPUT: attrs { id?, name, kind, root, credentialReferenceId?, accessMode? }
   OUTPUT: Depot OR DomainValidationError
   DATA: DepotKind enum (local | remote | virtual)
 
-// how: Validate name, kind, root; assign id; default accessMode to read_write; phase 1 skips relative-root policy engine branch.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Validate name, kind, root; assign id; default accessMode to read_write; phase 1 skips relative-root policy engine branch.
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_VALIDATE_DEPOT(attrs)
   IF attrs.name is missing OR trim(attrs.name) is empty THEN RETURN validation error "depot_name_required"
@@ -169,53 +169,53 @@ PROCEDURE IMPL-MESH_DOMAIN_TYPES_VALIDATE_DEPOT(attrs)
 
 ## TO_DTO_DEPOT
 
-// how: Map validated Depot entity to JSON-safe DTO for mesh serialization.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Map validated Depot entity to JSON-safe DTO for mesh serialization.
 
 CONTRACT ToDtoDepot
   INPUT: Depot
   OUTPUT: depot DTO
 
-// how: Copy depot fields to plain object (no secrets on depot DTO).
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Copy depot fields to plain object (no secrets on depot DTO).
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_TO_DTO_DEPOT(depot)
   RETURN { id, name, kind, root, credentialReferenceId, accessMode } from depot
 
 ## TO_DTO_SYNC_LINK
 
-// how: Map validated SyncLink entity to JSON-safe DTO for mesh serialization.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Map validated SyncLink entity to JSON-safe DTO for mesh serialization.
 
 CONTRACT ToDtoSyncLink
   INPUT: SyncLink
   OUTPUT: link DTO
 
-// how: Copy link id and depot endpoints to plain object.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Copy link id and depot endpoints to plain object.
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_TO_DTO_SYNC_LINK(link)
   RETURN { id, sourceDepotId, targetDepotId, direction } from link
 
 ## TO_DTO_POLICY
 
-// how: Map validated Policy entity to JSON-safe DTO embedded in mesh DTO.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Map validated Policy entity to JSON-safe DTO embedded in mesh DTO.
 
 CONTRACT ToDtoPolicy
   INPUT: Policy
   OUTPUT: policy DTO
 
-// how: Expose policy fields as plain object with same names as domain Policy.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Expose policy fields as plain object with same names as domain Policy.
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_TO_DTO_POLICY(policy)
   RETURN policy fields as plain object
 
 ## VALIDATE_SYNC_LINK
 
-// how: Enforce sync_link_requires_valid_source_and_target_depots against mesh depot id set; reject self-loops.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Enforce sync_link_requires_valid_source_and_target_depots against mesh depot id set; reject self-loops.
 
 CONTRACT ValidateSyncLink
   INPUT: attrs { id?, sourceDepotId, targetDepotId, direction }, meshDepots (set of depot ids)
   OUTPUT: SyncLink OR DomainValidationError
   DATA: LinkDirection (one_way | bidirectional)
 
-// how: Require known source/target depots, valid direction, and no self-loop; assign link id when omitted.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Require known source/target depots, valid direction, and no self-loop; assign link id when omitted.
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_VALIDATE_SYNC_LINK(attrs, meshDepots)
   IF attrs.sourceDepotId is missing THEN RETURN validation error "link_source_required"
@@ -228,14 +228,14 @@ PROCEDURE IMPL-MESH_DOMAIN_TYPES_VALIDATE_SYNC_LINK(attrs, meshDepots)
 
 ## VALIDATE_MESH
 
-// how: Orchestrate mesh_requires_name, zero-or-more depots, ordered depot-then-link validation, and policy default or VALIDATE_POLICY.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Orchestrate mesh_requires_name, zero-or-more depots, ordered depot-then-link validation, and policy default or VALIDATE_POLICY.
 
 CONTRACT ValidateMesh
   INPUT: attrs { id?, name, description?, tags?, depots[], links[], policy? }
   OUTPUT: Mesh OR DomainValidationError
   DATA: depots list may be empty; links validated against depot ids after depots built; policy validated or defaulted
 
-// how: Validate mesh name; foreach depot CALL VALIDATE_DEPOT; build depotIds; foreach link CALL VALIDATE_SYNC_LINK; resolve policy via DEFAULT_POLICY or VALIDATE_POLICY.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Validate mesh name; foreach depot CALL VALIDATE_DEPOT; build depotIds; foreach link CALL VALIDATE_SYNC_LINK; resolve policy via DEFAULT_POLICY or VALIDATE_POLICY.
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_VALIDATE_MESH(attrs)
   IF attrs.name is missing OR trim(attrs.name) is empty THEN RETURN validation error "mesh_name_required"
@@ -273,14 +273,14 @@ PROCEDURE IMPL-MESH_DOMAIN_TYPES_VALIDATE_MESH(attrs)
 
 ## CREATE_MESH_SNAPSHOT
 
-// how: Implement sync_session_requires_mesh_snapshot with deep clone and immutable snapshot metadata.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Implement sync_session_requires_mesh_snapshot with deep clone and immutable snapshot metadata.
 
 CONTRACT CreateMeshSnapshot
   INPUT: Mesh (validated)
   OUTPUT: MeshSnapshot
   DATA: snapshot is frozen copy; live mesh edits must not mutate snapshot
 
-// how: Deep-clone mesh, assign snapshotId and capturedAt; post-condition: snapshot mesh does not alias live mesh.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Deep-clone mesh, assign snapshotId and capturedAt; post-condition: snapshot mesh does not alias live mesh.
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_CREATE_MESH_SNAPSHOT(mesh)
   DATA copy = CALL IMPL-MESH_DOMAIN_TYPES_deepCloneMesh(mesh)
@@ -288,14 +288,14 @@ PROCEDURE IMPL-MESH_DOMAIN_TYPES_CREATE_MESH_SNAPSHOT(mesh)
 
 ## VALIDATE_SYNC_SESSION
 
-// how: Enforce sync_session_requires_mesh_snapshot and valid SessionState when state is provided.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Enforce sync_session_requires_mesh_snapshot and valid SessionState when state is provided.
 
 CONTRACT ValidateSyncSession
   INPUT: attrs { id?, meshSnapshot, state? }
   OUTPUT: SyncSession OR DomainValidationError
   DATA: SessionState (idle | scanning | running | paused | completed | failed | cancelled)
 
-// how: Require meshSnapshot.mesh; reject invalid state; default missing state to idle.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Require meshSnapshot.mesh; reject invalid state; default missing state to idle.
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_VALIDATE_SYNC_SESSION(attrs)
   IF attrs.meshSnapshot is missing THEN RETURN validation error "session_snapshot_required"
@@ -310,14 +310,14 @@ PROCEDURE IMPL-MESH_DOMAIN_TYPES_VALIDATE_SYNC_SESSION(attrs)
 
 ## VALIDATE_SYNC_OPERATION
 
-// how: Validate atomic SyncOperation kind and sourcePath for change-set membership.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Validate atomic SyncOperation kind and sourcePath for change-set membership.
 
 CONTRACT ValidateSyncOperation
   INPUT: attrs { id?, kind, sourcePath, targetPath?, riskLevel? }
   OUTPUT: SyncOperation OR DomainValidationError
   DATA: OperationKind (copy | update | delete | mkdir | verify)
 
-// how: Reject invalid operation kind or missing sourcePath; default riskLevel to low.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Reject invalid operation kind or missing sourcePath; default riskLevel to low.
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_VALIDATE_SYNC_OPERATION(attrs)
   IF attrs.kind not in (copy, update, delete, mkdir, verify) THEN RETURN validation error "operation_kind_invalid"
@@ -326,13 +326,13 @@ PROCEDURE IMPL-MESH_DOMAIN_TYPES_VALIDATE_SYNC_OPERATION(attrs)
 
 ## VALIDATE_CHANGE_SET
 
-// how: Preserve change_set_contains_ordered_operations by validating each operation in list order.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Preserve change_set_contains_ordered_operations by validating each operation in list order.
 
 CONTRACT ValidateChangeSet
   INPUT: attrs { id?, operations[] (ordered) }
   OUTPUT: ChangeSet OR DomainValidationError
 
-// how: Require operations array; foreach operation CALL VALIDATE_SYNC_OPERATION in order; abort on first error.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Require operations array; foreach operation CALL VALIDATE_SYNC_OPERATION in order; abort on first error.
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_VALIDATE_CHANGE_SET(attrs)
   IF attrs.operations is missing THEN RETURN validation error "change_set_operations_required"
@@ -346,14 +346,14 @@ PROCEDURE IMPL-MESH_DOMAIN_TYPES_VALIDATE_CHANGE_SET(attrs)
 
 ## VALIDATE_CONFLICT
 
-// how: Enforce conflict_has_type_participants_and_status with enum checks on type and status.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Enforce conflict_has_type_participants_and_status with enum checks on type and status.
 
 CONTRACT ValidateConflict
   INPUT: attrs { id?, type, participants, status }
   OUTPUT: Conflict OR DomainValidationError
   DATA: ConflictType (modify_modify | delete_modify | rename_modify | file_directory); ConflictStatus (pending | resolved | dismissed)
 
-// how: Require type in ConflictType enum, at least two participants, and valid ConflictStatus.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Require type in ConflictType enum, at least two participants, and valid ConflictStatus.
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_VALIDATE_CONFLICT(attrs)
   IF attrs.type is missing THEN RETURN validation error "conflict_type_required"
@@ -364,14 +364,14 @@ PROCEDURE IMPL-MESH_DOMAIN_TYPES_VALIDATE_CONFLICT(attrs)
 
 ## VALIDATE_FILTER
 
-// how: Phase-1 Filter shape (pattern + include/exclude mode) for later policy engine integration.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Phase-1 Filter shape (pattern + include/exclude mode) for later policy engine integration.
 
 CONTRACT ValidateFilter
   INPUT: attrs { pattern, mode }
   OUTPUT: Filter OR DomainValidationError
   DATA: FilterMode (include | exclude)
 
-// how: Require non-empty pattern and valid FilterMode enum.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Require non-empty pattern and valid FilterMode enum.
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_VALIDATE_FILTER(attrs)
   IF attrs.pattern is missing OR empty THEN RETURN validation error "filter_pattern_required"
@@ -380,13 +380,13 @@ PROCEDURE IMPL-MESH_DOMAIN_TYPES_VALIDATE_FILTER(attrs)
 
 ## VALIDATE_SYNC_EVENT
 
-// how: Validate SyncEvent audit fields (timestamp, type, subject) for future event-log IMPL.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Validate SyncEvent audit fields (timestamp, type, subject) for future event-log IMPL.
 
 CONTRACT ValidateSyncEvent
   INPUT: attrs { id?, timestamp, type, subject, payload }
   OUTPUT: SyncEvent OR DomainValidationError
 
-// how: Require timestamp, type, and subject; default payload to empty object.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Require timestamp, type, and subject; default payload to empty object.
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_VALIDATE_SYNC_EVENT(attrs)
   IF attrs.timestamp is missing THEN RETURN validation error "event_timestamp_required"
@@ -396,7 +396,7 @@ PROCEDURE IMPL-MESH_DOMAIN_TYPES_VALIDATE_SYNC_EVENT(attrs)
 
 ## MESH_ROUND_TRIP_SERIALIZATION
 
-// how: Support all_core_objects_can_be_serialized and invalid_core_objects_are_rejected via mesh and credential round-trips.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Support all_core_objects_can_be_serialized and invalid_core_objects_are_rejected via mesh and credential round-trips.
 
 // Phase 1 scope: standalone round-trip required for CredentialReference (TO/FROM_DTO) and Mesh aggregate (TO_DTO_MESH / FROM_DTO_MESH).
 // Other core entities are validated via VALIDATE_* and serialized nested inside mesh DTOs (depots, links, policy) — no separate FROM_DTO per leaf type in phase 1.
@@ -406,14 +406,14 @@ CONTRACT MeshRoundTrip
   OUTPUT: Mesh DTO OR Mesh entity
   DATA: JSON-safe plain objects only
 
-// how: Serialize mesh by mapping depots, links, and policy to DTO parts.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Serialize mesh by mapping depots, links, and policy to DTO parts.
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_TO_DTO_MESH(mesh)
   FOR EACH depot IN mesh.depots CALL IMPL-MESH_DOMAIN_TYPES_TO_DTO_DEPOT(depot)
   FOR EACH link IN mesh.links CALL IMPL-MESH_DOMAIN_TYPES_TO_DTO_SYNC_LINK(link)
   RETURN DTO { id, name, description, tags, depots, links, policy: CALL IMPL-MESH_DOMAIN_TYPES_TO_DTO_POLICY(mesh.policy) }
 
-// how: Deserialize mesh DTO by CALL VALIDATE_MESH so invalid_core_objects_are_rejected on FROM_DTO.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Deserialize mesh DTO by CALL VALIDATE_MESH so invalid_core_objects_are_rejected on FROM_DTO.
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_FROM_DTO_MESH(dto)
   CALL IMPL-MESH_DOMAIN_TYPES_VALIDATE_MESH(dto)
@@ -422,7 +422,7 @@ PROCEDURE IMPL-MESH_DOMAIN_TYPES_FROM_DTO_MESH(dto)
 
 ## IntraImplComposition
 
-// how: Document phase-1 internal call graph only — no cross-IMPL runtime calls (depends_on and composed_with empty).
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Document phase-1 internal call graph only — no cross-IMPL runtime calls (depends_on and composed_with empty).
 
 // INTRA_IMPL_CALL graph (all callee procedures are [IMPL-MESH_DOMAIN_TYPES]):
 //   VALIDATE_MESH → VALIDATE_DEPOT (per depot, sequential)
@@ -448,7 +448,7 @@ PROCEDURE IMPL-MESH_DOMAIN_TYPES_FROM_DTO_MESH(dto)
 
 ## CodeLocations
 
-// how: Map pseudo-code procedures to src/lib/mesh/domain files for implementation and colocated Vitest tests.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Map pseudo-code procedures to src/lib/mesh/domain files for implementation and colocated Vitest tests.
 
 // FILE: src/lib/mesh/domain/types.ts — domain entity and enum types
 // FILE: src/lib/mesh/domain/internal.ts — generateStableId, resolveEntityId, validateEach, isRecord helpers
@@ -461,14 +461,14 @@ PROCEDURE IMPL-MESH_DOMAIN_TYPES_FROM_DTO_MESH(dto)
 
 ## ErrorHandling
 
-// how: Propagate DomainValidationError on all fallible paths; defer exported on_error until logging IMPL exists.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Propagate DomainValidationError on all fallible paths; defer exported on_error until logging IMPL exists.
 
 CONTRACT OnError
   INPUT: context (string), error (DomainValidationError)
   OUTPUT: same DomainValidationError (unchanged)
   CONTROL: not exported from index.ts in phase 1
 
-// how: Log diagnostic context then return error unchanged without mutating partial entities (not exported phase 1).
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Log diagnostic context then return error unchanged without mutating partial entities (not exported phase 1).
 
 PROCEDURE IMPL-MESH_DOMAIN_TYPES_on_error(context, error)
   LOG DIAGNOSTIC with [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [REQ-MESH_DOMAIN_MODEL]

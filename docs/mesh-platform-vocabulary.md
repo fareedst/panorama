@@ -8,9 +8,9 @@
 
 | Kind | Tokens / artifacts |
 | --- | --- |
-| REQ | [REQ-MESH_PLATFORM](../tied/requirements/REQ-MESH_PLATFORM.yaml), [REQ-MESH_DOMAIN_MODEL](../tied/requirements/REQ-MESH_DOMAIN_MODEL.yaml), child REQs `REQ-MESH_*` in [requirements.yaml](../tied/requirements.yaml) |
-| ARCH | [ARCH-MESH_LAYERED](../tied/architecture-decisions/ARCH-MESH_LAYERED.yaml) and related `ARCH-MESH_*` |
-| IMPL | `IMPL-MESH_*` family — e.g. [IMPL-MESH_DOMAIN_TYPES](../tied/implementation-decisions/IMPL-MESH_DOMAIN_TYPES.yaml), [IMPL-MESH_RUNTIME](../tied/implementation-decisions/IMPL-MESH_RUNTIME.yaml), [IMPL-MESH_CRUD](../tied/implementation-decisions/IMPL-MESH_CRUD.yaml) |
+| REQ | [REQ-MESH_PLATFORM](../tied/requirements/REQ-MESH_PLATFORM.yaml), [REQ-MESH_DOMAIN_MODEL](../tied/requirements/REQ-MESH_DOMAIN_MODEL.yaml), [REQ-NAVIGATION_LINKS](../tied/requirements/REQ-NAVIGATION_LINKS.yaml), [REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml), child REQs `REQ-MESH_*` in [requirements.yaml](../tied/requirements.yaml) |
+| ARCH | [ARCH-MESH_LAYERED](../tied/architecture-decisions/ARCH-MESH_LAYERED.yaml), [ARCH-APP_ROUTER](../tied/architecture-decisions/ARCH-APP_ROUTER.yaml) and related `ARCH-MESH_*` |
+| IMPL | `IMPL-MESH_*` family — e.g. [IMPL-MESH_DOMAIN_TYPES](../tied/implementation-decisions/IMPL-MESH_DOMAIN_TYPES.yaml), [IMPL-MESH_RUNTIME](../tied/implementation-decisions/IMPL-MESH_RUNTIME.yaml), [IMPL-MESH_CRUD](../tied/implementation-decisions/IMPL-MESH_CRUD.yaml), [IMPL-EXTERNAL_LINKS](../tied/implementation-decisions/IMPL-EXTERNAL_LINKS.yaml) |
 | Pseudo-code | `tied/implementation-decisions/IMPL-MESH_*-pseudocode.md` |
 
 ## See also
@@ -55,7 +55,9 @@
 | **Open in File Manager** | Mesh detail restore entry (new tab) | `/files?meshId=` | `IMPL-WORKSPACE_MESH_BRIDGE` restore (server bootstrap + client rehydrate fallback) |
 | **Mesh restore pending** | Server `getMesh` miss; client rehydrates | prop `meshRestorePending` on Files page | `RESTORE_ON_FILES_PAGE` |
 | **Client mesh rehydrate** | Client `/api/mesh/:meshId` full restore | `RESTORE_LAYOUT_IN_WORKSPACE_VIEW` | `IMPL-WORKSPACE_MESH_BRIDGE` |
-| **Cross-surface link** | New-tab navigation between Mesh GUI and File Manager workspace; `target="_blank"`, `rel="noopener noreferrer"`, screen-reader disclosure |
+| **Cross-surface link** | New-tab navigation between Mesh GUI and File Manager workspace; implemented by shared **NewTabLink** component (`src/components/NewTabLink.tsx`) with `target="_blank"`, `rel="noopener noreferrer"`, and screen-reader disclosure |
+| **NewTabLink** | Reusable Next.js `Link` wrapper for cross-surface and external URLs; defaults from `config/site.yaml` → `navigation.security` ([REQ-NAVIGATION_LINKS](../tied/requirements/REQ-NAVIGATION_LINKS.yaml), [IMPL-EXTERNAL_LINKS](../tied/implementation-decisions/IMPL-EXTERNAL_LINKS.yaml)) |
+| **navigation.security** | Site config `{ target: _blank, rel: noopener noreferrer }`; verified in `config.test.ts` |
 | **Open mesh from workspace** | File Manager header nav to Mesh | `/mesh` or `/mesh/:meshId` | `open-mesh-from-workspace` |
 | **Mesh list note** | Human-readable prefix before snapshot JSON in `description` | `extractNotePrefixFromDescription` | `mesh-list-note` |
 | **Most recent save time** | Mesh record `updatedAt` (last metadata/workspace save) | `GET /api/mesh` list + detail | `mesh-list-updated-at` |
@@ -85,8 +87,9 @@
 | Archive mesh | settings, `archive-mesh-btn` | mesh archive API | `IMPL-MESH_GUI_archive` |
 | Schedule | schedule page | schedule routes | `IMPL-MESH_GUI_schedule` |
 | Workspace snapshot summary | `workspace-snapshot-summary` (note, save time, layout, shared sort, **file columns**, per-pane sort, display filters, **per-pane Compare filter** labels) | `workspaceSnapshotSummary`, `WorkspaceSnapshotSummaryList`, `fileColumnsLabel`, `pane.crossPaneVisibilityLabel` (focused-pane `summary.crossPaneVisibilityLabel` is not rendered in the list) | `WORKSPACE_SNAPSHOT_SUMMARY`, `WORKSPACE_SNAPSHOT_SUMMARY_LIST` |
-| Open workspace from mesh | `open-workspace-from-mesh` | `/files?meshId=` (new tab) | `IMPL-WORKSPACE_MESH_BRIDGE` |
-| Open mesh from workspace | `open-mesh-from-workspace` | `/mesh` or `/mesh/:meshId` (new tab) | `IMPL-WORKSPACE_MESH_BRIDGE` |
+| Open workspace from mesh | `open-workspace-from-mesh` | `/files?meshId=` (new tab via **NewTabLink**) | `IMPL-WORKSPACE_MESH_BRIDGE` |
+| Open mesh from workspace | `open-mesh-from-workspace` | `/mesh` or `/mesh/:meshId` (new tab via **NewTabLink**) | `IMPL-WORKSPACE_MESH_BRIDGE` |
+| Secure new-tab link | (component) | `NewTabLink` + `navigation.security` | `IMPL-EXTERNAL_LINKS` |
 | Update workspace from file manager | save dialog update mode | `PUT /api/mesh/:meshId/workspace` | `UPDATE_EXISTING_WORKSPACE` |
 | Diff workspace vs saved | `workspace-diff-dialog`, header Diff | `diffWorkspaceSnapshots` | `DIFF_SAVED_VS_CURRENT` |
 
@@ -110,7 +113,7 @@
 
 ## Copy coverage
 
-Mesh GUI strings: component copy in `src/app/mesh/` and related modules; workspace-bridge dialog copy in `config/files.yaml` → `copy.workspaceMesh.*` (**Save workspace as mesh**, **Diff**, restore warnings). File-manager header **Mesh Sync** link uses workspace chrome copy. This glossary is the **single source** for **Workspace snapshot** v1–v5 and **cross-surface link** terms. Owning IMPL: [IMPL-MESH_GUI](../tied/implementation-decisions/IMPL-MESH_GUI.yaml), [IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml).
+Mesh GUI strings: component copy in `src/app/mesh/` and related modules; workspace-bridge dialog copy in `config/files.yaml` → `copy.workspaceMesh.*` (**Save workspace as mesh**, **Diff**, restore warnings). File-manager header **Mesh Sync** link uses workspace chrome copy. **NewTabLink** (`src/components/NewTabLink.tsx`) and `config/site.yaml` → `navigation.security` define cross-surface link security defaults. This glossary is the **single source** for **Workspace snapshot** v1–v5, **cross-surface link**, and **NewTabLink** terms. Owning IMPL: [IMPL-MESH_GUI](../tied/implementation-decisions/IMPL-MESH_GUI.yaml), [IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml), [IMPL-EXTERNAL_LINKS](../tied/implementation-decisions/IMPL-EXTERNAL_LINKS.yaml).
 
 ## Pseudo-code block names
 
@@ -139,11 +142,14 @@ Mesh GUI strings: component copy in `src/app/mesh/` and related modules; workspa
 | Workspace snapshot summary (full) | `WORKSPACE_SNAPSHOT_SUMMARY` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Workspace snapshot summary list UI | `WORKSPACE_SNAPSHOT_SUMMARY_LIST` | IMPL-WORKSPACE_MESH_BRIDGE |
 | Per-mesh depots GUI | `IMPL-MESH_GUI_depots` | IMPL-MESH_GUI |
+| Cross-surface new-tab link | `IMPL-EXTERNAL_LINKS` | IMPL-EXTERNAL_LINKS |
 | Save workspace from UI | `STORE_FROM_WORKSPACE_UI` | IMPL-WORKSPACE_MESH_BRIDGE |
 
 ## Alphabetical index
 
-- **Cross-surface link** — new-tab navigation between Mesh GUI and File Manager workspace
+- **Cross-surface link** — new-tab navigation between Mesh GUI and File Manager workspace via **NewTabLink**
+- **NewTabLink** — shared secure new-tab link component
+- **navigation.security** — site config target/rel defaults for new-tab links
 - **Approved session handoff** — Plan → Sync via `sessionStorage`
 - **Archived mesh** — soft-archived; excluded from default list
 - **Mesh hub route** — global `/mesh/...` placeholder without `:meshId`

@@ -23,6 +23,8 @@ function file(name: string, isDirectory = false): FileStat {
 
 describe("display-filter-engine [IMPL-DISPLAY_FILTER_ENGINE]", () => {
   it("APPLY_PANE_LISTING Development Clean View hides node_modules and logs, keeps README", () => {
+    // [IMPL-DISPLAY_FILTER_ENGINE] [ARCH-DISPLAY_FILTER_ENGINE] [REQ-PANE_DISPLAY_FILTER]
+    // how: Filter raw directory listing; null spec returns all files with hiddenCount 0.
     const spec = createDevelopmentCleanViewSpec();
     const files = [
       file("README.md"),
@@ -37,6 +39,8 @@ describe("display-filter-engine [IMPL-DISPLAY_FILTER_ENGINE]", () => {
   });
 
   it("EVALUATE_ENTRY last matching rule wins for include after exclude", () => {
+    // [IMPL-DISPLAY_FILTER_ENGINE] [ARCH-DISPLAY_FILTER_ENGINE] [REQ-PANE_DISPLAY_FILTER]
+    // how: Last enabled matching rule by ascending order wins; default visible when no rule matches; target file|directory|both gates entry type.
     const spec = createDevelopmentCleanViewSpec();
     expect(evaluateEntryVisible({ name: "README.md", isDirectory: false }, spec.rules)).toBe(
       true,
@@ -64,6 +68,8 @@ describe("display-filter-engine [IMPL-DISPLAY_FILTER_ENGINE]", () => {
   });
 
   it("RECONCILE_PANE_SELECTION drops hidden marks and clamps cursor", () => {
+    // [IMPL-DISPLAY_FILTER_ENGINE] [REQ-PANE_DISPLAY_FILTER] [REQ-FILE_MARKING_WEB]
+    // how: Drop marks not in visible files; clamp cursor to [0, files.length - 1] or 0 when empty.
     const pane = reconcilePaneSelection({
       files: [file("a"), file("b")],
       cursor: 5,
@@ -74,6 +80,8 @@ describe("display-filter-engine [IMPL-DISPLAY_FILTER_ENGINE]", () => {
   });
 
   it("VALIDATE_RULE_PATTERN rejects empty pattern", () => {
+    // [IMPL-DISPLAY_FILTER_ENGINE] [REQ-PANE_DISPLAY_FILTER]
+    // how: Reject empty patterns and patterns that break globMatch probe.
     expect(validateRulePattern("  ").ok).toBe(false);
   });
 

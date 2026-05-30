@@ -1,10 +1,11 @@
-# ARCH detail — ARCH-NEXTJS_FRAMEWORK
 ARCH-NEXTJS_FRAMEWORK:
   name: Next.js 16.1 Framework Choice
   status: Active
   cross_references:
     - REQ-APP_STRUCTURE
+    - REQ-BRANDING
     - REQ-BUILD_SYSTEM
+    - REQ-METADATA
   decision: Use Next.js 16.1+ with App Router pattern
   rationale:
     why: Next.js provides best-in-class React framework with server components, optimized builds, and excellent developer experience
@@ -32,38 +33,46 @@ ARCH-NEXTJS_FRAMEWORK:
         - Smaller ecosystem
       rejected_reason: Next.js has larger ecosystem and better tooling
   implementation_approach:
-    summary: Use Next.js 16.1+ with App Router pattern
+    summary: Next.js 16.1 App Router; config-driven metadata and branding contract
     details:
-      - Configure TypeScript strict mode
-      - Enable server components by default
-      - Install Next.js 16.1+ with React 19
-      - Use App Router (src/app/ directory)
+      - Branding logo metadata in site config with optional darkInvert; home page next/image usage retired
+      - Configure TypeScript strict mode and server components by default
+      - Primary UI at /files file manager route
+      - Root layout exports metadata from getSiteConfig per REQ-METADATA
   traceability:
     requirements:
       - REQ-APP_STRUCTURE
+      - REQ-BRANDING
       - REQ-BUILD_SYSTEM
+      - REQ-METADATA
     implementation:
       - IMPL-BUILD_SCRIPTS
       - IMPL-HOME_PAGE
+      - IMPL-IMAGE_OPTIMIZATION
+      - IMPL-METADATA
       - IMPL-ROOT_LAYOUT
-    tests: []
+    tests:
+      - src/lib/config.test.ts
+      - src/test/dark-mode.test.tsx
     code_annotations:
       - REQ-APP_STRUCTURE
+      - REQ-BRANDING
   related_decisions:
     depends_on:
       - REQ-APP_STRUCTURE
     informs:
       - ARCH-APP_ROUTER
       - ARCH-REACT_VERSION
-    see_also: []
+    see_also:
+      - docs/workspace-pane-vocabulary.md
   metadata:
     created:
       date: 2025-11-08T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-06T00:00:00.000Z
+      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: Migration to v1.5.0
+      reason: LEAP — config-driven branding; retired home page Image criteria
     last_validated:
       date: 2026-02-06T00:00:00.000Z
       validator: AI Agent

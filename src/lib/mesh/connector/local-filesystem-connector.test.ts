@@ -1,4 +1,4 @@
-// [REQ-MESH_REAL_CONNECTORS]: Local connector tests — phase 28
+// [IMPL-MESH_CONNECTOR] [ARCH-MESH_LAYERED] [REQ-MESH_REAL_CONNECTORS] [REQ-MESH_PLATFORM]: Real FS implementation for local depots with basePath confinement.
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { mkdtempSync, rmSync, writeFileSync } from "fs";
@@ -6,7 +6,7 @@ import { join } from "path";
 import { tmpdir } from "os";
 import { LocalFilesystemConnector } from "./local-filesystem-connector";
 
-describe("LocalFilesystemConnector [IMPL-MESH_LOCAL_CONNECTOR]", () => {
+describe("LocalFilesystemConnector [IMPL-MESH_CONNECTOR]", () => {
   let dir: string;
   let connector: LocalFilesystemConnector;
 

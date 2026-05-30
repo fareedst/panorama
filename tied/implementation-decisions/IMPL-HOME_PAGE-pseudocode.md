@@ -1,84 +1,50 @@
 # IMPL-HOME_PAGE essence pseudocode
 
-// [IMPL-HOME_PAGE] [ARCH-SERVER_COMPONENTS] [REQ-HOME_PAGE]: Top-level Home Page Implementation: Server component that loads config and renders content
+// [IMPL-HOME_PAGE] [ARCH-SERVER_COMPONENTS] [REQ-HOME_PAGE]: Root home route — server component at src/app/page.tsx redirects visitors to the file manager (/files); sole-purpose app entry
 
 ## Summary contract
 
-// [IMPL-HOME_PAGE] [ARCH-SERVER_COMPONENTS] [REQ-HOME_PAGE]: bound module inputs, outputs, and shared data for all runtime blocks below
+// [IMPL-HOME_PAGE] [ARCH-SERVER_COMPONENTS] [REQ-HOME_PAGE]: how: / no longer renders welcome/marketing content; immediate navigation to primary application surface
 
 CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-HOME_PAGE
-  DATA: state and configuration per implementation_approach
+  INPUT: HTTP GET /
+  OUTPUT: redirect response to /files
+  DATA: next/navigation redirect helper
+  CONTROL: server component (no client state)
 
-## LoadSiteConfig
+## RootRedirectToFileManager
 
-// [IMPL-HOME_PAGE] [ARCH-SERVER_COMPONENTS] [REQ-HOME_PAGE]: Load site config
+// [IMPL-HOME_PAGE] [ARCH-SERVER_COMPONENTS] [REQ-HOME_PAGE]: how: Home() calls redirect("/files") so App Router never paints legacy home UI
 
-CONTRACT LoadSiteConfig
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT RootRedirectToFileManager
+  INPUT: none
+  OUTPUT: Next.js redirect to /files (not renderable tree in unit tests)
+  DATA: redirect from next/navigation
 
-PROCEDURE IMPL-HOME_PAGE_LoadSiteConfig(context)
-  // Load site config
-  CALL Load site config
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## RenderContentFromConfig
-
-// [IMPL-HOME_PAGE] [ARCH-SERVER_COMPONENTS] [REQ-HOME_PAGE]: Render content from config
-
-CONTRACT RenderContentFromConfig
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-HOME_PAGE_RenderContentFromConfig(context)
-  // Render content from config
-  CALL Render content from config
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## RenderLinksFromConfig
-
-// [IMPL-HOME_PAGE] [ARCH-SERVER_COMPONENTS] [REQ-HOME_PAGE]: Render links from config
-
-CONTRACT RenderLinksFromConfig
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-HOME_PAGE_RenderLinksFromConfig(context)
-  // Render links from config
-  CALL Render links from config
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## RenderLogoFromConfig
-
-// [IMPL-HOME_PAGE] [ARCH-SERVER_COMPONENTS] [REQ-HOME_PAGE]: Render logo from config
-
-CONTRACT RenderLogoFromConfig
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-HOME_PAGE_RenderLogoFromConfig(context)
-  // Render logo from config
-  CALL Render logo from config
-  ON invalid input OR missing data THEN RETURN without mutation
+PROCEDURE IMPL-HOME_PAGE_RootRedirectToFileManager()
+  IMPORT redirect from next/navigation
+  EXPORT default async or sync function Home
+  INVOKE redirect WITH path "/files"
+  ASSERT no config load, logo, or links in page.tsx (see IMPL-CONFIG_LOADER for site branding elsewhere)
 
 ## CodeLocations
 
-// [IMPL-HOME_PAGE] [ARCH-SERVER_COMPONENTS] [REQ-HOME_PAGE]: map implementing and verifying source files for this IMPL
+// [IMPL-HOME_PAGE] [ARCH-SERVER_COMPONENTS] [REQ-HOME_PAGE]: map implementing and verifying source files
 
-// FILE: src/app/page.tsx — Home page component
-// FUNCTION: Home in src/app/page.tsx
+// FILE: src/app/page.tsx — Home redirect
+// FILE: src/test/integration/app.test.tsx — documents root redirect behavior [IMPL-HOME_PAGE]
 
 ## ErrorHandling
 
-// [IMPL-HOME_PAGE] [ARCH-SERVER_COMPONENTS] [REQ-HOME_PAGE]: surface recoverable failures without breaking pane invariants
+// [IMPL-HOME_PAGE] [ARCH-SERVER_COMPONENTS] [REQ-HOME_PAGE]: how: invalid redirect target would fail at build; runtime errors propagate to framework error boundaries
 
 PROCEDURE IMPL-HOME_PAGE_on_error(context, error)
-  LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
-  ELSE propagate error to caller
+  IF redirect throws THEN propagate to Next error handling
+  ELSE no pane or workspace state involved
+
+## E2eOnlyBoundary
+
+// [IMPL-HOME_PAGE] [ARCH-SERVER_COMPONENTS] [REQ-HOME_PAGE]: how: redirect() side effect requires Playwright E2E; Vitest integration test documents contract only
+
+// e2e_only_reason: next/navigation redirect() throws NEXT_REDIRECT in unit tests; browser navigation verified in e2e/root-redirect.spec.ts
+// FILE: e2e/root-redirect.spec.ts — page.goto('/') asserts URL ends with /files

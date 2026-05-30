@@ -1,4 +1,4 @@
-// [IMPL-MESH_CREDENTIAL] [REQ-MESH_PLATFORM]: Credential references without secrets — phase 8
+// [IMPL-MESH_CREDENTIAL] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: In-memory credential reference store; L1 validation; mask for display without secrets
 
 import {
   isDomainValidationError,
@@ -16,6 +16,7 @@ export type MaskedCredential = {
 export class CredentialReferenceStore {
   private readonly refs = new Map<string, CredentialReference>();
 
+  // [IMPL-MESH_CREDENTIAL] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how: validateCredentialReference at L1; persist by id; never store secret material.
   create(attrs: unknown): CredentialReference | DomainValidationError {
     const ref = validateCredentialReference(attrs);
     if (isDomainValidationError(ref)) {
@@ -25,16 +26,19 @@ export class CredentialReferenceStore {
     return ref;
   }
 
+  // [IMPL-MESH_CREDENTIAL] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how: Read-through lookup by credential id.
   get(id: string): CredentialReference | undefined {
     return this.refs.get(id);
   }
 
+  // [IMPL-MESH_CREDENTIAL] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how: No-op in store; depot service clears depot association when detaching references from a mesh depot.
   detach(meshId: string, depotId: string): void {
     void meshId;
     void depotId;
     // references are shared; detach only clears depot association in depot service
   }
 
+  // [IMPL-MESH_CREDENTIAL] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how: Build display DTO with redacted placeholder; omit secret fields entirely.
   mask(ref: CredentialReference): MaskedCredential {
     return {
       id: ref.id,
@@ -43,6 +47,7 @@ export class CredentialReferenceStore {
     };
   }
 
+  // [IMPL-MESH_CREDENTIAL] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how: Return all stored credential references.
   list(): CredentialReference[] {
     return [...this.refs.values()];
   }

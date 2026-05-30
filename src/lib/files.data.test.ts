@@ -37,6 +37,7 @@ import { formatSize } from "./files.utils";
 
 const mockedFs = vi.mocked(fs);
 
+// [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-DIRECTORY_NAVIGATION] [REQ-FILE_OPERATIONS]: how: normalize path, readdir withFileTypes, stat each entry into FileStat, skip unstatable entries, return array (empty on top-level failure)
 describe("listDirectory [REQ_DIRECTORY_NAVIGATION]", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -165,6 +166,7 @@ describe("getUserHomeDirectory [REQ_DIRECTORY_NAVIGATION]", () => {
   });
 });
 
+// [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_OPERATIONS]: how: copyFile uses fs.copyFile then preserveCopyAttributes; moveFile/renameFile use fs.rename; deleteFile branches file vs recursive directory
 describe("File Operations [REQ_FILE_OPERATIONS]", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -234,6 +236,7 @@ describe("File Operations [REQ_FILE_OPERATIONS]", () => {
   });
 });
 
+// [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_LISTING]: how: in-place sort by SortType enum (Name, NameRev, Size, SizeRev, Mtime, MtimeRev, Ext, ExtRev) with optional directory priority
 describe("sortFiles [REQ_FILE_LISTING]", () => {
   let files: FileStat[];
   
@@ -346,6 +349,7 @@ describe("sortFiles [REQ_FILE_LISTING]", () => {
   });
 });
 
+// [IMPL-COMPARISON_INDEX] [ARCH-COMPARISON_INDEX] [REQ-CROSS_PANE_COMPARISON]: how: single pass over pane file lists building Map filename to parallel panes/sizes/mtimes arrays
 describe("buildComparisonIndex [REQ_CROSS_PANE_COMPARISON]", () => {
   it("should build comparison index", () => {
     const pane1: FileStat[] = [
@@ -525,6 +529,7 @@ describe("formatSize [REQ_FILE_LISTING]", () => {
   });
 });
 
+// [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_OPERATIONS]: how: copyFile uses fs.copyFile then preserveCopyAttributes; moveFile/renameFile use fs.rename; deleteFile branches file vs recursive directory
 describe("File Operations [REQ_FILE_OPERATIONS]", () => {
   beforeEach(() => {
     vi.clearAllMocks();

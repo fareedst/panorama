@@ -26,7 +26,11 @@ IMPL-MESH_RUNTIME:
     architecture:
       - ARCH-MESH_LAYERED
     requirements:
+      - REQ-MESH_AUTH
+      - REQ-MESH_E2E_RELEASE
+      - REQ-MESH_HARDENING
       - REQ-MESH_PLATFORM
+      - REQ-MESH_REAL_CONNECTORS
     tests:
       - src/lib/mesh/services/services.integration.test.ts
     code_annotations:
@@ -43,6 +47,6 @@ IMPL-MESH_RUNTIME:
       date: "2026-05-19T00:00:00.000Z"
       author: AI Agent
     last_updated:
-      date: "2026-05-19T00:00:00.000Z"
+      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: Mesh fortification LEAP
+      reason: Pseudocode retrofit from production code and tests

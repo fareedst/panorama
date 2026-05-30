@@ -44,7 +44,7 @@ const mockCopy = {
   subtitle: "Browse and manage server files",
 };
 
-// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: Top-level React State Mark Management: React useState with Set<string> per pane, keyboard and mouse handlers
+// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: Per-pane Set<string> marks in WorkspaceView; keyboard via keybindings; checkbox in FilePane
 describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB]", () => {
   const mockFiles: FileStat[] = [
     {
@@ -94,10 +94,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
     vi.restoreAllMocks();
   });
 
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: toggle single file mark on m key or checkbox click via handleToggleMark
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: toggle single file mark on m key or checkbox click via handleToggleMark
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: toggle single file mark on m key or checkbox click via handleToggleMark
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: toggle single file mark on m key or checkbox click via handleToggleMark
+  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: m key and checkbox call handleToggleMark without cursor move
   describe("Mark Toggle - Individual Files [IMPL-FILE_MARKING]", () => {
     it("should mark file when 'm' key pressed [REQ-FILE_MARKING_WEB]", async () => {
       render(
@@ -176,10 +173,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
     });
   });
 
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: mark focused file then advance cursor down one row (Space key)
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: mark focused file then advance cursor down one row (Space key)
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: mark focused file then advance cursor down one row (Space key)
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: mark focused file then advance cursor down one row (Space key)
+  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: Space keybinding mark.toggle toggles visible cursor file then advances cursor if not last
   describe("Mark with Space Key [IMPL-FILE_MARKING]", () => {
     it("should mark file and move cursor down when Space pressed [REQ-FILE_MARKING_WEB]", async () => {
       render(
@@ -238,10 +232,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
     });
   });
 
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: mark every file in pane on Shift+M via handleMarkAll
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: mark every file in pane on Shift+M via handleMarkAll
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: mark every file in pane on Shift+M via handleMarkAll
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: mark every file in pane on Shift+M via handleMarkAll
+  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB] [REQ-PANE_DISPLAY_FILTER]: how: Shift+M mark.all sets marks to all names in displayFilesByPane when filter active
   describe("Mark All Files [IMPL-FILE_MARKING]", () => {
     it("should mark all files when Shift+M pressed [REQ-FILE_MARKING_WEB]", async () => {
       render(
@@ -289,10 +280,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
     });
   });
 
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: symmetric difference of marks on Ctrl+M via handleInvertMarks
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: symmetric difference of marks on Ctrl+M via handleInvertMarks
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: symmetric difference of marks on Ctrl+M via handleInvertMarks
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: symmetric difference of marks on Ctrl+M via handleInvertMarks
+  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB] [REQ-PANE_DISPLAY_FILTER]: how: Ctrl+M mark.invert symmetric difference over visible file names only
   describe("Invert Marks [IMPL-FILE_MARKING]", () => {
     it("should invert marks when Ctrl+M pressed [REQ-FILE_MARKING_WEB]", async () => {
       render(
@@ -376,10 +364,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
     });
   });
 
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: remove all marks on Escape via handleClearMarks
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: remove all marks on Escape via handleClearMarks
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: remove all marks on Escape via handleClearMarks
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: remove all marks on Escape via handleClearMarks
+  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: mark.clear replaces marks with empty Set
   describe("Clear Marks [IMPL-FILE_MARKING]", () => {
     it("should clear all marks when Escape pressed [REQ-FILE_MARKING_WEB]", async () => {
       render(
@@ -431,10 +416,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
     });
   });
 
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: name-based Set survives re-sort and refresh per ARCH-MARKING_STATE
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: name-based Set survives re-sort and refresh per ARCH-MARKING_STATE
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: name-based Set survives re-sort and refresh per ARCH-MARKING_STATE
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: name-based Set survives re-sort and refresh per ARCH-MARKING_STATE
+  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: marks keyed by filename survive sort/filter/reload; pruned when name absent from listing
   describe("Mark Persistence [IMPL-FILE_MARKING] [ARCH-MARKING_STATE]", () => {
     it("should persist marks by filename (name-based persistence) [REQ-FILE_MARKING_WEB]", async () => {
       render(
@@ -460,11 +442,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
     });
   });
 
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: checkbox and bg-marked styling in FilePane per theme
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: checkbox and bg-marked styling in FilePane per theme
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: checkbox and bg-marked styling in FilePane per theme
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: checkbox and bg-marked styling in FilePane per theme
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: checkbox and bg-marked styling in FilePane per theme
+  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: FilePane checkbox checked when marked; row bg-yellow when marked and not comparison-colored
   describe("Mark Visual Feedback [IMPL-FILE_MARKING]", () => {
     it("should display checkboxes for all files [REQ-FILE_MARKING_WEB]", async () => {
       render(
@@ -539,10 +517,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
     });
   });
 
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: mark keys on empty listing produce no footer count and no error
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: mark keys on empty listing produce no footer count and no error
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: mark keys on empty listing produce no footer count and no error
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: mark keys on empty listing produce no footer count and no error
+  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: mark keybindings on empty visible list do not throw; footer omits marked segment when no files
   describe("Empty Directory Edge Cases [IMPL-FILE_MARKING]", () => {
     it("should not show marked count for empty directory [REQ-FILE_MARKING_WEB]", async () => {
       render(
@@ -569,10 +544,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
     });
   });
 
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: compose mark-all, invert, clear, and toggle in one session
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: compose mark-all, invert, clear, and toggle in one session
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: compose mark-all, invert, clear, and toggle in one session
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: compose mark-all, invert, clear, and toggle in one session
+  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: sequential mark, invert, clear, and mark-all workflows in one session
   describe("Multi-Mark Workflow [IMPL-FILE_MARKING]", () => {
     it("should support marking workflow: mark some, invert, clear [REQ-FILE_MARKING_WEB]", async () => {
       render(
@@ -636,10 +608,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
     });
   });
 
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: preserve marks when cursor moves with arrow keys
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: preserve marks when cursor moves with arrow keys
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: preserve marks when cursor moves with arrow keys
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: preserve marks when cursor moves with arrow keys
+  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: navigate.up/down does not clear marks
   describe("Mark with Navigation [IMPL-FILE_MARKING]", () => {
     it("should preserve mark state while navigating cursor [REQ-FILE_MARKING_WEB]", async () => {
       render(
@@ -674,8 +643,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
     });
   });
 
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: mark focused file then advance cursor down one row (Space key)
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: initialize per-pane marks as Set of filenames in PaneState
+  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: Space keybinding mark.toggle toggles visible cursor file then advances cursor if not last
   describe("Space Key Behavior [IMPL-FILE_MARKING]", () => {
     it("should mark and advance with Space key [REQ-FILE_MARKING_WEB]", async () => {
       render(
@@ -712,10 +680,7 @@ describe("WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB
     });
   });
 
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: DISPLAY footer as [markedCount/totalCount]
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: DISPLAY footer as [markedCount/totalCount] with highlight class when count greater than zero
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: DISPLAY footer as [markedCount/totalCount] with highlight class when count greater than zero
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: DISPLAY footer as [markedCount/totalCount] with highlight class when count greater than zero
+  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: footer shows [{marks.size} marked] with accent class when marks.size > 0
   describe("Marked Count Display [IMPL-FILE_MARKING]", () => {
     it("should not display marked count when zero marks [REQ-FILE_MARKING_WEB]", async () => {
       render(
@@ -854,9 +819,6 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
   });
 
   // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: toggle linkedMode on link.toggle keybinding and L key
-  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: toggle linkedMode on link.toggle keybinding and L key
-  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: toggle linkedMode on link.toggle keybinding and L key
-  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: toggle linkedMode on link.toggle keybinding and L key
   describe("Link Toggle [IMPL-LINKED_NAV]", () => {
     it("should toggle linked mode with L key [REQ-LINKED_PANES]", async () => {
       render(
@@ -889,9 +851,6 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
     });
   });
 
-  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: sync cursor to same filename in all panes when linkedMode ON
-  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: sync cursor to same filename in all panes when linkedMode ON
-  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: sync cursor to same filename in all panes when linkedMode ON
   // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: sync cursor to same filename in all panes when linkedMode ON
   describe("Cursor Synchronization [IMPL-LINKED_NAV]", () => {
     it("should sync cursor to same filename when linked mode ON [REQ-LINKED_PANES]", async () => {
@@ -1067,9 +1026,6 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
   });
 
   // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: apply sort criterion direction dirsFirst to all panes when linked
-  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: apply sort criterion direction dirsFirst to all panes when linked
-  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: apply sort criterion direction dirsFirst to all panes when linked
-  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: apply sort criterion direction dirsFirst to all panes when linked
   describe("Sort Synchronization [IMPL-LINKED_NAV]", () => {
     it("should sync sort settings to all panes when linked [REQ-LINKED_PANES]", async () => {
       const sortKeybindings = [
@@ -1099,9 +1055,6 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
     });
   });
 
-  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: disable linkedMode when partial downward navigation failure
-  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: disable linkedMode when partial downward navigation failure
-  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: disable linkedMode when partial downward navigation failure
   // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: disable linkedMode when partial downward navigation failure
   describe("Auto-Disable on Divergence [IMPL-LINKED_NAV]", () => {
     it("should auto-disable linked mode when navigation diverges [REQ-LINKED_PANES]", async () => {
@@ -1185,9 +1138,6 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
     });
   });
 
-  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: navigateToParent calls handleNavigate so Backspace and Parent button sync linked panes
-  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: navigateToParent calls handleNavigate so Backspace and Parent button sync linked panes
-  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: navigateToParent calls handleNavigate so Backspace and Parent button sync linked panes
   // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: navigateToParent calls handleNavigate so Backspace and Parent button sync linked panes
   describe("Parent Navigation Sync [IMPL-LINKED_NAV]", () => {
     it("should navigate all panes to parent when linked [REQ-LINKED_PANES]", async () => {
@@ -1501,9 +1451,6 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
   });
 
   // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: suppress linked UI when only one pane even if linkedMode true
-  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: suppress linked UI when only one pane even if linkedMode true
-  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: suppress linked UI when only one pane even if linkedMode true
-  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: suppress linked UI when only one pane even if linkedMode true
   describe("Single Pane Mode [IMPL-LINKED_NAV]", () => {
     it("should not show linked indicator with single pane [REQ-LINKED_PANES]", async () => {
       render(
@@ -1523,9 +1470,6 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
     });
   });
 
-  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: initialize linkedMode from layout.defaultLinkedMode defaulting true
-  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: initialize linkedMode from layout.defaultLinkedMode defaulting true
-  // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: initialize linkedMode from layout.defaultLinkedMode defaulting true
   // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: initialize linkedMode from layout.defaultLinkedMode defaulting true
   describe("Config-Driven Linked Mode [IMPL-LINKED_NAV]", () => {
     it("should initialize linked mode from config as true [REQ-LINKED_PANES]", async () => {
@@ -1583,9 +1527,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
     });
   });
 
-  // [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION]: switch focusIndex when user clicks pane via FilePane onFocusRequest onMouseDown
-  // [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION]: switch focusIndex when user clicks pane via FilePane onFocusRequest onMouseDown
-  // [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION]: switch focusIndex when user clicks pane via FilePane onFocusRequest onMouseDown
+  // [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION]: how — switch focusIndex when user clicks pane via FilePane onFocusRequest onMouseDown; file row clicks bubble to pane container.
   describe("Mouse Click Focus [IMPL-MOUSE_SUPPORT]", () => {
     it("should switch focus when clicking a non-focused pane [REQ-MOUSE_INTERACTION]", async () => {
       // Set up multi-pane view with 2 panes

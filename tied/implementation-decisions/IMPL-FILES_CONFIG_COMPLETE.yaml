@@ -66,7 +66,8 @@ IMPL-FILES_CONFIG_COMPLETE:
     requirements:
       - REQ-FILES_CONFIG_COMPLETE
       - REQ-CONFIG_DRIVEN_FILE_MANAGER
-    tests: []
+    tests:
+      - src/lib/config.test.ts
     code_annotations:
       - IMPL-FILES_CONFIG_COMPLETE
       - REQ-FILES_CONFIG_COMPLETE
@@ -84,9 +85,9 @@ IMPL-FILES_CONFIG_COMPLETE:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-19T16:06:42.636Z"
+      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: IMPL essence_pseudocode retrofit all 58
+      reason: Retrofit essence_pseudocode from tests/code; align block-lead comments
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

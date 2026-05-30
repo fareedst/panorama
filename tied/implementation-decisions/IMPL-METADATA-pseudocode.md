@@ -1,70 +1,31 @@
 # IMPL-METADATA essence pseudocode
 
-// [IMPL-METADATA] [ARCH-NEXTJS_FRAMEWORK] [REQ-METADATA]: Top-level Metadata Implementation: Export metadata object from layout
-
-## Summary contract
-
-// [IMPL-METADATA] [ARCH-NEXTJS_FRAMEWORK] [REQ-METADATA]: bound module inputs, outputs, and shared data for all runtime blocks below
-
-CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-METADATA
-  DATA: state and configuration per implementation_approach
+// [IMPL-METADATA] [ARCH-NEXTJS_FRAMEWORK] [REQ-METADATA] [REQ-CONFIG_DRIVEN_UI]: Export Next.js Metadata from root layout driven by site config
 
 ## ExportMetadataConstant
 
-// [IMPL-METADATA] [ARCH-NEXTJS_FRAMEWORK] [REQ-METADATA]: Export metadata constant
+// [IMPL-METADATA] [ARCH-NEXTJS_FRAMEWORK] [REQ-METADATA] [REQ-CONFIG_DRIVEN_UI]: how — call getSiteConfig once at module load; export metadata constant with title and description for Next.js Metadata API.
 
 CONTRACT ExportMetadataConstant
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+  INPUT: config/site.yaml via getSiteConfig()
+  OUTPUT: exported metadata: Metadata object
+  DATA: siteConfig.metadata.title, siteConfig.metadata.description
 
-PROCEDURE IMPL-METADATA_ExportMetadataConstant(context)
-  // Export metadata constant
-  CALL Export metadata constant
-  ON invalid input OR missing data THEN RETURN without mutation
+PROCEDURE IMPL-METADATA_ExportMetadataConstant()
+  DATA siteConfig = getSiteConfig()
+  EXPORT metadata = { title: siteConfig.metadata.title, description: siteConfig.metadata.description }
 
-## IncludeTitleAndDescription
+## MetadataTestContract
 
-// [IMPL-METADATA] [ARCH-NEXTJS_FRAMEWORK] [REQ-METADATA]: Include title and description
+// [IMPL-METADATA] [ARCH-NEXTJS_FRAMEWORK] [REQ-METADATA] [REQ-CONFIG_DRIVEN_UI]: how — tests assert exported metadata matches live site config values and required string fields exist.
 
-CONTRACT IncludeTitleAndDescription
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT MetadataTestContract
+  INPUT: imported metadata from layout module, getSiteConfig()
+  OUTPUT: passing assertions
+  DATA: site.metadata.title, site.metadata.description
 
-PROCEDURE IMPL-METADATA_IncludeTitleAndDescription(context)
-  // Include title
-  CALL Include title
-  // description
-  CALL description
-
-## LoadFromConfig
-
-// [IMPL-METADATA] [ARCH-NEXTJS_FRAMEWORK] [REQ-METADATA]: Load from config
-
-CONTRACT LoadFromConfig
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-METADATA_LoadFromConfig(context)
-  // Load from config
-  CALL Load from config
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## CodeLocations
-
-// [IMPL-METADATA] [ARCH-NEXTJS_FRAMEWORK] [REQ-METADATA]: map implementing and verifying source files for this IMPL
-
-// FILE: src/app/layout.tsx — Metadata export
-
-## ErrorHandling
-
-// [IMPL-METADATA] [ARCH-NEXTJS_FRAMEWORK] [REQ-METADATA]: surface recoverable failures without breaking pane invariants
-
-PROCEDURE IMPL-METADATA_on_error(context, error)
-  LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
-  ELSE propagate error to caller
+PROCEDURE IMPL-METADATA_MetadataTestContract()
+  ASSERT metadata defined
+  ASSERT metadata.title equals site.metadata.title
+  ASSERT metadata.description equals site.metadata.description
+  ASSERT typeof title and description are string

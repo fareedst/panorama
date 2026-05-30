@@ -67,7 +67,8 @@ IMPL-LOGGER_MODULE:
       - ARCH-LOGGING_SYSTEM
     requirements:
       - REQ-LOGGING_SYSTEM
-    tests: []
+    tests:
+      - src/lib/logger.test.ts — Log Levels, Metadata, File Creation, Synchronous vs Asynchronous Writing describes
     code_annotations:
       - IMPL-LOGGER_MODULE
   related_decisions:
@@ -81,9 +82,9 @@ IMPL-LOGGER_MODULE:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-19T16:06:42.636Z"
+      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: IMPL essence_pseudocode retrofit all 58
+      reason: Retrofit traceability from logger.test.ts
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

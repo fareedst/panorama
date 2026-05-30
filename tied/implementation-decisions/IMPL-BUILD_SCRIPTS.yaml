@@ -17,8 +17,9 @@ IMPL-BUILD_SCRIPTS:
     summary: Define npm scripts in package.json
     details:
       - 'build: next build'
+      - 'clean: remove build artifacts and tsbuildinfo'
       - 'dev: next dev'
-      - 'lint: next lint'
+      - 'lint: eslint'
       - 'start: next start'
       - 'test: vitest run'
       - 'test:coverage: vitest run --coverage'
@@ -26,14 +27,14 @@ IMPL-BUILD_SCRIPTS:
   code_locations:
     files:
       - path: package.json
-        description: NPM scripts
-    functions: []
+        description: NPM scripts (dev, build, start, lint, test, test:coverage, test:watch, clean)
   traceability:
     architecture:
       - ARCH-NEXTJS_FRAMEWORK
     requirements:
       - REQ-BUILD_SYSTEM
-    tests: []
+    tests:
+      - src/test/integration/app.test.tsx
     code_annotations:
       - REQ-BUILD_SYSTEM
   related_decisions:
@@ -46,9 +47,9 @@ IMPL-BUILD_SCRIPTS:
       date: 2025-11-08T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-19T16:06:42.636Z"
+      date: "2026-05-29T00:00:00.000Z"
       author: AI Agent
-      reason: IMPL essence_pseudocode retrofit all 58
+      reason: Retrofit essence_pseudocode from package.json and app.test.tsx
     last_validated:
       date: 2026-02-06T00:00:00.000Z
       validator: AI Agent

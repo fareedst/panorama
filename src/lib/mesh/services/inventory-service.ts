@@ -1,4 +1,4 @@
-// [IMPL-MESH_INVENTORY] [REQ-MESH_PLATFORM]: Depot inventory scan — phase 9
+// [IMPL-MESH_INVENTORY] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: Read-only depot inventory scan via connector health check, listing, and per-file stat metadata.
 
 import type { Connector, ConnectorError } from "../connector/types";
 import type { Depot } from "../domain";
@@ -22,6 +22,7 @@ function isConnectorError(r: unknown): r is ConnectorError {
 }
 
 export class InventoryService {
+  // [IMPL-MESH_INVENTORY] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — verify connector health; list entries from depot root; collect directory rows and file size/mtime from stat (skip stat failures).
   scanDepot(depot: Depot, connector: Connector): InventorySnapshot | ConnectorError {
     const health = connector.healthCheck();
     if (!health.ok) {

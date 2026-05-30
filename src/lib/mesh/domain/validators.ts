@@ -78,7 +78,7 @@ const CONFLICT_TYPES: readonly ConflictType[] = [
 const CONFLICT_STATUSES: readonly ConflictStatus[] = ["pending", "resolved", "dismissed"];
 const FILTER_MODES: readonly FilterMode[] = ["include", "exclude"];
 
-// how: Build structured validation errors with path, code, and message for all VALIDATE_* reject paths.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Build structured validation errors with path, code, and message for all VALIDATE_* reject paths.
 
 export function makeValidationError(
   fieldPath: string,
@@ -95,7 +95,7 @@ export function makeValidationError(
   return { code, path: fieldPath, message };
 }
 
-// how: Supply non-destructive policy defaults for policy_has_default_safe_values and mesh policy omission.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Supply non-destructive policy defaults for policy_has_default_safe_values and mesh policy omission.
 
 export function defaultPolicy(): Policy {
   return {
@@ -106,7 +106,7 @@ export function defaultPolicy(): Policy {
   };
 }
 
-// how: Validate optional inline policy fields on mesh DTOs before accepting a Mesh.policy value.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Validate optional inline policy fields on mesh DTOs before accepting a Mesh.policy value.
 
 export function validatePolicy(attrs: unknown): Policy | DomainValidationError {
   if (!isRecord(attrs)) {
@@ -159,7 +159,7 @@ function resolveMeshPolicy(policy: unknown): Policy | DomainValidationError {
   return isPresent(policy) ? validatePolicy(policy) : defaultPolicy();
 }
 
-// how: Validate record shape; assign id via resolveEntityId when omitted; forbid secret payloads on domain references.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Validate record shape; assign id via resolveEntityId when omitted; forbid secret payloads on domain references.
 
 export function validateCredentialReference(
   attrs: unknown,
@@ -184,7 +184,7 @@ export function validateCredentialReference(
   return { id: resolveEntityId(attrs), label: attrs.label };
 }
 
-// how: Enforce depot_requires_name_kind_and_root and DepotKind enum for each depot in a mesh.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Enforce depot_requires_name_kind_and_root and DepotKind enum for each depot in a mesh.
 
 export function validateDepot(attrs: unknown): Depot | DomainValidationError {
   if (!isRecord(attrs)) {
@@ -209,7 +209,7 @@ export function validateDepot(attrs: unknown): Depot | DomainValidationError {
   };
 }
 
-// how: Enforce sync_link_requires_valid_source_and_target_depots against mesh depot id set; reject self-loops.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Enforce sync_link_requires_valid_source_and_target_depots against mesh depot id set; reject self-loops.
 
 export function validateSyncLink(
   attrs: unknown,
@@ -256,7 +256,7 @@ export function validateSyncLink(
   };
 }
 
-// how: Orchestrate mesh_requires_name, zero-or-more depots, ordered depot-then-link validation, and policy default or VALIDATE_POLICY.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Orchestrate mesh_requires_name, zero-or-more depots, ordered depot-then-link validation, and policy default or VALIDATE_POLICY.
 
 export function validateMesh(attrs: unknown): Mesh | DomainValidationError {
   if (!isRecord(attrs)) {
@@ -295,7 +295,7 @@ export function validateMesh(attrs: unknown): Mesh | DomainValidationError {
   };
 }
 
-// how: Implement sync_session_requires_mesh_snapshot with deep clone and immutable snapshot metadata.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Implement sync_session_requires_mesh_snapshot with deep clone and immutable snapshot metadata.
 
 export function createMeshSnapshot(mesh: Mesh): MeshSnapshot {
   return {
@@ -305,7 +305,7 @@ export function createMeshSnapshot(mesh: Mesh): MeshSnapshot {
   };
 }
 
-// how: Enforce sync_session_requires_mesh_snapshot and valid SessionState when state is provided.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Enforce sync_session_requires_mesh_snapshot and valid SessionState when state is provided.
 
 export function validateSyncSession(attrs: unknown): SyncSession | DomainValidationError {
   if (!isRecord(attrs)) {
@@ -347,7 +347,7 @@ export function validateSyncSession(attrs: unknown): SyncSession | DomainValidat
   };
 }
 
-// how: Validate atomic SyncOperation kind and sourcePath for change-set membership.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Validate atomic SyncOperation kind and sourcePath for change-set membership.
 
 export function validateSyncOperation(
   attrs: unknown,
@@ -382,7 +382,7 @@ export function validateSyncOperation(
   };
 }
 
-// how: Preserve change_set_contains_ordered_operations by validating each operation in list order.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Preserve change_set_contains_ordered_operations by validating each operation in list order.
 
 export function validateChangeSet(attrs: unknown): ChangeSet | DomainValidationError {
   if (!isRecord(attrs) || !Array.isArray(attrs.operations)) {
@@ -399,7 +399,7 @@ export function validateChangeSet(attrs: unknown): ChangeSet | DomainValidationE
   return { id: resolveEntityId(attrs), operations };
 }
 
-// how: Enforce conflict_has_type_participants_and_status with enum checks on type and status.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Enforce conflict_has_type_participants_and_status with enum checks on type and status.
 
 export function validateConflict(attrs: unknown): Conflict | DomainValidationError {
   if (!isRecord(attrs)) {
@@ -433,7 +433,7 @@ export function validateConflict(attrs: unknown): Conflict | DomainValidationErr
   };
 }
 
-// how: Phase-1 Filter shape (pattern + include/exclude mode) for later policy engine integration.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Phase-1 Filter shape (pattern + include/exclude mode) for later policy engine integration.
 
 export function validateFilter(attrs: unknown): Filter | DomainValidationError {
   if (!isRecord(attrs)) {
@@ -448,7 +448,7 @@ export function validateFilter(attrs: unknown): Filter | DomainValidationError {
   return { pattern: attrs.pattern, mode: attrs.mode };
 }
 
-// how: Validate SyncEvent audit fields (timestamp, type, subject) for future event-log IMPL.
+// [IMPL-MESH_DOMAIN_TYPES] [ARCH-MESH_DOMAIN] [ARCH-MESH_LAYERED] [REQ-MESH_DOMAIN_MODEL] [REQ-MESH_PLATFORM]: how: Validate SyncEvent audit fields (timestamp, type, subject) for future event-log IMPL.
 
 export function validateSyncEvent(attrs: unknown): SyncEvent | DomainValidationError {
   if (!isRecord(attrs)) {

@@ -28,3 +28,11 @@ IMPL-MESH_INVENTORY:
     created:
       date: "2026-05-19T00:00:00.000Z"
       author: AI Agent
+    last_updated:
+      date: "2026-05-30T00:00:00.000Z"
+      author: AI Agent
+  code_locations:
+    files:
+      - path: src/lib/mesh/services/inventory-service.ts
+        description: Depot inventory scan service
+    functions: []

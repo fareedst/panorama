@@ -6,10 +6,7 @@ import fs from "fs/promises";
 import path from "path";
 import { logger } from "@/lib/logger";
 
-/**
- * Detect file type based on extension
- * [IMPL-FILE_PREVIEW] [REQ-FILE_PREVIEW]
- */
+// [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW]: how: detectFileType maps extension to text, image, archive, or binary
 function detectFileType(filePath: string): "text" | "image" | "archive" | "binary" {
   const ext = path.extname(filePath).toLowerCase();
   
@@ -32,11 +29,7 @@ function detectFileType(filePath: string): "text" | "image" | "archive" | "binar
   return "binary";
 }
 
-/**
- * GET /api/files/preview?path=...&type=text|image|archive
- * Returns preview content for a file
- * [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW]
- */
+// [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW]: how: GET /api/files/preview?path=&type= branches by detected or requested type
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;

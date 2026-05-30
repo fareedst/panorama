@@ -1,110 +1,92 @@
 # IMPL-FILES_CONFIG_COMPLETE essence pseudocode
 
-// [IMPL-FILES_CONFIG_COMPLETE] [ARCH-CONFIG_DRIVEN_UI] [REQ-FILES_CONFIG_COMPLETE] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: Top-level Complete File Manager Configuration Implementation: Extended YAML configuration files with new sections (layout, startup, fileTypes), updated TypeScript types, added defaults, and provided helper functions for configuration access
+// [IMPL-FILES_CONFIG_COMPLETE] [ARCH-CONFIG_DRIVEN_UI] [REQ-FILES_CONFIG_COMPLETE] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: Complete file-manager YAML configuration — layout/startup/fileTypes types, extended files.yaml and theme.yaml, DEFAULT_FILES_CONFIG defaults, getFileTypeConfig pattern matcher
 
 ## Summary contract
 
-// [IMPL-FILES_CONFIG_COMPLETE] [ARCH-CONFIG_DRIVEN_UI] [REQ-FILES_CONFIG_COMPLETE] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: bound module inputs, outputs, and shared data for all runtime blocks below
+// [IMPL-FILES_CONFIG_COMPLETE] [ARCH-CONFIG_DRIVEN_UI] [REQ-FILES_CONFIG_COMPLETE] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: builds on IMPL-FILES_CONFIG with layout, startup, marking/help/commandPalette copy, and theme fileTypes for icons
 
 CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-FILES_CONFIG_COMPLETE
-  DATA: state and configuration per implementation_approach
+  INPUT: config/files.yaml, theme from getThemeConfig(), filename, isDirectory flag
+  OUTPUT: complete FilesConfig, { icon, iconClass } per file row
+  DATA: FileTypeConfig patterns as glob-to-regex, directory and file defaults
+  CONTROL: first matching type wins; case-insensitive pattern test
 
-## AddedFileTypeConfigFilesLayoutConfigFilesStartupConfig
+## ExtendedTypes
 
-// [IMPL-FILES_CONFIG_COMPLETE] [ARCH-CONFIG_DRIVEN_UI] [REQ-FILES_CONFIG_COMPLETE] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: Added FileTypeConfig, FilesLayoutConfig, FilesStartupConfig TypeScript interfaces
+// [IMPL-FILES_CONFIG_COMPLETE] [ARCH-CONFIG_DRIVEN_UI] [REQ-FILES_CONFIG_COMPLETE] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: FileTypeConfig, FilesLayoutConfig, FilesStartupConfig extend config.types.ts; FilesThemeConfig.fileTypes record
 
-CONTRACT AddedFileTypeConfigFilesLayoutConfigFilesStartupConfig
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT ExtendedTypes
+  INPUT: schema definitions
+  OUTPUT: typed layout.default, startup.mode/paths, fileTypes with patterns
+  DATA: config.types.ts interfaces
 
-PROCEDURE IMPL-FILES_CONFIG_COMPLETE_AddedFileTypeConfigFilesLayoutConfigFilesStartupConfig(context)
-  // Added FileTypeConfig
-  CALL Added FileTypeConfig
-  // FilesLayoutConfig
-  CALL FilesLayoutConfig
-  // FilesStartupConfig TypeScript interfaces
-  CALL FilesStartupConfig TypeScript interfaces
+PROCEDURE IMPL-FILES_CONFIG_COMPLETE_ExtendedTypes()
+  DEFINE FileTypeConfig { icon, iconClass, patterns? }
+  DEFINE FilesLayoutConfig { default, defaultPaneCount, allowPaneManagement, maxPanes, defaultLinkedMode }
+  DEFINE FilesStartupConfig { mode, paths?, rememberLastLocations? }
+  EXTEND FilesThemeConfig with fileTypes record
 
-## ExtendedConfigFilesYaml
+## ExtendedFilesYaml
 
-// [IMPL-FILES_CONFIG_COMPLETE] [ARCH-CONFIG_DRIVEN_UI] [REQ-FILES_CONFIG_COMPLETE] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: Extended config/files.yaml with marking/help/commandPalette copy, layout preferences, startup configuration
+// [IMPL-FILES_CONFIG_COMPLETE] [ARCH-CONFIG_DRIVEN_UI] [REQ-FILES_CONFIG_COMPLETE] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: config/files.yaml adds marking, help, commandPalette, layout, startup, columns, keybindings beyond base copy section
 
-CONTRACT ExtendedConfigFilesYaml
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT ExtendedFilesYaml
+  INPUT: config/files.yaml on disk
+  OUTPUT: merged FilesConfig with layout and startup sections populated
+  DATA: DEFAULT_FILES_CONFIG layout { default tile, defaultPaneCount 3, maxPanes 0 }, startup { mode home, paths pane1-3 }
 
-PROCEDURE IMPL-FILES_CONFIG_COMPLETE_ExtendedConfigFilesYaml(context)
-  // Extended config/files.yaml with marking/help/commandPalette copy
-  CALL Extended config/files.yaml with marking/help/commandPalette copy
-  // layout preferences
-  CALL layout preferences
-  // startup configuration
-  CALL startup configuration
+PROCEDURE IMPL-FILES_CONFIG_COMPLETE_ExtendedFilesYaml()
+  loaded := merge files.yaml into DEFAULT_FILES_CONFIG
+  ASSERT copy.marking, copy.help, copy.commandPalette strings available
+  ASSERT layout.default, startup.mode, startup.paths present after merge
 
-## ExtendedConfigThemeYaml
+## ExtendedThemeYaml
 
-// [IMPL-FILES_CONFIG_COMPLETE] [ARCH-CONFIG_DRIVEN_UI] [REQ-FILES_CONFIG_COMPLETE] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: Extended config/theme.yaml with fileTypes section (9 common types with icon/color/patterns)
+// [IMPL-FILES_CONFIG_COMPLETE] [ARCH-CONFIG_DRIVEN_UI] [REQ-FILES_CONFIG_COMPLETE] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: theme.files.fileTypes defines directory, file defaults, and typed patterns (code, image, archive, etc.)
 
-CONTRACT ExtendedConfigThemeYaml
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT ExtendedThemeYaml
+  INPUT: ThemeConfig from getThemeConfig
+  OUTPUT: fileTypes map with icon, iconClass, patterns per type
+  DATA: config/theme.yaml fileTypes section (~9 common types)
 
-PROCEDURE IMPL-FILES_CONFIG_COMPLETE_ExtendedConfigThemeYaml(context)
-  // Extended config/theme.yaml with fileTypes section (9 common types with icon/color/patterns)
-  CALL Extended config/theme.yaml with fileTypes section (9 common types with icon/color/patterns)
-  ON invalid input OR missing data THEN RETURN without mutation
+PROCEDURE IMPL-FILES_CONFIG_COMPLETE_ExtendedThemeYaml(theme)
+  ASSERT theme.files.fileTypes includes directory and file entries
+  FOR each specialized type ASSERT patterns array when configured
 
-## ExtendedDEFAULTFILESCONFIG
+## GetFileTypeConfig
 
-// [IMPL-FILES_CONFIG_COMPLETE] [ARCH-CONFIG_DRIVEN_UI] [REQ-FILES_CONFIG_COMPLETE] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: Extended DEFAULT_FILES_CONFIG with all new sections and defaults
+// [IMPL-FILES_CONFIG_COMPLETE] [ARCH-CONFIG_DRIVEN_UI] [REQ-FILES_CONFIG_COMPLETE] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: directories always use fileTypes.directory; iterate types skipping directory/file keys; glob pattern to case-insensitive regex; first match wins; fallback fileTypes.file or generic defaults
 
-CONTRACT ExtendedDEFAULTFILESCONFIG
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+CONTRACT GetFileTypeConfig
+  INPUT: theme, filename, isDirectory
+  OUTPUT: { icon, iconClass }
 
-PROCEDURE IMPL-FILES_CONFIG_COMPLETE_ExtendedDEFAULTFILESCONFIG(context)
-  // Extended DEFAULT_FILES_CONFIG with all new sections
-  CALL Extended DEFAULT_FILES_CONFIG with all new sections
-  // defaults
-  CALL defaults
-
-## ImplementedGetFileTypeConfigForPattern
-
-// [IMPL-FILES_CONFIG_COMPLETE] [ARCH-CONFIG_DRIVEN_UI] [REQ-FILES_CONFIG_COMPLETE] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: Implemented getFileTypeConfig() for pattern-based file type matching
-
-CONTRACT ImplementedGetFileTypeConfigForPattern
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-FILES_CONFIG_COMPLETE_ImplementedGetFileTypeConfigForPattern(context)
-  // Implemented getFileTypeConfig() for pattern-based file type matching
-  CALL Implemented getFileTypeConfig() for pattern-based file type matching
-  ON invalid input OR missing data THEN RETURN without mutation
+PROCEDURE IMPL-FILES_CONFIG_COMPLETE_getFileTypeConfig(theme, filename, isDirectory)
+  IF isDirectory THEN RETURN fileTypes.directory OR defaultDir { folder icon, blue classes }
+  IF NOT fileTypes THEN RETURN defaultFile { document icon, gray classes }
+  FOR EACH typeName, typeConfig IN fileTypes ENTRIES
+    SKIP typeName directory OR file
+    SKIP when patterns empty
+    FOR EACH pattern
+      regex := globToRegex(pattern) // . escaped, * -> .*
+      IF regex matches filename case-insensitive THEN RETURN typeConfig icon fields
+  RETURN fileTypes.file OR defaultFile
 
 ## CodeLocations
 
 // [IMPL-FILES_CONFIG_COMPLETE] [ARCH-CONFIG_DRIVEN_UI] [REQ-FILES_CONFIG_COMPLETE] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: map implementing and verifying source files for this IMPL
 
-// FILE: config/files.yaml — Extended with marking, help, commandPalette copy; added layout and startup sections
-// FILE: config/theme.yaml — Added fileTypes configuration with 9 file types and patterns
-// FILE: src/lib/config.types.ts — Added FileTypeConfig, FilesLayoutConfig, FilesStartupConfig interfaces; extended FilesCopyConfig, FilesThemeConfig, FilesConfig
-// FILE: src/lib/config.ts — Extended DEFAULT_FILES_CONFIG; added getFileTypeConfig() helper
-// FILE: src/lib/config.test.ts — Added 16 new tests for files configuration and file type matching
-// FUNCTION: getFileTypeConfig in src/lib/config.ts
-// FUNCTION: getFilesConfig in src/lib/config.ts
+// FILE: config/files.yaml — extended copy, layout, startup, columns, keybindings
+// FILE: config/theme.yaml — files.fileTypes patterns
+// FILE: src/lib/config.types.ts — FileTypeConfig, FilesLayoutConfig, FilesStartupConfig
+// FILE: src/lib/config.ts — DEFAULT_FILES_CONFIG extensions, getFileTypeConfig
+// FILE: src/lib/config.test.ts — describe getFilesConfig, describe getFileTypeConfig
 
 ## ErrorHandling
 
-// [IMPL-FILES_CONFIG_COMPLETE] [ARCH-CONFIG_DRIVEN_UI] [REQ-FILES_CONFIG_COMPLETE] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: surface recoverable failures without breaking pane invariants
+// [IMPL-FILES_CONFIG_COMPLETE] [ARCH-CONFIG_DRIVEN_UI] [REQ-FILES_CONFIG_COMPLETE] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: getFileTypeConfig never throws; missing types fall back to hard-coded default icon/class pairs
 
 PROCEDURE IMPL-FILES_CONFIG_COMPLETE_on_error(context, error)
-  LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
-  ELSE propagate error to caller
+  IF no fileTypes OR no pattern match THEN RETURN default file or directory icon
+  DELEGATE YAML load errors to IMPL-CONFIG_LOADER defaults

@@ -5,7 +5,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { LayoutPickerPopover } from "./LayoutPickerPopover";
 
 describe("LayoutPickerPopover [REQ-MULTI_PANE_LAYOUT]", () => {
-  // [IMPL-WORKSPACE_VIEW] [REQ-TOOLBAR_SYSTEM] LAYOUT_TOOLBAR_PICKER — highlights current layout option
+  // [IMPL-WORKSPACE_VIEW] [IMPL-LAYOUT_CALCULATOR] [ARCH-TOOLBAR_LAYOUT] [ARCH-TOOLBAR_ACTIONS] [REQ-MULTI_PANE_LAYOUT] [REQ-TOOLBAR_SYSTEM] [REQ-KEYBOARD_NAVIGATION] [REQ-WORKSPACE_MESH_BRIDGE]: how: view.layout handler opens LayoutPickerPopover; option selects layout and closes; Escape or overlay closes without change; activeActions includes view.layout while open
   it("highlights current layout and calls onSelect on option click", () => {
     const onSelect = vi.fn();
     const onClose = vi.fn();
@@ -25,7 +25,7 @@ describe("LayoutPickerPopover [REQ-MULTI_PANE_LAYOUT]", () => {
     expect(onClose).toHaveBeenCalled();
   });
 
-  // [IMPL-WORKSPACE_VIEW] [REQ-KEYBOARD_NAVIGATION] LAYOUT_TOOLBAR_PICKER — Escape closes without select
+  // [IMPL-WORKSPACE_VIEW] [IMPL-LAYOUT_CALCULATOR] [ARCH-TOOLBAR_LAYOUT] [ARCH-TOOLBAR_ACTIONS] [REQ-MULTI_PANE_LAYOUT] [REQ-TOOLBAR_SYSTEM] [REQ-KEYBOARD_NAVIGATION] [REQ-WORKSPACE_MESH_BRIDGE]: how: view.layout handler opens LayoutPickerPopover; option selects layout and closes; Escape or overlay closes without change; activeActions includes view.layout while open
   it("closes on Escape without selecting", () => {
     const onClose = vi.fn();
     render(
@@ -40,7 +40,7 @@ describe("LayoutPickerPopover [REQ-MULTI_PANE_LAYOUT]", () => {
     expect(onClose).toHaveBeenCalled();
   });
 
-  // [IMPL-WORKSPACE_VIEW] LAYOUT_TOOLBAR_PICKER — overlay click closes
+  // [IMPL-WORKSPACE_VIEW] [IMPL-LAYOUT_CALCULATOR] [ARCH-TOOLBAR_LAYOUT] [ARCH-TOOLBAR_ACTIONS] [REQ-MULTI_PANE_LAYOUT] [REQ-TOOLBAR_SYSTEM] [REQ-KEYBOARD_NAVIGATION] [REQ-WORKSPACE_MESH_BRIDGE]: how: view.layout handler opens LayoutPickerPopover; option selects layout and closes; Escape or overlay closes without change; activeActions includes view.layout while open
   it("closes when overlay is clicked", () => {
     const onClose = vi.fn();
     render(

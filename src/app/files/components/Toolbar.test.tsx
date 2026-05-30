@@ -45,7 +45,7 @@ describe("[REQ-TOOLBAR_SYSTEM] Toolbar", () => {
     ],
   };
 
-  // [IMPL-TOOLBAR_COMPONENT] TOOLBAR_COMPACT_TOGGLE: leadingContent precedes action buttons
+  // [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM]: how: leading toggle on first top toolbar switches session toolbarExpanded state; expanded shows three tiers with keystroke badges; compact shows merged single row icon-only; tooltips unchanged
   it("renders leadingContent before action buttons", () => {
     render(
       <Toolbar
@@ -66,7 +66,7 @@ describe("[REQ-TOOLBAR_SYSTEM] Toolbar", () => {
     ).toBeTruthy();
   });
 
-  // [IMPL-TOOLBAR_COMPONENT] MERGE_TOP_TOOLBARS: compact mode hides keystroke badges via showKeystroke=false
+  // [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM]: how: mergeTopToolbarConfigs concatenates enabled top-position workspace, pane, system groups for compact single-row render
   it("passes showKeystroke=false to hide keystroke badges", () => {
     render(
       <Toolbar
@@ -79,7 +79,7 @@ describe("[REQ-TOOLBAR_SYSTEM] Toolbar", () => {
     expect(screen.queryByText("C")).not.toBeInTheDocument();
   });
 
-  // [IMPL-TOOLBAR_COMPONENT] WORKSPACE_TOOLBAR_DISPLAY_MODE: singleRow applies horizontal scroll layout
+  // [IMPL-TOOLBAR_COMPONENT] [IMPL-TOOLBAR_CONFIG] [ARCH-TOOLBAR_ACTIONS] [REQ-TOOLBAR_SYSTEM]: how: deriveToolbarButton uses keybinding registry first; else toolbars.actions description/icon/label for toolbar-only actions such as view.columns
   it("renders toolbar-only action from actionsMeta without keybinding", () => {
     render(
       <Toolbar
@@ -98,6 +98,7 @@ describe("[REQ-TOOLBAR_SYSTEM] Toolbar", () => {
     expect(screen.getByTestId("toolbar-view.columns")).toBeInTheDocument();
   });
 
+  // [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM] [REQ-MULTI_PANE_LAYOUT]: how: WorkspaceView useState(false) defaults to compact; expanded renders up to three top tiers with toggle on first visible tier; compact renders single merged Toolbar with showKeystroke=false and singleRow; pane bounds use useElementSize on workspace-area ref
   it("applies singleRow flex-nowrap layout when singleRow is true", () => {
     const { container } = render(
       <Toolbar config={baseConfig} onAction={vi.fn()} singleRow className="toolbar-compact" />,

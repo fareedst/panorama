@@ -20,9 +20,11 @@ IMPL-NSYNC_COMPARE:
     architecture: []
     requirements:
       - REQ-COMPARE_METHODS
-    tests: []
+    tests:
+      - src/lib/sync/engine.test.ts — should skip unchanged files [REQ-COMPARE_METHODS]
     code_annotations:
       - IMPL-NSYNC_COMPARE
+      - REQ-COMPARE_METHODS
   related_decisions:
     depends_on: []
     supersedes: []
@@ -30,6 +32,6 @@ IMPL-NSYNC_COMPARE:
   metadata:
     registered: 2026-02-09T00:00:00.000Z
     last_updated:
-      date: "2026-05-19T16:06:42.636Z"
+      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: IMPL essence_pseudocode retrofit all 58
+      reason: NSYNC pseudocode retrofit from production code and tests

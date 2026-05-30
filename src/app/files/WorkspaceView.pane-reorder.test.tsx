@@ -81,7 +81,7 @@ describe("WorkspaceView pane reorder [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYO
     vi.restoreAllMocks();
   });
 
-  // [IMPL-PANE_MANAGEMENT_SwapPanes] [REQ-MULTI_PANE_LAYOUT]
+  // [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] [REQ-MULTI_PANE_LAYOUT]: how: swap panes[i] and panes[j]; remap focusIndex; permute directory history; clear scrollTriggers
   it("swaps two panes via pane.swap keeping focus on same content", async () => {
     render(
       <WorkspaceView
@@ -113,7 +113,7 @@ describe("WorkspaceView pane reorder [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYO
     expect(screen.getByTestId("pane-1").closest(".border-2")).toHaveClass("border-blue-500");
   });
 
-  // [IMPL-PANE_MANAGEMENT_CyclePanes] [REQ-MULTI_PANE_LAYOUT]
+  // [IMPL-PANE_MANAGEMENT] [ARCH-KEYBIND_SYSTEM] [REQ-MULTI_PANE_LAYOUT]: how: rotate all panes one slot forward or backward; remap focus and directory history
   it("cycles three panes forward via pane.cycle", async () => {
     render(
       <WorkspaceView
@@ -142,7 +142,7 @@ describe("WorkspaceView pane reorder [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYO
     });
   });
 
-  // [IMPL-PANE_MANAGEMENT_SwapFocusedNeighbor] [REQ-MULTI_PANE_LAYOUT]
+  // [IMPL-PANE_MANAGEMENT] [ARCH-KEYBIND_SYSTEM] [REQ-MULTI_PANE_LAYOUT]: how: pane.swap / pane.swapPrev — two panes swap 0↔1; else swap focus with wrapped next/prev neighbor
   it("swaps focused pane with previous neighbor via pane.swapPrev on three panes", async () => {
     render(
       <WorkspaceView
@@ -171,7 +171,7 @@ describe("WorkspaceView pane reorder [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYO
     });
   });
 
-  // [IMPL-PANE_MANAGEMENT_CyclePanes] [REQ-MULTI_PANE_LAYOUT]
+  // [IMPL-PANE_MANAGEMENT] [ARCH-KEYBIND_SYSTEM] [REQ-MULTI_PANE_LAYOUT]: how: rotate all panes one slot forward or backward; remap focus and directory history
   it("cycles three panes backward via pane.cyclePrev", async () => {
     render(
       <WorkspaceView
@@ -200,7 +200,7 @@ describe("WorkspaceView pane reorder [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYO
     });
   });
 
-  // [IMPL-PANE_MANAGEMENT_PaneOrderDialogApply] [REQ-MULTI_PANE_LAYOUT] [REQ-TOOLBAR_SYSTEM]
+  // [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYOUT] [REQ-TOOLBAR_SYSTEM]: how: Apply reorders panes[] by index permutation from dialog; focus follows previous focus pane content
   it("reorders panes via pane order dialog", async () => {
     render(
       <WorkspaceView
@@ -237,7 +237,7 @@ describe("WorkspaceView pane reorder [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYO
     });
   });
 
-  // [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYOUT]: reorder blocked when allowPaneManagement is false
+  // [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYOUT] [REQ-TOOLBAR_SYSTEM]: how: disable pane.swap, cycle, order when allowPaneManagement false or fewer than two panes
   it("does not reorder panes when allowPaneManagement is false", async () => {
     render(
       <WorkspaceView

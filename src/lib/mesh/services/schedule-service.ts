@@ -1,4 +1,4 @@
-// [IMPL-MESH_SCHEDULE] [REQ-MESH_SCHEDULE] [REQ-MESH_PLATFORM]: Sync scheduling — phase 25
+// [IMPL-MESH_SCHEDULE] [ARCH-MESH_LAYERED] [REQ-MESH_SCHEDULE] [REQ-MESH_PLATFORM]: Per-mesh interval scheduling metadata
 
 export type ScheduleMode = "manual" | "interval" | "disabled";
 
@@ -21,6 +21,7 @@ export type ScheduleTickResult = {
 export class ScheduleService {
   private readonly schedules = new Map<string, MeshSchedule>();
 
+  // [IMPL-MESH_SCHEDULE] [ARCH-MESH_LAYERED] [REQ-MESH_SCHEDULE]: how — return stored schedule or default manual enabled with runCount zero.
   get(meshId: string): MeshSchedule {
     return (
       this.schedules.get(meshId) ?? {
@@ -43,6 +44,7 @@ export class ScheduleService {
     return this.upsert(meshId, { enabled: false, mode: "disabled" });
   }
 
+  // [IMPL-MESH_SCHEDULE] [ARCH-MESH_LAYERED] [REQ-MESH_SCHEDULE]: how — return interval schedules whose elapsed time since lastRunAt exceeds intervalMinutes; schedules without lastRunAt are immediately due.
   dueSchedules(now = Date.now()): MeshSchedule[] {
     return [...this.schedules.values()].filter((s) => {
       if (!s.enabled || s.mode !== "interval" || !s.intervalMinutes) {

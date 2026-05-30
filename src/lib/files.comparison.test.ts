@@ -51,7 +51,7 @@ describe("[TEST-FILE_COMPARISON] buildEnhancedComparisonIndex", () => {
     expect(result.has("shared.txt")).toBe(true);
   });
 
-  // [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: comparison-equal, comparison-smallest, comparison-largest
+  // [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: how: equal when min=max; else smallest/largest/null for middle values in 3+ panes
 
   describe("size comparison [IMPL-COMPARISON_COLORS]", () => {
     it("should mark equal sizes [REQ-FILE_COMPARISON_VISUAL]", () => {
@@ -100,7 +100,7 @@ describe("[TEST-FILE_COMPARISON] buildEnhancedComparisonIndex", () => {
     });
   });
 
-  // [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: comparison-equal, comparison-smallest, comparison-largest
+  // [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: how: parse string or Date mtimes; equal within 1 second; else earliest/latest/null for middle
 
   describe("time comparison [IMPL-COMPARISON_COLORS]", () => {
     it("should mark equal times [REQ-FILE_COMPARISON_VISUAL]", () => {
@@ -180,7 +180,7 @@ describe("[TEST-FILE_COMPARISON] buildEnhancedComparisonIndex", () => {
     });
   });
 
-  // [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: comparison-equal, comparison-smallest, comparison-largest
+  // [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: how: scan panes for shared filenames; attach sizeComparison and timeComparison arrays per pane entry
 
   describe("multiple shared files [IMPL-COMPARISON_COLORS]", () => {
     it("should handle multiple shared files independently [REQ-FILE_COMPARISON_VISUAL]", () => {
@@ -215,7 +215,7 @@ describe("[TEST-FILE_COMPARISON] buildEnhancedComparisonIndex", () => {
     });
   });
 
-  // [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: comparison-equal, comparison-smallest, comparison-largest
+  // [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: how: scan panes for shared filenames; attach sizeComparison and timeComparison arrays per pane entry
 
   describe("comparison state structure [IMPL-COMPARISON_COLORS]", () => {
     it("should maintain panes, sizes, and mtimes arrays [REQ-FILE_COMPARISON_VISUAL]", () => {

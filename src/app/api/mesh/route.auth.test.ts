@@ -1,4 +1,4 @@
-// [REQ-MESH_AUTH]: API authorization — phase 24
+// [IMPL-MESH_AUTH] [ARCH-MESH_LAYERED] [REQ-MESH_AUTH] [REQ-MESH_PLATFORM]: Role-based permission matrix with audit callback on denial
 
 import { describe, it, expect, beforeEach } from "vitest";
 import { POST } from "./route";

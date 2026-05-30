@@ -321,8 +321,7 @@ export default function FilePane({
     }
   };
   
-  // [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]
-  // Get comparison CSS class for a file based on current comparison mode
+  // [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: how: FilePane getComparisonClass maps comparisonMode and classifications to row background classes
   const getComparisonClass = (filename: string): string => {
     if (comparisonMode === "off" || !comparisonIndex) {
       return "";
@@ -446,6 +445,7 @@ export default function FilePane({
     }
   };
   
+  // [IMPL-RESPONSIVE_CLASSES] [ARCH-RESPONSIVE_FIRST] [REQ-RESPONSIVE_DESIGN]: FilePane uses flex flex-col so header path bar file grid and footer stack vertically within pane bounds
   return (
     <div
       data-testid={dataTestId}
@@ -465,7 +465,7 @@ export default function FilePane({
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDragDrop}
-      // [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION]: switch focusIndex when user clicks pane via FilePane onFocusRequest onMouseDown
+      // [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION]: how — switch focusIndex when user clicks pane via FilePane onFocusRequest onMouseDown; file row clicks bubble to pane container.
       onMouseDown={() => onFocusRequest?.()}
     >
       {/* Header with path and display spec [REQ-PANE_DISPLAY_FILTER] */}
@@ -546,7 +546,7 @@ export default function FilePane({
         )}
       </div>
       
-      {/* File list */}
+      {/* [IMPL-FILE_PANE] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-FILE_LISTING] [REQ-DIRECTORY_NAVIGATION]: how: map files to grid rows with cursor, mark, and comparison styling */}
       <div ref={fileListRef} className="flex-1 overflow-y-auto">
         {files.length === 0 ? (
           <div className="p-4 text-center text-zinc-500 dark:text-zinc-400">

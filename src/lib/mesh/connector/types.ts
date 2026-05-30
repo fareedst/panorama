@@ -1,4 +1,4 @@
-// [IMPL-MESH_CONNECTOR] [REQ-MESH_PLATFORM]: Connector contract — deployment plan phase 4
+// [IMPL-MESH_CONNECTOR] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: Declarative connector surface for inventory scans and executor mutations; shared by local, remote stub, virtual, and test doubles.
 
 export type ConnectorEntry = {
   path: string;

@@ -1,4 +1,4 @@
-// [IMPL-MESH_MONITORING] [REQ-MESH_MONITORING] [REQ-MESH_PLATFORM]: Operational dashboard — phase 26
+// [IMPL-MESH_MONITORING] [ARCH-MESH_LAYERED] [REQ-MESH_MONITORING] [REQ-MESH_PLATFORM]: Aggregate operational dashboard summary from mesh records, sync sessions, and pending conflict count.
 
 import type { MeshRecord } from "../mesh-record";
 import type { SyncEvent } from "../domain";
@@ -12,6 +12,7 @@ export type MonitoringSummary = {
 };
 
 export class MonitoringService {
+  // [IMPL-MESH_MONITORING] [ARCH-MESH_LAYERED] [REQ-MESH_MONITORING] [REQ-MESH_PLATFORM]: how — count active and failed sessions; pass through pending conflict count; map each mesh record to health row.
   buildSummary(
     meshes: MeshRecord[],
     sessions: SyncSession[],
@@ -37,6 +38,7 @@ export class MonitoringService {
     };
   }
 
+  // [IMPL-MESH_MONITORING] [ARCH-MESH_LAYERED] [REQ-MESH_MONITORING] [REQ-MESH_PLATFORM]: how — return sessions sorted by meshSnapshot.capturedAt descending (newest first).
   sessionHistory(sessions: SyncSession[]): SyncSession[] {
     return [...sessions].sort(
       (a, b) =>

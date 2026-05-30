@@ -1,69 +1,60 @@
 # IMPL-DARK_MODE essence pseudocode
 
-// [IMPL-DARK_MODE] [ARCH-CSS_VARIABLES] [REQ-DARK_MODE]: Top-level Dark Mode Implementation: Define CSS variables in globals.css with prefers-color-scheme media query
+## TAILWIND_THEME_INLINE_MAP
+# [IMPL-DARK_MODE] [ARCH-CSS_VARIABLES] [ARCH-TAILWIND_V4] [REQ-DARK_MODE] [REQ-CONFIG_DRIVEN_UI]
+# how: Map injected CSS custom properties to Tailwind v4 theme tokens via @theme inline in globals.css.
 
-## Summary contract
+```
+TAILWIND_THEME_INLINE_MAP():
+  DATA: --background, --foreground from theme injection; --font-geist-sans, --font-geist-mono from next/font
+  MAP --color-background := var(--background)
+  MAP --color-foreground := var(--foreground)
+  MAP --font-sans := var(--font-geist-sans)
+  MAP --font-mono := var(--font-geist-mono)
+  OUTPUT: Tailwind utilities (bg-background, text-foreground, font-sans) resolve through CSS variables
+```
 
-// [IMPL-DARK_MODE] [ARCH-CSS_VARIABLES] [REQ-DARK_MODE]: bound module inputs, outputs, and shared data for all runtime blocks below
+## BODY_APPLY_THEME_VARIABLES
+# [IMPL-DARK_MODE] [ARCH-CSS_VARIABLES] [REQ-DARK_MODE] [REQ-GLOBAL_STYLES] [REQ-CONFIG_DRIVEN_UI]
+# how: Apply --background and --foreground on body; values switch via prefers-color-scheme without JavaScript.
 
-CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-DARK_MODE
-  DATA: state and configuration per implementation_approach
+```
+BODY_APPLY_THEME_VARIABLES():
+  OUTPUT: body { background: var(--background); color: var(--foreground); font-family: var(--font-geist-sans, fallback) }
+  CONTROL: color values originate from config/theme.yaml injected by IMPL-THEME_INJECTION layout <style> tag
+  CONTROL: @media (prefers-color-scheme: dark) overrides :root variables for dark palette
+```
 
-## DefineDarkModeValues
+## SYSTEM_PREFERENCE_COLOR_SWITCH
+# [IMPL-DARK_MODE] [ARCH-CSS_VARIABLES] [REQ-DARK_MODE] [REQ-CONFIG_DRIVEN_UI]
+# how: Light/dark palettes come from theme config; generateThemeCss emits prefers-color-scheme media query (IMPL-THEME_INJECTION).
 
-// [IMPL-DARK_MODE] [ARCH-CSS_VARIABLES] [REQ-DARK_MODE]: dark)
+```
+SYSTEM_PREFERENCE_COLOR_SWITCH(themeConfig):
+  INPUT: themeConfig.colors.light { background, foreground, ... }
+  INPUT: themeConfig.colors.dark { background, foreground, ... }
+  OUTPUT: CSS :root light vars; @media (prefers-color-scheme: dark) { :root dark vars }
+  DATA: light background #ffffff, foreground #171717; dark background #0a0a0a, foreground #ededed (defaults)
+  CONTROL: zero JavaScript at runtime; browser applies matching block automatically
+```
 
-CONTRACT DefineDarkModeValues
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+## TAILWIND_DARK_PREFIX_UTILITIES
+# [IMPL-DARK_MODE] [REQ-DARK_MODE]
+# how: Components use Tailwind dark: prefix utilities paired with light defaults for automatic scheme switching.
 
-PROCEDURE IMPL-DARK_MODE_DefineDarkModeValues(context)
-  // dark)
-  CALL dark)
-  ON invalid input OR missing data THEN RETURN without mutation
+```
+TAILWIND_DARK_PREFIX_UTILITIES():
+  DATA: utility pairs e.g. bg-zinc-50 + dark:bg-black, text-black + dark:text-zinc-50
+  DATA: branding logos may use dark:invert for SVG visibility
+  OUTPUT: class strings matching /^dark:/ pattern where dark variant required
+```
 
-## ApplyVariablesToBody
+## CONTRAST_ACCESSIBILITY
+# [IMPL-DARK_MODE] [REQ-DARK_MODE] [REQ-ACCESSIBILITY] [REQ-CONFIG_DRIVEN_UI]
+# how: Configured light and dark foreground/background pairs exceed WCAG AAA 7:1 contrast.
 
-// [IMPL-DARK_MODE] [ARCH-CSS_VARIABLES] [REQ-DARK_MODE]: Apply variables to body
-
-CONTRACT ApplyVariablesToBody
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-DARK_MODE_ApplyVariablesToBody(context)
-  // Apply variables to body
-  CALL Apply variables to body
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## DefineBackgroundAndForeground
-
-// [IMPL-DARK_MODE] [ARCH-CSS_VARIABLES] [REQ-DARK_MODE]: root
-
-CONTRACT DefineBackgroundAndForeground
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-DARK_MODE_DefineBackgroundAndForeground(context)
-  // root
-  CALL root
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## CodeLocations
-
-// [IMPL-DARK_MODE] [ARCH-CSS_VARIABLES] [REQ-DARK_MODE]: map implementing and verifying source files for this IMPL
-
-// FILE: src/app/globals.css — Global CSS with dark mode variables
-
-## ErrorHandling
-
-// [IMPL-DARK_MODE] [ARCH-CSS_VARIABLES] [REQ-DARK_MODE]: surface recoverable failures without breaking pane invariants
-
-PROCEDURE IMPL-DARK_MODE_on_error(context, error)
-  LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
-  ELSE propagate error to caller
+```
+CONTRAST_ACCESSIBILITY(themeConfig):
+  INPUT: themeConfig.colors light and dark background/foreground hex values
+  OUTPUT: contrast ratios > 7.0 for both modes (light ~13.5:1, dark ~14.7:1 with defaults)
+```

@@ -1,4 +1,4 @@
-// [REQ-MESH_PLATFORM]: Persistence round-trip — phase 16
+// [IMPL-MESH_PERSISTENCE] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: JSON file persistence for MeshRecord[] under MESH_DATA_DIR with in-memory cache and repository factory.
 
 import { describe, it, expect } from "vitest";
 import { readFileSync, writeFileSync, mkdtempSync, rmSync } from "fs";
@@ -12,6 +12,7 @@ import { addLinkToMesh } from "../services/topology-service";
 import { nextMeshRecordAfterMeshMutation } from "../mesh-record";
 
 describe("JsonMeshRepository [IMPL-MESH_PERSISTENCE]", () => {
+  // [IMPL-MESH_PERSISTENCE] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: how — normalize record, upsert in cache by mesh.id, write full cache array to meshes.json.
   it("save_and_load_mesh", () => {
     const dir = mkdtempSync(join(tmpdir(), "mesh-persist-"));
     try {

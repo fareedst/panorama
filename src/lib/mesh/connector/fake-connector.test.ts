@@ -1,4 +1,4 @@
-// [IMPL-MESH_CONNECTOR] [REQ-MESH_PLATFORM]: Fake connector contract tests — phase 4
+// [IMPL-MESH_CONNECTOR] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM] [REQ-MESH_REAL_CONNECTORS]: Connector contract and in-memory, local FS, remote stub, and virtual implementations
 
 import { describe, it, expect } from "vitest";
 import { FakeConnector } from "./fake-connector";

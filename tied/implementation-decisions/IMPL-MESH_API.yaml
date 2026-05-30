@@ -11,12 +11,14 @@ IMPL-MESH_API:
     summary: src/app/api/mesh/**
   code_locations:
     files:
+      - path: src/lib/mesh/api/mesh-api-helpers.ts
+        description: requirePermission and handleServiceResult
       - path: src/app/api/mesh/route.ts
-        description: List/create
-      - path: src/app/api/mesh/[meshId]/depots/route.ts
-        description: Add depot
-      - path: src/app/api/mesh/[meshId]/links/route.ts
-        description: Add sync link
+        description: List/create meshes
+      - path: src/app/api/mesh/credentials/route.ts
+        description: Credential reference POST
+      - path: src/app/api/mesh/[meshId]/sessions/route.ts
+        description: Session lifecycle API
     functions: []
   traceability:
     architecture:
@@ -24,8 +26,13 @@ IMPL-MESH_API:
     requirements:
       - REQ-MESH_API
     tests:
-      - src/app/api/mesh/route.test.ts
+      - src/app/api/mesh/credentials.route.test.ts
       - src/app/api/mesh/depots-links.route.test.ts
+      - src/app/api/mesh/import-export.route.test.ts
+      - src/app/api/mesh/plan-conflicts.route.test.ts
+      - src/app/api/mesh/route.auth.test.ts
+      - src/app/api/mesh/route.test.ts
+      - src/app/api/mesh/sessions.route.test.ts
     code_annotations:
       - IMPL-MESH_API
   related_decisions:
@@ -38,3 +45,7 @@ IMPL-MESH_API:
     created:
       date: "2026-05-19T00:00:00.000Z"
       author: AI Agent
+    last_updated:
+      date: "2026-05-30T00:00:00.000Z"
+      author: AI Agent
+      reason: Retrofit pseudocode and traceability from production/tests

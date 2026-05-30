@@ -1,4 +1,4 @@
-// [TEST-BULK_FILE_OPS] [REQ-BULK_FILE_OPS] [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS]
+// [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: client bulk copy/move/delete with confirm and progress dialogs; server Promise.allSettled per source via POST /api/files
 // Tests for bulk file operations
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
@@ -79,6 +79,7 @@ const mockFiles2: FileStat[] = [
   },
 ];
 
+// [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: require 2 panes; dest is other pane path; detect overwrite conflicts; confirm then POST bulk-copy; refresh both panes and clear marks
 describe("WorkspaceView Bulk Operations [REQ-BULK_FILE_OPS]", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -519,7 +520,7 @@ describe("WorkspaceView Bulk Operations [REQ-BULK_FILE_OPS]", () => {
   });
 });
 
-// [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: Escape to cancel, Enter to confirm; destructive styling for delete
+// [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: Escape cancels; Enter confirms; optional scrollable conflict list; destructive red confirm for delete
 describe("ConfirmDialog [IMPL-BULK_OPS]", () => {
   it("should close on Escape key [REQ-BULK_FILE_OPS]", async () => {
     render(
@@ -621,7 +622,7 @@ describe("Integration Tests [TEST-BULK_FILE_OPS]", () => {
   });
 });
 
-// [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: Before opening confirm dialog, check destination pane files for matching names
+// [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: before confirm, foreach source path compare basename to destination pane file names; build FileConflict when match
 
 describe("Overwrite Prompt [TEST-BULK_FILE_OPS] [IMPL-OVERWRITE_PROMPT]", () => {
   const mockSourceFiles: FileStat[] = [

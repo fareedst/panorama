@@ -1,57 +1,97 @@
 # IMPL-COMPARISON_COLORS essence pseudocode
 
-// [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: Top-level CSS Class-Based Comparison Coloring: Enhance ComparisonIndex, apply CSS classes from theme
+// [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: how: buildEnhancedComparisonIndex classifies size/time deltas; FilePane applies mode-specific CSS classes from classifications
 
-## Summary contract
+## BUILD_ENHANCED_INDEX
 
-// [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: bound module inputs, outputs, and shared data for all runtime blocks below
+// [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: how: scan panes for shared filenames; attach sizeComparison and timeComparison arrays per pane entry
 
-CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-COMPARISON_COLORS
-  DATA: state and configuration per implementation_approach
+```
+CONTRACT BUILD_ENHANCED_INDEX
+  INPUT: panes FileStat[][]
+  OUTPUT: Map filename -> Map paneIndex -> EnhancedCompareState
+  DATA: skips filenames present in fewer than two panes
 
-## SizeComparison
+PROCEDURE IMPL-COMPARISON_COLORS_BuildEnhancedIndex(panes)
+  basicIndex := accumulate CompareState per filename across panes
+  FOR EACH filename, state IN basicIndex
+    IF state.panes.length < 2 THEN CONTINUE
+    sizeComparisons := AnalyzeSizes(state.sizes)
+    timeComparisons := AnalyzeTimes(state.mtimes)
+    FOR i IN 0..state.panes.length-1
+      paneIndex := state.panes[i]
+      STORE EnhancedCompareState with sizeComparison[0] and timeComparison[0] for paneIndex
+  RETURN result Map
+```
 
-// [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: classify file size delta between panes for background color
+## ANALYZE_SIZES
 
-CONTRACT SizeComparison
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+// [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: how: equal when min=max; else smallest/largest/null for middle values in 3+ panes
 
-PROCEDURE IMPL-COMPARISON_COLORS_SizeComparison(context)
-  FOR EACH filename in shared comparison index
-  IF size equal THEN no size color class
-  IF source larger THEN apply positive size class ELSE negative
+```
+CONTRACT ANALYZE_SIZES
+  INPUT: sizes number[] parallel to shared panes
+  OUTPUT: SizeComparison[] values equal | smallest | largest | null
 
-## TimeComparison
+PROCEDURE IMPL-COMPARISON_COLORS_AnalyzeSizes(sizes)
+  IF sizes.length < 2 THEN RETURN array of null
+  minSize := MIN(sizes); maxSize := MAX(sizes)
+  IF minSize = maxSize THEN RETURN all equal
+  FOR EACH size
+    IF size = minSize THEN smallest
+    ELSE IF size = maxSize THEN largest
+    ELSE null
+```
 
-// [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: classify mtime delta for time-based coloring
+## ANALYZE_TIMES
 
-CONTRACT TimeComparison
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+// [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: how: parse string or Date mtimes; equal within 1 second; else earliest/latest/null for middle
 
-PROCEDURE IMPL-COMPARISON_COLORS_TimeComparison(context)
-  // COMPARE mtime between pane files with same name
-  CALL COMPARE mtime between pane files with same name
-  IF newer in pane A THEN apply time highlight for pane A row
+```
+CONTRACT ANALYZE_TIMES
+  INPUT: mtimes (Date|string)[]
+  OUTPUT: TimeComparison[] values equal | earliest | latest | null
+
+PROCEDURE IMPL-COMPARISON_COLORS_AnalyzeTimes(mtimes)
+  IF mtimes.length < 2 THEN RETURN array of null
+  timestamps := CONVERT each mtime to epoch ms (parse ISO strings)
+  minTime := MIN(timestamps); maxTime := MAX(timestamps)
+  IF maxTime - minTime < 1000 THEN RETURN all equal
+  FOR EACH timestamp
+    IF timestamp = minTime THEN earliest
+    ELSE IF timestamp = maxTime THEN latest
+    ELSE null
+```
+
+## APPLY_CSS_CLASSES
+
+// [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: how: FilePane getComparisonClass maps comparisonMode and classifications to row background classes
+
+```
+CONTRACT APPLY_CSS_CLASSES
+  INPUT: comparisonMode off|name|size|time, comparisonIndex Map, paneIndex, filename
+  OUTPUT: Tailwind class string for file row (empty when not applicable)
+  DATA: theme compareColors documented in config/theme.yaml; FilePane uses inline defaults matching those tokens
+
+PROCEDURE IMPL-COMPARISON_COLORS_ApplyCssClasses(comparisonMode, comparisonIndex, paneIndex, filename)
+  IF comparisonMode = off OR comparisonIndex missing THEN RETURN ""
+  fileMap := comparisonIndex.get(filename)
+  IF fileMap missing THEN RETURN ""
+  compareState := fileMap.get(paneIndex)
+  IF compareState missing THEN RETURN ""
+  CASE comparisonMode
+    name -> shared-file highlight bg-zinc-100 dark:bg-zinc-800
+    size -> map sizeComparison[0] equal|smallest|largest to green|blue|red border-left classes
+    time -> map timeComparison[0] equal|earliest|latest to green|blue|red border-left classes
+    default -> ""
+```
 
 ## CodeLocations
 
-// [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: map implementing and verifying source files for this IMPL
+// [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: how: map implementing and verifying source files for this IMPL
 
-// FILE: src/lib/files.data.ts — Enhanced comparison index builder
-// FILE: src/app/files/components/FilePane.tsx — CSS class application
-// FUNCTION: buildEnhancedComparisonIndex in src/lib/files.data.ts
-
-## ErrorHandling
-
-// [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: surface recoverable failures without breaking pane invariants
-
-PROCEDURE IMPL-COMPARISON_COLORS_on_error(context, error)
-  LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
-  ELSE propagate error to caller
+// FILE: src/lib/files.comparison.ts — buildEnhancedComparisonIndex, AnalyzeSizes, AnalyzeTimes
+// FILE: src/lib/files.types.ts — SizeComparison, TimeComparison, EnhancedCompareState types
+// FILE: src/app/files/components/FilePane.tsx — getComparisonClass row styling
+// FILE: config/theme.yaml — files.compareColors reference tokens
+// FILE: src/lib/files.comparison.test.ts — size/time/multi-pane classification tests

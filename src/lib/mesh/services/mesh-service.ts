@@ -64,7 +64,7 @@ export class MeshService {
     return this.repository.get(meshId);
   }
 
-  // [IMPL-MESH_CRUD] [ARCH-MESH_CRUD] [REQ-MESH_CRUD]: updateMeshMetadata — merge patch, re-validate mesh, save
+  // [IMPL-MESH_CRUD] [ARCH-MESH_CRUD] [REQ-MESH_CRUD]: updateMeshMetadata — merge patch, optimistic configurationVersion lock, re-validate mesh, save
   updateMeshMetadata(
     meshId: string,
     patch: {

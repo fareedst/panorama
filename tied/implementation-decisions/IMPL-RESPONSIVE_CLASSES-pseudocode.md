@@ -1,84 +1,58 @@
 # IMPL-RESPONSIVE_CLASSES essence pseudocode
 
-// [IMPL-RESPONSIVE_CLASSES] [ARCH-RESPONSIVE_FIRST] [REQ-RESPONSIVE_DESIGN]: Top-level Responsive Classes Implementation: Use Tailwind breakpoints (sm:, md:, lg:) with mobile-first approach
+// [IMPL-RESPONSIVE_CLASSES] [ARCH-RESPONSIVE_FIRST] [REQ-RESPONSIVE_DESIGN]: Files workspace Tailwind mobile-first layouts — default single-column/stacked; lg: breakpoint and max-w viewport guards on overlays
 
-## Summary contract
+## HelpOverlayResponsiveGrid
 
-// [IMPL-RESPONSIVE_CLASSES] [ARCH-RESPONSIVE_FIRST] [REQ-RESPONSIVE_DESIGN]: bound module inputs, outputs, and shared data for all runtime blocks below
+// [IMPL-RESPONSIVE_CLASSES] [ARCH-RESPONSIVE_FIRST] [REQ-RESPONSIVE_DESIGN]: Help overlay shortcut categories use grid-cols-1 by default and lg:grid-cols-2 for wide viewports
 
-CONTRACT Summary
-  INPUT: caller context, pane state, configuration
-  OUTPUT: behavior required by IMPL-RESPONSIVE_CLASSES
-  DATA: state and configuration per implementation_approach
+CONTRACT HelpOverlayResponsiveGrid
+  INPUT: isOpen boolean, categories from keybind registry
+  OUTPUT: modal content grid with one column on small screens two columns at lg breakpoint
+  DATA: class grid grid-cols-1 lg:grid-cols-2 gap-8; modal max-w-5xl w-full mx-4 max-h 90vh
 
-## AddMd
+PROCEDURE IMPL-RESPONSIVE_CLASSES_HelpOverlayResponsiveGrid(context)
+  IF NOT isOpen THEN RETURN null
+  RENDER modal shell flex centered inset-0
+  RENDER scrollable content area
+  RENDER category sections inside grid with 1 column below lg and 2 columns at lg and above
 
-// [IMPL-RESPONSIVE_CLASSES] [ARCH-RESPONSIVE_FIRST] [REQ-RESPONSIVE_DESIGN]: , lg: for desktop
+## DialogViewportMaxWidth
 
-CONTRACT AddMd
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+// [IMPL-RESPONSIVE_CLASSES] [ARCH-RESPONSIVE_FIRST] [REQ-RESPONSIVE_DESIGN]: file manager dialogs cap panel width and add max-w-[90vw] so narrow viewports do not overflow horizontally
 
-PROCEDURE IMPL-RESPONSIVE_CLASSES_AddMd(context)
-  // lg: for desktop
-  CALL lg: for desktop
-  ON invalid input OR missing data THEN RETURN without mutation
+CONTRACT DialogViewportMaxWidth
+  INPUT: dialog panel fixed width token (w-96, w-72, w-[28rem])
+  OUTPUT: panel remains within viewport on mobile
+  DATA: Tailwind max-w-[90vw] combined with fixed w-* on SortDialog ColumnOrderDialog PaneOrderDialog LayoutPickerPopover
 
-## AddSm
+PROCEDURE IMPL-RESPONSIVE_CLASSES_DialogViewportMaxWidth(context)
+  APPLY base width class for dialog type
+  APPLY max-w-[90vw] on same panel element
+  CENTER overlay with flex items-center justify-center (or items-start for top-aligned finder/search)
 
-// [IMPL-RESPONSIVE_CLASSES] [ARCH-RESPONSIVE_FIRST] [REQ-RESPONSIVE_DESIGN]: for tablets
+## FilePaneFlexColumnLayout
 
-CONTRACT AddSm
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
+// [IMPL-RESPONSIVE_CLASSES] [ARCH-RESPONSIVE_FIRST] [REQ-RESPONSIVE_DESIGN]: FilePane uses flex flex-col so header path bar file grid and footer stack vertically within pane bounds
 
-PROCEDURE IMPL-RESPONSIVE_CLASSES_AddSm(context)
-  // for tablets
-  CALL for tablets
-  ON invalid input OR missing data THEN RETURN without mutation
+CONTRACT FilePaneFlexColumnLayout
+  INPUT: pane dimensions and file listing
+  OUTPUT: pane interior scrolls file list in flex-1 overflow-y-auto region
+  DATA: outer absolute overflow-hidden flex flex-col; file list flex-1; footer flex row at bottom
 
-## DefaultStylesForMobile
-
-// [IMPL-RESPONSIVE_CLASSES] [ARCH-RESPONSIVE_FIRST] [REQ-RESPONSIVE_DESIGN]: Default styles for mobile
-
-CONTRACT DefaultStylesForMobile
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-RESPONSIVE_CLASSES_DefaultStylesForMobile(context)
-  // Default styles for mobile
-  CALL Default styles for mobile
-  ON invalid input OR missing data THEN RETURN without mutation
-
-## UseFlexboxAndGrid
-
-// [IMPL-RESPONSIVE_CLASSES] [ARCH-RESPONSIVE_FIRST] [REQ-RESPONSIVE_DESIGN]: Use flexbox and grid for layouts
-
-CONTRACT UseFlexboxAndGrid
-  INPUT: pane or module context for this block
-  OUTPUT: updated state or side effect described below
-  DATA: fields referenced in steps
-
-PROCEDURE IMPL-RESPONSIVE_CLASSES_UseFlexboxAndGrid(context)
-  // Use flexbox
-  CALL Use flexbox
-  // grid for layouts
-  CALL grid for layouts
+PROCEDURE IMPL-RESPONSIVE_CLASSES_FilePaneFlexColumnLayout(context)
+  RENDER pane container flex flex-col full height
+  RENDER path header row flex items-center truncate
+  RENDER file list region flex-1 overflow-y-auto with CSS grid rows per file
+  RENDER footer flex items-center justify-between when status non-empty
 
 ## CodeLocations
 
-// [IMPL-RESPONSIVE_CLASSES] [ARCH-RESPONSIVE_FIRST] [REQ-RESPONSIVE_DESIGN]: map implementing and verifying source files for this IMPL
+// [IMPL-RESPONSIVE_CLASSES] [ARCH-RESPONSIVE_FIRST] [REQ-RESPONSIVE_DESIGN]: map files workspace implementing sources for this IMPL
 
-// FILE: src/app/page.tsx — Responsive classes in home page
-
-## ErrorHandling
-
-// [IMPL-RESPONSIVE_CLASSES] [ARCH-RESPONSIVE_FIRST] [REQ-RESPONSIVE_DESIGN]: surface recoverable failures without breaking pane invariants
-
-PROCEDURE IMPL-RESPONSIVE_CLASSES_on_error(context, error)
-  LOG diagnostic with IMPL, ARCH, REQ token refs
-  IF recoverable THEN retry or degrade gracefully
-  ELSE propagate error to caller
+// FILE: src/app/files/components/HelpOverlay.tsx — lg:grid-cols-2 responsive category grid
+// FILE: src/app/files/components/SortDialog.tsx — w-96 max-w-[90vw]
+// FILE: src/app/files/components/ColumnOrderDialog.tsx — w-96 max-w-[90vw]
+// FILE: src/app/files/components/PaneOrderDialog.tsx — w-[28rem] max-w-[90vw]
+// FILE: src/app/files/components/LayoutPickerPopover.tsx — w-72 max-w-[90vw]
+// FILE: src/app/files/components/FilePane.tsx — flex flex-col pane shell and flex-1 scrolling list

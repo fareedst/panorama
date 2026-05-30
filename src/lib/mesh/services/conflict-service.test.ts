@@ -1,4 +1,4 @@
-// [IMPL-MESH_CONFLICT] [REQ-MESH_PLATFORM]: Conflict tests — phase 11
+// [IMPL-MESH_CONFLICT] [ARCH-MESH_LAYERED] [REQ-MESH_PLATFORM]: Track pending sync conflicts, resolve lifecycle, and gate destructive execution
 
 import { describe, it, expect } from "vitest";
 import { isDomainValidationError } from "../domain";
