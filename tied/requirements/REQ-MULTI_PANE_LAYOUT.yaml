@@ -18,6 +18,7 @@ REQ-MULTI_PANE_LAYOUT:
     - criterion: Layout can be changed dynamically
     - criterion: Pane bounds reflect available workspace area (toolbar and header aware), not fixed viewport heuristics
     - criterion: Pane order dialog (pane.order) allows arbitrary reorder of panes[]
+    - criterion: Pane URL deep link query params pane0..paneN initialize pane paths on mount for E2E and bookmarkable workspaces (see Pane URL deep link in workspace-pane-vocabulary.md)
     - criterion: Support 2-4 panes in any layout
     - criterion: Support OneColumn layout (all panes vertical)
     - criterion: Support OneRow layout (all panes horizontal)
@@ -33,6 +34,8 @@ REQ-MULTI_PANE_LAYOUT:
       coverage: Pane bounds calculated correctly, no overlaps (62 tests)
     - method: Integration tests
       coverage: useElementSize and WorkspaceView toolbar compact toggle update pane geometry from measured workspace-area
+    - method: Playwright
+      coverage: e2e/readme-screenshots.spec.ts loads three panes via pane URL deep link
   traceability:
     architecture:
       - ARCH-LAYOUT_ALGORITHMS
@@ -42,8 +45,9 @@ REQ-MULTI_PANE_LAYOUT:
       - IMPL-PANE_MANAGEMENT
       - IMPL-WORKSPACE_VIEW
     tests:
-      - src/lib/pane-order.test.ts
+      - e2e/readme-screenshots.spec.ts
       - src/app/files/WorkspaceView.pane-reorder.test.tsx
+      - src/lib/pane-order.test.ts
     code_annotations:
       - REQ-MULTI_PANE_LAYOUT
   related_requirements:
@@ -51,15 +55,16 @@ REQ-MULTI_PANE_LAYOUT:
       - REQ-FILE_MANAGER_PAGE
     related_to:
       - REQ-FILE_LISTING
+      - REQ-README_DEMO_AUTOMATION
     supersedes: []
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-29T00:00:00.000Z"
+      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — vocabulary standards; workspace-pane glossary criterion
+      reason: LEAP — pane URL deep link E2E coverage for README demo screenshots
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

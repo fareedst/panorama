@@ -1,19 +1,24 @@
 #!/bin/bash
-# Verify CopyAll Demo Screenshots
+# [IMPL-DEMO_SCREENSHOT_PIPELINE] [ARCH-DEMO_ASSET_PIPELINE] [REQ-README_DEMO_AUTOMATION]: how: VERIFY_DEMO_ASSETS — repo-relative check for required docs/screenshots files
+# Verify README and CopyAll demo screenshots
 # This script checks that all required demo screenshots exist
 
-SCREENSHOT_DIR="/Users/fareed/Documents/dev/node/nx1/docs/screenshots"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+SCREENSHOT_DIR="$SCRIPT_DIR/../docs/screenshots"
 
-echo "Verifying CopyAll demo screenshots..."
+echo "Verifying README and CopyAll demo screenshots..."
 echo "Screenshot directory: $SCREENSHOT_DIR"
 echo ""
 
 # Required screenshots
 REQUIRED_SCREENSHOTS=(
+    "3-pane-workspace.png"
+    "3-pane-comparison.png"
     "demo-01-initial-state.png"
     "demo-02-marked-files.png"
     "demo-03-copyall-dialog.png"
     "demo-05-final-result.png"
+    "copyall-demo.gif"
 )
 
 # Optional screenshots
@@ -26,7 +31,6 @@ MISSING_COUNT=0
 for screenshot in "${REQUIRED_SCREENSHOTS[@]}"; do
     if [ -f "$SCREENSHOT_DIR/$screenshot" ]; then
         echo "✅ Found: $screenshot"
-        # Get file size
         SIZE=$(ls -lh "$SCREENSHOT_DIR/$screenshot" | awk '{print $5}')
         echo "   Size: $SIZE"
     else

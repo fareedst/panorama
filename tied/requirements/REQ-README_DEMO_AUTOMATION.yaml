@@ -1,0 +1,65 @@
+REQ-README_DEMO_AUTOMATION:
+  name: README Demo Screenshot Automation
+  category: Documentation
+  priority: P2
+  status: Implemented
+  description: 'One-command Playwright pipeline generates committed README demo assets under docs/screenshots/: 3-pane workspace and comparison PNGs, CopyAll step PNGs, and copyall-demo.gif. Uses pane URL deep links and separate comparison vs CopyAll fixtures. Canonical terms: docs/workspace-pane-vocabulary.md, docs/cross-pane-comparison-vocabulary.md, docs/nsync-multi-target-vocabulary.md, docs/toolbar-keybind-vocabulary.md.'
+  rationale:
+    why: README visuals must stay reproducible without manual recording
+    problems_solved:
+      - Comparison screenshots missing from automation
+      - Hard-coded verify paths tied to one machine
+      - Stale or oversized screenshot binaries
+    benefits:
+      - Documented fixture lifecycle per E2E spec
+      - npm run demo:screenshots regenerates all assets
+      - Repo-relative verify script
+  satisfaction_criteria:
+    - criterion: copyall_demo_pngs_and_gif_produced_by_existing_copyall_spec
+    - criterion: demo_screenshots_script_runs_setup_readme_setup_copyall_playwright_and_convert
+    - criterion: release_maintainers_run_demo_screenshots_before_committing_readme_visuals
+    - criterion: verify_demo_screenshots_uses_repo_relative_paths_and_lists_all_required_assets
+    - criterion: workspace_and_comparison_pngs_written_to_docs_screenshots
+  validation_criteria:
+    - method: Playwright
+      coverage: e2e/readme-screenshots.spec.ts captures 3-pane-workspace.png and 3-pane-comparison.png
+    - method: Playwright
+      coverage: e2e/copyall-demo.spec.ts captures demo-01 through demo-05 PNGs and records webm for GIF
+    - method: Shell
+      coverage: scripts/verify_demo_screenshots.sh
+    - method: npm script
+      coverage: package.json demo:screenshots and demo:record alias
+  traceability:
+    architecture:
+      - ARCH-DEMO_ASSET_PIPELINE
+      - ARCH-TEST_FRAMEWORK
+    implementation:
+      - IMPL-DEMO_SCREENSHOT_PIPELINE
+    tests:
+      - e2e/copyall-demo.spec.ts
+      - e2e/readme-screenshots.spec.ts
+      - scripts/verify_demo_screenshots.sh
+    code_annotations:
+      - REQ-README_DEMO_AUTOMATION
+  related_requirements:
+    depends_on:
+      - REQ-BUILD_SYSTEM
+      - REQ-CROSS_PANE_COMPARISON
+      - REQ-FILE_COMPARISON_VISUAL
+      - REQ-MULTI_PANE_LAYOUT
+      - REQ-NSYNC_MULTI_TARGET
+      - REQ-TOOLBAR_SYSTEM
+    related_to: []
+    supersedes: []
+  metadata:
+    created:
+      date: "2026-05-30T00:00:00.000Z"
+      author: AI Agent
+    last_updated:
+      date: "2026-05-30T00:00:00.000Z"
+      author: AI Agent
+      reason: README workspace/comparison screenshot automation
+    last_validated:
+      date: "2026-05-30T00:00:00.000Z"
+      validator: AI Agent
+      result: pass

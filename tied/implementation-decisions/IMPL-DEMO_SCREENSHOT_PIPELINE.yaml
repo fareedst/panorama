@@ -1,0 +1,75 @@
+IMPL-DEMO_SCREENSHOT_PIPELINE:
+  name: Demo Screenshot Pipeline Implementation
+  status: Active
+  cross_references:
+    - ARCH-DEMO_ASSET_PIPELINE
+    - REQ-README_DEMO_AUTOMATION
+  decision: Bash fixture scripts and Playwright E2E specs capture README demo PNGs and GIF; npm scripts chain setup, test, convert, and verify.
+  rationale:
+    why: Implements REQ-README_DEMO_AUTOMATION with traceable automation artifacts
+    problems_solved:
+      - Missing automated 3-pane comparison screenshots
+      - verify script used developer-absolute path
+    benefits:
+      - Literal token comments in E2E and shell scripts
+      - essence_pseudocode blocks map to test steps
+  implementation_approach:
+    summary: 'Seven pseudo-code blocks: comparison fixture, CopyAll fixture, workspace/comparison capture, CopyAll capture, GIF convert, verify assets, npm orchestration'
+    details:
+      - 'e2e_only_reason: bash fixtures and Playwright asset writes are not unit-testable; browser and filesystem side effects require E2E or manual demo:screenshots'
+      - Each E2E describe beforeAll re-runs its fixture script because demo:setup wipes /tmp/test-dirs between prelude steps
+  code_locations:
+    files:
+      - path: e2e/readme-screenshots.spec.ts
+        description: Capture 3-pane-workspace and 3-pane-comparison PNGs
+      - path: e2e/copyall-demo.spec.ts
+        description: Capture CopyAll workflow PNGs and Playwright video
+      - path: scripts/setup_readme_screenshots.sh
+        description: Comparison demo fixture
+      - path: scripts/setup_copyall_demo.sh
+        description: CopyAll demo fixture
+      - path: scripts/convert_demo_to_gif.sh
+        description: Webm to copyall-demo.gif
+      - path: scripts/verify_demo_screenshots.sh
+        description: Required asset presence check
+      - path: package.json
+        description: demo:screenshots npm script chain
+    functions: []
+  traceability:
+    architecture:
+      - ARCH-DEMO_ASSET_PIPELINE
+      - ARCH-TEST_FRAMEWORK
+    requirements:
+      - REQ-CROSS_PANE_COMPARISON
+      - REQ-MULTI_PANE_LAYOUT
+      - REQ-NSYNC_MULTI_TARGET
+      - REQ-README_DEMO_AUTOMATION
+      - REQ-TOOLBAR_SYSTEM
+    tests:
+      - e2e/readme-screenshots.spec.ts
+      - e2e/copyall-demo.spec.ts
+    code_annotations:
+      - REQ-README_DEMO_AUTOMATION
+      - IMPL-DEMO_SCREENSHOT_PIPELINE
+  related_decisions:
+    depends_on:
+      - IMPL-TEST_SETUP
+    supersedes: []
+    see_also:
+      - docs/cross-pane-comparison-vocabulary.md
+      - docs/nsync-multi-target-vocabulary.md
+      - docs/screenshots/README.md
+      - docs/toolbar-keybind-vocabulary.md
+      - docs/workspace-pane-vocabulary.md
+  metadata:
+    created:
+      date: "2026-05-30T00:00:00.000Z"
+      author: AI Agent
+    last_updated:
+      date: "2026-05-30T00:00:00.000Z"
+      author: AI Agent
+      reason: README demo screenshot pipeline
+    last_validated:
+      date: "2026-05-30T00:00:00.000Z"
+      validator: AI Agent
+      result: pass

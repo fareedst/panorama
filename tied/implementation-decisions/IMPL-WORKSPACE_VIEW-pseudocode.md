@@ -16,6 +16,25 @@ PROCEDURE DIALOG_KEYS
   OTHER modals use isOpen without alternating keys (ColumnOrderDialog, HelpOverlay, etc.)
 ```
 
+## PANE_URL_DEEP_LINK_INIT
+
+// [IMPL-WORKSPACE_VIEW] [ARCH-PANE_LIFECYCLE] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-MULTI_PANE_LAYOUT] [REQ-README_DEMO_AUTOMATION]: how: on mount read pane0..paneN from URLSearchParams and call handleNavigate per index unless mesh restore skipped; enables E2E and bookmarkable multi-pane paths (Pane URL deep link)
+
+```
+CONTRACT PaneUrlDeepLinkInit
+  INPUT: window.location.search, panes.length, restoredFromMesh, clientRestoredFromMesh, meshRehydrating
+  OUTPUT: panes navigated to URL-specified directory paths
+  DATA: query keys pane0, pane1, pane2, ...; staggered setTimeout index * 100ms per navigate
+
+PROCEDURE PANE_URL_DEEP_LINK_INIT
+  IF restoredFromMesh OR clientRestoredFromMesh OR meshRehydrating THEN RETURN
+  COLLECT panePathsFromUrl := searchParams.get(`pane${i}`) for i in 0..panes.length-1
+  IF panePathsFromUrl.length > 0
+    FOR EACH (panePath, index) IN panePathsFromUrl
+      SCHEDULE handleNavigate(index, panePath) after index * 100ms delay
+  RUN once on mount (deps: mesh restore flags only)
+```
+
 ## KEYBINDING_INIT
 
 // [IMPL-WORKSPACE_VIEW] [IMPL-KEYBINDS] [ARCH-KEYBIND_SYSTEM] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-KEYBOARD_NAVIGATION]: how: useMemo builds workspaceActionHandlers and paneActionHandlers maps; merged into actionHandlers; window keydown and handleExecuteAction dispatch through merged map

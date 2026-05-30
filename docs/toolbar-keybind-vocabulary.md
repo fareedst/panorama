@@ -49,6 +49,7 @@
 | **Panorama icons** | `panorama-icons.tsx` — app-specific glyphs (compare filters, mesh, multi-pane file ops) |
 | **ACTION_ICON_MAP** | Action → icon name when a keybinding exists (`src/lib/toolbar.utils.ts`) |
 | **icon-unknown** | Fallback glyph for unmapped actions (not **Help**; `help.show` uses `help-circle`) |
+| **Toolbar view test id** | `data-testid="toolbar-{action}"` e.g. `toolbar-view.comparison`, `toolbar-file.copyAll` — Playwright demo selectors ([REQ-TOOLBAR_SYSTEM](../tied/requirements/REQ-TOOLBAR_SYSTEM.yaml)) |
 
 ## Naming bridge
 
@@ -73,6 +74,7 @@
 | Pane order | “Pane order” dialog | `copy.paneManagement.paneOrderTitle` + `toolbars.actions.pane.order` | `pane.order` (toolbar-only) | `PaneOrderDialog`, `handleApplyPaneOrder` |
 | Compare filter thresholds | Threshold dialog | `toolbars.actions.view.compareFilter.thresholds` | — (toolbar-only) | `CompareFilterThresholdDialog` ([REQ-CROSS_PANE_VISIBILITY](../tied/requirements/REQ-CROSS_PANE_VISIBILITY.yaml)) |
 | Compare filter criterion | Tri-state toolbar button | `toolbars.actions.view.compareFilter.*` | — (toolbar-only) | `TriStateToolbarButton`, `CYCLE_TRI_STATE` |
+| Toggle comparison mode (E2E) | (cycles mode) | — | `view.comparison` | `data-testid="toolbar-view.comparison"` |
 
 ### Action namespace prefixes (stable)
 
@@ -112,6 +114,7 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 - **Icon registry** — `getIconPaths` / `isIconRegistered` in `src/components/icons/registry.ts`; `getReferencedToolbarIconNames()` in `toolbar.utils.ts` for test coverage.
 - **pane.order** — Toolbar-only pane reorder; icon `bookmark-list`; opens `PaneOrderDialog` (no keybinding row in `config/files.yaml`).
 - **pane.swap** / **pane.cycle** — Workspace Panes group; icons `move` and `refresh-cw`; share handlers with keyboard shortcuts ([workspace-pane-vocabulary.md](workspace-pane-vocabulary.md)).
+- **Toolbar view test id** — Stable `toolbar-{action}` test ids on `ToolbarButton` for Playwright ([e2e/readme-screenshots.spec.ts](../e2e/readme-screenshots.spec.ts), [e2e/copyall-demo.spec.ts](../e2e/copyall-demo.spec.ts)).
 
 ### Adding toolbar icons
 
@@ -179,7 +182,8 @@ Toolbar button labels and dialog titles: `config/files.yaml` → `copy.paneManag
 - **Toolbar expanded mode** — user-toggled three-tier layout with keystroke badges
 - **view.compareFilter.*** — tri-state compare filter toolbar actions (toolbar-only)
 - **view.compareFilter.thresholds** — compare filter size/time threshold dialog
-- **Toolbar test id** — `toolbar-{action}`
+- **Toolbar test id** — `toolbar-{action}` (see **Toolbar view test id**)
+- **Toolbar view test id** — `data-testid="toolbar-{action}"` for Playwright demos
 - **Workspace toolbar** — `toolbars.workspace`
 - **Workspace area** — measured flex region; `data-testid="workspace-area"`
 - **useElementSize** — ResizeObserver hook feeding pane layout (`src/lib/useElementSize.ts`)

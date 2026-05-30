@@ -9,8 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **README demo screenshot automation** (`[REQ-README_DEMO_AUTOMATION]`, `[ARCH-DEMO_ASSET_PIPELINE]`, `[IMPL-DEMO_SCREENSHOT_PIPELINE]`): `npm run demo:screenshots` / `demo:record` captures `3-pane-workspace.png`, `3-pane-comparison.png`, CopyAll step PNGs, and `copyall-demo.gif`; [`scripts/setup_readme_screenshots.sh`](scripts/setup_readme_screenshots.sh); [`e2e/readme-screenshots.spec.ts`](e2e/readme-screenshots.spec.ts); repo-relative [`scripts/verify_demo_screenshots.sh`](scripts/verify_demo_screenshots.sh) (runs at end of `demo:screenshots`). Vocabulary: [`docs/workspace-pane-vocabulary.md`](docs/workspace-pane-vocabulary.md) (**Pane URL deep link**, **README demo asset**), [`docs/cross-pane-comparison-vocabulary.md`](docs/cross-pane-comparison-vocabulary.md) (**Comparison demo fixture**), [`docs/toolbar-keybind-vocabulary.md`](docs/toolbar-keybind-vocabulary.md) (**Toolbar view test id**), [`docs/nsync-multi-target-vocabulary.md`](docs/nsync-multi-target-vocabulary.md) (**CopyAll demo asset**).
+
 ### Changed
 
+- **Demo asset pipeline** (`[IMPL-DEMO_SCREENSHOT_PIPELINE]`): `demo:record` aliases unified `demo:screenshots`; GIF converter prefers CopyAll webm; compressed committed screenshot binaries under `docs/screenshots/`.
+- **Pane URL deep link** (`[IMPL-WORKSPACE_VIEW]`, `[REQ-MULTI_PANE_LAYOUT]`): TIED pseudo-code block `PANE_URL_DEEP_LINK_INIT` and E2E coverage via readme-screenshots spec.
 - **TIED three-way traceability retrofit** (`[PROC-IMPL_PSEUDOCODE_TOKENS]`, `[PROC-TIED_FIRST_IMPLEMENTATION]`): 80+ IMPL `essence_pseudocode` sidecars with block leads; literal copy to `src/**` code and Vitest comments; LEAP for **REQ-HOME_PAGE** (root redirect), **REQ-NAVIGATION_LINKS** (NewTabLink), **REQ-BRANDING** (config logo/darkInvert), **REQ-CONFIG_DRIVEN_APPEARANCE** (file-manager-only scope); ARCH **ARCH-CONFIG_DRIVEN_APPEARANCE**, **ARCH-SERVER_COMPONENTS**, **ARCH-APP_ROUTER**, **ARCH-NEXTJS_FRAMEWORK**; nine MESH sidecars completed (**IMPL-MESH_DOMAIN_TYPES**, **IMPL-MESH_AUTH**, **IMPL-MESH_SESSION**, …).
 
 - **Domain vocabulary** ([`docs/workspace-pane-vocabulary.md`](docs/workspace-pane-vocabulary.md), [`docs/mesh-platform-vocabulary.md`](docs/mesh-platform-vocabulary.md)): preferred terms **Root entry redirect**, **Sole-purpose entry**, **Branding logo**, **darkInvert**, **NewTabLink**, **navigation.security**; [`scripts/validate-vocabulary.sh`](scripts/validate-vocabulary.sh) via `bun run validate:vocabulary`.

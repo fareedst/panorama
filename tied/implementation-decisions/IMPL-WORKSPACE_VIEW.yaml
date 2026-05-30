@@ -42,6 +42,7 @@ IMPL-WORKSPACE_VIEW:
   traceability:
     architecture:
       - ARCH-FILE_MANAGER_HIERARCHY
+      - ARCH-PANE_LIFECYCLE
       - ARCH-TOOLBAR_LAYOUT
     requirements:
       - REQ-CONFIG_DRIVEN_FILE_MANAGER
@@ -51,8 +52,10 @@ IMPL-WORKSPACE_VIEW:
       - REQ-MOUSE_INTERACTION
       - REQ-MULTI_PANE_LAYOUT
       - REQ-REACT_SSR_STABILITY
+      - REQ-README_DEMO_AUTOMATION
       - REQ-TOOLBAR_SYSTEM
     tests:
+      - e2e/readme-screenshots.spec.ts
       - src/app/files/components/LayoutPickerPopover.test.tsx
       - src/app/files/WorkspaceView.cross-pane-visibility.test.tsx
       - src/app/files/WorkspaceView.file-column-clipboard.test.tsx
@@ -68,6 +71,7 @@ IMPL-WORKSPACE_VIEW:
       - IMPL-FILE_PANE
       - IMPL-KEYBINDS
       - IMPL-LAYOUT_CALCULATOR
+      - tied/implementation-decisions/IMPL-DEMO_SCREENSHOT_PIPELINE-pseudocode.md
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z
@@ -75,7 +79,7 @@ IMPL-WORKSPACE_VIEW:
     last_updated:
       date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: Retrofit essence_pseudocode from WorkspaceView tests
+      reason: LEAP — Pane URL deep link pseudo-code block for README demo E2E
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

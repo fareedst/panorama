@@ -4204,3 +4204,10 @@ IMPL-CROSS_PANE_VISIBILITY_CATALOG:
     - IMPL-CROSS_PANE_VISIBILITY_UI
     - REQ-CROSS_PANE_VISIBILITY
   detail_file: implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_CATALOG.yaml
+IMPL-DEMO_SCREENSHOT_PIPELINE:
+  name: Demo Screenshot Pipeline Implementation
+  status: Active
+  cross_references:
+    - ARCH-DEMO_ASSET_PIPELINE
+    - REQ-README_DEMO_AUTOMATION
+  detail_file: implementation-decisions/IMPL-DEMO_SCREENSHOT_PIPELINE.yaml

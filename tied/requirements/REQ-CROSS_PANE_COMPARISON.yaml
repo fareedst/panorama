@@ -15,6 +15,7 @@ REQ-CROSS_PANE_COMPARISON:
       - Identify same/different files quickly
       - Visual diff indicators (color coding)
   satisfaction_criteria:
+    - criterion: Comparison demo fixture provides deliberate size/mtime deltas for README screenshot automation (comparison demo fixture in cross-pane-comparison-vocabulary.md)
     - criterion: Comparison updates when panes change
     - criterion: Different sizes/times indicated with distinct colors (ComparisonMode size/time)
     - criterion: Files unique to one pane clearly marked
@@ -25,13 +26,18 @@ REQ-CROSS_PANE_COMPARISON:
       coverage: Comparison colors display correctly
     - method: Index testing
       coverage: Comparison index builds and updates correctly
+    - method: Playwright
+      coverage: e2e/readme-screenshots.spec.ts captures 3-pane-comparison.png with comparison mode active
   traceability:
     architecture:
       - ARCH-COMPARISON_INDEX
+      - ARCH-DEMO_ASSET_PIPELINE
     implementation:
       - IMPL-COMPARISON_INDEX
+      - IMPL-DEMO_SCREENSHOT_PIPELINE
       - IMPL-FILE_PANE
-    tests: []
+    tests:
+      - e2e/readme-screenshots.spec.ts
     code_annotations:
       - REQ-CROSS_PANE_COMPARISON
   related_requirements:
@@ -39,16 +45,18 @@ REQ-CROSS_PANE_COMPARISON:
       - REQ-FILE_LISTING
       - REQ-MULTI_PANE_LAYOUT
     related_to:
+      - REQ-FILE_COMPARISON_VISUAL
       - REQ-FILE_OPERATIONS
+      - REQ-README_DEMO_AUTOMATION
     supersedes: []
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-19"
+      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: Link canonical domain vocabulary
+      reason: LEAP — comparison fixture and README screenshot E2E
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

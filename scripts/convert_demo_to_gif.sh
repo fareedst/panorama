@@ -1,10 +1,16 @@
 #!/bin/bash
+# [IMPL-DEMO_SCREENSHOT_PIPELINE] [ARCH-DEMO_ASSET_PIPELINE] [REQ-README_DEMO_AUTOMATION]: how: CONVERT_COPYALL_GIF — prefer copyall-demo webm then write docs/screenshots/copyall-demo.gif
 # Convert Playwright test video to optimized GIF
 
 set -e
 
-# Find the most recent test video (macOS compatible)
-VIDEO=$(find test-results -name "*.webm" -type f -print0 2>/dev/null | xargs -0 ls -t 2>/dev/null | head -1)
+# Prefer CopyAll demo video; fall back to most recent test video
+VIDEO=$(find test-results -path '*copyall-demo*' -name '*.webm' -type f -print0 2>/dev/null \
+  | xargs -0 ls -t 2>/dev/null | head -1)
+
+if [ -z "$VIDEO" ]; then
+  VIDEO=$(find test-results -name "*.webm" -type f -print0 2>/dev/null | xargs -0 ls -t 2>/dev/null | head -1)
+fi
 
 if [ -z "$VIDEO" ]; then
   echo "Error: No video found in test-results/"

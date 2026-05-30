@@ -1,4 +1,5 @@
 #!/bin/bash
+# [IMPL-DEMO_SCREENSHOT_PIPELINE] [ARCH-DEMO_ASSET_PIPELINE] [REQ-README_DEMO_AUTOMATION] [REQ-NSYNC_MULTI_TARGET]: how: SETUP_COPYALL_FIXTURE — alpha source pane and empty beta/gamma targets for CopyAll demo
 # Setup test directories for CopyAll demo recording
 #
 # This script creates the directory structure needed for the CopyAll demo:

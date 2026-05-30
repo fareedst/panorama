@@ -27,6 +27,7 @@ REQ-TOOLBAR_SYSTEM:
     - criterion: Each toolbar action with an icon mapping renders a registered icon from the icon registry (not the icon-unknown fallback)
     - criterion: Session starts in compact single-row icon-only toolbar; user can toggle to expanded three-tier layout with keystroke badges; tooltips retain keyboard shortcuts in both modes
     - criterion: Terminology aligns with docs/toolbar-keybind-vocabulary.md
+    - criterion: Toolbar actions expose data-testid toolbar-{action} for Playwright demo and E2E automation (toolbar test id in toolbar-keybind-vocabulary.md)
     - criterion: Toolbar button actions dispatch to same handlers as keyboard shortcuts
     - criterion: Toolbar group actions listed under toolbars.actions render without a keybinding row
     - criterion: Toolbar rendering does not impact file manager responsiveness
@@ -44,6 +45,8 @@ REQ-TOOLBAR_SYSTEM:
       coverage: ARIA labels, keyboard navigation, focus management, toolbar-compact-toggle aria-pressed
     - method: Manual testing
       coverage: Visual inspection, compact vs expanded layout, interaction testing, responsive testing
+    - method: Playwright
+      coverage: e2e/readme-screenshots.spec.ts and e2e/copyall-demo.spec.ts select toolbar-view.comparison and toolbar-file.copyAll
   traceability:
     architecture:
       - ARCH-TOOLBAR_LAYOUT
@@ -52,6 +55,8 @@ REQ-TOOLBAR_SYSTEM:
       - IMPL-TOOLBAR_COMPONENT
       - IMPL-TOOLBAR_CONFIG
     tests:
+      - e2e/copyall-demo.spec.ts
+      - e2e/readme-screenshots.spec.ts
       - src/app/files/components/Toolbar.test.tsx
       - src/app/files/components/ToolbarButton.test.tsx
       - src/app/files/components/ToolbarCompactToggle.test.tsx
@@ -68,6 +73,7 @@ REQ-TOOLBAR_SYSTEM:
       - REQ-CONFIG_DRIVEN_FILE_MANAGER
     related_to:
       - REQ-MOUSE_INTERACTION
+      - REQ-README_DEMO_AUTOMATION
       - REQ-TOOLBAR_CONFIG
     supersedes: []
   metadata:
@@ -75,9 +81,9 @@ REQ-TOOLBAR_SYSTEM:
       date: 2026-02-08T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-29T00:00:00.000Z"
+      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — vocabulary standards; toolbar glossary criterion
+      reason: LEAP — toolbar data-testid E2E dependency for demo screenshots
     last_validated:
       date: 2026-02-08T00:00:00.000Z
       validator: AI Agent

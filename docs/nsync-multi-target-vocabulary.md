@@ -8,7 +8,7 @@
 
 | Kind | Tokens / artifacts |
 | --- | --- |
-| REQ | [REQ-NSYNC_MULTI_TARGET](../tied/requirements/REQ-NSYNC_MULTI_TARGET.yaml), [REQ-MOVE_SEMANTICS](../tied/requirements/REQ-MOVE_SEMANTICS.yaml), [REQ-COMPARE_METHODS](../tied/requirements/REQ-COMPARE_METHODS.yaml), [REQ-HASH_COMPUTATION](../tied/requirements/REQ-HASH_COMPUTATION.yaml), [REQ-VERIFY_DEST](../tied/requirements/REQ-VERIFY_DEST.yaml), [REQ-STORE_FAILURE_DETECT](../tied/requirements/REQ-STORE_FAILURE_DETECT.yaml) |
+| REQ | [REQ-NSYNC_MULTI_TARGET](../tied/requirements/REQ-NSYNC_MULTI_TARGET.yaml), [REQ-README_DEMO_AUTOMATION](../tied/requirements/REQ-README_DEMO_AUTOMATION.yaml), [REQ-MOVE_SEMANTICS](../tied/requirements/REQ-MOVE_SEMANTICS.yaml), [REQ-COMPARE_METHODS](../tied/requirements/REQ-COMPARE_METHODS.yaml), [REQ-HASH_COMPUTATION](../tied/requirements/REQ-HASH_COMPUTATION.yaml), [REQ-VERIFY_DEST](../tied/requirements/REQ-VERIFY_DEST.yaml), [REQ-STORE_FAILURE_DETECT](../tied/requirements/REQ-STORE_FAILURE_DETECT.yaml) |
 | ARCH | [ARCH-NSYNC_INTEGRATION](../tied/architecture-decisions/ARCH-NSYNC_INTEGRATION.yaml) |
 | IMPL | [IMPL-NSYNC_ENGINE](../tied/implementation-decisions/IMPL-NSYNC_ENGINE.yaml), [IMPL-NSYNC_OPERATIONS](../tied/implementation-decisions/IMPL-NSYNC_OPERATIONS.yaml), [IMPL-NSYNC_COMPARE](../tied/implementation-decisions/IMPL-NSYNC_COMPARE.yaml), [IMPL-NSYNC_HASH](../tied/implementation-decisions/IMPL-NSYNC_HASH.yaml), [IMPL-NSYNC_VERIFY](../tied/implementation-decisions/IMPL-NSYNC_VERIFY.yaml), [IMPL-NSYNC_STORE](../tied/implementation-decisions/IMPL-NSYNC_STORE.yaml) |
 | Pseudo-code | [IMPL-NSYNC_ENGINE-pseudocode.md](../tied/implementation-decisions/IMPL-NSYNC_ENGINE-pseudocode.md) |
@@ -35,12 +35,13 @@
 | **Store monitor** | “store failure detection”, `StoreMonitor`, `storeFailureAbort` |
 | **Sync observer** | “progress callbacks”, `SyncObserver` (`onStart`, `onItemComplete`, `onFinish`, …) |
 | **Sync plan** | `SyncPlan` — `totalItems`, `totalBytes`, `totalDestinations` at start |
+| **CopyAll demo asset** | `demo-01-initial-state.png` … `demo-05-final-result.png`, `copyall-demo.gif` under `docs/screenshots/` ([REQ-README_DEMO_AUTOMATION](../tied/requirements/REQ-README_DEMO_AUTOMATION.yaml)) |
 
 ## Naming bridge
 
 | Canonical concept | UI label | Icon name | Config / API | Keybind action | Code symbol |
 | --- | --- | --- | --- | --- | --- |
-| Copy to all panes | toolbar “Copy to All” | `copy-all` | POST `operation: "sync-all"`, `move: false` | `file.copyAll` (Shift+C) | `handleCopyAll` |
+| Copy to all panes | toolbar “Copy to All” | `copy-all` | POST `operation: "sync-all"`, `move: false` | `file.copyAll` (Shift+C) | `handleCopyAll`, `data-testid="toolbar-file.copyAll"` |
 | Move to all panes | toolbar “Move to All” | `move-all` | POST `sync-all`, `move: true` | `file.moveAll` (Shift+V) | `handleMoveAll` |
 | Default compare | — | `compareMethod: "size-mtime"` (body default) | — | `CompareMethod` |
 | Verify destination | — | `verifyDestination` / `verify` | — | post-copy hash check |
@@ -84,9 +85,12 @@ Toolbar labels **Copy to All** / **Move to All** use pane toolbar group copy fro
 | Progress callbacks | `ObserverCallbacks` → `IMPL-NSYNC_ENGINE_ObserverCallbacks` | IMPL-NSYNC_ENGINE |
 | Store failure abort | `StoreMonitor` → `IMPL-NSYNC_ENGINE_StoreMonitor` | IMPL-NSYNC_ENGINE |
 | Copy/move/delete primitives | `CopyFile`, `MoveFile`, `DeleteFile` | IMPL-NSYNC_OPERATIONS |
+| CopyAll demo capture | `CAPTURE_COPYALL_WORKFLOW` | IMPL-DEMO_SCREENSHOT_PIPELINE |
+| CopyAll GIF convert | `CONVERT_COPYALL_GIF` | IMPL-DEMO_SCREENSHOT_PIPELINE |
 
 ## Alphabetical index
 
+- **CopyAll demo asset** — README PNG/GIF from Playwright CopyAll spec
 - **Compare method** — `none`, `size`, `mtime`, `size-mtime`, `hash`
 - **Destination** — target directory path
 - **Move semantics** — deferred delete after all destinations succeed

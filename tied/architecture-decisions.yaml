@@ -2784,3 +2784,10 @@ ARCH-CROSS_PANE_VISIBILITY:
     - ARCH-DISPLAY_FILTER_ENGINE
     - REQ-CROSS_PANE_VISIBILITY
   detail_file: architecture-decisions/ARCH-CROSS_PANE_VISIBILITY.yaml
+ARCH-DEMO_ASSET_PIPELINE:
+  name: Demo Asset Pipeline
+  status: Active
+  cross_references:
+    - REQ-README_DEMO_AUTOMATION
+    - ARCH-TEST_FRAMEWORK
+  detail_file: architecture-decisions/ARCH-DEMO_ASSET_PIPELINE.yaml

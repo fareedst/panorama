@@ -26,13 +26,18 @@ REQ-NSYNC_MULTI_TARGET:
       coverage: Multi-destination sync, move semantics, observer callbacks
     - method: Integration tests
       coverage: CopyAll/MoveAll from React UI
+    - method: Playwright
+      coverage: e2e/copyall-demo.spec.ts documents CopyAll workflow and produces demo PNGs plus GIF via IMPL-DEMO_SCREENSHOT_PIPELINE
   traceability:
     architecture:
       - ARCH-NSYNC_INTEGRATION
+      - ARCH-DEMO_ASSET_PIPELINE
     implementation:
+      - IMPL-DEMO_SCREENSHOT_PIPELINE
       - IMPL-NSYNC_ENGINE
       - IMPL-NSYNC_OPERATIONS
-    tests: []
+    tests:
+      - e2e/copyall-demo.spec.ts
     code_annotations:
       - REQ-NSYNC_MULTI_TARGET
   related_requirements:
@@ -40,15 +45,16 @@ REQ-NSYNC_MULTI_TARGET:
     related_to:
       - REQ-BULK_FILE_OPS
       - REQ-MOVE_SEMANTICS
+      - REQ-README_DEMO_AUTOMATION
     supersedes: []
   metadata:
     created:
       date: 2026-02-09T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-19"
+      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: Link canonical domain vocabulary and pseudo-code block names
+      reason: LEAP — CopyAll demo E2E and GIF pipeline traceability
     last_validated:
       date: 2026-02-09T00:00:00.000Z
       validator: AI Agent

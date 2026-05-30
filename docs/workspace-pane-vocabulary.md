@@ -10,7 +10,7 @@ Excludes NSYNC sync algorithms ([nsync-multi-target-vocabulary.md](nsync-multi-t
 
 | Kind | Tokens / artifacts |
 | --- | --- |
-| REQ | [REQ-FILE_MANAGER_PAGE](../tied/requirements/REQ-FILE_MANAGER_PAGE.yaml), [REQ-HOME_PAGE](../tied/requirements/REQ-HOME_PAGE.yaml), [REQ-BRANDING](../tied/requirements/REQ-BRANDING.yaml), [REQ-MULTI_PANE_LAYOUT](../tied/requirements/REQ-MULTI_PANE_LAYOUT.yaml), [REQ-CONFIG_DRIVEN_FILE_MANAGER](../tied/requirements/REQ-CONFIG_DRIVEN_FILE_MANAGER.yaml), [REQ-TOOLBAR_SYSTEM](../tied/requirements/REQ-TOOLBAR_SYSTEM.yaml), [REQ-DIRECTORY_NAVIGATION](../tied/requirements/REQ-DIRECTORY_NAVIGATION.yaml), [REQ-MOUSE_INTERACTION](../tied/requirements/REQ-MOUSE_INTERACTION.yaml), [REQ-LINKED_PANES](../tied/requirements/REQ-LINKED_PANES.yaml), [REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml), [REQ-PANE_DISPLAY_FILTER](../tied/requirements/REQ-PANE_DISPLAY_FILTER.yaml), [REQ-CROSS_PANE_VISIBILITY](../tied/requirements/REQ-CROSS_PANE_VISIBILITY.yaml) |
+| REQ | [REQ-FILE_MANAGER_PAGE](../tied/requirements/REQ-FILE_MANAGER_PAGE.yaml), [REQ-HOME_PAGE](../tied/requirements/REQ-HOME_PAGE.yaml), [REQ-BRANDING](../tied/requirements/REQ-BRANDING.yaml), [REQ-MULTI_PANE_LAYOUT](../tied/requirements/REQ-MULTI_PANE_LAYOUT.yaml), [REQ-README_DEMO_AUTOMATION](../tied/requirements/REQ-README_DEMO_AUTOMATION.yaml), [REQ-CONFIG_DRIVEN_FILE_MANAGER](../tied/requirements/REQ-CONFIG_DRIVEN_FILE_MANAGER.yaml), [REQ-TOOLBAR_SYSTEM](../tied/requirements/REQ-TOOLBAR_SYSTEM.yaml), [REQ-DIRECTORY_NAVIGATION](../tied/requirements/REQ-DIRECTORY_NAVIGATION.yaml), [REQ-MOUSE_INTERACTION](../tied/requirements/REQ-MOUSE_INTERACTION.yaml), [REQ-LINKED_PANES](../tied/requirements/REQ-LINKED_PANES.yaml), [REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml), [REQ-PANE_DISPLAY_FILTER](../tied/requirements/REQ-PANE_DISPLAY_FILTER.yaml), [REQ-CROSS_PANE_VISIBILITY](../tied/requirements/REQ-CROSS_PANE_VISIBILITY.yaml) |
 | ARCH | [ARCH-FILE_MANAGER_HIERARCHY](../tied/architecture-decisions/ARCH-FILE_MANAGER_HIERARCHY.yaml), [ARCH-SERVER_COMPONENTS](../tied/architecture-decisions/ARCH-SERVER_COMPONENTS.yaml), [ARCH-PANE_LIFECYCLE](../tied/architecture-decisions/ARCH-PANE_LIFECYCLE.yaml), [ARCH-CONFIG_DRIVEN_UI](../tied/architecture-decisions/ARCH-CONFIG_DRIVEN_UI.yaml), [ARCH-MOUSE_SUPPORT](../tied/architecture-decisions/ARCH-MOUSE_SUPPORT.yaml), [ARCH-CROSS_PANE_VISIBILITY](../tied/architecture-decisions/ARCH-CROSS_PANE_VISIBILITY.yaml) |
 | IMPL | [IMPL-HOME_PAGE](../tied/implementation-decisions/IMPL-HOME_PAGE.yaml), [IMPL-IMAGE_OPTIMIZATION](../tied/implementation-decisions/IMPL-IMAGE_OPTIMIZATION.yaml), [IMPL-FILE_MANAGER_PAGE](../tied/implementation-decisions/IMPL-FILE_MANAGER_PAGE.yaml), [IMPL-FILE_COLUMN_CONFIG](../tied/implementation-decisions/IMPL-FILE_COLUMN_CONFIG.yaml), [IMPL-WORKSPACE_VIEW](../tied/implementation-decisions/IMPL-WORKSPACE_VIEW.yaml), [IMPL-FILE_PANE](../tied/implementation-decisions/IMPL-FILE_PANE.yaml), [IMPL-MOUSE_SUPPORT](../tied/implementation-decisions/IMPL-MOUSE_SUPPORT.yaml), [IMPL-PANE_MANAGEMENT](../tied/implementation-decisions/IMPL-PANE_MANAGEMENT.yaml), [IMPL-LAYOUT_CALCULATOR](../tied/implementation-decisions/IMPL-LAYOUT_CALCULATOR.yaml), [IMPL-TOOLBAR_COMPONENT](../tied/implementation-decisions/IMPL-TOOLBAR_COMPONENT.yaml), [IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml) |
 | Pseudo-code | `tied/implementation-decisions/IMPL-*-pseudocode.md` for the IMPL tokens above |
@@ -79,6 +79,8 @@ Excludes NSYNC sync algorithms ([nsync-multi-target-vocabulary.md](nsync-multi-t
 | **Workspace restore warning** | Amber `workspace-restore-warning` — partial or client recovery |
 | **Workspace restore error** | Red `workspace-restore-error` — unrecovered bootstrap failure |
 | **Loaded workspace name** | Header `workspace-loaded-name` when `/files?meshId=` resolves |
+| **Pane URL deep link** | Bookmarkable `/files?pane0=…&pane1=…` query params; `WorkspaceView` navigates panes on mount ([REQ-MULTI_PANE_LAYOUT](../tied/requirements/REQ-MULTI_PANE_LAYOUT.yaml), block `PANE_URL_DEEP_LINK_INIT`) |
+| **README demo asset** | Committed PNG/GIF under `docs/screenshots/` produced by `npm run demo:screenshots` ([REQ-README_DEMO_AUTOMATION](../tied/requirements/REQ-README_DEMO_AUTOMATION.yaml)) |
 
 ## Naming bridge
 
@@ -104,6 +106,7 @@ Excludes NSYNC sync algorithms ([nsync-multi-target-vocabulary.md](nsync-multi-t
 | File columns (config) | Column defaults | `columns` in `config/files.yaml` | — | `FilesColumnConfig[]` |
 | File column clipboard menu | Copy filename / path / paths | — | — | `FileColumnContextMenu` |
 | Save / diff workspace | See mesh-platform + toolbar | `copy.workspaceMesh.*` | `mesh.saveWorkspace`, `mesh.diffWorkspace` | mesh bridge IMPL |
+| Pane URL deep link | (none) | — | — | `pane0`, `pane1`, … in `URLSearchParams` |
 
 ## Named concepts
 
@@ -120,6 +123,8 @@ Excludes NSYNC sync algorithms ([nsync-multi-target-vocabulary.md](nsync-multi-t
 - **Workspace keyboard-shortcuts footer** — removed; use toolbar badges/tooltips ([toolbar-keybind-vocabulary.md](toolbar-keybind-vocabulary.md)).
 - **File column context menu** — Clipboard-only on metadata cells; exclusive with row file-operations menu ([REQ-MOUSE_INTERACTION](../tied/requirements/REQ-MOUSE_INTERACTION.yaml)).
 - **Cross-pane path clipboard** — **Copy paths in all panes** uses cursor filename match key ([REQ-LINKED_PANES](../tied/requirements/REQ-LINKED_PANES.yaml)).
+- **Pane URL deep link** — Query parameters initialize pane paths without UI navigation; skipped when mesh restore is active.
+- **README demo asset** — Static screenshots and GIF for README; regenerated via Playwright ([IMPL-DEMO_SCREENSHOT_PIPELINE](../tied/implementation-decisions/IMPL-DEMO_SCREENSHOT_PIPELINE.yaml)).
 
 ## Copy coverage
 
@@ -132,7 +137,9 @@ User-facing strings: `config/site.yaml` → `branding.logo` (metadata contract);
 | Root redirect to file manager | `RootRedirectToFileManager` → `IMPL-HOME_PAGE_RootRedirectToFileManager` | IMPL-HOME_PAGE |
 | Branding logo config shape | `BrandingLogoConfigShape` → `IMPL-IMAGE_OPTIMIZATION_BrandingLogoConfigShape` | IMPL-IMAGE_OPTIMIZATION |
 | Workspace dialog remount keys | `DialogKeys` → `IMPL-WORKSPACE_VIEW_DialogKeys` | IMPL-WORKSPACE_VIEW |
+| Pane URL deep link init | `PANE_URL_DEEP_LINK_INIT` → `IMPL-WORKSPACE_VIEW_PaneUrlDeepLinkInit` | IMPL-WORKSPACE_VIEW |
 | Keybinding handler registration | `KeybindingInit` → `IMPL-WORKSPACE_VIEW_KeybindingInit` | IMPL-WORKSPACE_VIEW |
+| README demo screenshot pipeline | `NPM_DEMO_SCREENSHOTS`, `CAPTURE_WORKSPACE_AND_COMPARISON` | IMPL-DEMO_SCREENSHOT_PIPELINE |
 | Add pane | `AddPane` → `IMPL-PANE_MANAGEMENT_AddPane` | IMPL-PANE_MANAGEMENT |
 | Remove pane | `RemovePane` → `IMPL-PANE_MANAGEMENT_RemovePane` | IMPL-PANE_MANAGEMENT |
 | Swap panes | `SwapPanes` → `IMPL-PANE_MANAGEMENT_SwapPanes` | IMPL-PANE_MANAGEMENT |
@@ -185,6 +192,7 @@ User-facing strings: `config/site.yaml` → `branding.logo` (metadata contract);
 - **Loaded workspace name** — `workspace-loaded-name`
 - **Mesh restore pending** — `meshRestorePending`; canonical: mesh-platform
 - **OneColumn shared file column widths** — shared Size/Time `ch`
+- **Pane URL deep link** — `paneN` query params on `/files`
 - **Pane** — single listing column
 - **Pane bounds** — layout geometry
 - **Pane files list** — `paneFilesList`
@@ -192,6 +200,7 @@ User-facing strings: `config/site.yaml` → `branding.logo` (metadata contract);
 - **Pane order** — visual slot in `panes[]`
 - **Pane order dialog** — `pane.order` / `PaneOrderDialog`
 - **Pane state** — per-pane state object
+- **README demo asset** — `docs/screenshots/*.png`, `copyall-demo.gif`
 - **Root entry redirect** — `/` server redirect to `/files` via `redirect()`
 - **Sole-purpose entry** — file-manager-only product; no welcome home page
 - **Share sort** — copy focused sort to `sharedSort`

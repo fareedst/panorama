@@ -3131,3 +3131,14 @@ REQ-CROSS_PANE_VISIBILITY:
   priority: P1
   status: Planned
   detail_file: requirements/REQ-CROSS_PANE_VISIBILITY.yaml
+REQ-README_DEMO_AUTOMATION:
+  name: README Demo Screenshot Automation
+  category: Documentation
+  priority: P2
+  status: Implemented
+  cross_references:
+    - REQ-CROSS_PANE_COMPARISON
+    - REQ-MULTI_PANE_LAYOUT
+    - REQ-NSYNC_MULTI_TARGET
+    - REQ-TOOLBAR_SYSTEM
+  detail_file: requirements/REQ-README_DEMO_AUTOMATION.yaml

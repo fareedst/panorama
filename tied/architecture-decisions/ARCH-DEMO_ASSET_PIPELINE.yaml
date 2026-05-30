@@ -1,0 +1,61 @@
+ARCH-DEMO_ASSET_PIPELINE:
+  name: Demo Asset Pipeline
+  status: Active
+  cross_references:
+    - REQ-README_DEMO_AUTOMATION
+    - ARCH-TEST_FRAMEWORK
+  decision: Playwright E2E specs plus bash fixture scripts produce committed docs/screenshots assets; comparison and CopyAll fixtures are separate and each spec re-runs its setup in beforeAll.
+  rationale:
+    why: Documentation visuals are release artifacts requiring deterministic automation
+    problems_solved:
+      - Manual screenshot drift
+      - Fixture overwrite when chaining npm setup scripts
+    benefits:
+      - GIF conversion prefers CopyAll webm
+      - Per-spec beforeAll restores correct fixture
+      - Single demo:screenshots entry point
+  alternatives_considered:
+    - name: Manual recording only
+      pros:
+        - No Playwright maintenance
+      cons:
+        - Non-reproducible assets
+      rejected_reason: Automation already exists for CopyAll; extend for comparison
+  implementation_approach:
+    summary: npm demo:screenshots orchestrates setup scripts, targeted Playwright specs, GIF convert, optional verify
+    details:
+      - convert_demo_to_gif.sh writes copyall-demo.gif
+      - readme-screenshots.spec.ts and copyall-demo.spec.ts each call their setup in beforeAll
+      - setup_copyall_demo.sh --clean builds CopyAll source/target layout
+      - setup_readme_screenshots.sh builds comparison demo fixture at /tmp/test-dirs
+      - verify_demo_screenshots.sh resolves SCREENSHOT_DIR relative to repo
+  traceability:
+    requirements:
+      - REQ-README_DEMO_AUTOMATION
+      - REQ-BUILD_SYSTEM
+    implementation:
+      - IMPL-DEMO_SCREENSHOT_PIPELINE
+    tests:
+      - e2e/readme-screenshots.spec.ts
+      - e2e/copyall-demo.spec.ts
+    code_annotations:
+      - REQ-README_DEMO_AUTOMATION
+  related_decisions:
+    depends_on:
+      - ARCH-TEST_FRAMEWORK
+    informs:
+      - IMPL-DEMO_SCREENSHOT_PIPELINE
+    see_also:
+      - docs/screenshots/README.md
+  metadata:
+    created:
+      date: "2026-05-30T00:00:00.000Z"
+      author: AI Agent
+    last_updated:
+      date: "2026-05-30T00:00:00.000Z"
+      author: AI Agent
+      reason: README demo screenshot pipeline
+    last_validated:
+      date: "2026-05-30T00:00:00.000Z"
+      validator: AI Agent
+      result: pass

@@ -3107,3 +3107,40 @@ IMPL-CROSS_PANE_VISIBILITY_CATALOG:
   metadata:
     registered: "2026-05-23T00:00:00.000Z"
     last_updated: "2026-05-23T00:00:00.000Z"
+REQ-README_DEMO_AUTOMATION:
+  type: REQ
+  name: README Demo Screenshot Automation
+  status: Implemented
+  cross_references:
+    - REQ-CROSS_PANE_COMPARISON
+    - REQ-MULTI_PANE_LAYOUT
+    - REQ-NSYNC_MULTI_TARGET
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-README_DEMO_AUTOMATION.yaml
+  metadata:
+    registered: "2026-05-30T00:00:00.000Z"
+    last_updated: "2026-05-30T00:00:00.000Z"
+ARCH-DEMO_ASSET_PIPELINE:
+  type: ARCH
+  name: Demo Asset Pipeline
+  status: Active
+  cross_references:
+    - REQ-README_DEMO_AUTOMATION
+    - ARCH-TEST_FRAMEWORK
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-DEMO_ASSET_PIPELINE.yaml
+  metadata:
+    registered: "2026-05-30T00:00:00.000Z"
+    last_updated: "2026-05-30T00:00:00.000Z"
+IMPL-DEMO_SCREENSHOT_PIPELINE:
+  type: IMPL
+  name: Demo Screenshot Pipeline Implementation
+  status: Active
+  cross_references:
+    - ARCH-DEMO_ASSET_PIPELINE
+    - REQ-README_DEMO_AUTOMATION
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-DEMO_SCREENSHOT_PIPELINE.yaml
+  metadata:
+    registered: "2026-05-30T00:00:00.000Z"
+    last_updated: "2026-05-30T00:00:00.000Z"

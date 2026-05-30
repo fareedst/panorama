@@ -762,9 +762,8 @@ export default function WorkspaceView({
     columns,
   ]);
 
-  // Initialize panes from URL query parameters (for E2E testing and deep linking)
+  // [IMPL-WORKSPACE_VIEW] [ARCH-PANE_LIFECYCLE] [REQ-MULTI_PANE_LAYOUT] [REQ-README_DEMO_AUTOMATION]: how: PANE_URL_DEEP_LINK_INIT — pane0..paneN query params navigate panes on mount for E2E and bookmarkable workspaces; skip when mesh restore active
   // Query params: ?pane0=/path/to/dir&pane1=/another/path&pane2=/third/path
-  // [IMPL-WORKSPACE_MESH_BRIDGE] Skip when server or client restored from meshId
   useEffect(() => {
     if (restoredFromMesh || clientRestoredFromMesh || meshRehydrating) {
       return;
