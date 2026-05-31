@@ -1,0 +1,35 @@
+IMPL-PANE_COMMAND_EXEC:
+  name: Pane Command Execution Implementation
+  status: Active
+  cross_references:
+    - ARCH-FILE_OPERATIONS_API
+    - ARCH-PANE_COMMAND_EXEC
+    - REQ-PANE_COMMAND_EXEC
+  decision: execute-command.ts resolves pane targets and expands placeholders; execute-command.data.ts spawns shell; POST /api/files execute-command validates and runs entries sequentially
+  rationale:
+    why: Pure client resolution plus server spawn mirrors Touch bulk-touch split
+  implementation_approach:
+    summary: lib/execute-command.ts + execute-command.data.ts + API route case
+  code_locations:
+    files:
+      - path: src/lib/execute-command.ts
+        description: Target resolution and placeholder expansion
+      - path: src/lib/execute-command.data.ts
+        description: Server shell spawn helper
+      - path: src/app/api/files/route.ts
+        description: execute-command operation case
+  traceability:
+    requirements:
+      - REQ-PANE_COMMAND_EXEC
+    architecture:
+      - ARCH-PANE_COMMAND_EXEC
+      - ARCH-FILE_OPERATIONS_API
+    tests:
+      - src/lib/execute-command.test.ts
+      - src/app/api/files/route.test.ts
+    code_annotations:
+      - IMPL-PANE_COMMAND_EXEC
+  related_decisions:
+    depends_on:
+      - IMPL-EXECUTE_DIALOG
+    see_also: []

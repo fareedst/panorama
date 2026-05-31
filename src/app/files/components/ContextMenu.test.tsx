@@ -177,6 +177,22 @@ describe("[TEST-MOUSE_INTERACTION] ContextMenu Component", () => {
     expect(screen.getByTestId("touch-file-menu-item")).toBeInTheDocument();
   });
 
+  // [IMPL-EXECUTE_DIALOG] [REQ-PANE_COMMAND_EXEC] [REQ-MOUSE_INTERACTION]: Execute… menu item
+  it("shows Execute menu item when handler provided", () => {
+    const onExecute = vi.fn();
+    render(
+      <ContextMenu
+        {...defaultProps}
+        onExecute={onExecute}
+        executeMenuLabel="Execute…"
+      />,
+    );
+    expect(screen.getByTestId("execute-file-menu-item")).toHaveTextContent("Execute…");
+    fireEvent.click(screen.getByTestId("execute-file-menu-item"));
+    expect(onExecute).toHaveBeenCalledTimes(1);
+    expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
+  });
+
   it("closes menu on Escape key", () => {
     render(<ContextMenu {...defaultProps} />);
     

@@ -265,6 +265,52 @@ export async function POST(request: NextRequest) {
         });
         return NextResponse.json(touchResult);
       }
+
+      case "execute-command": {
+        // [IMPL-PANE_COMMAND_EXEC] [ARCH-PANE_COMMAND_EXEC] [REQ-PANE_COMMAND_EXEC]: how — validate entries; delegate to executeCommandBatch sequentially
+        const execEntries = body.entries as Array<{
+          paneIndex?: number;
+          cwd?: string;
+          command?: string;
+          filePath?: string;
+          markedPaths?: string[];
+        }>;
+        if (!execEntries || !Array.isArray(execEntries) || execEntries.length === 0) {
+          logger.warn(["IMPL-PANE_COMMAND_EXEC", "REQ-PANE_COMMAND_EXEC"], `Execute command missing entries`);
+          return NextResponse.json({ error: "Entries array required" }, { status: 400 });
+        }
+
+        for (const entry of execEntries) {
+          if (typeof entry.paneIndex !== "number") {
+            return NextResponse.json({ error: "Each entry requires paneIndex" }, { status: 400 });
+          }
+          if (!entry.cwd || typeof entry.cwd !== "string") {
+            return NextResponse.json({ error: "Each entry requires cwd" }, { status: 400 });
+          }
+          if (entry.cwd.includes("..")) {
+            return NextResponse.json({ error: "Invalid cwd" }, { status: 400 });
+          }
+          if (!entry.command || typeof entry.command !== "string" || !entry.command.trim()) {
+            return NextResponse.json({ error: "Each entry requires command" }, { status: 400 });
+          }
+        }
+
+        const { executeCommandBatch } = await import("@/lib/execute-command.data");
+        const execResult = await executeCommandBatch(
+          execEntries.map((entry) => ({
+            paneIndex: entry.paneIndex!,
+            cwd: entry.cwd!,
+            command: entry.command!.trim(),
+            filePath: typeof entry.filePath === "string" ? entry.filePath : "",
+            markedPaths: Array.isArray(entry.markedPaths) ? entry.markedPaths : [],
+          })),
+        );
+        logger.info(["IMPL-PANE_COMMAND_EXEC", "REQ-PANE_COMMAND_EXEC"], `Execute command completed`, {
+          successCount: execResult.successCount,
+          errorCount: execResult.errorCount,
+        });
+        return NextResponse.json(execResult);
+      }
       
       case "sync-all": {
         // [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET]

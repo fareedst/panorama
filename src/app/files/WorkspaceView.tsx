@@ -79,6 +79,11 @@ import {
   TouchFileDialog,
   type TouchApplySelection,
 } from "./components/TouchFileDialog";
+import {
+  ExecuteFileDialog,
+  type ExecuteApplySelection,
+} from "./components/ExecuteFileDialog";
+import { buildExecuteEntries } from "@/lib/execute-command";
 import { LayoutPickerPopover } from "./components/LayoutPickerPopover";
 import {
   getVisibleFileColumns,
@@ -500,6 +505,13 @@ export default function WorkspaceView({
     paneIndex: number;
   }>({ isOpen: false, path: "", paneIndex: 0 });
   const [touchFileDialog, setTouchFileDialog] = useState<{
+    isOpen: boolean;
+    paneIndex: number;
+    file: FileStat;
+    marksAtOpen: Set<string>;
+  } | null>(null);
+  // [IMPL-WORKSPACE_VIEW] [IMPL-EXECUTE_DIALOG] [REQ-PANE_COMMAND_EXEC]: how — Execute file dialog state (pane index, context file, marks at open)
+  const [executeFileDialog, setExecuteFileDialog] = useState<{
     isOpen: boolean;
     paneIndex: number;
     file: FileStat;
@@ -2298,6 +2310,81 @@ export default function WorkspaceView({
     [touchFileDialog, panes, handleNavigate, displaySpecPayload],
   );
 
+  // [IMPL-WORKSPACE_VIEW] [IMPL-EXECUTE_DIALOG] [IMPL-PANE_COMMAND_EXEC] [ARCH-PANE_COMMAND_EXEC] [REQ-PANE_COMMAND_EXEC]: how — buildExecuteEntries, POST execute-command, refresh affected pane listings
+  const handleApplyExecute = useCallback(
+    (selection: ExecuteApplySelection) => {
+      if (!executeFileDialog) {
+        return;
+      }
+      const { paneIndex, file, marksAtOpen } = executeFileDialog;
+      const entries = buildExecuteEntries(
+        selection.paneTarget,
+        selection.command,
+        paneIndex,
+        panes,
+        marksAtOpen,
+        file,
+      );
+
+      setExecuteFileDialog(null);
+
+      if (entries.length === 0) {
+        alert("No panes to execute against with the selected options.");
+        return;
+      }
+
+      fetch("/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "execute-command",
+          entries: entries.map((entry) => ({
+            paneIndex: entry.paneIndex,
+            cwd: entry.cwd,
+            command: entry.command,
+            filePath: entry.filePath,
+            markedPaths: entry.markedPaths,
+          })),
+        }),
+      })
+        .then(async (res) => {
+          const data = (await res.json()) as {
+            error?: string;
+            errorCount?: number;
+            successCount?: number;
+            results?: Array<{ paneIndex: number; exitCode: number; error?: string }>;
+          };
+          if (!res.ok) {
+            throw new Error(data.error || res.statusText);
+          }
+          if ((data.errorCount ?? 0) > 0) {
+            const summary = (data.results ?? [])
+              .filter((r) => r.exitCode !== 0)
+              .map(
+                (r) =>
+                  `Pane ${r.paneIndex + 1}: exit ${r.exitCode}${r.error ? ` (${r.error})` : ""}`,
+              )
+              .join("\n");
+            alert(
+              `Execute completed with errors: ${data.successCount} succeeded, ${data.errorCount} failed.\n${summary}`,
+            );
+          }
+          return data;
+        })
+        .then(() => {
+          const paneIndicesToRefresh = new Set(entries.map((entry) => entry.paneIndex));
+          for (const i of paneIndicesToRefresh) {
+            void handleNavigate(i, panes[i].path);
+          }
+        })
+        .catch((e) => {
+          console.error("Execute failed:", e);
+          alert(`Execute failed: ${String(e)}`);
+        });
+    },
+    [executeFileDialog, panes, handleNavigate],
+  );
+
   // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
   // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] [ARCH-LINKED_NAV]
   // Helper: Navigate to parent directory with cursor positioning
@@ -3146,6 +3233,15 @@ export default function WorkspaceView({
               })
             }
             touchMenuLabel={copy.touchFile?.touchMenu}
+            onExecute={(file, marksAtOpen) =>
+              setExecuteFileDialog({
+                isOpen: true,
+                paneIndex: index,
+                file,
+                marksAtOpen,
+              })
+            }
+            executeMenuLabel={copy.executeFile?.executeMenu}
             displaySpecs={catalogSpecs}
             activeDisplaySpecId={pane.activeDisplaySpecId}
             activeDisplaySpecName={
@@ -3348,6 +3444,20 @@ export default function WorkspaceView({
           touchLabels={copy.touchFile}
           onApply={(selection) => handleApplyTouch(selection)}
           onClose={() => setTouchFileDialog(null)}
+        />
+      )}
+
+      {executeFileDialog && (
+        <ExecuteFileDialog
+          isOpen={executeFileDialog.isOpen}
+          initiatingPaneIndex={executeFileDialog.paneIndex}
+          paneCount={panes.length}
+          file={executeFileDialog.file}
+          marksAtOpen={executeFileDialog.marksAtOpen}
+          paneLabels={copy.paneManagement}
+          executeLabels={copy.executeFile}
+          onApply={(selection) => handleApplyExecute(selection)}
+          onClose={() => setExecuteFileDialog(null)}
         />
       )}
 

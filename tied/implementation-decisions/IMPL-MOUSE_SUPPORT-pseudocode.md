@@ -77,6 +77,9 @@ PROCEDURE UNIFIED_ROW_CONTEXT_MENU(context)
   RENDER ContextMenu portal at click coordinates
   RENDER file ops section (copy, move, rename, delete) when handlers provided
   IF directory AND onSetBaseDirectory THEN RENDER SET_BASE_DIRECTORY_MENU item
+  IF onTouch THEN RENDER Touch… menu item (REQ-TOUCH_MTIME)
+  // [IMPL-MOUSE_SUPPORT] [IMPL-EXECUTE_DIALOG] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] [REQ-PANE_COMMAND_EXEC]: how — Execute… menu item when onExecute provided; after Touch, before Delete
+  IF onExecute THEN RENDER Execute… menu item
   IF showClipboardSection THEN RENDER clipboard menuitems (same as FILE_COLUMN_CONTEXT_MENU actions)
   ON dismiss → clear FilePane contextMenu state
 

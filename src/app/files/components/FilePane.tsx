@@ -89,6 +89,10 @@ interface FilePaneProps {
   onTouch?: (file: FileStat, marksAtOpen: Set<string>) => void;
   /** Label for Touch context menu item */
   touchMenuLabel?: string;
+  /** [REQ-PANE_COMMAND_EXEC] Open Execute file dialog for row or marked files */
+  onExecute?: (file: FileStat, marksAtOpen: Set<string>) => void;
+  /** Label for Execute context menu item */
+  executeMenuLabel?: string;
   /** Test ID for automation */
   "data-testid"?: string;
   /** [REQ-PANE_DISPLAY_FILTER] Catalog of saved display specs */
@@ -141,6 +145,8 @@ export default function FilePane({
   setBaseDirectoryMenuLabel,
   onTouch,
   touchMenuLabel,
+  onExecute,
+  executeMenuLabel,
   onDrop,
   linked = false, // [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
   scrollTrigger, // [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
@@ -621,6 +627,7 @@ export default function FilePane({
 
       {/* [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] Context menu */}
       {/* [IMPL-TOUCH_DIALOG] [IMPL-FILE_PANE] [REQ-TOUCH_MTIME] [REQ-MOUSE_INTERACTION]: how — onTouch passes file and marksAtOpen snapshot to Touch dialog */}
+      {/* [IMPL-EXECUTE_DIALOG] [IMPL-FILE_PANE] [ARCH-MOUSE_SUPPORT] [REQ-PANE_COMMAND_EXEC] [REQ-MOUSE_INTERACTION]: how — onExecute passes file and marksAtOpen snapshot to Execute dialog */}
       {contextMenu && (
         <ContextMenu
           x={contextMenu.x}
@@ -642,8 +649,14 @@ export default function FilePane({
               ? () => onTouch(contextMenu.file, new Set(marks))
               : undefined
           }
+          onExecute={
+            onExecute
+              ? () => onExecute(contextMenu.file, new Set(marks))
+              : undefined
+          }
           setBaseDirectoryMenuLabel={setBaseDirectoryMenuLabel}
           touchMenuLabel={touchMenuLabel}
+          executeMenuLabel={executeMenuLabel}
           paneFilesList={paneFilesList}
         />
       )}

@@ -37,6 +37,8 @@ interface ContextMenuProps {
   onSetBaseDirectory?: () => void;
   /** [REQ-TOUCH_MTIME] [REQ-MOUSE_INTERACTION] Open Touch file dialog */
   onTouch?: () => void;
+  /** [REQ-PANE_COMMAND_EXEC] [REQ-MOUSE_INTERACTION] Open Execute file dialog */
+  onExecute?: () => void;
   /** Workspace pane listings for cross-pane path clipboard actions */
   paneFilesList?: readonly (readonly FileStat[])[];
   /** Injectable clipboard writer for tests */
@@ -45,6 +47,8 @@ interface ContextMenuProps {
   setBaseDirectoryMenuLabel?: string;
   /** Label for Touch menu item */
   touchMenuLabel?: string;
+  /** Label for Execute menu item */
+  executeMenuLabel?: string;
 }
 
 /**
@@ -63,10 +67,12 @@ export default function ContextMenu({
   onRename,
   onSetBaseDirectory,
   onTouch,
+  onExecute,
   paneFilesList,
   copyText = copyTextToClipboard,
   setBaseDirectoryMenuLabel = "Set as Base directory…",
   touchMenuLabel = "Touch…",
+  executeMenuLabel = "Execute…",
 }: ContextMenuProps) {
   const menuElementRef = useRef<HTMLDivElement>(null);
   
@@ -220,6 +226,20 @@ export default function ContextMenu({
         >
           <span className="text-sm">🕐</span>
           <span>{touchMenuLabel}</span>
+        </button>
+      )}
+
+      {/* [IMPL-EXECUTE_DIALOG] [REQ-PANE_COMMAND_EXEC] [REQ-MOUSE_INTERACTION]: Execute… opens Execute file dialog */}
+      {onExecute && (
+        <button
+          type="button"
+          className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+          onClick={() => handleAction(onExecute)}
+          role="menuitem"
+          data-testid="execute-file-menu-item"
+        >
+          <span className="text-sm">▶️</span>
+          <span>{executeMenuLabel}</span>
         </button>
       )}
 

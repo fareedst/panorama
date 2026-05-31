@@ -1,4 +1,3 @@
-# ARCH detail — ARCH-FILE_OPERATIONS_API
 ARCH-FILE_OPERATIONS_API:
   name: File Operations API Routes
   status: Active
@@ -26,6 +25,7 @@ ARCH-FILE_OPERATIONS_API:
   implementation_approach:
     summary: POST /api/files endpoint handles copy, move, delete, rename operations
     details:
+      - 'execute-command: validate entries array; spawn shell per entry via executeCommandBatch (ARCH-PANE_COMMAND_EXEC)'
       - 'Request body: { operation, src, dest }'
       - Call data layer functions
       - Return success/error responses
@@ -49,9 +49,9 @@ ARCH-FILE_OPERATIONS_API:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-07T00:00:00.000Z
+      date: "2026-05-31T00:00:00.000Z"
       author: AI Agent
-      reason: Initial creation
+      reason: LEAP — execute-command POST operation
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

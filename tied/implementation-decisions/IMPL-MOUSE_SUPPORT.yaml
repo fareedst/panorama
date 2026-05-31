@@ -14,7 +14,7 @@ IMPL-MOUSE_SUPPORT:
       - 'file-column-clipboard.ts: format and resolveCrossPanePathsForFilename by cursor filename'
       - 'FileColumnContextMenu: clipboard-only on file column cells (filename, path, cross-pane paths)'
       - 'SET_BASE_DIRECTORY_MENU: directory rows show Set as Base directory menu item (data-testid=set-base-directory-menu-item)'
-      - 'UNIFIED_ROW_CONTEXT_MENU: ContextMenu portal combines file ops, SET_BASE_DIRECTORY_MENU on directories, and clipboard section'
+      - 'UNIFIED_ROW_CONTEXT_MENU: ContextMenu portal combines file ops, SET_BASE_DIRECTORY_MENU on directories, Touch and Execute menu items, and clipboard section'
   code_locations:
     files:
       - path: src/lib/file-column-clipboard.ts
@@ -48,6 +48,7 @@ IMPL-MOUSE_SUPPORT:
       - src/app/files/components/ContextMenu.test.tsx
       - src/app/files/components/FileColumnContextMenu.test.tsx
       - src/app/files/components/SetBaseDirectoryDialog.test.tsx
+      - src/app/files/WorkspaceView.execute.test.tsx
       - src/lib/file-column-clipboard.test.ts
       - src/lib/set-base-directory.test.ts
     code_annotations:
@@ -59,13 +60,14 @@ IMPL-MOUSE_SUPPORT:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-30T00:00:00.000Z"
+      date: "2026-05-31T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — unified ContextMenu and set-base menu
+      reason: LEAP — Execute menu item in unified ContextMenu
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent
       result: pass - 554 tests passing
   related_decisions:
     see_also:
+      - IMPL-EXECUTE_DIALOG
       - tied/vocab/workspace-pane.md

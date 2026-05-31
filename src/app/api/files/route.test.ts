@@ -22,6 +22,7 @@ vi.mock("@/lib/sync", () => ({
 }));
 
 const mockBulkTouch = vi.fn();
+const mockExecuteCommandBatch = vi.fn();
 vi.mock("@/lib/files.data", () => ({
   copyFile: vi.fn(),
   moveFile: vi.fn(),
@@ -36,6 +37,10 @@ vi.mock("@/lib/files.data", () => ({
   sortFiles: vi.fn(),
 }));
 
+vi.mock("@/lib/execute-command.data", () => ({
+  executeCommandBatch: (...args: unknown[]) => mockExecuteCommandBatch(...args),
+}));
+
 describe("POST /api/files [TEST-FILES_API] [IMPL-FILES_API] [REQ-FILE_OPERATIONS]", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -43,6 +48,11 @@ describe("POST /api/files [TEST-FILES_API] [IMPL-FILES_API] [REQ-FILE_OPERATIONS
       successCount: 1,
       errorCount: 0,
       errors: [],
+    });
+    mockExecuteCommandBatch.mockResolvedValue({
+      successCount: 1,
+      errorCount: 0,
+      results: [{ paneIndex: 0, exitCode: 0 }],
     });
     mockSync.mockResolvedValue({
       cancelled: false,
@@ -242,6 +252,114 @@ describe("POST /api/files [TEST-FILES_API] [IMPL-FILES_API] [REQ-FILE_OPERATIONS
         {
           path: "/tmp/a.txt",
           mtime: new Date("2026-01-01T00:00:00.000Z"),
+        },
+      ]);
+    });
+  });
+
+  describe("execute-command operation [IMPL-PANE_COMMAND_EXEC] [IMPL-FILES_API] [ARCH-PANE_COMMAND_EXEC] [REQ-PANE_COMMAND_EXEC]", () => {
+    it("returns 400 when entries missing [REQ-PANE_COMMAND_EXEC] [IMPL-FILES_API]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ operation: "execute-command" }),
+      });
+      const response = await POST(request);
+      const data = await response.json();
+      expect(response.status).toBe(400);
+      expect(data.error).toBe("Entries array required");
+      expect(mockExecuteCommandBatch).not.toHaveBeenCalled();
+    });
+
+    it("returns 400 for invalid cwd in entry [REQ-PANE_COMMAND_EXEC]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "execute-command",
+          entries: [{ paneIndex: 0, cwd: "../secret", command: "echo hi" }],
+        }),
+      });
+      const response = await POST(request);
+      const data = await response.json();
+      expect(response.status).toBe(400);
+      expect(data.error).toBe("Invalid cwd");
+    });
+
+    it("returns 400 when command missing [REQ-PANE_COMMAND_EXEC] [IMPL-FILES_API]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "execute-command",
+          entries: [{ paneIndex: 0, cwd: "/tmp", command: "  " }],
+        }),
+      });
+      const response = await POST(request);
+      const data = await response.json();
+      expect(response.status).toBe(400);
+      expect(data.error).toBe("Each entry requires command");
+      expect(mockExecuteCommandBatch).not.toHaveBeenCalled();
+    });
+
+    it("returns 400 when paneIndex missing [REQ-PANE_COMMAND_EXEC] [IMPL-FILES_API]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "execute-command",
+          entries: [{ cwd: "/tmp", command: "echo hi" }],
+        }),
+      });
+      const response = await POST(request);
+      const data = await response.json();
+      expect(response.status).toBe(400);
+      expect(data.error).toBe("Each entry requires paneIndex");
+      expect(mockExecuteCommandBatch).not.toHaveBeenCalled();
+    });
+
+    it("returns 400 when cwd missing [REQ-PANE_COMMAND_EXEC] [IMPL-FILES_API]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "execute-command",
+          entries: [{ paneIndex: 0, command: "echo hi" }],
+        }),
+      });
+      const response = await POST(request);
+      const data = await response.json();
+      expect(response.status).toBe(400);
+      expect(data.error).toBe("Each entry requires cwd");
+      expect(mockExecuteCommandBatch).not.toHaveBeenCalled();
+    });
+
+    it("delegates valid execute-command to executeCommandBatch [REQ-PANE_COMMAND_EXEC] [IMPL-FILES_API]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "execute-command",
+          entries: [
+            {
+              paneIndex: 0,
+              cwd: "/tmp",
+              command: "echo hi",
+              filePath: "/tmp/a.txt",
+              markedPaths: [],
+            },
+          ],
+        }),
+      });
+      const response = await POST(request);
+      expect(response.status).toBe(200);
+      expect(mockExecuteCommandBatch).toHaveBeenCalledWith([
+        {
+          paneIndex: 0,
+          cwd: "/tmp",
+          command: "echo hi",
+          filePath: "/tmp/a.txt",
+          markedPaths: [],
         },
       ]);
     });

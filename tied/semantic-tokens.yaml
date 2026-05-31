@@ -3160,3 +3160,19 @@ IMPL-TOUCH_DIALOG:
   type: implementation
   name: Touch File Dialog Implementation
   description: TouchFileDialog ContextMenu WorkspaceView wiring
+REQ-PANE_COMMAND_EXEC:
+  type: requirement
+  name: Pane Command Execution
+  description: Run shell commands from context menu with pane targets and file/mark placeholders
+ARCH-PANE_COMMAND_EXEC:
+  type: architecture
+  name: Pane Command Execution Architecture
+  description: ExecuteFileDialog and execute-command API with server shell spawn
+IMPL-PANE_COMMAND_EXEC:
+  type: implementation
+  name: Pane Command Execution Implementation
+  description: execute-command.ts target resolution and execute-command.data.ts spawn
+IMPL-EXECUTE_DIALOG:
+  type: implementation
+  name: Execute File Dialog Implementation
+  description: ExecuteFileDialog ContextMenu FilePane WorkspaceView wiring

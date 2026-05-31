@@ -121,6 +121,14 @@ copy:
     touchTimeUtc: UTC
     touchApply: Apply
     cancel: Cancel
+  # [IMPL-EXECUTE_DIALOG] [REQ-PANE_COMMAND_EXEC] Execute file dialog copy
+  executeFile:
+    executeMenu: Execute…
+    executeTitle: Execute
+    commandLabel: Command
+    commandPlaceholder: e.g. echo $FILE
+    executeApply: Execute
+    cancel: Cancel
   # [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE]
   workspaceMesh:
     saveDialogTitle: Save workspace as mesh

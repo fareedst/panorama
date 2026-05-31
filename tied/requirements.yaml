@@ -3148,3 +3148,9 @@ REQ-TOUCH_MTIME:
   priority: P1
   status: Implemented
   detail_file: requirements/REQ-TOUCH_MTIME.yaml
+REQ-PANE_COMMAND_EXEC:
+  name: Pane Command Execution
+  category: Functional
+  priority: P1
+  status: Implemented
+  detail_file: requirements/REQ-PANE_COMMAND_EXEC.yaml

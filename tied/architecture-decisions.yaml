@@ -2795,3 +2795,7 @@ ARCH-TOUCH_MTIME:
   name: Touch Modification Time Architecture
   status: Active
   detail_file: architecture-decisions/ARCH-TOUCH_MTIME.yaml
+ARCH-PANE_COMMAND_EXEC:
+  name: Pane Command Execution Architecture
+  status: Active
+  detail_file: architecture-decisions/ARCH-PANE_COMMAND_EXEC.yaml

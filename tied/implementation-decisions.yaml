@@ -4219,3 +4219,11 @@ IMPL-TOUCH_DIALOG:
   name: Touch File Dialog Implementation
   status: Active
   detail_file: implementation-decisions/IMPL-TOUCH_DIALOG.yaml
+IMPL-EXECUTE_DIALOG:
+  name: Execute File Dialog Implementation
+  status: Active
+  detail_file: implementation-decisions/IMPL-EXECUTE_DIALOG.yaml
+IMPL-PANE_COMMAND_EXEC:
+  name: Pane Command Execution Implementation
+  status: Active
+  detail_file: implementation-decisions/IMPL-PANE_COMMAND_EXEC.yaml

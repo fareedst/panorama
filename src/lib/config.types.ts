@@ -331,6 +331,15 @@ export interface FilesCopyConfig {
     touchApply?: string;
     cancel?: string;
   };
+  // [IMPL-EXECUTE_DIALOG] [REQ-PANE_COMMAND_EXEC] Execute file dialog copy
+  executeFile?: {
+    executeMenu?: string;
+    executeTitle?: string;
+    commandLabel?: string;
+    commandPlaceholder?: string;
+    executeApply?: string;
+    cancel?: string;
+  };
   // [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE]
   workspaceMesh?: {
     saveDialogTitle?: string;

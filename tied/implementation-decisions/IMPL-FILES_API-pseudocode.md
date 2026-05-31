@@ -124,12 +124,32 @@ PROCEDURE IMPL-FILES_API_assertSourcesVisible(sources, displaySpecId)
   IF err THEN LOG warn RETURN 400 { error: err }
   RETURN null
 
+## PostExecuteCommand
+
+// [IMPL-FILES_API] [IMPL-PANE_COMMAND_EXEC] [ARCH-FILE_OPERATIONS_API] [REQ-PANE_COMMAND_EXEC]: how — validate entries array; reject .. in cwd; delegate executeCommandBatch; return successCount, errorCount, results
+
+```
+CONTRACT PostExecuteCommand
+  INPUT: body.entries[] with paneIndex, cwd, command, optional filePath and markedPaths
+  OUTPUT: { results, successCount, errorCount } OR 400 validation error
+  DATA: executeCommandBatch from execute-command.data.ts
+
+PROCEDURE IMPL-FILES_API_PostExecuteCommand(body)
+  REQUIRE entries array non-empty
+  FOR EACH entry:
+    REQUIRE paneIndex number, cwd string, command non-empty trimmed string
+    REJECT cwd containing ..
+  result := AWAIT executeCommandBatch(normalized entries)
+  LOG info with successCount and errorCount
+  RETURN result JSON
+```
+
 ## CodeLocations
 
 // [IMPL-FILES_API] [ARCH-FILE_OPERATIONS_API] [ARCH-LOGGING_SYSTEM] [REQ-DIRECTORY_NAVIGATION] [REQ-FILE_OPERATIONS] [REQ-LOGGING_SYSTEM]: map implementing and verifying source files for this IMPL
 
-// FILE: src/app/api/files/route.ts — GET and POST handlers
-// FILE: src/app/api/files/route.test.ts — POST validation and sync-all tests
+// FILE: src/app/api/files/route.ts — GET and POST handlers including execute-command case
+// FILE: src/app/api/files/route.test.ts — POST validation, execute-command, and sync-all tests
 // FILE: src/app/api/files/display-filter.route.test.ts — GET with displaySpecId listing tests
 
 ## ErrorHandling

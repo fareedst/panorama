@@ -3,9 +3,13 @@ IMPL-WORKSPACE_VIEW:
   status: Implemented
   cross_references:
     - ARCH-FILE_MANAGER_HIERARCHY
+    - ARCH-PANE_COMMAND_EXEC
+    - IMPL-EXECUTE_DIALOG
     - IMPL-FILES_API
+    - IMPL-PANE_COMMAND_EXEC
     - REQ-KEYBOARD_NAVIGATION
     - REQ-MULTI_PANE_LAYOUT
+    - REQ-PANE_COMMAND_EXEC
     - REQ-REACT_SSR_STABILITY
   decision: Client component with unique dialog keys, useMemo keybinding initialization, and API integration
   rationale:
@@ -21,8 +25,9 @@ IMPL-WORKSPACE_VIEW:
       - Layout coordination
       - Stable component rendering without warnings
   implementation_approach:
-    summary: Client component with unique dialog keys, useMemo keybinding initialization, layout toolbar picker, sharedSort state, Set as Base directory dialog, and API integration
+    summary: Client component with unique dialog keys, useMemo keybinding initialization, layout toolbar picker, sharedSort state, Set as Base directory dialog, Execute file dialog, and API integration
     details:
+      - 'ExecuteApply: handleApplyExecute builds entries, POST execute-command, refreshes affected panes'
       - 'NavigateAbsoluteBase: syncingRef for multi-target set-base except thisPane'
       - 'PANE_FILES_LIST_TO_FILEPANE: pass paneFilesList to each FilePane'
       - 'SetBaseDirectoryApply: handleNavigate loop; newPane via appendPaneAtPath; newWorkspace single-pane URL tab'
@@ -30,16 +35,22 @@ IMPL-WORKSPACE_VIEW:
   code_locations:
     files:
       - path: src/app/files/WorkspaceView.tsx
-        description: Workspace client; appendPaneAtPath, set-base handler
+        description: Workspace client; appendPaneAtPath, set-base and execute handlers
         lines: []
       - path: src/lib/set-base-directory.ts
         description: Set base directory target resolution
+        lines: []
+      - path: src/lib/execute-command.ts
+        description: Execute target resolution and placeholder expansion
         lines: []
       - path: src/app/files/components/SetBaseDirectoryDialog.tsx
         description: Set base directory dialog
         lines: []
       - path: src/app/files/components/SetBaseDirectoryTargetIcon.tsx
         description: Semantic SVG icons per set-base target
+        lines: []
+      - path: src/app/files/components/ExecuteFileDialog.tsx
+        description: Execute file dialog pane target and command field
         lines: []
       - path: src/app/files/components/LayoutPickerPopover.tsx
         description: Layout toolbar picker
@@ -48,6 +59,9 @@ IMPL-WORKSPACE_VIEW:
       - name: handleApplySetBaseDirectory
         file: src/app/files/WorkspaceView.tsx
         description: Apply set-base dialog target
+      - name: handleApplyExecute
+        file: src/app/files/WorkspaceView.tsx
+        description: Apply execute dialog; POST execute-command and refresh panes
       - name: appendPaneAtPath
         file: src/app/files/WorkspaceView.tsx
         description: Append pane at directory with template inheritance
@@ -58,6 +72,7 @@ IMPL-WORKSPACE_VIEW:
     architecture:
       - ARCH-FILE_MANAGER_HIERARCHY
       - ARCH-MOUSE_SUPPORT
+      - ARCH-PANE_COMMAND_EXEC
       - ARCH-PANE_LIFECYCLE
       - ARCH-TOOLBAR_LAYOUT
     requirements:
@@ -67,6 +82,7 @@ IMPL-WORKSPACE_VIEW:
       - REQ-LINKED_PANES
       - REQ-MOUSE_INTERACTION
       - REQ-MULTI_PANE_LAYOUT
+      - REQ-PANE_COMMAND_EXEC
       - REQ-REACT_SSR_STABILITY
       - REQ-README_DEMO_AUTOMATION
       - REQ-TOOLBAR_SYSTEM
@@ -76,6 +92,7 @@ IMPL-WORKSPACE_VIEW:
       - src/app/files/components/SetBaseDirectoryDialog.test.tsx
       - src/app/files/components/SetBaseDirectoryTargetIcon.test.tsx
       - src/app/files/WorkspaceView.cross-pane-visibility.test.tsx
+      - src/app/files/WorkspaceView.execute.test.tsx
       - src/app/files/WorkspaceView.file-column-clipboard.test.tsx
       - src/app/files/WorkspaceView.file-columns.test.tsx
       - src/app/files/WorkspaceView.set-base-directory.test.tsx
@@ -87,9 +104,11 @@ IMPL-WORKSPACE_VIEW:
       - IMPL-FILES_API
     supersedes: []
     see_also:
+      - IMPL-EXECUTE_DIALOG
       - IMPL-FILE_PANE
       - IMPL-KEYBINDS
       - IMPL-LAYOUT_CALCULATOR
+      - IMPL-PANE_COMMAND_EXEC
       - tied/implementation-decisions/IMPL-DEMO_SCREENSHOT_PIPELINE-pseudocode.md
       - tied/vocab/workspace-pane.md
   metadata:
@@ -99,7 +118,7 @@ IMPL-WORKSPACE_VIEW:
     last_updated:
       date: "2026-05-31T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — set-base newPane target, SetBaseDirectoryTargetIcon, appendPaneAtPath
+      reason: LEAP — ExecuteApply handleApplyExecute and ExecuteFileDialog wiring
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

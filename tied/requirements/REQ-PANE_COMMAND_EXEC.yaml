@@ -1,0 +1,57 @@
+REQ-PANE_COMMAND_EXEC:
+  name: Pane Command Execution
+  category: Functional
+  priority: P1
+  status: Planned
+  description: Users need to run shell commands from the unified file context menu with pane-target scope and file/mark context via env vars and placeholders.
+  rationale:
+    why: Power users need ad-hoc shell commands in pane directories without leaving the file manager
+    problems_solved:
+      - No UI to run commands in pane listing directories
+      - Cannot run the same command across all panes from context menu
+    benefits:
+      - Context-menu discoverability
+      - File and marked-file context via env vars and $FILE/$MARKED placeholders
+      - Pane-target scope matching Touch dialog subset
+  satisfaction_criteria:
+    - criterion: execute_dialog_command_field — dialog provides Command text entry with Apply disabled when empty
+    - criterion: execute_dialog_pane_targets — dialog offers thisPane and allPanes with set-base copy labels
+    - criterion: execute_env_context — server spawn sets PANORAMA_PANE_PATH, PANORAMA_FILE_PATH, PANORAMA_MARKED_PATHS per target
+    - criterion: execute_marks_scope — when marks non-empty at open, marked paths resolved in pane target scope
+    - criterion: execute_menu_on_file_rows — unified ContextMenu shows Execute… for file and directory rows
+    - criterion: execute_placeholders — client expands $FILE and $MARKED in command string before API call
+    - criterion: execute_refresh_panes — affected pane listings refresh after command execution
+  validation_criteria:
+    - method: Unit tests
+      coverage: execute-command.ts target resolution and placeholder expansion
+    - method: API tests
+      coverage: execute-command route validation and spawn delegation
+    - method: Component tests
+      coverage: ExecuteFileDialog and ContextMenu Execute item
+    - method: Integration tests
+      coverage: WorkspaceView execute apply and pane refresh
+  traceability:
+    architecture:
+      - ARCH-FILE_OPERATIONS_API
+      - ARCH-MOUSE_SUPPORT
+      - ARCH-PANE_COMMAND_EXEC
+    implementation:
+      - IMPL-EXECUTE_DIALOG
+      - IMPL-MOUSE_SUPPORT
+      - IMPL-PANE_COMMAND_EXEC
+      - IMPL-WORKSPACE_VIEW
+    tests:
+      - src/app/api/files/route.test.ts
+      - src/app/files/components/ContextMenu.test.tsx
+      - src/app/files/components/ExecuteFileDialog.test.tsx
+      - src/app/files/WorkspaceView.execute.test.tsx
+      - src/lib/execute-command.test.ts
+    code_annotations:
+      - REQ-PANE_COMMAND_EXEC
+  related_requirements:
+    depends_on:
+      - REQ-FILE_OPERATIONS
+      - REQ-MOUSE_INTERACTION
+    related_to:
+      - REQ-TOUCH_MTIME
+    supersedes: []

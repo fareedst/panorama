@@ -10,9 +10,9 @@ Excludes NSYNC sync algorithms ([nsync-multi-target.md](nsync-multi-target.md)),
 
 | Kind | Tokens / artifacts |
 | --- | --- |
-| REQ | [REQ-FILE_MANAGER_PAGE](../tied/requirements/REQ-FILE_MANAGER_PAGE.yaml), [REQ-HOME_PAGE](../tied/requirements/REQ-HOME_PAGE.yaml), [REQ-BRANDING](../tied/requirements/REQ-BRANDING.yaml), [REQ-MULTI_PANE_LAYOUT](../tied/requirements/REQ-MULTI_PANE_LAYOUT.yaml), [REQ-README_DEMO_AUTOMATION](../tied/requirements/REQ-README_DEMO_AUTOMATION.yaml), [REQ-CONFIG_DRIVEN_FILE_MANAGER](../tied/requirements/REQ-CONFIG_DRIVEN_FILE_MANAGER.yaml), [REQ-TOOLBAR_SYSTEM](../tied/requirements/REQ-TOOLBAR_SYSTEM.yaml), [REQ-DIRECTORY_NAVIGATION](../tied/requirements/REQ-DIRECTORY_NAVIGATION.yaml), [REQ-MOUSE_INTERACTION](../tied/requirements/REQ-MOUSE_INTERACTION.yaml), [REQ-LINKED_PANES](../tied/requirements/REQ-LINKED_PANES.yaml), [REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml), [REQ-PANE_DISPLAY_FILTER](../tied/requirements/REQ-PANE_DISPLAY_FILTER.yaml), [REQ-CROSS_PANE_VISIBILITY](../tied/requirements/REQ-CROSS_PANE_VISIBILITY.yaml), [REQ-TOUCH_MTIME](../tied/requirements/REQ-TOUCH_MTIME.yaml) |
-| ARCH | [ARCH-FILE_MANAGER_HIERARCHY](../tied/architecture-decisions/ARCH-FILE_MANAGER_HIERARCHY.yaml), [ARCH-SERVER_COMPONENTS](../tied/architecture-decisions/ARCH-SERVER_COMPONENTS.yaml), [ARCH-PANE_LIFECYCLE](../tied/architecture-decisions/ARCH-PANE_LIFECYCLE.yaml), [ARCH-CONFIG_DRIVEN_UI](../tied/architecture-decisions/ARCH-CONFIG_DRIVEN_UI.yaml), [ARCH-MOUSE_SUPPORT](../tied/architecture-decisions/ARCH-MOUSE_SUPPORT.yaml), [ARCH-CROSS_PANE_VISIBILITY](../tied/architecture-decisions/ARCH-CROSS_PANE_VISIBILITY.yaml), [ARCH-TOUCH_MTIME](../tied/architecture-decisions/ARCH-TOUCH_MTIME.yaml) |
-| IMPL | [IMPL-HOME_PAGE](../tied/implementation-decisions/IMPL-HOME_PAGE.yaml), [IMPL-IMAGE_OPTIMIZATION](../tied/implementation-decisions/IMPL-IMAGE_OPTIMIZATION.yaml), [IMPL-FILE_MANAGER_PAGE](../tied/implementation-decisions/IMPL-FILE_MANAGER_PAGE.yaml), [IMPL-FILE_COLUMN_CONFIG](../tied/implementation-decisions/IMPL-FILE_COLUMN_CONFIG.yaml), [IMPL-WORKSPACE_VIEW](../tied/implementation-decisions/IMPL-WORKSPACE_VIEW.yaml), [IMPL-FILE_PANE](../tied/implementation-decisions/IMPL-FILE_PANE.yaml), [IMPL-MOUSE_SUPPORT](../tied/implementation-decisions/IMPL-MOUSE_SUPPORT.yaml), [IMPL-PANE_MANAGEMENT](../tied/implementation-decisions/IMPL-PANE_MANAGEMENT.yaml), [IMPL-LAYOUT_CALCULATOR](../tied/implementation-decisions/IMPL-LAYOUT_CALCULATOR.yaml), [IMPL-TOOLBAR_COMPONENT](../tied/implementation-decisions/IMPL-TOOLBAR_COMPONENT.yaml), [IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml), [IMPL-TOUCH_MTIME](../tied/implementation-decisions/IMPL-TOUCH_MTIME.yaml), [IMPL-TOUCH_DIALOG](../tied/implementation-decisions/IMPL-TOUCH_DIALOG.yaml) |
+| REQ | [REQ-FILE_MANAGER_PAGE](../tied/requirements/REQ-FILE_MANAGER_PAGE.yaml), [REQ-HOME_PAGE](../tied/requirements/REQ-HOME_PAGE.yaml), [REQ-BRANDING](../tied/requirements/REQ-BRANDING.yaml), [REQ-MULTI_PANE_LAYOUT](../tied/requirements/REQ-MULTI_PANE_LAYOUT.yaml), [REQ-README_DEMO_AUTOMATION](../tied/requirements/REQ-README_DEMO_AUTOMATION.yaml), [REQ-CONFIG_DRIVEN_FILE_MANAGER](../tied/requirements/REQ-CONFIG_DRIVEN_FILE_MANAGER.yaml), [REQ-TOOLBAR_SYSTEM](../tied/requirements/REQ-TOOLBAR_SYSTEM.yaml), [REQ-DIRECTORY_NAVIGATION](../tied/requirements/REQ-DIRECTORY_NAVIGATION.yaml), [REQ-MOUSE_INTERACTION](../tied/requirements/REQ-MOUSE_INTERACTION.yaml), [REQ-LINKED_PANES](../tied/requirements/REQ-LINKED_PANES.yaml), [REQ-WORKSPACE_MESH_BRIDGE](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml), [REQ-PANE_DISPLAY_FILTER](../tied/requirements/REQ-PANE_DISPLAY_FILTER.yaml), [REQ-CROSS_PANE_VISIBILITY](../tied/requirements/REQ-CROSS_PANE_VISIBILITY.yaml), [REQ-TOUCH_MTIME](../tied/requirements/REQ-TOUCH_MTIME.yaml), [REQ-PANE_COMMAND_EXEC](../tied/requirements/REQ-PANE_COMMAND_EXEC.yaml) |
+| ARCH | [ARCH-FILE_MANAGER_HIERARCHY](../tied/architecture-decisions/ARCH-FILE_MANAGER_HIERARCHY.yaml), [ARCH-SERVER_COMPONENTS](../tied/architecture-decisions/ARCH-SERVER_COMPONENTS.yaml), [ARCH-PANE_LIFECYCLE](../tied/architecture-decisions/ARCH-PANE_LIFECYCLE.yaml), [ARCH-CONFIG_DRIVEN_UI](../tied/architecture-decisions/ARCH-CONFIG_DRIVEN_UI.yaml), [ARCH-MOUSE_SUPPORT](../tied/architecture-decisions/ARCH-MOUSE_SUPPORT.yaml), [ARCH-CROSS_PANE_VISIBILITY](../tied/architecture-decisions/ARCH-CROSS_PANE_VISIBILITY.yaml), [ARCH-TOUCH_MTIME](../tied/architecture-decisions/ARCH-TOUCH_MTIME.yaml), [ARCH-PANE_COMMAND_EXEC](../tied/architecture-decisions/ARCH-PANE_COMMAND_EXEC.yaml) |
+| IMPL | [IMPL-HOME_PAGE](../tied/implementation-decisions/IMPL-HOME_PAGE.yaml), [IMPL-IMAGE_OPTIMIZATION](../tied/implementation-decisions/IMPL-IMAGE_OPTIMIZATION.yaml), [IMPL-FILE_MANAGER_PAGE](../tied/implementation-decisions/IMPL-FILE_MANAGER_PAGE.yaml), [IMPL-FILE_COLUMN_CONFIG](../tied/implementation-decisions/IMPL-FILE_COLUMN_CONFIG.yaml), [IMPL-WORKSPACE_VIEW](../tied/implementation-decisions/IMPL-WORKSPACE_VIEW.yaml), [IMPL-FILE_PANE](../tied/implementation-decisions/IMPL-FILE_PANE.yaml), [IMPL-MOUSE_SUPPORT](../tied/implementation-decisions/IMPL-MOUSE_SUPPORT.yaml), [IMPL-PANE_MANAGEMENT](../tied/implementation-decisions/IMPL-PANE_MANAGEMENT.yaml), [IMPL-LAYOUT_CALCULATOR](../tied/implementation-decisions/IMPL-LAYOUT_CALCULATOR.yaml), [IMPL-TOOLBAR_COMPONENT](../tied/implementation-decisions/IMPL-TOOLBAR_COMPONENT.yaml), [IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml), [IMPL-TOUCH_MTIME](../tied/implementation-decisions/IMPL-TOUCH_MTIME.yaml), [IMPL-TOUCH_DIALOG](../tied/implementation-decisions/IMPL-TOUCH_DIALOG.yaml), [IMPL-PANE_COMMAND_EXEC](../tied/implementation-decisions/IMPL-PANE_COMMAND_EXEC.yaml), [IMPL-EXECUTE_DIALOG](../tied/implementation-decisions/IMPL-EXECUTE_DIALOG.yaml) |
 | Pseudo-code | `tied/implementation-decisions/IMPL-*-pseudocode.md` for the IMPL tokens above |
 
 ## See also
@@ -88,9 +88,15 @@ Excludes NSYNC sync algorithms ([nsync-multi-target.md](nsync-multi-target.md)),
 | **Set base directory target icon** | `SetBaseDirectoryTargetIcon` — semantic SVG per dialog target (initiating blue, target emerald, direction amber, swap violet, new-workspace sky; 36px, strokeWidth 1.5) |
 | **Append pane at path** | `appendPaneAtPath(directoryPath, templatePaneIndex)` — shared pane append with display-spec and cross-pane inheritance; used by **Add pane** and **Set base: new pane** |
 | **Navigate absolute base** | Multi-pane **Set base directory** assignment via `handleNavigate` with **Syncing ref** ([linked-navigation.md](linked-navigation.md)) so linked mode does not relative-sync non-initiating targets; **In this pane** (`thisPane`) allows linked propagation |
-| **Unified file context menu** | Single portal `ContextMenu` for row and column right-click — file operations, **Touch…** on file and directory rows, clipboard section (`data-testid="file-column-context-menu"`), and **Set as Base directory** on directories; legacy `FileColumnContextMenu` component retained for unit tests only |
+| **Unified file context menu** | Single portal `ContextMenu` for row and column right-click — file operations, **Touch…** and **Execute…** on file and directory rows, clipboard section (`data-testid="file-column-context-menu"`), and **Set as Base directory** on directories; legacy `FileColumnContextMenu` component retained for unit tests only |
 | **Touch…** | File and directory row context menu item opening **Touch file dialog** ([REQ-TOUCH_MTIME](../tied/requirements/REQ-TOUCH_MTIME.yaml)); label from `copy.touchFile.touchMenu` |
 | **Touch file dialog** | `TouchFileDialog` — secondary workspace dialog with pane target (`thisPane` / `allPanes`, reusing `copy.paneManagement.setBaseInThisPane` / `setBaseInAllPanes`) and mtime mode (now, specified UTC/local, earliest/latest from comparison index) |
+| **Execute…** | File and directory row context menu item opening **Execute file dialog** ([REQ-PANE_COMMAND_EXEC](../tied/requirements/REQ-PANE_COMMAND_EXEC.yaml)); label from `copy.executeFile.executeMenu` |
+| **Execute file dialog** | `ExecuteFileDialog` — secondary workspace dialog with **Touch file pane target** subset and Command text field |
+| **Execute file pane target** | `ExecuteFilePaneTarget` — `thisPane` \| `allPanes`; same subset as Touch file pane target |
+| **Execute command placeholders** | `$FILE` (context file absolute path) and `$MARKED` (marked paths newline-separated); expanded client-side before POST ([REQ-PANE_COMMAND_EXEC](../tied/requirements/REQ-PANE_COMMAND_EXEC.yaml)) |
+| **Panorama execute env vars** | `PANORAMA_PANE_PATH`, `PANORAMA_FILE_PATH`, `PANORAMA_MARKED_PATHS` — set on server shell spawn per execute-command entry |
+| **Execute apply** | `handleApplyExecute` — builds entries, POSTs `execute-command`, refreshes affected pane listings |
 | **Touch file pane target** | `TouchFilePaneTarget` — `thisPane` \| `allPanes`; subset of set-base target ids |
 | **Touch mtime mode** | `TouchMtimeMode` — `now` \| `specified` \| `earliest` \| `latest` |
 | **README demo asset** | Committed PNG/GIF under `docs/screenshots/` produced by `npm run demo:screenshots` ([REQ-README_DEMO_AUTOMATION](../tied/requirements/REQ-README_DEMO_AUTOMATION.yaml)) |
@@ -111,7 +117,9 @@ Excludes NSYNC sync algorithms ([nsync-multi-target.md](nsync-multi-target.md)),
 | Pane order dialog | “Pane order” | `copy.paneManagement.paneOrderTitle` | `pane.order` (toolbar-only) | `PaneOrderDialog` |
 | Set as Base directory | “Set as Base directory…” | `copy.paneManagement.setBaseDirectoryMenu` | — | `onSetBaseDirectory`, `SetBaseDirectoryDialog` |
 | Touch… | “Touch…” | `copy.touchFile.touchMenu` | — | `onTouch`, `TouchFileDialog` |
+| Execute… | “Execute…” | `copy.executeFile.executeMenu` | — | `onExecute`, `ExecuteFileDialog` |
 | Touch file dialog | (title from copy) | `copy.touchFile.touchTitle` | — | `handleApplyTouch` |
+| Execute file dialog | (title from copy) | `copy.executeFile.executeTitle` | — | `handleApplyExecute` |
 | Set base directory dialog | (title from copy) | `copy.paneManagement.setBaseDirectoryTitle` | — | `handleApplySetBaseDirectory` |
 | Single-pane workspace URL | (none) | — | — | `?panes=1&pane0=` on `/files` |
 | Default pane count | — | `layout.defaultPaneCount` | — | startup pane array length |
@@ -150,8 +158,10 @@ Excludes NSYNC sync algorithms ([nsync-multi-target.md](nsync-multi-target.md)),
 - **Parent navigation** — Must route through `handleNavigate` for linked sync.
 - **Mesh bridge UX** — Save, diff, restore banners and header status row in file manager; domain terms (**Workspace snapshot**, **Save workspace as mesh**, **Workspace diff**) are canonical in [mesh-platform.md](mesh-platform.md).
 - **Workspace keyboard-shortcuts footer** — removed; use toolbar badges/tooltips ([toolbar-keybind.md](toolbar-keybind.md)).
-- **Unified file context menu** — Row and metadata-cell right-click open the same `ContextMenu` (file ops, **Touch…** on file and directory rows, clipboard section, **Set as Base directory** on directories); see [REQ-MOUSE_INTERACTION](../tied/requirements/REQ-MOUSE_INTERACTION.yaml).
+- **Unified file context menu** — Row and metadata-cell right-click open the same `ContextMenu` (file ops, **Touch…** and **Execute…** on file and directory rows, clipboard section, **Set as Base directory** on directories); see [REQ-MOUSE_INTERACTION](../tied/requirements/REQ-MOUSE_INTERACTION.yaml).
 - **Touch file dialog** — Secondary workspace dialog (`TouchFileDialog`) for pane-target and mtime-mode selection; when marks are non-empty at open, touch applies to all marked basenames in scope ([REQ-TOUCH_MTIME](../tied/requirements/REQ-TOUCH_MTIME.yaml)).
+- **Execute file dialog** — Secondary workspace dialog (`ExecuteFileDialog`) for pane-target and Command field; when marks are non-empty at open, execute resolves marked paths in scope ([REQ-PANE_COMMAND_EXEC](../tied/requirements/REQ-PANE_COMMAND_EXEC.yaml)).
+- **Execute apply** — `handleApplyExecute` POSTs `execute-command` and refreshes affected pane listings via `handleNavigate`.
 - **Navigate absolute base** — **Set base directory** multi-target paths use **Syncing ref** per [linked-navigation.md](linked-navigation.md); only **In this pane** propagates linked navigation.
 - **Append pane at path** — `appendPaneAtPath` fetches listing at `directoryPath`, inherits template pane display spec and cross-pane fields, appends to `panes[]`; shared by toolbar/keybind **Add pane** and dialog **Set base: new pane**.
 - **Set base directory target icon** — `SetBaseDirectoryTargetIcon` renders semantic multi-color pane glyphs on each dialog action button for visual target discrimination.
@@ -161,7 +171,7 @@ Excludes NSYNC sync algorithms ([nsync-multi-target.md](nsync-multi-target.md)),
 
 ## Copy coverage
 
-User-facing strings: `config/site.yaml` → `branding.logo` (metadata contract); `config/files.yaml` → `copy.paneManagement.*`, `copy.touchFile.*` (Touch dialog menu, title, mtime modes, UTC/local labels, Apply/Cancel), `copy.layouts.*`, `copy.columns.*`, `copy.sort.*`, `copy.workspaceMesh.*` (save/diff dialogs and restore messages). Header **Mesh Sync** and restore banners use workspace mesh bridge copy keys. This glossary is authoritative for **Workspace**, **Pane**, **Focus**, layout geometry, file-column UX, **Touch file dialog**, and **root entry redirect**. Owning IMPL: [IMPL-HOME_PAGE](../tied/implementation-decisions/IMPL-HOME_PAGE.yaml), [IMPL-IMAGE_OPTIMIZATION](../tied/implementation-decisions/IMPL-IMAGE_OPTIMIZATION.yaml), [IMPL-WORKSPACE_VIEW](../tied/implementation-decisions/IMPL-WORKSPACE_VIEW.yaml), [IMPL-FILE_COLUMN_CONFIG](../tied/implementation-decisions/IMPL-FILE_COLUMN_CONFIG.yaml), [IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml), [IMPL-TOUCH_DIALOG](../tied/implementation-decisions/IMPL-TOUCH_DIALOG.yaml).
+User-facing strings: `config/site.yaml` → `branding.logo` (metadata contract); `config/files.yaml` → `copy.paneManagement.*`, `copy.touchFile.*` (Touch dialog menu, title, mtime modes, UTC/local labels, Apply/Cancel), `copy.executeFile.*` (Execute menu, title, command label/placeholder, Apply/Cancel), `copy.layouts.*`, `copy.columns.*`, `copy.sort.*`, `copy.workspaceMesh.*` (save/diff dialogs and restore messages). Header **Mesh Sync** and restore banners use workspace mesh bridge copy keys. This glossary is authoritative for **Workspace**, **Pane**, **Focus**, layout geometry, file-column UX, **Touch file dialog**, **Execute file dialog**, and **root entry redirect**. Owning IMPL: [IMPL-HOME_PAGE](../tied/implementation-decisions/IMPL-HOME_PAGE.yaml), [IMPL-IMAGE_OPTIMIZATION](../tied/implementation-decisions/IMPL-IMAGE_OPTIMIZATION.yaml), [IMPL-WORKSPACE_VIEW](../tied/implementation-decisions/IMPL-WORKSPACE_VIEW.yaml), [IMPL-FILE_COLUMN_CONFIG](../tied/implementation-decisions/IMPL-FILE_COLUMN_CONFIG.yaml), [IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml), [IMPL-TOUCH_DIALOG](../tied/implementation-decisions/IMPL-TOUCH_DIALOG.yaml), [IMPL-EXECUTE_DIALOG](../tied/implementation-decisions/IMPL-EXECUTE_DIALOG.yaml).
 
 ## Pseudo-code block names
 
@@ -186,6 +196,8 @@ User-facing strings: `config/site.yaml` → `branding.logo` (metadata contract);
 | Unified row context menu | `UNIFIED_ROW_CONTEXT_MENU` → `IMPL-MOUSE_SUPPORT_UnifiedRowContextMenu` | IMPL-MOUSE_SUPPORT |
 | Touch file dialog | `TouchFileDialog` → `IMPL-TOUCH_DIALOG_TouchFileDialog` | IMPL-TOUCH_DIALOG |
 | Touch apply | `TouchApply` / `handleApplyTouch` → `IMPL-WORKSPACE_VIEW_TouchApply` | IMPL-WORKSPACE_VIEW, IMPL-TOUCH_MTIME |
+| Execute file dialog | `ExecuteFileDialog` → `IMPL-EXECUTE_DIALOG_ExecuteFileDialog` | IMPL-EXECUTE_DIALOG |
+| Execute apply | `ExecuteApply` / `handleApplyExecute` → `IMPL-WORKSPACE_VIEW_ExecuteApply` | IMPL-WORKSPACE_VIEW, IMPL-PANE_COMMAND_EXEC |
 | Single-pane workspace URL | `SinglePaneWorkspaceUrl` → `IMPL-FILE_MANAGER_PAGE_SinglePaneWorkspaceUrl` | IMPL-FILE_MANAGER_PAGE |
 | Layout: tile / one row / column / fullscreen | `Tile`, `OneRow`, `OneColumn`, `Fullscreen` | IMPL-LAYOUT_CALCULATOR |
 | Workspace area measurement | `WORKSPACE_AREA_MEASUREMENT` | IMPL-LAYOUT_CALCULATOR |
@@ -219,6 +231,11 @@ User-facing strings: `config/site.yaml` → `branding.logo` (metadata contract);
 - **Cross-pane path resolution** — `resolveCrossPanePathsForFilename`
 - **Cross-surface link** — canonical: mesh-platform; header nav here
 - **Cycle panes** — `pane.cycle` / `pane.cyclePrev`
+- **Execute apply** — `handleApplyExecute` POST and pane refresh
+- **Execute command placeholders** — `$FILE`, `$MARKED` client expansion
+- **Execute file dialog** — `ExecuteFileDialog` pane target + Command field
+- **Execute file pane target** — `thisPane` \| `allPanes`
+- **Execute…** — context menu item opening **Execute file dialog**
 - **File column** — `mtime`, `size`, `name`
 - **File column clipboard menu** — Copy filename / path / paths
 - **File column context menu** — metadata cell clipboard menu
@@ -253,6 +270,7 @@ User-facing strings: `config/site.yaml` → `branding.logo` (metadata contract);
 - **Set base directory target** — `SetBaseDirectoryTarget` dialog choice id
 - **Set base directory target icon** — `SetBaseDirectoryTargetIcon` semantic SVG
 - **Navigate absolute base** — absolute path re-root with syncing ref for multi-pane targets
+- **Panorama execute env vars** — `PANORAMA_PANE_PATH`, `PANORAMA_FILE_PATH`, `PANORAMA_MARKED_PATHS`
 - **Single-pane workspace URL** — `?panes=1&pane0=`
 - **Unified file context menu** — combined row/column right-click menu
 - **Swap panes** — `pane.swap` / `pane.swapPrev`

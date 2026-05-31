@@ -1,0 +1,45 @@
+IMPL-EXECUTE_DIALOG:
+  name: Execute File Dialog Implementation
+  status: Active
+  cross_references:
+    - ARCH-MOUSE_SUPPORT
+    - ARCH-PANE_COMMAND_EXEC
+    - IMPL-MOUSE_SUPPORT
+    - IMPL-WORKSPACE_VIEW
+    - REQ-PANE_COMMAND_EXEC
+  decision: ExecuteFileDialog secondary workspace dialog with pane target radio group and command text field; ContextMenu Execute item; WorkspaceView handleApplyExecute
+  rationale:
+    why: Matches TouchFileDialog shell and wiring pattern
+  implementation_approach:
+    summary: ExecuteFileDialog + ContextMenu + WorkspaceView wiring
+  code_locations:
+    files:
+      - path: src/app/files/components/ExecuteFileDialog.tsx
+        description: Pane target and command dialog
+      - path: src/app/files/components/ContextMenu.tsx
+        description: Execute menu item
+      - path: src/app/files/components/FilePane.tsx
+        description: onExecute wiring
+      - path: src/app/files/WorkspaceView.tsx
+        description: Dialog state and handleApplyExecute
+  traceability:
+    requirements:
+      - REQ-PANE_COMMAND_EXEC
+      - REQ-MOUSE_INTERACTION
+    architecture:
+      - ARCH-PANE_COMMAND_EXEC
+      - ARCH-MOUSE_SUPPORT
+    tests:
+      - src/app/files/components/ContextMenu.test.tsx
+      - src/app/files/components/ExecuteFileDialog.test.tsx
+      - src/app/files/WorkspaceView.execute.test.tsx
+    code_annotations:
+      - IMPL-EXECUTE_DIALOG
+  related_decisions:
+    depends_on:
+      - IMPL-MOUSE_SUPPORT
+      - IMPL-PANE_COMMAND_EXEC
+      - IMPL-WORKSPACE_VIEW
+    see_also:
+      - IMPL-MOUSE_SUPPORT
+      - IMPL-PANE_COMMAND_EXEC

@@ -38,6 +38,7 @@ ARCH-MOUSE_SUPPORT:
       - 'Double-click: Existing onDoubleClick handlers (already implemented)'
       - 'Drag-drop: HTML5 API with custom drag image and modifier key detection'
       - 'FileColumnContextMenu: Portal clipboard menu on metadata column cells (name, size, mtime); copy filename, absolute path, cross-pane paths'
+      - 'Pane command execution: ExecuteFileDialog secondary dialog with pane target and command field (ARCH-PANE_COMMAND_EXEC)'
       - 'Scroll: Native browser overflow-y-auto'
       - 'Set as Base directory: directory rows open secondary dialog with nine pane-target actions and SetBaseDirectoryTargetIcon semantic SVG (IMPL-WORKSPACE_VIEW SetBaseDirectoryDialog)'
       - 'Touch mtime: TouchFileDialog secondary dialog with pane target and mtime mode groups (ARCH-TOUCH_MTIME)'
@@ -65,7 +66,7 @@ ARCH-MOUSE_SUPPORT:
     last_updated:
       date: "2026-05-31T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — nine set-base targets with SetBaseDirectoryTargetIcon
+      reason: LEAP — pane command execution ExecuteFileDialog (ARCH-PANE_COMMAND_EXEC)
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

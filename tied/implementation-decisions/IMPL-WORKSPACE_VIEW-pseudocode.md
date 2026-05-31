@@ -255,8 +255,29 @@ PROCEDURE handleApplyTouch(dialogState, selection)
   ON error: alert
 ```
 
+## ExecuteApply
+
+// [IMPL-WORKSPACE_VIEW] [IMPL-EXECUTE_DIALOG] [IMPL-PANE_COMMAND_EXEC] [ARCH-PANE_COMMAND_EXEC] [REQ-PANE_COMMAND_EXEC]: how — dialog state, buildExecuteEntries, POST execute-command, refresh affected pane listings
+
+```
+CONTRACT ExecuteApply
+  INPUT: executeFileDialog state (paneIndex, file, marksAtOpen), ExecuteApplySelection from ExecuteFileDialog
+  OUTPUT: POST execute-command; close dialog; refresh affected pane listings via handleNavigate
+  DATA: buildExecuteEntries from execute-command.ts
+
+PROCEDURE handleApplyExecute(dialogState, selection)
+  entries := buildExecuteEntries(selection.paneTarget, selection.command, dialogState.paneIndex, panes, dialogState.marksAtOpen, dialogState.file)
+  IF entries.length == 0: alert; RETURN
+  close executeFileDialog
+  POST /api/files { operation: "execute-command", entries }
+  ON success:
+    FOR EACH entry.paneIndex: handleNavigate(entry.paneIndex, panes[entry.paneIndex].path)
+  ON partial failure (errorCount > 0): alert summary with per-pane exit codes
+  ON HTTP error: alert with error message
+```
+
 ## CodeLocations
 
 // [IMPL-WORKSPACE_VIEW] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-DIRECTORY_NAVIGATION] [REQ-KEYBOARD_NAVIGATION] [REQ-MULTI_PANE_LAYOUT] [REQ-REACT_SSR_STABILITY]: map implementing and verifying source files for this IMPL
 
-// src/app/files/WorkspaceView.tsx — DIALOG_KEYS, KEYBINDING_INIT, FILE_COLUMNS_STATE, COLUMN_ORDER_DIALOG_HANDLER, SHARED_METADATA_WIDTHS_ONECOLUMN, PANE_FILES_LIST_TO_FILEPANE, HANDLE_NAVIGATE, LAYOUT_TOOLBAR_PICKER, appendPaneAtPath, SetBaseDirectoryApply, TouchApply/handleApplyTouch, NavigateAbsoluteBase; src/lib/set-base-directory.ts; src/lib/touch-file.ts; src/app/files/components/SetBaseDirectoryDialog.tsx; src/app/files/components/SetBaseDirectoryTargetIcon.tsx; src/app/files/components/TouchFileDialog.tsx; src/app/files/components/LayoutPickerPopover.tsx; src/app/files/page.tsx SinglePaneWorkspaceUrl; tests WorkspaceView.file-columns.test.tsx, WorkspaceView.file-column-clipboard.test.tsx, WorkspaceView.cross-pane-visibility.test.tsx, WorkspaceView.set-base-directory.test.tsx, WorkspaceView.touch.test.tsx, LayoutPickerPopover.test.tsx, set-base-directory.test.ts, SetBaseDirectoryDialog.test.tsx, SetBaseDirectoryTargetIcon.test.tsx, TouchFileDialog.test.tsx, touch-file.test.ts
+// src/app/files/WorkspaceView.tsx — DIALOG_KEYS, KEYBINDING_INIT, FILE_COLUMNS_STATE, COLUMN_ORDER_DIALOG_HANDLER, SHARED_METADATA_WIDTHS_ONECOLUMN, PANE_FILES_LIST_TO_FILEPANE, HANDLE_NAVIGATE, LAYOUT_TOOLBAR_PICKER, appendPaneAtPath, SetBaseDirectoryApply, TouchApply/handleApplyTouch, ExecuteApply/handleApplyExecute, NavigateAbsoluteBase; src/lib/set-base-directory.ts; src/lib/touch-file.ts; src/lib/execute-command.ts; src/app/files/components/SetBaseDirectoryDialog.tsx; src/app/files/components/SetBaseDirectoryTargetIcon.tsx; src/app/files/components/TouchFileDialog.tsx; src/app/files/components/ExecuteFileDialog.tsx; src/app/files/components/LayoutPickerPopover.tsx; src/app/files/page.tsx SinglePaneWorkspaceUrl; tests WorkspaceView.file-columns.test.tsx, WorkspaceView.file-column-clipboard.test.tsx, WorkspaceView.cross-pane-visibility.test.tsx, WorkspaceView.set-base-directory.test.tsx, WorkspaceView.touch.test.tsx, WorkspaceView.execute.test.tsx, LayoutPickerPopover.test.tsx, set-base-directory.test.ts, SetBaseDirectoryDialog.test.tsx, SetBaseDirectoryTargetIcon.test.tsx, TouchFileDialog.test.tsx, ExecuteFileDialog.test.tsx, touch-file.test.ts, execute-command.test.ts
