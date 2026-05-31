@@ -11,7 +11,7 @@ CONTRACT Summary
   INPUT: path, files[], cursor, marks Set, columns, optional metadataColumnWidths, paneFilesList, scrollTrigger, comparisonMode/Index
   OUTPUT: rendered file rows; onNavigate, onCursorMove, onToggleMark, onDrop callbacks
   DATA: contextMenu and columnContextMenu state; fileListRef for scrollIntoView
-  CONTROL: row and column context menus mutually exclusive
+  CONTROL: single contextMenu state for row and column right-click (unified ContextMenu)
 ```
 
 ## RenderFileRows
@@ -66,18 +66,17 @@ PROCEDURE PANE_FILES_LIST_PROP(context)
   PASS to FileColumnContextMenu for clipboard path resolution across panes
 ```
 
-## FILE_COLUMN_CONTEXT_MENU_WIRING
+## UNIFIED_CONTEXT_MENU_WIRING
 
-// [IMPL-FILE_PANE] [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] [REQ-LINKED_PANES]: how: column cell context menu exclusive with row file operations menu
+// [IMPL-FILE_PANE] [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] [REQ-LINKED_PANES] [REQ-DIRECTORY_NAVIGATION]: how: row and metadata-cell right-click set same contextMenu state; FilePane renders unified ContextMenu with clipboard section and onSetBaseDirectory for directories
 
 ```
-PROCEDURE FILE_COLUMN_CONTEXT_MENU_WIRING(context)
-  ON column cell contextMenu preventDefault; stopPropagation; clear contextMenu
+PROCEDURE UNIFIED_CONTEXT_MENU_WIRING(context)
+  ON row OR column cell contextMenu preventDefault; stopPropagation
   IF index != cursor THEN onCursorMove(index)
-  SET columnContextMenu at client coordinates
-  ON row contextMenu clear columnContextMenu; move cursor; open file operations menu
-  renderColumn attaches onContextMenu to name, size, mtime cells
-  RENDER FileColumnContextMenu when columnContextMenu set
+  SET contextMenu at client coordinates with file at index
+  renderColumn attaches onContextMenu to name, size, mtime cells (same handler as row)
+  RENDER ContextMenu when contextMenu set; PASS paneFilesList, onSetBaseDirectory, file op handlers
 ```
 
 ## ScrollToCursor

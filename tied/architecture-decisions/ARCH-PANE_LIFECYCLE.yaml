@@ -42,6 +42,7 @@ ARCH-PANE_LIFECYCLE:
       - 'Cycle panes: rotate panes[] one slot; remap focus and history'
       - 'Pane order dialog: arbitrary reorder via index permutation'
       - 'Remove pane: removes pane from array, adjusts focusIndex if necessary'
+      - 'Single-pane workspace URL: server Files page honors ?panes=1&pane0= to bootstrap one pane at path when no mesh restore (IMPL-FILE_MANAGER_PAGE SinglePaneWorkspaceUrl)'
       - 'Startup mode configured: each pane starts at paths.pane1, pane2, etc.'
       - 'Startup mode home: all panes start at user home directory'
       - 'Startup mode last: future enhancement using localStorage'

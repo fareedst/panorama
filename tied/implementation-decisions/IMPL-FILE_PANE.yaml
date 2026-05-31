@@ -22,10 +22,10 @@ IMPL-FILE_PANE:
       - Reusable pane component
       - Robust date handling for API responses
   implementation_approach:
-    summary: Client component renders file list with cursor, marks, comparison colors, and proper date conversion
+    summary: Client component renders file list with cursor, marks, comparison colors, and unified context menu
     details:
-      - 'FILE_COLUMN_CONTEXT_MENU_WIRING: column cell right-click opens FileColumnContextMenu; mutual exclusion with row ContextMenu'
-      - 'PANE_FILES_LIST_PROP: optional paneFilesList forwarded for cross-pane path clipboard'
+      - 'UNIFIED_CONTEXT_MENU_WIRING: row and column right-click open ContextMenu with clipboard and onSetBaseDirectory'
+      - 'PANE_FILES_LIST_PROP: paneFilesList for cross-pane clipboard in unified menu'
   code_locations:
     files:
       - path: src/app/files/components/FilePane.tsx
@@ -56,6 +56,7 @@ IMPL-FILE_PANE:
       - REQ-MOUSE_INTERACTION
     tests:
       - src/app/files/components/FilePane.test.tsx
+      - src/app/files/components/ContextMenu.test.tsx
     code_annotations:
       - IMPL-FILE_PANE
   related_decisions:
@@ -73,7 +74,7 @@ IMPL-FILE_PANE:
     last_updated:
       date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: Retrofit essence_pseudocode from tests and production code
+      reason: LEAP — unified ContextMenu wiring and set-base
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

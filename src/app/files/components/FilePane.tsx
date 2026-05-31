@@ -19,7 +19,6 @@ import {
 } from "@/lib/file-columns";
 import { getSortLabel, getSortDirectionSymbol, type SortCriterion, type SortDirection } from "@/lib/files.utils";
 import ContextMenu from "./ContextMenu";
-import FileColumnContextMenu from "./FileColumnContextMenu";
 import type { DisplayFilterSpec } from "@/lib/display-filter.types";
 import { DisplaySpecSelector } from "./DisplaySpecSelector";
 import { CrossPaneVisibilitySelector } from "./CrossPaneVisibilitySelector";
@@ -78,6 +77,10 @@ interface FilePaneProps {
   columns: FilesColumnConfig[];
   /** [IMPL-FILE_COLUMN_CONFIG] [REQ-MULTI_PANE_LAYOUT] OneColumn workspace-wide Size/Time ch (skips per-pane measure) */
   metadataColumnWidths?: MeasuredFileColumnWidths;
+  /** [REQ-DIRECTORY_NAVIGATION] [REQ-MOUSE_INTERACTION] Open Set as Base directory dialog */
+  onSetBaseDirectory?: (directoryPath: string) => void;
+  /** Label for Set as Base directory context menu item */
+  setBaseDirectoryMenuLabel?: string;
   /** Test ID for automation */
   "data-testid"?: string;
   /** [REQ-PANE_DISPLAY_FILTER] Catalog of saved display specs */
@@ -126,6 +129,8 @@ export default function FilePane({
   onMove,
   onDelete,
   onRename,
+  onSetBaseDirectory,
+  setBaseDirectoryMenuLabel,
   onDrop,
   linked = false, // [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
   scrollTrigger, // [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
@@ -152,15 +157,8 @@ export default function FilePane({
   onManageCrossPaneVisibility,
   paneFilesList = [],
 }: FilePaneProps) {
-  // [IMPL-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] Context menu state
+  // [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION]
   const [contextMenu, setContextMenu] = useState<{
-    x: number;
-    y: number;
-    file: FileStat;
-  } | null>(null);
-
-  // FILE_COLUMN_CONTEXT_MENU_WIRING — [IMPL-FILE_PANE] [REQ-MOUSE_INTERACTION] column clipboard menu state
-  const [columnContextMenu, setColumnContextMenu] = useState<{
     x: number;
     y: number;
     file: FileStat;
@@ -211,35 +209,14 @@ export default function FilePane({
   };
 
   // [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION]
-  // Row file operations context menu — clears column clipboard menu (mutual exclusion)
+  // Unified row context menu — file operations and clipboard actions on any row right-click
   const handleContextMenu = (e: React.MouseEvent, file: FileStat, index: number) => {
     e.preventDefault();
-    setColumnContextMenu(null);
-    // Move cursor to right-clicked file
+    onFocusRequest?.();
     if (index !== cursor) {
       onCursorMove(index);
     }
     setContextMenu({
-      x: e.clientX,
-      y: e.clientY,
-      file,
-    });
-  };
-
-  // FILE_COLUMN_CONTEXT_MENU_WIRING — [IMPL-FILE_PANE] [IMPL-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] [REQ-LINKED_PANES]
-  // how: metadata cell right-click opens clipboard menu; stopPropagation prevents row operations menu
-  const handleColumnContextMenu = (
-    e: React.MouseEvent,
-    file: FileStat,
-    index: number,
-  ) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setContextMenu(null);
-    if (index !== cursor) {
-      onCursorMove(index);
-    }
-    setColumnContextMenu({
       x: e.clientX,
       y: e.clientY,
       file,
@@ -391,11 +368,6 @@ export default function FilePane({
   ) => {
     const cellClass = "px-2 truncate tabular-nums";
     const displayText = formatFileColumnCell(file, columnId, columns);
-    // FILE_COLUMN_CONTEXT_MENU_WIRING — attach column right-click to name, size, and mtime cells
-    const columnContextProps = {
-      onContextMenu: (e: React.MouseEvent) =>
-        handleColumnContextMenu(e, file, rowIndex),
-    };
 
     switch (columnId) {
       case "name":
@@ -410,7 +382,6 @@ export default function FilePane({
                 : "text-zinc-900 dark:text-zinc-100"
               }
             `}
-            {...columnContextProps}
           >
             {displayText}
           </span>
@@ -422,7 +393,6 @@ export default function FilePane({
             key="size"
             data-testid="file-column-size"
             className={`${cellClass} text-zinc-500 dark:text-zinc-400 text-xs`}
-            {...columnContextProps}
           >
             {displayText}
           </span>
@@ -434,7 +404,6 @@ export default function FilePane({
             key="mtime"
             data-testid="file-column-mtime"
             className={`${cellClass} text-zinc-500 dark:text-zinc-400 text-xs`}
-            {...columnContextProps}
           >
             {displayText}
           </span>
@@ -651,17 +620,13 @@ export default function FilePane({
           onMove={onMove}
           onDelete={onDelete}
           onRename={onRename}
-        />
-      )}
-
-      {columnContextMenu && (
-        // FILE_COLUMN_CONTEXT_MENU_WIRING — render clipboard menu with workspace pane listings
-        <FileColumnContextMenu
-          x={columnContextMenu.x}
-          y={columnContextMenu.y}
-          file={columnContextMenu.file}
+          onSetBaseDirectory={
+            contextMenu.file.isDirectory && onSetBaseDirectory
+              ? () => onSetBaseDirectory(contextMenu.file.path)
+              : undefined
+          }
+          setBaseDirectoryMenuLabel={setBaseDirectoryMenuLabel}
           paneFilesList={paneFilesList}
-          onClose={() => setColumnContextMenu(null)}
         />
       )}
     </div>

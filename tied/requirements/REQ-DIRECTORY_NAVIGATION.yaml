@@ -20,6 +20,7 @@ REQ-DIRECTORY_NAVIGATION:
     - criterion: Can navigate to parent directory (Backspace key)
     - criterion: Current path displayed in pane header
     - criterion: Directory entries marked visually (folder icon or indicator)
+    - criterion: set_base_directory_reroots_pane_path — context menu Set as Base directory on directory rows opens dialog to assign pane path via handleNavigate
   validation_criteria:
     - method: Navigation testing
       coverage: Can navigate into and out of directories
@@ -27,17 +28,22 @@ REQ-DIRECTORY_NAVIGATION:
       coverage: Current path updates correctly
   traceability:
     architecture:
-      - ARCH-FILESYSTEM_ABSTRACTION
       - ARCH-CROSS_PANE_VISIBILITY
+      - ARCH-FILESYSTEM_ABSTRACTION
+      - ARCH-PANE_LIFECYCLE
     implementation:
       - IMPL-CROSS_PANE_VISIBILITY_CATALOG
+      - IMPL-FILE_MANAGER_PAGE
       - IMPL-FILE_PANE
       - IMPL-FILES_DATA
       - IMPL-FILES_UTILS
       - IMPL-WORKSPACE_VIEW
     tests:
-      - src/lib/pane-cross-pane-visibility.test.ts
+      - src/app/files/page.single-pane-url.test.tsx
       - src/app/files/WorkspaceView.cross-pane-visibility.test.tsx
+      - src/app/files/WorkspaceView.set-base-directory.test.tsx
+      - src/lib/pane-cross-pane-visibility.test.ts
+      - src/lib/set-base-directory.test.ts
     code_annotations:
       - REQ-DIRECTORY_NAVIGATION
   related_requirements:
@@ -52,9 +58,9 @@ REQ-DIRECTORY_NAVIGATION:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-07T00:00:00.000Z
+      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: Implementation complete, 34 data layer tests passing
+      reason: LEAP — Set as Base directory tests
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

@@ -19,19 +19,20 @@ REQ-MOUSE_INTERACTION:
     - criterion: cross_pane_paths_disabled_when_basename_missing_from_listings — cross-pane copy action disabled when no pane listing contains the basename
     - criterion: Double-click opens/enters file/directory
     - criterion: Drag-and-drop moves/copies files between panes
-    - criterion: file_column_menu_exclusive_with_row_operations_menu — column right-click does not open row file operations menu
-    - criterion: file_column_right_click_shows_clipboard_menu — Copy filename, Copy path, Copy paths in all panes on metadata column cells
+    - criterion: file_column_right_click_shows_clipboard_menu — Copy filename, Copy path, Copy paths in all panes within unified ContextMenu clipboard section
     - criterion: Left-click selects file and moves cursor
     - criterion: Right-click shows context menu with operations
     - criterion: Scroll wheel navigates file list
+    - criterion: set_base_directory_menu_on_directory_rows — directory rows show Set as Base directory menu item; file rows unchanged
     - criterion: Touch gestures work on tablets
+    - criterion: unified_file_context_menu_on_row_and_column_right_click — row and metadata-cell right-click open one ContextMenu with file operations, clipboard section, and Set as Base directory on directories
   validation_criteria:
     - method: Unit tests
-      coverage: file-column-clipboard.ts formatters and cross-pane resolution
+      coverage: file-column-clipboard.ts and set-base-directory.ts
     - method: Component tests
-      coverage: FileColumnContextMenu copy actions and disabled cross-pane state
+      coverage: ContextMenu, SetBaseDirectoryDialog, FileColumnContextMenu standalone
     - method: Composition tests
-      coverage: FilePane column right-click wiring; WorkspaceView paneFilesList binding
+      coverage: FilePane unified menu; WorkspaceView set-base-directory
     - method: Integration tests
       coverage: Mouse event handling
     - method: UI tests
@@ -44,10 +45,14 @@ REQ-MOUSE_INTERACTION:
       - IMPL-MOUSE_SUPPORT
       - IMPL-WORKSPACE_VIEW
     tests:
+      - src/app/files/components/ContextMenu.test.tsx
       - src/app/files/components/FileColumnContextMenu.test.tsx
       - src/app/files/components/FilePane.test.tsx
+      - src/app/files/components/SetBaseDirectoryDialog.test.tsx
       - src/app/files/WorkspaceView.file-column-clipboard.test.tsx
+      - src/app/files/WorkspaceView.set-base-directory.test.tsx
       - src/lib/file-column-clipboard.test.ts
+      - src/lib/set-base-directory.test.ts
     code_annotations:
       - REQ-MOUSE_INTERACTION
   related_requirements:
@@ -61,9 +66,9 @@ REQ-MOUSE_INTERACTION:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-24T00:00:00.000Z"
+      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — file column clipboard context menu satisfaction criteria
+      reason: LEAP — unified ContextMenu and Set as Base directory
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

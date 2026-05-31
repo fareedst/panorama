@@ -111,6 +111,16 @@ copy:
     maxPanesReached: "Maximum number of panes reached"
     minPanesReached: "At least one pane must remain"
     paneManagementDisabled: "Pane management is disabled"
+    setBaseDirectoryMenu: "Set as Base directory…"
+    setBaseDirectoryTitle: "Set as Base directory"
+    setBaseInThisPane: "In this pane"
+    setBaseInAllPanes: "In all panes"
+    setBaseInOtherPanes: "In all other panes"
+    setBaseInNextPane: "In the next pane"
+    setBaseInNextPaneSwap: "In the next pane and swap pane position"
+    setBaseInPriorPane: "In the prior pane"
+    setBaseInPriorPaneSwap: "In the prior pane and swap pane position"
+    setBaseNewWorkspace: "In new workspace, as the only pane"
 
   # [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE]
   workspaceMesh:

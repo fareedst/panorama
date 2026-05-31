@@ -306,6 +306,16 @@ export interface FilesCopyConfig {
     maxPanesReached?: string;
     minPanesReached?: string;
     paneManagementDisabled?: string;
+    setBaseDirectoryMenu?: string;
+    setBaseDirectoryTitle?: string;
+    setBaseInThisPane?: string;
+    setBaseInAllPanes?: string;
+    setBaseInOtherPanes?: string;
+    setBaseInNextPane?: string;
+    setBaseInNextPaneSwap?: string;
+    setBaseInPriorPane?: string;
+    setBaseInPriorPaneSwap?: string;
+    setBaseNewWorkspace?: string;
   };
   // [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE]
   workspaceMesh?: {

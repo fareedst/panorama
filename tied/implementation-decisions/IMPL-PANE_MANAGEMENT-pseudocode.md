@@ -126,6 +126,21 @@ PROCEDURE IMPL-PANE_MANAGEMENT_PaneOrderDialogApply(order)
   CLEAR scrollTriggers map
   SET paneOrderDialogOpen := false
 
+## SetBaseDirectorySwapCompose
+
+// [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] [REQ-MULTI_PANE_LAYOUT] [REQ-DIRECTORY_NAVIGATION]: how — after navigating neighbor pane to base directory path, swap initiating pane slot with neighbor via handleSwapPanes; focus follows pane content
+
+CONTRACT SetBaseDirectorySwapCompose
+  INPUT: initiatingPaneIndex, neighborIndex, directoryPath
+  OUTPUT: neighbor pane at new path; pane slots swapped
+  DATA: handleSwapPanes(initiating, neighbor); requires allowPaneManagement
+
+PROCEDURE IMPL-PANE_MANAGEMENT_SetBaseDirectorySwapCompose(initiating, neighbor, path)
+  syncingRef.add(neighbor)
+  TRY await handleNavigate(neighbor, path)
+  FINALLY syncingRef.delete(neighbor)
+  IF allowPaneManagement THEN handleSwapPanes(initiating, neighbor)
+
 ## KeybindDisabledRules
 
 // [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYOUT] [REQ-TOOLBAR_SYSTEM]: how: disable pane.swap, cycle, order when allowPaneManagement false or fewer than two panes

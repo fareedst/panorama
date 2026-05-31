@@ -1,0 +1,58 @@
+# CITDP change-analysis record — Set as Base directory context menu
+# [PROC-CITDP] persist-citdp-record
+CITDP-SET_BASE_DIRECTORY:
+  record_identity:
+    change_request_id: SET_BASE_DIRECTORY
+    title: Directory row context menu — Set as Base directory with multi-pane target dialog
+    recorded_at: "2026-05-30"
+  change_definition:
+    current_behavior: Row ContextMenu shows seven items for all rows; no way to re-root pane path from directory context menu
+    desired_behavior: Directory rows show eighth item Set as Base directory opening secondary dialog with eight pane-target actions routed through handleNavigate; new tab single-pane workspace via ?panes=1&pane0=
+    unchanged_behavior: File rows keep seven-item menu; mesh save unchanged; linked mode applies on In this pane only
+    non_goals:
+      - Keybind for set base directory
+      - Mesh depot basePath
+      - Search basePath scope
+    success_criteria:
+      - Dialog offers eight targets plus Cancel with correct disabled states
+      - Directory row shows Set as Base directory menu item; file rows do not
+      - Multi-target navigations use handleNavigate without linked fan-out corruption
+      - New workspace opens new tab with single pane at directory path
+      - Swap variants navigate neighbor then swap initiating pane with neighbor
+  impact_analysis:
+    tied_tokens_affected:
+      - ARCH-MOUSE_SUPPORT
+      - ARCH-PANE_LIFECYCLE
+      - IMPL-FILE_MANAGER_PAGE
+      - IMPL-MOUSE_SUPPORT
+      - IMPL-PANE_MANAGEMENT
+      - IMPL-WORKSPACE_VIEW
+      - REQ-DIRECTORY_NAVIGATION
+      - REQ-MOUSE_INTERACTION
+      - REQ-MULTI_PANE_LAYOUT
+    tied_tokens_new: []
+    modules_or_boundaries: ContextMenu, FilePane, WorkspaceView, SetBaseDirectoryDialog, set-base-directory lib, Files page bootstrap
+    impl_inventory_notes: Extends unified row context menu; composes pane.swap with absolute path navigation
+  risk_analysis:
+    risks:
+      - id: RISK-001
+        description: Linked mode fan-out when setting base on multiple panes
+        mitigation: syncingRef marks target pane before handleNavigate for multi-target absolute assignment
+      - id: RISK-002
+        description: Single-pane URL ignored when defaultPaneCount is 3
+        mitigation: Server reads panes=1 query param before default bootstrap
+      - id: RISK-003
+        description: Swap when allowPaneManagement false
+        mitigation: Disable swap dialog buttons; handleSwapPanes already guards
+  test_strategy:
+    summary: Unit tests for target resolution; component tests for dialog and menu; composition tests in WorkspaceView.set-base-directory.test.tsx
+    matrix_notes: 1-pane and 2-pane workspaces; directory vs file rows; newWorkspace window.open mock
+  tdd_sequence:
+    summary: set-base-directory lib → SetBaseDirectoryDialog → ContextMenu → WorkspaceView handler → page.tsx bootstrap
+  completion_criteria:
+    verification_gate_notes: bun run lint:ts; vitest affected suites; tied_validate_consistency
+  leap_feedback:
+    divergences_from_analysis:
+      - Unified row/column ContextMenu replaces separate FileColumnContextMenu in FilePane; REQ-MOUSE_INTERACTION criterion updated via LEAP
+    tied_stack_updates_required: []
+    record_status: complete

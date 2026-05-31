@@ -124,6 +124,30 @@ describe("[TEST-MOUSE_INTERACTION] ContextMenu Component", () => {
     expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
   });
 
+  // SET_BASE_DIRECTORY_MENU — [IMPL-MOUSE_SUPPORT] [REQ-DIRECTORY_NAVIGATION] [REQ-MOUSE_INTERACTION]: directory row shows menu item
+  it("shows Set as Base directory for directory rows when handler provided", () => {
+    const dirFile: FileStat = { ...mockFile, name: "projects", path: "/test/projects", isDirectory: true };
+    const onSetBaseDirectory = vi.fn();
+    render(
+      <ContextMenu
+        {...defaultProps}
+        file={dirFile}
+        onSetBaseDirectory={onSetBaseDirectory}
+      />,
+    );
+
+    expect(screen.getByTestId("set-base-directory-menu-item")).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId("set-base-directory-menu-item"));
+    expect(onSetBaseDirectory).toHaveBeenCalledTimes(1);
+    expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("hides Set as Base directory for file rows", () => {
+    const onSetBaseDirectory = vi.fn();
+    render(<ContextMenu {...defaultProps} onSetBaseDirectory={onSetBaseDirectory} />);
+    expect(screen.queryByTestId("set-base-directory-menu-item")).not.toBeInTheDocument();
+  });
+
   it("closes menu on Escape key", () => {
     render(<ContextMenu {...defaultProps} />);
     

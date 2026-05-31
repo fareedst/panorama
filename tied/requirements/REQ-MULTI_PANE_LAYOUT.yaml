@@ -19,6 +19,7 @@ REQ-MULTI_PANE_LAYOUT:
     - criterion: Pane bounds reflect available workspace area (toolbar and header aware), not fixed viewport heuristics
     - criterion: Pane order dialog (pane.order) allows arbitrary reorder of panes[]
     - criterion: Pane URL deep link query params pane0..paneN initialize pane paths on mount for E2E and bookmarkable workspaces (see Pane URL deep link in tied/vocab/workspace-pane.md)
+    - criterion: single_pane_workspace_url_bootstrap — when searchParams.panes equals 1 and pane0 present without meshId, server bootstraps exactly one pane at pane0 path instead of defaultPaneCount (Single-pane workspace URL in tied/vocab/workspace-pane.md)
     - criterion: Support 2-4 panes in any layout
     - criterion: Support OneColumn layout (all panes vertical)
     - criterion: Support OneRow layout (all panes horizontal)
@@ -41,13 +42,16 @@ REQ-MULTI_PANE_LAYOUT:
       - ARCH-LAYOUT_ALGORITHMS
       - ARCH-PANE_LIFECYCLE
     implementation:
+      - IMPL-FILE_MANAGER_PAGE
       - IMPL-LAYOUT_CALCULATOR
       - IMPL-PANE_MANAGEMENT
       - IMPL-WORKSPACE_VIEW
     tests:
       - e2e/readme-screenshots.spec.ts
+      - src/app/files/page.single-pane-url.test.tsx
       - src/app/files/WorkspaceView.pane-reorder.test.tsx
       - src/lib/pane-order.test.ts
+      - src/lib/set-base-directory.test.ts
     code_annotations:
       - REQ-MULTI_PANE_LAYOUT
   related_requirements:
@@ -64,7 +68,7 @@ REQ-MULTI_PANE_LAYOUT:
     last_updated:
       date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — pane URL deep link E2E coverage for README demo screenshots
+      reason: LEAP — Single-pane workspace URL bootstrap for Set as Base directory new workspace
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

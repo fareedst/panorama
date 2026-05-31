@@ -80,6 +80,13 @@ Excludes NSYNC sync algorithms ([nsync-multi-target.md](nsync-multi-target.md)),
 | **Workspace restore error** | Red `workspace-restore-error` — unrecovered bootstrap failure |
 | **Loaded workspace name** | Header `workspace-loaded-name` when `/files?meshId=` resolves |
 | **Pane URL deep link** | Bookmarkable `/files?pane0=…&pane1=…` query params; `WorkspaceView` navigates panes on mount ([REQ-MULTI_PANE_LAYOUT](../tied/requirements/REQ-MULTI_PANE_LAYOUT.yaml), block `PANE_URL_DEEP_LINK_INIT`) |
+| **Single-pane workspace URL** | `/files?panes=1&pane0=…` — server bootstrap one pane at path; used by **Set as Base directory** new-workspace target (not mesh snapshot) |
+| **Base directory** | Absolute directory path assigned as pane state `path` (re-root); distinct from Enter-into-subdirectory navigation |
+| **Set as Base directory** | Directory row context menu item opening **Set base directory dialog** |
+| **Set base directory dialog** | `SetBaseDirectoryDialog` — eight pane-target actions plus Cancel |
+| **Set base directory target** | `SetBaseDirectoryTarget` — machine id for dialog choice: `thisPane`, `allPanes`, `otherPanes`, `nextPane`, `nextPaneSwap`, `priorPane`, `priorPaneSwap`, `newWorkspace`; UI labels from `copy.paneManagement.setBaseIn*` |
+| **Navigate absolute base** | Multi-pane **Set base directory** assignment via `handleNavigate` with **Syncing ref** ([linked-navigation.md](linked-navigation.md)) so linked mode does not relative-sync non-initiating targets; **In this pane** (`thisPane`) allows linked propagation |
+| **Unified file context menu** | Single portal `ContextMenu` for row and column right-click — file operations, clipboard section (`data-testid="file-column-context-menu"`), and **Set as Base directory** on directories; legacy `FileColumnContextMenu` component retained for unit tests only |
 | **README demo asset** | Committed PNG/GIF under `docs/screenshots/` produced by `npm run demo:screenshots` ([REQ-README_DEMO_AUTOMATION](../tied/requirements/REQ-README_DEMO_AUTOMATION.yaml)) |
 
 ## Naming bridge
@@ -94,6 +101,9 @@ Excludes NSYNC sync algorithms ([nsync-multi-target.md](nsync-multi-target.md)),
 | Cycle panes forward | “Cycle panes forward” | `copy.paneManagement.cycleForward` | `pane.cycle` (Ctrl+Shift+]) | `handleCyclePanes` |
 | Cycle panes backward | “Cycle panes backward” | `copy.paneManagement.cycleBackward` | `pane.cyclePrev` | `handleCyclePanes` |
 | Pane order dialog | “Pane order” | `copy.paneManagement.paneOrderTitle` | `pane.order` (toolbar-only) | `PaneOrderDialog` |
+| Set as Base directory | “Set as Base directory…” | `copy.paneManagement.setBaseDirectoryMenu` | — | `onSetBaseDirectory`, `SetBaseDirectoryDialog` |
+| Set base directory dialog | (title from copy) | `copy.paneManagement.setBaseDirectoryTitle` | — | `handleApplySetBaseDirectory` |
+| Single-pane workspace URL | (none) | — | — | `?panes=1&pane0=` on `/files` |
 | Default pane count | — | `layout.defaultPaneCount` | — | startup pane array length |
 | Max panes | “Maximum number of panes reached” | `layout.maxPanes` (`0` = no limit) | — | `handleAddPane` validation |
 | Layout: tile | “Tile” | `layout.default: tile` | — | `LayoutType` / `calculateLayout` |
@@ -104,7 +114,15 @@ Excludes NSYNC sync algorithms ([nsync-multi-target.md](nsync-multi-target.md)),
 | Layout toolbar picker | Layout pop-over | `copy.layouts.*` | `view.layout` (Ctrl+Shift+L) | `LayoutPickerPopover` |
 | Column order dialog | “Column order” | `copy.columns.*` | `view.columns` | `ColumnOrderDialog`, `fileColumns` |
 | File columns (config) | Column defaults | `columns` in `config/files.yaml` | — | `FilesColumnConfig[]` |
-| File column clipboard menu | Copy filename / path / paths | — | — | `FileColumnContextMenu` |
+| File column clipboard menu | Copy filename / path / paths | — | — | `ContextMenu` clipboard section (`file-column-context-menu`); standalone `FileColumnContextMenu` for tests |
+| Set base: In this pane | “In this pane” | `copy.paneManagement.setBaseInThisPane` | — | `thisPane` |
+| Set base: all panes | “In all panes” | `copy.paneManagement.setBaseInAllPanes` | — | `allPanes` |
+| Set base: other panes | “In all other panes” | `copy.paneManagement.setBaseInOtherPanes` | — | `otherPanes` |
+| Set base: next pane | “In the next pane” | `copy.paneManagement.setBaseInNextPane` | — | `nextPane` |
+| Set base: next pane swap | “In the next pane and swap pane position” | `copy.paneManagement.setBaseInNextPaneSwap` | — | `nextPaneSwap` |
+| Set base: prior pane | “In the prior pane” | `copy.paneManagement.setBaseInPriorPane` | — | `priorPane` |
+| Set base: prior pane swap | “In the prior pane and swap pane position” | `copy.paneManagement.setBaseInPriorPaneSwap` | — | `priorPaneSwap` |
+| Set base: new workspace | “In new workspace, as the only pane” | `copy.paneManagement.setBaseNewWorkspace` | — | `newWorkspace` |
 | Save / diff workspace | See mesh-platform + toolbar | `copy.workspaceMesh.*` | `mesh.saveWorkspace`, `mesh.diffWorkspace` | mesh bridge IMPL |
 | Pane URL deep link | (none) | — | — | `pane0`, `pane1`, … in `URLSearchParams` |
 
@@ -121,7 +139,8 @@ Excludes NSYNC sync algorithms ([nsync-multi-target.md](nsync-multi-target.md)),
 - **Parent navigation** — Must route through `handleNavigate` for linked sync.
 - **Mesh bridge UX** — Save, diff, restore banners and header status row in file manager; domain terms (**Workspace snapshot**, **Save workspace as mesh**, **Workspace diff**) are canonical in [mesh-platform.md](mesh-platform.md).
 - **Workspace keyboard-shortcuts footer** — removed; use toolbar badges/tooltips ([toolbar-keybind.md](toolbar-keybind.md)).
-- **File column context menu** — Clipboard-only on metadata cells; exclusive with row file-operations menu ([REQ-MOUSE_INTERACTION](../tied/requirements/REQ-MOUSE_INTERACTION.yaml)).
+- **Unified file context menu** — Row and metadata-cell right-click open the same `ContextMenu` (file ops, clipboard section, **Set as Base directory** on directories); see [REQ-MOUSE_INTERACTION](../tied/requirements/REQ-MOUSE_INTERACTION.yaml).
+- **Navigate absolute base** — **Set base directory** multi-target paths use **Syncing ref** per [linked-navigation.md](linked-navigation.md); only **In this pane** propagates linked navigation.
 - **Cross-pane path clipboard** — **Copy paths in all panes** uses cursor filename match key ([REQ-LINKED_PANES](../tied/requirements/REQ-LINKED_PANES.yaml)).
 - **Pane URL deep link** — Query parameters initialize pane paths without UI navigation; skipped when mesh restore is active.
 - **README demo asset** — Static screenshots and GIF for README; regenerated via Playwright ([IMPL-DEMO_SCREENSHOT_PIPELINE](../tied/implementation-decisions/IMPL-DEMO_SCREENSHOT_PIPELINE.yaml)).
@@ -145,6 +164,11 @@ User-facing strings: `config/site.yaml` → `branding.logo` (metadata contract);
 | Swap panes | `SwapPanes` → `IMPL-PANE_MANAGEMENT_SwapPanes` | IMPL-PANE_MANAGEMENT |
 | Cycle panes | `CyclePanes` → `IMPL-PANE_MANAGEMENT_CyclePanes` | IMPL-PANE_MANAGEMENT |
 | Pane order dialog | `PaneOrderDialog` → `IMPL-PANE_MANAGEMENT_PaneOrderDialog` | IMPL-PANE_MANAGEMENT |
+| Set base directory dialog | `SetBaseDirectoryDialog` → `IMPL-WORKSPACE_VIEW_SetBaseDirectoryDialog` | IMPL-WORKSPACE_VIEW |
+| Set base directory apply | `SetBaseDirectoryApply` → `IMPL-WORKSPACE_VIEW_SetBaseDirectoryApply` | IMPL-WORKSPACE_VIEW |
+| Navigate absolute base | `NavigateAbsoluteBase` → `IMPL-WORKSPACE_VIEW_NavigateAbsoluteBase` | IMPL-WORKSPACE_VIEW, IMPL-LINKED_NAV |
+| Unified row context menu | `UNIFIED_ROW_CONTEXT_MENU` → `IMPL-MOUSE_SUPPORT_UnifiedRowContextMenu` | IMPL-MOUSE_SUPPORT |
+| Single-pane workspace URL | `SinglePaneWorkspaceUrl` → `IMPL-FILE_MANAGER_PAGE_SinglePaneWorkspaceUrl` | IMPL-FILE_MANAGER_PAGE |
 | Layout: tile / one row / column / fullscreen | `Tile`, `OneRow`, `OneColumn`, `Fullscreen` | IMPL-LAYOUT_CALCULATOR |
 | Workspace area measurement | `WORKSPACE_AREA_MEASUREMENT` | IMPL-LAYOUT_CALCULATOR |
 | File row render + scroll | `RenderFileRows`, `ScrollToCursor` | IMPL-FILE_PANE |
@@ -166,6 +190,7 @@ User-facing strings: `config/site.yaml` → `branding.logo` (metadata contract);
 - **Active cross-pane visibility preset** — see cross-pane-visibility glossary
 - **Active display spec** — see pane-display-filter glossary
 - **Apply shared sort** — Sort menu **Shared** on focused pane
+- **Base directory** — pane state path re-root target
 - **Client mesh rehydrate** — client full restore when server bootstrap misses mesh
 - **Client restored from mesh** — `clientRestoredFromMesh`
 - **Container dimensions** — `containerWidth`, `containerHeight`
@@ -204,7 +229,12 @@ User-facing strings: `config/site.yaml` → `branding.logo` (metadata contract);
 - **Root entry redirect** — `/` server redirect to `/files` via `redirect()`
 - **Sole-purpose entry** — file-manager-only product; no welcome home page
 - **Share sort** — copy focused sort to `sharedSort`
-- **Shared sort** — workspace default sort; snapshot v3 in mesh-platform
+- **Set as Base directory** — directory row context menu item
+- **Set base directory dialog** — `SetBaseDirectoryDialog`
+- **Set base directory target** — `SetBaseDirectoryTarget` dialog choice id
+- **Navigate absolute base** — absolute path re-root with syncing ref for multi-pane targets
+- **Single-pane workspace URL** — `?panes=1&pane0=`
+- **Unified file context menu** — combined row/column right-click menu
 - **Swap panes** — `pane.swap` / `pane.swapPrev`
 - **Tabular file row** — `file-row-grid` in `FilePane`
 - **useElementSize** — ResizeObserver on workspace area

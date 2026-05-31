@@ -6,6 +6,13 @@
 import React, { useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import type { FileStat } from "@/lib/files.types";
+import {
+  copyTextToClipboard,
+  formatAbsolutePathForClipboard,
+  formatCrossPanePathsForClipboard,
+  formatCursorFilenameForClipboard,
+  resolveCrossPanePathsForFilename,
+} from "@/lib/file-column-clipboard";
 
 interface ContextMenuProps {
   /** Click X coordinate */
@@ -26,6 +33,14 @@ interface ContextMenuProps {
   onDelete?: () => void;
   /** Handler for rename operation (receives the file to rename) */
   onRename?: (file: FileStat) => void;
+  /** [REQ-DIRECTORY_NAVIGATION] [REQ-MOUSE_INTERACTION] Open Set as Base directory dialog */
+  onSetBaseDirectory?: () => void;
+  /** Workspace pane listings for cross-pane path clipboard actions */
+  paneFilesList?: readonly (readonly FileStat[])[];
+  /** Injectable clipboard writer for tests */
+  copyText?: (text: string) => Promise<void>;
+  /** Label for Set as Base directory menu item */
+  setBaseDirectoryMenuLabel?: string;
 }
 
 /**
@@ -42,6 +57,10 @@ export default function ContextMenu({
   onMove,
   onDelete,
   onRename,
+  onSetBaseDirectory,
+  paneFilesList,
+  copyText = copyTextToClipboard,
+  setBaseDirectoryMenuLabel = "Set as Base directory…",
 }: ContextMenuProps) {
   const menuElementRef = useRef<HTMLDivElement>(null);
   
@@ -107,12 +126,29 @@ export default function ContextMenu({
     [onClose]
   );
 
+  const handleClipboardCopy = useCallback(
+    async (text: string) => {
+      await copyText(text);
+      onClose();
+    },
+    [copyText, onClose],
+  );
+
   // Determine operation context (marked files or current file)
   const targetCount = marks.size > 0 ? marks.size : 1;
   const targetLabel =
     marks.size > 0 ? `${marks.size} marked file(s)` : file?.name || "file";
 
   if (!file) return null;
+
+  const showClipboardSection = marks.size === 0 && paneFilesList !== undefined;
+  const crossPaneEntries = showClipboardSection
+    ? resolveCrossPanePathsForFilename(paneFilesList, file.name)
+    : [];
+  const crossPaneText = formatCrossPanePathsForClipboard(crossPaneEntries);
+  const hasFileOps = !!(onCopy || onMove || (onRename && file) || onDelete);
+  const showSetBaseDirectory =
+    file.isDirectory && onSetBaseDirectory !== undefined;
 
   // Render menu via portal to escape pane overflow
   return createPortal(
@@ -167,20 +203,79 @@ export default function ContextMenu({
         </button>
       )}
 
-      {/* Divider */}
-      <div className="border-t border-gray-200 dark:border-gray-700 my-1" />
-
       {/* Delete */}
       {onDelete && (
-        <button
-          className="w-full text-left px-4 py-2 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center gap-2"
-          onClick={() => handleAction(onDelete)}
-          role="menuitem"
-        >
-          <span className="text-sm">🗑️</span>
-          <span>Delete {targetCount > 1 ? `(${targetCount})` : ""}</span>
-          <span className="ml-auto text-xs text-gray-500">D</span>
-        </button>
+        <>
+          {(onCopy || onMove || (marks.size === 0 && onRename)) && (
+            <div className="border-t border-gray-200 dark:border-gray-700 my-1" />
+          )}
+          <button
+            className="w-full text-left px-4 py-2 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center gap-2"
+            onClick={() => handleAction(onDelete)}
+            role="menuitem"
+          >
+            <span className="text-sm">🗑️</span>
+            <span>Delete {targetCount > 1 ? `(${targetCount})` : ""}</span>
+            <span className="ml-auto text-xs text-gray-500">D</span>
+          </button>
+        </>
+      )}
+
+      {/* SET_BASE_DIRECTORY_MENU — [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-DIRECTORY_NAVIGATION] [REQ-MOUSE_INTERACTION]: how — eighth item on directory rows only; opens Set base directory dialog via onSetBaseDirectory */}
+      {showSetBaseDirectory && (
+        <>
+          {hasFileOps && (
+            <div className="border-t border-gray-200 dark:border-gray-700 my-1" />
+          )}
+          <button
+            type="button"
+            className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+            onClick={() => handleAction(onSetBaseDirectory!)}
+            role="menuitem"
+            data-testid="set-base-directory-menu-item"
+          >
+            <span className="text-sm">📂</span>
+            <span>{setBaseDirectoryMenuLabel}</span>
+          </button>
+        </>
+      )}
+
+      {/* UNIFIED_ROW_CONTEXT_MENU clipboard section — [IMPL-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] [REQ-LINKED_PANES]: how — copy filename, path, cross-pane paths on row or column right-click */}
+      {showClipboardSection && (
+        <div data-testid="file-column-context-menu">
+          {hasFileOps && (
+            <div className="border-t border-gray-200 dark:border-gray-700 my-1" />
+          )}
+          <button
+            type="button"
+            className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-sm"
+            role="menuitem"
+            data-testid="file-column-copy-filename"
+            onClick={() => void handleClipboardCopy(formatCursorFilenameForClipboard(file))}
+          >
+            Copy filename
+          </button>
+          <button
+            type="button"
+            className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-sm"
+            role="menuitem"
+            data-testid="file-column-copy-path"
+            onClick={() => void handleClipboardCopy(formatAbsolutePathForClipboard(file))}
+          >
+            Copy path
+          </button>
+          <button
+            type="button"
+            className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            role="menuitem"
+            data-testid="file-column-copy-cross-pane-paths"
+            disabled={crossPaneEntries.length === 0}
+            onClick={() => void handleClipboardCopy(crossPaneText)}
+          >
+            Copy paths in all panes
+            {crossPaneEntries.length > 0 ? ` (${crossPaneEntries.length})` : ""}
+          </button>
+        </div>
       )}
     </div>,
     document.body

@@ -31,6 +31,7 @@
 | **Auto-disable** | Turn off linked mode when partial downward navigation fails (divergent directory trees) |
 | **Default linked mode** | `layout.defaultLinkedMode` in `config/files.yaml` (default **true** when omitted) |
 | **Single-pane suppression** | Linked UI hidden when `panes.length < 2` even if `linkedMode` is true |
+| **Navigate absolute base** | **Set base directory** on non-`thisPane` targets marks pane in **Syncing ref** before `handleNavigate` so assignment is absolute, not relative linked sync ([workspace-pane.md](workspace-pane.md)) |
 
 ## Naming bridge
 

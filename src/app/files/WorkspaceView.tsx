@@ -73,6 +73,7 @@ import BookmarkDialog from "./components/BookmarkDialog";
 import SortDialog from "./components/SortDialog";
 import { ColumnOrderDialog } from "./components/ColumnOrderDialog";
 import { PaneOrderDialog } from "./components/PaneOrderDialog";
+import { SetBaseDirectoryDialog } from "./components/SetBaseDirectoryDialog";
 import { LayoutPickerPopover } from "./components/LayoutPickerPopover";
 import {
   getVisibleFileColumns,
@@ -101,10 +102,18 @@ import {
 import { WorkspaceDiffDialog } from "./components/WorkspaceDiffDialog";
 import { NewTabLink } from "@/components/NewTabLink";
 import { getDisplaySpecStore, type DisplaySpecStore } from "@/lib/display-spec-store";
+import type { DisplayFilterSpec } from "@/lib/display-filter.types";
 import {
   ensureDisplaySpecOnServer,
   syncDisplaySpecCatalogToServer,
 } from "@/lib/display-spec-sync";
+import {
+  buildSinglePaneWorkspaceUrl,
+  allowsLinkedPropagationForSetBaseTarget,
+  resolveSetBaseDirectoryPaneTargets,
+  resolveSetBaseDirectorySwapPair,
+  type SetBaseDirectoryTarget,
+} from "@/lib/set-base-directory";
 import {
   buildPaneFromRawListing,
   fetchDirectoryListing,
@@ -361,7 +370,8 @@ export default function WorkspaceView({
 
   // [REQ-PANE_DISPLAY_FILTER] [IMPL-DISPLAY_SPEC_STORE] [IMPL-PANE_DISPLAY_FILTER_UI]
   const [displaySpecStore] = useState<DisplaySpecStore>(() => getDisplaySpecStore());
-  const [catalogSpecs, setCatalogSpecs] = useState(() => displaySpecStore.list());
+  // [REQ-REACT_SSR_STABILITY]: empty initial catalog; hydrate from localStorage after mount (SSR has no window)
+  const [catalogSpecs, setCatalogSpecs] = useState<DisplayFilterSpec[]>([]);
   const [displaySpecManagerOpen, setDisplaySpecManagerOpen] = useState(false);
   const [recentSpecIds, setRecentSpecIds] = useState<string[]>([]);
   const [specDeletedNotice, setSpecDeletedNotice] = useState<string | null>(null);
@@ -371,6 +381,7 @@ export default function WorkspaceView({
   }, [displaySpecStore]);
 
   useEffect(() => {
+    setCatalogSpecs(displaySpecStore.list());
     const unsub = displaySpecStore.subscribe((ev) => {
       setCatalogSpecs(displaySpecStore.list());
       void syncDisplaySpecCatalogToServer(displaySpecStore);
@@ -400,9 +411,8 @@ export default function WorkspaceView({
   }, [displaySpecStore]);
 
   // [REQ-CROSS_PANE_VISIBILITY] [IMPL-CROSS_PANE_VISIBILITY_CATALOG] [IMPL-CROSS_PANE_VISIBILITY_UI]
-  const [visibilityPresets, setVisibilityPresets] = useState(() =>
-    crossPaneVisibilityStore.list(),
-  );
+  // [REQ-REACT_SSR_STABILITY]: empty initial presets; hydrate from localStorage after mount (SSR has no window)
+  const [visibilityPresets, setVisibilityPresets] = useState<CrossPaneVisibilityPreset[]>([]);
   const [crossPaneVisibilityManagerOpen, setCrossPaneVisibilityManagerOpen] = useState(false);
   const [recentCrossPanePresetIds, setRecentCrossPanePresetIds] = useState<string[]>([]);
   const [compareFilterPresetDeletedNotice, setCompareFilterPresetDeletedNotice] = useState<
@@ -411,6 +421,7 @@ export default function WorkspaceView({
   const [compareFilterThresholdOpen, setCompareFilterThresholdOpen] = useState(false);
 
   useEffect(() => {
+    setVisibilityPresets(crossPaneVisibilityStore.list());
     const unsub = crossPaneVisibilityStore.subscribe((ev) => {
       setVisibilityPresets(crossPaneVisibilityStore.list());
       if (ev.type === "deleted") {
@@ -474,6 +485,11 @@ export default function WorkspaceView({
   );
   const [columnOrderDialogOpen, setColumnOrderDialogOpen] = useState(false);
   const [paneOrderDialogOpen, setPaneOrderDialogOpen] = useState(false);
+  const [setBaseDirectoryDialog, setSetBaseDirectoryDialog] = useState<{
+    isOpen: boolean;
+    path: string;
+    paneIndex: number;
+  }>({ isOpen: false, path: "", paneIndex: 0 });
   
   // [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW] Preview panel state
   const [previewPanel, setPreviewPanel] = useState<{
@@ -1572,6 +1588,59 @@ export default function WorkspaceView({
     },
     [panes.length, focusIndex, layoutConfig.allowPaneManagement],
   );
+
+  // [IMPL-WORKSPACE_VIEW] [IMPL-PANE_MANAGEMENT] [IMPL-LINKED_NAV] [REQ-DIRECTORY_NAVIGATION] [REQ-MOUSE_INTERACTION]: how — SetBaseDirectoryApply routes through handleNavigate; linked propagation only for thisPane; swap variants compose handleSwapPanes
+  const handleApplySetBaseDirectory = useCallback(
+    async (target: SetBaseDirectoryTarget) => {
+      const { path: directoryPath, paneIndex: initiatingPaneIndex } =
+        setBaseDirectoryDialog;
+
+      if (target === "newWorkspace") {
+        window.open(
+          buildSinglePaneWorkspaceUrl(directoryPath),
+          "_blank",
+          "noopener,noreferrer",
+        );
+        return;
+      }
+
+      const paneTargets = resolveSetBaseDirectoryPaneTargets(
+        target,
+        initiatingPaneIndex,
+        panes.length,
+      );
+      const allowLinked = allowsLinkedPropagationForSetBaseTarget(target);
+
+      // NavigateAbsoluteBase — [IMPL-WORKSPACE_VIEW] [IMPL-LINKED_NAV] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES]: how — syncingRef suppresses linked relative sync for multi-target base assignment
+      for (const idx of paneTargets) {
+        if (allowLinked) {
+          await handleNavigate(idx, directoryPath);
+        } else {
+          syncingRef.current.add(idx);
+          try {
+            await handleNavigate(idx, directoryPath);
+          } finally {
+            syncingRef.current.delete(idx);
+          }
+        }
+      }
+
+      const swapPair = resolveSetBaseDirectorySwapPair(
+        target,
+        initiatingPaneIndex,
+        panes.length,
+      );
+      if (swapPair) {
+        handleSwapPanes(swapPair[0], swapPair[1]);
+      }
+    },
+    [
+      setBaseDirectoryDialog,
+      panes.length,
+      handleNavigate,
+      handleSwapPanes,
+    ],
+  );
   
   // [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS] Bulk operation handlers
   
@@ -1610,20 +1679,21 @@ export default function WorkspaceView({
    * [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: require 2 panes; dest is other pane path; detect overwrite conflicts; confirm then POST bulk-copy; refresh both panes and clear marks
    * [IMPL-OVERWRITE_PROMPT]
    */
-  const handleBulkCopy = useCallback(async () => {
+  const handleBulkCopy = useCallback(async (sourcePaneIndex?: number) => {
+    const paneIndex = sourcePaneIndex ?? focusIndex;
     // Need at least 2 panes for cross-pane copy
     if (panes.length < 2) {
       alert("Copy requires at least 2 panes");
       return;
     }
     
-    const sources = getOperationFiles(focusIndex);
+    const sources = getOperationFiles(paneIndex);
     if (sources.length === 0) {
       return;
     }
     
     // Destination is the other pane
-    const destPaneIndex = focusIndex === 0 ? 1 : 0;
+    const destPaneIndex = paneIndex === 0 ? 1 : 0;
     const destDir = panes[destPaneIndex].path;
     
     // [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: before confirm, foreach source path compare basename to destination pane file names; build FileConflict when match
@@ -1634,7 +1704,7 @@ export default function WorkspaceView({
       
       if (existingFile) {
         // Find source file stat
-        const sourceFile = panes[focusIndex].files.find(f => f.path === sourcePath);
+        const sourceFile = panes[paneIndex].files.find(f => f.path === sourcePath);
         if (sourceFile) {
           const { sourceSummary, existingSummary, comparison } = describeFileComparison(
             sourceFile,
@@ -1684,7 +1754,7 @@ export default function WorkspaceView({
               operation: "bulk-copy",
               sources,
               dest: destDir,
-              ...displaySpecPayload(focusIndex),
+              ...displaySpecPayload(paneIndex),
             }),
           });
           
@@ -1703,11 +1773,11 @@ export default function WorkspaceView({
           });
           
           // Refresh both panes
-          await handleNavigate(focusIndex, panes[focusIndex].path);
+          await handleNavigate(paneIndex, panes[paneIndex].path);
           await handleNavigate(destPaneIndex, panes[destPaneIndex].path);
           
           // Clear marks in source pane
-          handleClearMarks(focusIndex);
+          handleClearMarks(paneIndex);
         } catch (error) {
           console.error("Bulk copy failed:", error);
           alert(`Copy failed: ${String(error)}`);
@@ -1721,20 +1791,21 @@ export default function WorkspaceView({
    * [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: same client flow as BulkCopy with operation bulk-move and file.move keybinding (V)
    * [IMPL-OVERWRITE_PROMPT]
    */
-  const handleBulkMove = useCallback(async () => {
+  const handleBulkMove = useCallback(async (sourcePaneIndex?: number) => {
+    const paneIndex = sourcePaneIndex ?? focusIndex;
     // Need at least 2 panes for cross-pane move
     if (panes.length < 2) {
       alert("Move requires at least 2 panes");
       return;
     }
     
-    const sources = getOperationFiles(focusIndex);
+    const sources = getOperationFiles(paneIndex);
     if (sources.length === 0) {
       return;
     }
     
     // Destination is the other pane
-    const destPaneIndex = focusIndex === 0 ? 1 : 0;
+    const destPaneIndex = paneIndex === 0 ? 1 : 0;
     const destDir = panes[destPaneIndex].path;
     
     // [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: before confirm, foreach source path compare basename to destination pane file names; build FileConflict when match
@@ -1745,7 +1816,7 @@ export default function WorkspaceView({
       
       if (existingFile) {
         // Find source file stat
-        const sourceFile = panes[focusIndex].files.find(f => f.path === sourcePath);
+        const sourceFile = panes[paneIndex].files.find(f => f.path === sourcePath);
         if (sourceFile) {
           const { sourceSummary, existingSummary, comparison } = describeFileComparison(
             sourceFile,
@@ -1795,7 +1866,7 @@ export default function WorkspaceView({
               operation: "bulk-move",
               sources,
               dest: destDir,
-              ...displaySpecPayload(focusIndex),
+              ...displaySpecPayload(paneIndex),
             }),
           });
           
@@ -1814,11 +1885,11 @@ export default function WorkspaceView({
           });
           
           // Refresh both panes
-          await handleNavigate(focusIndex, panes[focusIndex].path);
+          await handleNavigate(paneIndex, panes[paneIndex].path);
           await handleNavigate(destPaneIndex, panes[destPaneIndex].path);
           
           // Clear marks in source pane
-          handleClearMarks(focusIndex);
+          handleClearMarks(paneIndex);
         } catch (error) {
           console.error("Bulk move failed:", error);
           alert(`Move failed: ${String(error)}`);
@@ -1831,8 +1902,9 @@ export default function WorkspaceView({
   /**
    * [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: destructive confirm then POST bulk-delete; refresh focused pane and clear marks
    */
-  const handleBulkDelete = useCallback(async () => {
-    const sources = getOperationFiles(focusIndex);
+  const handleBulkDelete = useCallback(async (sourcePaneIndex?: number) => {
+    const paneIndex = sourcePaneIndex ?? focusIndex;
+    const sources = getOperationFiles(paneIndex);
     if (sources.length === 0) {
       return;
     }
@@ -1863,7 +1935,7 @@ export default function WorkspaceView({
             body: JSON.stringify({
               operation: "bulk-delete",
               sources,
-              ...displaySpecPayload(focusIndex),
+              ...displaySpecPayload(paneIndex),
             }),
           });
           
@@ -1882,10 +1954,10 @@ export default function WorkspaceView({
           });
           
           // Refresh current pane
-          await handleNavigate(focusIndex, panes[focusIndex].path);
+          await handleNavigate(paneIndex, panes[paneIndex].path);
           
           // Clear marks
-          handleClearMarks(focusIndex);
+          handleClearMarks(paneIndex);
         } catch (error) {
           console.error("Bulk delete failed:", error);
           alert(`Delete failed: ${String(error)}`);
@@ -2934,6 +3006,13 @@ export default function WorkspaceView({
             columns={fileColumns} // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
             metadataColumnWidths={sharedMetadataColumnWidths}
             onRename={(file) => setRenameDialog({ isOpen: true, filePath: file.path, fileName: file.name, paneIndex: index })}
+            onCopy={() => void handleBulkCopy(index)}
+            onMove={() => void handleBulkMove(index)}
+            onDelete={() => void handleBulkDelete(index)}
+            onSetBaseDirectory={(path) =>
+              setSetBaseDirectoryDialog({ isOpen: true, path, paneIndex: index })
+            }
+            setBaseDirectoryMenuLabel={copy.paneManagement?.setBaseDirectoryMenu}
             displaySpecs={catalogSpecs}
             activeDisplaySpecId={pane.activeDisplaySpecId}
             activeDisplaySpecName={
@@ -3105,6 +3184,19 @@ export default function WorkspaceView({
         labels={copy.paneManagement}
         onApply={handleApplyPaneOrder}
         onClose={() => setPaneOrderDialogOpen(false)}
+      />
+
+      <SetBaseDirectoryDialog
+        isOpen={setBaseDirectoryDialog.isOpen}
+        directoryPath={setBaseDirectoryDialog.path}
+        initiatingPaneIndex={setBaseDirectoryDialog.paneIndex}
+        paneCount={panes.length}
+        allowPaneManagement={layoutConfig.allowPaneManagement ?? true}
+        labels={copy.paneManagement}
+        onApply={(target) => void handleApplySetBaseDirectory(target)}
+        onClose={() =>
+          setSetBaseDirectoryDialog((prev) => ({ ...prev, isOpen: false }))
+        }
       />
 
       <SortDialog

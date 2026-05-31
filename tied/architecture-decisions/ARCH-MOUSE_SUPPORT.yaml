@@ -39,6 +39,8 @@ ARCH-MOUSE_SUPPORT:
       - 'Drag-drop: HTML5 API with custom drag image and modifier key detection'
       - 'FileColumnContextMenu: Portal clipboard menu on metadata column cells (name, size, mtime); copy filename, absolute path, cross-pane paths'
       - 'Scroll: Native browser overflow-y-auto'
+      - 'Set as Base directory: eighth context menu item on directory rows opens secondary dialog (IMPL-WORKSPACE_VIEW SetBaseDirectoryDialog)'
+      - 'Unified file context menu: row and column right-click use one ContextMenu portal with file ops, clipboard section, and set-base on directories (UNIFIED_ROW_CONTEXT_MENU)'
   traceability:
     requirements:
       - REQ-MOUSE_INTERACTION

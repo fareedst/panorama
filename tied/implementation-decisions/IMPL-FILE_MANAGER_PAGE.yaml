@@ -18,6 +18,7 @@ IMPL-FILE_MANAGER_PAGE:
   implementation_approach:
     summary: Server component loads directory data and config, renders WorkspaceView
     details:
+      - 'SinglePaneWorkspaceUrl: when panes=1 and pane0 query params without meshId, bootstrap one initial pane at pane0 path'
       - Created src/app/files/page.tsx as server component
       - Loads initial directory (user home)
       - Passes data to WorkspaceView client component
@@ -36,9 +37,14 @@ IMPL-FILE_MANAGER_PAGE:
   traceability:
     architecture:
       - ARCH-FILE_MANAGER_HIERARCHY
+      - ARCH-PANE_LIFECYCLE
     requirements:
+      - REQ-DIRECTORY_NAVIGATION
       - REQ-FILE_MANAGER_PAGE
+      - REQ-MULTI_PANE_LAYOUT
     tests:
+      - src/app/files/page.mesh-restore.test.tsx
+      - src/app/files/page.single-pane-url.test.tsx
       - src/test/integration/app.test.tsx
     code_annotations:
       - IMPL-FILE_MANAGER_PAGE
@@ -54,7 +60,7 @@ IMPL-FILE_MANAGER_PAGE:
     last_updated:
       date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: Retrofit pseudocode; add integration test traceability
+      reason: LEAP — SinglePaneWorkspaceUrl bootstrap
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

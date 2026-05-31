@@ -32,6 +32,7 @@ IMPL-PANE_MANAGEMENT:
       - 'handleSwapPanes(i,j): swap panes array, remap focusIndex, permute directory history'
       - 'Keyboard shortcuts: = add, - remove; Ctrl+Shift+S swap; Ctrl+Shift+] cycle forward'
       - 'pane-order.ts: swapArrayAt, rotateArray, moveArrayAt, focus remap helpers'
+      - 'SetBaseDirectorySwapCompose: after neighbor navigate to base path, handleSwapPanes swaps initiating pane with neighbor for swap targets'
       - State updates trigger comparison index rebuild and layout recalculation
   code_locations:
     files:

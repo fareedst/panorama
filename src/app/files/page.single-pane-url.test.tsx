@@ -1,0 +1,55 @@
+// [REQ-MULTI_PANE_LAYOUT] [REQ-DIRECTORY_NAVIGATION] [IMPL-FILE_MANAGER_PAGE]: SinglePaneWorkspaceUrl server bootstrap
+
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { isValidElement, type ReactElement } from "react";
+import FilesPage from "./page";
+
+vi.mock("@/lib/files.data", () => ({
+  listDirectory: vi.fn(async (dirPath: string) => {
+    if (dirPath === "/custom/base") {
+      return [{ name: "only.txt", path: "/custom/base/only.txt", isDirectory: false, size: 1, mtime: new Date(), extension: ".txt" }];
+    }
+    return [];
+  }),
+  getUserHomeDirectory: vi.fn(() => "/home/test"),
+  sortFiles: vi.fn((files: unknown[]) => files),
+}));
+
+function workspaceViewProps(
+  element: ReactElement | Awaited<ReturnType<typeof FilesPage>>,
+): Record<string, unknown> {
+  if (!isValidElement(element)) {
+    throw new Error("FilesPage did not return a valid element");
+  }
+  return element.props as Record<string, unknown>;
+}
+
+describe("REQ-MULTI_PANE_LAYOUT SinglePaneWorkspaceUrl [IMPL-FILE_MANAGER_PAGE]", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  // SinglePaneWorkspaceUrl — [IMPL-FILE_MANAGER_PAGE] [ARCH-PANE_LIFECYCLE] [REQ-DIRECTORY_NAVIGATION] [REQ-MULTI_PANE_LAYOUT]: how — panes=1 and pane0 bootstrap one pane at path
+  it("bootstraps_one_pane_at_pane0_when_panes_query_is_1", async () => {
+    const element = await FilesPage({
+      searchParams: Promise.resolve({ panes: "1", pane0: "/custom/base" }),
+    });
+    const props = workspaceViewProps(element);
+    const initialPanes = props.initialPanes as { path: string; files: unknown[] }[];
+
+    expect(initialPanes).toHaveLength(1);
+    expect(initialPanes[0]?.path).toBe("/custom/base");
+    expect(initialPanes[0]?.files).toHaveLength(1);
+  });
+
+  it("uses_default_pane_count_when_panes_query_not_1", async () => {
+    const element = await FilesPage({
+      searchParams: Promise.resolve({}),
+    });
+    const props = workspaceViewProps(element);
+    const initialPanes = props.initialPanes as { path: string }[];
+
+    expect(initialPanes.length).toBeGreaterThanOrEqual(1);
+    expect(initialPanes[0]?.path).toBe("/home/test");
+  });
+});

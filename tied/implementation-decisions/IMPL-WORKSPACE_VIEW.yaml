@@ -21,27 +21,36 @@ IMPL-WORKSPACE_VIEW:
       - Layout coordination
       - Stable component rendering without warnings
   implementation_approach:
-    summary: Client component with unique dialog keys, useMemo keybinding initialization, layout toolbar picker, sharedSort state, and API integration
+    summary: Client component with unique dialog keys, useMemo keybinding initialization, layout toolbar picker, sharedSort state, Set as Base directory dialog, and API integration
     details:
-      - 'PANE_FILES_LIST_TO_FILEPANE: pass paneFilesList={panes.map(p => p.files)} to each FilePane for cross-pane path clipboard'
+      - 'NavigateAbsoluteBase: syncingRef for multi-target set-base except thisPane'
+      - 'PANE_FILES_LIST_TO_FILEPANE: pass paneFilesList to each FilePane'
+      - SetBaseDirectoryDialog and handleApplySetBaseDirectory via handleNavigate
   code_locations:
     files:
       - path: src/app/files/WorkspaceView.tsx
-        description: Workspace client; layout picker, sharedSort, keybindings
+        description: Workspace client; set-base handler
+        lines: []
+      - path: src/lib/set-base-directory.ts
+        description: Set base directory target resolution
+        lines: []
+      - path: src/app/files/components/SetBaseDirectoryDialog.tsx
+        description: Set base directory dialog
         lines: []
       - path: src/app/files/components/LayoutPickerPopover.tsx
-        description: Layout toolbar picker pop-over
+        description: Layout toolbar picker
         lines: []
     functions:
-      - name: WorkspaceView
+      - name: handleApplySetBaseDirectory
         file: src/app/files/WorkspaceView.tsx
-        description: Main workspace component with layout picker and sharedSort
+        description: Apply set-base dialog target
       - name: handleNavigate
         file: src/app/files/WorkspaceView.tsx
-        description: Navigate to directory via API call
+        description: Navigate pane to directory
   traceability:
     architecture:
       - ARCH-FILE_MANAGER_HIERARCHY
+      - ARCH-MOUSE_SUPPORT
       - ARCH-PANE_LIFECYCLE
       - ARCH-TOOLBAR_LAYOUT
     requirements:
@@ -57,9 +66,12 @@ IMPL-WORKSPACE_VIEW:
     tests:
       - e2e/readme-screenshots.spec.ts
       - src/app/files/components/LayoutPickerPopover.test.tsx
+      - src/app/files/components/SetBaseDirectoryDialog.test.tsx
       - src/app/files/WorkspaceView.cross-pane-visibility.test.tsx
       - src/app/files/WorkspaceView.file-column-clipboard.test.tsx
       - src/app/files/WorkspaceView.file-columns.test.tsx
+      - src/app/files/WorkspaceView.set-base-directory.test.tsx
+      - src/lib/set-base-directory.test.ts
     code_annotations:
       - IMPL-WORKSPACE_VIEW
   related_decisions:
@@ -79,7 +91,7 @@ IMPL-WORKSPACE_VIEW:
     last_updated:
       date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — Pane URL deep link pseudo-code block for README demo E2E
+      reason: LEAP — Set as Base directory
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

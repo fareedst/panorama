@@ -136,8 +136,69 @@ PROCEDURE LAYOUT_TOOLBAR_PICKER(context)
   calculateLayout uses layout state for pane bounds (Tile, OneRow, OneColumn, Fullscreen)
 ```
 
+## SetBaseDirectoryDialog
+
+// [IMPL-WORKSPACE_VIEW] [ARCH-PANE_LIFECYCLE] [ARCH-MOUSE_SUPPORT] [REQ-DIRECTORY_NAVIGATION] [REQ-MOUSE_INTERACTION] [REQ-MULTI_PANE_LAYOUT]: how — secondary dialog with eight pane-target buttons plus Cancel; disabled when paneCount less than 2 or swap when allowPaneManagement false
+
+```
+CONTRACT SetBaseDirectoryDialog
+  INPUT: isOpen, directoryPath, initiatingPaneIndex, paneCount, allowPaneManagement, labels from copy.paneManagement
+  OUTPUT: onApply(SetBaseDirectoryTarget) then onClose
+  DATA: data-testid set-base-directory-dialog, per-target button test ids
+
+PROCEDURE SetBaseDirectoryDialog(context)
+  IF NOT isOpen THEN RETURN null
+  RENDER overlay dialog role=dialog aria-label=setBaseDirectoryTitle
+  SHOW directoryPath truncated monospace
+  RENDER eight action buttons matching target labels
+  DISABLE other/next/prior/swap targets WHEN paneCount less than 2
+  DISABLE swap targets WHEN NOT allowPaneManagement
+  ON target click → onApply(target) AND onClose
+  ON Escape OR overlay → onClose
+```
+
+## SetBaseDirectoryApply
+
+// [IMPL-WORKSPACE_VIEW] [IMPL-PANE_MANAGEMENT] [IMPL-LINKED_NAV] [ARCH-PANE_LIFECYCLE] [REQ-DIRECTORY_NAVIGATION] [REQ-MULTI_PANE_LAYOUT]: how — resolve pane targets; navigate via handleNavigate; swap variants call handleSwapPanes after neighbor navigate; newWorkspace opens window with single-pane URL
+
+```
+CONTRACT SetBaseDirectoryApply
+  INPUT: target SetBaseDirectoryTarget, path, initiatingPaneIndex, panes.length
+  OUTPUT: pane paths updated; optional pane swap; optional new tab
+  DATA: resolveSetBaseDirectoryPaneTargets, resolveSetBaseDirectorySwapPair from set-base-directory lib
+
+PROCEDURE SetBaseDirectoryApply(context)
+  paneTargets := resolveSetBaseDirectoryPaneTargets(target, initiatingPaneIndex, paneCount)
+  swapPair := resolveSetBaseDirectorySwapPair(target, initiatingPaneIndex, paneCount)
+  IF target equals newWorkspace
+    window.open(`/files?panes=1&pane0=${encodeURIComponent(path)}`, "_blank", "noopener,noreferrer")
+    RETURN
+  FOR EACH idx IN paneTargets
+    IF target equals thisPane
+      await handleNavigate(idx, path)  // initiating navigation; linked propagation applies
+    ELSE
+      syncingRef.add(idx)
+      TRY await handleNavigate(idx, path)  // suppress linked fan-out
+      FINALLY syncingRef.delete(idx)
+  IF swapPair THEN handleSwapPanes(swapPair[0], swapPair[1])
+```
+
+## NavigateAbsoluteBase
+
+// [IMPL-WORKSPACE_VIEW] [IMPL-LINKED_NAV] [ARCH-LINKED_NAV] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES]: how — multi-target base directory assignment marks target pane in syncingRef so isInitiatingNavigation is false and linked mode does not relative-sync other panes
+
+```
+PROCEDURE NavigateAbsoluteBase(paneIndex, path, allowLinkedPropagation)
+  IF allowLinkedPropagation
+    await handleNavigate(paneIndex, path)
+  ELSE
+    syncingRef.add(paneIndex)
+    TRY await handleNavigate(paneIndex, path)
+    FINALLY syncingRef.delete(paneIndex)
+```
+
 ## CodeLocations
 
 // [IMPL-WORKSPACE_VIEW] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-DIRECTORY_NAVIGATION] [REQ-KEYBOARD_NAVIGATION] [REQ-MULTI_PANE_LAYOUT] [REQ-REACT_SSR_STABILITY]: map implementing and verifying source files for this IMPL
 
-// src/app/files/WorkspaceView.tsx — DIALOG_KEYS, KEYBINDING_INIT, FILE_COLUMNS_STATE, COLUMN_ORDER_DIALOG_HANDLER, SHARED_METADATA_WIDTHS_ONECOLUMN, PANE_FILES_LIST_TO_FILEPANE, HANDLE_NAVIGATE, LAYOUT_TOOLBAR_PICKER; src/app/files/components/LayoutPickerPopover.tsx; tests WorkspaceView.file-columns.test.tsx, WorkspaceView.file-column-clipboard.test.tsx, WorkspaceView.cross-pane-visibility.test.tsx, LayoutPickerPopover.test.tsx
+// src/app/files/WorkspaceView.tsx — DIALOG_KEYS, KEYBINDING_INIT, FILE_COLUMNS_STATE, COLUMN_ORDER_DIALOG_HANDLER, SHARED_METADATA_WIDTHS_ONECOLUMN, PANE_FILES_LIST_TO_FILEPANE, HANDLE_NAVIGATE, LAYOUT_TOOLBAR_PICKER, SetBaseDirectoryApply, NavigateAbsoluteBase; src/lib/set-base-directory.ts; src/app/files/components/SetBaseDirectoryDialog.tsx; src/app/files/components/LayoutPickerPopover.tsx; src/app/files/page.tsx SinglePaneWorkspaceUrl; tests WorkspaceView.file-columns.test.tsx, WorkspaceView.file-column-clipboard.test.tsx, WorkspaceView.cross-pane-visibility.test.tsx, WorkspaceView.set-base-directory.test.tsx, LayoutPickerPopover.test.tsx, set-base-directory.test.ts, SetBaseDirectoryDialog.test.tsx

@@ -39,9 +39,9 @@ export interface PaneInitialState {
 export default async function FilesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ meshId?: string }>;
+  searchParams: Promise<{ meshId?: string; panes?: string; pane0?: string }>;
 }) {
-  const { meshId } = await searchParams;
+  const { meshId, panes: panesQuery, pane0: pane0Query } = await searchParams;
 
   const config = getFilesConfig();
   const keybindings = config.keybindings || [];
@@ -111,30 +111,40 @@ export default async function FilesPage({
   // how: meshRestorePending when meshId present but server did not hydrate panes; defer default startup panes.
   const meshRestorePending = Boolean(meshId && !restoredFromMesh);
 
-  // [IMPL-FILE_MANAGER_PAGE] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-FILE_MANAGER_PAGE] [REQ-MULTI_PANE_LAYOUT]: how: home or configured paths per pane when no mesh hydration
+  // [IMPL-FILE_MANAGER_PAGE] [IMPL-WORKSPACE_VIEW] [REQ-DIRECTORY_NAVIGATION] [REQ-MULTI_PANE_LAYOUT]: how — SinglePaneWorkspaceUrl bootstrap one pane from ?panes=1&pane0=
   if (initialPanes.length === 0 && !meshRestorePending) {
-    const homeDir = getUserHomeDirectory();
-    const paneCount = layout.defaultPaneCount || 1;
-
-    for (let i = 0; i < paneCount; i++) {
-      let panePath = homeDir;
-
-      if (startup.mode === "configured" && startup.paths) {
-        const configPath = startup.paths[`pane${i + 1}`];
-        if (configPath) {
-          panePath = configPath.startsWith("~")
-            ? path.join(homeDir, configPath.slice(1))
-            : configPath;
-        }
-      }
-
+    if (!meshId && panesQuery === "1" && pane0Query) {
+      const panePath = pane0Query;
       const files = await listDirectory(panePath);
       const sortedFiles = sortFilesData(files, "Name", true);
-
       initialPanes.push({
         path: panePath,
         files: sortedFiles,
       });
+    } else {
+      const homeDir = getUserHomeDirectory();
+      const paneCount = layout.defaultPaneCount || 1;
+
+      for (let i = 0; i < paneCount; i++) {
+        let panePath = homeDir;
+
+        if (startup.mode === "configured" && startup.paths) {
+          const configPath = startup.paths[`pane${i + 1}`];
+          if (configPath) {
+            panePath = configPath.startsWith("~")
+              ? path.join(homeDir, configPath.slice(1))
+              : configPath;
+          }
+        }
+
+        const files = await listDirectory(panePath);
+        const sortedFiles = sortFilesData(files, "Name", true);
+
+        initialPanes.push({
+          path: panePath,
+          files: sortedFiles,
+        });
+      }
     }
   }
 

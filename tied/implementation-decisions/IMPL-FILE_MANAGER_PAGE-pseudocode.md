@@ -69,6 +69,21 @@ PROCEDURE DefaultStartupPanes(context)
     PUSH { path: panePath, files: sortedFiles } into initialPanes
 ```
 
+## SinglePaneWorkspaceUrl
+
+// [IMPL-FILE_MANAGER_PAGE] [ARCH-PANE_LIFECYCLE] [REQ-DIRECTORY_NAVIGATION] [REQ-MULTI_PANE_LAYOUT]: how — when searchParams.panes equals "1" and pane0 present without meshId, bootstrap exactly one pane at pane0 path instead of defaultPaneCount loop
+
+```
+PROCEDURE SinglePaneWorkspaceUrl(context)
+  IF meshId OR initialPanes.length > 0 OR meshRestorePending THEN RETURN
+  IF searchParams.panes equals "1" AND searchParams.pane0
+    SET panePath := decode pane0
+    LOAD files := await listDirectory(panePath)
+    SORT sortedFiles := sortFilesData(files, "Name", true)
+    SET initialPanes := [{ path: panePath, files: sortedFiles }]
+    RETURN skip default multi-pane startup
+```
+
 ## PassPropsToWorkspaceView
 
 // [IMPL-FILE_MANAGER_PAGE] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-FILE_MANAGER_PAGE]: how: render client WorkspaceView with config and restore props

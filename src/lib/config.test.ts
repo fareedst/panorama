@@ -463,6 +463,7 @@ describe("Pane Management Config [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE]", 
     expect(config.copy?.paneManagement?.maxPanesReached).toBe("Maximum number of panes reached");
     expect(config.copy?.paneManagement?.minPanesReached).toBe("At least one pane must remain");
     expect(config.copy?.paneManagement?.paneManagementDisabled).toBe("Pane management is disabled");
+    expect(config.copy?.paneManagement?.setBaseDirectoryMenu).toBe("Set as Base directory…");
   });
 
   it("includes pane management keybindings", () => {

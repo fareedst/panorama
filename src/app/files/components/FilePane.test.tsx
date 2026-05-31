@@ -627,7 +627,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
   });
 
   // FILE_COLUMN_CONTEXT_MENU_WIRING — [IMPL-FILE_PANE] [IMPL-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION]
-  it("shows file column context menu on file column right-click [REQ-MOUSE_INTERACTION]", () => {
+  it("shows unified context menu with clipboard actions on file column right-click [REQ-MOUSE_INTERACTION]", () => {
     render(
       <FilePane
         path="/home/user"
@@ -648,11 +648,12 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
 
     expect(screen.getByTestId("file-column-context-menu")).toBeInTheDocument();
     expect(screen.getByTestId("file-column-copy-filename")).toBeInTheDocument();
+    expect(screen.getByRole("menu", { name: "File operations menu" })).toBeInTheDocument();
     expect(mockOnCursorMove).toHaveBeenCalledWith(1);
   });
 
-  // FILE_COLUMN_CONTEXT_MENU_WIRING — mutual exclusion with row file operations menu
-  it("row context menu does not open when right-clicking a file column cell [REQ-MOUSE_INTERACTION]", () => {
+  // Unified menu — column and row right-click share the same context menu
+  it("column right-click opens the same file operations menu as row padding [REQ-MOUSE_INTERACTION]", () => {
     render(
       <FilePane
         path="/home/user"
@@ -672,8 +673,6 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
     fireEvent.contextMenu(screen.getAllByTestId("file-column-size")[1]);
 
     expect(screen.getByTestId("file-column-context-menu")).toBeInTheDocument();
-    expect(
-      screen.queryByRole("menu", { name: "File operations menu" }),
-    ).not.toBeInTheDocument();
+    expect(screen.getByRole("menu", { name: "File operations menu" })).toBeInTheDocument();
   });
 });
