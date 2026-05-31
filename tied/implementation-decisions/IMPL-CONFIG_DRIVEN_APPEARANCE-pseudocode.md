@@ -42,18 +42,22 @@ PROCEDURE IMPL-CONFIG_DRIVEN_APPEARANCE_FilesCopyAndLayoutFromYaml()
 
 ## ThemeClassesAndFileTypeIcons
 
-// [IMPL-CONFIG_DRIVEN_APPEARANCE] [ARCH-CONFIG_DRIVEN_APPEARANCE] [REQ-CONFIG_DRIVEN_APPEARANCE]: how: theme.files overrides and fileTypes drive icon and iconClass via getFileTypeConfig and getFilesOverride
+// [IMPL-CONFIG_DRIVEN_APPEARANCE] [ARCH-CONFIG_DRIVEN_APPEARANCE] [REQ-CONFIG_DRIVEN_APPEARANCE]: how: theme.files.fileTypes drive icon and iconClass via client-safe resolveFileTypeConfig; server passes fileTypes prop through page.tsx → WorkspaceView → FilePane and FinderDialog; FileTypeIcon renders every row
 
 CONTRACT ThemeClassesAndFileTypeIcons
-  INPUT: ThemeConfig from getThemeConfig, filename, isDirectory
-  OUTPUT: icon string and iconClass string per row
-  DATA: theme.files.fileTypes patterns (glob → regex), directory and file defaults
+  INPUT: fileTypes from getThemeConfig().files.fileTypes (or DEFAULT_FILE_TYPES), filename, isDirectory
+  OUTPUT: icon string and iconClass string per file row in FilePane and FinderDialog
+  DATA: theme.files.fileTypes patterns (glob → regex), directory and file defaults; src/lib/file-type-config.ts (client-safe)
 
-PROCEDURE IMPL-CONFIG_DRIVEN_APPEARANCE_ThemeClassesAndFileTypeIcons(theme, filename, isDirectory)
-  IF isDirectory THEN RETURN fileTypes.directory OR default directory icon
-  FOR each file type IN theme.files.fileTypes (skip directory, file keys for pattern loop)
-    IF filename matches any pattern THEN RETURN type icon and iconClass
-  RETURN fileTypes.file OR default file icon
+PROCEDURE IMPL-CONFIG_DRIVEN_APPEARANCE_ThemeClassesAndFileTypeIcons(fileTypes, filename, isDirectory)
+  resolved := resolveFileTypeConfig(fileTypes, filename, isDirectory)
+  RENDER FileTypeIcon with resolved.icon and resolved.iconClass for every file row (directories and files)
+
+PROCEDURE IMPL-CONFIG_DRIVEN_APPEARANCE_FileTypesPropFlow()
+  page.tsx := getThemeConfig().files.fileTypes OR DEFAULT_FILE_TYPES
+  PASS fileTypes to WorkspaceView
+  WorkspaceView PASS fileTypes to each FilePane and FinderDialog
+  FilePane and FinderDialog RENDER FileTypeIcon per row — no hard-coded emoji icons
 
 ## SiteMetadataForLayout
 
@@ -72,12 +76,18 @@ PROCEDURE IMPL-CONFIG_DRIVEN_APPEARANCE_SiteMetadataForLayout()
 
 // [IMPL-CONFIG_DRIVEN_APPEARANCE] [ARCH-CONFIG_DRIVEN_APPEARANCE] [REQ-CONFIG_DRIVEN_APPEARANCE]: map implementing and verifying source files for this IMPL
 
-// FILE: src/lib/config.ts — getFilesConfig, getFilesOverride, getFileTypeConfig
+// FILE: src/lib/config.ts — getFilesConfig, getFilesOverride, getFileTypeConfig (server wrapper)
+// FILE: src/lib/file-type-config.ts — DEFAULT_FILE_TYPES, resolveFileTypeConfig (client-safe)
+// FILE: src/app/files/components/FileTypeIcon.tsx — theme-driven row icon component
+// FILE: src/app/files/components/FilePane.tsx — FileTypeIcon per row
+// FILE: src/app/files/components/FinderDialog.tsx — FileTypeIcon per result
 // FILE: config/files.yaml — file manager copy and layout
 // FILE: config/theme.yaml — colors, fonts, files.fileTypes
 // FILE: config/site.yaml — metadata
-// FILE: src/app/files/page.tsx — server loads config into WorkspaceView
+// FILE: src/app/files/page.tsx — server loads config and fileTypes into WorkspaceView
 // FILE: src/lib/config.test.ts — files config and file type matching tests
+// FILE: src/lib/file-type-config.test.ts — resolveFileTypeConfig pattern tests
+// FILE: src/app/files/components/FileTypeIcon.test.tsx — icon component tests
 
 ## ErrorHandling
 

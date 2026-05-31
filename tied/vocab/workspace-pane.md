@@ -83,8 +83,10 @@ Excludes NSYNC sync algorithms ([nsync-multi-target.md](nsync-multi-target.md)),
 | **Single-pane workspace URL** | `/files?panes=1&pane0=…` — server bootstrap one pane at path; used by **Set as Base directory** new-workspace target (not mesh snapshot) |
 | **Base directory** | Absolute directory path assigned as pane state `path` (re-root); distinct from Enter-into-subdirectory navigation |
 | **Set as Base directory** | Directory row context menu item opening **Set base directory dialog** |
-| **Set base directory dialog** | `SetBaseDirectoryDialog` — eight pane-target actions plus Cancel |
-| **Set base directory target** | `SetBaseDirectoryTarget` — machine id for dialog choice: `thisPane`, `allPanes`, `otherPanes`, `nextPane`, `nextPaneSwap`, `priorPane`, `priorPaneSwap`, `newWorkspace`; UI labels from `copy.paneManagement.setBaseIn*` |
+| **Set base directory dialog** | `SetBaseDirectoryDialog` — nine pane-target actions plus Cancel |
+| **Set base directory target** | `SetBaseDirectoryTarget` — machine id for dialog choice: `thisPane`, `allPanes`, `otherPanes`, `nextPane`, `nextPaneSwap`, `priorPane`, `priorPaneSwap`, `newPane`, `newWorkspace`; UI labels from `copy.paneManagement.setBaseIn*` |
+| **Set base directory target icon** | `SetBaseDirectoryTargetIcon` — semantic SVG per dialog target (initiating blue, target emerald, direction amber, swap violet, new-workspace sky; 36px, strokeWidth 1.5) |
+| **Append pane at path** | `appendPaneAtPath(directoryPath, templatePaneIndex)` — shared pane append with display-spec and cross-pane inheritance; used by **Add pane** and **Set base: new pane** |
 | **Navigate absolute base** | Multi-pane **Set base directory** assignment via `handleNavigate` with **Syncing ref** ([linked-navigation.md](linked-navigation.md)) so linked mode does not relative-sync non-initiating targets; **In this pane** (`thisPane`) allows linked propagation |
 | **Unified file context menu** | Single portal `ContextMenu` for row and column right-click — file operations, clipboard section (`data-testid="file-column-context-menu"`), and **Set as Base directory** on directories; legacy `FileColumnContextMenu` component retained for unit tests only |
 | **README demo asset** | Committed PNG/GIF under `docs/screenshots/` produced by `npm run demo:screenshots` ([REQ-README_DEMO_AUTOMATION](../tied/requirements/REQ-README_DEMO_AUTOMATION.yaml)) |
@@ -94,7 +96,9 @@ Excludes NSYNC sync algorithms ([nsync-multi-target.md](nsync-multi-target.md)),
 | Canonical concept | UI label | Config key | Keybind action | Code symbol |
 | --- | --- | --- | --- | --- |
 | Workspace toolbar | (group names in YAML) | `toolbars.workspace` | various | `WorkspaceView` + `Toolbar` |
-| Add pane | “Add Pane” | `copy.paneManagement.addPane` | `pane.add` | `handleAddPane` |
+| Add pane | “Add Pane” | `copy.paneManagement.addPane` | `pane.add` | `handleAddPane`, `appendPaneAtPath` |
+| Append pane at path | (internal) | — | — | `appendPaneAtPath` |
+| Set base directory target icon | (per-target glyph) | — | — | `SetBaseDirectoryTargetIcon` |
 | Remove pane | “Remove Pane” | `copy.paneManagement.removePane` | `pane.remove` | `handleRemovePane` |
 | Swap panes | “Swap panes” | `copy.paneManagement.swapPanes` | `pane.swap` (Ctrl+Shift+S) | `handleSwapFocusedNext` |
 | Swap with previous | “Swap with previous” | `copy.paneManagement.swapPrev` | `pane.swapPrev` | `handleSwapFocusedPrev` |
@@ -122,6 +126,7 @@ Excludes NSYNC sync algorithms ([nsync-multi-target.md](nsync-multi-target.md)),
 | Set base: next pane swap | “In the next pane and swap pane position” | `copy.paneManagement.setBaseInNextPaneSwap` | — | `nextPaneSwap` |
 | Set base: prior pane | “In the prior pane” | `copy.paneManagement.setBaseInPriorPane` | — | `priorPane` |
 | Set base: prior pane swap | “In the prior pane and swap pane position” | `copy.paneManagement.setBaseInPriorPaneSwap` | — | `priorPaneSwap` |
+| Set base: new pane | “In a new pane” | `copy.paneManagement.setBaseInNewPane` | — | `newPane` |
 | Set base: new workspace | “In new workspace, as the only pane” | `copy.paneManagement.setBaseNewWorkspace` | — | `newWorkspace` |
 | Save / diff workspace | See mesh-platform + toolbar | `copy.workspaceMesh.*` | `mesh.saveWorkspace`, `mesh.diffWorkspace` | mesh bridge IMPL |
 | Pane URL deep link | (none) | — | — | `pane0`, `pane1`, … in `URLSearchParams` |
@@ -141,6 +146,8 @@ Excludes NSYNC sync algorithms ([nsync-multi-target.md](nsync-multi-target.md)),
 - **Workspace keyboard-shortcuts footer** — removed; use toolbar badges/tooltips ([toolbar-keybind.md](toolbar-keybind.md)).
 - **Unified file context menu** — Row and metadata-cell right-click open the same `ContextMenu` (file ops, clipboard section, **Set as Base directory** on directories); see [REQ-MOUSE_INTERACTION](../tied/requirements/REQ-MOUSE_INTERACTION.yaml).
 - **Navigate absolute base** — **Set base directory** multi-target paths use **Syncing ref** per [linked-navigation.md](linked-navigation.md); only **In this pane** propagates linked navigation.
+- **Append pane at path** — `appendPaneAtPath` fetches listing at `directoryPath`, inherits template pane display spec and cross-pane fields, appends to `panes[]`; shared by toolbar/keybind **Add pane** and dialog **Set base: new pane**.
+- **Set base directory target icon** — `SetBaseDirectoryTargetIcon` renders semantic multi-color pane glyphs on each dialog action button for visual target discrimination.
 - **Cross-pane path clipboard** — **Copy paths in all panes** uses cursor filename match key ([REQ-LINKED_PANES](../tied/requirements/REQ-LINKED_PANES.yaml)).
 - **Pane URL deep link** — Query parameters initialize pane paths without UI navigation; skipped when mesh restore is active.
 - **README demo asset** — Static screenshots and GIF for README; regenerated via Playwright ([IMPL-DEMO_SCREENSHOT_PIPELINE](../tied/implementation-decisions/IMPL-DEMO_SCREENSHOT_PIPELINE.yaml)).
@@ -160,11 +167,13 @@ User-facing strings: `config/site.yaml` → `branding.logo` (metadata contract);
 | Keybinding handler registration | `KeybindingInit` → `IMPL-WORKSPACE_VIEW_KeybindingInit` | IMPL-WORKSPACE_VIEW |
 | README demo screenshot pipeline | `NPM_DEMO_SCREENSHOTS`, `CAPTURE_WORKSPACE_AND_COMPARISON` | IMPL-DEMO_SCREENSHOT_PIPELINE |
 | Add pane | `AddPane` → `IMPL-PANE_MANAGEMENT_AddPane` | IMPL-PANE_MANAGEMENT |
+| Append pane at path | `AppendPaneAtPath` → `IMPL-PANE_MANAGEMENT_AppendPaneAtPath` | IMPL-PANE_MANAGEMENT |
 | Remove pane | `RemovePane` → `IMPL-PANE_MANAGEMENT_RemovePane` | IMPL-PANE_MANAGEMENT |
 | Swap panes | `SwapPanes` → `IMPL-PANE_MANAGEMENT_SwapPanes` | IMPL-PANE_MANAGEMENT |
 | Cycle panes | `CyclePanes` → `IMPL-PANE_MANAGEMENT_CyclePanes` | IMPL-PANE_MANAGEMENT |
 | Pane order dialog | `PaneOrderDialog` → `IMPL-PANE_MANAGEMENT_PaneOrderDialog` | IMPL-PANE_MANAGEMENT |
 | Set base directory dialog | `SetBaseDirectoryDialog` → `IMPL-WORKSPACE_VIEW_SetBaseDirectoryDialog` | IMPL-WORKSPACE_VIEW |
+| Set base directory target icon | `SetBaseDirectoryTargetIcon` → `IMPL-WORKSPACE_VIEW_SetBaseDirectoryTargetIcon` | IMPL-WORKSPACE_VIEW |
 | Set base directory apply | `SetBaseDirectoryApply` → `IMPL-WORKSPACE_VIEW_SetBaseDirectoryApply` | IMPL-WORKSPACE_VIEW |
 | Navigate absolute base | `NavigateAbsoluteBase` → `IMPL-WORKSPACE_VIEW_NavigateAbsoluteBase` | IMPL-WORKSPACE_VIEW, IMPL-LINKED_NAV |
 | Unified row context menu | `UNIFIED_ROW_CONTEXT_MENU` → `IMPL-MOUSE_SUPPORT_UnifiedRowContextMenu` | IMPL-MOUSE_SUPPORT |
@@ -190,6 +199,7 @@ User-facing strings: `config/site.yaml` → `branding.logo` (metadata contract);
 - **Active cross-pane visibility preset** — see cross-pane-visibility glossary
 - **Active display spec** — see pane-display-filter glossary
 - **Apply shared sort** — Sort menu **Shared** on focused pane
+- **Append pane at path** — `appendPaneAtPath` shared helper
 - **Base directory** — pane state path re-root target
 - **Client mesh rehydrate** — client full restore when server bootstrap misses mesh
 - **Client restored from mesh** — `clientRestoredFromMesh`
@@ -232,6 +242,7 @@ User-facing strings: `config/site.yaml` → `branding.logo` (metadata contract);
 - **Set as Base directory** — directory row context menu item
 - **Set base directory dialog** — `SetBaseDirectoryDialog`
 - **Set base directory target** — `SetBaseDirectoryTarget` dialog choice id
+- **Set base directory target icon** — `SetBaseDirectoryTargetIcon` semantic SVG
 - **Navigate absolute base** — absolute path re-root with syncing ref for multi-pane targets
 - **Single-pane workspace URL** — `?panes=1&pane0=`
 - **Unified file context menu** — combined row/column right-click menu

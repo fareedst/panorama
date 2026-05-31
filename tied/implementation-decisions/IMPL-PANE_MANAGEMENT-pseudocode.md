@@ -22,15 +22,31 @@ CONTRACT AddPane
   DATA: sourcePane.activeDisplaySpecId, fetchDirectoryListing, buildPaneFromRawListing
 
 PROCEDURE IMPL-PANE_MANAGEMENT_AddPane()
-  IF NOT layoutConfig.allowPaneManagement THEN log warn AND RETURN
-  IF maxPanes greater than zero AND panes.length greater or equal maxPanes THEN log warn AND RETURN
   SET sourcePane := panes[focusIndex]
+  newIndex := await AppendPaneAtPath(sourcePane.path, focusIndex)
+  IF newIndex NOT null THEN SET focusIndex := newIndex
+
+## AppendPaneAtPath
+
+// [IMPL-PANE_MANAGEMENT] [IMPL-WORKSPACE_VIEW] [ARCH-PANE_LIFECYCLE] [REQ-MULTI_PANE_LAYOUT] [REQ-DIRECTORY_NAVIGATION]: how — shared append at arbitrary directoryPath; used by AddPane (clone path) and SetBaseDirectoryApply newPane (directory path from dialog)
+
+CONTRACT AppendPaneAtPath
+  INPUT: directoryPath, templatePaneIndex, layoutConfig, panes[], sharedSort, displaySpecStore
+  OUTPUT: new pane index or null when guards fail or fetch errors
+  DATA: inherit display spec and cross-pane fields from template pane; sharedSort for listing build
+
+PROCEDURE IMPL-PANE_MANAGEMENT_AppendPaneAtPath(directoryPath, templatePaneIndex)
+  IF NOT allowPaneManagement OR at maxPanes THEN RETURN null
+  SET sourcePane := panes[templatePaneIndex]
+  IF sourcePane missing THEN RETURN null
   IF sourcePane.activeDisplaySpecId THEN ensureDisplaySpecOnServer(store.get(id))
-  FETCH listing for sourcePane.path with activeDisplaySpecId
-  BUILD newPane via buildPaneFromRawListing with sharedSort, preserveMarks false
-  MERGE cross-pane visibility fields from sourcePane
-  APPEND newPane to panes
-  SET focusIndex := panes.length (index of new pane)
+  FETCH listing for directoryPath with sourcePane.activeDisplaySpecId
+  BUILD built via buildPaneFromRawListing with sharedSort, preserveMarks false
+  MERGE newPane := mergePaneListingWithCrossPaneFields(built, cross-pane fields from sourcePane)
+  SET newIndex := panes.length
+  APPEND newPane to panes via setPanes
+  RETURN newIndex
+  ON fetch error LOG error AND RETURN null
 
 ## RemovePane
 
@@ -158,7 +174,7 @@ PROCEDURE IMPL-PANE_MANAGEMENT_KeybindDisabledRules()
 
 // [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] [ARCH-KEYBIND_SYSTEM] [REQ-MULTI_PANE_LAYOUT] [REQ-FILES_CONFIG_COMPLETE] [REQ-TOOLBAR_SYSTEM]: map implementing and verifying source files for this IMPL
 
-// FILE: src/app/files/WorkspaceView.tsx — handleAddPane, handleRemovePane, handleSwapPanes, handleSwapFocusedNext/Prev, handleCyclePanes, handleApplyPaneOrder, keybinding handlers
+// FILE: src/app/files/WorkspaceView.tsx — appendPaneAtPath, handleAddPane, handleRemovePane, handleSwapPanes, handleSwapFocusedNext/Prev, handleCyclePanes, handleApplyPaneOrder, keybinding handlers
 // FILE: src/app/files/components/PaneOrderDialog.tsx — pane order dialog UI
 // FILE: src/lib/pane-order.ts — swap, rotate, reorder, focus remap helpers
 // FILE: src/lib/files.history.ts — swapPaneHistories, rotatePaneHistories, reorderPaneHistories
@@ -167,6 +183,8 @@ PROCEDURE IMPL-PANE_MANAGEMENT_KeybindDisabledRules()
 // TEST: src/lib/files.history.test.ts
 // TEST: src/app/files/components/PaneOrderDialog.test.tsx
 // TEST: src/app/files/WorkspaceView.pane-reorder.test.tsx
+// TEST: src/app/files/WorkspaceView.set-base-directory.test.tsx — appendPaneAtPath via newPane target
+// TEST: src/lib/set-base-directory.test.ts
 // TEST: src/lib/config.test.ts — Pane Management Config describe
 
 ## ErrorHandling

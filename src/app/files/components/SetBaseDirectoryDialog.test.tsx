@@ -11,12 +11,13 @@ describe("SetBaseDirectoryDialog [IMPL-WORKSPACE_VIEW]", () => {
     initiatingPaneIndex: 0,
     paneCount: 3,
     allowPaneManagement: true,
+    atMaxPanes: false,
     onApply: vi.fn(),
     onClose: vi.fn(),
   };
 
-  // SetBaseDirectoryDialog — [IMPL-WORKSPACE_VIEW] [REQ-MOUSE_INTERACTION]: how — eight target buttons from copy labels
-  it("renders all eight target action buttons", () => {
+  // SetBaseDirectoryDialog — [IMPL-WORKSPACE_VIEW] [REQ-MOUSE_INTERACTION]: how — nine target buttons from copy labels with SetBaseDirectoryTargetIcon
+  it("renders all nine target action buttons", () => {
     render(
       <SetBaseDirectoryDialog
         {...defaultProps}
@@ -28,6 +29,7 @@ describe("SetBaseDirectoryDialog [IMPL-WORKSPACE_VIEW]", () => {
           setBaseInNextPaneSwap: "In the next pane and swap pane position",
           setBaseInPriorPane: "In the prior pane",
           setBaseInPriorPaneSwap: "In the prior pane and swap pane position",
+          setBaseInNewPane: "In a new pane",
           setBaseNewWorkspace: "In new workspace, as the only pane",
         }}
       />,
@@ -43,9 +45,46 @@ describe("SetBaseDirectoryDialog [IMPL-WORKSPACE_VIEW]", () => {
     expect(screen.getByTestId("set-base-in-prior-pane-swap")).toHaveTextContent(
       "In the prior pane and swap pane position",
     );
+    expect(screen.getByTestId("set-base-in-new-pane")).toHaveTextContent(
+      "In a new pane",
+    );
     expect(screen.getByTestId("set-base-new-workspace")).toHaveTextContent(
       "In new workspace, as the only pane",
     );
+  });
+
+  // SetBaseDirectoryDialog — [IMPL-WORKSPACE_VIEW] [REQ-DIRECTORY_NAVIGATION]: how — each target button renders SetBaseDirectoryTargetIcon SVG
+  it("renders an SVG icon for each target action button", () => {
+    render(<SetBaseDirectoryDialog {...defaultProps} />);
+    const testIds = [
+      "set-base-in-this-pane",
+      "set-base-in-all-panes",
+      "set-base-in-other-panes",
+      "set-base-in-next-pane",
+      "set-base-in-next-pane-swap",
+      "set-base-in-prior-pane",
+      "set-base-in-prior-pane-swap",
+      "set-base-in-new-pane",
+      "set-base-new-workspace",
+    ];
+    for (const testId of testIds) {
+      const button = screen.getByTestId(testId);
+      expect(button.querySelector("svg")).toBeTruthy();
+    }
+  });
+
+  // SetBaseDirectoryTargetIcon — [IMPL-WORKSPACE_VIEW] [ARCH-MOUSE_SUPPORT] [REQ-DIRECTORY_NAVIGATION] [REQ-MOUSE_INTERACTION]: how — otherPanes icon uses initiating blue outline and target emerald fill roles
+  it("renders multi-color semantic roles on otherPanes icon", () => {
+    render(<SetBaseDirectoryDialog {...defaultProps} />);
+    const svg = screen
+      .getByTestId("set-base-in-other-panes")
+      .querySelector("svg");
+    expect(svg).toBeTruthy();
+    const classNames = Array.from(svg!.querySelectorAll("[class]"))
+      .map((el) => el.getAttribute("class") ?? "")
+      .join(" ");
+    expect(classNames).toMatch(/fill-emerald-500/);
+    expect(classNames).toMatch(/stroke-blue-500/);
   });
 
   it("renders dialog with directory path", () => {
@@ -82,10 +121,22 @@ describe("SetBaseDirectoryDialog [IMPL-WORKSPACE_VIEW]", () => {
     expect(screen.getByTestId("set-base-in-other-panes")).toBeDisabled();
     expect(screen.getByTestId("set-base-in-next-pane")).toBeDisabled();
     expect(screen.getByTestId("set-base-in-this-pane")).not.toBeDisabled();
+    expect(screen.getByTestId("set-base-in-new-pane")).not.toBeDisabled();
     expect(screen.getByTestId("set-base-new-workspace")).not.toBeDisabled();
   });
 
-  it("disables swap targets when allowPaneManagement is false", () => {
+  it("disables new pane target when atMaxPanes", () => {
+    render(
+      <SetBaseDirectoryDialog
+        {...defaultProps}
+        atMaxPanes={true}
+      />,
+    );
+    expect(screen.getByTestId("set-base-in-new-pane")).toBeDisabled();
+    expect(screen.getByTestId("set-base-new-workspace")).not.toBeDisabled();
+  });
+
+  it("disables swap and new pane targets when allowPaneManagement is false", () => {
     render(
       <SetBaseDirectoryDialog
         {...defaultProps}
@@ -94,6 +145,7 @@ describe("SetBaseDirectoryDialog [IMPL-WORKSPACE_VIEW]", () => {
     );
     expect(screen.getByTestId("set-base-in-next-pane-swap")).toBeDisabled();
     expect(screen.getByTestId("set-base-in-prior-pane-swap")).toBeDisabled();
+    expect(screen.getByTestId("set-base-in-new-pane")).toBeDisabled();
     expect(screen.getByTestId("set-base-in-next-pane")).not.toBeDisabled();
   });
 

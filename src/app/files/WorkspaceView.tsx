@@ -65,6 +65,7 @@ import {
 } from "@/lib/files.utils";
 import { initializeKeybindingRegistry, matchKeybinding } from "@/lib/files.keybinds";
 import type { KeybindingConfig, FilesCopyConfig, FilesLayoutConfig, ToolbarsConfig } from "@/lib/config.types";
+import { DEFAULT_FILE_TYPES, type FileTypesMap } from "@/lib/file-type-config";
 import FilePane from "./components/FilePane";
 import ConfirmDialog, { type FileConflict } from "./components/ConfirmDialog";
 import ProgressDialog from "./components/ProgressDialog";
@@ -191,6 +192,8 @@ interface WorkspaceViewProps {
   columns: import("@/lib/config.types").FilesColumnConfig[];
   /** Toolbar configuration from server [REQ-TOOLBAR_SYSTEM] [IMPL-TOOLBAR_COMPONENT] */
   toolbars?: ToolbarsConfig;
+  /** [REQ-CONFIG_DRIVEN_APPEARANCE] [IMPL-CONFIG_DRIVEN_APPEARANCE] File type icons from theme.files.fileTypes */
+  fileTypes?: FileTypesMap;
   /** [REQ-WORKSPACE_MESH_BRIDGE] meshId from /files?meshId= (server + client layout rehydrate). */
   meshId?: string;
   /** [REQ-WORKSPACE_MESH_BRIDGE] Restored from /files?meshId= */
@@ -274,6 +277,7 @@ export default function WorkspaceView({
   layout: layoutConfig,
   columns,
   toolbars,
+  fileTypes = DEFAULT_FILE_TYPES,
   meshId,
   restoreUi,
   restoreLayout,
@@ -1411,71 +1415,96 @@ export default function WorkspaceView({
   // [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] [REQ-MULTI_PANE_LAYOUT] Pane management handlers
   
   /**
+   * Append a pane at directoryPath, inheriting sort/display/cross-pane fields from template pane.
+   * [IMPL-PANE_MANAGEMENT] [IMPL-WORKSPACE_VIEW] [REQ-MULTI_PANE_LAYOUT] [REQ-DIRECTORY_NAVIGATION]: how — shared by handleAddPane and SetBaseDirectoryApply newPane
+   */
+  const appendPaneAtPath = useCallback(
+    async (
+      directoryPath: string,
+      templatePaneIndex: number,
+    ): Promise<number | null> => {
+      if (!layoutConfig.allowPaneManagement) {
+        console.warn("Pane management is disabled in configuration");
+        return null;
+      }
+
+      const maxPanes = layoutConfig.maxPanes ?? 0;
+      if (maxPanes > 0 && panes.length >= maxPanes) {
+        console.warn(`Cannot add pane: maximum of ${maxPanes} panes reached`);
+        return null;
+      }
+
+      const sourcePane = panes[templatePaneIndex];
+      if (!sourcePane) {
+        return null;
+      }
+
+      try {
+        if (sourcePane.activeDisplaySpecId) {
+          await ensureDisplaySpecOnServer(
+            displaySpecStore.get(sourcePane.activeDisplaySpecId),
+          );
+        }
+        const listing = await fetchDirectoryListing(
+          directoryPath,
+          sourcePane.activeDisplaySpecId,
+        );
+        const built = buildPaneFromRawListing(
+          listing.files,
+          {
+            path: directoryPath,
+            files: listing.files,
+            cursor: 0,
+            marks: new Set<string>(),
+            sortBy: sharedSort.sortBy,
+            sortDirection: sharedSort.sortDirection,
+            sortDirsFirst: sharedSort.sortDirsFirst,
+            activeDisplaySpecId: sourcePane.activeDisplaySpecId,
+            loadedSpecVersion: null,
+            hiddenCount: 0,
+            rawFileCount: listing.totalCount,
+          },
+          displaySpecStore,
+          {
+            preserveMarks: false,
+            serverPreFiltered: listing.serverPreFiltered,
+            hiddenCount: listing.hiddenCount,
+            totalCount: listing.totalCount,
+          },
+        );
+        const newPane = mergePaneListingWithCrossPaneFields(built, {
+          activeCrossPaneVisibilityId: sourcePane.activeCrossPaneVisibilityId,
+          crossPaneVisibilityDraft: copyCrossPaneVisibilityState(
+            sourcePane.crossPaneVisibilityDraft,
+          ),
+          crossPaneVisibilityDraftSourceVersion:
+            sourcePane.crossPaneVisibilityDraftSourceVersion,
+        });
+        const newIndex = panes.length;
+        setPanes((prev) => [...prev, newPane]);
+        return newIndex;
+      } catch (error) {
+        console.error("Failed to add pane:", error);
+        return null;
+      }
+    },
+    [panes, layoutConfig, displaySpecStore, sharedSort],
+  );
+
+  /**
    * Add a new pane to the workspace
    * [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] [REQ-MULTI_PANE_LAYOUT] [REQ-FILES_CONFIG_COMPLETE]: how: clone focused pane path and listing into new pane when under maxPanes and management allowed
    */
   const handleAddPane = useCallback(async () => {
-    // Check if pane management is allowed
-    if (!layoutConfig.allowPaneManagement) {
-      console.warn("Pane management is disabled in configuration");
-      return;
-    }
-    
-    // Check if we've reached the maximum number of panes (0 = no limit)
-    const maxPanes = layoutConfig.maxPanes ?? 0;
-    if (maxPanes > 0 && panes.length >= maxPanes) {
-      console.warn(`Cannot add pane: maximum of ${maxPanes} panes reached`);
-      return;
-    }
-    
-    // [IMPL-PANE_MANAGEMENT] [IMPL-SORT_FILTER] [REQ-MULTI_PANE_LAYOUT] [REQ-FILE_SORTING_ADVANCED] Add pane — clone path from focus; sort from workspace sharedSort
     const sourcePane = panes[focusIndex];
-    
-    try {
-      if (sourcePane.activeDisplaySpecId) {
-        await ensureDisplaySpecOnServer(displaySpecStore.get(sourcePane.activeDisplaySpecId));
-      }
-      const listing = await fetchDirectoryListing(
-        sourcePane.path,
-        sourcePane.activeDisplaySpecId,
-      );
-      const built = buildPaneFromRawListing(
-        listing.files,
-        {
-          path: sourcePane.path,
-          files: listing.files,
-          cursor: 0,
-          marks: new Set<string>(),
-          sortBy: sharedSort.sortBy,
-          sortDirection: sharedSort.sortDirection,
-          sortDirsFirst: sharedSort.sortDirsFirst,
-          activeDisplaySpecId: sourcePane.activeDisplaySpecId,
-          loadedSpecVersion: null,
-          hiddenCount: 0,
-          rawFileCount: listing.totalCount,
-        },
-        displaySpecStore,
-        {
-          preserveMarks: false,
-          serverPreFiltered: listing.serverPreFiltered,
-          hiddenCount: listing.hiddenCount,
-          totalCount: listing.totalCount,
-        },
-      );
-      const newPane = mergePaneListingWithCrossPaneFields(built, {
-        activeCrossPaneVisibilityId: sourcePane.activeCrossPaneVisibilityId,
-        crossPaneVisibilityDraft: copyCrossPaneVisibilityState(
-          sourcePane.crossPaneVisibilityDraft,
-        ),
-        crossPaneVisibilityDraftSourceVersion:
-          sourcePane.crossPaneVisibilityDraftSourceVersion,
-      });
-      setPanes((prev) => [...prev, newPane]);
-      setFocusIndex(panes.length);
-    } catch (error) {
-      console.error("Failed to add pane:", error);
+    if (!sourcePane) {
+      return;
     }
-  }, [panes, focusIndex, layoutConfig, displaySpecStore, sharedSort]);
+    const newIndex = await appendPaneAtPath(sourcePane.path, focusIndex);
+    if (newIndex !== null) {
+      setFocusIndex(newIndex);
+    }
+  }, [panes, focusIndex, appendPaneAtPath]);
   
   /**
    * Remove a pane from the workspace
@@ -1595,6 +1624,18 @@ export default function WorkspaceView({
       const { path: directoryPath, paneIndex: initiatingPaneIndex } =
         setBaseDirectoryDialog;
 
+      // SetBaseDirectoryApply newPane — [IMPL-WORKSPACE_VIEW] [IMPL-PANE_MANAGEMENT] [REQ-DIRECTORY_NAVIGATION] [REQ-MULTI_PANE_LAYOUT]: how — appendPaneAtPath at directory path and focus new pane
+      if (target === "newPane") {
+        const newIndex = await appendPaneAtPath(
+          directoryPath,
+          initiatingPaneIndex,
+        );
+        if (newIndex !== null) {
+          setFocusIndex(newIndex);
+        }
+        return;
+      }
+
       if (target === "newWorkspace") {
         window.open(
           buildSinglePaneWorkspaceUrl(directoryPath),
@@ -1639,6 +1680,7 @@ export default function WorkspaceView({
       panes.length,
       handleNavigate,
       handleSwapPanes,
+      appendPaneAtPath,
     ],
   );
   
@@ -3004,6 +3046,7 @@ export default function WorkspaceView({
             onFocusRequest={() => setFocusIndex(index)}
             onNavigateParent={() => navigateToParent(index)} // [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
             columns={fileColumns} // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
+            fileTypes={fileTypes} // [REQ-CONFIG_DRIVEN_APPEARANCE] [IMPL-CONFIG_DRIVEN_APPEARANCE]
             metadataColumnWidths={sharedMetadataColumnWidths}
             onRename={(file) => setRenameDialog({ isOpen: true, filePath: file.path, fileName: file.name, paneIndex: index })}
             onCopy={() => void handleBulkCopy(index)}
@@ -3192,6 +3235,10 @@ export default function WorkspaceView({
         initiatingPaneIndex={setBaseDirectoryDialog.paneIndex}
         paneCount={panes.length}
         allowPaneManagement={layoutConfig.allowPaneManagement ?? true}
+        atMaxPanes={
+          (layoutConfig.maxPanes ?? 0) > 0 &&
+          panes.length >= (layoutConfig.maxPanes ?? 0)
+        }
         labels={copy.paneManagement}
         onApply={(target) => void handleApplySetBaseDirectory(target)}
         onClose={() =>
@@ -3261,6 +3308,7 @@ export default function WorkspaceView({
         onSelect={handleFinderSelect}
         files={panes[focusIndex]?.files || []}
         copy={copy?.search}
+        fileTypes={fileTypes}
       />
       
       <SearchDialog

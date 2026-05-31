@@ -10,6 +10,7 @@ global.fetch = vi.fn();
 
 const mockKeybindings = [
   { key: "Tab", action: "navigate.tab", description: "Next pane", category: "navigation" as const },
+  { key: "=", action: "pane.add", description: "Add pane", category: "pane-management" as const },
 ];
 
 const mockLayout: FilesLayoutConfig = {
@@ -250,5 +251,59 @@ describe("WorkspaceView set base directory [SET_BASE_DIRECTORY]", () => {
       "_blank",
       "noopener,noreferrer",
     );
+  });
+
+  // SetBaseDirectoryApply newPane — [IMPL-WORKSPACE_VIEW] [IMPL-PANE_MANAGEMENT] [REQ-DIRECTORY_NAVIGATION]: how — appendPaneAtPath adds pane at directory and focuses it
+  it("applies In a new pane and appends focused pane at directory path", async () => {
+    renderWorkspace();
+    await waitFor(() => expect(screen.getByTestId("pane-0")).toBeInTheDocument());
+
+    await applySetBaseTarget("set-base-in-new-pane", 0);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("pane-2")).toBeInTheDocument();
+      expect(screen.getByTestId("pane-2")).toHaveTextContent("/left/projects");
+    });
+    expect(screen.getByTestId("pane-0")).toHaveTextContent("/left");
+    expect(screen.getByTestId("pane-1")).toHaveTextContent("/right");
+  });
+
+  // AddPane — [IMPL-PANE_MANAGEMENT] [IMPL-WORKSPACE_VIEW] [REQ-MULTI_PANE_LAYOUT]: how — pane.add keybind delegates to appendPaneAtPath at focused pane path
+  it("adds pane at focused path via pane.add keybind", async () => {
+    renderWorkspace();
+    await waitFor(() => expect(screen.getByTestId("pane-0")).toBeInTheDocument());
+
+    fireEvent.keyDown(window, { key: "=" });
+
+    await waitFor(() => {
+      expect(screen.getByTestId("pane-2")).toBeInTheDocument();
+      expect(screen.getByTestId("pane-2")).toHaveTextContent("/left");
+    });
+    expect(screen.getByTestId("pane-0")).toHaveTextContent("/left");
+    expect(screen.getByTestId("pane-1")).toHaveTextContent("/right");
+  });
+
+  // SetBaseDirectoryDialog — [IMPL-WORKSPACE_VIEW] [REQ-MULTI_PANE_LAYOUT]: how — atMaxPanes prop disables newPane when panes.length reaches layout.maxPanes
+  it("disables In a new pane when workspace is at maxPanes", async () => {
+    render(
+      <WorkspaceView
+        initialPanes={[
+          { path: "/left", files: [fileEntry, dirEntry] },
+          { path: "/right", files: [fileEntry] },
+          { path: "/left", files: [fileEntry, dirEntry] },
+          { path: "/right", files: [fileEntry] },
+        ]}
+        keybindings={mockKeybindings}
+        copy={mockCopy}
+        layout={{ ...mockLayout, maxPanes: 4 }}
+        columns={mockColumns}
+        toolbars={mockToolbars}
+      />,
+    );
+    await waitFor(() => expect(screen.getByTestId("pane-3")).toBeInTheDocument());
+
+    await openSetBaseDialog(0);
+
+    expect(screen.getByTestId("set-base-in-new-pane")).toBeDisabled();
   });
 });

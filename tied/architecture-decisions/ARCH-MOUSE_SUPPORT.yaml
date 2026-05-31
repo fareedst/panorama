@@ -39,7 +39,7 @@ ARCH-MOUSE_SUPPORT:
       - 'Drag-drop: HTML5 API with custom drag image and modifier key detection'
       - 'FileColumnContextMenu: Portal clipboard menu on metadata column cells (name, size, mtime); copy filename, absolute path, cross-pane paths'
       - 'Scroll: Native browser overflow-y-auto'
-      - 'Set as Base directory: eighth context menu item on directory rows opens secondary dialog (IMPL-WORKSPACE_VIEW SetBaseDirectoryDialog)'
+      - 'Set as Base directory: directory rows open secondary dialog with nine pane-target actions and SetBaseDirectoryTargetIcon semantic SVG (IMPL-WORKSPACE_VIEW SetBaseDirectoryDialog)'
       - 'Unified file context menu: row and column right-click use one ContextMenu portal with file ops, clipboard section, and set-base on directories (UNIFIED_ROW_CONTEXT_MENU)'
   traceability:
     requirements:
@@ -62,9 +62,9 @@ ARCH-MOUSE_SUPPORT:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-24T00:00:00.000Z"
+      date: "2026-05-31T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — file column clipboard context menu architecture
+      reason: LEAP — nine set-base targets with SetBaseDirectoryTargetIcon
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

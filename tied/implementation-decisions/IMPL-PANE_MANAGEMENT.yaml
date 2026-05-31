@@ -23,8 +23,9 @@ IMPL-PANE_MANAGEMENT:
   implementation_approach:
     summary: Add/remove/swap/cycle pane handlers with config validation, keyboard shortcuts, pane order dialog
     details:
+      - 'appendPaneAtPath(directoryPath, templatePaneIndex): shared append with display-spec and cross-pane inheritance'
       - 'Command palette actions: pane.add, pane.remove, pane.swap, pane.swapPrev, pane.cycle, pane.cyclePrev, pane.order'
-      - 'handleAddPane(): Check allowPaneManagement and maxPanes limit, clone focused pane'
+      - 'handleAddPane(): delegates to appendPaneAtPath at focused pane path'
       - 'handleApplyPaneOrder(order): reorder by index permutation from PaneOrderDialog'
       - 'handleCyclePanes(direction): rotate panes[], remap focus and history'
       - 'handleRemovePane(index): Check allowPaneManagement and minimum 1 pane, adjust focusIndex'
@@ -32,31 +33,17 @@ IMPL-PANE_MANAGEMENT:
       - 'handleSwapPanes(i,j): swap panes array, remap focusIndex, permute directory history'
       - 'Keyboard shortcuts: = add, - remove; Ctrl+Shift+S swap; Ctrl+Shift+] cycle forward'
       - 'pane-order.ts: swapArrayAt, rotateArray, moveArrayAt, focus remap helpers'
+      - 'SetBaseDirectoryApply newPane: consumer of appendPaneAtPath at dialog directory path'
       - 'SetBaseDirectorySwapCompose: after neighbor navigate to base path, handleSwapPanes swaps initiating pane with neighbor for swap targets'
       - State updates trigger comparison index rebuild and layout recalculation
   code_locations:
-    files:
-      - path: src/lib/pane-order.ts
-        description: Pure pane reorder helpers
-        lines:
-          - 1
-          - 100
-      - path: src/app/files/components/PaneOrderDialog.tsx
-        description: Pane order dialog
-        lines:
-          - 1
-          - 150
-      - path: src/lib/files.history.ts
-        description: swapPaneHistories, rotatePaneHistories, reorderPaneHistories
-        lines:
-          - 190
-          - 280
-      - path: src/app/files/WorkspaceView.tsx
-        description: Pane reorder handlers and keybinding integration
-        lines:
-          - 1385
-          - 1550
     functions:
+      - name: appendPaneAtPath
+        file: src/app/files/WorkspaceView.tsx
+        description: Append pane at path with template inheritance
+      - name: handleAddPane
+        file: src/app/files/WorkspaceView.tsx
+        description: Add pane at focused path via appendPaneAtPath
       - name: handleSwapPanes
         file: src/app/files/WorkspaceView.tsx
         description: Swap two pane indices with focus and history remap
@@ -71,15 +58,18 @@ IMPL-PANE_MANAGEMENT:
       - ARCH-PANE_LIFECYCLE
       - ARCH-KEYBIND_SYSTEM
     requirements:
+      - REQ-DIRECTORY_NAVIGATION
       - REQ-FILES_CONFIG_COMPLETE
       - REQ-MULTI_PANE_LAYOUT
       - REQ-TOOLBAR_SYSTEM
     tests:
       - src/app/files/components/PaneOrderDialog.test.tsx
       - src/app/files/WorkspaceView.pane-reorder.test.tsx
+      - src/app/files/WorkspaceView.set-base-directory.test.tsx
       - src/lib/config.test.ts
       - src/lib/files.history.test.ts
       - src/lib/pane-order.test.ts
+      - src/lib/set-base-directory.test.ts
     code_annotations:
       - ARCH-PANE_LIFECYCLE
       - IMPL-PANE_MANAGEMENT
@@ -99,9 +89,9 @@ IMPL-PANE_MANAGEMENT:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-30T00:00:00.000Z"
+      date: "2026-05-31T00:00:00.000Z"
       author: AI Agent
-      reason: Retrofit essence_pseudocode from production code and tests
+      reason: LEAP — appendPaneAtPath shared helper; set-base newPane consumer
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

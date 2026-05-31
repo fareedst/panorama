@@ -6,6 +6,7 @@ import {
   buildSinglePaneWorkspaceUrl,
   isSetBaseDirectorySwapTarget,
   isSetBaseDirectoryTargetMultiPaneOnly,
+  isSetBaseDirectoryTargetRequiresPaneManagement,
   resolveSetBaseDirectoryPaneTargets,
   resolveSetBaseDirectorySwapPair,
 } from "./set-base-directory";
@@ -49,6 +50,10 @@ describe("[TEST-SET_BASE_DIRECTORY] set-base-directory", () => {
       expect(
         resolveSetBaseDirectoryPaneTargets("newWorkspace", 0, 3),
       ).toEqual([]);
+    });
+
+    it("returns empty for newPane", () => {
+      expect(resolveSetBaseDirectoryPaneTargets("newPane", 0, 3)).toEqual([]);
     });
   });
 
@@ -98,6 +103,18 @@ describe("[TEST-SET_BASE_DIRECTORY] set-base-directory", () => {
     it("identifies swap targets", () => {
       expect(isSetBaseDirectorySwapTarget("nextPaneSwap")).toBe(true);
       expect(isSetBaseDirectorySwapTarget("nextPane")).toBe(false);
+    });
+
+    it("identifies pane-management-required targets", () => {
+      expect(isSetBaseDirectoryTargetRequiresPaneManagement("newPane")).toBe(
+        true,
+      );
+      expect(isSetBaseDirectoryTargetRequiresPaneManagement("nextPaneSwap")).toBe(
+        true,
+      );
+      expect(isSetBaseDirectoryTargetRequiresPaneManagement("thisPane")).toBe(
+        false,
+      );
     });
   });
 });

@@ -23,6 +23,8 @@ import type { DisplayFilterSpec } from "@/lib/display-filter.types";
 import { DisplaySpecSelector } from "./DisplaySpecSelector";
 import { CrossPaneVisibilitySelector } from "./CrossPaneVisibilitySelector";
 import type { CrossPaneVisibilityPreset } from "@/lib/cross-pane-visibility.types";
+import type { FileTypesMap } from "@/lib/file-type-config";
+import { FileTypeIcon } from "./FileTypeIcon";
 
 interface FilePaneProps {
   /** Current directory path */
@@ -75,6 +77,8 @@ interface FilePaneProps {
   onNavigateParent?: () => void;
   /** [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER] Column configuration */
   columns: FilesColumnConfig[];
+  /** [REQ-CONFIG_DRIVEN_APPEARANCE] [IMPL-CONFIG_DRIVEN_APPEARANCE] Theme file type icons */
+  fileTypes: FileTypesMap;
   /** [IMPL-FILE_COLUMN_CONFIG] [REQ-MULTI_PANE_LAYOUT] OneColumn workspace-wide Size/Time ch (skips per-pane measure) */
   metadataColumnWidths?: MeasuredFileColumnWidths;
   /** [REQ-DIRECTORY_NAVIGATION] [REQ-MOUSE_INTERACTION] Open Set as Base directory dialog */
@@ -137,6 +141,7 @@ export default function FilePane({
   onFocusRequest,
   onNavigateParent, // [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
   columns, // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
+  fileTypes, // [REQ-CONFIG_DRIVEN_APPEARANCE] [IMPL-CONFIG_DRIVEN_APPEARANCE]
   metadataColumnWidths,
   "data-testid": dataTestId,
   displaySpecs = [],
@@ -559,13 +564,13 @@ export default function FilePane({
                     className="w-4 h-4 justify-self-start"
                   />
                   
-                  {/* Directory indicator */}
+                  {/* [REQ-CONFIG_DRIVEN_APPEARANCE] [IMPL-CONFIG_DRIVEN_APPEARANCE] File type icon */}
                   <span className="w-4 text-center justify-self-start">
-                    {file.isDirectory ? (
-                      <span className="text-blue-600 dark:text-blue-400 font-bold" aria-hidden>
-                        📁
-                      </span>
-                    ) : null}
+                    <FileTypeIcon
+                      fileTypes={fileTypes}
+                      filename={file.name}
+                      isDirectory={file.isDirectory}
+                    />
                   </span>
                   
                   {/* [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER] Tabular columns */}

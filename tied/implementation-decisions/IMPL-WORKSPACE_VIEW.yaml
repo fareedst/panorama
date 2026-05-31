@@ -25,17 +25,21 @@ IMPL-WORKSPACE_VIEW:
     details:
       - 'NavigateAbsoluteBase: syncingRef for multi-target set-base except thisPane'
       - 'PANE_FILES_LIST_TO_FILEPANE: pass paneFilesList to each FilePane'
-      - SetBaseDirectoryDialog and handleApplySetBaseDirectory via handleNavigate
+      - 'SetBaseDirectoryApply: handleNavigate loop; newPane via appendPaneAtPath; newWorkspace single-pane URL tab'
+      - 'SetBaseDirectoryDialog: nine pane-target actions with SetBaseDirectoryTargetIcon semantic SVG; atMaxPanes disables newPane'
   code_locations:
     files:
       - path: src/app/files/WorkspaceView.tsx
-        description: Workspace client; set-base handler
+        description: Workspace client; appendPaneAtPath, set-base handler
         lines: []
       - path: src/lib/set-base-directory.ts
         description: Set base directory target resolution
         lines: []
       - path: src/app/files/components/SetBaseDirectoryDialog.tsx
         description: Set base directory dialog
+        lines: []
+      - path: src/app/files/components/SetBaseDirectoryTargetIcon.tsx
+        description: Semantic SVG icons per set-base target
         lines: []
       - path: src/app/files/components/LayoutPickerPopover.tsx
         description: Layout toolbar picker
@@ -44,6 +48,9 @@ IMPL-WORKSPACE_VIEW:
       - name: handleApplySetBaseDirectory
         file: src/app/files/WorkspaceView.tsx
         description: Apply set-base dialog target
+      - name: appendPaneAtPath
+        file: src/app/files/WorkspaceView.tsx
+        description: Append pane at directory with template inheritance
       - name: handleNavigate
         file: src/app/files/WorkspaceView.tsx
         description: Navigate pane to directory
@@ -67,6 +74,7 @@ IMPL-WORKSPACE_VIEW:
       - e2e/readme-screenshots.spec.ts
       - src/app/files/components/LayoutPickerPopover.test.tsx
       - src/app/files/components/SetBaseDirectoryDialog.test.tsx
+      - src/app/files/components/SetBaseDirectoryTargetIcon.test.tsx
       - src/app/files/WorkspaceView.cross-pane-visibility.test.tsx
       - src/app/files/WorkspaceView.file-column-clipboard.test.tsx
       - src/app/files/WorkspaceView.file-columns.test.tsx
@@ -89,9 +97,9 @@ IMPL-WORKSPACE_VIEW:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-30T00:00:00.000Z"
+      date: "2026-05-31T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — Set as Base directory
+      reason: LEAP — set-base newPane target, SetBaseDirectoryTargetIcon, appendPaneAtPath
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

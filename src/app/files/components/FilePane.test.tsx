@@ -5,6 +5,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import FilePane from "./FilePane";
 import type { FileStat } from "@/lib/files.types";
+import { DEFAULT_FILE_TYPES } from "@/lib/file-type-config";
 
 describe("FilePane [REQ_FILE_LISTING]", () => {
   const mockFiles: FileStat[] = [
@@ -40,6 +41,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
     { id: "size" as const, visible: true },
     { id: "name" as const, visible: true },
   ];
+  const mockFileTypes = DEFAULT_FILE_TYPES;
   
   const mockBounds = { x: 0, y: 0, width: 400, height: 600 };
   const mockOnNavigate = vi.fn();
@@ -58,6 +60,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
       />
     );
     
@@ -78,6 +81,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
       />
     );
     
@@ -96,6 +100,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
       />
     );
     
@@ -115,6 +120,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
       />
     );
     
@@ -134,6 +140,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
       />
     );
     
@@ -153,6 +160,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
       />
     );
     
@@ -171,6 +179,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
       />
     );
     
@@ -189,6 +198,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
       />
     );
     
@@ -210,6 +220,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
       />
     );
     
@@ -231,6 +242,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
         onToggleMark={mockOnToggleMark}
       />
     );
@@ -253,6 +265,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
       />
     );
     
@@ -272,6 +285,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
       />,
     );
 
@@ -291,6 +305,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
       />
     );
     
@@ -311,6 +326,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
       />
     );
     
@@ -333,6 +349,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
       />
     );
     
@@ -359,6 +376,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
         onFocusRequest={mockOnFocusRequest}
       />
     );
@@ -383,6 +401,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
         onFocusRequest={mockOnFocusRequest}
       />
     );
@@ -409,6 +428,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
         onNavigateParent={mockOnNavigateParent}
       />
     );
@@ -433,6 +453,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
         onNavigateParent={mockOnNavigateParent}
       />
     );
@@ -456,6 +477,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
         onNavigateParent={mockOnNavigateParent}
       />
     );
@@ -480,6 +502,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
         linked={true}
       />
     );
@@ -501,6 +524,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
         linked={false}
       />
     );
@@ -521,6 +545,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onCursorMove={mockOnCursorMove}
         onToggleMark={mockOnToggleMark}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
         activeDisplaySpecId="spec-1"
         activeDisplaySpecName="No logs"
         hiddenCount={3}
@@ -561,6 +586,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={orderedColumns}
+        fileTypes={mockFileTypes}
       />,
     );
     const row = container.querySelector('[data-testid="file-row-grid"]');
@@ -583,6 +609,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
       />,
     );
     expect(screen.queryByTestId("file-row-grid-header")).not.toBeInTheDocument();
@@ -600,6 +627,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
       />,
     );
     const row = container.querySelector('[data-testid="file-row-grid"]') as HTMLElement;
@@ -619,6 +647,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
         metadataColumnWidths={{ size: 20, mtime: 22 }}
       />,
     );
@@ -639,6 +668,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
         paneFilesList={[mockFiles]}
       />,
     );
@@ -665,6 +695,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         onNavigate={mockOnNavigate}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
+        fileTypes={mockFileTypes}
         onCopy={vi.fn()}
         paneFilesList={[mockFiles]}
       />,
@@ -674,5 +705,29 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
 
     expect(screen.getByTestId("file-column-context-menu")).toBeInTheDocument();
     expect(screen.getByRole("menu", { name: "File operations menu" })).toBeInTheDocument();
+  });
+
+  // [REQ-CONFIG_DRIVEN_APPEARANCE] [IMPL-CONFIG_DRIVEN_APPEARANCE]
+  it("renders theme file type icons for directories and files", () => {
+    render(
+      <FilePane
+        path="/home/user"
+        files={mockFiles}
+        cursor={0}
+        marks={new Set()}
+        bounds={mockBounds}
+        focused={true}
+        onNavigate={mockOnNavigate}
+        onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
+        fileTypes={mockFileTypes}
+      />,
+    );
+
+    const icons = screen.getAllByTestId("file-type-icon");
+    expect(icons).toHaveLength(3);
+    expect(icons[0]).toHaveTextContent("📁");
+    expect(icons[1]).toHaveTextContent("📝");
+    expect(icons[2]).toHaveTextContent("📝");
   });
 });

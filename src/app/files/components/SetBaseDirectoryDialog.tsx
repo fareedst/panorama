@@ -2,11 +2,12 @@
 
 // [IMPL-WORKSPACE_VIEW] [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] [ARCH-MOUSE_SUPPORT] [REQ-DIRECTORY_NAVIGATION] [REQ-MOUSE_INTERACTION] [REQ-MULTI_PANE_LAYOUT]
 
+import { SetBaseDirectoryTargetIcon } from "./SetBaseDirectoryTargetIcon";
 import type { FilesCopyConfig } from "@/lib/config.types";
 import type { SetBaseDirectoryTarget } from "@/lib/set-base-directory";
 import {
-  isSetBaseDirectorySwapTarget,
   isSetBaseDirectoryTargetMultiPaneOnly,
+  isSetBaseDirectoryTargetRequiresPaneManagement,
 } from "@/lib/set-base-directory";
 
 export interface SetBaseDirectoryDialogProps {
@@ -15,6 +16,7 @@ export interface SetBaseDirectoryDialogProps {
   initiatingPaneIndex: number;
   paneCount: number;
   allowPaneManagement: boolean;
+  atMaxPanes: boolean;
   labels?: NonNullable<FilesCopyConfig["paneManagement"]>;
   onApply: (target: SetBaseDirectoryTarget) => void;
   onClose: () => void;
@@ -27,24 +29,45 @@ const TARGETS: {
   labelKey: keyof NonNullable<FilesCopyConfig["paneManagement"]>;
   testId: string;
 }[] = [
-  { target: "thisPane", labelKey: "setBaseInThisPane", testId: "set-base-in-this-pane" },
-  { target: "allPanes", labelKey: "setBaseInAllPanes", testId: "set-base-in-all-panes" },
+  {
+    target: "thisPane",
+    labelKey: "setBaseInThisPane",
+    testId: "set-base-in-this-pane",
+  },
+  {
+    target: "allPanes",
+    labelKey: "setBaseInAllPanes",
+    testId: "set-base-in-all-panes",
+  },
   {
     target: "otherPanes",
     labelKey: "setBaseInOtherPanes",
     testId: "set-base-in-other-panes",
   },
-  { target: "nextPane", labelKey: "setBaseInNextPane", testId: "set-base-in-next-pane" },
+  {
+    target: "nextPane",
+    labelKey: "setBaseInNextPane",
+    testId: "set-base-in-next-pane",
+  },
   {
     target: "nextPaneSwap",
     labelKey: "setBaseInNextPaneSwap",
     testId: "set-base-in-next-pane-swap",
   },
-  { target: "priorPane", labelKey: "setBaseInPriorPane", testId: "set-base-in-prior-pane" },
+  {
+    target: "priorPane",
+    labelKey: "setBaseInPriorPane",
+    testId: "set-base-in-prior-pane",
+  },
   {
     target: "priorPaneSwap",
     labelKey: "setBaseInPriorPaneSwap",
     testId: "set-base-in-prior-pane-swap",
+  },
+  {
+    target: "newPane",
+    labelKey: "setBaseInNewPane",
+    testId: "set-base-in-new-pane",
   },
   {
     target: "newWorkspace",
@@ -61,6 +84,7 @@ const DEFAULT_LABELS: Record<string, string> = {
   setBaseInNextPaneSwap: "In the next pane and swap pane position",
   setBaseInPriorPane: "In the prior pane",
   setBaseInPriorPaneSwap: "In the prior pane and swap pane position",
+  setBaseInNewPane: "In a new pane",
   setBaseNewWorkspace: "In new workspace, as the only pane",
 };
 
@@ -68,23 +92,31 @@ function isTargetDisabled(
   target: SetBaseDirectoryTarget,
   paneCount: number,
   allowPaneManagement: boolean,
+  atMaxPanes: boolean,
 ): boolean {
   if (isSetBaseDirectoryTargetMultiPaneOnly(target) && paneCount < 2) {
     return true;
   }
-  if (isSetBaseDirectorySwapTarget(target) && !allowPaneManagement) {
+  if (
+    isSetBaseDirectoryTargetRequiresPaneManagement(target) &&
+    !allowPaneManagement
+  ) {
+    return true;
+  }
+  if (target === "newPane" && atMaxPanes) {
     return true;
   }
   return false;
 }
 
-// SetBaseDirectoryDialog — [IMPL-WORKSPACE_VIEW] [ARCH-PANE_LIFECYCLE] [ARCH-MOUSE_SUPPORT] [REQ-DIRECTORY_NAVIGATION] [REQ-MOUSE_INTERACTION] [REQ-MULTI_PANE_LAYOUT]: how — secondary dialog with eight pane-target buttons plus Cancel; disabled when paneCount < 2 or swap when allowPaneManagement false
+// SetBaseDirectoryDialog — [IMPL-WORKSPACE_VIEW] [ARCH-PANE_LIFECYCLE] [ARCH-MOUSE_SUPPORT] [REQ-DIRECTORY_NAVIGATION] [REQ-MOUSE_INTERACTION] [REQ-MULTI_PANE_LAYOUT]: how — secondary dialog with nine pane-target buttons plus Cancel; disabled when paneCount less than 2, swap when allowPaneManagement false, or newPane when at max panes
 
 function SetBaseDirectoryDialogBody({
   directoryPath,
   initiatingPaneIndex,
   paneCount,
   allowPaneManagement,
+  atMaxPanes,
   labels,
   onApply,
   onClose,
@@ -133,6 +165,7 @@ function SetBaseDirectoryDialogBody({
               target,
               paneCount,
               allowPaneManagement,
+              atMaxPanes,
             );
             const label =
               (labels?.[labelKey] as string | undefined) ??
@@ -143,9 +176,12 @@ function SetBaseDirectoryDialogBody({
                   type="button"
                   disabled={disabled}
                   onClick={() => handleSelect(target)}
-                  className="w-full text-left px-3 py-2 text-sm rounded hover:bg-zinc-100 dark:hover:bg-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed text-gray-900 dark:text-gray-100"
+                  className="w-full text-left px-3 py-2 text-sm rounded hover:bg-zinc-100 dark:hover:bg-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed text-gray-900 dark:text-gray-100 flex items-center gap-2"
                   data-testid={testId}
                 >
+                  <SetBaseDirectoryTargetIcon
+                    target={target}
+                  />
                   {label}
                 </button>
               </li>
@@ -173,6 +209,7 @@ export function SetBaseDirectoryDialog({
   initiatingPaneIndex,
   paneCount,
   allowPaneManagement,
+  atMaxPanes,
   labels,
   onApply,
   onClose,
@@ -180,11 +217,12 @@ export function SetBaseDirectoryDialog({
   if (!isOpen) return null;
   return (
     <SetBaseDirectoryDialogBody
-      key={`${directoryPath}|${initiatingPaneIndex}|${paneCount}`}
+      key={`${directoryPath}|${initiatingPaneIndex}|${paneCount}|${atMaxPanes}`}
       directoryPath={directoryPath}
       initiatingPaneIndex={initiatingPaneIndex}
       paneCount={paneCount}
       allowPaneManagement={allowPaneManagement}
+      atMaxPanes={atMaxPanes}
       labels={labels}
       onApply={onApply}
       onClose={onClose}

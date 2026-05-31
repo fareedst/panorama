@@ -20,7 +20,7 @@ REQ-DIRECTORY_NAVIGATION:
     - criterion: Can navigate to parent directory (Backspace key)
     - criterion: Current path displayed in pane header
     - criterion: Directory entries marked visually (folder icon or indicator)
-    - criterion: set_base_directory_reroots_pane_path — context menu Set as Base directory on directory rows opens dialog to assign pane path via handleNavigate
+    - criterion: set_base_directory_reroots_pane_path — context menu Set as Base directory on directory rows opens dialog to assign pane path via handleNavigate or appendPaneAtPath for newPane
   validation_criteria:
     - method: Navigation testing
       coverage: Can navigate into and out of directories
@@ -39,6 +39,8 @@ REQ-DIRECTORY_NAVIGATION:
       - IMPL-FILES_UTILS
       - IMPL-WORKSPACE_VIEW
     tests:
+      - src/app/files/components/SetBaseDirectoryDialog.test.tsx
+      - src/app/files/components/SetBaseDirectoryTargetIcon.test.tsx
       - src/app/files/page.single-pane-url.test.tsx
       - src/app/files/WorkspaceView.cross-pane-visibility.test.tsx
       - src/app/files/WorkspaceView.set-base-directory.test.tsx
@@ -58,9 +60,9 @@ REQ-DIRECTORY_NAVIGATION:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-30T00:00:00.000Z"
+      date: "2026-05-31T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — Set as Base directory tests
+      reason: LEAP — set-base newPane via appendPaneAtPath; dialog target icons
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

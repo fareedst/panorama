@@ -315,6 +315,7 @@ export interface FilesCopyConfig {
     setBaseInNextPaneSwap?: string;
     setBaseInPriorPane?: string;
     setBaseInPriorPaneSwap?: string;
+    setBaseInNewPane?: string;
     setBaseNewWorkspace?: string;
   };
   // [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE]

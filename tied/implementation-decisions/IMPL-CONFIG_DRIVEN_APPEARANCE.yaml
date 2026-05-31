@@ -22,30 +22,32 @@ IMPL-CONFIG_DRIVEN_APPEARANCE:
       - Historical jobs loader and pages removed
   code_locations:
     files:
-      - path: src/lib/config.ts
-        description: getFilesConfig, getFilesOverride, getFileTypeConfig
-      - path: config/files.yaml
-        description: File manager copy and layout
-      - path: config/theme.yaml
-        description: Theme and files.fileTypes
-      - path: config/site.yaml
-        description: Site metadata
-      - path: src/app/files/page.tsx
-        description: Server passes config into WorkspaceView
+      - path: src/lib/file-type-config.ts
+        description: DEFAULT_FILE_TYPES and client-safe resolveFileTypeConfig
+      - path: src/app/files/components/FileTypeIcon.tsx
+        description: Theme-driven file row icon component
+      - path: src/app/files/components/FilePane.tsx
+        description: FileTypeIcon per file row
+      - path: src/app/files/components/FinderDialog.tsx
+        description: FileTypeIcon per finder result
     functions:
-      - name: getFilesConfig
-        file: src/lib/config.ts
-        description: Merged files config
+      - name: resolveFileTypeConfig
+        file: src/lib/file-type-config.ts
+        description: Client-safe pattern-based icon lookup
       - name: getFileTypeConfig
         file: src/lib/config.ts
-        description: Icon lookup by filename
+        description: Server wrapper delegating to resolveFileTypeConfig
   traceability:
     architecture:
       - ARCH-CONFIG_DRIVEN_APPEARANCE
     requirements:
       - REQ-CONFIG_DRIVEN_APPEARANCE
     tests:
+      - src/app/files/components/FilePane.test.tsx
+      - src/app/files/components/FileTypeIcon.test.tsx
+      - src/app/files/components/FinderDialog.test.tsx
       - src/lib/config.test.ts
+      - src/lib/file-type-config.test.ts
     code_annotations:
       - REQ-CONFIG_DRIVEN_APPEARANCE
   related_decisions:

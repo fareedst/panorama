@@ -11,6 +11,7 @@ export type SetBaseDirectoryTarget =
   | "nextPaneSwap"
   | "priorPane"
   | "priorPaneSwap"
+  | "newPane"
   | "newWorkspace";
 
 /** Whether a target requires at least two panes to be actionable. */
@@ -33,7 +34,15 @@ export function isSetBaseDirectorySwapTarget(
   return target === "nextPaneSwap" || target === "priorPaneSwap";
 }
 
-// SetBaseDirectoryApply target resolution — [IMPL-WORKSPACE_VIEW] [REQ-DIRECTORY_NAVIGATION] [REQ-MULTI_PANE_LAYOUT]: how — maps dialog target to pane index list for handleNavigate loop
+/** Whether a target requires allowPaneManagement (swap variants and in-workspace new pane). */
+// isSetBaseDirectoryTargetRequiresPaneManagement — [IMPL-WORKSPACE_VIEW] [REQ-DIRECTORY_NAVIGATION] [REQ-MULTI_PANE_LAYOUT]: how — pure helper; swap targets and newPane require pane management
+export function isSetBaseDirectoryTargetRequiresPaneManagement(
+  target: SetBaseDirectoryTarget,
+): boolean {
+  return isSetBaseDirectorySwapTarget(target) || target === "newPane";
+}
+
+// SetBaseDirectoryApply target resolution — [IMPL-WORKSPACE_VIEW] [REQ-DIRECTORY_NAVIGATION] [REQ-MULTI_PANE_LAYOUT]: how — maps dialog target to pane index list for handleNavigate loop; newPane and newWorkspace return empty list
 
 /** Pane indices that should receive handleNavigate for the given target. */
 export function resolveSetBaseDirectoryPaneTargets(
@@ -41,7 +50,7 @@ export function resolveSetBaseDirectoryPaneTargets(
   initiatingPaneIndex: number,
   paneCount: number,
 ): number[] {
-  if (target === "newWorkspace" || paneCount < 1) {
+  if (target === "newWorkspace" || target === "newPane" || paneCount < 1) {
     return [];
   }
 

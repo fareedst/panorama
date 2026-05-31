@@ -8,6 +8,9 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import type { FileStat } from "@/lib/files.types";
 import { filterFiles, SearchHistory, scoreMatch } from "@/lib/files.search";
 import type { FilesCopyConfig } from "@/lib/config.types";
+import type { FileTypesMap } from "@/lib/file-type-config";
+import { DEFAULT_FILE_TYPES } from "@/lib/file-type-config";
+import { FileTypeIcon } from "./FileTypeIcon";
 
 interface FinderDialogProps {
   isOpen: boolean;
@@ -15,6 +18,8 @@ interface FinderDialogProps {
   onSelect: (file: FileStat) => void;
   files: FileStat[];
   copy: FilesCopyConfig["search"];
+  /** [REQ-CONFIG_DRIVEN_APPEARANCE] [IMPL-CONFIG_DRIVEN_APPEARANCE] Theme file type icons */
+  fileTypes?: FileTypesMap;
 }
 
 /**
@@ -34,6 +39,7 @@ export function FinderDialog({
   onSelect,
   files,
   copy,
+  fileTypes = DEFAULT_FILE_TYPES,
 }: FinderDialogProps) {
   const [pattern, setPattern] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -240,11 +246,13 @@ export function FinderDialog({
                     }}
                   >
                     <div className="flex items-center">
-                      {file.isDirectory && (
-                        <span className="mr-2 text-blue-600 dark:text-blue-400">
-                          📁
-                        </span>
-                      )}
+                      <span className="mr-2">
+                        <FileTypeIcon
+                          fileTypes={fileTypes}
+                          filename={file.name}
+                          isDirectory={file.isDirectory}
+                        />
+                      </span>
                       <span className="text-gray-900 dark:text-white">
                         {highlightMatch(file.name, pattern)}
                       </span>

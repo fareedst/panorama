@@ -3,7 +3,7 @@
 // [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE]: Restore workspace from ?meshId=
 
 import { listDirectory, getUserHomeDirectory, sortFiles as sortFilesData } from "@/lib/files.data";
-import { getFilesConfig } from "@/lib/config";
+import { getFilesConfig, getThemeConfig, DEFAULT_FILE_TYPES } from "@/lib/config";
 import WorkspaceView, {
   type RestorePaneMeta,
   type RestoreUiState,
@@ -44,6 +44,7 @@ export default async function FilesPage({
   const { meshId, panes: panesQuery, pane0: pane0Query } = await searchParams;
 
   const config = getFilesConfig();
+  const fileTypes = getThemeConfig().files?.fileTypes ?? DEFAULT_FILE_TYPES;
   const keybindings = config.keybindings || [];
   const copy = config.copy || {};
   const layout = config.layout || {
@@ -158,6 +159,7 @@ export default async function FilesPage({
       layout={layout}
       columns={columns}
       toolbars={toolbars}
+      fileTypes={fileTypes}
       restoreUi={restoreUi}
       restoreLayout={restoreLayout}
       restorePaneMeta={restorePaneMeta}

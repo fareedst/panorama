@@ -15,6 +15,13 @@ import type {
   FilesConfig,
   FilesThemeOverrides,
 } from "./config.types";
+import {
+  DEFAULT_FILE_TYPES,
+  resolveFileTypeConfig,
+} from "./file-type-config";
+
+export { DEFAULT_FILE_TYPES, resolveFileTypeConfig };
+export type { FileTypesMap } from "./file-type-config";
 
 // ---------------------------------------------------------------------------
 // Default configurations – used as fallback when YAML values are missing
@@ -104,6 +111,9 @@ const DEFAULT_THEME_CONFIG: ThemeConfig = {
     buttonDesktopWidth: "158px",
   },
   overrides: {},
+  files: {
+    fileTypes: DEFAULT_FILE_TYPES,
+  },
 };
 
 // ---------------------------------------------------------------------------
@@ -372,45 +382,11 @@ export function getFileTypeConfig(
   filename: string,
   isDirectory: boolean,
 ): { icon: string; iconClass: string } {
-  const fileTypes = theme.files?.fileTypes;
-  const defaultFile = {
-    icon: "📄",
-    iconClass: "text-gray-500 dark:text-gray-400",
-  };
-  const defaultDir = {
-    icon: "📁",
-    iconClass: "text-blue-500 dark:text-blue-400",
-  };
-
-  // Directories always use directory type
-  if (isDirectory) {
-    return fileTypes?.directory ?? defaultDir;
-  }
-
-  // No file types configured
-  if (!fileTypes) return defaultFile;
-
-  // Check each file type's patterns
-  for (const [typeName, typeConfig] of Object.entries(fileTypes)) {
-    if (typeName === "directory" || typeName === "file") continue;
-    if (!typeConfig.patterns || typeConfig.patterns.length === 0) continue;
-
-    // Match against patterns (simple glob matching)
-    for (const pattern of typeConfig.patterns) {
-      const regex = pattern
-        .replace(/\./g, "\\.")
-        .replace(/\*/g, ".*");
-      if (new RegExp(`^${regex}$`, "i").test(filename)) {
-        return {
-          icon: typeConfig.icon,
-          iconClass: typeConfig.iconClass,
-        };
-      }
-    }
-  }
-
-  // Default to generic file type
-  return fileTypes.file ?? defaultFile;
+  return resolveFileTypeConfig(
+    theme.files?.fileTypes ?? DEFAULT_FILE_TYPES,
+    filename,
+    isDirectory,
+  );
 }
 
 // ---------------------------------------------------------------------------

@@ -150,8 +150,26 @@ describe("FinderDialog [TEST-FILE_SEARCH] [REQ-FILE_SEARCH]", () => {
         />
       );
 
-      // Check for directory emoji
-      expect(screen.getByText("📁")).toBeInTheDocument();
+      const icons = screen.getAllByTestId("file-type-icon");
+      expect(icons.length).toBeGreaterThan(0);
+      expect(icons[0]).toHaveTextContent("📁");
+    });
+
+    it("shows code icon for JavaScript files [REQ-CONFIG_DRIVEN_APPEARANCE]", () => {
+      render(
+        <FinderDialog
+          isOpen={true}
+          onClose={mockOnClose}
+          onSelect={mockOnSelect}
+          files={mockFiles}
+          copy={mockCopy}
+        />
+      );
+
+      const jsIcon = screen
+        .getAllByTestId("file-type-icon")
+        .find((el) => el.closest("div")?.textContent?.includes("test_file.js"));
+      expect(jsIcon).toHaveTextContent("💻");
     });
   });
 

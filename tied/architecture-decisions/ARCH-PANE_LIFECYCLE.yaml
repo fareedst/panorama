@@ -39,6 +39,7 @@ ARCH-PANE_LIFECYCLE:
     summary: Server-side multi-pane initialization based on config, client-side pane management with keyboard shortcuts and config validation
     details:
       - 'Add pane: clones focused pane state or creates new pane at home directory'
+      - 'appendPaneAtPath: append at arbitrary directoryPath with template-pane display spec and cross-pane inheritance; shared by handleAddPane and Set-base newPane'
       - 'Cycle panes: rotate panes[] one slot; remap focus and history'
       - 'Pane order dialog: arbitrary reorder via index permutation'
       - 'Remove pane: removes pane from array, adjusts focusIndex if necessary'
@@ -80,9 +81,9 @@ ARCH-PANE_LIFECYCLE:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-29T00:00:00.000Z"
+      date: "2026-05-31T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — vocabulary see_also back-link
+      reason: LEAP — appendPaneAtPath shared append helper
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent
