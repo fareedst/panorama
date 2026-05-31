@@ -83,7 +83,12 @@ import {
   ExecuteFileDialog,
   type ExecuteApplySelection,
 } from "./components/ExecuteFileDialog";
+import {
+  RenameRegexDialog,
+  type RenameRegexApplySelection,
+} from "./components/RenameRegexDialog";
 import { buildExecuteEntries } from "@/lib/execute-command";
+import { buildRenameRegexEntries } from "@/lib/rename-regex";
 import { LayoutPickerPopover } from "./components/LayoutPickerPopover";
 import {
   getVisibleFileColumns,
@@ -512,6 +517,13 @@ export default function WorkspaceView({
   } | null>(null);
   // [IMPL-WORKSPACE_VIEW] [IMPL-EXECUTE_DIALOG] [REQ-PANE_COMMAND_EXEC]: how — Execute file dialog state (pane index, context file, marks at open)
   const [executeFileDialog, setExecuteFileDialog] = useState<{
+    isOpen: boolean;
+    paneIndex: number;
+    file: FileStat;
+    marksAtOpen: Set<string>;
+  } | null>(null);
+  // [IMPL-WORKSPACE_VIEW] [IMPL-RENAME_REGEX_DIALOG] [REQ-BULK_FILE_OPS]: how — Rename Regex dialog state (pane index, context file, marks at open)
+  const [renameRegexDialog, setRenameRegexDialog] = useState<{
     isOpen: boolean;
     paneIndex: number;
     file: FileStat;
@@ -2385,6 +2397,77 @@ export default function WorkspaceView({
     [executeFileDialog, panes, handleNavigate],
   );
 
+  // [IMPL-WORKSPACE_VIEW] [IMPL-RENAME_REGEX_DIALOG] [IMPL-RENAME_REGEX] [REQ-BULK_FILE_OPS]: how — buildRenameRegexEntries, POST bulk-rename, refresh affected pane listings
+  const handleApplyRenameRegex = useCallback(
+    (selection: RenameRegexApplySelection) => {
+      if (!renameRegexDialog) {
+        return;
+      }
+      const { paneIndex, file, marksAtOpen } = renameRegexDialog;
+      const paneFilesList = panes.map((p) => p.files);
+      const entries = buildRenameRegexEntries(
+        selection.paneTarget,
+        selection.matchPattern,
+        selection.replacement,
+        paneIndex,
+        paneFilesList,
+        marksAtOpen,
+        file,
+      );
+
+      setRenameRegexDialog(null);
+
+      if (entries.length === 0) {
+        alert("No files to rename with the selected pattern.");
+        return;
+      }
+
+      fetch("/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "bulk-rename",
+          entries,
+          ...displaySpecPayload(paneIndex),
+        }),
+      })
+        .then(async (res) => {
+          const data = (await res.json()) as OperationResult & { error?: string };
+          if (!res.ok) {
+            throw new Error(data.error || res.statusText);
+          }
+          if (data.errorCount > 0) {
+            alert(
+              `Rename completed with errors: ${data.successCount} succeeded, ${data.errorCount} failed.`,
+            );
+          }
+          return data;
+        })
+        .then(() => {
+          const paneIndicesToRefresh = new Set<number>();
+          for (const entry of entries) {
+            panes.forEach((p, i) => {
+              if (
+                p.files.some(
+                  (f) => f.path === entry.src || f.path === entry.dest,
+                )
+              ) {
+                paneIndicesToRefresh.add(i);
+              }
+            });
+          }
+          for (const i of paneIndicesToRefresh) {
+            void handleNavigate(i, panes[i].path);
+          }
+        })
+        .catch((e) => {
+          console.error("Rename regex failed:", e);
+          alert(`Rename regex failed: ${String(e)}`);
+        });
+    },
+    [renameRegexDialog, panes, handleNavigate, displaySpecPayload],
+  );
+
   // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
   // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] [ARCH-LINKED_NAV]
   // Helper: Navigate to parent directory with cursor positioning
@@ -3241,6 +3324,15 @@ export default function WorkspaceView({
                 marksAtOpen,
               })
             }
+            onRenameRegex={(file, marksAtOpen) =>
+              setRenameRegexDialog({
+                isOpen: true,
+                paneIndex: index,
+                file,
+                marksAtOpen,
+              })
+            }
+            renameRegexMenuLabel={copy.renameRegex?.renameRegexMenu}
             executeMenuLabel={copy.executeFile?.executeMenu}
             displaySpecs={catalogSpecs}
             activeDisplaySpecId={pane.activeDisplaySpecId}
@@ -3458,6 +3550,20 @@ export default function WorkspaceView({
           executeLabels={copy.executeFile}
           onApply={(selection) => handleApplyExecute(selection)}
           onClose={() => setExecuteFileDialog(null)}
+        />
+      )}
+
+      {renameRegexDialog && (
+        <RenameRegexDialog
+          isOpen={renameRegexDialog.isOpen}
+          initiatingPaneIndex={renameRegexDialog.paneIndex}
+          paneCount={panes.length}
+          file={renameRegexDialog.file}
+          marksAtOpen={renameRegexDialog.marksAtOpen}
+          paneLabels={copy.paneManagement}
+          renameRegexLabels={copy.renameRegex}
+          onApply={(selection) => handleApplyRenameRegex(selection)}
+          onClose={() => setRenameRegexDialog(null)}
         />
       )}
 

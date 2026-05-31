@@ -13,6 +13,7 @@ IMPL-MOUSE_SUPPORT:
       - 'ContextMenu: row file operations (copy, move, delete, rename)'
       - 'file-column-clipboard.ts: format and resolveCrossPanePathsForFilename by cursor filename'
       - 'FileColumnContextMenu: clipboard-only on file column cells (filename, path, cross-pane paths)'
+      - 'RENAME_REGEX_MENU: ContextMenu Rename Regex… menu item opens RenameRegexDialog (marks allowed unlike single Rename)'
       - 'SET_BASE_DIRECTORY_MENU: directory rows show Set as Base directory menu item (data-testid=set-base-directory-menu-item)'
       - 'UNIFIED_ROW_CONTEXT_MENU: ContextMenu portal combines file ops, SET_BASE_DIRECTORY_MENU on directories, Touch and Execute menu items, and clipboard section'
   code_locations:
@@ -27,16 +28,10 @@ IMPL-MOUSE_SUPPORT:
         description: FileColumnContextMenu component unit tests
       - path: src/app/files/components/ContextMenu.tsx
         description: Row file operations context menu
-    functions:
-      - name: formatCursorFilenameForClipboard
-        file: src/lib/file-column-clipboard.ts
-        description: Returns file.name for clipboard
-      - name: resolveCrossPanePathsForFilename
-        file: src/lib/file-column-clipboard.ts
-        description: Cross-pane path resolution by basename
-      - name: FileColumnContextMenu
-        file: src/app/files/components/FileColumnContextMenu.tsx
-        description: File column clipboard context menu
+      - path: src/app/files/components/RenameRegexDialog.tsx
+        description: Rename Regex secondary workspace dialog
+      - path: src/lib/rename-regex.ts
+        description: Rename Regex path resolution and basename transform
   traceability:
     requirements:
       - REQ-DIRECTORY_NAVIGATION
@@ -47,8 +42,10 @@ IMPL-MOUSE_SUPPORT:
     tests:
       - src/app/files/components/ContextMenu.test.tsx
       - src/app/files/components/FileColumnContextMenu.test.tsx
+      - src/app/files/components/RenameRegexDialog.test.tsx
       - src/app/files/components/SetBaseDirectoryDialog.test.tsx
       - src/app/files/WorkspaceView.execute.test.tsx
+      - src/app/files/WorkspaceView.rename-regex.test.tsx
       - src/lib/file-column-clipboard.test.ts
       - src/lib/set-base-directory.test.ts
     code_annotations:
@@ -62,7 +59,7 @@ IMPL-MOUSE_SUPPORT:
     last_updated:
       date: "2026-05-31T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — Execute menu item in unified ContextMenu
+      reason: LEAP — Rename Regex menu item in unified ContextMenu
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

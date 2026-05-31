@@ -1,0 +1,52 @@
+IMPL-RENAME_REGEX_DIALOG:
+  name: Rename Regex Dialog and Context Menu
+  status: Active
+  cross_references:
+    - ARCH-BATCH_OPERATIONS
+    - ARCH-MOUSE_SUPPORT
+    - IMPL-MOUSE_SUPPORT
+    - IMPL-RENAME_REGEX
+    - IMPL-WORKSPACE_VIEW
+    - REQ-BULK_FILE_OPS
+    - REQ-MOUSE_INTERACTION
+  decision: RenameRegexDialog secondary workspace dialog with pane target (thisPane/allPanes), match pattern and replacement fields; ContextMenu Rename Regex… item; rename-regex.ts resolves paths via touch-file helpers; WorkspaceView handleApplyRenameRegex POSTs bulk-rename
+  rationale:
+    why: Implements bulk rename with regex pattern from unified file context menu per REQ-BULK_FILE_OPS and REQ-MOUSE_INTERACTION
+  implementation_approach:
+    summary: RenameRegexDialog + rename-regex.ts + bulk-rename API + ContextMenu/WorkspaceView wiring
+    details:
+      - buildRenameRegexEntries reuses resolveTouchBasenames and resolveTouchPaths
+      - Context menu item visible with marks unlike single Rename
+      - POST /api/files operation bulk-rename with entries { src, dest }[]
+      - RenameRegexDialog mirrors TouchFileDialog/ExecuteFileDialog shell
+  traceability:
+    requirements:
+      - REQ-BULK_FILE_OPS
+      - REQ-MOUSE_INTERACTION
+    architecture:
+      - ARCH-BATCH_OPERATIONS
+      - ARCH-MOUSE_SUPPORT
+    tests:
+      - src/app/files/components/ContextMenu.test.tsx
+      - src/app/files/components/RenameRegexDialog.test.tsx
+      - src/app/files/WorkspaceView.rename-regex.test.tsx
+      - src/lib/rename-regex.test.ts
+    code_annotations:
+      - IMPL-RENAME_REGEX_DIALOG
+  related_decisions:
+    depends_on:
+      - IMPL-BULK_OPS
+      - IMPL-MOUSE_SUPPORT
+      - IMPL-WORKSPACE_VIEW
+    see_also:
+      - IMPL-RENAME_DIALOG
+      - IMPL-TOUCH_DIALOG
+  metadata:
+    created:
+      date: "2026-05-31T00:00:00.000Z"
+      author: AI Agent
+    last_updated:
+      date: "2026-05-31T00:00:00.000Z"
+      author: AI Agent
+      reason: Initial creation for Rename Regex context menu and dialog
+  essence_pseudocode_path: implementation-decisions/IMPL-RENAME_REGEX_DIALOG-pseudocode.md

@@ -1,4 +1,3 @@
-# ARCH detail — ARCH-BATCH_OPERATIONS
 ARCH-BATCH_OPERATIONS:
   name: Async Batch File Operations Architecture
   status: Active
@@ -36,13 +35,19 @@ ARCH-BATCH_OPERATIONS:
       - 'POST /api/files with operation: bulk-copy/bulk-move/bulk-delete'
       - 'Progress dialog shows: percentage, file count, current file'
       - Check marks.size > 0, use marked files; else use cursor file
+      - POST /api/files operation bulk-rename with entries { src, dest }[]; client rename-regex.ts resolves paths then bulkRename Promise.allSettled
       - Server streams progress updates via callbacks
   traceability:
     requirements:
       - REQ-BULK_FILE_OPS
     implementation:
       - IMPL-BULK_OPS
-    tests: []
+      - IMPL-RENAME_REGEX
+    tests:
+      - src/app/api/files/route.test.ts
+      - src/app/files/WorkspaceView.rename-regex.test.tsx
+      - src/lib/rename-regex.data.test.ts
+      - src/lib/rename-regex.test.ts
     code_annotations:
       - ARCH-BATCH_OPERATIONS
   related_decisions:
@@ -57,9 +62,9 @@ ARCH-BATCH_OPERATIONS:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-07T00:00:00.000Z
+      date: "2026-05-31T00:00:00.000Z"
       author: AI Agent
-      reason: Initial creation - adapted from Goful ARCH-ASYNC_FILE_OPERATIONS
+      reason: LEAP — bulk-rename via IMPL-RENAME_REGEX traceability
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

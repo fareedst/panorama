@@ -129,6 +129,13 @@ copy:
     commandPlaceholder: e.g. echo $FILE
     executeApply: Execute
     cancel: Cancel
+  renameRegex:
+    renameRegexMenu: Rename Regex…
+    renameRegexTitle: Rename Regex
+    matchPatternLabel: Match pattern
+    replacementLabel: Replacement text
+    renameRegexApply: Apply
+    cancel: Cancel
   # [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE]
   workspaceMesh:
     saveDialogTitle: Save workspace as mesh

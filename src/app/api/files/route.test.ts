@@ -22,6 +22,7 @@ vi.mock("@/lib/sync", () => ({
 }));
 
 const mockBulkTouch = vi.fn();
+const mockBulkRename = vi.fn();
 const mockExecuteCommandBatch = vi.fn();
 vi.mock("@/lib/files.data", () => ({
   copyFile: vi.fn(),
@@ -32,6 +33,7 @@ vi.mock("@/lib/files.data", () => ({
   bulkMove: vi.fn(),
   bulkDelete: vi.fn(),
   bulkTouch: (...args: unknown[]) => mockBulkTouch(...args),
+  bulkRename: (...args: unknown[]) => mockBulkRename(...args),
   listDirectory: vi.fn(),
   getUserHomeDirectory: vi.fn(),
   sortFiles: vi.fn(),
@@ -45,6 +47,11 @@ describe("POST /api/files [TEST-FILES_API] [IMPL-FILES_API] [REQ-FILE_OPERATIONS
   beforeEach(() => {
     vi.clearAllMocks();
     mockBulkTouch.mockResolvedValue({
+      successCount: 1,
+      errorCount: 0,
+      errors: [],
+    });
+    mockBulkRename.mockResolvedValue({
       successCount: 1,
       errorCount: 0,
       errors: [],
@@ -253,6 +260,119 @@ describe("POST /api/files [TEST-FILES_API] [IMPL-FILES_API] [REQ-FILE_OPERATIONS
           path: "/tmp/a.txt",
           mtime: new Date("2026-01-01T00:00:00.000Z"),
         },
+      ]);
+    });
+  });
+
+  describe("bulk-rename operation [IMPL-RENAME_REGEX] [IMPL-FILES_API] [ARCH-BATCH_OPERATIONS] [ARCH-FILE_OPERATIONS_API] [REQ-BULK_FILE_OPS]", () => {
+    // [IMPL-RENAME_REGEX] [ARCH-BATCH_OPERATIONS] [ARCH-FILE_OPERATIONS_API] [REQ-BULK_FILE_OPS]: how — validate entries array present
+    it("returns 400 when entries missing [REQ-BULK_FILE_OPS]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ operation: "bulk-rename" }),
+      });
+      const response = await POST(request);
+      const data = await response.json();
+      expect(response.status).toBe(400);
+      expect(data.error).toBe("Entries array required");
+      expect(mockBulkRename).not.toHaveBeenCalled();
+    });
+
+    it("returns 400 for invalid path in entry [REQ-BULK_FILE_OPS]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "bulk-rename",
+          entries: [{ src: "../secret", dest: "../secret2" }],
+        }),
+      });
+      const response = await POST(request);
+      const data = await response.json();
+      expect(response.status).toBe(400);
+      expect(data.error).toBe("Invalid path");
+    });
+
+    it("returns 400 when rename crosses directories [REQ-BULK_FILE_OPS]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "bulk-rename",
+          entries: [{ src: "/tmp/a.txt", dest: "/other/a.txt" }],
+        }),
+      });
+      const response = await POST(request);
+      const data = await response.json();
+      expect(response.status).toBe(400);
+      expect(data.error).toBe("Rename must stay in same directory");
+    });
+
+    // [IMPL-RENAME_REGEX] [ARCH-FILE_OPERATIONS_API] [REQ-BULK_FILE_OPS]: how — each entry requires src and dest strings
+    it("returns 400 when entry missing src [REQ-BULK_FILE_OPS]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "bulk-rename",
+          entries: [{ dest: "/tmp/b.txt" }],
+        }),
+      });
+      const response = await POST(request);
+      const data = await response.json();
+      expect(response.status).toBe(400);
+      expect(data.error).toBe("Each entry requires src");
+      expect(mockBulkRename).not.toHaveBeenCalled();
+    });
+
+    it("returns 400 when entry missing dest [REQ-BULK_FILE_OPS]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "bulk-rename",
+          entries: [{ src: "/tmp/a.txt" }],
+        }),
+      });
+      const response = await POST(request);
+      const data = await response.json();
+      expect(response.status).toBe(400);
+      expect(data.error).toBe("Each entry requires dest");
+      expect(mockBulkRename).not.toHaveBeenCalled();
+    });
+
+    // [IMPL-RENAME_REGEX] [ARCH-FILE_OPERATIONS_API] [REQ-BULK_FILE_OPS]: how — validateRenameBasename on destination basename
+    it("returns 400 for invalid destination basename [REQ-BULK_FILE_OPS]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "bulk-rename",
+          entries: [{ src: "/tmp/a.txt", dest: "/tmp/." }],
+        }),
+      });
+      const response = await POST(request);
+      const data = await response.json();
+      expect(response.status).toBe(400);
+      expect(data.error).toBe("Invalid destination name");
+      expect(mockBulkRename).not.toHaveBeenCalled();
+    });
+
+    // [IMPL-RENAME_REGEX] [ARCH-BATCH_OPERATIONS] [ARCH-FILE_OPERATIONS_API] [REQ-BULK_FILE_OPS]: how — delegate validated entries to bulkRename
+    it("delegates valid bulk-rename to bulkRename [REQ-BULK_FILE_OPS]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "bulk-rename",
+          entries: [{ src: "/tmp/a.txt", dest: "/tmp/b.txt" }],
+        }),
+      });
+      const response = await POST(request);
+      expect(response.status).toBe(200);
+      expect(mockBulkRename).toHaveBeenCalledWith([
+        { src: "/tmp/a.txt", dest: "/tmp/b.txt" },
       ]);
     });
   });

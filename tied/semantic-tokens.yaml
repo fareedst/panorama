@@ -3176,3 +3176,11 @@ IMPL-EXECUTE_DIALOG:
   type: implementation
   name: Execute File Dialog Implementation
   description: ExecuteFileDialog ContextMenu FilePane WorkspaceView wiring
+IMPL-RENAME_REGEX:
+  type: implementation
+  name: Rename Regex Path Resolution
+  description: rename-regex.ts buildRenameRegexEntries and bulkRename API
+IMPL-RENAME_REGEX_DIALOG:
+  type: implementation
+  name: Rename Regex Dialog
+  description: RenameRegexDialog ContextMenu WorkspaceView wiring for regex bulk rename

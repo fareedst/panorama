@@ -193,6 +193,38 @@ describe("[TEST-MOUSE_INTERACTION] ContextMenu Component", () => {
     expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
   });
 
+  // [IMPL-RENAME_REGEX_DIALOG] [REQ-BULK_FILE_OPS] [REQ-MOUSE_INTERACTION]: Rename Regex… menu item
+  it("shows Rename Regex menu item when handler provided", () => {
+    const onRenameRegex = vi.fn();
+    render(
+      <ContextMenu
+        {...defaultProps}
+        onRenameRegex={onRenameRegex}
+        renameRegexMenuLabel="Rename Regex…"
+      />,
+    );
+    expect(screen.getByTestId("rename-regex-menu-item")).toHaveTextContent(
+      "Rename Regex…",
+    );
+    fireEvent.click(screen.getByTestId("rename-regex-menu-item"));
+    expect(onRenameRegex).toHaveBeenCalledTimes(1);
+    expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
+  });
+
+  // [IMPL-RENAME_REGEX_DIALOG] [IMPL-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] [REQ-BULK_FILE_OPS]: how — Rename Regex visible with marks (unlike single Rename)
+  it("shows Rename Regex with marked files", () => {
+    const marks = new Set(["a.txt", "b.txt"]);
+    render(
+      <ContextMenu
+        {...defaultProps}
+        marks={marks}
+        onRenameRegex={vi.fn()}
+      />,
+    );
+    expect(screen.getByText("2 marked file(s)")).toBeInTheDocument();
+    expect(screen.getByTestId("rename-regex-menu-item")).toBeInTheDocument();
+  });
+
   it("closes menu on Escape key", () => {
     render(<ContextMenu {...defaultProps} />);
     

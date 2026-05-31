@@ -263,6 +263,47 @@ export async function bulkTouch(
 }
 
 /**
+ * [IMPL-RENAME_REGEX] [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how — Promise.allSettled per entry like bulkTouch
+ */
+export async function bulkRename(
+  entries: Array<{ src: string; dest: string }>,
+): Promise<import("./files.types").OperationResult> {
+  logger.warn(
+    ["IMPL-RENAME_REGEX", "IMPL-BULK_OPS", "REQ-BULK_FILE_OPS"],
+    `Bulk rename: ${entries.length} paths`,
+  );
+
+  const errors: Array<{ file: string; error: string }> = [];
+
+  const results = await Promise.allSettled(
+    entries.map(async ({ src, dest }) => {
+      try {
+        await renameFile(src, dest);
+      } catch (error) {
+        const errMsg = String(error);
+        errors.push({ file: src, error: errMsg });
+        throw error;
+      }
+    }),
+  );
+
+  const successCount = results.filter((r) => r.status === "fulfilled").length;
+  const errorCount = results.filter((r) => r.status === "rejected").length;
+
+  logger.info(
+    ["IMPL-RENAME_REGEX", "IMPL-BULK_OPS", "REQ-BULK_FILE_OPS"],
+    `Bulk rename completed`,
+    { successCount, errorCount },
+  );
+
+  return {
+    successCount,
+    errorCount,
+    errors,
+  };
+}
+
+/**
  * [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: bulkCopy bulkMove bulkDelete in files.data.ts run Promise.allSettled per source without stopping on first failure
  * Copy multiple files with progress tracking
  * 

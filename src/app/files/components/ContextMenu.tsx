@@ -39,6 +39,8 @@ interface ContextMenuProps {
   onTouch?: () => void;
   /** [REQ-PANE_COMMAND_EXEC] [REQ-MOUSE_INTERACTION] Open Execute file dialog */
   onExecute?: () => void;
+  /** [REQ-BULK_FILE_OPS] [REQ-MOUSE_INTERACTION] Open Rename Regex dialog */
+  onRenameRegex?: () => void;
   /** Workspace pane listings for cross-pane path clipboard actions */
   paneFilesList?: readonly (readonly FileStat[])[];
   /** Injectable clipboard writer for tests */
@@ -49,6 +51,8 @@ interface ContextMenuProps {
   touchMenuLabel?: string;
   /** Label for Execute menu item */
   executeMenuLabel?: string;
+  /** Label for Rename Regex menu item */
+  renameRegexMenuLabel?: string;
 }
 
 /**
@@ -68,11 +72,13 @@ export default function ContextMenu({
   onSetBaseDirectory,
   onTouch,
   onExecute,
+  onRenameRegex,
   paneFilesList,
   copyText = copyTextToClipboard,
   setBaseDirectoryMenuLabel = "Set as Base directory…",
   touchMenuLabel = "Touch…",
   executeMenuLabel = "Execute…",
+  renameRegexMenuLabel = "Rename Regex…",
 }: ContextMenuProps) {
   const menuElementRef = useRef<HTMLDivElement>(null);
   
@@ -212,6 +218,20 @@ export default function ContextMenu({
           <span className="text-sm">✏️</span>
           <span>Rename</span>
           <span className="ml-auto text-xs text-gray-500">R</span>
+        </button>
+      )}
+
+      {/* [IMPL-RENAME_REGEX_DIALOG] [REQ-BULK_FILE_OPS] [REQ-MOUSE_INTERACTION]: Rename Regex… opens Rename Regex dialog */}
+      {onRenameRegex && (
+        <button
+          type="button"
+          className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+          onClick={() => handleAction(onRenameRegex)}
+          role="menuitem"
+          data-testid="rename-regex-menu-item"
+        >
+          <span className="text-sm">🔤</span>
+          <span>{renameRegexMenuLabel}</span>
         </button>
       )}
 

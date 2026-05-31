@@ -2,6 +2,7 @@
 // API routes for file operations
 
 import { NextRequest, NextResponse } from "next/server";
+import path from "path";
 import { listDirectory, getUserHomeDirectory, sortFiles } from "@/lib/files.data";
 import { filterFileStats } from "@/lib/display-filter-engine";
 import { validateOperationSourcesForDisplaySpec } from "@/lib/display-filter-api-validate";
@@ -110,7 +111,8 @@ export async function POST(request: NextRequest) {
     }
     
     // Import operations dynamically to avoid loading on GET
-    const { copyFile, moveFile, deleteFile, renameFile, bulkCopy, bulkMove, bulkDelete, bulkTouch } = await import("@/lib/files.data");
+    const { copyFile, moveFile, deleteFile, renameFile, bulkCopy, bulkMove, bulkDelete, bulkTouch, bulkRename } = await import("@/lib/files.data");
+    const { validateRenameBasename } = await import("@/lib/rename-regex");
 
     const assertSourcesVisible = async (sources: string[]) => {
       const err = await validateOperationSourcesForDisplaySpec(sources, displaySpecId);
@@ -264,6 +266,46 @@ export async function POST(request: NextRequest) {
           errorCount: touchResult.errors.length,
         });
         return NextResponse.json(touchResult);
+      }
+
+      case "bulk-rename": {
+        // [IMPL-RENAME_REGEX] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how — validate entries; same-dir rename; delegate to bulkRename
+        const renameEntries = body.entries as Array<{ src?: string; dest?: string }>;
+        if (!renameEntries || !Array.isArray(renameEntries) || renameEntries.length === 0) {
+          logger.warn(["IMPL-RENAME_REGEX", "REQ-BULK_FILE_OPS"], `Bulk rename missing entries`);
+          return NextResponse.json({ error: "Entries array required" }, { status: 400 });
+        }
+
+        const parsedRename: Array<{ src: string; dest: string }> = [];
+        for (const entry of renameEntries) {
+          if (!entry.src || typeof entry.src !== "string") {
+            return NextResponse.json({ error: "Each entry requires src" }, { status: 400 });
+          }
+          if (!entry.dest || typeof entry.dest !== "string") {
+            return NextResponse.json({ error: "Each entry requires dest" }, { status: 400 });
+          }
+          if (entry.src.includes("..") || entry.dest.includes("..")) {
+            return NextResponse.json({ error: "Invalid path" }, { status: 400 });
+          }
+          if (path.dirname(entry.src) !== path.dirname(entry.dest)) {
+            return NextResponse.json({ error: "Rename must stay in same directory" }, { status: 400 });
+          }
+          const destBasename = path.basename(entry.dest);
+          if (!validateRenameBasename(destBasename)) {
+            return NextResponse.json({ error: "Invalid destination name" }, { status: 400 });
+          }
+          parsedRename.push({ src: entry.src, dest: entry.dest });
+        }
+
+        const blockedRename = await assertSourcesVisible(parsedRename.map((e) => e.src));
+        if (blockedRename) return blockedRename;
+
+        const renameResult = await bulkRename(parsedRename);
+        logger.info(["IMPL-RENAME_REGEX", "REQ-BULK_FILE_OPS"], `Bulk rename completed`, {
+          successCount: renameResult.successCount,
+          errorCount: renameResult.errors.length,
+        });
+        return NextResponse.json(renameResult);
       }
 
       case "execute-command": {

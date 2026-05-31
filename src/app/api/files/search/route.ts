@@ -41,37 +41,7 @@ function validatePath(requestedPath: string): { valid: boolean; error?: string }
   return { valid: true };
 }
 
-/**
- * Validate regex pattern to prevent ReDoS attacks
- * [REQ-FILE_SEARCH] [ARCH-SEARCH_ENGINE] Security validation
- */
-function validateRegex(pattern: string): { valid: boolean; error?: string } {
-  // Reject patterns that are too long
-  if (pattern.length > 500) {
-    return { valid: false, error: "Pattern too long" };
-  }
-  
-  // Test if regex is valid
-  try {
-    new RegExp(pattern);
-  } catch {
-    return { valid: false, error: "Invalid regex pattern" };
-  }
-  
-  // Reject patterns with excessive repetition (potential ReDoS)
-  const dangerousPatterns = [
-    /(\*|\+|\{)\s*(\*|\+|\{)/,  // Nested repetition
-    /(\(.*\)){5,}/,              // Many groups
-  ];
-  
-  for (const dangerous of dangerousPatterns) {
-    if (dangerous.test(pattern)) {
-      return { valid: false, error: "Potentially dangerous regex pattern" };
-    }
-  }
-  
-  return { valid: true };
-}
+import { validateRegex } from "@/lib/regex-validation";
 
 /**
  * Search file for pattern matches

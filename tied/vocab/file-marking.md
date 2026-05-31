@@ -10,7 +10,7 @@
 | --- | --- |
 | REQ | [REQ-FILE_MARKING_WEB](../tied/requirements/REQ-FILE_MARKING_WEB.yaml), [REQ-BULK_FILE_OPS](../tied/requirements/REQ-BULK_FILE_OPS.yaml) |
 | ARCH | [ARCH-MARKING_STATE](../tied/architecture-decisions/ARCH-MARKING_STATE.yaml), [ARCH-BATCH_OPERATIONS](../tied/architecture-decisions/ARCH-BATCH_OPERATIONS.yaml) |
-| IMPL | [IMPL-FILE_MARKING](../tied/implementation-decisions/IMPL-FILE_MARKING.yaml), [IMPL-BULK_OPS](../tied/implementation-decisions/IMPL-BULK_OPS.yaml) |
+| IMPL | [IMPL-FILE_MARKING](../tied/implementation-decisions/IMPL-FILE_MARKING.yaml), [IMPL-BULK_OPS](../tied/implementation-decisions/IMPL-BULK_OPS.yaml), [IMPL-RENAME_REGEX](../tied/implementation-decisions/IMPL-RENAME_REGEX.yaml) |
 | Pseudo-code | [IMPL-FILE_MARKING-pseudocode.md](../tied/implementation-decisions/IMPL-FILE_MARKING-pseudocode.md) |
 
 ## See also
@@ -33,6 +33,8 @@
 | **Invert marks** | `mark.invert` — **Ctrl+M** |
 | **Clear marks** | `mark.clear` — **Escape** |
 | **Operation files** | `getOperationFiles()` — marked paths if any marks, else cursor file path |
+| **Bulk operation** | Uses `getOperationFiles(focusIndex)` before NSYNC or API bulk routes; **Rename Regex**, **Touch**, and **Execute** dialogs use **`marksAtOpen` snapshot** at dialog open |
+| **marksAtOpen snapshot** | Frozen copy of `pane.marks` when a secondary dialog opens from the context menu; path resolution uses snapshot, not live marks ([IMPL-RENAME_REGEX](../tied/implementation-decisions/IMPL-RENAME_REGEX.yaml)) |
 | **Per-pane independence** | Marks do not copy across panes; bulk ops use **source pane** marks only |
 
 ## Naming bridge
@@ -52,7 +54,8 @@
 - **Parent entry** — `..` parent row is not markable.
 - **Empty directory** — Mark keys on empty listing: no error, no footer count.
 - **Multi-mark workflow** — Sequential mark.all → invert → clear is valid UX.
-- **Bulk operation** — Uses `getOperationFiles(focusIndex)` before NSYNC or API bulk routes.
+- **Bulk operation** — Uses `getOperationFiles(focusIndex)` before NSYNC or API bulk routes; dialog flows (**Rename Regex**, **Touch**, **Execute**) snapshot marks at open via **`marksAtOpen`**.
+- **marksAtOpen snapshot** — Context menu passes `new Set(marks)` when opening secondary dialogs so apply uses marks frozen at open time.
 - **Visible-only marks** — When a [display spec](pane-display-filter.md) is active, `pane.files` is the filtered visible set; mark-all and footer **total** count visible items only.
 
 ## Copy coverage
@@ -88,4 +91,5 @@ User-facing strings: `config/files.yaml` → `copy.marking.*` (`markAll`, `inver
 - **Mark and advance** — `mark.toggle-cursor` / Space
 - **Marked file** — name in `pane.marks`
 - **Bulk operation** — uses `getOperationFiles`
+- **marksAtOpen snapshot** — frozen marks at dialog open
 - **Visible-only marks** — counts use filtered listing

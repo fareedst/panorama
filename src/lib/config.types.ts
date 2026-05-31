@@ -340,6 +340,15 @@ export interface FilesCopyConfig {
     executeApply?: string;
     cancel?: string;
   };
+  // [IMPL-RENAME_REGEX_DIALOG] [REQ-BULK_FILE_OPS] Rename Regex dialog copy
+  renameRegex?: {
+    renameRegexMenu?: string;
+    renameRegexTitle?: string;
+    matchPatternLabel?: string;
+    replacementLabel?: string;
+    renameRegexApply?: string;
+    cancel?: string;
+  };
   // [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE]
   workspaceMesh?: {
     saveDialogTitle?: string;

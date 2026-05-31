@@ -93,6 +93,10 @@ interface FilePaneProps {
   onExecute?: (file: FileStat, marksAtOpen: Set<string>) => void;
   /** Label for Execute context menu item */
   executeMenuLabel?: string;
+  /** [REQ-BULK_FILE_OPS] Open Rename Regex dialog for row or marked files */
+  onRenameRegex?: (file: FileStat, marksAtOpen: Set<string>) => void;
+  /** Label for Rename Regex context menu item */
+  renameRegexMenuLabel?: string;
   /** Test ID for automation */
   "data-testid"?: string;
   /** [REQ-PANE_DISPLAY_FILTER] Catalog of saved display specs */
@@ -147,6 +151,8 @@ export default function FilePane({
   touchMenuLabel,
   onExecute,
   executeMenuLabel,
+  onRenameRegex,
+  renameRegexMenuLabel,
   onDrop,
   linked = false, // [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
   scrollTrigger, // [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
@@ -626,6 +632,7 @@ export default function FilePane({
       {/* [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] Context menu */}
       {/* [IMPL-TOUCH_DIALOG] [IMPL-FILE_PANE] [REQ-TOUCH_MTIME] [REQ-MOUSE_INTERACTION]: how — onTouch passes file and marksAtOpen snapshot to Touch dialog */}
       {/* [IMPL-EXECUTE_DIALOG] [IMPL-FILE_PANE] [ARCH-MOUSE_SUPPORT] [REQ-PANE_COMMAND_EXEC] [REQ-MOUSE_INTERACTION]: how — onExecute passes file and marksAtOpen snapshot to Execute dialog */}
+      {/* [IMPL-RENAME_REGEX_DIALOG] [IMPL-FILE_PANE] [REQ-BULK_FILE_OPS] [REQ-MOUSE_INTERACTION]: how — onRenameRegex passes file and marksAtOpen snapshot to Rename Regex dialog */}
       {contextMenu && (
         <ContextMenu
           x={contextMenu.x}
@@ -642,6 +649,11 @@ export default function FilePane({
               ? () => onSetBaseDirectory(contextMenu.file.path)
               : undefined
           }
+          onRenameRegex={
+            onRenameRegex
+              ? () => onRenameRegex(contextMenu.file, new Set(marks))
+              : undefined
+          }
           onTouch={
             onTouch
               ? () => onTouch(contextMenu.file, new Set(marks))
@@ -655,6 +667,7 @@ export default function FilePane({
           setBaseDirectoryMenuLabel={setBaseDirectoryMenuLabel}
           touchMenuLabel={touchMenuLabel}
           executeMenuLabel={executeMenuLabel}
+          renameRegexMenuLabel={renameRegexMenuLabel}
           paneFilesList={paneFilesList}
         />
       )}

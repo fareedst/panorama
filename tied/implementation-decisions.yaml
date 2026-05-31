@@ -4227,3 +4227,22 @@ IMPL-PANE_COMMAND_EXEC:
   name: Pane Command Execution Implementation
   status: Active
   detail_file: implementation-decisions/IMPL-PANE_COMMAND_EXEC.yaml
+IMPL-RENAME_REGEX:
+  name: Rename Regex Path Resolution and Basename Transform
+  status: Active
+  cross_references:
+    - ARCH-BATCH_OPERATIONS
+    - REQ-BULK_FILE_OPS
+  detail_file: implementation-decisions/IMPL-RENAME_REGEX.yaml
+IMPL-RENAME_REGEX_DIALOG:
+  name: Rename Regex Dialog and Context Menu
+  status: Active
+  cross_references:
+    - ARCH-BATCH_OPERATIONS
+    - ARCH-MOUSE_SUPPORT
+    - IMPL-MOUSE_SUPPORT
+    - IMPL-RENAME_REGEX
+    - IMPL-WORKSPACE_VIEW
+    - REQ-BULK_FILE_OPS
+    - REQ-MOUSE_INTERACTION
+  detail_file: implementation-decisions/IMPL-RENAME_REGEX_DIALOG.yaml

@@ -3,7 +3,7 @@ ARCH-FILE_OPERATIONS_API:
   status: Active
   cross_references:
     - REQ-FILE_OPERATIONS
-  decision: POST /api/files endpoint handles copy, move, delete, rename operations
+  decision: POST /api/files endpoint handles copy, move, delete, rename, and bulk batch operations
   rationale:
     why: API routes provide secure server-side file operations accessible from client
     problems_solved:
@@ -23,8 +23,9 @@ ARCH-FILE_OPERATIONS_API:
         - Less flexible for programmatic calls
       rejected_reason: API routes more flexible for file operations
   implementation_approach:
-    summary: POST /api/files endpoint handles copy, move, delete, rename operations
+    summary: POST /api/files endpoint handles copy, move, delete, rename, bulk-touch, bulk-rename, execute-command
     details:
+      - 'bulk-rename: validate entries; same-dir rename; validateRenameBasename; bulkRename (ARCH-BATCH_OPERATIONS)'
       - 'execute-command: validate entries array; spawn shell per entry via executeCommandBatch (ARCH-PANE_COMMAND_EXEC)'
       - 'Request body: { operation, src, dest }'
       - Call data layer functions
@@ -51,7 +52,7 @@ ARCH-FILE_OPERATIONS_API:
     last_updated:
       date: "2026-05-31T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — execute-command POST operation
+      reason: LEAP — bulk-rename POST operation
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent
