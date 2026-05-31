@@ -20,6 +20,7 @@ REQ-CROSS_PANE_COMPARISON:
     - criterion: Different sizes/times indicated with distinct colors (ComparisonMode size/time)
     - criterion: Files unique to one pane clearly marked
     - criterion: Files with same name across panes color-coded (shared filename / CompareState)
+    - criterion: resolveAggregateMtime reuses CompareState.mtimes for Touch earliest/latest modes (REQ-TOUCH_MTIME)
     - criterion: Terminology aligns with tied/vocab/cross-pane-comparison.md
   validation_criteria:
     - method: Comparison testing
@@ -48,15 +49,16 @@ REQ-CROSS_PANE_COMPARISON:
       - REQ-FILE_COMPARISON_VISUAL
       - REQ-FILE_OPERATIONS
       - REQ-README_DEMO_AUTOMATION
+      - REQ-TOUCH_MTIME
     supersedes: []
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-30T00:00:00.000Z"
+      date: "2026-05-31T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — comparison fixture and README screenshot E2E
+      reason: LEAP — Touch aggregate mtime reuse via resolveAggregateMtime
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

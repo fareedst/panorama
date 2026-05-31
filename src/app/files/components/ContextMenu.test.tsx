@@ -148,6 +148,35 @@ describe("[TEST-MOUSE_INTERACTION] ContextMenu Component", () => {
     expect(screen.queryByTestId("set-base-directory-menu-item")).not.toBeInTheDocument();
   });
 
+  // [IMPL-TOUCH_DIALOG] [REQ-TOUCH_MTIME] [REQ-MOUSE_INTERACTION]: Touch… menu item
+  it("shows Touch menu item when handler provided", () => {
+    const onTouch = vi.fn();
+    render(
+      <ContextMenu
+        {...defaultProps}
+        onTouch={onTouch}
+        touchMenuLabel="Touch…"
+      />,
+    );
+    expect(screen.getByTestId("touch-file-menu-item")).toHaveTextContent("Touch…");
+    fireEvent.click(screen.getByTestId("touch-file-menu-item"));
+    expect(onTouch).toHaveBeenCalledTimes(1);
+    expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("shows Touch with marked files in header", () => {
+    const marks = new Set(["a.txt", "b.txt"]);
+    render(
+      <ContextMenu
+        {...defaultProps}
+        marks={marks}
+        onTouch={vi.fn()}
+      />,
+    );
+    expect(screen.getByText("2 marked file(s)")).toBeInTheDocument();
+    expect(screen.getByTestId("touch-file-menu-item")).toBeInTheDocument();
+  });
+
   it("closes menu on Escape key", () => {
     render(<ContextMenu {...defaultProps} />);
     

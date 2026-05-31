@@ -195,6 +195,74 @@ export async function renameFile(oldPath: string, newPath: string): Promise<void
 }
 
 /**
+ * [IMPL-TOUCH_MTIME] [ARCH-TOUCH_MTIME] [REQ-TOUCH_MTIME] [REQ-FILE_OPERATIONS]: how — stat then utimes preserving atime; files and directories
+ */
+export async function setFileMtime(filePath: string, mtime: Date): Promise<void> {
+  logger.debug(
+    ["IMPL-TOUCH_MTIME", "REQ-TOUCH_MTIME", "REQ-FILE_OPERATIONS"],
+    `Setting mtime: ${filePath}`,
+    { mtime: mtime.toISOString() },
+  );
+
+  try {
+    const stats = await fs.stat(filePath);
+    await fs.utimes(filePath, stats.atime, mtime);
+    logger.info(
+      ["IMPL-TOUCH_MTIME", "REQ-TOUCH_MTIME"],
+      `Successfully set mtime: ${filePath}`,
+    );
+  } catch (error) {
+    logger.error(
+      ["IMPL-TOUCH_MTIME", "REQ-TOUCH_MTIME"],
+      `Failed to set mtime: ${filePath}`,
+      { error: String(error) },
+    );
+    throw error;
+  }
+}
+
+/**
+ * [IMPL-TOUCH_MTIME] [ARCH-TOUCH_MTIME] [REQ-TOUCH_MTIME]: how — Promise.allSettled per entry like bulkDelete
+ */
+export async function bulkTouch(
+  entries: Array<{ path: string; mtime: Date }>,
+): Promise<import("./files.types").OperationResult> {
+  logger.warn(
+    ["IMPL-TOUCH_MTIME", "REQ-TOUCH_MTIME"],
+    `Bulk touch: ${entries.length} paths`,
+  );
+
+  const errors: Array<{ file: string; error: string }> = [];
+
+  const results = await Promise.allSettled(
+    entries.map(async ({ path, mtime }) => {
+      try {
+        await setFileMtime(path, mtime);
+      } catch (error) {
+        const errMsg = String(error);
+        errors.push({ file: path, error: errMsg });
+        throw error;
+      }
+    }),
+  );
+
+  const successCount = results.filter((r) => r.status === "fulfilled").length;
+  const errorCount = results.filter((r) => r.status === "rejected").length;
+
+  logger.info(
+    ["IMPL-TOUCH_MTIME", "REQ-TOUCH_MTIME"],
+    `Bulk touch completed`,
+    { successCount, errorCount },
+  );
+
+  return {
+    successCount,
+    errorCount,
+    errors,
+  };
+}
+
+/**
  * [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: bulkCopy bulkMove bulkDelete in files.data.ts run Promise.allSettled per source without stopping on first failure
  * Copy multiple files with progress tracking
  * 

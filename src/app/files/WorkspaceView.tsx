@@ -75,6 +75,10 @@ import SortDialog from "./components/SortDialog";
 import { ColumnOrderDialog } from "./components/ColumnOrderDialog";
 import { PaneOrderDialog } from "./components/PaneOrderDialog";
 import { SetBaseDirectoryDialog } from "./components/SetBaseDirectoryDialog";
+import {
+  TouchFileDialog,
+  type TouchApplySelection,
+} from "./components/TouchFileDialog";
 import { LayoutPickerPopover } from "./components/LayoutPickerPopover";
 import {
   getVisibleFileColumns,
@@ -115,6 +119,7 @@ import {
   resolveSetBaseDirectorySwapPair,
   type SetBaseDirectoryTarget,
 } from "@/lib/set-base-directory";
+import { buildTouchEntries } from "@/lib/touch-file";
 import {
   buildPaneFromRawListing,
   fetchDirectoryListing,
@@ -494,6 +499,12 @@ export default function WorkspaceView({
     path: string;
     paneIndex: number;
   }>({ isOpen: false, path: "", paneIndex: 0 });
+  const [touchFileDialog, setTouchFileDialog] = useState<{
+    isOpen: boolean;
+    paneIndex: number;
+    file: FileStat;
+    marksAtOpen: Set<string>;
+  } | null>(null);
   
   // [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW] Preview panel state
   const [previewPanel, setPreviewPanel] = useState<{
@@ -2217,6 +2228,76 @@ export default function WorkspaceView({
     [handleNavigate, displaySpecPayload]
   );
 
+  // [IMPL-TOUCH_DIALOG] [IMPL-TOUCH_MTIME] [REQ-TOUCH_MTIME]: how — build entries, POST bulk-touch, refresh panes listing touched paths
+  const handleApplyTouch = useCallback(
+    (selection: TouchApplySelection) => {
+      if (!touchFileDialog) {
+        return;
+      }
+      const { paneIndex, file, marksAtOpen } = touchFileDialog;
+      const paneFilesList = panes.map((p) => p.files);
+      const entries = buildTouchEntries(
+        selection.paneTarget,
+        selection.mtimeMode,
+        selection.specifiedDate,
+        paneIndex,
+        paneFilesList,
+        marksAtOpen,
+        file,
+      );
+
+      setTouchFileDialog(null);
+
+      if (entries.length === 0) {
+        alert("No files to touch with the selected options.");
+        return;
+      }
+
+      fetch("/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "bulk-touch",
+          entries: entries.map((e) => ({
+            path: e.path,
+            mtime: e.mtime.toISOString(),
+          })),
+          ...displaySpecPayload(paneIndex),
+        }),
+      })
+        .then(async (res) => {
+          const data = (await res.json()) as OperationResult & { error?: string };
+          if (!res.ok) {
+            throw new Error(data.error || res.statusText);
+          }
+          if (data.errorCount > 0) {
+            alert(
+              `Touch completed with errors: ${data.successCount} succeeded, ${data.errorCount} failed.`,
+            );
+          }
+          return data;
+        })
+        .then(() => {
+          const paneIndicesToRefresh = new Set<number>();
+          for (const entry of entries) {
+            panes.forEach((p, i) => {
+              if (p.files.some((f) => f.path === entry.path)) {
+                paneIndicesToRefresh.add(i);
+              }
+            });
+          }
+          for (const i of paneIndicesToRefresh) {
+            void handleNavigate(i, panes[i].path);
+          }
+        })
+        .catch((e) => {
+          console.error("Touch failed:", e);
+          alert(`Touch failed: ${String(e)}`);
+        });
+    },
+    [touchFileDialog, panes, handleNavigate, displaySpecPayload],
+  );
+
   // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
   // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] [ARCH-LINKED_NAV]
   // Helper: Navigate to parent directory with cursor positioning
@@ -3056,6 +3137,15 @@ export default function WorkspaceView({
               setSetBaseDirectoryDialog({ isOpen: true, path, paneIndex: index })
             }
             setBaseDirectoryMenuLabel={copy.paneManagement?.setBaseDirectoryMenu}
+            onTouch={(file, marksAtOpen) =>
+              setTouchFileDialog({
+                isOpen: true,
+                paneIndex: index,
+                file,
+                marksAtOpen,
+              })
+            }
+            touchMenuLabel={copy.touchFile?.touchMenu}
             displaySpecs={catalogSpecs}
             activeDisplaySpecId={pane.activeDisplaySpecId}
             activeDisplaySpecName={
@@ -3245,6 +3335,21 @@ export default function WorkspaceView({
           setSetBaseDirectoryDialog((prev) => ({ ...prev, isOpen: false }))
         }
       />
+
+      {touchFileDialog && (
+        <TouchFileDialog
+          isOpen={touchFileDialog.isOpen}
+          initiatingPaneIndex={touchFileDialog.paneIndex}
+          paneCount={panes.length}
+          file={touchFileDialog.file}
+          marksAtOpen={touchFileDialog.marksAtOpen}
+          paneFilesList={panes.map((p) => p.files)}
+          paneLabels={copy.paneManagement}
+          touchLabels={copy.touchFile}
+          onApply={(selection) => handleApplyTouch(selection)}
+          onClose={() => setTouchFileDialog(null)}
+        />
+      )}
 
       <SortDialog
         isOpen={sortDialog.isOpen}

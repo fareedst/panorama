@@ -22,6 +22,7 @@ vi.mock("@/lib/files.data", () => ({
   bulkCopy: vi.fn(),
   bulkMove: vi.fn(),
   bulkDelete: vi.fn(),
+  bulkTouch: vi.fn(),
 }));
 
 const SPECS_FILE = path.join(process.cwd(), "data", "display-specs.json");

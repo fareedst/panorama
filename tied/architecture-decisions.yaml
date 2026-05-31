@@ -2791,3 +2791,7 @@ ARCH-DEMO_ASSET_PIPELINE:
     - REQ-README_DEMO_AUTOMATION
     - ARCH-TEST_FRAMEWORK
   detail_file: architecture-decisions/ARCH-DEMO_ASSET_PIPELINE.yaml
+ARCH-TOUCH_MTIME:
+  name: Touch Modification Time Architecture
+  status: Active
+  detail_file: architecture-decisions/ARCH-TOUCH_MTIME.yaml

@@ -1,0 +1,49 @@
+IMPL-TOUCH_MTIME:
+  name: Touch Modification Time Implementation
+  status: Active
+  cross_references:
+    - ARCH-FILE_OPERATIONS_API
+    - ARCH-TOUCH_MTIME
+    - IMPL-FILES_API
+    - IMPL-FILES_DATA
+    - REQ-TOUCH_MTIME
+  decision: touch-file.ts resolves paths and mtimes; setFileMtime and bulkTouch in files.data.ts; bulk-touch API route case
+  rationale:
+    why: Pure client resolution keeps server thin; utimes preserves atime like inverse of preserveCopyAttributes
+  implementation_approach:
+    summary: touch-file.ts + files.data setFileMtime/bulkTouch + API bulk-touch
+  code_locations:
+    files:
+      - path: src/lib/touch-file.ts
+        description: Path and mtime resolution
+      - path: src/lib/files.comparison.ts
+        description: resolveAggregateMtime export
+      - path: src/lib/files.data.ts
+        description: setFileMtime bulkTouch
+      - path: src/app/api/files/route.ts
+        description: bulk-touch operation
+  traceability:
+    requirements:
+      - REQ-TOUCH_MTIME
+    architecture:
+      - ARCH-TOUCH_MTIME
+    tests:
+      - src/app/api/files/route.test.ts
+      - src/lib/touch-file.test.ts
+      - src/lib/touch-mtime.data.test.ts
+    code_annotations:
+      - IMPL-TOUCH_MTIME
+  related_decisions:
+    depends_on:
+      - IMPL-FILES_DATA
+      - IMPL-FILES_API
+    see_also:
+      - IMPL-COPY_ATTRS
+  metadata:
+    created:
+      date: "2026-05-31T00:00:00.000Z"
+      author: AI Agent
+    last_updated:
+      date: "2026-05-31T00:00:00.000Z"
+      author: AI Agent
+      reason: Initial creation

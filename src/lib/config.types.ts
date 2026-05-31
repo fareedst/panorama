@@ -318,6 +318,19 @@ export interface FilesCopyConfig {
     setBaseInNewPane?: string;
     setBaseNewWorkspace?: string;
   };
+  // [IMPL-TOUCH_DIALOG] [REQ-TOUCH_MTIME] Touch file dialog copy
+  touchFile?: {
+    touchMenu?: string;
+    touchTitle?: string;
+    touchMtimeNow?: string;
+    touchMtimeSpecified?: string;
+    touchMtimeEarliest?: string;
+    touchMtimeLatest?: string;
+    touchTimeLocal?: string;
+    touchTimeUtc?: string;
+    touchApply?: string;
+    cancel?: string;
+  };
   // [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE]
   workspaceMesh?: {
     saveDialogTitle?: string;

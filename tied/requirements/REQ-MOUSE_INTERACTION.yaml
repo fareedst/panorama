@@ -25,6 +25,7 @@ REQ-MOUSE_INTERACTION:
     - criterion: Scroll wheel navigates file list
     - criterion: set_base_directory_menu_on_directory_rows — directory rows show Set as Base directory menu item; file rows unchanged
     - criterion: Touch gestures work on tablets
+    - criterion: touch_menu_on_file_rows — unified ContextMenu shows Touch… for file and directory rows (REQ-TOUCH_MTIME)
     - criterion: unified_file_context_menu_on_row_and_column_right_click — row and metadata-cell right-click open one ContextMenu with file operations, clipboard section, and Set as Base directory on directories
   validation_criteria:
     - method: Unit tests
@@ -40,9 +41,11 @@ REQ-MOUSE_INTERACTION:
   traceability:
     architecture:
       - ARCH-MOUSE_SUPPORT
+      - ARCH-TOUCH_MTIME
     implementation:
       - IMPL-FILE_PANE
       - IMPL-MOUSE_SUPPORT
+      - IMPL-TOUCH_DIALOG
       - IMPL-WORKSPACE_VIEW
     tests:
       - src/app/files/components/ContextMenu.test.tsx
@@ -50,10 +53,13 @@ REQ-MOUSE_INTERACTION:
       - src/app/files/components/FilePane.test.tsx
       - src/app/files/components/SetBaseDirectoryDialog.test.tsx
       - src/app/files/components/SetBaseDirectoryTargetIcon.test.tsx
+      - src/app/files/components/TouchFileDialog.test.tsx
       - src/app/files/WorkspaceView.file-column-clipboard.test.tsx
       - src/app/files/WorkspaceView.set-base-directory.test.tsx
+      - src/app/files/WorkspaceView.touch.test.tsx
       - src/lib/file-column-clipboard.test.ts
       - src/lib/set-base-directory.test.ts
+      - src/lib/touch-file.test.ts
     code_annotations:
       - REQ-MOUSE_INTERACTION
   related_requirements:
@@ -61,6 +67,7 @@ REQ-MOUSE_INTERACTION:
       - REQ-FILE_OPERATIONS
     related_to:
       - REQ-KEYBOARD_NAVIGATION
+      - REQ-TOUCH_MTIME
     supersedes: []
   metadata:
     created:

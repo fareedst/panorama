@@ -3142,3 +3142,9 @@ REQ-README_DEMO_AUTOMATION:
     - REQ-NSYNC_MULTI_TARGET
     - REQ-TOOLBAR_SYSTEM
   detail_file: requirements/REQ-README_DEMO_AUTOMATION.yaml
+REQ-TOUCH_MTIME:
+  name: Touch Modification Time
+  category: Functional
+  priority: P1
+  status: Implemented
+  detail_file: requirements/REQ-TOUCH_MTIME.yaml

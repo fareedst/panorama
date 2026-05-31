@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
     }
     
     // Import operations dynamically to avoid loading on GET
-    const { copyFile, moveFile, deleteFile, renameFile, bulkCopy, bulkMove, bulkDelete } = await import("@/lib/files.data");
+    const { copyFile, moveFile, deleteFile, renameFile, bulkCopy, bulkMove, bulkDelete, bulkTouch } = await import("@/lib/files.data");
 
     const assertSourcesVisible = async (sources: string[]) => {
       const err = await validateOperationSourcesForDisplaySpec(sources, displaySpecId);
@@ -226,6 +226,44 @@ export async function POST(request: NextRequest) {
           errorCount: result.errors.length
         });
         return NextResponse.json(result);
+      }
+
+      case "bulk-touch": {
+        // [IMPL-TOUCH_MTIME] [ARCH-TOUCH_MTIME] [REQ-TOUCH_MTIME]: how — validate entries array; assertSourcesVisible; delegate to bulkTouch
+        const entries = body.entries as Array<{ path?: string; mtime?: string }>;
+        if (!entries || !Array.isArray(entries) || entries.length === 0) {
+          logger.warn(["IMPL-TOUCH_MTIME", "REQ-TOUCH_MTIME"], `Bulk touch missing entries`);
+          return NextResponse.json({ error: "Entries array required" }, { status: 400 });
+        }
+
+        const parsed: Array<{ path: string; mtime: Date }> = [];
+        for (const entry of entries) {
+          // [IMPL-TOUCH_MTIME] [REQ-TOUCH_MTIME]: how — reject missing path, traversal, missing/invalid mtime per entry
+          if (!entry.path || typeof entry.path !== "string") {
+            return NextResponse.json({ error: "Each entry requires path" }, { status: 400 });
+          }
+          if (entry.path.includes("..")) {
+            return NextResponse.json({ error: "Invalid path" }, { status: 400 });
+          }
+          if (!entry.mtime || typeof entry.mtime !== "string") {
+            return NextResponse.json({ error: "Each entry requires mtime" }, { status: 400 });
+          }
+          const mtime = new Date(entry.mtime);
+          if (Number.isNaN(mtime.getTime())) {
+            return NextResponse.json({ error: "Invalid mtime" }, { status: 400 });
+          }
+          parsed.push({ path: entry.path, mtime });
+        }
+
+        const blockedTouch = await assertSourcesVisible(parsed.map((e) => e.path));
+        if (blockedTouch) return blockedTouch;
+
+        const touchResult = await bulkTouch(parsed);
+        logger.info(["IMPL-TOUCH_MTIME", "REQ-TOUCH_MTIME"], `Bulk touch completed`, {
+          successCount: touchResult.successCount,
+          errorCount: touchResult.errors.length,
+        });
+        return NextResponse.json(touchResult);
       }
       
       case "sync-all": {

@@ -1,0 +1,47 @@
+ARCH-TOUCH_MTIME:
+  name: Touch Modification Time Architecture
+  status: Active
+  cross_references:
+    - ARCH-FILE_OPERATIONS_API
+    - ARCH-MOUSE_SUPPORT
+    - REQ-TOUCH_MTIME
+  decision: Secondary workspace dialog (TouchFileDialog) with pane target and mtime mode choice groups; client resolves paths and mtimes via touch-file.ts and comparison index; POST /api/files bulk-touch applies fs.utimes per entry.
+  rationale:
+    why: Reuse set-base dialog and comparison-index patterns; server bulk-touch mirrors bulk-delete shape
+    benefits:
+      - Consistent workspace dialog UX
+      - Cross-pane path resolution via existing file-column-clipboard helpers
+      - Per-basename earliest/latest from CompareState.mtimes
+  implementation_approach:
+    summary: TouchFileDialog + touch-file.ts + bulk-touch API
+    details:
+      - 'bulk-touch entries: { path, mtime ISO }[]'
+      - 'TouchFilePaneTarget: thisPane | allPanes'
+      - 'TouchMtimeMode: now | specified | earliest | latest'
+      - Display-spec visibility gate on all paths
+  traceability:
+    requirements:
+      - REQ-TOUCH_MTIME
+    implementation:
+      - IMPL-TOUCH_MTIME
+      - IMPL-TOUCH_DIALOG
+    tests: []
+    code_annotations:
+      - ARCH-TOUCH_MTIME
+  related_decisions:
+    depends_on:
+      - ARCH-FILE_OPERATIONS_API
+      - ARCH-MOUSE_SUPPORT
+    informs:
+      - IMPL-TOUCH_MTIME
+      - IMPL-TOUCH_DIALOG
+    see_also:
+      - REQ-CROSS_PANE_COMPARISON
+  metadata:
+    created:
+      date: "2026-05-31T00:00:00.000Z"
+      author: AI Agent
+    last_updated:
+      date: "2026-05-31T00:00:00.000Z"
+      author: AI Agent
+      reason: Initial creation

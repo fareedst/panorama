@@ -1,4 +1,3 @@
-# REQ detail — REQ-FILE_OPERATIONS
 REQ-FILE_OPERATIONS:
   name: File Copy, Move, Rename, Delete Operations
   category: Functional
@@ -20,6 +19,7 @@ REQ-FILE_OPERATIONS:
     - criterion: Can delete files (keyboard shortcut with confirmation)
     - criterion: Can move files (keyboard shortcut or button)
     - criterion: Can rename files (keyboard shortcut or inline edit)
+    - criterion: Can set modification time on files and directories via Touch dialog (REQ-TOUCH_MTIME)
     - criterion: Error handling for failed operations
     - criterion: Operations work on single and marked files
   validation_criteria:
@@ -31,9 +31,11 @@ REQ-FILE_OPERATIONS:
     architecture:
       - ARCH-FILE_OPERATIONS_API
       - ARCH-FILESYSTEM_ABSTRACTION
+      - ARCH-TOUCH_MTIME
     implementation:
       - IMPL-FILES_API
       - IMPL-FILES_DATA
+      - IMPL-TOUCH_MTIME
     tests: []
     code_annotations:
       - REQ-FILE_OPERATIONS
@@ -43,6 +45,7 @@ REQ-FILE_OPERATIONS:
       - REQ-KEYBOARD_NAVIGATION
     related_to:
       - REQ-CROSS_PANE_COMPARISON
+      - REQ-TOUCH_MTIME
     supersedes: []
   metadata:
     created:

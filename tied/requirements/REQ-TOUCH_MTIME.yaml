@@ -1,0 +1,66 @@
+REQ-TOUCH_MTIME:
+  name: Touch Modification Time
+  category: Functional
+  priority: P1
+  status: Implemented
+  description: Users need to set file and directory modification times from the workspace context menu, including cross-pane targets and comparison-index-derived earliest/latest values.
+  rationale:
+    why: Cross-pane comparison workflows often require aligning mtimes; a Touch dialog avoids shell commands
+    problems_solved:
+      - No UI to set mtime on files or directories
+      - Cannot align mtimes across panes from the file manager
+    benefits:
+      - Bulk touch for marked files
+      - Context-menu discoverability
+      - Pane-target and comparison-index-aware mtime choices
+  satisfaction_criteria:
+    - criterion: touch_bulk_marked — when marks are non-empty, touch applies to all marked basenames in scope
+    - criterion: touch_dialog_mtime_modes — dialog offers now, specified time (UTC or local), earliest in all panes, latest in all panes
+    - criterion: touch_dialog_pane_targets — dialog offers thisPane and allPanes with existing set-base copy labels
+    - criterion: touch_earliest_latest_disabled — earliest/latest disabled when basename not shared across two or more panes
+    - criterion: touch_menu_on_file_rows — unified ContextMenu shows Touch… for file and directory rows
+    - criterion: touch_preserves_atime — server sets mtime only, preserving atime
+  validation_criteria:
+    - method: Unit tests
+      coverage: touch-file.ts and resolveAggregateMtime
+    - method: API tests
+      coverage: bulk-touch route validation
+    - method: Component tests
+      coverage: TouchFileDialog and ContextMenu Touch item
+    - method: Integration tests
+      coverage: WorkspaceView touch apply and pane refresh
+  traceability:
+    architecture:
+      - ARCH-FILE_OPERATIONS_API
+      - ARCH-MOUSE_SUPPORT
+      - ARCH-TOUCH_MTIME
+    implementation:
+      - IMPL-MOUSE_SUPPORT
+      - IMPL-TOUCH_DIALOG
+      - IMPL-TOUCH_MTIME
+      - IMPL-WORKSPACE_VIEW
+    tests:
+      - src/app/api/files/route.test.ts
+      - src/app/files/components/ContextMenu.test.tsx
+      - src/app/files/components/TouchFileDialog.test.tsx
+      - src/app/files/WorkspaceView.touch.test.tsx
+      - src/lib/touch-file.test.ts
+      - src/lib/touch-mtime.data.test.ts
+    code_annotations:
+      - REQ-TOUCH_MTIME
+  related_requirements:
+    depends_on:
+      - REQ-CROSS_PANE_COMPARISON
+      - REQ-FILE_OPERATIONS
+      - REQ-MOUSE_INTERACTION
+    related_to:
+      - REQ-FILE_LISTING
+    supersedes: []
+  metadata:
+    created:
+      date: "2026-05-31T00:00:00.000Z"
+      author: AI Agent
+    last_updated:
+      date: "2026-05-31T00:00:00.000Z"
+      author: AI Agent
+      reason: tied_verify after touch mtime test pass

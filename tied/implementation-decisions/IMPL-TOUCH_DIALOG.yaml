@@ -1,0 +1,51 @@
+IMPL-TOUCH_DIALOG:
+  name: Touch File Dialog Implementation
+  status: Active
+  cross_references:
+    - ARCH-MOUSE_SUPPORT
+    - ARCH-TOUCH_MTIME
+    - IMPL-MOUSE_SUPPORT
+    - IMPL-WORKSPACE_VIEW
+    - REQ-TOUCH_MTIME
+  decision: TouchFileDialog secondary workspace dialog with pane target and mtime mode groups; ContextMenu Touch item; WorkspaceView handleApplyTouch
+  rationale:
+    why: Matches SetBaseDirectoryDialog shell; two-group Apply pattern like CompareFilterThresholdDialog
+  implementation_approach:
+    summary: TouchFileDialog + ContextMenu + WorkspaceView wiring
+  code_locations:
+    files:
+      - path: src/app/files/components/TouchFileDialog.tsx
+        description: Two-group touch dialog
+      - path: src/app/files/components/ContextMenu.tsx
+        description: Touch menu item
+      - path: src/app/files/components/FilePane.tsx
+        description: onTouch wiring
+      - path: src/app/files/WorkspaceView.tsx
+        description: Dialog state and handleApplyTouch
+  traceability:
+    requirements:
+      - REQ-TOUCH_MTIME
+      - REQ-MOUSE_INTERACTION
+    architecture:
+      - ARCH-TOUCH_MTIME
+      - ARCH-MOUSE_SUPPORT
+    tests:
+      - src/app/files/components/ContextMenu.test.tsx
+      - src/app/files/components/TouchFileDialog.test.tsx
+      - src/app/files/WorkspaceView.touch.test.tsx
+    code_annotations:
+      - IMPL-TOUCH_DIALOG
+  related_decisions:
+    depends_on:
+      - IMPL-MOUSE_SUPPORT
+      - IMPL-TOUCH_MTIME
+      - IMPL-WORKSPACE_VIEW
+    see_also: []
+  metadata:
+    created:
+      date: "2026-05-31T00:00:00.000Z"
+      author: AI Agent
+    last_updated:
+      date: "2026-05-31T00:00:00.000Z"
+      author: AI Agent
+      reason: Initial creation

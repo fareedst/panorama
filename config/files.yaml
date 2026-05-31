@@ -109,6 +109,18 @@ copy:
     setBaseInPriorPaneSwap: In the prior pane and swap pane position
     setBaseInNewPane: In a new pane
     setBaseNewWorkspace: In new workspace, as the only pane
+  # [IMPL-TOUCH_DIALOG] [REQ-TOUCH_MTIME] Touch file dialog copy
+  touchFile:
+    touchMenu: Touch…
+    touchTitle: Touch
+    touchMtimeNow: Now
+    touchMtimeSpecified: A specified time
+    touchMtimeEarliest: Earliest time in all panes
+    touchMtimeLatest: Latest time in all panes
+    touchTimeLocal: Local
+    touchTimeUtc: UTC
+    touchApply: Apply
+    cancel: Cancel
   # [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE]
   workspaceMesh:
     saveDialogTitle: Save workspace as mesh

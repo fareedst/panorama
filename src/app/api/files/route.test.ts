@@ -21,9 +21,29 @@ vi.mock("@/lib/sync", () => ({
   })),
 }));
 
+const mockBulkTouch = vi.fn();
+vi.mock("@/lib/files.data", () => ({
+  copyFile: vi.fn(),
+  moveFile: vi.fn(),
+  deleteFile: vi.fn(),
+  renameFile: vi.fn(),
+  bulkCopy: vi.fn(),
+  bulkMove: vi.fn(),
+  bulkDelete: vi.fn(),
+  bulkTouch: (...args: unknown[]) => mockBulkTouch(...args),
+  listDirectory: vi.fn(),
+  getUserHomeDirectory: vi.fn(),
+  sortFiles: vi.fn(),
+}));
+
 describe("POST /api/files [TEST-FILES_API] [IMPL-FILES_API] [REQ-FILE_OPERATIONS]", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockBulkTouch.mockResolvedValue({
+      successCount: 1,
+      errorCount: 0,
+      errors: [],
+    });
     mockSync.mockResolvedValue({
       cancelled: false,
       storeFailureAbort: false,
@@ -136,6 +156,94 @@ describe("POST /api/files [TEST-FILES_API] [IMPL-FILES_API] [REQ-FILE_OPERATIONS
       const data = await response.json();
       expect(response.status).toBe(400);
       expect(data.error).toBe("Sources array required");
+    });
+  });
+
+  describe("bulk-touch operation [IMPL-TOUCH_MTIME] [ARCH-TOUCH_MTIME] [REQ-TOUCH_MTIME]", () => {
+    // [IMPL-TOUCH_MTIME] [REQ-TOUCH_MTIME]: how — reject missing entries array
+    it("returns 400 when entries missing [REQ-TOUCH_MTIME]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ operation: "bulk-touch" }),
+      });
+      const response = await POST(request);
+      const data = await response.json();
+      expect(response.status).toBe(400);
+      expect(data.error).toBe("Entries array required");
+      expect(mockBulkTouch).not.toHaveBeenCalled();
+    });
+
+    // [IMPL-TOUCH_MTIME] [REQ-TOUCH_MTIME]: how — reject path traversal in entry
+    it("returns 400 for invalid path in entry [REQ-TOUCH_MTIME]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "bulk-touch",
+          entries: [{ path: "../secret", mtime: "2026-01-01T00:00:00.000Z" }],
+        }),
+      });
+      const response = await POST(request);
+      const data = await response.json();
+      expect(response.status).toBe(400);
+      expect(data.error).toBe("Invalid path");
+    });
+
+    // [IMPL-TOUCH_MTIME] [REQ-TOUCH_MTIME]: how — reject missing path field in entry
+    it("returns 400 when entry path missing [REQ-TOUCH_MTIME]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "bulk-touch",
+          entries: [{ mtime: "2026-01-01T00:00:00.000Z" }],
+        }),
+      });
+      const response = await POST(request);
+      const data = await response.json();
+      expect(response.status).toBe(400);
+      expect(data.error).toBe("Each entry requires path");
+      expect(mockBulkTouch).not.toHaveBeenCalled();
+    });
+
+    // [IMPL-TOUCH_MTIME] [REQ-TOUCH_MTIME]: how — reject missing or invalid mtime string
+    it("returns 400 for invalid mtime in entry [REQ-TOUCH_MTIME]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "bulk-touch",
+          entries: [{ path: "/tmp/a.txt", mtime: "not-a-date" }],
+        }),
+      });
+      const response = await POST(request);
+      const data = await response.json();
+      expect(response.status).toBe(400);
+      expect(data.error).toBe("Invalid mtime");
+      expect(mockBulkTouch).not.toHaveBeenCalled();
+    });
+
+    // [IMPL-TOUCH_MTIME] [ARCH-TOUCH_MTIME] [REQ-TOUCH_MTIME]: how — parse ISO mtime and delegate to bulkTouch
+    it("delegates valid bulk-touch to bulkTouch [REQ-TOUCH_MTIME]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "bulk-touch",
+          entries: [
+            { path: "/tmp/a.txt", mtime: "2026-01-01T00:00:00.000Z" },
+          ],
+        }),
+      });
+      const response = await POST(request);
+      expect(response.status).toBe(200);
+      expect(mockBulkTouch).toHaveBeenCalledWith([
+        {
+          path: "/tmp/a.txt",
+          mtime: new Date("2026-01-01T00:00:00.000Z"),
+        },
+      ]);
     });
   });
 });

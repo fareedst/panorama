@@ -8,15 +8,15 @@
 
 | Kind | Tokens / artifacts |
 | --- | --- |
-| REQ | [REQ-CROSS_PANE_COMPARISON](../tied/requirements/REQ-CROSS_PANE_COMPARISON.yaml), [REQ-FILE_COMPARISON_VISUAL](../tied/requirements/REQ-FILE_COMPARISON_VISUAL.yaml), [REQ-CROSS_PANE_VISIBILITY](../tied/requirements/REQ-CROSS_PANE_VISIBILITY.yaml), [REQ-README_DEMO_AUTOMATION](../tied/requirements/REQ-README_DEMO_AUTOMATION.yaml) |
-| ARCH | [ARCH-COMPARISON_INDEX](../tied/architecture-decisions/ARCH-COMPARISON_INDEX.yaml), [ARCH-COMPARISON_COLORING](../tied/architecture-decisions/ARCH-COMPARISON_COLORING.yaml), [ARCH-CROSS_PANE_VISIBILITY](../tied/architecture-decisions/ARCH-CROSS_PANE_VISIBILITY.yaml) |
-| IMPL | [IMPL-COMPARISON_INDEX](../tied/implementation-decisions/IMPL-COMPARISON_INDEX.yaml), [IMPL-COMPARISON_COLORS](../tied/implementation-decisions/IMPL-COMPARISON_COLORS.yaml), [IMPL-FILE_PANE](../tied/implementation-decisions/IMPL-FILE_PANE.yaml), [IMPL-CROSS_PANE_VISIBILITY_ENGINE](../tied/implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_ENGINE.yaml) |
-| Pseudo-code | [IMPL-COMPARISON_INDEX-pseudocode.md](../tied/implementation-decisions/IMPL-COMPARISON_INDEX-pseudocode.md), [IMPL-COMPARISON_COLORS-pseudocode.md](../tied/implementation-decisions/IMPL-COMPARISON_COLORS-pseudocode.md) |
+| REQ | [REQ-CROSS_PANE_COMPARISON](../tied/requirements/REQ-CROSS_PANE_COMPARISON.yaml), [REQ-FILE_COMPARISON_VISUAL](../tied/requirements/REQ-FILE_COMPARISON_VISUAL.yaml), [REQ-CROSS_PANE_VISIBILITY](../tied/requirements/REQ-CROSS_PANE_VISIBILITY.yaml), [REQ-README_DEMO_AUTOMATION](../tied/requirements/REQ-README_DEMO_AUTOMATION.yaml), [REQ-TOUCH_MTIME](../tied/requirements/REQ-TOUCH_MTIME.yaml) |
+| ARCH | [ARCH-COMPARISON_INDEX](../tied/architecture-decisions/ARCH-COMPARISON_INDEX.yaml), [ARCH-COMPARISON_COLORING](../tied/architecture-decisions/ARCH-COMPARISON_COLORING.yaml), [ARCH-CROSS_PANE_VISIBILITY](../tied/architecture-decisions/ARCH-CROSS_PANE_VISIBILITY.yaml), [ARCH-TOUCH_MTIME](../tied/architecture-decisions/ARCH-TOUCH_MTIME.yaml) |
+| IMPL | [IMPL-COMPARISON_INDEX](../tied/implementation-decisions/IMPL-COMPARISON_INDEX.yaml), [IMPL-COMPARISON_COLORS](../tied/implementation-decisions/IMPL-COMPARISON_COLORS.yaml), [IMPL-FILE_PANE](../tied/implementation-decisions/IMPL-FILE_PANE.yaml), [IMPL-CROSS_PANE_VISIBILITY_ENGINE](../tied/implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_ENGINE.yaml), [IMPL-TOUCH_MTIME](../tied/implementation-decisions/IMPL-TOUCH_MTIME.yaml) |
+| Pseudo-code | [IMPL-COMPARISON_INDEX-pseudocode.md](../tied/implementation-decisions/IMPL-COMPARISON_INDEX-pseudocode.md), [IMPL-COMPARISON_COLORS-pseudocode.md](../tied/implementation-decisions/IMPL-COMPARISON_COLORS-pseudocode.md), [IMPL-TOUCH_MTIME-pseudocode.md](../tied/implementation-decisions/IMPL-TOUCH_MTIME-pseudocode.md) |
 
 ## See also
 
 - [panorama-domain-references.md](panorama-domain-references.md)
-- [workspace-pane.md](workspace-pane.md)
+- [workspace-pane.md](workspace-pane.md) — **Touch file dialog**, **Touch mtime mode**, earliest/latest from comparison index
 - [cross-pane-visibility.md](cross-pane-visibility.md)
 - [nsync-multi-target.md](nsync-multi-target.md) — `CompareMethod` for sync skip
 
@@ -34,6 +34,8 @@
 | **Unique file** | Appears in only one pane — no `CompareState` entry (not “orphan” in Mesh sense) |
 | **Filter comparison index** | `buildEnhancedComparisonIndex` when `panes.length >= 2` for compare filters — independent of `comparisonMode` coloring ([REQ-CROSS_PANE_VISIBILITY](../tied/requirements/REQ-CROSS_PANE_VISIBILITY.yaml)) |
 | **Comparison demo fixture** | `/tmp/test-dirs/{alpha,beta,gamma}` with shared filenames and deliberate size/mtime deltas for README `3-pane-comparison.png` ([IMPL-DEMO_SCREENSHOT_PIPELINE](../tied/implementation-decisions/IMPL-DEMO_SCREENSHOT_PIPELINE.yaml)) |
+| **Aggregate mtime** | `resolveAggregateMtime(mtimes, earliest\|latest)` — min/max mtime across shared copies; used by Touch earliest/latest modes ([REQ-TOUCH_MTIME](../tied/requirements/REQ-TOUCH_MTIME.yaml)) |
+| **Shared compare state lookup** | `getSharedCompareState(paneFilesList, basename)` — returns `CompareState` when basename appears in 2+ panes via enhanced index |
 
 ## Naming bridge
 
@@ -44,6 +46,8 @@
 | Size coloring | — | mode `size` | — | `SizeComparison` per row |
 | Time coloring | — | mode `time` | — | `TimeComparison` per row |
 | Index data structure | — | — | — | `Map<string, Map<number, EnhancedCompareState>>` in `FilePane` |
+| Aggregate mtime | (Touch dialog modes) | — | — | `resolveAggregateMtime` |
+| Shared compare state lookup | (internal) | — | — | `getSharedCompareState` |
 
 ## Named concepts
 
@@ -53,12 +57,14 @@
 - **Filter comparison index** — Built whenever two or more panes exist for cross-pane visibility criteria; coloring index remains gated by `comparisonMode` ([cross-pane-visibility.md](cross-pane-visibility.md)).
 - **Pane index** — Numeric index into workspace `panes[]`; parallel arrays in `CompareState.panes`.
 - **Comparison demo fixture** — Bash seed data for automated comparison screenshots; not a runtime catalog.
+- **Aggregate mtime** — Earliest or latest mtime across all copies of a shared basename; Touch dialog writes this value to each targeted path ([IMPL-TOUCH_MTIME](../tied/implementation-decisions/IMPL-TOUCH_MTIME.yaml)).
+- **Shared compare state lookup** — Resolves `CompareState` for Touch mtime modes without requiring comparison mode coloring to be active.
 
 Row algorithms: [IMPL-COMPARISON_COLORS-pseudocode.md](../tied/implementation-decisions/IMPL-COMPARISON_COLORS-pseudocode.md).
 
 ## Copy coverage
 
-Comparison mode has no dedicated `copy.*` block; toolbar `view.comparison` labels come from keybinding registry / tooltips. This glossary is authoritative for **Comparison index** vs NSYNC **Compare method**. Owning IMPL: [IMPL-COMPARISON_INDEX](../tied/implementation-decisions/IMPL-COMPARISON_INDEX.yaml).
+Comparison mode has no dedicated `copy.*` block; toolbar `view.comparison` labels come from keybinding registry / tooltips. Touch earliest/latest labels live in `copy.touchFile.touchMtimeEarliest` / `touchMtimeLatest` — see [workspace-pane.md](workspace-pane.md). This glossary is authoritative for **Comparison index** vs NSYNC **Compare method** and **Aggregate mtime**. Owning IMPL: [IMPL-COMPARISON_INDEX](../tied/implementation-decisions/IMPL-COMPARISON_INDEX.yaml), [IMPL-TOUCH_MTIME](../tied/implementation-decisions/IMPL-TOUCH_MTIME.yaml).
 
 ## Pseudo-code block names
 
@@ -68,16 +74,20 @@ Comparison mode has no dedicated `copy.*` block; toolbar `view.comparison` label
 | Build index for compare filters | `BUILD_INDEX_FOR_FILTERS` | IMPL-WORKSPACE_VIEW, IMPL-CROSS_PANE_VISIBILITY_ENGINE |
 | Size delta CSS classes | `SizeComparison` → `IMPL-COMPARISON_COLORS_SizeComparison` | IMPL-COMPARISON_COLORS |
 | Mtime delta CSS classes | `TimeComparison` → `IMPL-COMPARISON_COLORS_TimeComparison` | IMPL-COMPARISON_COLORS |
+| Resolve aggregate mtime | `RESOLVE_AGGREGATE_MTIME` → `IMPL-TOUCH_MTIME_ResolveAggregateMtime` | IMPL-TOUCH_MTIME |
+| Shared compare state lookup | `GET_SHARED_COMPARE_STATE` → `IMPL-TOUCH_MTIME_GetSharedCompareState` | IMPL-TOUCH_MTIME |
 | Comparison demo fixture | `SETUP_COMPARISON_FIXTURE` | IMPL-DEMO_SCREENSHOT_PIPELINE |
 | Capture comparison screenshot | `CAPTURE_WORKSPACE_AND_COMPARISON` | IMPL-DEMO_SCREENSHOT_PIPELINE |
 
 ## Alphabetical index
 
+- **Aggregate mtime** — min/max across shared copies via `resolveAggregateMtime`
 - **Comparison demo fixture** — `/tmp/test-dirs` seed for README comparison PNG
 - **Compare state** — cross-pane stats for one name
 - **Comparison index** — shared-filename map
 - **Comparison mode** — `off` \| `name` \| `size` \| `time`
 - **Enhanced compare state** — compare state + classifications
+- **Shared compare state lookup** — `getSharedCompareState` for Touch modes
 - **Shared filename** — name in 2+ panes
 - **Size comparison** — visual size role per pane
 - **Time comparison** — visual mtime role per pane

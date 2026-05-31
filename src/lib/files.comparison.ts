@@ -137,3 +137,47 @@ function analyzeTimes(mtimes: (Date | string)[]): TimeComparison[] {
     return null; // Middle values in 3+ pane comparison
   });
 }
+
+/**
+ * [IMPL-TOUCH_MTIME] [ARCH-TOUCH_MTIME] [REQ-TOUCH_MTIME] [REQ-CROSS_PANE_COMPARISON]: how — min or max mtime across shared copies; null when fewer than two mtimes
+ */
+export function resolveAggregateMtime(
+  mtimes: (Date | string)[],
+  role: "earliest" | "latest",
+): Date | null {
+  if (mtimes.length < 2) {
+    return null;
+  }
+
+  const timestamps = mtimes.map((t) =>
+    typeof t === "string" ? new Date(t).getTime() : t.getTime(),
+  );
+  const targetMs =
+    role === "earliest" ? Math.min(...timestamps) : Math.max(...timestamps);
+  return new Date(targetMs);
+}
+
+/**
+ * [IMPL-TOUCH_MTIME] [REQ-TOUCH_MTIME]: how — shared filenames with CompareState from enhanced index (2+ panes)
+ */
+export function getSharedCompareState(
+  paneFilesList: readonly (readonly FileStat[])[],
+  basename: string,
+): CompareState | null {
+  const index = buildEnhancedComparisonIndex(
+    paneFilesList.map((pane) => [...pane]),
+  );
+  const paneMap = index.get(basename);
+  if (!paneMap) {
+    return null;
+  }
+  const entry = paneMap.values().next().value;
+  if (!entry || entry.panes.length < 2) {
+    return null;
+  }
+  return {
+    panes: entry.panes,
+    sizes: entry.sizes,
+    mtimes: entry.mtimes,
+  };
+}
