@@ -23,6 +23,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **FilePane column renderer** (`[IMPL-FILE_PANE]`, `[IMPL-FILE_COLUMN_CONFIG]`, `[REQ-CONFIG_DRIVEN_FILE_MANAGER]`): `renderColumn` takes `(columnId, file)` only; aligns implementation with `TABULAR_FILE_ROW_GRID` / `TabularFileRowGrid` pseudo-code. Module: [`FilePane.tsx`](src/app/files/components/FilePane.tsx).
+
+- **Tests** (`[IMPL-PANE_COMMAND_EXEC]`): remove unused `afterEach` import in [`execute-command.data.test.ts`](src/lib/execute-command.data.test.ts); behavior unchanged.
+
 - **Unified file context menu** (`[REQ-MOUSE_INTERACTION]`, `[IMPL-MOUSE_SUPPORT]`, `[IMPL-FILE_PANE]`): row and metadata-cell right-click open one `ContextMenu` with file operations, clipboard section, and **Set as Base directory** on directories; standalone `FileColumnContextMenu` retained for unit tests.
 
 - **README demo screenshot automation** (`[REQ-README_DEMO_AUTOMATION]`, `[ARCH-DEMO_ASSET_PIPELINE]`, `[IMPL-DEMO_SCREENSHOT_PIPELINE]`): `npm run demo:screenshots` / `demo:record` captures `3-pane-workspace.png`, `3-pane-comparison.png`, CopyAll step PNGs, and `copyall-demo.gif`; [`scripts/setup_readme_screenshots.sh`](scripts/setup_readme_screenshots.sh); [`e2e/readme-screenshots.spec.ts`](e2e/readme-screenshots.spec.ts); repo-relative [`scripts/verify_demo_screenshots.sh`](scripts/verify_demo_screenshots.sh) (runs at end of `demo:screenshots`). Vocabulary: [`docs/workspace-pane-vocabulary.md`](docs/workspace-pane-vocabulary.md) (**Pane URL deep link**, **README demo asset**), [`docs/cross-pane-comparison-vocabulary.md`](docs/cross-pane-comparison-vocabulary.md) (**Comparison demo fixture**), [`docs/toolbar-keybind-vocabulary.md`](docs/toolbar-keybind-vocabulary.md) (**Toolbar view test id**), [`docs/nsync-multi-target-vocabulary.md`](docs/nsync-multi-target-vocabulary.md) (**CopyAll demo asset**).

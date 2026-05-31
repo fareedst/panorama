@@ -376,12 +376,10 @@ export default function FilePane({
     ? `auto auto ${metadataGridTemplate}`
     : "auto auto";
 
-  // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
-  // Render a single column based on column ID
+  // [IMPL-FILE_PANE] [IMPL-FILE_COLUMN_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [REQ-FILE_LISTING]: how — TABULAR_FILE_ROW_GRID renders each metadata cell via columnId and FileStat only; row index stays in files.map for cursor and UNIFIED_CONTEXT_MENU_WIRING, not in renderColumn
   const renderColumn = (
     columnId: FileColumnId,
     file: FileStat,
-    rowIndex: number,
   ) => {
     const cellClass = "px-2 truncate tabular-nums";
     const displayText = formatFileColumnCell(file, columnId, columns);
@@ -585,8 +583,8 @@ export default function FilePane({
                     />
                   </span>
                   
-                  {/* [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER] Tabular columns */}
-                  {visibleColumns.map((col) => renderColumn(col.id, file, index))}
+                  {/* [IMPL-FILE_PANE] [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how — TabularFileRowGrid calls renderColumn(columnId, file) per visible column */}
+                  {visibleColumns.map((col) => renderColumn(col.id, file))}
                 </div>
               );
             })}

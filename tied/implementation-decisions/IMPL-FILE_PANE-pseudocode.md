@@ -42,7 +42,8 @@ PROCEDURE TABULAR_FILE_ROW_GRID(context)
   measuredWidths := metadataColumnWidths OR measureFileMetadataColumnWidths(files, visibleColumns)
   metadataGridTemplate := buildFileRowGridTemplate(visibleColumnIds, measuredWidths)
   rowGridTemplate := "auto auto " + metadataGridTemplate
-  FOR each file RENDER checkbox slot, folder icon slot, renderColumn per visible id
+  FOR each file RENDER checkbox slot, folder icon slot
+  FOR each visible column CALL renderColumn(columnId, file) — no row index; outer loop index used only for cursor and context menu (UNIFIED_CONTEXT_MENU_WIRING)
   data-testid=file-column-{id} on metadata cells
 ```
 

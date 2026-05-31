@@ -74,7 +74,8 @@ PROCEDURE TabularFileRowGrid(context)
   rowGridTemplate := "auto auto " + metadataGridTemplate
   FOR each file row
     RENDER data-testid=file-row-grid style gridTemplateColumns=rowGridTemplate
-    RENDER checkbox + folder icon slot + renderColumn per visible column
+    RENDER checkbox + folder icon slot
+    FOR each visible column CALL renderColumn(columnId, file) — no row index; outer loop index used only for cursor and context menu
     data-testid=file-column-{id} on each metadata cell
 ```
 

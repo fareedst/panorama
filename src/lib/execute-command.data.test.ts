@@ -1,6 +1,7 @@
 // [TEST-PANE_COMMAND_EXEC] [IMPL-PANE_COMMAND_EXEC] [REQ-PANE_COMMAND_EXEC]
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+// [IMPL-PANE_COMMAND_EXEC]: how — vitest hooks; afterEach removed (unused); behavior unchanged
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { EventEmitter } from "events";
 import {
   executeCommandBatch,
