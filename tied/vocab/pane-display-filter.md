@@ -2,7 +2,7 @@
 
 ## Scope
 
-**Named display filter specs** for file-manager **panes**: include/exclude glob rules, per-pane selection by stable id, cross-pane refresh on save, and exclusion from marks/batch ops. Not access control; not Mesh sync **Policy** filters ([mesh-platform-vocabulary.md](mesh-platform-vocabulary.md)).
+**Named display filter specs** for file-manager **panes**: include/exclude glob rules, per-pane selection by stable id, cross-pane refresh on save, and exclusion from marks/batch ops. Not access control; not Mesh sync **Policy** filters ([mesh-platform.md](mesh-platform.md)).
 
 ## Traceability
 
@@ -15,10 +15,10 @@
 ## See also
 
 - [panorama-domain-references.md](panorama-domain-references.md)
-- [workspace-pane-vocabulary.md](workspace-pane-vocabulary.md) — pane state, mesh snapshot `displaySpecId`
-- [file-marking-vocabulary.md](file-marking-vocabulary.md) — marks operate on **visible** files when a spec is active
-- [toolbar-keybind-vocabulary.md](toolbar-keybind-vocabulary.md) — `view.displaySpec*` actions
-- [cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md) — filter order after display spec
+- [workspace-pane.md](workspace-pane.md) — pane state, mesh snapshot `displaySpecId`
+- [file-marking.md](file-marking.md) — marks operate on **visible** files when a spec is active
+- [toolbar-keybind.md](toolbar-keybind.md) — `view.displaySpec*` actions
+- [cross-pane-visibility.md](cross-pane-visibility.md) — filter order after display spec
 
 ## Preferred term vs synonyms
 

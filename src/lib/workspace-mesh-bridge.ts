@@ -103,7 +103,7 @@ export type DepotSyncOp =
 
 export type DepotForSync = { id: string; name: string; root: string };
 
-// [IMPL-WORKSPACE_MESH_BRIDGE] [IMPL-CROSS_PANE_VISIBILITY_CATALOG] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-CROSS_PANE_VISIBILITY] CAPTURE_SNAPSHOT: how: **Workspace snapshot** v5 capture (docs/mesh-platform-vocabulary.md) — per-pane crossPaneVisibility when inline snapshot fields present
+// [IMPL-WORKSPACE_MESH_BRIDGE] [IMPL-CROSS_PANE_VISIBILITY_CATALOG] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-CROSS_PANE_VISIBILITY] CAPTURE_SNAPSHOT: how: **Workspace snapshot** v5 capture (tied/vocab/mesh-platform.md) — per-pane crossPaneVisibility when inline snapshot fields present
 /** Build v5 snapshot from live workspace pane state (includes fileColumns and cross-pane visibility). */
 export function captureWorkspaceSnapshot(input: WorkspaceCaptureInput): WorkspaceSnapshot {
   return {
@@ -677,7 +677,7 @@ export async function listDirectoryViaFilesApi(path: string): Promise<FileStat[]
   return (await response.json()) as FileStat[];
 }
 
-// [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] BUILD_WORKSPACE_RESTORE_BUNDLE: how: **Workspace restore bundle** from **Workspace snapshot** pane paths (docs/mesh-platform-vocabulary.md, docs/workspace-pane-vocabulary.md)
+// [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] BUILD_WORKSPACE_RESTORE_BUNDLE: how: **Workspace restore bundle** from **Workspace snapshot** pane paths (tied/vocab/mesh-platform.md, tied/vocab/workspace-pane.md)
 /** Build initial panes + restore props from a limited snapshot; listDir hydrates file rows. */
 export async function buildWorkspaceRestoreBundle(
   snapshot: WorkspaceSnapshot,

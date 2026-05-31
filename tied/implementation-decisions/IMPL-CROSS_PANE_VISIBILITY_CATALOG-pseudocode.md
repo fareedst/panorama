@@ -93,7 +93,7 @@ PROCEDURE INLINE_SNAPSHOT_WHEN_DIRTY(paneFields, store)
 
 ## MERGE_LISTING_WITH_CROSS_PANE_FIELDS
 
-// [IMPL-CROSS_PANE_VISIBILITY_CATALOG] [ARCH-CROSS_PANE_VISIBILITY] [REQ-CROSS_PANE_VISIBILITY] [REQ-DIRECTORY_NAVIGATION]: how: **Listing merge** via **Cross-pane field pick** after BUILD_PANE_FROM_RAW_LISTING — attach visibility catalog fields only; never overwrite listing path/files/cursor/marks (docs/cross-pane-visibility-vocabulary.md)
+// [IMPL-CROSS_PANE_VISIBILITY_CATALOG] [ARCH-CROSS_PANE_VISIBILITY] [REQ-CROSS_PANE_VISIBILITY] [REQ-DIRECTORY_NAVIGATION]: how: **Listing merge** via **Cross-pane field pick** after BUILD_PANE_FROM_RAW_LISTING — attach visibility catalog fields only; never overwrite listing path/files/cursor/marks (tied/vocab/cross-pane-visibility.md)
 
 CONTRACT MERGE_LISTING_WITH_CROSS_PANE_FIELDS
   INPUT: listingPane (path, files, cursor, marks, display spec fields), crossPane fields only

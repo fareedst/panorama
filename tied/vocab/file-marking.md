@@ -2,7 +2,7 @@
 
 ## Scope
 
-**Marks**: per-pane sets of selected **filenames** used as the source list for copy/move/delete and **multi-target sync**. Excludes visual comparison ([cross-pane-comparison-vocabulary.md](cross-pane-comparison-vocabulary.md)) and mark-independent single-file ops (cursor-only when no marks).
+**Marks**: per-pane sets of selected **filenames** used as the source list for copy/move/delete and **multi-target sync**. Excludes visual comparison ([cross-pane-comparison.md](cross-pane-comparison.md)) and mark-independent single-file ops (cursor-only when no marks).
 
 ## Traceability
 
@@ -16,9 +16,9 @@
 ## See also
 
 - [panorama-domain-references.md](panorama-domain-references.md)
-- [nsync-multi-target-vocabulary.md](nsync-multi-target-vocabulary.md) — sources from marks
-- [workspace-pane-vocabulary.md](workspace-pane-vocabulary.md) — focused pane
-- [pane-display-filter-vocabulary.md](pane-display-filter-vocabulary.md) — visible-only marks
+- [nsync-multi-target.md](nsync-multi-target.md) — sources from marks
+- [workspace-pane.md](workspace-pane.md) — focused pane
+- [pane-display-filter.md](pane-display-filter.md) — visible-only marks
 
 ## Preferred term vs synonyms
 
@@ -53,7 +53,7 @@
 - **Empty directory** — Mark keys on empty listing: no error, no footer count.
 - **Multi-mark workflow** — Sequential mark.all → invert → clear is valid UX.
 - **Bulk operation** — Uses `getOperationFiles(focusIndex)` before NSYNC or API bulk routes.
-- **Visible-only marks** — When a [display spec](pane-display-filter-vocabulary.md) is active, `pane.files` is the filtered visible set; mark-all and footer **total** count visible items only.
+- **Visible-only marks** — When a [display spec](pane-display-filter.md) is active, `pane.files` is the filtered visible set; mark-all and footer **total** count visible items only.
 
 ## Copy coverage
 

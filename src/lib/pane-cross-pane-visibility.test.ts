@@ -57,7 +57,7 @@ describe("pane-cross-pane-visibility [IMPL-CROSS_PANE_VISIBILITY_CATALOG]", () =
     expect(shouldSnapshotInlineCrossPaneVisibility(fields, store)).toBe(true);
   });
 
-  // [IMPL-CROSS_PANE_VISIBILITY_CATALOG] [ARCH-CROSS_PANE_VISIBILITY] [REQ-CROSS_PANE_VISIBILITY] [REQ-DIRECTORY_NAVIGATION]: how: **Listing merge** via **Cross-pane field pick** — attach visibility catalog fields only; navigation/refresh do not revert path or files (docs/cross-pane-visibility-vocabulary.md)
+  // [IMPL-CROSS_PANE_VISIBILITY_CATALOG] [ARCH-CROSS_PANE_VISIBILITY] [REQ-CROSS_PANE_VISIBILITY] [REQ-DIRECTORY_NAVIGATION]: how: **Listing merge** via **Cross-pane field pick** — attach visibility catalog fields only; navigation/refresh do not revert path or files (tied/vocab/cross-pane-visibility.md)
   it("mergePaneListingWithCrossPaneFields keeps listing path when passed a full pane", () => {
     const crossPane = initialPaneCrossPaneVisibilityFields(undefined, store);
     const listingPane: PaneWithDisplayFilter = {

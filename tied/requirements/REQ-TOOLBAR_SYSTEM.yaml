@@ -3,7 +3,7 @@ REQ-TOOLBAR_SYSTEM:
   category: Functional
   priority: P1
   status: Implemented
-  description: 'To improve discoverability and accessibility of file manager operations by providing a visual, mouse-accessible interface alongside keyboard shortcuts. Canonical terms: docs/toolbar-keybind-vocabulary.md; pseudo-code blocks CYCLE_TRI_STATE, ICON_REGISTRY, TOOLBAR_COMPACT_TOGGLE in IMPL-TOOLBAR_COMPONENT-pseudocode.md.'
+  description: 'To improve discoverability and accessibility of file manager operations by providing a visual, mouse-accessible interface alongside keyboard shortcuts. Canonical terms: tied/vocab/toolbar-keybind.md; pseudo-code blocks CYCLE_TRI_STATE, ICON_REGISTRY, TOOLBAR_COMPACT_TOGGLE in IMPL-TOOLBAR_COMPONENT-pseudocode.md.'
   rationale:
     why: To improve discoverability and accessibility of file manager operations by providing a visual, mouse-accessible interface alongside keyboard shortcuts
     problems_solved:
@@ -26,8 +26,8 @@ REQ-TOOLBAR_SYSTEM:
     - criterion: Each button displays icon (when available) + keyboard shortcut in compact format; label text only shown as fallback when no icon exists
     - criterion: Each toolbar action with an icon mapping renders a registered icon from the icon registry (not the icon-unknown fallback)
     - criterion: Session starts in compact single-row icon-only toolbar; user can toggle to expanded three-tier layout with keystroke badges; tooltips retain keyboard shortcuts in both modes
-    - criterion: Terminology aligns with docs/toolbar-keybind-vocabulary.md
-    - criterion: Toolbar actions expose data-testid toolbar-{action} for Playwright demo and E2E automation (toolbar test id in toolbar-keybind-vocabulary.md)
+    - criterion: Terminology aligns with tied/vocab/toolbar-keybind.md
+    - criterion: Toolbar actions expose data-testid toolbar-{action} for Playwright demo and E2E automation (toolbar test id in tied/vocab/toolbar-keybind.md)
     - criterion: Toolbar button actions dispatch to same handlers as keyboard shortcuts
     - criterion: Toolbar group actions listed under toolbars.actions render without a keybinding row
     - criterion: Toolbar rendering does not impact file manager responsiveness

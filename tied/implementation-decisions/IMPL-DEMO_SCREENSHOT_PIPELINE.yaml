@@ -56,11 +56,11 @@ IMPL-DEMO_SCREENSHOT_PIPELINE:
       - IMPL-TEST_SETUP
     supersedes: []
     see_also:
-      - docs/cross-pane-comparison-vocabulary.md
-      - docs/nsync-multi-target-vocabulary.md
       - docs/screenshots/README.md
-      - docs/toolbar-keybind-vocabulary.md
-      - docs/workspace-pane-vocabulary.md
+      - tied/vocab/cross-pane-comparison.md
+      - tied/vocab/nsync-multi-target.md
+      - tied/vocab/toolbar-keybind.md
+      - tied/vocab/workspace-pane.md
   metadata:
     created:
       date: "2026-05-30T00:00:00.000Z"

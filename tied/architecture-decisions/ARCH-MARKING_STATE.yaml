@@ -52,7 +52,7 @@ ARCH-MARKING_STATE:
       - IMPL-FILE_MARKING
     see_also:
       - ARCH-BATCH_OPERATIONS
-      - docs/file-marking-vocabulary.md
+      - tied/vocab/file-marking.md
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z

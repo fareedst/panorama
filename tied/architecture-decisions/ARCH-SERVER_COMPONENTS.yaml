@@ -37,7 +37,7 @@ ARCH-SERVER_COMPONENTS:
       - ARCH-REACT_VERSION
     informs: []
     see_also:
-      - docs/workspace-pane-vocabulary.md
+      - tied/vocab/workspace-pane.md
       - docs/FILE_MANAGER_SOLE_PURPOSE.md
   metadata:
     created:

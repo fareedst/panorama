@@ -6,7 +6,7 @@ REQ-FILE_MARKING_WEB:
   description: |-
     Users must be able to mark and unmark individual files within a web-based directory listing for batch operations. Marked files are visually distinguished from unmarked files using checkbox icons and background highlighting. The system must support marking/unmarking individual files, toggling marks on all files, and clearing all marks. Mark state must persist when the directory is re-sorted or refreshed, maintaining marks on the same file names. Marked files participate in batch operations (copy, move, delete) as a group.
 
-    Canonical terms: docs/file-marking-vocabulary.md; pseudo-code blocks MarkToggle, MarkAll, ClearMarks in IMPL-FILE_MARKING-pseudocode.md.
+    Canonical terms: tied/vocab/file-marking.md; pseudo-code blocks MarkToggle, MarkAll, ClearMarks in IMPL-FILE_MARKING-pseudocode.md.
   rationale:
     why: Batch operations on multiple files require a selection mechanism optimized for web interfaces
     problems_solved:
@@ -25,7 +25,7 @@ REQ-FILE_MARKING_WEB:
     - criterion: Mark state persists when directory is re-sorted or refreshed
     - criterion: Marked files visually distinguished with checkbox icon and background color
     - criterion: Parent directory entry (..) cannot be marked
-    - criterion: Terminology aligns with docs/file-marking-vocabulary.md
+    - criterion: Terminology aligns with tied/vocab/file-marking.md
     - criterion: Users can clear all marks with Escape key
     - criterion: Users can mark all files (Shift+M) and invert marks (Ctrl+M)
     - criterion: Users can mark individual files by toggling with Space key or checkbox click

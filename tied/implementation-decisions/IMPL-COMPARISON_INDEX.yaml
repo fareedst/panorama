@@ -53,7 +53,7 @@ IMPL-COMPARISON_INDEX:
     depends_on: []
     supersedes: []
     see_also:
-      - docs/cross-pane-comparison-vocabulary.md
+      - tied/vocab/cross-pane-comparison.md
       - docs/panorama-domain-references.md
   metadata:
     created:

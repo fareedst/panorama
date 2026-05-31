@@ -463,7 +463,7 @@ npm run test:e2e
 
 - [panorama-domain-references.md](panorama-domain-references.md) — canonical domain vocabulary index
 - [vocabulary-index-analysis-and-standards.md](vocabulary-index-analysis-and-standards.md) — mandatory glossary sections, PR checklist
-- Run `bun run validate:vocabulary` (or `bash scripts/validate-vocabulary.sh`) after editing `docs/*-vocabulary.md`
-- [mesh-platform-vocabulary.md](mesh-platform-vocabulary.md) — mesh platform terms
+- Run `bun run validate:vocabulary` (or `bash scripts/validate-vocabulary.sh`) after editing `tied/vocab/*.md`
+- [mesh-platform.md](../tied/vocab/mesh-platform.md) — mesh platform terms
 - [sync-mesh-phase-status.md](sync-mesh-phase-status.md) — mesh sync phase tracker
-- [nsync-multi-target-vocabulary.md](nsync-multi-target-vocabulary.md) — file-manager NSYNC vs `/mesh` boundary (**NSYNC**)
+- [nsync-multi-target.md](../tied/vocab/nsync-multi-target.md) — file-manager NSYNC vs `/mesh` boundary (**NSYNC**)

@@ -46,7 +46,7 @@ ARCH-LAYOUT_ALGORITHMS:
       - IMPL-LAYOUT_CALCULATOR
     see_also:
       - ARCH-FILE_MANAGER_HIERARCHY
-      - docs/workspace-pane-vocabulary.md
+      - tied/vocab/workspace-pane.md
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z

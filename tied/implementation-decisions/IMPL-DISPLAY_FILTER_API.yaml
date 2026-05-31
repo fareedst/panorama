@@ -28,7 +28,7 @@ IMPL-DISPLAY_FILTER_API:
       - src/lib/display-spec-sync.ts
   related_decisions:
     see_also:
-      - docs/pane-display-filter-vocabulary.md
+      - tied/vocab/pane-display-filter.md
   metadata:
     last_updated:
       date: "2026-05-30T00:00:00.000Z"

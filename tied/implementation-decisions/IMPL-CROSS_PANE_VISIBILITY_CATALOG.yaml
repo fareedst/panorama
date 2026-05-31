@@ -24,7 +24,7 @@ IMPL-CROSS_PANE_VISIBILITY_CATALOG:
       - src/lib/pane-cross-pane-visibility.test.ts
   related_decisions:
     see_also:
-      - docs/cross-pane-visibility-vocabulary.md
+      - tied/vocab/cross-pane-visibility.md
   metadata:
     last_updated:
       date: "2026-05-29T00:00:00.000Z"

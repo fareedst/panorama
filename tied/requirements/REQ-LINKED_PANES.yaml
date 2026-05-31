@@ -3,7 +3,7 @@ REQ-LINKED_PANES:
   category: Functional
   priority: P2
   status: Implemented
-  description: 'Toggleable linked mode synchronizes directory navigation, cursor position (by filename), and sort across panes. Canonical terms: docs/linked-navigation-vocabulary.md; pseudo-code blocks IMPL-LINKED_NAV_* in tied/implementation-decisions/IMPL-LINKED_NAV-pseudocode.md.'
+  description: 'Toggleable linked mode synchronizes directory navigation, cursor position (by filename), and sort across panes. Canonical terms: tied/vocab/linked-navigation.md; pseudo-code blocks IMPL-LINKED_NAV_* in tied/implementation-decisions/IMPL-LINKED_NAV-pseudocode.md.'
   rationale:
     why: Users need synchronized navigation across panes for comparison tasks
     problems_solved:
@@ -20,7 +20,7 @@ REQ-LINKED_PANES:
     - criterion: Link groups configurable (future enhancement)
     - criterion: Linked mode persists across directory changes
     - criterion: Linked panes navigate to same subdirectory together (DownwardNavigation)
-    - criterion: Terminology aligns with docs/linked-navigation-vocabulary.md
+    - criterion: Terminology aligns with tied/vocab/linked-navigation.md
     - criterion: Toggle linked mode with L key (link.toggle)
     - criterion: Visual indicator shows linked state in pane headers (VisualIndicators)
   validation_criteria:

@@ -1806,7 +1806,7 @@ REQ-LINKED_PANES:
     - criterion: Link groups configurable (future enhancement)
     - criterion: Linked mode persists across directory changes
     - criterion: Linked panes navigate to same subdirectory together (DownwardNavigation)
-    - criterion: Terminology aligns with docs/linked-navigation-vocabulary.md
+    - criterion: Terminology aligns with tied/vocab/linked-navigation.md
     - criterion: Toggle linked mode with L key (link.toggle)
     - criterion: Visual indicator shows linked state in pane headers (VisualIndicators)
   validation_criteria:

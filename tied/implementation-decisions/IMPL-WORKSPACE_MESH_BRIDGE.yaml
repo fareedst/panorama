@@ -57,5 +57,5 @@ IMPL-WORKSPACE_MESH_BRIDGE:
       reason: LEAP — vocabulary see_also back-link
   related_decisions:
     see_also:
-      - docs/mesh-platform-vocabulary.md
-      - docs/workspace-pane-vocabulary.md
+      - tied/vocab/mesh-platform.md
+      - tied/vocab/workspace-pane.md

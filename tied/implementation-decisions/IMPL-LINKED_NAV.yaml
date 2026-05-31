@@ -116,7 +116,7 @@ IMPL-LINKED_NAV:
       - IMPL-WORKSPACE_VIEW
     supersedes: []
     see_also:
-      - docs/linked-navigation-vocabulary.md
+      - tied/vocab/linked-navigation.md
       - docs/panorama-domain-references.md
   metadata:
     created:

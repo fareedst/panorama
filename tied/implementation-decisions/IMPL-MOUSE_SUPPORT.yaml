@@ -63,4 +63,4 @@ IMPL-MOUSE_SUPPORT:
       result: pass - 554 tests passing
   related_decisions:
     see_also:
-      - docs/workspace-pane-vocabulary.md
+      - tied/vocab/workspace-pane.md

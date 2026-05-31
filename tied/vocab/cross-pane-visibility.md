@@ -2,7 +2,7 @@
 
 ## Scope
 
-**Tri-state toolbar filters** that show or hide file rows using the **comparison index** and **enhanced compare state**. Focused pane applies include/exclude rules; other panes **mirror** visible **shared filenames**. Distinct from **display spec** glob filters ([pane-display-filter-vocabulary.md](pane-display-filter-vocabulary.md)).
+**Tri-state toolbar filters** that show or hide file rows using the **comparison index** and **enhanced compare state**. Focused pane applies include/exclude rules; other panes **mirror** visible **shared filenames**. Distinct from **display spec** glob filters ([pane-display-filter.md](pane-display-filter.md)).
 
 ## Traceability
 
@@ -15,11 +15,11 @@
 ## See also
 
 - [panorama-domain-references.md](panorama-domain-references.md)
-- [linked-navigation-vocabulary.md](linked-navigation-vocabulary.md) — `handleNavigate`, parent `..`, linked directory navigation
-- [cross-pane-comparison-vocabulary.md](cross-pane-comparison-vocabulary.md)
-- [workspace-pane-vocabulary.md](workspace-pane-vocabulary.md)
-- [toolbar-keybind-vocabulary.md](toolbar-keybind-vocabulary.md)
-- [pane-display-filter-vocabulary.md](pane-display-filter-vocabulary.md)
+- [linked-navigation.md](linked-navigation.md) — `handleNavigate`, parent `..`, linked directory navigation
+- [cross-pane-comparison.md](cross-pane-comparison.md)
+- [workspace-pane.md](workspace-pane.md)
+- [toolbar-keybind.md](toolbar-keybind.md)
+- [pane-display-filter.md](pane-display-filter.md)
 
 ## Preferred term vs synonyms
 
@@ -34,7 +34,7 @@
 | **Focused pane visibility** | Include/exclude evaluated on focused listing |
 | **Mirrored visibility** | Other panes show rows matching focused visible basenames |
 | **Visibility threshold** | `sizeThreshold` / `timeThreshold` for gt/lt criteria |
-| **Snapshot cross-pane visibility** | Per pane: `crossPaneVisibilityId` + optional inline `crossPaneVisibility` on snapshot v5 — canonical snapshot terms in [mesh-platform-vocabulary.md](mesh-platform-vocabulary.md) |
+| **Snapshot cross-pane visibility** | Per pane: `crossPaneVisibilityId` + optional inline `crossPaneVisibility` on snapshot v5 — canonical snapshot terms in [mesh-platform.md](mesh-platform.md) |
 | **Listing merge** | Combining a fresh directory listing with persisted cross-pane visibility fields on the pane |
 | **Cross-pane field pick** | Merge copies only visibility catalog fields, never `path`, `files`, `cursor`, or `marks` |
 
@@ -51,7 +51,7 @@
 
 ## Toolbar icon names
 
-Compare filter toolbar **Action** ids map to **Icon name** values in `toolbars.actions` / `ACTION_ICON_MAP` (see [toolbar-keybind-vocabulary.md](toolbar-keybind-vocabulary.md)):
+Compare filter toolbar **Action** ids map to **Icon name** values in `toolbars.actions` / `ACTION_ICON_MAP` (see [toolbar-keybind.md](toolbar-keybind.md)):
 
 | Action | Icon name |
 | --- | --- |

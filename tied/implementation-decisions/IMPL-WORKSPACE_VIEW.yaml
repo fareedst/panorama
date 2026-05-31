@@ -67,11 +67,11 @@ IMPL-WORKSPACE_VIEW:
       - IMPL-FILES_API
     supersedes: []
     see_also:
-      - docs/workspace-pane-vocabulary.md
       - IMPL-FILE_PANE
       - IMPL-KEYBINDS
       - IMPL-LAYOUT_CALCULATOR
       - tied/implementation-decisions/IMPL-DEMO_SCREENSHOT_PIPELINE-pseudocode.md
+      - tied/vocab/workspace-pane.md
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z

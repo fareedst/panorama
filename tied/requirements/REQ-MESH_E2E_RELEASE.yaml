@@ -1,7 +1,7 @@
 REQ-MESH_E2E_RELEASE:
   name: Mesh E2E Release Validation
   status: Implemented
-  description: 'Playwright flows for mesh UI release validation. Covers two-local-depot sync, fan-out, conflict resolution, destructive-operation guard, pause/resume/cancel, RBAC credentials, export/import, navigation, monitoring, archive. Canonical terms: docs/mesh-platform-vocabulary.md.'
+  description: 'Playwright flows for mesh UI release validation. Covers two-local-depot sync, fan-out, conflict resolution, destructive-operation guard, pause/resume/cancel, RBAC credentials, export/import, navigation, monitoring, archive. Canonical terms: tied/vocab/mesh-platform.md.'
   satisfaction_criteria:
     - criterion: e2e_archived_mesh_hidden_history_retained
     - criterion: e2e_conflict_detect_and_resolve

@@ -44,7 +44,7 @@ ARCH-COMPARISON_INDEX:
       - IMPL-COMPARISON_INDEX
     see_also:
       - ARCH-FILE_MANAGER_HIERARCHY
-      - docs/cross-pane-comparison-vocabulary.md
+      - tied/vocab/cross-pane-comparison.md
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z

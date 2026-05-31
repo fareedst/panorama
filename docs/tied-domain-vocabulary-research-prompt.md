@@ -14,21 +14,21 @@ Copy everything in the **Prompt** section below into a new Cursor (or other TIED
 |-------------|----------------|
 | `{PROJECT}` | `panorama` |
 | `{INDEX_PATH}` | `docs/panorama-domain-references.md` |
-| `{VOCAB_DIR}` | `docs/` |
+| `{VOCAB_DIR}` | `tied/vocab/` |
 
 ### Domain seeds (Panorama)
 
 Group work by cohesive subsystems that already have REQ/ARCH/IMPL clusters:
 
-1. **Workspace & pane shell** — [`workspace-pane-vocabulary.md`](workspace-pane-vocabulary.md) ([`REQ-FILE_MANAGER_PAGE`](../tied/requirements/REQ-FILE_MANAGER_PAGE.yaml), [`REQ-MULTI_PANE_LAYOUT`](../tied/requirements/REQ-MULTI_PANE_LAYOUT.yaml))
-2. **NSYNC multi-target** — [`nsync-multi-target-vocabulary.md`](nsync-multi-target-vocabulary.md) ([`REQ-NSYNC_MULTI_TARGET`](../tied/requirements/REQ-NSYNC_MULTI_TARGET.yaml))
-3. **Cross-pane comparison** — [`cross-pane-comparison-vocabulary.md`](cross-pane-comparison-vocabulary.md) ([`REQ-CROSS_PANE_COMPARISON`](../tied/requirements/REQ-CROSS_PANE_COMPARISON.yaml))
-4. **Linked navigation** — [`linked-navigation-vocabulary.md`](linked-navigation-vocabulary.md) ([`REQ-LINKED_PANES`](../tied/requirements/REQ-LINKED_PANES.yaml))
-5. **File marking** — [`file-marking-vocabulary.md`](file-marking-vocabulary.md) ([`REQ-FILE_MARKING_WEB`](../tied/requirements/REQ-FILE_MARKING_WEB.yaml))
-6. **Pane display filters** — [`pane-display-filter-vocabulary.md`](pane-display-filter-vocabulary.md) ([`REQ-PANE_DISPLAY_FILTER`](../tied/requirements/REQ-PANE_DISPLAY_FILTER.yaml))
-7. **Cross-pane visibility** — [`cross-pane-visibility-vocabulary.md`](cross-pane-visibility-vocabulary.md) ([`REQ-CROSS_PANE_VISIBILITY`](../tied/requirements/REQ-CROSS_PANE_VISIBILITY.yaml))
-8. **Toolbar & keybinds** — [`toolbar-keybind-vocabulary.md`](toolbar-keybind-vocabulary.md) ([`REQ-TOOLBAR_SYSTEM`](../tied/requirements/REQ-TOOLBAR_SYSTEM.yaml))
-9. **Mesh platform** — [`mesh-platform-vocabulary.md`](mesh-platform-vocabulary.md) ([`REQ-MESH_GUI`](../tied/requirements/REQ-MESH_GUI.yaml), [`REQ-WORKSPACE_MESH_BRIDGE`](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml))
+1. **Workspace & pane shell** — [`workspace-pane.md`](../tied/vocab/workspace-pane.md) ([`REQ-FILE_MANAGER_PAGE`](../tied/requirements/REQ-FILE_MANAGER_PAGE.yaml), [`REQ-MULTI_PANE_LAYOUT`](../tied/requirements/REQ-MULTI_PANE_LAYOUT.yaml))
+2. **NSYNC multi-target** — [`nsync-multi-target.md`](../tied/vocab/nsync-multi-target.md) ([`REQ-NSYNC_MULTI_TARGET`](../tied/requirements/REQ-NSYNC_MULTI_TARGET.yaml))
+3. **Cross-pane comparison** — [`cross-pane-comparison.md`](../tied/vocab/cross-pane-comparison.md) ([`REQ-CROSS_PANE_COMPARISON`](../tied/requirements/REQ-CROSS_PANE_COMPARISON.yaml))
+4. **Linked navigation** — [`linked-navigation.md`](../tied/vocab/linked-navigation.md) ([`REQ-LINKED_PANES`](../tied/requirements/REQ-LINKED_PANES.yaml))
+5. **File marking** — [`file-marking.md`](../tied/vocab/file-marking.md) ([`REQ-FILE_MARKING_WEB`](../tied/requirements/REQ-FILE_MARKING_WEB.yaml))
+6. **Pane display filters** — [`pane-display-filter.md`](../tied/vocab/pane-display-filter.md) ([`REQ-PANE_DISPLAY_FILTER`](../tied/requirements/REQ-PANE_DISPLAY_FILTER.yaml))
+7. **Cross-pane visibility** — [`cross-pane-visibility.md`](../tied/vocab/cross-pane-visibility.md) ([`REQ-CROSS_PANE_VISIBILITY`](../tied/requirements/REQ-CROSS_PANE_VISIBILITY.yaml))
+8. **Toolbar & keybinds** — [`toolbar-keybind.md`](../tied/vocab/toolbar-keybind.md) ([`REQ-TOOLBAR_SYSTEM`](../tied/requirements/REQ-TOOLBAR_SYSTEM.yaml))
+9. **Mesh platform** — [`mesh-platform.md`](../tied/vocab/mesh-platform.md) ([`REQ-MESH_GUI`](../tied/requirements/REQ-MESH_GUI.yaml), [`REQ-WORKSPACE_MESH_BRIDGE`](../tied/requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml))
 
 ---
 
@@ -84,10 +84,10 @@ Run `bash scripts/validate-vocabulary.sh` after edits.
 | Acceptance item | Panorama status |
 |-----------------|-----------------|
 | Index lists all vocabulary files | [`panorama-domain-references.md`](panorama-domain-references.md) — 9 glossaries |
-| Each glossary: scope, synonyms, Copy coverage, pseudo-code blocks, index | All `docs/*-vocabulary.md` |
-| REQ cites vocabulary path | e.g. [`REQ-LINKED_PANES`](../tied/requirements/REQ-LINKED_PANES.yaml) → `docs/linked-navigation-vocabulary.md` |
+| Each glossary: scope, synonyms, Copy coverage, pseudo-code blocks, index | All `tied/vocab/*.md` glossaries |
+| REQ cites vocabulary path | e.g. [`REQ-LINKED_PANES`](../tied/requirements/REQ-LINKED_PANES.yaml) → `tied/vocab/linked-navigation.md` |
 | Glossary ↔ UPPER_SNAKE blocks | e.g. `EVALUATE_FOCUS_VISIBILITY` in [`IMPL-CROSS_PANE_VISIBILITY_ENGINE-pseudocode.md`](../tied/implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_ENGINE-pseudocode.md) |
-| Mesh snapshot terms defined once | [`mesh-platform-vocabulary.md`](mesh-platform-vocabulary.md); workspace-pane links out |
+| Mesh snapshot terms defined once | [`mesh-platform.md`](../tied/vocab/mesh-platform.md); workspace-pane links out |
 | README links index | [README.md](../README.md) § Domain vocabulary |
 | Validation script | [`scripts/validate-vocabulary.sh`](../scripts/validate-vocabulary.sh) |
 

@@ -2,7 +2,7 @@
 
 ## Scope
 
-**Toolbar** system (workspace / pane / system tiers), **keybinding actions** (dot-separated IDs), and how toolbars derive labels/shortcuts from `config/files.yaml`. Full key list remains in config (behavior inventory). Excludes layout geometry ([workspace-pane-vocabulary.md](workspace-pane-vocabulary.md)).
+**Toolbar** system (workspace / pane / system tiers), **keybinding actions** (dot-separated IDs), and how toolbars derive labels/shortcuts from `config/files.yaml`. Full key list remains in config (behavior inventory). Excludes layout geometry ([workspace-pane.md](workspace-pane.md)).
 
 ## Traceability
 
@@ -16,10 +16,10 @@
 ## See also
 
 - [panorama-domain-references.md](panorama-domain-references.md) — behavior inventories pointer
-- [linked-navigation-vocabulary.md](linked-navigation-vocabulary.md) — `link.toggle`
-- [nsync-multi-target-vocabulary.md](nsync-multi-target-vocabulary.md) — `file.copyAll` / `file.moveAll`
-- [cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md) — `view.compareFilter.*` tri-state filters
-- [workspace-pane-vocabulary.md](workspace-pane-vocabulary.md) — pane management actions
+- [linked-navigation.md](linked-navigation.md) — `link.toggle`
+- [nsync-multi-target.md](nsync-multi-target.md) — `file.copyAll` / `file.moveAll`
+- [cross-pane-visibility.md](cross-pane-visibility.md) — `view.compareFilter.*` tri-state filters
+- [workspace-pane.md](workspace-pane.md) — pane management actions
 
 ## Preferred term vs synonyms
 
@@ -82,7 +82,7 @@
 | --- | --- |
 | `navigate.*` | Directory cursor, enter, parent, tab, home |
 | `file.*` | copy, move, delete, rename, **copyAll**, **moveAll** |
-| `mark.*` | marking ([file-marking-vocabulary.md](file-marking-vocabulary.md)) |
+| `mark.*` | marking ([file-marking.md](file-marking.md)) |
 | `view.*` | sort, layout picker (`view.layout`), column order dialog (`view.columns`, toolbar-only), comparison mode, hidden files, display filter specs (`view.displaySpec`, `view.displaySpec.none`), compare filters (`view.compareFilter.*`, toolbar-only) |
 | `link.*` | linked mode toggle |
 | `pane.*` | add, remove, refresh, refresh-all, **swap**, **swapPrev**, **cycle**, **cyclePrev**, **order** |
@@ -109,11 +109,11 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 - **leadingContent** — Renders before the first group; vertical separator when groups follow.
 - **Workspace area remeasure** — Compact/expanded toggle changes vertical chrome; `useElementSize` on `workspace-area` updates `containerHeight` and pane bounds ([REQ-MULTI_PANE_LAYOUT](../tied/requirements/REQ-MULTI_PANE_LAYOUT.yaml)).
 - **view.layout** — Opens layout picker pop-over (`LayoutPickerPopover`, `workspace-layout-picker`); replaces header layout `<select>`.
-- **view.compareFilter.*** — Tri-state compare filter toolbar actions; see [cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md).
+- **view.compareFilter.*** — Tri-state compare filter toolbar actions; see [cross-pane-visibility.md](cross-pane-visibility.md).
 - **view.compareFilter.thresholds** — Opens size/time threshold dialog for gt/lt compare criteria.
 - **Icon registry** — `getIconPaths` / `isIconRegistered` in `src/components/icons/registry.ts`; `getReferencedToolbarIconNames()` in `toolbar.utils.ts` for test coverage.
 - **pane.order** — Toolbar-only pane reorder; icon `bookmark-list`; opens `PaneOrderDialog` (no keybinding row in `config/files.yaml`).
-- **pane.swap** / **pane.cycle** — Workspace Panes group; icons `move` and `refresh-cw`; share handlers with keyboard shortcuts ([workspace-pane-vocabulary.md](workspace-pane-vocabulary.md)).
+- **pane.swap** / **pane.cycle** — Workspace Panes group; icons `move` and `refresh-cw`; share handlers with keyboard shortcuts ([workspace-pane.md](workspace-pane.md)).
 - **Toolbar view test id** — Stable `toolbar-{action}` test ids on `ToolbarButton` for Playwright ([e2e/readme-screenshots.spec.ts](../e2e/readme-screenshots.spec.ts), [e2e/copyall-demo.spec.ts](../e2e/copyall-demo.spec.ts)).
 
 ### Adding toolbar icons

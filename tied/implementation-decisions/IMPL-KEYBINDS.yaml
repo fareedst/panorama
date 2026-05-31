@@ -65,7 +65,7 @@ IMPL-KEYBINDS:
       result: pass - help triggered by both 'h' and '?', closes on first Escape press, no interference with modal keyboard events
   related_decisions:
     see_also:
-      - docs/toolbar-keybind-vocabulary.md
+      - tied/vocab/toolbar-keybind.md
   traceability:
     architecture:
       - ARCH-KEYBIND_SYSTEM

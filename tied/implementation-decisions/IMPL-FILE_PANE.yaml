@@ -62,10 +62,10 @@ IMPL-FILE_PANE:
     depends_on: []
     supersedes: []
     see_also:
-      - docs/workspace-pane-vocabulary.md
       - IMPL-FILES_UTILS
       - IMPL-MOUSE_SUPPORT
       - IMPL-WORKSPACE_VIEW
+      - tied/vocab/workspace-pane.md
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z

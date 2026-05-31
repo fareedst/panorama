@@ -2,7 +2,7 @@
 
 ## Scope
 
-**Mesh** synchronization **platform** (`/mesh` routes, mesh API, domain model): meshes, depots, sync links, sessions, plans, conflicts, connectors. Separate product surface from the **file manager** workspace and from **NSYNC** pane sync ([nsync-multi-target-vocabulary.md](nsync-multi-target-vocabulary.md)). Excludes connector implementation algorithms.
+**Mesh** synchronization **platform** (`/mesh` routes, mesh API, domain model): meshes, depots, sync links, sessions, plans, conflicts, connectors. Separate product surface from the **file manager** workspace and from **NSYNC** pane sync ([nsync-multi-target.md](nsync-multi-target.md)). Excludes connector implementation algorithms.
 
 ## Traceability
 
@@ -16,10 +16,10 @@
 ## See also
 
 - [panorama-domain-references.md](panorama-domain-references.md)
-- [workspace-pane-vocabulary.md](workspace-pane-vocabulary.md) — file-manager restore UX chrome
-- [nsync-multi-target-vocabulary.md](nsync-multi-target-vocabulary.md) — file-manager multi-pane sync (different subsystem)
-- [cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md) — snapshot v5 compare filter fields
-- [pane-display-filter-vocabulary.md](pane-display-filter-vocabulary.md) — snapshot v2 display spec fields
+- [workspace-pane.md](workspace-pane.md) — file-manager restore UX chrome
+- [nsync-multi-target.md](nsync-multi-target.md) — file-manager multi-pane sync (different subsystem)
+- [cross-pane-visibility.md](cross-pane-visibility.md) — snapshot v5 compare filter fields
+- [pane-display-filter.md](pane-display-filter.md) — snapshot v2 display spec fields
 
 ## Preferred term vs synonyms
 

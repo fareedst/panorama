@@ -28,8 +28,8 @@ IMPL-CROSS_PANE_VISIBILITY_UI:
       - src/app/files/WorkspaceView.cross-pane-visibility.test.tsx
   related_decisions:
     see_also:
-      - docs/cross-pane-visibility-vocabulary.md
-      - docs/toolbar-keybind-vocabulary.md
+      - tied/vocab/cross-pane-visibility.md
+      - tied/vocab/toolbar-keybind.md
   metadata:
     last_updated:
       date: "2026-05-29T00:00:00.000Z"

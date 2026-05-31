@@ -28,7 +28,7 @@ IMPL-PANE_DISPLAY_FILTER_UI:
       - REQ-PANE_DISPLAY_FILTER
   related_decisions:
     see_also:
-      - docs/pane-display-filter-vocabulary.md
+      - tied/vocab/pane-display-filter.md
   metadata:
     last_updated:
       date: "2026-05-30T00:00:00.000Z"

@@ -13,7 +13,7 @@ NORMALIZE_LAYOUT(value):
 
 ## CAPTURE_SNAPSHOT
 # [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MULTI_PANE_LAYOUT] [REQ-PANE_DISPLAY_FILTER] [REQ-FILE_SORTING_ADVANCED] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [REQ-CROSS_PANE_VISIBILITY] [IMPL-FILE_COLUMN_CONFIG] [IMPL-CROSS_PANE_VISIBILITY_CATALOG]
-# how: **Workspace snapshot** capture (canonical v1–v5 schema in docs/mesh-platform-vocabulary.md) — copy layout, focus, linked, comparison, sharedSort, fileColumns, and per-pane path/sort/cursor/displaySpecId/crossPaneVisibility into v5; layout via NORMALIZE_LAYOUT.
+# how: **Workspace snapshot** capture (canonical v1–v5 schema in tied/vocab/mesh-platform.md) — copy layout, focus, linked, comparison, sharedSort, fileColumns, and per-pane path/sort/cursor/displaySpecId/crossPaneVisibility into v5; layout via NORMALIZE_LAYOUT.
 
 ```
 CAPTURE_SNAPSHOT(workspaceState):
@@ -137,7 +137,7 @@ PARSE_SHARED_SORT(snapshotVersion, rawSharedSort):
 
 ## BUILD_WORKSPACE_RESTORE_BUNDLE
 # [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-FILE_MANAGER_PAGE]
-# how: **Workspace restore bundle** — hydrate initialPanes by listing each **Workspace snapshot** pane path; build restoreLayout, restoreUi, restorePaneMeta from limited snapshot (docs/mesh-platform-vocabulary.md, docs/workspace-pane-vocabulary.md).
+# how: **Workspace restore bundle** — hydrate initialPanes by listing each **Workspace snapshot** pane path; build restoreLayout, restoreUi, restorePaneMeta from limited snapshot (tied/vocab/mesh-platform.md, tied/vocab/workspace-pane.md).
 
 ```
 BUILD_WORKSPACE_RESTORE_BUNDLE(limited, listDir):
@@ -342,7 +342,7 @@ SHOW_LOADED_WORKSPACE_NAME(meshId, record):
 
 ## WORKSPACE_HEADER_STATUS
 # [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-FILE_MANAGER_PAGE]
-# how: **Workspace header status row** (`workspace-header-status`) — groups **Loaded workspace name**, **Workspace restore pending/warning/error** chrome below title (docs/workspace-pane-vocabulary.md).
+# how: **Workspace header status row** (`workspace-header-status`) — groups **Loaded workspace name**, **Workspace restore pending/warning/error** chrome below title (tied/vocab/workspace-pane.md).
 
 ```
 WORKSPACE_HEADER_STATUS(loadedMeshName, restoreWarning, restoredFromMesh, clientRestoredFromMesh, meshRehydrating):

@@ -2,7 +2,7 @@
 
 ## Scope
 
-**Multi-destination file synchronization** from one **source pane** to all **other visible panes** (Copy to All / Move to All), including the `SyncEngine`, API `sync-all` operation, skip/verify/compare options, and safe **move semantics**. Excludes single-destination copy/move between two panes (`file.copy` / `file.move`) and Mesh orchestration ([mesh-platform-vocabulary.md](mesh-platform-vocabulary.md)).
+**Multi-destination file synchronization** from one **source pane** to all **other visible panes** (Copy to All / Move to All), including the `SyncEngine`, API `sync-all` operation, skip/verify/compare options, and safe **move semantics**. Excludes single-destination copy/move between two panes (`file.copy` / `file.move`) and Mesh orchestration ([mesh-platform.md](mesh-platform.md)).
 
 ## Traceability
 
@@ -16,10 +16,10 @@
 ## See also
 
 - [panorama-domain-references.md](panorama-domain-references.md)
-- [file-marking-vocabulary.md](file-marking-vocabulary.md) — how sources are chosen
-- [workspace-pane-vocabulary.md](workspace-pane-vocabulary.md) — pane / focus
-- [cross-pane-comparison-vocabulary.md](cross-pane-comparison-vocabulary.md) — visual compare vs sync skip
-- [toolbar-keybind-vocabulary.md](toolbar-keybind-vocabulary.md) — `file.copyAll` / `file.moveAll`
+- [file-marking.md](file-marking.md) — how sources are chosen
+- [workspace-pane.md](workspace-pane.md) — pane / focus
+- [cross-pane-comparison.md](cross-pane-comparison.md) — visual compare vs sync skip
+- [toolbar-keybind.md](toolbar-keybind.md) — `file.copyAll` / `file.moveAll`
 
 ## Preferred term vs synonyms
 

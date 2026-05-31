@@ -3,7 +3,7 @@ REQ-NSYNC_MULTI_TARGET:
   category: Functional
   priority: P1
   status: Implemented
-  description: 'Enable efficient copying/moving of files from the focused pane (sources) to all other visible panes (destinations) in parallel. Canonical terms: docs/nsync-multi-target-vocabulary.md; pseudo-code blocks IMPL-NSYNC_ENGINE_* in tied/implementation-decisions/IMPL-NSYNC_ENGINE-pseudocode.md.'
+  description: 'Enable efficient copying/moving of files from the focused pane (sources) to all other visible panes (destinations) in parallel. Canonical terms: tied/vocab/nsync-multi-target.md; pseudo-code blocks IMPL-NSYNC_ENGINE_* in tied/implementation-decisions/IMPL-NSYNC_ENGINE-pseudocode.md.'
   rationale:
     why: Enable efficient copying/moving of files from source to multiple destinations in parallel, inspired by Goful's nsync usage
     problems_solved:
@@ -20,7 +20,7 @@ REQ-NSYNC_MULTI_TARGET:
     - criterion: Cancellation support via AbortSignal
     - criterion: Observer pattern for progress callbacks (SyncObserver)
     - criterion: Sync files to 2+ destinations in parallel via sync-all / SyncEngine
-    - criterion: Terminology and block names align with docs/nsync-multi-target-vocabulary.md
+    - criterion: Terminology and block names align with tied/vocab/nsync-multi-target.md
   validation_criteria:
     - method: Unit tests
       coverage: Multi-destination sync, move semantics, observer callbacks

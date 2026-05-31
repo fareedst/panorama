@@ -3,7 +3,7 @@ REQ-README_DEMO_AUTOMATION:
   category: Documentation
   priority: P2
   status: Implemented
-  description: 'One-command Playwright pipeline generates committed README demo assets under docs/screenshots/: 3-pane workspace and comparison PNGs, CopyAll step PNGs, and copyall-demo.gif. Uses pane URL deep links and separate comparison vs CopyAll fixtures. Canonical terms: docs/workspace-pane-vocabulary.md, docs/cross-pane-comparison-vocabulary.md, docs/nsync-multi-target-vocabulary.md, docs/toolbar-keybind-vocabulary.md.'
+  description: 'One-command Playwright pipeline generates committed README demo assets under docs/screenshots/: 3-pane workspace and comparison PNGs, CopyAll step PNGs, and copyall-demo.gif. Uses pane URL deep links and separate comparison vs CopyAll fixtures. Canonical terms: tied/vocab/workspace-pane.md, tied/vocab/cross-pane-comparison.md, tied/vocab/nsync-multi-target.md, tied/vocab/toolbar-keybind.md.'
   rationale:
     why: README visuals must stay reproducible without manual recording
     problems_solved:

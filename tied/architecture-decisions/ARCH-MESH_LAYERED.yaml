@@ -52,7 +52,7 @@ ARCH-MESH_LAYERED:
       - ARCH-MESH_DOMAIN
     see_also:
       - ARCH-NSYNC_INTEGRATION
-      - docs/mesh-platform-vocabulary.md
+      - tied/vocab/mesh-platform.md
   metadata:
     created:
       date: "2026-05-19T00:00:00.000Z"

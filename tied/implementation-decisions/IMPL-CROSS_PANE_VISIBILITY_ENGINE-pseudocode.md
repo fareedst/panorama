@@ -1,6 +1,6 @@
 # IMPL-CROSS_PANE_VISIBILITY_ENGINE essence pseudocode
 
-// [IMPL-CROSS_PANE_VISIBILITY_ENGINE] [ARCH-CROSS_PANE_VISIBILITY] [REQ-CROSS_PANE_VISIBILITY]: how: Filter pipeline stage 2 — **Cross-pane visibility** on focused listing after **Display spec**; **Focused pane visibility** + **Mirrored visibility** (docs/cross-pane-visibility-vocabulary.md)
+// [IMPL-CROSS_PANE_VISIBILITY_ENGINE] [ARCH-CROSS_PANE_VISIBILITY] [REQ-CROSS_PANE_VISIBILITY]: how: Filter pipeline stage 2 — **Cross-pane visibility** on focused listing after **Display spec**; **Focused pane visibility** + **Mirrored visibility** (tied/vocab/cross-pane-visibility.md)
 
 ## EVALUATE_FOCUS_VISIBILITY
 

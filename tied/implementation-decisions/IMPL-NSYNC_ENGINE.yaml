@@ -70,7 +70,7 @@ IMPL-NSYNC_ENGINE:
       - IMPL-NSYNC_VERIFY
     supersedes: []
     see_also:
-      - docs/nsync-multi-target-vocabulary.md
+      - tied/vocab/nsync-multi-target.md
       - docs/panorama-domain-references.md
   metadata:
     created:

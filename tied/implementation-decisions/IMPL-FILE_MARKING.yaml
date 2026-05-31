@@ -55,7 +55,7 @@ IMPL-FILE_MARKING:
     supersedes: []
     see_also:
       - IMPL-BULK_OPS
-      - docs/file-marking-vocabulary.md
+      - tied/vocab/file-marking.md
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z

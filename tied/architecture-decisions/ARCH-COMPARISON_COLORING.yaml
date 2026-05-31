@@ -51,7 +51,7 @@ ARCH-COMPARISON_COLORING:
       - IMPL-COMPARISON_COLORS
     see_also:
       - ARCH-CONFIG_DRIVEN_UI
-      - docs/cross-pane-comparison-vocabulary.md
+      - tied/vocab/cross-pane-comparison.md
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z

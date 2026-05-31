@@ -2,7 +2,7 @@
 
 ## Scope
 
-**Visual and structural comparison** of files that share a **filename** across multiple panes: building the **comparison index**, classifying size/time deltas, and **comparison mode** display. Excludes NSYNC skip/compare during copy ([nsync-multi-target-vocabulary.md](nsync-multi-target-vocabulary.md)) — different `compareMethod` pipeline.
+**Visual and structural comparison** of files that share a **filename** across multiple panes: building the **comparison index**, classifying size/time deltas, and **comparison mode** display. Excludes NSYNC skip/compare during copy ([nsync-multi-target.md](nsync-multi-target.md)) — different `compareMethod` pipeline.
 
 ## Traceability
 
@@ -16,9 +16,9 @@
 ## See also
 
 - [panorama-domain-references.md](panorama-domain-references.md)
-- [workspace-pane-vocabulary.md](workspace-pane-vocabulary.md)
-- [cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md)
-- [nsync-multi-target-vocabulary.md](nsync-multi-target-vocabulary.md) — `CompareMethod` for sync skip
+- [workspace-pane.md](workspace-pane.md)
+- [cross-pane-visibility.md](cross-pane-visibility.md)
+- [nsync-multi-target.md](nsync-multi-target.md) — `CompareMethod` for sync skip
 
 ## Preferred term vs synonyms
 
@@ -50,7 +50,7 @@
 - **Comparison index** — Map from **filename** → per-pane stats for names present in **two or more** panes; `ComparisonIndex.get(paneIndex, filename)`.
 - **Shared filenames** — `getSharedFilenames()` — drives which rows participate in cross-pane styling.
 - **Comparison mode off** — No cross-pane coloring; listing still works.
-- **Filter comparison index** — Built whenever two or more panes exist for cross-pane visibility criteria; coloring index remains gated by `comparisonMode` ([cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md)).
+- **Filter comparison index** — Built whenever two or more panes exist for cross-pane visibility criteria; coloring index remains gated by `comparisonMode` ([cross-pane-visibility.md](cross-pane-visibility.md)).
 - **Pane index** — Numeric index into workspace `panes[]`; parallel arrays in `CompareState.panes`.
 - **Comparison demo fixture** — Bash seed data for automated comparison screenshots; not a runtime catalog.
 

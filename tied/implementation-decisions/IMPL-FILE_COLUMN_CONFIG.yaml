@@ -104,11 +104,11 @@ IMPL-FILE_COLUMN_CONFIG:
       - IMPL-FILES_CONFIG
     supersedes: []
     see_also:
-      - docs/workspace-pane-vocabulary.md
       - IMPL-FILES_CONFIG_COMPLETE
       - IMPL-TOOLBAR_COMPONENT
       - IMPL-WORKSPACE_MESH_BRIDGE
       - IMPL-WORKSPACE_VIEW
+      - tied/vocab/workspace-pane.md
   metadata:
     created:
       date: 2026-02-08T00:00:00.000Z

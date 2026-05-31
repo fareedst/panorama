@@ -64,7 +64,7 @@ ARCH-NEXTJS_FRAMEWORK:
       - ARCH-APP_ROUTER
       - ARCH-REACT_VERSION
     see_also:
-      - docs/workspace-pane-vocabulary.md
+      - tied/vocab/workspace-pane.md
   metadata:
     created:
       date: 2025-11-08T00:00:00.000Z

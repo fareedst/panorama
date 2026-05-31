@@ -47,7 +47,7 @@ ARCH-TOOLBAR_ACTIONS:
     informs:
       - IMPL-TOOLBAR_COMPONENT
     see_also:
-      - docs/toolbar-keybind-vocabulary.md
+      - tied/vocab/toolbar-keybind.md
   metadata:
     created:
       date: 2026-02-08T00:00:00.000Z

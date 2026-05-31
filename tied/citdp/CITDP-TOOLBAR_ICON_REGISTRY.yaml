@@ -44,7 +44,7 @@ CITDP-TOOLBAR_ICON_REGISTRY:
       - IMPL-TOOLBAR_COMPONENT
       - REQ-TOOLBAR_SYSTEM
     modules_or_boundaries: |
-      src/components/icons/*; Icon.tsx; toolbar.utils.ts; docs/*-vocabulary.md (toolbar, cross-pane-visibility, nsync, mesh, pane-display-filter)
+      src/components/icons/*; Icon.tsx; toolbar.utils.ts; tied/vocab/*.md (toolbar, cross-pane-visibility, nsync, mesh, pane-display-filter)
   risk_analysis:
     risks:
       - id: RISK-001

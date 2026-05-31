@@ -3,7 +3,7 @@ REQ-MESH_GUI:
   category: Functional
   priority: P1
   status: Implemented
-  description: 'Mesh UI at src/app/mesh: list, detail, topology, plan, sync, conflicts, schedule, export, history, rules, settings, per-mesh depots page. Canonical terms: docs/mesh-platform-vocabulary.md; two-phase plan approve then sync start per IMPL-MESH_GUI-pseudocode.'
+  description: 'Mesh UI at src/app/mesh: list, detail, topology, plan, sync, conflicts, schedule, export, history, rules, settings, per-mesh depots page. Canonical terms: tied/vocab/mesh-platform.md; two-phase plan approve then sync start per IMPL-MESH_GUI-pseudocode.'
   rationale:
     why: Deployment plan phases 17-22.
     problems_solved:

@@ -85,7 +85,7 @@ ARCH-LINKED_NAV:
     see_also:
       - ARCH-COMPARISON_INDEX
       - ARCH-DIRECTORY_HISTORY
-      - docs/linked-navigation-vocabulary.md
+      - tied/vocab/linked-navigation.md
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z

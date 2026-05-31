@@ -73,7 +73,7 @@ ARCH-PANE_LIFECYCLE:
       - IMPL-FILE_MANAGER_PAGE
     see_also:
       - ARCH-LAYOUT_ALGORITHMS
-      - docs/workspace-pane-vocabulary.md
+      - tied/vocab/workspace-pane.md
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z

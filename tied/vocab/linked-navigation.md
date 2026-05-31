@@ -2,7 +2,7 @@
 
 ## Scope
 
-**Linked mode** (`linkedMode`): synchronized **directory navigation**, **cursor** (by filename), and **sort** across panes when two or more panes are visible. Excludes NSYNC file copy ([nsync-multi-target-vocabulary.md](nsync-multi-target-vocabulary.md)) and single-pane focus rules ([workspace-pane-vocabulary.md](workspace-pane-vocabulary.md)).
+**Linked mode** (`linkedMode`): synchronized **directory navigation**, **cursor** (by filename), and **sort** across panes when two or more panes are visible. Excludes NSYNC file copy ([nsync-multi-target.md](nsync-multi-target.md)) and single-pane focus rules ([workspace-pane.md](workspace-pane.md)).
 
 ## Traceability
 
@@ -16,8 +16,8 @@
 ## See also
 
 - [panorama-domain-references.md](panorama-domain-references.md)
-- [workspace-pane-vocabulary.md](workspace-pane-vocabulary.md)
-- [toolbar-keybind-vocabulary.md](toolbar-keybind-vocabulary.md)
+- [workspace-pane.md](workspace-pane.md)
+- [toolbar-keybind.md](toolbar-keybind.md)
 
 ## Preferred term vs synonyms
 
@@ -27,7 +27,7 @@
 | **Link toggle** | “toggle link”, `link.toggle` action, **L** key |
 | **Initiating navigation** | Navigation started by user in one pane (`isInitiatingNavigation`) — drives downward/upward linked propagation |
 | **Syncing ref** | `syncingRef` — `Set` of pane indexes currently receiving linked navigation (prevents recursion) |
-| **Cursor filename** | `cursorFilename` — match key for cross-pane cursor sync (basename, not path); also used by **cross-pane path clipboard** in [workspace-pane-vocabulary.md](workspace-pane-vocabulary.md) regardless of **linked mode** |
+| **Cursor filename** | `cursorFilename` — match key for cross-pane cursor sync (basename, not path); also used by **cross-pane path clipboard** in [workspace-pane.md](workspace-pane.md) regardless of **linked mode** |
 | **Auto-disable** | Turn off linked mode when partial downward navigation fails (divergent directory trees) |
 | **Default linked mode** | `layout.defaultLinkedMode` in `config/files.yaml` (default **true** when omitted) |
 | **Single-pane suppression** | Linked UI hidden when `panes.length < 2` even if `linkedMode` is true |
@@ -47,7 +47,7 @@
 - **Linked downward navigation** — Append same **relative subdirectory** to each other pane when structures align.
 - **Linked upward navigation** — Pop same number of path segments on each pane toward root.
 - **Cursor synchronization** — Match `file.name` across panes; cursor `-1` when name missing (graceful degradation).
-- **Cross-pane path clipboard** — File column menu **Copy paths in all panes** reuses the same **cursor filename** match key; independent of whether **linked mode** is ON ([workspace-pane-vocabulary.md](workspace-pane-vocabulary.md)).
+- **Cross-pane path clipboard** — File column menu **Copy paths in all panes** reuses the same **cursor filename** match key; independent of whether **linked mode** is ON ([workspace-pane.md](workspace-pane.md)).
 - **Scroll synchronization** — `scrollTriggers` → `scrollIntoView` in `FilePane` after cursor sync.
 - **Sort synchronization** — Same sort criterion/direction/dirs-first on all panes; preserve cursor by filename after sort.
 - **Parent navigation sync** — Parent button and Backspace use `handleNavigate` so linked rules apply.

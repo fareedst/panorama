@@ -50,7 +50,7 @@ ARCH-APP_ROUTER:
     informs:
       - ARCH-SERVER_COMPONENTS
     see_also:
-      - docs/mesh-platform-vocabulary.md
+      - tied/vocab/mesh-platform.md
   metadata:
     created:
       date: 2025-11-08T00:00:00.000Z

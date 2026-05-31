@@ -1,4 +1,4 @@
-// [IMPL-CROSS_PANE_VISIBILITY_ENGINE] [ARCH-CROSS_PANE_VISIBILITY] [REQ-CROSS_PANE_VISIBILITY]: Filter pipeline stage 2 — **Cross-pane visibility** after **Display spec**; **Focused pane visibility** + **Mirrored visibility** (docs/cross-pane-visibility-vocabulary.md)
+// [IMPL-CROSS_PANE_VISIBILITY_ENGINE] [ARCH-CROSS_PANE_VISIBILITY] [REQ-CROSS_PANE_VISIBILITY]: Filter pipeline stage 2 — **Cross-pane visibility** after **Display spec**; **Focused pane visibility** + **Mirrored visibility** (tied/vocab/cross-pane-visibility.md)
 
 import type { FileStat, EnhancedCompareState } from "./files.types";
 

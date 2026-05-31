@@ -4,7 +4,7 @@
 
 Covers the **multi-pane file manager shell**: server **Files page**, client **workspace**, individual **panes**, **focus**, **layout** geometry, file columns, and file-manager-side restore UX chrome. **Intentional hub** — exceeds ~15 concepts by design; see [panorama-domain-references.md](panorama-domain-references.md) split/merge policy.
 
-Excludes NSYNC sync algorithms ([nsync-multi-target-vocabulary.md](nsync-multi-target-vocabulary.md)), cross-pane comparison coloring ([cross-pane-comparison-vocabulary.md](cross-pane-comparison-vocabulary.md)), Mesh platform domain objects ([mesh-platform-vocabulary.md](mesh-platform-vocabulary.md)), pane **display filter specs** ([pane-display-filter-vocabulary.md](pane-display-filter-vocabulary.md)), and **cross-pane visibility** filters ([cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md)). Application **root entry redirect** (`/`) is documented here; cross-surface **NewTabLink** component details are canonical in [mesh-platform-vocabulary.md](mesh-platform-vocabulary.md).
+Excludes NSYNC sync algorithms ([nsync-multi-target.md](nsync-multi-target.md)), cross-pane comparison coloring ([cross-pane-comparison.md](cross-pane-comparison.md)), Mesh platform domain objects ([mesh-platform.md](mesh-platform.md)), pane **display filter specs** ([pane-display-filter.md](pane-display-filter.md)), and **cross-pane visibility** filters ([cross-pane-visibility.md](cross-pane-visibility.md)). Application **root entry redirect** (`/`) is documented here; cross-surface **NewTabLink** component details are canonical in [mesh-platform.md](mesh-platform.md).
 
 ## Traceability
 
@@ -19,12 +19,12 @@ Excludes NSYNC sync algorithms ([nsync-multi-target-vocabulary.md](nsync-multi-t
 
 - [FILE_MANAGER_SOLE_PURPOSE.md](FILE_MANAGER_SOLE_PURPOSE.md) — sole-purpose product boundary
 - [panorama-domain-references.md](panorama-domain-references.md)
-- [mesh-platform-vocabulary.md](mesh-platform-vocabulary.md) — **Workspace snapshot** v1–v5, save/diff/update, cross-surface links (canonical)
-- [linked-navigation-vocabulary.md](linked-navigation-vocabulary.md)
-- [file-marking-vocabulary.md](file-marking-vocabulary.md)
-- [toolbar-keybind-vocabulary.md](toolbar-keybind-vocabulary.md)
-- [pane-display-filter-vocabulary.md](pane-display-filter-vocabulary.md)
-- [cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md)
+- [mesh-platform.md](mesh-platform.md) — **Workspace snapshot** v1–v5, save/diff/update, cross-surface links (canonical)
+- [linked-navigation.md](linked-navigation.md)
+- [file-marking.md](file-marking.md)
+- [toolbar-keybind.md](toolbar-keybind.md)
+- [pane-display-filter.md](pane-display-filter.md)
+- [cross-pane-visibility.md](cross-pane-visibility.md)
 
 ## Preferred term vs synonyms
 
@@ -34,10 +34,10 @@ Excludes NSYNC sync algorithms ([nsync-multi-target-vocabulary.md](nsync-multi-t
 | **Pane** | Legacy/avoid: “panel”, “column”, “split” — always **pane** in prose and pseudo-code |
 | **Focused pane** | “active pane”, `focusIndex` (state index into `panes[]`) |
 | **Pane state** | `PaneState` — path, files, cursor, marks, sort per pane |
-| **Active display spec** | `activeDisplaySpecId` — see [pane-display-filter-vocabulary.md](pane-display-filter-vocabulary.md) |
+| **Active display spec** | `activeDisplaySpecId` — see [pane-display-filter.md](pane-display-filter.md) |
 | **Hidden item count** | `hiddenCount` — entries filtered out by active display spec |
 | **Loaded spec version** | `loadedSpecVersion` — catalog version last applied to pane listing |
-| **Active cross-pane visibility preset** | `activeCrossPaneVisibilityId` — see [cross-pane-visibility-vocabulary.md](cross-pane-visibility-vocabulary.md) |
+| **Active cross-pane visibility preset** | `activeCrossPaneVisibilityId` — see [cross-pane-visibility.md](cross-pane-visibility.md) |
 | **Cross-pane visibility draft** | `crossPaneVisibilityDraft` — see cross-pane-visibility glossary |
 | **Cross-pane hidden count** | `crossPaneHiddenByPane[i]` — rows hidden by compare filter after display spec |
 | **Files page** | “file manager page”, `src/app/files/page.tsx` (server component) |
@@ -55,7 +55,7 @@ Excludes NSYNC sync algorithms ([nsync-multi-target-vocabulary.md](nsync-multi-t
 | **Swap panes** | `pane.swap` / `pane.swapPrev` — exchange focused pane with neighbor |
 | **Cycle panes** | `pane.cycle` / `pane.cyclePrev` — rotate all panes one slot |
 | **Pane order dialog** | `pane.order` → `PaneOrderDialog` |
-| **Cross-surface link** | Canonical definition: [mesh-platform-vocabulary.md](mesh-platform-vocabulary.md) — file-manager **Mesh Sync** header nav is local UX |
+| **Cross-surface link** | Canonical definition: [mesh-platform.md](mesh-platform.md) — file-manager **Mesh Sync** header nav is local UX |
 | **Workspace header cross-surface nav** | Header `<nav>` with Mesh Sync link; `workspace-cross-surface-nav` |
 | **Workspace header banner** | Top `<header>` — title, status row, Diff, cross-surface nav |
 | **Shared sort** | Workspace `sharedSort`; snapshot field — schema in mesh-platform |
@@ -67,8 +67,8 @@ Excludes NSYNC sync algorithms ([nsync-multi-target-vocabulary.md](nsync-multi-t
 | **File column context menu** | `FileColumnContextMenu` on metadata cells; not row file-operations menu |
 | **File column clipboard menu** | Copy filename / Copy path / Copy paths in all panes |
 | **Pane files list** | `paneFilesList` — workspace `panes[].files` for cross-pane path lookup |
-| **Cross-pane path resolution** | `resolveCrossPanePathsForFilename` — see [linked-navigation-vocabulary.md](linked-navigation-vocabulary.md) |
-| **Layout toolbar picker** | `view.layout` → `LayoutPickerPopover` — [toolbar-keybind-vocabulary.md](toolbar-keybind-vocabulary.md) |
+| **Cross-pane path resolution** | `resolveCrossPanePathsForFilename` — see [linked-navigation.md](linked-navigation.md) |
+| **Layout toolbar picker** | `view.layout` → `LayoutPickerPopover` — [toolbar-keybind.md](toolbar-keybind.md) |
 | **Workspace header status row** | `workspace-header-status` — loaded name, restore warnings, errors |
 | **Layout normalization** | `normalizeLayoutType` / `NORMALIZE_LAYOUT` — aliases round-trip to `LayoutType` |
 | **Mesh restore pending** | File-manager prop `meshRestorePending` when server miss — canonical: mesh-platform |
@@ -119,8 +119,8 @@ Excludes NSYNC sync algorithms ([nsync-multi-target-vocabulary.md](nsync-multi-t
 - **Workspace area** — `flex-1 min-h-0` region measured via `useElementSize` on `workspaceAreaRef`.
 - **Startup paths** — `startup.mode` and `startup.paths.paneN` in `config/files.yaml`.
 - **Parent navigation** — Must route through `handleNavigate` for linked sync.
-- **Mesh bridge UX** — Save, diff, restore banners and header status row in file manager; domain terms (**Workspace snapshot**, **Save workspace as mesh**, **Workspace diff**) are canonical in [mesh-platform-vocabulary.md](mesh-platform-vocabulary.md).
-- **Workspace keyboard-shortcuts footer** — removed; use toolbar badges/tooltips ([toolbar-keybind-vocabulary.md](toolbar-keybind-vocabulary.md)).
+- **Mesh bridge UX** — Save, diff, restore banners and header status row in file manager; domain terms (**Workspace snapshot**, **Save workspace as mesh**, **Workspace diff**) are canonical in [mesh-platform.md](mesh-platform.md).
+- **Workspace keyboard-shortcuts footer** — removed; use toolbar badges/tooltips ([toolbar-keybind.md](toolbar-keybind.md)).
 - **File column context menu** — Clipboard-only on metadata cells; exclusive with row file-operations menu ([REQ-MOUSE_INTERACTION](../tied/requirements/REQ-MOUSE_INTERACTION.yaml)).
 - **Cross-pane path clipboard** — **Copy paths in all panes** uses cursor filename match key ([REQ-LINKED_PANES](../tied/requirements/REQ-LINKED_PANES.yaml)).
 - **Pane URL deep link** — Query parameters initialize pane paths without UI navigation; skipped when mesh restore is active.
@@ -157,7 +157,7 @@ User-facing strings: `config/site.yaml` → `branding.logo` (metadata contract);
 | Column context menu UI | `FILE_COLUMN_CONTEXT_MENU` | IMPL-MOUSE_SUPPORT |
 | Column right-click wiring | `FILE_COLUMN_CONTEXT_MENU_WIRING` | IMPL-FILE_PANE |
 | Workspace pane listings prop | `PANE_FILES_LIST_TO_FILEPANE` | IMPL-FILE_PANE, IMPL-WORKSPACE_VIEW |
-| Mesh bridge blocks | `CAPTURE_SNAPSHOT`, `BUILD_WORKSPACE_RESTORE_BUNDLE`, `WORKSPACE_HEADER_STATUS`, … | IMPL-WORKSPACE_MESH_BRIDGE — full list in [mesh-platform-vocabulary.md](mesh-platform-vocabulary.md) |
+| Mesh bridge blocks | `CAPTURE_SNAPSHOT`, `BUILD_WORKSPACE_RESTORE_BUNDLE`, `WORKSPACE_HEADER_STATUS`, … | IMPL-WORKSPACE_MESH_BRIDGE — full list in [mesh-platform.md](mesh-platform.md) |
 
 ## Alphabetical index
 
