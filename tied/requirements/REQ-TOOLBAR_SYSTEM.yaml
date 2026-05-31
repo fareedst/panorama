@@ -3,7 +3,7 @@ REQ-TOOLBAR_SYSTEM:
   category: Functional
   priority: P1
   status: Implemented
-  description: 'To improve discoverability and accessibility of file manager operations by providing a visual, mouse-accessible interface alongside keyboard shortcuts. Canonical terms: tied/vocab/toolbar-keybind.md; pseudo-code blocks CYCLE_TRI_STATE, ICON_REGISTRY, TOOLBAR_COMPACT_TOGGLE in IMPL-TOOLBAR_COMPONENT-pseudocode.md.'
+  description: 'To improve discoverability and accessibility of file manager operations by providing a visual, mouse-accessible interface alongside keyboard shortcuts. Canonical terms: tied/vocab/toolbar-keybind.md; pseudo-code blocks TOOLBAR_NAMED_LABELS, TOOLBAR_DISPLAY_PROPS, TOOLBAR_COMPACT_TOGGLE, ICON_REGISTRY in IMPL-TOOLBAR_COMPONENT-pseudocode.md.'
   rationale:
     why: To improve discoverability and accessibility of file manager operations by providing a visual, mouse-accessible interface alongside keyboard shortcuts
     problems_solved:
@@ -21,14 +21,15 @@ REQ-TOOLBAR_SYSTEM:
     - criterion: All 36+ keybinding actions represented in configurable toolbars
     - criterion: Button states (active/disabled) reflect current workspace state
     - criterion: Buttons sized to prevent overflow even with 12+ actions per toolbar
-    - criterion: Compact/expanded toolbar toggle does not clip panes; pane geometry updates when workspace area size changes
     - criterion: Compare filter tri-state toolbar actions (view.compareFilter.*) render via TriStateToolbarButton with data-tri-state attribute
-    - criterion: Each button displays icon (when available) + keyboard shortcut in compact format; label text only shown as fallback when no icon exists
     - criterion: Each toolbar action with an icon mapping renders a registered icon from the icon registry (not the icon-unknown fallback)
-    - criterion: Session starts in compact single-row icon-only toolbar; user can toggle to expanded three-tier layout with keystroke badges; tooltips retain keyboard shortcuts in both modes
+    - criterion: In compact and expanded modes, each button displays icon (when available) plus keyboard shortcut badge in expanded mode only; label text only shown as fallback when no icon exists
+    - criterion: Named toolbar mode renders three top tiers with icon plus visible Action labels (keybinding registry label when present, else toolbars.actions metadata label or description); keystroke badges hidden; tooltips retain keyboard shortcuts
+    - criterion: Session starts in compact single-row icon-only toolbar; user can cycle toolbar display to expanded three-tier layout with keystroke badges, then named three-tier layout with visible Action labels from deriveToolbarButton; tooltips retain keyboard shortcuts in all modes
     - criterion: Terminology aligns with tied/vocab/toolbar-keybind.md
     - criterion: Toolbar actions expose data-testid toolbar-{action} for Playwright demo and E2E automation (toolbar test id in tied/vocab/toolbar-keybind.md)
     - criterion: Toolbar button actions dispatch to same handlers as keyboard shortcuts
+    - criterion: Toolbar display toggle cycles compact, expanded, and named modes without clipping panes; pane geometry updates when workspace area size changes
     - criterion: Toolbar group actions listed under toolbars.actions render without a keybinding row
     - criterion: Toolbar rendering does not impact file manager responsiveness
     - criterion: Toolbar styling follows existing theme system in config/theme.yaml
@@ -38,13 +39,13 @@ REQ-TOOLBAR_SYSTEM:
     - criterion: Workspace Panes toolbar group includes pane.swap and pane.cycle with icons; toolbar-only pane.order opens PaneOrderDialog via toolbars.actions metadata
   validation_criteria:
     - method: Component tests
-      coverage: Button rendering, group layout, keystroke display, ToolbarCompactToggle aria-pressed, showKeystroke=false badge hide with tooltip shortcut retention, mergeTopToolbarConfigs tier order
+      coverage: Button rendering, group layout, keystroke display, showActionLabel named labels, ToolbarCompactToggle aria-pressed and three-mode cycle, showKeystroke=false badge hide with tooltip shortcut retention, mergeTopToolbarConfigs tier order
     - method: Integration tests
-      coverage: WorkspaceView toolbar compact/expanded branch, toggle placement on first visible top tier, merged single-row compact toolbar, action dispatch and configuration changes, pane height remeasure on compact toggle via workspace-area
+      coverage: WorkspaceView toolbar compact/expanded/named branch, toggle placement on first visible top tier, merged single-row compact toolbar, named mode visible labels, action dispatch and configuration changes, pane height remeasure on display mode change via workspace-area
     - method: Accessibility tests
       coverage: ARIA labels, keyboard navigation, focus management, toolbar-compact-toggle aria-pressed
     - method: Manual testing
-      coverage: Visual inspection, compact vs expanded layout, interaction testing, responsive testing
+      coverage: Visual inspection, compact vs expanded vs named layout, interaction testing, responsive testing
     - method: Playwright
       coverage: e2e/readme-screenshots.spec.ts and e2e/copyall-demo.spec.ts select toolbar-view.comparison and toolbar-file.copyAll
   traceability:
@@ -81,9 +82,9 @@ REQ-TOOLBAR_SYSTEM:
       date: 2026-02-08T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-30T00:00:00.000Z"
+      date: "2026-05-31T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — toolbar data-testid E2E dependency for demo screenshots
+      reason: LEAP — named toolbar display mode (third session display state)
     last_validated:
       date: 2026-02-08T00:00:00.000Z
       validator: AI Agent

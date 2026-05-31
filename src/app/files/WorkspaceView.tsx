@@ -108,7 +108,12 @@ import { PaneToolbar } from "./components/PaneToolbar";
 import { SystemToolbar } from "./components/SystemToolbar";
 import { Toolbar } from "./components/Toolbar";
 import { ToolbarCompactToggle } from "./components/ToolbarCompactToggle";
-import { mergeTopToolbarConfigs } from "@/lib/toolbar.utils";
+import {
+  cycleToolbarDisplayMode,
+  mergeTopToolbarConfigs,
+  toolbarDisplayProps,
+  type ToolbarDisplayMode,
+} from "@/lib/toolbar.utils";
 import { useElementSize } from "@/lib/useElementSize";
 import {
   SaveWorkspaceMeshDialog,
@@ -469,12 +474,13 @@ export default function WorkspaceView({
     };
   }, [crossPaneVisibilityStore]);
 
-  // [REQ-TOOLBAR_SYSTEM] [REQ-MULTI_PANE_LAYOUT] [IMPL-TOOLBAR_COMPONENT] [IMPL-LAYOUT_CALCULATOR] [ARCH-TOOLBAR_LAYOUT] WORKSPACE_TOOLBAR_DISPLAY_MODE: session toolbarExpanded (not persisted); default compact
-  const [toolbarExpanded, setToolbarExpanded] = useState(false);
+  // [REQ-TOOLBAR_SYSTEM] [REQ-MULTI_PANE_LAYOUT] [IMPL-TOOLBAR_COMPONENT] [IMPL-LAYOUT_CALCULATOR] [ARCH-TOOLBAR_LAYOUT] WORKSPACE_TOOLBAR_DISPLAY_MODE: session toolbarDisplayMode (not persisted); default compact
+  const [toolbarDisplayMode, setToolbarDisplayMode] =
+    useState<ToolbarDisplayMode>("compact");
   // [IMPL-LAYOUT_CALCULATOR] [IMPL-TOOLBAR_COMPONENT] WORKSPACE_AREA_MEASUREMENT: flex workspace-area ref for pane bounds
   const workspaceAreaRef = useRef<HTMLDivElement>(null);
   const { width: containerWidth, height: containerHeight } = useElementSize(workspaceAreaRef, [
-    toolbarExpanded,
+    toolbarDisplayMode,
     toolbars?.enabled,
   ]);
 
@@ -3040,10 +3046,18 @@ export default function WorkspaceView({
     [toolbars],
   );
 
+  // [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM] WORKSPACE_TOOLBAR_DISPLAY_MODE: derive Toolbar props from session toolbarDisplayMode
+  const toolbarDisplay = useMemo(
+    () => toolbarDisplayProps(toolbarDisplayMode),
+    [toolbarDisplayMode],
+  );
+
   const toolbarCompactToggle = (
     <ToolbarCompactToggle
-      expanded={toolbarExpanded}
-      onToggle={() => setToolbarExpanded((v) => !v)}
+      mode={toolbarDisplayMode}
+      onCycle={() =>
+        setToolbarDisplayMode((mode) => cycleToolbarDisplayMode(mode))
+      }
     />
   );
 
@@ -3193,10 +3207,26 @@ export default function WorkspaceView({
         </div>
       </header>
       
-      {/* [REQ-TOOLBAR_SYSTEM] [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] WORKSPACE_TOOLBAR_DISPLAY_MODE */}
+      {/* [REQ-TOOLBAR_SYSTEM] [REQ-MULTI_PANE_LAYOUT] [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] WORKSPACE_TOOLBAR_DISPLAY_MODE: SWITCH compact merged row | expanded keystroke badges | named visible Action labels */}
       {toolbars && toolbars.enabled && (
         <>
-          {toolbarExpanded ? (
+          {toolbarDisplayMode === "compact" ? (
+            mergedToolbarConfig && (
+              <Toolbar
+                config={mergedToolbarConfig}
+                onAction={handleExecuteAction}
+                activeActions={activeActions}
+                disabledActions={disabledActions}
+                leadingContent={toolbarCompactToggle}
+                showKeystroke={toolbarDisplay.showKeystroke}
+                showActionLabel={toolbarDisplay.showActionLabel}
+                singleRow={toolbarDisplay.singleRow}
+                actionsMeta={toolbars.actions}
+                triStateActions={triStateActions}
+                className={toolbarDisplay.mergedClassName ?? ""}
+              />
+            )
+          ) : (
             <>
               {showWorkspaceTop && (
                 <WorkspaceToolbar
@@ -3205,6 +3235,9 @@ export default function WorkspaceView({
                   activeActions={activeActions}
                   disabledActions={disabledActions}
                   leadingContent={toolbarCompactToggle}
+                  showKeystroke={toolbarDisplay.showKeystroke}
+                  showActionLabel={toolbarDisplay.showActionLabel}
+                  tierClassName={toolbarDisplay.tierClassName}
                   actionsMeta={toolbars.actions}
                   triStateActions={triStateActions}
                 />
@@ -3217,6 +3250,9 @@ export default function WorkspaceView({
                   activeActions={activeActions}
                   disabledActions={disabledActions}
                   leadingContent={!showWorkspaceTop ? toolbarCompactToggle : undefined}
+                  showKeystroke={toolbarDisplay.showKeystroke}
+                  showActionLabel={toolbarDisplay.showActionLabel}
+                  tierClassName={toolbarDisplay.tierClassName}
                   actionsMeta={toolbars.actions}
                 />
               )}
@@ -3230,25 +3266,13 @@ export default function WorkspaceView({
                   leadingContent={
                     !showWorkspaceTop && !showPaneTop ? toolbarCompactToggle : undefined
                   }
+                  showKeystroke={toolbarDisplay.showKeystroke}
+                  showActionLabel={toolbarDisplay.showActionLabel}
+                  tierClassName={toolbarDisplay.tierClassName}
                   actionsMeta={toolbars.actions}
                 />
               )}
             </>
-          ) : (
-            mergedToolbarConfig && (
-              <Toolbar
-                config={mergedToolbarConfig}
-                onAction={handleExecuteAction}
-                activeActions={activeActions}
-                disabledActions={disabledActions}
-                leadingContent={toolbarCompactToggle}
-                showKeystroke={false}
-                singleRow
-                actionsMeta={toolbars.actions}
-                triStateActions={triStateActions}
-                className="toolbar-compact"
-              />
-            )
           )}
         </>
       )}

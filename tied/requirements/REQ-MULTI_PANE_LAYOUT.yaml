@@ -35,7 +35,7 @@ REQ-MULTI_PANE_LAYOUT:
     - method: Geometric testing
       coverage: Pane bounds calculated correctly, no overlaps (62 tests)
     - method: Integration tests
-      coverage: useElementSize and WorkspaceView toolbar compact toggle update pane geometry from measured workspace-area
+      coverage: useElementSize and WorkspaceView toolbar display mode cycle update pane geometry from measured workspace-area
     - method: Playwright
       coverage: e2e/readme-screenshots.spec.ts loads three panes via pane URL deep link
   traceability:
@@ -71,7 +71,7 @@ REQ-MULTI_PANE_LAYOUT:
     last_updated:
       date: "2026-05-31T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — set_base_new_pane_appends_at_directory criterion
+      reason: LEAP — toolbar display mode cycle remeasure
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

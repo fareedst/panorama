@@ -14,6 +14,7 @@ export interface TriStateToolbarButtonProps {
   onClick: () => void;
   disabled?: boolean;
   showKeystroke?: boolean;
+  showActionLabel?: boolean;
   keystroke?: string;
 }
 
@@ -26,6 +27,7 @@ export function TriStateToolbarButton({
   onClick,
   disabled = false,
   showKeystroke = true,
+  showActionLabel = false,
   keystroke = "",
 }: TriStateToolbarButtonProps) {
   const hasKeystroke = keystroke.trim().length > 0;
@@ -65,7 +67,12 @@ export function TriStateToolbarButton({
       `.trim().replace(/\s+/g, " ")}
     >
       {icon && <Icon name={icon} size={16} className="flex-shrink-0" />}
-      <span className="sr-only">{label}</span>
+      {/* [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM] TOOLBAR_NAMED_LABELS: visible label in named mode else sr-only for accessibility */}
+      {showActionLabel ? (
+        <span className="font-medium whitespace-nowrap">{label}</span>
+      ) : (
+        <span className="sr-only">{label}</span>
+      )}
       {showKeystroke && hasKeystroke && (
         <span
           className="px-1 py-0.5 text-xs rounded bg-gray-200 dark:bg-gray-700 font-mono"

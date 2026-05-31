@@ -13,8 +13,10 @@ export interface WorkspaceToolbarProps {
   activeActions?: Set<string>;
   disabledActions?: Set<string>;
   showKeystroke?: boolean;
+  showActionLabel?: boolean;
   leadingContent?: React.ReactNode;
   singleRow?: boolean;
+  tierClassName?: string;
   /** [IMPL-TOOLBAR_COMPONENT] [REQ-TOOLBAR_SYSTEM] toolbars.actions for toolbar-only actions (ACTIONS_META_PASS_THROUGH) */
   actionsMeta?: Record<string, ToolbarActionMeta>;
   triStateActions?: Map<string, TriState>;
@@ -31,11 +33,14 @@ export function WorkspaceToolbar({
   activeActions,
   disabledActions,
   showKeystroke,
+  showActionLabel,
   leadingContent,
   singleRow,
+  tierClassName,
   actionsMeta,
   triStateActions,
 }: WorkspaceToolbarProps) {
+  // [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM] WORKSPACE_TOOLBAR_DISPLAY_MODE: forward showActionLabel, showKeystroke, tierClassName to Toolbar
   return (
     <Toolbar
       config={config}
@@ -43,11 +48,12 @@ export function WorkspaceToolbar({
       activeActions={activeActions}
       disabledActions={disabledActions}
       showKeystroke={showKeystroke}
+      showActionLabel={showActionLabel}
       leadingContent={leadingContent}
       singleRow={singleRow}
       actionsMeta={actionsMeta}
       triStateActions={triStateActions}
-      className="workspace-toolbar"
+      className={["workspace-toolbar", tierClassName].filter(Boolean).join(" ")}
     />
   );
 }

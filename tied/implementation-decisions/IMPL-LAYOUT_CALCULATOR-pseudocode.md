@@ -113,7 +113,7 @@ PROCEDURE IMPL-LAYOUT_CALCULATOR_LayoutValidationHelpers(bounds)
 CONTRACT WorkspaceAreaMeasurement
   INPUT: workspaceAreaRef on flex-1 min-h-0 region data-testid workspace-area
   OUTPUT: containerWidth, containerHeight state
-  DATA: useElementSize ResizeObserver; deps toolbarExpanded and toolbars.enabled
+  DATA: useElementSize ResizeObserver; deps toolbarDisplayMode (compact | expanded | named) and toolbars.enabled
 
 PROCEDURE IMPL-LAYOUT_CALCULATOR_WorkspaceAreaMeasurement()
   ATTACH ref to workspace region below header and toolbars

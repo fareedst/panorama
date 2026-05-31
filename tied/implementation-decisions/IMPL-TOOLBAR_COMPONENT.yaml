@@ -13,21 +13,24 @@ IMPL-TOOLBAR_COMPONENT:
     problems_solved: []
     benefits: []
   implementation_approach:
-    summary: React components for toolbar system including base and specialized toolbars with compact icon-only button design
+    summary: React components for toolbar system including compact, expanded, and named display modes
     details:
       - Icon registry in src/components/icons (lucide-icons, panorama-icons, registry.ts); getReferencedToolbarIconNames for test coverage
       - mergeTopToolbarConfigs merges enabled top-position tiers for compact single-row layout
+      - ToolbarButton showActionLabel prop surfaces deriveToolbarButton labels in named mode
       - ToolbarButton showKeystroke prop hides badge while preserving tooltip shortcuts
-      - ToolbarCompactToggle leading control toggles session compact/expanded display
-      - useElementSize on workspace-area ref remeasures pane bounds when toolbar compact/expanded toggles
+      - ToolbarDisplayMode type compact | expanded | named; ToolbarCompactToggle cycles compact → expanded → named → compact
+      - useElementSize on workspace-area ref remeasures pane bounds when toolbar display mode changes
   code_locations:
     files:
       - path: src/app/files/components/ToolbarCompactToggle.tsx
         description: TOOLBAR_COMPACT_TOGGLE leading control
       - path: src/app/files/components/Toolbar.tsx
-        description: Base toolbar with leadingContent, showKeystroke, singleRow
+        description: Base toolbar with leadingContent, showKeystroke, showActionLabel, singleRow
       - path: src/app/files/components/ToolbarButton.tsx
-        description: Keystroke badge toggle; tooltip retains shortcut
+        description: TOOLBAR_NAMED_LABELS; keystroke badge toggle; tooltip retains shortcut
+      - path: src/app/files/components/TriStateToolbarButton.tsx
+        description: TOOLBAR_NAMED_LABELS for compare filter tri-state buttons
       - path: src/app/files/components/WorkspaceToolbar.tsx
         description: Workspace tier wrapper
       - path: src/app/files/components/PaneToolbar.tsx
@@ -35,7 +38,7 @@ IMPL-TOOLBAR_COMPONENT:
       - path: src/app/files/components/SystemToolbar.tsx
         description: System tier wrapper
       - path: src/lib/toolbar.utils.ts
-        description: MERGE_TOP_TOOLBARS mergeTopToolbarConfigs; ACTION_ICON_MAP; getReferencedToolbarIconNames
+        description: TOOLBAR_DISPLAY_PROPS toolbarDisplayProps cycleToolbarDisplayMode; MERGE_TOP_TOOLBARS mergeTopToolbarConfigs; ACTION_ICON_MAP; getReferencedToolbarIconNames
       - path: src/components/icons/registry.ts
         description: ICON_REGISTRY merged SVG definitions; isIconRegistered
       - path: src/components/icons/panorama-icons.tsx
@@ -51,9 +54,13 @@ IMPL-TOOLBAR_COMPONENT:
       - path: src/lib/useElementSize.test.ts
         description: useElementSize unit tests
       - path: src/app/files/WorkspaceView.tsx
-        description: WORKSPACE_TOOLBAR_DISPLAY_MODE compact/expanded branch; workspaceAreaRef and useElementSize
+        description: WORKSPACE_TOOLBAR_DISPLAY_MODE compact expanded named branch; workspaceAreaRef and useElementSize
     functions:
       - name: mergeTopToolbarConfigs
+        file: src/lib/toolbar.utils.ts
+      - name: toolbarDisplayProps
+        file: src/lib/toolbar.utils.ts
+      - name: cycleToolbarDisplayMode
         file: src/lib/toolbar.utils.ts
       - name: ToolbarCompactToggle
         file: src/app/files/components/ToolbarCompactToggle.tsx
@@ -68,6 +75,7 @@ IMPL-TOOLBAR_COMPONENT:
       - src/app/files/components/Toolbar.test.tsx
       - src/app/files/components/ToolbarButton.test.tsx
       - src/app/files/components/ToolbarCompactToggle.test.tsx
+      - src/app/files/components/TriStateToolbarButton.test.tsx
       - src/app/files/WorkspaceView.toolbar-compact.test.tsx
       - src/components/icons/registry.test.tsx
       - src/lib/toolbar.utils.test.ts
@@ -82,7 +90,7 @@ IMPL-TOOLBAR_COMPONENT:
   metadata:
     registered: 2026-02-08T00:00:00.000Z
     last_updated:
-      date: "2026-05-30T00:00:00.000Z"
+      date: "2026-05-31T00:00:00.000Z"
       author: AI Agent
-      reason: Trim stub blocks; align with production toolbar components
+      reason: LEAP — named toolbar display mode
   essence_pseudocode_path: implementation-decisions/IMPL-TOOLBAR_COMPONENT-pseudocode.md

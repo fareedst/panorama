@@ -2339,11 +2339,13 @@ ARCH-TOOLBAR_LAYOUT:
     summary: Three toolbar types (workspace, pane, system) with configurable position and button groups
     details:
       - 'Configurable position: top, bottom, hidden, per-pane'
-      - 'Optional toolbar compact mode: user-toggle single merged top row with icon-only buttons (session state); expanded mode remains default three-tier layout with keystroke badges'
+      - 'Optional toolbar compact mode: session starts compact (single merged top row, icon-only); user-toggle expands to three-tier layout with keystroke badges via toolbar-compact-toggle'
+      - 'Optional toolbar named mode: third session display state — three-tier layout with icon plus visible Action labels from deriveToolbarButton; keystroke badges hidden'
       - 'PaneToolbar: actions on focused pane'
       - 'SystemToolbar: independent actions'
       - 'WorkspaceToolbar: actions affecting all panes'
-      - Compact/expanded toolbar height changes trigger workspace-area remeasure (ResizeObserver + explicit deps) so pane bounds update
+      - Compact/expanded/named toolbar height changes trigger workspace-area remeasure (ResizeObserver + explicit deps) so pane bounds update
+      - Toolbar display toggle cycles compact → expanded → named → compact on toolbar-compact-toggle
   traceability:
     requirements:
       - REQ-TOOLBAR_SYSTEM
@@ -2366,9 +2368,9 @@ ARCH-TOOLBAR_LAYOUT:
       date: 2026-02-08T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-05-22T00:00:00.000Z
+      date: "2026-05-31T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — optional compact merged toolbar mode
+      reason: LEAP — named toolbar display mode
     last_validated:
       date: 2026-02-08T00:00:00.000Z
       validator: AI Agent

@@ -12,7 +12,9 @@ export interface PaneToolbarProps {
   activeActions?: Set<string>;
   disabledActions?: Set<string>;
   showKeystroke?: boolean;
+  showActionLabel?: boolean;
   leadingContent?: React.ReactNode;
+  tierClassName?: string;
   /** [IMPL-TOOLBAR_COMPONENT] [REQ-TOOLBAR_SYSTEM] toolbars.actions metadata for toolbar-only buttons (ACTIONS_META_PASS_THROUGH) */
   actionsMeta?: Record<string, ToolbarActionMeta>;
 }
@@ -28,9 +30,12 @@ export function PaneToolbar({
   activeActions,
   disabledActions,
   showKeystroke,
+  showActionLabel,
   leadingContent,
+  tierClassName,
   actionsMeta,
 }: PaneToolbarProps) {
+  // [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM] WORKSPACE_TOOLBAR_DISPLAY_MODE: forward showActionLabel, showKeystroke, tierClassName to Toolbar
   return (
     <Toolbar
       config={config}
@@ -38,9 +43,10 @@ export function PaneToolbar({
       activeActions={activeActions}
       disabledActions={disabledActions}
       showKeystroke={showKeystroke}
+      showActionLabel={showActionLabel}
       leadingContent={leadingContent}
       actionsMeta={actionsMeta}
-      className="pane-toolbar"
+      className={["pane-toolbar", tierClassName].filter(Boolean).join(" ")}
     />
   );
 }

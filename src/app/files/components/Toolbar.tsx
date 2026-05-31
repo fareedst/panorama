@@ -17,8 +17,10 @@ export interface ToolbarProps {
   activeActions?: Set<string>;
   disabledActions?: Set<string>;
   className?: string;
-  /** Hide keystroke badges on buttons (compact mode). [REQ-TOOLBAR_SYSTEM] */
+  /** Hide keystroke badges on buttons (compact/named mode). [REQ-TOOLBAR_SYSTEM] */
   showKeystroke?: boolean;
+  /** Show visible Action labels from deriveToolbarButton (named mode). [REQ-TOOLBAR_SYSTEM] TOOLBAR_NAMED_LABELS */
+  showActionLabel?: boolean;
   /** Content rendered before the first button group (e.g. compact toggle). */
   leadingContent?: React.ReactNode;
   /** Force single-row layout with horizontal scroll. [REQ-TOOLBAR_SYSTEM] */
@@ -41,6 +43,7 @@ export function Toolbar({
   disabledActions = new Set(),
   className = "",
   showKeystroke = true,
+  showActionLabel = false,
   leadingContent,
   singleRow = false,
   actionsMeta,
@@ -100,6 +103,7 @@ export function Toolbar({
                   onClick={() => onAction(action)}
                   disabled={disabledActions.has(action)}
                   showKeystroke={showKeystroke}
+                  showActionLabel={showActionLabel}
                 />
               );
             }
@@ -112,6 +116,7 @@ export function Toolbar({
                 active={activeActions.has(action)}
                 disabled={disabledActions.has(action)}
                 showKeystroke={showKeystroke}
+                showActionLabel={showActionLabel}
               />
             );
           })}

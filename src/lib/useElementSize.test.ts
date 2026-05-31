@@ -95,7 +95,7 @@ describe("[IMPL-LAYOUT_CALCULATOR] [REQ-MULTI_PANE_LAYOUT] useElementSize", () =
     expect(result.current).toEqual({ width: 800, height: 400 });
   });
 
-  // [IMPL-TOOLBAR_COMPONENT] [REQ-TOOLBAR_SYSTEM]: remeasure when toolbarExpanded deps change
+  // [IMPL-TOOLBAR_COMPONENT] [REQ-TOOLBAR_SYSTEM] [REQ-MULTI_PANE_LAYOUT]: remeasure when toolbarDisplayMode deps change
   it("re-attaches observer when deps change", () => {
     const element = document.createElement("div");
     Object.defineProperty(element, "clientWidth", { value: 900, configurable: true });

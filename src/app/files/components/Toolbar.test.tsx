@@ -45,7 +45,7 @@ describe("[REQ-TOOLBAR_SYSTEM] Toolbar", () => {
     ],
   };
 
-  // [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM]: how: leading toggle on first top toolbar switches session toolbarExpanded state; expanded shows three tiers with keystroke badges; compact shows merged single row icon-only; tooltips unchanged
+  // [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM] TOOLBAR_COMPACT_TOGGLE: how: leading toggle cycles session toolbarDisplayMode compact → expanded → named → compact
   it("renders leadingContent before action buttons", () => {
     render(
       <Toolbar
@@ -76,6 +76,21 @@ describe("[REQ-TOOLBAR_SYSTEM] Toolbar", () => {
       />,
     );
 
+    expect(screen.queryByText("C")).not.toBeInTheDocument();
+  });
+
+  // [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_ACTIONS] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM] TOOLBAR_NAMED_LABELS: Toolbar passes showActionLabel to render visible Action labels
+  it("passes showActionLabel to render visible Action labels", () => {
+    render(
+      <Toolbar
+        config={baseConfig}
+        onAction={vi.fn()}
+        showActionLabel
+        showKeystroke={false}
+      />,
+    );
+
+    expect(screen.getByText("Copy")).toBeInTheDocument();
     expect(screen.queryByText("C")).not.toBeInTheDocument();
   });
 

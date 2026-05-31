@@ -16,6 +16,51 @@ export interface DerivedButtonProps {
   description: string;
 }
 
+/** Session toolbar display mode in WorkspaceView. [REQ-TOOLBAR_SYSTEM] [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] TOOLBAR_DISPLAY_PROPS */
+export type ToolbarDisplayMode = "compact" | "expanded" | "named";
+
+// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM] TOOLBAR_DISPLAY_PROPS: Toolbar render props derived from display mode
+export interface ToolbarDisplayProps {
+  showKeystroke: boolean;
+  showActionLabel: boolean;
+  singleRow: boolean;
+  mergedClassName?: string;
+  tierClassName?: string;
+}
+
+// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM] TOOLBAR_DISPLAY_PROPS: how: map ToolbarDisplayMode to showKeystroke, showActionLabel, singleRow, and className props
+export function toolbarDisplayProps(mode: ToolbarDisplayMode): ToolbarDisplayProps {
+  switch (mode) {
+    case "compact":
+      return {
+        showKeystroke: false,
+        showActionLabel: false,
+        singleRow: true,
+        mergedClassName: "toolbar-compact",
+      };
+    case "expanded":
+      return {
+        showKeystroke: true,
+        showActionLabel: false,
+        singleRow: false,
+      };
+    case "named":
+      return {
+        showKeystroke: false,
+        showActionLabel: true,
+        singleRow: false,
+        tierClassName: "toolbar-named",
+      };
+  }
+}
+
+// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM] TOOLBAR_DISPLAY_PROPS: how: cycle compact → expanded → named → compact
+export function cycleToolbarDisplayMode(mode: ToolbarDisplayMode): ToolbarDisplayMode {
+  if (mode === "compact") return "expanded";
+  if (mode === "expanded") return "named";
+  return "compact";
+}
+
 // [ARCH-TOOLBAR_ACTIONS] Action-to-icon mapping
 const ACTION_ICON_MAP: Record<string, string> = {
   // File operations

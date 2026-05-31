@@ -17,6 +17,8 @@ export interface ToolbarButtonProps {
   className?: string;
   /** When false, hide keystroke badge but keep tooltip/aria-label unchanged. [REQ-TOOLBAR_SYSTEM] */
   showKeystroke?: boolean;
+  /** When true, show deriveToolbarButton label visibly alongside icon. [REQ-TOOLBAR_SYSTEM] TOOLBAR_NAMED_LABELS */
+  showActionLabel?: boolean;
 }
 
 /**
@@ -35,9 +37,10 @@ export function ToolbarButton({
   disabled = false,
   className = "",
   showKeystroke = true,
+  showActionLabel = false,
 }: ToolbarButtonProps) {
-  // [REQ-TOOLBAR_SYSTEM] Only show label if no icon present
-  const showLabel = !icon;
+  // [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_ACTIONS] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM] TOOLBAR_NAMED_LABELS: showVisibleLabel when named mode or when no icon fallback
+  const showVisibleLabel = showActionLabel || !icon;
   const hasKeystroke = keystroke.trim().length > 0;
   const title = hasKeystroke ? `${description} (${keystroke})` : description;
   const ariaLabel = hasKeystroke
@@ -62,7 +65,9 @@ export function ToolbarButton({
       `.trim().replace(/\s+/g, ' ')}
     >
       {icon && <Icon name={icon} size={16} className="flex-shrink-0" />}
-      {showLabel && <span className="font-medium">{label}</span>}
+      {showVisibleLabel && (
+        <span className="font-medium whitespace-nowrap">{label}</span>
+      )}
       {showKeystroke && hasKeystroke && (
         <span
           className="px-1 py-0.5 text-xs rounded bg-gray-200 dark:bg-gray-700 font-mono"

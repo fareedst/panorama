@@ -1,10 +1,12 @@
 // [REQ-TOOLBAR_SYSTEM] [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] MERGE_TOP_TOOLBARS
 import { describe, it, expect } from "vitest";
 import {
+  cycleToolbarDisplayMode,
   deriveIconFromAction,
   deriveToolbarButton,
   getReferencedToolbarIconNames,
   mergeTopToolbarConfigs,
+  toolbarDisplayProps,
 } from "./toolbar.utils";
 import { isIconRegistered } from "@/components/icons/registry";
 import type { KeybindingConfig } from "./config.types";
@@ -156,5 +158,40 @@ describe("[REQ-TOOLBAR_SYSTEM] IMPL-TOOLBAR_COMPONENT_MergeTopToolbars", () => {
     };
 
     expect(mergeTopToolbarConfigs(toolbars)).toBeNull();
+  });
+});
+
+// [REQ-TOOLBAR_SYSTEM] [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] TOOLBAR_DISPLAY_PROPS
+describe("[REQ-TOOLBAR_SYSTEM] IMPL-TOOLBAR_COMPONENT_ToolbarDisplayProps", () => {
+  it("maps compact mode to merged single-row props", () => {
+    expect(toolbarDisplayProps("compact")).toEqual({
+      showKeystroke: false,
+      showActionLabel: false,
+      singleRow: true,
+      mergedClassName: "toolbar-compact",
+    });
+  });
+
+  it("maps expanded mode to keystroke badges without labels", () => {
+    expect(toolbarDisplayProps("expanded")).toEqual({
+      showKeystroke: true,
+      showActionLabel: false,
+      singleRow: false,
+    });
+  });
+
+  it("maps named mode to visible labels without keystroke badges", () => {
+    expect(toolbarDisplayProps("named")).toEqual({
+      showKeystroke: false,
+      showActionLabel: true,
+      singleRow: false,
+      tierClassName: "toolbar-named",
+    });
+  });
+
+  it("cycles compact → expanded → named → compact", () => {
+    expect(cycleToolbarDisplayMode("compact")).toBe("expanded");
+    expect(cycleToolbarDisplayMode("expanded")).toBe("named");
+    expect(cycleToolbarDisplayMode("named")).toBe("compact");
   });
 });

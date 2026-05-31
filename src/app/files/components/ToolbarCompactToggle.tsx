@@ -1,28 +1,42 @@
-// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM]: Toolbar compact/expand toggle control
+// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM]: Toolbar display mode cycle control
 
 "use client";
 
 import { Icon } from "@/components/Icon";
+import type { ToolbarDisplayMode } from "@/lib/toolbar.utils";
 
 export interface ToolbarCompactToggleProps {
-  expanded: boolean;
-  onToggle: () => void;
+  mode: ToolbarDisplayMode;
+  onCycle: () => void;
 }
 
-// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM]: how: leading toggle on first top toolbar switches session toolbarExpanded state; expanded shows three tiers with keystroke badges; compact shows merged single row icon-only; tooltips unchanged
+// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM] TOOLBAR_COMPACT_TOGGLE: keystroke-free title/aria-label for next display mode on click
+function nextModeLabel(mode: ToolbarDisplayMode): string {
+  switch (mode) {
+    case "compact":
+      return "Expand toolbar";
+    case "expanded":
+      return "Show action labels";
+    case "named":
+      return "Compact toolbar";
+  }
+}
+
+// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM]: how: leading toggle cycles session toolbarDisplayMode compact → expanded → named → compact
 /**
- * ToolbarCompactToggle - leading control to switch toolbar compact/expanded modes
+ * ToolbarCompactToggle - leading control to cycle toolbar display modes
  * [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM]
  */
-export function ToolbarCompactToggle({ expanded, onToggle }: ToolbarCompactToggleProps) {
-  const title = expanded ? "Compact toolbar" : "Expand toolbar";
+export function ToolbarCompactToggle({ mode, onCycle }: ToolbarCompactToggleProps) {
+  const title = nextModeLabel(mode);
 
   return (
     <button
       type="button"
       data-testid="toolbar-compact-toggle"
-      onClick={onToggle}
-      aria-pressed={!expanded}
+      data-toolbar-display-mode={mode}
+      onClick={onCycle}
+      aria-pressed={mode === "compact"}
       aria-label={title}
       title={title}
       className={`
@@ -32,7 +46,11 @@ export function ToolbarCompactToggle({ expanded, onToggle }: ToolbarCompactToggl
         focus:outline-none focus:ring-2 focus:ring-blue-500
       `.trim().replace(/\s+/g, " ")}
     >
-      <Icon name={expanded ? "chevrons-up" : "chevrons-down"} size={16} className="flex-shrink-0" />
+      <Icon
+        name={mode === "compact" ? "chevrons-down" : "chevrons-up"}
+        size={16}
+        className="flex-shrink-0"
+      />
     </button>
   );
 }

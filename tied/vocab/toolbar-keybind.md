@@ -39,9 +39,10 @@
 | **toolbars.actions** | Catalog of `description`, optional `icon` / `label` for mouse-only toolbar buttons |
 | **Toolbar compact mode** | Default session layout — single merged top row; icon-only buttons (no keystroke badges) |
 | **Toolbar expanded mode** | User-toggled three-tier layout with keystroke badges on each button |
-| **Toolbar compact toggle** | Leading control on first top toolbar; `data-testid="toolbar-compact-toggle"` |
+| **Toolbar named mode** | Third session display state — three-tier layout with icon plus visible Action labels from deriveToolbarButton; no keystroke badges |
+| **Toolbar compact toggle** | Leading control on first top toolbar; cycles compact → expanded → named → compact; `data-testid="toolbar-compact-toggle"` |
 | **leadingContent** | Optional slot before the first button group (toggle, future chrome); passed to `Toolbar` / tier wrappers |
-| **Session toolbar display state** | `toolbarExpanded` in `WorkspaceView` (session-only, not URL/mesh); default `false` (compact); synonym: toolbar display mode |
+| **Session toolbar display state** | `toolbarDisplayMode` in `WorkspaceView` (`compact` \| `expanded` \| `named`; session-only, not URL/mesh); default `compact`; toggle cycles compact → expanded → named → compact |
 | **Tri-state toolbar button** | Compare filter criterion toggle — `inactive` \| `include` \| `exclude`; `data-tri-state` on `TriStateToolbarButton` |
 | **singleRow** | `Toolbar` prop: one horizontal row with overflow scroll (compact merged layout) |
 | **Icon name** | Kebab-case string passed to `Icon` (e.g. `layout-grid`, `copy-all`) |
@@ -100,14 +101,16 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 - **Shared dispatch** — Toolbar `onAction(action)` and keyboard layer call the same handler map in `WorkspaceView`.
 - **deriveToolbarButton** — Resolves icon, label, shortcut from keybinding registry, else `toolbars.actions` metadata (`src/lib/toolbar.utils.ts`). Keybinding wins when both exist.
 - **Toolbar-only action** — `toolbars.actions.{actionId}` supplies button metadata without registering a keyboard shortcut.
-- **ToolbarButton** — Compact icon + keystroke badge component (`ToolbarButton.tsx`).
+- **ToolbarButton** — Icon button; compact/expanded show keystroke badge; named mode shows icon plus visible Action label (`showActionLabel`); icon-only fallback when no icon mapping.
 - **mesh.saveWorkspace** — Workspace toolbar action; icon `network` in `toolbar.utils.ts`; opens save dialog (update current mesh when `meshId` set, else POST `/api/mesh`).
 - **mesh.diffWorkspace** — Compare live workspace to saved snapshot; icon `git-compare`; disabled without loaded snapshot.
-- **Toolbar compact toggle** — UI-only leading control; not a keybinding action; switches compact/expanded toolbar display.
+- **Toolbar compact toggle** — UI-only leading control; not a keybinding action; cycles compact → expanded → named → compact toolbar display via `toolbar-compact-toggle`.
+- **ToolbarDisplayMode** — Session enum `compact` \| `expanded` \| `named` in `WorkspaceView`; default `compact`.
+- **toolbarDisplayProps** — Maps `ToolbarDisplayMode` to `showKeystroke`, `showActionLabel`, `singleRow`, and CSS class names (`toolbar.utils.ts`).
 - **Merged toolbar config** — Runtime concat of enabled top-position tier groups via `mergeTopToolbarConfigs` (`src/lib/toolbar.utils.ts`).
 - **Toggle placement rule** — Compact toggle on the **first visible top tier** in order workspace → pane → system (`showWorkspaceTop`, `showPaneTop`, `showSystemTop` in `WorkspaceView`).
 - **leadingContent** — Renders before the first group; vertical separator when groups follow.
-- **Workspace area remeasure** — Compact/expanded toggle changes vertical chrome; `useElementSize` on `workspace-area` updates `containerHeight` and pane bounds ([REQ-MULTI_PANE_LAYOUT](../tied/requirements/REQ-MULTI_PANE_LAYOUT.yaml)).
+- **Workspace area remeasure** — Toolbar display mode changes (compact ↔ expanded ↔ named) alter vertical chrome; `useElementSize` on `workspace-area` updates `containerHeight` and pane bounds ([REQ-MULTI_PANE_LAYOUT](../tied/requirements/REQ-MULTI_PANE_LAYOUT.yaml)).
 - **view.layout** — Opens layout picker pop-over (`LayoutPickerPopover`, `workspace-layout-picker`); replaces header layout `<select>`.
 - **view.compareFilter.*** — Tri-state compare filter toolbar actions; see [cross-pane-visibility.md](cross-pane-visibility.md).
 - **view.compareFilter.thresholds** — Opens size/time threshold dialog for gt/lt compare criteria.
@@ -125,7 +128,7 @@ Authoritative enumeration: `config/files.yaml` → `keybindings`.
 
 ## Copy coverage
 
-Toolbar button labels and dialog titles: `config/files.yaml` → `copy.paneManagement.*`, `copy.layouts.*`, `copy.columns.*`, `copy.workspaceMesh.*`, `copy.displaySpec.*`, plus `toolbars.actions.*` metadata. Shortcut discovery: expanded toolbar keystroke badges, compact tooltips, and `help.show` / command palette (`help.*`, `command.*`). Authoritative key list: `config/files.yaml` → `keybindings`. Owning IMPL: [IMPL-TOOLBAR_COMPONENT](../tied/implementation-decisions/IMPL-TOOLBAR_COMPONENT.yaml), [IMPL-KEYBINDS](../tied/implementation-decisions/IMPL-KEYBINDS.yaml).
+Toolbar button labels and dialog titles: `config/files.yaml` → `copy.paneManagement.*`, `copy.layouts.*`, `copy.columns.*`, `copy.workspaceMesh.*`, `copy.displaySpec.*`, plus `toolbars.actions.*` metadata. Shortcut discovery: expanded toolbar keystroke badges; compact and named modes use tooltips (shortcuts retained); named mode also shows visible Action labels on buttons; `help.show` / command palette (`help.*`, `command.*`). Authoritative key list: `config/files.yaml` → `keybindings`. Owning IMPL: [IMPL-TOOLBAR_COMPONENT](../tied/implementation-decisions/IMPL-TOOLBAR_COMPONENT.yaml), [IMPL-KEYBINDS](../tied/implementation-decisions/IMPL-KEYBINDS.yaml).
 
 ## Pseudo-code block names
 
@@ -136,6 +139,8 @@ Toolbar button labels and dialog titles: `config/files.yaml` → `copy.paneManag
 | Registry / validation | (see IMPL-KEYBINDS sidecar) | IMPL-KEYBINDS |
 | Workspace keybind map | `KeybindingInit` → `IMPL-WORKSPACE_VIEW_KeybindingInit` | IMPL-WORKSPACE_VIEW |
 | Toolbar compact toggle | `TOOLBAR_COMPACT_TOGGLE` → `IMPL-TOOLBAR_COMPONENT_ToolbarCompactToggle` | IMPL-TOOLBAR_COMPONENT |
+| Toolbar named labels | `TOOLBAR_NAMED_LABELS` → `IMPL-TOOLBAR_COMPONENT_ToolbarNamedLabels` | IMPL-TOOLBAR_COMPONENT |
+| Toolbar display props | `TOOLBAR_DISPLAY_PROPS` → `IMPL-TOOLBAR_COMPONENT_ToolbarDisplayProps` | IMPL-TOOLBAR_COMPONENT |
 | Merge top toolbars | `MERGE_TOP_TOOLBARS` → `IMPL-TOOLBAR_COMPONENT_MergeTopToolbars` | IMPL-TOOLBAR_COMPONENT |
 | Workspace toolbar display | `WORKSPACE_TOOLBAR_DISPLAY_MODE` → `IMPL-TOOLBAR_COMPONENT_WorkspaceToolbarDisplayMode` | IMPL-TOOLBAR_COMPONENT |
 | Tri-state compare filter click | `CYCLE_TRI_STATE` | IMPL-CROSS_PANE_VISIBILITY_UI |
@@ -165,8 +170,11 @@ Toolbar button labels and dialog titles: `config/files.yaml` → `copy.paneManag
 - **Keybinding** — YAML shortcut row
 - **Keybinding category** — grouping for help UI
 - **leadingContent** — leading slot before first toolbar group
-- **Session toolbar display state** — `toolbarExpanded` session flag in WorkspaceView
+- **Session toolbar display state** — `toolbarDisplayMode` session enum (`compact` \| `expanded` \| `named`) in WorkspaceView; cycles via toolbar-compact-toggle
+- **showActionLabel** — Toolbar prop; when true, render deriveToolbarButton label visibly (named mode)
 - **singleRow** — compact merged toolbar horizontal layout flag
+- **toolbarDisplayMode** — session enum in WorkspaceView (`compact` \| `expanded` \| `named`)
+- **toolbarDisplayProps** — maps ToolbarDisplayMode to Toolbar render props
 - **mesh.diffWorkspace** — workspace Mesh group + header Diff; disabled without saved baseline
 - **mesh.saveWorkspace** — Ctrl+Shift+M; workspace Mesh toolbar group (update or save-as-new)
 - **view.displaySpec** — open display spec manager dialog
@@ -180,6 +188,7 @@ Toolbar button labels and dialog titles: `config/files.yaml` → `copy.paneManag
 - **Toolbar compact mode** — single merged top row; icon-only buttons
 - **Toolbar compact toggle** — `toolbar-compact-toggle`
 - **Toolbar expanded mode** — user-toggled three-tier layout with keystroke badges
+- **Toolbar named mode** — third session display state; three-tier layout with visible Action labels
 - **view.compareFilter.*** — tri-state compare filter toolbar actions (toolbar-only)
 - **view.compareFilter.thresholds** — compare filter size/time threshold dialog
 - **Toolbar test id** — `toolbar-{action}` (see **Toolbar view test id**)

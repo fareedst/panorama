@@ -48,19 +48,53 @@ PROCEDURE DERIVE_TOOLBAR_BUTTON_FALLBACK(context)
   ToolbarButton renders icon-only when no shortcut; title from description
 ```
 
+## TOOLBAR_NAMED_LABELS
+
+// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_ACTIONS] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM]: how: ToolbarButton and TriStateToolbarButton accept showActionLabel; when true render deriveToolbarButton label visibly alongside icon; tooltips unchanged
+
+```
+CONTRACT ToolbarNamedLabels
+  INPUT: showActionLabel boolean, deriveToolbarButton label string
+  OUTPUT: visible Action label span on ToolbarButton and TriStateToolbarButton when showActionLabel true
+  DATA: showVisibleLabel := showActionLabel OR NOT icon
+
+PROCEDURE TOOLBAR_NAMED_LABELS(context)
+  Toolbar passes showActionLabel from named display mode
+  ToolbarButton renders label span when showVisibleLabel
+  TriStateToolbarButton renders visible label when showActionLabel else sr-only
+  KEEP tooltip and aria-label with shortcut when keystroke exists
+```
+
+## TOOLBAR_DISPLAY_PROPS
+
+// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM]: how: toolbarDisplayProps maps ToolbarDisplayMode to showKeystroke/showActionLabel/singleRow/className; cycleToolbarDisplayMode advances compact → expanded → named → compact
+
+```
+CONTRACT ToolbarDisplayProps
+  INPUT: ToolbarDisplayMode
+  OUTPUT: ToolbarDisplayProps { showKeystroke, showActionLabel, singleRow, mergedClassName?, tierClassName? }
+
+PROCEDURE TOOLBAR_DISPLAY_PROPS(context)
+  CASE compact → showKeystroke=false, showActionLabel=false, singleRow=true, mergedClassName=toolbar-compact
+  CASE expanded → showKeystroke=true, showActionLabel=false, singleRow=false
+  CASE named → showKeystroke=false, showActionLabel=true, singleRow=false, tierClassName=toolbar-named
+  cycleToolbarDisplayMode RETURNS next mode in cycle
+```
+
 ## TOOLBAR_COMPACT_TOGGLE
 
-// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM]: how: leading toggle on first top toolbar switches session toolbarExpanded state; expanded shows three tiers with keystroke badges; compact shows merged single row icon-only; tooltips unchanged
+// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM]: how: leading toggle on first top toolbar cycles session toolbarDisplayMode compact → expanded → named → compact; expanded shows three tiers with keystroke badges; named shows three tiers with showActionLabel; compact shows merged single row icon-only; tooltips unchanged
 
 ```
 CONTRACT ToolbarCompactToggle
-  INPUT: toolbarExpanded boolean, onToggle callback
+  INPUT: toolbarDisplayMode ToolbarDisplayMode, onCycle callback
   OUTPUT: ToolbarCompactToggle button at leading slot
-  DATA: aria-pressed, data-testid toolbar-compact-toggle
+  DATA: aria-pressed when compact, data-testid toolbar-compact-toggle, data-toolbar-display-mode
 
 PROCEDURE TOOLBAR_COMPACT_TOGGLE(context)
-  RENDER ToolbarCompactToggle with chevrons-up when expanded, chevrons-down when compact
-  ON click TOGGLE toolbarExpanded in WorkspaceView
+  RENDER chevrons-down when compact else chevrons-up
+  title/aria-label: Expand toolbar | Show action labels | Compact toolbar (next mode on click)
+  ON click CYCLE toolbarDisplayMode compact → expanded → named → compact in WorkspaceView
   KEEP button title and aria-label keystroke-free (UI-only control)
 ```
 
@@ -83,32 +117,33 @@ PROCEDURE MERGE_TOP_TOOLBARS(context)
 
 ## WORKSPACE_TOOLBAR_DISPLAY_MODE
 
-// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM] [REQ-MULTI_PANE_LAYOUT]: how: WorkspaceView useState(false) defaults to compact; expanded renders up to three top tiers with toggle on first visible tier; compact renders single merged Toolbar with showKeystroke=false and singleRow; pane bounds use useElementSize on workspace-area ref
+// [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM] [REQ-MULTI_PANE_LAYOUT]: how: WorkspaceView useState("compact") defaults to compact; expanded renders up to three top tiers with showKeystroke; named renders three tiers with showActionLabel and showKeystroke=false; compact renders single merged Toolbar; pane bounds use useElementSize on workspace-area ref
 
 ```
 CONTRACT WorkspaceToolbarDisplayMode
-  INPUT: toolbars config, toolbarExpanded boolean, mergedToolbarConfig from mergeTopToolbarConfigs
+  INPUT: toolbars config, toolbarDisplayMode ToolbarDisplayMode, mergedToolbarConfig from mergeTopToolbarConfigs
   OUTPUT: one or three top toolbars plus toggle placement on first visible tier; workspace-area measured dimensions feed calculateLayout
-  DATA: showWorkspaceTop, showPaneTop, showSystemTop, toolbarCompactToggle element, workspaceAreaRef, useElementSize deps include toolbarExpanded
+  DATA: showWorkspaceTop, showPaneTop, showSystemTop, toolbarCompactToggle element, workspaceAreaRef, useElementSize deps include toolbarDisplayMode
 
 PROCEDURE WORKSPACE_TOOLBAR_DISPLAY_MODE(context)
   ATTACH workspaceAreaRef to flex-1 min-h-0 workspace container (no fixed pixel height)
-  MEASURE workspace area via useElementSize(workspaceAreaRef, [toolbarExpanded, toolbars.enabled])
+  MEASURE workspace area via useElementSize(workspaceAreaRef, [toolbarDisplayMode, toolbars.enabled])
   PASS measured width/height to calculateLayout for FilePane bounds
-  IF toolbarExpanded THEN
-    RENDER WorkspaceToolbar WHEN showWorkspaceTop WITH leadingContent toggle
-    RENDER PaneToolbar WHEN showPaneTop WITH leadingContent toggle IF workspace tier not top
-    RENDER SystemToolbar WHEN showSystemTop WITH leadingContent toggle IF workspace and pane tiers not top
-  ELSE
-    IF mergedToolbarConfig THEN
-      RENDER Toolbar merged config showKeystroke=false singleRow className toolbar-compact WITH leadingContent toggle
-    ENDIF
-  ENDIF
-  KEEP toolbarExpanded session-only (not persisted to URL or mesh snapshot)
+  SWITCH toolbarDisplayMode
+    CASE compact:
+      IF mergedToolbarConfig THEN
+        RENDER Toolbar merged showKeystroke=false showActionLabel=false singleRow className toolbar-compact WITH leadingContent toggle
+      ENDIF
+    CASE expanded:
+      RENDER three tiers WITH showKeystroke=true showActionLabel=false AND toggle on first visible top tier
+    CASE named:
+      RENDER three tiers WITH showKeystroke=false showActionLabel=true className toolbar-named AND toggle on first visible top tier
+  ENDSWITCH
+  KEEP toolbarDisplayMode session-only (not persisted to URL or mesh snapshot)
 ```
 
 ## CodeLocations
 
 // [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [ARCH-TOOLBAR_ACTIONS] [REQ-TOOLBAR_SYSTEM]: map implementing and verifying source files for this IMPL
 
-// src/app/files/components/ToolbarCompactToggle.tsx, Toolbar.tsx, ToolbarButton.tsx, WorkspaceToolbar.tsx, PaneToolbar.tsx, SystemToolbar.tsx, src/lib/toolbar.utils.ts, src/components/icons/*, src/components/Icon.tsx, src/lib/useElementSize.ts, src/app/files/WorkspaceView.tsx; tests registry.test.ts, toolbar.utils.test.ts, useElementSize.test.ts, Toolbar*.test.tsx, WorkspaceView.toolbar-compact.test.tsx
+// src/app/files/components/ToolbarCompactToggle.tsx, Toolbar.tsx, ToolbarButton.tsx, TriStateToolbarButton.tsx, WorkspaceToolbar.tsx, PaneToolbar.tsx, SystemToolbar.tsx, src/lib/toolbar.utils.ts (toolbarDisplayProps, cycleToolbarDisplayMode), src/components/icons/*, src/components/Icon.tsx, src/lib/useElementSize.ts, src/app/files/WorkspaceView.tsx; tests registry.test.ts, toolbar.utils.test.ts, useElementSize.test.ts, Toolbar*.test.tsx, TriStateToolbarButton.test.tsx, WorkspaceView.toolbar-compact.test.tsx

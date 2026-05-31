@@ -5,36 +5,62 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { ToolbarCompactToggle } from "./ToolbarCompactToggle";
 
 describe("[REQ-TOOLBAR_SYSTEM] IMPL-TOOLBAR_COMPONENT_ToolbarCompactToggle", () => {
-  it("exposes toolbar-compact-toggle test id and toggles on click", () => {
-    const onToggle = vi.fn();
-    render(<ToolbarCompactToggle expanded onToggle={onToggle} />);
+  it("exposes toolbar-compact-toggle test id and cycles on click", () => {
+    const onCycle = vi.fn();
+    render(<ToolbarCompactToggle mode="compact" onCycle={onCycle} />);
 
     const button = screen.getByTestId("toolbar-compact-toggle");
     fireEvent.click(button);
-    expect(onToggle).toHaveBeenCalledTimes(1);
+    expect(onCycle).toHaveBeenCalledTimes(1);
   });
 
-  it("sets aria-pressed false when expanded and true when compact", () => {
+  it("sets aria-pressed true only in compact mode", () => {
     const { rerender } = render(
-      <ToolbarCompactToggle expanded onToggle={vi.fn()} />,
+      <ToolbarCompactToggle mode="compact" onCycle={vi.fn()} />,
     );
+    expect(screen.getByTestId("toolbar-compact-toggle")).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+
+    rerender(<ToolbarCompactToggle mode="expanded" onCycle={vi.fn()} />);
     expect(screen.getByTestId("toolbar-compact-toggle")).toHaveAttribute(
       "aria-pressed",
       "false",
     );
 
-    rerender(<ToolbarCompactToggle expanded={false} onToggle={vi.fn()} />);
+    rerender(<ToolbarCompactToggle mode="named" onCycle={vi.fn()} />);
     expect(screen.getByTestId("toolbar-compact-toggle")).toHaveAttribute(
       "aria-pressed",
-      "true",
+      "false",
     );
   });
 
-  it("uses keystroke-free title and aria-label", () => {
-    render(<ToolbarCompactToggle expanded onToggle={vi.fn()} />);
-    const button = screen.getByTestId("toolbar-compact-toggle");
+  it("uses next-mode title and aria-label for each display mode", () => {
+    const { rerender } = render(
+      <ToolbarCompactToggle mode="compact" onCycle={vi.fn()} />,
+    );
+    let button = screen.getByTestId("toolbar-compact-toggle");
+    expect(button).toHaveAttribute("title", "Expand toolbar");
+    expect(button).toHaveAttribute("aria-label", "Expand toolbar");
+
+    rerender(<ToolbarCompactToggle mode="expanded" onCycle={vi.fn()} />);
+    button = screen.getByTestId("toolbar-compact-toggle");
+    expect(button).toHaveAttribute("title", "Show action labels");
+    expect(button).toHaveAttribute("aria-label", "Show action labels");
+
+    rerender(<ToolbarCompactToggle mode="named" onCycle={vi.fn()} />);
+    button = screen.getByTestId("toolbar-compact-toggle");
     expect(button).toHaveAttribute("title", "Compact toolbar");
     expect(button).toHaveAttribute("aria-label", "Compact toolbar");
     expect(button.getAttribute("title")).not.toMatch(/Ctrl|Shift|\+/);
+  });
+
+  it("exposes data-toolbar-display-mode for the current mode", () => {
+    render(<ToolbarCompactToggle mode="named" onCycle={vi.fn()} />);
+    expect(screen.getByTestId("toolbar-compact-toggle")).toHaveAttribute(
+      "data-toolbar-display-mode",
+      "named",
+    );
   });
 });

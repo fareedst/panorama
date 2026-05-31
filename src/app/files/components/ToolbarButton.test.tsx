@@ -31,6 +31,29 @@ describe("[REQ-TOOLBAR_SYSTEM] ToolbarButton", () => {
     );
   });
 
+  // [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_ACTIONS] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM] TOOLBAR_NAMED_LABELS: visible label with icon when showActionLabel true
+  it("shows visible label with icon when showActionLabel is true", () => {
+    render(<ToolbarButton {...defaultProps} showActionLabel />);
+    expect(screen.getByText("Copy")).toBeInTheDocument();
+  });
+
+  // [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM] TOOLBAR_NAMED_LABELS: hide keystroke badge in named mode while keeping tooltip shortcut
+  it("hides keystroke badge in named mode while keeping tooltip", () => {
+    render(
+      <ToolbarButton
+        {...defaultProps}
+        showActionLabel
+        showKeystroke={false}
+      />,
+    );
+    expect(screen.getByText("Copy")).toBeInTheDocument();
+    expect(screen.queryByText("C")).not.toBeInTheDocument();
+    expect(screen.getByTestId("toolbar-file.copy")).toHaveAttribute(
+      "title",
+      "Copy files (C)",
+    );
+  });
+
   it("omits keystroke from title and aria-label when keystroke is empty", () => {
     render(
       <ToolbarButton

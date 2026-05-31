@@ -155,7 +155,7 @@ describe("[REQ-TOOLBAR_SYSTEM] IMPL-TOOLBAR_COMPONENT_WorkspaceToolbarDisplayMod
     expect(screen.getByTestId("toolbar-compact-toggle")).toBeInTheDocument();
   });
 
-  it("expands to three top toolbars with keystroke badges when toggled", () => {
+  it("expands to three top toolbars with keystroke badges when toggled once", () => {
     renderWithToolbars();
 
     fireEvent.click(screen.getByTestId("toolbar-compact-toggle"));
@@ -163,9 +163,29 @@ describe("[REQ-TOOLBAR_SYSTEM] IMPL-TOOLBAR_COMPONENT_WorkspaceToolbarDisplayMod
     expect(within(screen.getAllByRole("toolbar")[0]).getByText("S")).toBeInTheDocument();
   });
 
-  it("collapses to one merged toolbar without keystroke badges when compact", () => {
+  // [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM] WORKSPACE_TOOLBAR_DISPLAY_MODE: named mode renders three tiers with showActionLabel and toolbar-named class
+  it("shows named mode with visible Action labels after two toggles", () => {
     renderWithToolbars();
 
+    fireEvent.click(screen.getByTestId("toolbar-compact-toggle"));
+    fireEvent.click(screen.getByTestId("toolbar-compact-toggle"));
+
+    const toolbars = screen.getAllByRole("toolbar");
+    expect(toolbars).toHaveLength(3);
+    expect(toolbars[0]).toHaveClass("toolbar-named");
+    expect(within(toolbars[1]).getByText("Copy")).toBeInTheDocument();
+    expect(within(toolbars[1]).queryByText("C")).not.toBeInTheDocument();
+    expect(screen.getByTestId("toolbar-file.copy")).toHaveAttribute(
+      "title",
+      "Copy files (C)",
+    );
+  });
+
+  // [IMPL-TOOLBAR_COMPONENT] [ARCH-TOOLBAR_LAYOUT] [REQ-TOOLBAR_SYSTEM] WORKSPACE_TOOLBAR_DISPLAY_MODE: cycle returns to compact merged row after three toggles
+  it("collapses to one merged toolbar without keystroke badges after three toggles", () => {
+    renderWithToolbars();
+
+    fireEvent.click(screen.getByTestId("toolbar-compact-toggle"));
     fireEvent.click(screen.getByTestId("toolbar-compact-toggle"));
     fireEvent.click(screen.getByTestId("toolbar-compact-toggle"));
 
