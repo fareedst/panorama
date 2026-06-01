@@ -38,6 +38,12 @@ REQ-WORKSPACE_MESH_BRIDGE:
     - criterion: workspace_restore_error_when_mesh_missing
       description: red workspace-restore-error only when restoreWarning is set, restoredFromMesh is false, clientRestoredFromMesh is false, and mesh rehydrate is not in progress
     - criterion: Terminology aligns with tied/vocab/mesh-platform.md and file-manager restore UX in tied/vocab/workspace-pane.md
+    - criterion: files_startup_mesh_restores_workspace_on_plain_files_load
+      description: When localStorage holds a valid files startup mesh id and /files has no meshId query, FilesStartupMeshGate validates via GET /api/mesh/:id and router.replace to /files?meshId= reusing RESTORE_ON_FILES_PAGE
+    - criterion: files_startup_mesh_invalid_pref_falls_back_to_yaml
+      description: When stored startup mesh id does not resolve, clear localStorage preference and render YAML bootstrap from config/files.yaml without meshRestorePending
+    - criterion: files_startup_mesh_explicit_meshId_takes_precedence
+      description: searchParams.meshId overrides localStorage startup preference
   validation_criteria:
     - method: Vitest
       coverage: src/lib/workspace-mesh-bridge.test.ts
@@ -59,6 +65,10 @@ REQ-WORKSPACE_MESH_BRIDGE:
       coverage: src/components/NewTabLink.test.tsx
     - method: Playwright
       coverage: e2e/workspace-mesh-bridge.spec.ts
+    - method: Vitest
+      coverage: src/lib/files-startup-mesh.test.ts
+    - method: Vitest
+      coverage: src/app/files/FilesStartupMeshGate.test.tsx
   traceability:
     architecture:
       - ARCH-WORKSPACE_MESH_BRIDGE
@@ -72,12 +82,14 @@ REQ-WORKSPACE_MESH_BRIDGE:
       - src/app/api/mesh/workspace-bridge.route.test.ts
       - src/app/files/components/SaveWorkspaceMeshDialog.test.tsx
       - src/app/files/components/WorkspaceDiffDialog.test.tsx
+      - src/app/files/FilesStartupMeshGate.test.tsx
       - src/app/files/page.mesh-restore.test.tsx
       - src/app/files/WorkspaceView.file-columns.test.tsx
       - src/app/files/WorkspaceView.mesh-restore.test.tsx
       - src/app/mesh/components/MeshDetailClient.test.tsx
       - src/app/mesh/components/WorkspaceSnapshotSummaryList.test.tsx
       - src/components/NewTabLink.test.tsx
+      - src/lib/files-startup-mesh.test.ts
       - src/lib/workspace-mesh-bridge.test.ts
     code_annotations:
       - REQ-WORKSPACE_MESH_BRIDGE

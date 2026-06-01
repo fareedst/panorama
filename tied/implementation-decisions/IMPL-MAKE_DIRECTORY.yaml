@@ -1,0 +1,38 @@
+IMPL-MAKE_DIRECTORY:
+  name: Make Directory Path Resolution and Data Layer
+  status: Active
+  cross_references:
+    - ARCH-FILE_OPERATIONS_API
+    - IMPL-FILES_API
+    - IMPL-FILES_DATA
+    - REQ-DIRECTORY_NAVIGATION
+  decision: make-directory.ts resolves pane-target paths; makeDirectory and bulkMakeDirectory in files.data.ts; bulk-mkdir API route case
+  rationale:
+    why: Pure client resolution keeps server thin; mkdir under pane.path matches directory navigation model
+  implementation_approach:
+    summary: make-directory.ts + files.data makeDirectory/bulkMakeDirectory + API bulk-mkdir
+  code_locations:
+    files:
+      - path: src/lib/make-directory.ts
+        description: Pane target path resolution
+      - path: src/lib/files.data.ts
+        description: makeDirectory bulkMakeDirectory
+      - path: src/app/api/files/route.ts
+        description: bulk-mkdir operation
+  traceability:
+    requirements:
+      - REQ-DIRECTORY_NAVIGATION
+    architecture:
+      - ARCH-FILE_OPERATIONS_API
+    tests:
+      - src/app/api/files/route.test.ts
+      - src/lib/make-directory.data.test.ts
+      - src/lib/make-directory.test.ts
+    code_annotations:
+      - IMPL-MAKE_DIRECTORY
+  related_decisions:
+    depends_on:
+      - IMPL-FILES_DATA
+      - IMPL-FILES_API
+    see_also:
+      - IMPL-RENAME_REGEX

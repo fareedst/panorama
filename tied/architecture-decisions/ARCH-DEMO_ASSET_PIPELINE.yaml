@@ -4,7 +4,7 @@ ARCH-DEMO_ASSET_PIPELINE:
   cross_references:
     - REQ-README_DEMO_AUTOMATION
     - ARCH-TEST_FRAMEWORK
-  decision: Playwright E2E specs plus bash fixture scripts produce committed docs/screenshots assets; comparison and CopyAll fixtures are separate and each spec re-runs its setup in beforeAll.
+  decision: Modular Playwright E2E specs plus bash fixture scripts produce committed docs/screenshots product tour assets; comparison and CopyAll fixtures are separate; mesh demos use ephemeral MESH_DATA_DIR with mkdtemp depot roots.
   rationale:
     why: Documentation visuals are release artifacts requiring deterministic automation
     problems_solved:
@@ -22,22 +22,29 @@ ARCH-DEMO_ASSET_PIPELINE:
         - Non-reproducible assets
       rejected_reason: Automation already exists for CopyAll; extend for comparison
   implementation_approach:
-    summary: npm demo:screenshots orchestrates setup scripts, targeted Playwright specs, GIF convert, optional verify
+    summary: npm demo:screenshots orchestrates setup scripts, six targeted Playwright specs, batch GIF convert, and verify
     details:
-      - convert_demo_to_gif.sh writes copyall-demo.gif
-      - readme-screenshots.spec.ts and copyall-demo.spec.ts each call their setup in beforeAll
-      - setup_copyall_demo.sh --clean builds CopyAll source/target layout
-      - setup_readme_screenshots.sh builds comparison demo fixture at /tmp/test-dirs
-      - verify_demo_screenshots.sh resolves SCREENSHOT_DIR relative to repo
+      - convert_all_readme_gifs.sh writes five motion GIFs
+      - Each E2E describe beforeAll re-runs its fixture script because demo:setup wipes /tmp/test-dirs between prelude steps
+      - readme-mesh-surfaces.spec.ts and readme-mesh-bridge.spec.ts capture Mesh routes and bridge dialogs
+      - readme-workspace-dialogs.spec.ts captures fifteen static workspace overlays
+      - readme-workspace-motion.spec.ts records four motion demo webms
+      - readme-workspace-surfaces.spec.ts captures workspace shell, toolbars, and legacy 3-pane PNGs
   traceability:
     requirements:
-      - REQ-README_DEMO_AUTOMATION
       - REQ-BUILD_SYSTEM
+      - REQ-MESH_GUI
+      - REQ-README_DEMO_AUTOMATION
+      - REQ-WORKSPACE_MESH_BRIDGE
     implementation:
       - IMPL-DEMO_SCREENSHOT_PIPELINE
     tests:
-      - e2e/readme-screenshots.spec.ts
       - e2e/copyall-demo.spec.ts
+      - e2e/readme-mesh-bridge.spec.ts
+      - e2e/readme-mesh-surfaces.spec.ts
+      - e2e/readme-workspace-dialogs.spec.ts
+      - e2e/readme-workspace-motion.spec.ts
+      - e2e/readme-workspace-surfaces.spec.ts
     code_annotations:
       - REQ-README_DEMO_AUTOMATION
   related_decisions:
@@ -52,9 +59,9 @@ ARCH-DEMO_ASSET_PIPELINE:
       date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
     last_updated:
-      date: "2026-05-30T00:00:00.000Z"
+      date: "2026-05-31T00:00:00.000Z"
       author: AI Agent
-      reason: README demo screenshot pipeline
+      reason: README product tour modular spec split
     last_validated:
       date: "2026-05-30T00:00:00.000Z"
       validator: AI Agent

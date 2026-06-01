@@ -193,6 +193,24 @@ describe("[TEST-MOUSE_INTERACTION] ContextMenu Component", () => {
     expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
   });
 
+  // [IMPL-MAKE_DIRECTORY_DIALOG] [REQ-DIRECTORY_NAVIGATION] [REQ-MOUSE_INTERACTION]: Make directory… menu item
+  it("shows Make directory menu item when handler provided", () => {
+    const onMakeDirectory = vi.fn();
+    render(
+      <ContextMenu
+        {...defaultProps}
+        onMakeDirectory={onMakeDirectory}
+        makeDirectoryMenuLabel="Make directory…"
+      />,
+    );
+    expect(screen.getByTestId("make-directory-menu-item")).toHaveTextContent(
+      "Make directory…",
+    );
+    fireEvent.click(screen.getByTestId("make-directory-menu-item"));
+    expect(onMakeDirectory).toHaveBeenCalledTimes(1);
+    expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
+  });
+
   // [IMPL-RENAME_REGEX_DIALOG] [REQ-BULK_FILE_OPS] [REQ-MOUSE_INTERACTION]: Rename Regex… menu item
   it("shows Rename Regex menu item when handler provided", () => {
     const onRenameRegex = vi.fn();

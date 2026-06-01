@@ -84,6 +84,22 @@ PROCEDURE SinglePaneWorkspaceUrl(context)
     RETURN skip default multi-pane startup
 ```
 
+## MultiPaneDeepLinkUrl
+
+// [IMPL-FILE_MANAGER_PAGE] [IMPL-WORKSPACE_VIEW] [REQ-MULTI_PANE_LAYOUT] [REQ-README_DEMO_AUTOMATION]: how — parsePaneDeepLinkPaths reads consecutive pane0..paneN; server hydrates one pane per path before default startup (independent of layout.defaultPaneCount)
+
+```
+PROCEDURE MultiPaneDeepLinkUrl(context)
+  IF meshId OR initialPanes.length > 0 OR meshRestorePending THEN RETURN
+  SET paths := parsePaneDeepLinkPaths(searchParams)
+  IF paths.length equals 0 THEN RETURN
+  FOR EACH panePath IN paths
+    LOAD files := await listDirectory(panePath)
+    SORT sortedFiles := sortFilesData(files, "Name", true)
+    PUSH { path: panePath, files: sortedFiles } into initialPanes
+  RETURN skip default startup
+```
+
 ## PassPropsToWorkspaceView
 
 // [IMPL-FILE_MANAGER_PAGE] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-FILE_MANAGER_PAGE]: how: render client WorkspaceView with config and restore props

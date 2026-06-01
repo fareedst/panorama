@@ -24,6 +24,10 @@ IMPL-WORKSPACE_MESH_BRIDGE:
         description: MESH_DETAIL_RESTORE_LINK, WORKSPACE_SNAPSHOT_SUMMARY wiring with display spec resolver
       - path: src/app/mesh/components/WorkspaceSnapshotSummaryList.tsx
         description: WORKSPACE_SNAPSHOT_SUMMARY_LIST — per-pane Compare filter labels on mesh detail
+      - path: src/lib/files-startup-mesh.ts
+        description: RESOLVE_FILES_STARTUP_MESH — localStorage get/set/clear for files startup mesh preference
+      - path: src/app/files/FilesStartupMeshGate.tsx
+        description: FILES_STARTUP_MESH_GATE — validate stored mesh id and redirect to /files?meshId= before WorkspaceView
     functions: []
   essence_pseudocode_path: implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE-pseudocode.md
   traceability:
@@ -38,11 +42,13 @@ IMPL-WORKSPACE_MESH_BRIDGE:
       - src/app/api/mesh/workspace-bridge.route.test.ts
       - src/app/files/components/SaveWorkspaceMeshDialog.test.tsx
       - src/app/files/components/WorkspaceDiffDialog.test.tsx
+      - src/app/files/FilesStartupMeshGate.test.tsx
       - src/app/files/page.mesh-restore.test.tsx
       - src/app/files/WorkspaceView.mesh-restore.test.tsx
       - src/app/mesh/components/MeshDetailClient.test.tsx
       - src/app/mesh/components/WorkspaceSnapshotSummaryList.test.tsx
       - src/components/NewTabLink.test.tsx
+      - src/lib/files-startup-mesh.test.ts
       - src/lib/files.layout.test.ts
       - src/lib/workspace-mesh-bridge.test.ts
     code_annotations:

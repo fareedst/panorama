@@ -23,6 +23,7 @@ vi.mock("@/lib/sync", () => ({
 
 const mockBulkTouch = vi.fn();
 const mockBulkRename = vi.fn();
+const mockBulkMakeDirectory = vi.fn();
 const mockExecuteCommandBatch = vi.fn();
 vi.mock("@/lib/files.data", () => ({
   copyFile: vi.fn(),
@@ -34,6 +35,7 @@ vi.mock("@/lib/files.data", () => ({
   bulkDelete: vi.fn(),
   bulkTouch: (...args: unknown[]) => mockBulkTouch(...args),
   bulkRename: (...args: unknown[]) => mockBulkRename(...args),
+  bulkMakeDirectory: (...args: unknown[]) => mockBulkMakeDirectory(...args),
   listDirectory: vi.fn(),
   getUserHomeDirectory: vi.fn(),
   sortFiles: vi.fn(),
@@ -52,6 +54,11 @@ describe("POST /api/files [TEST-FILES_API] [IMPL-FILES_API] [REQ-FILE_OPERATIONS
       errors: [],
     });
     mockBulkRename.mockResolvedValue({
+      successCount: 1,
+      errorCount: 0,
+      errors: [],
+    });
+    mockBulkMakeDirectory.mockResolvedValue({
       successCount: 1,
       errorCount: 0,
       errors: [],
@@ -374,6 +381,87 @@ describe("POST /api/files [TEST-FILES_API] [IMPL-FILES_API] [REQ-FILE_OPERATIONS
       expect(mockBulkRename).toHaveBeenCalledWith([
         { src: "/tmp/a.txt", dest: "/tmp/b.txt" },
       ]);
+    });
+  });
+
+  describe("bulk-mkdir operation [IMPL-MAKE_DIRECTORY] [ARCH-FILE_OPERATIONS_API] [REQ-DIRECTORY_NAVIGATION]", () => {
+    it("returns 400 when entries missing [REQ-DIRECTORY_NAVIGATION]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ operation: "bulk-mkdir" }),
+      });
+      const response = await POST(request);
+      const data = await response.json();
+      expect(response.status).toBe(400);
+      expect(data.error).toBe("Entries array required");
+      expect(mockBulkMakeDirectory).not.toHaveBeenCalled();
+    });
+
+    it("returns 400 for invalid path in entry [REQ-DIRECTORY_NAVIGATION]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "bulk-mkdir",
+          entries: [{ path: "../secret/newdir" }],
+        }),
+      });
+      const response = await POST(request);
+      const data = await response.json();
+      expect(response.status).toBe(400);
+      expect(data.error).toBe("Invalid path");
+    });
+
+    it("returns 400 when entry path missing [REQ-DIRECTORY_NAVIGATION]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "bulk-mkdir",
+          entries: [{}],
+        }),
+      });
+      const response = await POST(request);
+      const data = await response.json();
+      expect(response.status).toBe(400);
+      expect(data.error).toBe("Each entry requires path");
+      expect(mockBulkMakeDirectory).not.toHaveBeenCalled();
+    });
+
+    it("returns 400 for invalid directory name [REQ-DIRECTORY_NAVIGATION]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "bulk-mkdir",
+          entries: [{ path: "/tmp/." }],
+        }),
+      });
+      const response = await POST(request);
+      const data = await response.json();
+      expect(response.status).toBe(400);
+      expect(data.error).toBe("Invalid directory name");
+      expect(mockBulkMakeDirectory).not.toHaveBeenCalled();
+    });
+
+    it("delegates valid bulk-mkdir to bulkMakeDirectory [REQ-DIRECTORY_NAVIGATION]", async () => {
+      mockBulkMakeDirectory.mockResolvedValueOnce({
+        successCount: 1,
+        errorCount: 0,
+        errors: [],
+      });
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "bulk-mkdir",
+          entries: [{ path: "/tmp/newdir" }],
+        }),
+      });
+      const response = await POST(request);
+      expect(response.status).toBe(200);
+      expect(mockBulkMakeDirectory).toHaveBeenCalledWith([{ path: "/tmp/newdir" }]);
     });
   });
 

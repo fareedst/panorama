@@ -14,40 +14,40 @@ IMPL-DEMO_SCREENSHOT_PIPELINE:
       - Literal token comments in E2E and shell scripts
       - essence_pseudocode blocks map to test steps
   implementation_approach:
-    summary: 'Seven pseudo-code blocks: comparison fixture, CopyAll fixture, workspace/comparison capture, CopyAll capture, GIF convert, verify assets, npm orchestration'
+    summary: 'Thirteen pseudo-code blocks: fixtures, workspace surfaces/pane-filters/dialogs/motion, mesh surfaces/bridge, CopyAll, GIF convert batch, verify assets, npm orchestration'
     details:
-      - 'e2e_only_reason: bash fixtures and Playwright asset writes are not unit-testable; browser and filesystem side effects require E2E or manual demo:screenshots'
-      - Each E2E describe beforeAll re-runs its fixture script because demo:setup wipes /tmp/test-dirs between prelude steps
+      - convert_readme_gif.sh generalizes single-GIF conversion; convert_all_readme_gifs.sh batch-converts five GIFs
+      - e2e/helpers/readme-demo.ts shared helpers including seedReadmePaneFilterDemo catalog seeding
+      - Seven Playwright specs replace single readme-screenshots.spec.ts
   code_locations:
     files:
-      - path: e2e/readme-screenshots.spec.ts
-        description: Capture 3-pane-workspace and 3-pane-comparison PNGs
-      - path: e2e/copyall-demo.spec.ts
-        description: Capture CopyAll workflow PNGs and Playwright video
-      - path: scripts/setup_readme_screenshots.sh
-        description: Comparison demo fixture
-      - path: scripts/setup_copyall_demo.sh
-        description: CopyAll demo fixture
-      - path: scripts/convert_demo_to_gif.sh
-        description: Webm to copyall-demo.gif
-      - path: scripts/verify_demo_screenshots.sh
-        description: Required asset presence check
-      - path: package.json
-        description: demo:screenshots npm script chain
-    functions: []
+      - path: e2e/z-copyall-demo.spec.ts
+        description: CopyAll workflow PNGs and video
+      - path: e2e/readme-workspace-pane-filters.spec.ts
+        description: Per-pane display spec and cross-pane visibility selector PNGs
   traceability:
     architecture:
       - ARCH-DEMO_ASSET_PIPELINE
       - ARCH-TEST_FRAMEWORK
     requirements:
       - REQ-CROSS_PANE_COMPARISON
+      - REQ-CROSS_PANE_VISIBILITY
+      - REQ-LINKED_PANES
+      - REQ-MESH_GUI
       - REQ-MULTI_PANE_LAYOUT
       - REQ-NSYNC_MULTI_TARGET
+      - REQ-PANE_DISPLAY_FILTER
       - REQ-README_DEMO_AUTOMATION
       - REQ-TOOLBAR_SYSTEM
+      - REQ-WORKSPACE_MESH_BRIDGE
     tests:
-      - e2e/readme-screenshots.spec.ts
-      - e2e/copyall-demo.spec.ts
+      - e2e/readme-mesh-bridge.spec.ts
+      - e2e/readme-mesh-surfaces.spec.ts
+      - e2e/readme-workspace-dialogs.spec.ts
+      - e2e/readme-workspace-motion.spec.ts
+      - e2e/readme-workspace-pane-filters.spec.ts
+      - e2e/readme-workspace-surfaces.spec.ts
+      - e2e/z-copyall-demo.spec.ts
     code_annotations:
       - REQ-README_DEMO_AUTOMATION
       - IMPL-DEMO_SCREENSHOT_PIPELINE
@@ -58,7 +58,9 @@ IMPL-DEMO_SCREENSHOT_PIPELINE:
     see_also:
       - docs/screenshots/README.md
       - tied/vocab/cross-pane-comparison.md
+      - tied/vocab/cross-pane-visibility.md
       - tied/vocab/nsync-multi-target.md
+      - tied/vocab/pane-display-filter.md
       - tied/vocab/toolbar-keybind.md
       - tied/vocab/workspace-pane.md
   metadata:
@@ -66,9 +68,9 @@ IMPL-DEMO_SCREENSHOT_PIPELINE:
       date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
     last_updated:
-      date: "2026-05-30T00:00:00.000Z"
+      date: "2026-06-01T00:00:00.000Z"
       author: AI Agent
-      reason: README demo screenshot pipeline
+      reason: README per-pane filter control demo assets
     last_validated:
       date: "2026-05-30T00:00:00.000Z"
       validator: AI Agent

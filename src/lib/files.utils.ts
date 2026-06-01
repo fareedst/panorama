@@ -94,12 +94,17 @@ export function formatDateTime(date: Date | string): string {
  *   - 45 minutes 30 seconds old → "45 min 30 sec"
  * 
  * @param date - Date object or ISO string
+ * @param referenceNow - Stable clock for SSR/hydration (defaults to current time)
  * @returns Formatted age string with two significant units
  */
-export function formatAge(date: Date | string): string {
+export function formatAge(
+  date: Date | string,
+  referenceNow: Date | number = Date.now(),
+): string {
   const d = typeof date === "string" ? new Date(date) : date;
-  const now = new Date();
-  const diffMs = now.getTime() - d.getTime();
+  const nowMs =
+    typeof referenceNow === "number" ? referenceNow : referenceNow.getTime();
+  const diffMs = nowMs - d.getTime();
   const diffSec = Math.floor(diffMs / 1000);
   
   // Handle future dates (show as 0 sec)
@@ -339,4 +344,33 @@ export function describeFileComparison(
     existingSummary,
     comparison,
   };
+}
+
+/** Search param keys for multi-pane workspace URLs: pane0, pane1, … */
+export type PaneDeepLinkSearchParams = Record<string, string | string[] | undefined>;
+
+export function searchParamString(
+  value: string | string[] | undefined,
+): string | undefined {
+  if (value == null) {
+    return undefined;
+  }
+  return Array.isArray(value) ? value[0] : value;
+}
+
+// [IMPL-FILE_MANAGER_PAGE] [IMPL-WORKSPACE_VIEW] [REQ-MULTI_PANE_LAYOUT] [REQ-README_DEMO_AUTOMATION]: how — parse consecutive pane0..paneN query values for server bootstrap and E2E deep links
+export function parsePaneDeepLinkPaths(params: PaneDeepLinkSearchParams): string[] {
+  const paths: string[] = [];
+  for (let i = 0; i < 64; i += 1) {
+    const raw = params[`pane${i}`];
+    if (raw == null || raw === "") {
+      break;
+    }
+    const value = Array.isArray(raw) ? raw[0] : raw;
+    if (!value) {
+      break;
+    }
+    paths.push(value);
+  }
+  return paths;
 }

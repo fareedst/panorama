@@ -149,6 +149,8 @@ const ACTION_ICON_MAP: Record<string, string> = {
 // [ICON_REGISTRY] [ARCH-TOOLBAR_ACTIONS] [REQ-TOOLBAR_SYSTEM]: icon names from config/files.yaml toolbars.actions — keep in sync with YAML
 export const TOOLBAR_ACTIONS_ICON_NAMES: readonly string[] = [
   "columns",
+  "filter",
+  "git-compare",
   "sliders",
   "files",
   "file-minus",

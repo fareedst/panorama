@@ -19,6 +19,9 @@ import {
   type WorkspaceSnapshot,
 } from "@/lib/workspace-mesh-bridge";
 import type { LayoutType } from "@/lib/files.layout";
+import { FilesStartupMeshGate } from "./FilesStartupMeshGate";
+import { captureRequestAgeReferenceMs } from "@/lib/request-age-reference";
+import { parsePaneDeepLinkPaths, searchParamString } from "@/lib/files.utils";
 
 // [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_ON_FILES_PAGE — per-request meshId (not static /files shell).
 export const dynamic = "force-dynamic";
@@ -39,9 +42,13 @@ export interface PaneInitialState {
 export default async function FilesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ meshId?: string; panes?: string; pane0?: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const { meshId, panes: panesQuery, pane0: pane0Query } = await searchParams;
+  const resolvedSearchParams = await searchParams;
+  const meshId = searchParamString(resolvedSearchParams.meshId);
+  const panesQuery = searchParamString(resolvedSearchParams.panes);
+  const pane0Query = searchParamString(resolvedSearchParams.pane0);
+  const paneDeepLinkPaths = parsePaneDeepLinkPaths(resolvedSearchParams);
 
   const config = getFilesConfig();
   const fileTypes = getThemeConfig().files?.fileTypes ?? DEFAULT_FILE_TYPES;
@@ -113,6 +120,7 @@ export default async function FilesPage({
   const meshRestorePending = Boolean(meshId && !restoredFromMesh);
 
   // [IMPL-FILE_MANAGER_PAGE] [IMPL-WORKSPACE_VIEW] [REQ-DIRECTORY_NAVIGATION] [REQ-MULTI_PANE_LAYOUT]: how — SinglePaneWorkspaceUrl bootstrap one pane from ?panes=1&pane0=
+  // [IMPL-WORKSPACE_VIEW] [REQ-README_DEMO_AUTOMATION]: how — ?pane0=&pane1=&pane2= bootstrap N panes regardless of layout.defaultPaneCount
   if (initialPanes.length === 0 && !meshRestorePending) {
     if (!meshId && panesQuery === "1" && pane0Query) {
       const panePath = pane0Query;
@@ -122,6 +130,15 @@ export default async function FilesPage({
         path: panePath,
         files: sortedFiles,
       });
+    } else if (!meshId && paneDeepLinkPaths.length > 0) {
+      for (const panePath of paneDeepLinkPaths) {
+        const files = await listDirectory(panePath);
+        const sortedFiles = sortFilesData(files, "Name", true);
+        initialPanes.push({
+          path: panePath,
+          files: sortedFiles,
+        });
+      }
     } else {
       const homeDir = getUserHomeDirectory();
       const paneCount = layout.defaultPaneCount || 1;
@@ -149,25 +166,32 @@ export default async function FilesPage({
     }
   }
 
+  // [REQ-REACT_SSR_STABILITY] [IMPL-FILE_AGE_DISPLAY]: single request clock for relative mtime SSR/hydration
+  const ageReferenceMs = captureRequestAgeReferenceMs();
+
   return (
-    <WorkspaceView
-      key={meshId ?? "files-workspace"}
-      meshId={meshId}
-      initialPanes={initialPanes}
-      keybindings={keybindings}
-      copy={copy}
-      layout={layout}
-      columns={columns}
-      toolbars={toolbars}
-      fileTypes={fileTypes}
-      restoreUi={restoreUi}
-      restoreLayout={restoreLayout}
-      restorePaneMeta={restorePaneMeta}
-      restoredFromMesh={restoredFromMesh}
-      restoreWarning={restoreWarning}
-      loadedMeshName={loadedMeshName}
-      loadedSnapshot={loadedSnapshot}
-      meshRestorePending={meshRestorePending}
-    />
+    // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE]: FILES_STARTUP_MESH_GATE — validate localStorage pref before WorkspaceView when no meshId in URL
+    <FilesStartupMeshGate>
+      <WorkspaceView
+        key={meshId ?? "files-workspace"}
+        meshId={meshId}
+        ageReferenceMs={ageReferenceMs}
+        initialPanes={initialPanes}
+        keybindings={keybindings}
+        copy={copy}
+        layout={layout}
+        columns={columns}
+        toolbars={toolbars}
+        fileTypes={fileTypes}
+        restoreUi={restoreUi}
+        restoreLayout={restoreLayout}
+        restorePaneMeta={restorePaneMeta}
+        restoredFromMesh={restoredFromMesh}
+        restoreWarning={restoreWarning}
+        loadedMeshName={loadedMeshName}
+        loadedSnapshot={loadedSnapshot}
+        meshRestorePending={meshRestorePending}
+      />
+    </FilesStartupMeshGate>
   );
 }

@@ -62,6 +62,9 @@
 | **Mesh list note** | Human-readable prefix before snapshot JSON in `description` | `extractNotePrefixFromDescription` | `mesh-list-note` |
 | **Most recent save time** | Mesh record `updatedAt` (last metadata/workspace save) | `GET /api/mesh` list + detail | `mesh-list-updated-at` |
 | **Sortable mesh list** | Client-side column sort on mesh list headers | `MeshListClient` | `mesh-list-sort-*` |
+| **Files startup mesh** | Mesh record whose workspace snapshot restores on plain `/files` load | `FilesStartupMeshGate` → `/files?meshId=` | `FILES_STARTUP_MESH_GATE` |
+| **Files startup mesh preference** | Browser localStorage `panorama.filesStartupMeshId` | `setFilesStartupMeshId` | `RESOLVE_FILES_STARTUP_MESH` |
+| **YAML startup fallback** | `config/files.yaml` startup when no valid files startup mesh | `RESTORE_ON_FILES_PAGE` skip path | `ARCH-PANE_LIFECYCLE` |
 
 ## Naming bridge
 
@@ -73,6 +76,7 @@
 | Mesh list note | `mesh-list-note` column | description prefix | `extractNotePrefixFromDescription` |
 | Most recent save time | `mesh-list-updated-at` column | mesh `updatedAt` | `formatDateTime` |
 | Sortable mesh list | `mesh-list-sort-*` header buttons | client `sortColumn` / `sortDirection` | `IMPL-MESH_GUI_list` |
+| Files startup mesh | `mesh-list-files-startup-*` radio column | localStorage + `FilesStartupMeshGate` | `FILES_STARTUP_MESH_GATE` |
 | Create mesh | create form | `POST /api/mesh` | `IMPL-MESH_CRUD_createMesh` |
 | Topology graph | topology screen | validate + project | `IMPL-MESH_TOPOLOGY_validateTopology` |
 | Generate plan | plan view, `generate-plan-btn` | `POST /plan` | `IMPL-MESH_RUNTIME_generatePlan` |
@@ -108,6 +112,9 @@
 - **Mesh list note** — Optional human text before snapshot JSON; shown in mesh list **Note** column and mesh detail snapshot summary.
 - **Most recent save time** — Mesh record `updatedAt`; shown in mesh list and detail snapshot summary when workspace was last saved.
 - **Sortable mesh list** — Mesh list table headers toggle ascending/descending client-side sort per column.
+- **Files startup mesh** — Operator-chosen mesh record; plain `/files` load restores its workspace snapshot via client gate redirect to `/files?meshId=`.
+- **Files startup mesh preference** — Persisted in browser localStorage (`panorama.filesStartupMeshId`); set from mesh list **Files startup** column.
+- **YAML startup fallback** — When no preference or invalid mesh id, bootstrap from `config/files.yaml` `startup` and `layout` defaults.
 - **Workspace update** — `PUT /api/mesh/:meshId/workspace` applies `buildMeshPatchPayload` and `planDepotSync` so mesh metadata and depot roots match the captured snapshot ([IMPL-WORKSPACE_MESH_BRIDGE](../tied/implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml)).
 - **Saved snapshot baseline** — Client `savedSnapshot` used by `diffWorkspaceSnapshots`; after update save, set to the exact captured snapshot so the diff badge clears without re-parse drift.
 
@@ -144,9 +151,14 @@ Mesh GUI strings: component copy in `src/app/mesh/` and related modules; workspa
 | Per-mesh depots GUI | `IMPL-MESH_GUI_depots` | IMPL-MESH_GUI |
 | Cross-surface new-tab link | `IMPL-EXTERNAL_LINKS` | IMPL-EXTERNAL_LINKS |
 | Save workspace from UI | `STORE_FROM_WORKSPACE_UI` | IMPL-WORKSPACE_MESH_BRIDGE |
+| Resolve files startup mesh | `RESOLVE_FILES_STARTUP_MESH` | IMPL-WORKSPACE_MESH_BRIDGE |
+| Files startup mesh gate | `FILES_STARTUP_MESH_GATE` | IMPL-WORKSPACE_MESH_BRIDGE |
 
 ## Alphabetical index
 
+- **Files startup mesh** — operator-chosen mesh; plain `/files` restores via gate redirect
+- **Files startup mesh preference** — localStorage `panorama.filesStartupMeshId`; mesh list radio column
+- **YAML startup fallback** — `config/files.yaml` bootstrap when no valid files startup mesh
 - **Cross-surface link** — new-tab navigation between Mesh GUI and File Manager workspace via **NewTabLink**
 - **NewTabLink** — shared secure new-tab link component
 - **navigation.security** — site config target/rel defaults for new-tab links

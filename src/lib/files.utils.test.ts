@@ -2,7 +2,15 @@
 // Tests for client-safe file utilities
 
 import { describe, test, expect } from "vitest";
-import { formatSize, sortFiles, getSortLabel, getSortDirectionSymbol, formatDateTime, formatAge } from "./files.utils";
+import {
+  formatSize,
+  sortFiles,
+  getSortLabel,
+  getSortDirectionSymbol,
+  formatDateTime,
+  formatAge,
+  parsePaneDeepLinkPaths,
+} from "./files.utils";
 import type { FileStat } from "./files.types";
 
 // [IMPL-FILES_UTILS] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_LISTING]: how: binary scale 1024; units B through TB; zero returns "0 B"; sub-KB shows integer B; larger uses one decimal place
@@ -345,6 +353,13 @@ describe("formatDateTime - IMPL_FILE_COLUMN_CONFIG", () => {
 
 // Test [IMPL-FILE_AGE_DISPLAY] [REQ-CONFIG_DRIVEN_FILE_MANAGER] formatAge function
 describe("formatAge - IMPL_FILE_AGE_DISPLAY", () => {
+  test("uses referenceNow for deterministic SSR-safe output", () => {
+    const referenceNow = new Date("2026-06-01T12:00:00.000Z").getTime();
+    const date = new Date("2026-06-01T11:44:12.000Z");
+    expect(formatAge(date, referenceNow)).toBe("15 min 48 sec");
+    expect(formatAge(date, referenceNow + 1000)).toBe("15 min 49 sec");
+  });
+
   test("formats years and months", () => {
     const now = new Date();
     const date = new Date(now.getTime() - (365 * 86400 * 1000) - (30 * 86400 * 1000) * 2.5);
@@ -450,5 +465,27 @@ describe("formatAge - IMPL_FILE_AGE_DISPLAY", () => {
     const date = new Date(now.getTime() - (3600 * 1000 * 2));
     const formatted = formatAge(date);
     expect(formatted).toBe("2 hr");
+  });
+});
+
+// [REQ-MULTI_PANE_LAYOUT] [REQ-README_DEMO_AUTOMATION]: parsePaneDeepLinkPaths for server/E2E pane0..paneN URLs
+describe("parsePaneDeepLinkPaths", () => {
+  test("returns consecutive pane paths until gap", () => {
+    expect(
+      parsePaneDeepLinkPaths({
+        pane0: "/a",
+        pane1: "/b",
+        pane2: "/c",
+        other: "ignored",
+      }),
+    ).toEqual(["/a", "/b", "/c"]);
+  });
+
+  test("stops at first missing pane index", () => {
+    expect(parsePaneDeepLinkPaths({ pane0: "/a", pane2: "/c" })).toEqual(["/a"]);
+  });
+
+  test("returns empty when no pane keys", () => {
+    expect(parsePaneDeepLinkPaths({ meshId: "m1" })).toEqual([]);
   });
 });

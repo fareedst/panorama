@@ -87,14 +87,21 @@ import {
   RenameRegexDialog,
   type RenameRegexApplySelection,
 } from "./components/RenameRegexDialog";
+import {
+  MakeDirectoryDialog,
+  type MakeDirectoryApplySelection,
+} from "./components/MakeDirectoryDialog";
 import { buildExecuteEntries } from "@/lib/execute-command";
 import { buildRenameRegexEntries } from "@/lib/rename-regex";
+import { buildMakeDirectoryEntries } from "@/lib/make-directory";
 import { LayoutPickerPopover } from "./components/LayoutPickerPopover";
 import {
   getVisibleFileColumns,
   measureFileMetadataColumnWidthsForPanes,
   normalizeFileColumns,
 } from "@/lib/file-columns";
+import { WORKSPACE_AGE_REFERENCE_FALLBACK_MS } from "@/lib/request-age-reference";
+import { useHydrationSafeNowMs } from "@/lib/use-hydration-safe-now";
 import RenameDialog from "./components/RenameDialog";
 import { InfoPanel } from "./components/InfoPanel";
 import { PreviewPanel } from "./components/PreviewPanel";
@@ -229,6 +236,8 @@ interface WorkspaceViewProps {
   loadedSnapshot?: WorkspaceSnapshot;
   /** [REQ-WORKSPACE_MESH_BRIDGE] Server missed mesh; client will rehydrate from /api/mesh */
   meshRestorePending?: boolean;
+  /** [REQ-REACT_SSR_STABILITY] [IMPL-FILE_AGE_DISPLAY] Request-time clock for relative mtime columns */
+  ageReferenceMs?: number;
 }
 
 /**
@@ -307,9 +316,14 @@ export default function WorkspaceView({
   loadedMeshName: loadedMeshNameProp,
   loadedSnapshot: loadedSnapshotProp,
   meshRestorePending = false,
+  ageReferenceMs: ageReferenceMsProp,
 }: WorkspaceViewProps) {
   const workspaceMeshCopy = copy.workspaceMesh;
   const router = useRouter();
+  // [REQ-REACT_SSR_STABILITY] [IMPL-FILE_AGE_DISPLAY]: how — shared request clock until client mount, then periodic refresh
+  const mtimeDisplayNowMs = useHydrationSafeNowMs(
+    ageReferenceMsProp ?? WORKSPACE_AGE_REFERENCE_FALLBACK_MS,
+  );
   // [IMPL-KEYBINDS] [ARCH-KEYBIND_SYSTEM] [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [REQ-REACT_SSR_STABILITY]: how: WorkspaceView useMemo calls initializeKeybindingRegistry once per keybindings prop before children render
   useMemo(() => {
     initializeKeybindingRegistry(keybindings);
@@ -534,6 +548,11 @@ export default function WorkspaceView({
     paneIndex: number;
     file: FileStat;
     marksAtOpen: Set<string>;
+  } | null>(null);
+  // [IMPL-WORKSPACE_VIEW] [IMPL-MAKE_DIRECTORY_DIALOG] [REQ-DIRECTORY_NAVIGATION]: how — Make directory dialog state (pane index only)
+  const [makeDirectoryDialog, setMakeDirectoryDialog] = useState<{
+    isOpen: boolean;
+    paneIndex: number;
   } | null>(null);
   
   // [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW] Preview panel state
@@ -866,8 +885,9 @@ export default function WorkspaceView({
     return measureFileMetadataColumnWidthsForPanes(
       panes.map((p) => p.files),
       getVisibleFileColumns(fileColumns),
+      mtimeDisplayNowMs,
     );
-  }, [layout, panes, fileColumns]);
+  }, [layout, panes, fileColumns, mtimeDisplayNowMs]);
 
   // [IMPL-COMPARISON_INDEX] [REQ-CROSS_PANE_VISIBILITY] BUILD_INDEX_FOR_FILTERS — index for compare filters whenever 2+ panes
   const comparisonIndexForFilters = useMemo(() => {
@@ -2403,6 +2423,63 @@ export default function WorkspaceView({
     [executeFileDialog, panes, handleNavigate],
   );
 
+  // [IMPL-WORKSPACE_VIEW] [IMPL-MAKE_DIRECTORY_DIALOG] [IMPL-MAKE_DIRECTORY] [REQ-DIRECTORY_NAVIGATION]: how — buildMakeDirectoryEntries, POST bulk-mkdir, refresh affected pane listings
+  const handleApplyMakeDirectory = useCallback(
+    (selection: MakeDirectoryApplySelection) => {
+      if (!makeDirectoryDialog) {
+        return;
+      }
+      const { paneIndex } = makeDirectoryDialog;
+      const paneStates = panes.map((p) => ({ path: p.path }));
+      const entries = buildMakeDirectoryEntries(
+        selection.paneTarget,
+        selection.directoryName,
+        paneIndex,
+        paneStates,
+      );
+
+      setMakeDirectoryDialog(null);
+
+      if (entries.length === 0) {
+        alert("No directories to create with the selected options.");
+        return;
+      }
+
+      fetch("/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "bulk-mkdir",
+          entries: entries.map((entry) => ({ path: entry.path })),
+          ...displaySpecPayload(paneIndex),
+        }),
+      })
+        .then(async (res) => {
+          const data = (await res.json()) as OperationResult & { error?: string };
+          if (!res.ok) {
+            throw new Error(data.error || res.statusText);
+          }
+          if (data.errorCount > 0) {
+            alert(
+              `Make directory completed with errors: ${data.successCount} succeeded, ${data.errorCount} failed.`,
+            );
+          }
+          return data;
+        })
+        .then(() => {
+          const paneIndicesToRefresh = new Set(entries.map((entry) => entry.paneIndex));
+          for (const i of paneIndicesToRefresh) {
+            void handleNavigate(i, panes[i].path);
+          }
+        })
+        .catch((e) => {
+          console.error("Make directory failed:", e);
+          alert(`Make directory failed: ${String(e)}`);
+        });
+    },
+    [makeDirectoryDialog, panes, handleNavigate, displaySpecPayload],
+  );
+
   // [IMPL-WORKSPACE_VIEW] [IMPL-RENAME_REGEX_DIALOG] [IMPL-RENAME_REGEX] [REQ-BULK_FILE_OPS]: how — buildRenameRegexEntries, POST bulk-rename, refresh affected pane listings
   const handleApplyRenameRegex = useCallback(
     (selection: RenameRegexApplySelection) => {
@@ -3323,6 +3400,7 @@ export default function WorkspaceView({
             columns={fileColumns} // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
             fileTypes={fileTypes} // [REQ-CONFIG_DRIVEN_APPEARANCE] [IMPL-CONFIG_DRIVEN_APPEARANCE]
             metadataColumnWidths={sharedMetadataColumnWidths}
+            mtimeDisplayNowMs={mtimeDisplayNowMs}
             onRename={(file) => setRenameDialog({ isOpen: true, filePath: file.path, fileName: file.name, paneIndex: index })}
             onCopy={() => void handleBulkCopy(index)}
             onMove={() => void handleBulkMove(index)}
@@ -3348,6 +3426,13 @@ export default function WorkspaceView({
                 marksAtOpen,
               })
             }
+            onMakeDirectory={() =>
+              setMakeDirectoryDialog({
+                isOpen: true,
+                paneIndex: index,
+              })
+            }
+            makeDirectoryMenuLabel={copy.makeDirectory?.makeDirectoryMenu}
             onRenameRegex={(file, marksAtOpen) =>
               setRenameRegexDialog({
                 isOpen: true,
@@ -3588,6 +3673,18 @@ export default function WorkspaceView({
           renameRegexLabels={copy.renameRegex}
           onApply={(selection) => handleApplyRenameRegex(selection)}
           onClose={() => setRenameRegexDialog(null)}
+        />
+      )}
+
+      {makeDirectoryDialog && (
+        <MakeDirectoryDialog
+          isOpen={makeDirectoryDialog.isOpen}
+          initiatingPaneIndex={makeDirectoryDialog.paneIndex}
+          paneCount={panes.length}
+          paneLabels={copy.paneManagement}
+          makeDirectoryLabels={copy.makeDirectory}
+          onApply={(selection) => handleApplyMakeDirectory(selection)}
+          onClose={() => setMakeDirectoryDialog(null)}
         />
       )}
 

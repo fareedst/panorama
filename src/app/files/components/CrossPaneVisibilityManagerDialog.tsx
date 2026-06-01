@@ -124,7 +124,12 @@ function CrossPaneVisibilityManagerDialogBody({
       <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-xl w-full max-w-lg max-h-[80vh] flex flex-col">
         <div className="flex justify-between items-center p-4 border-b dark:border-zinc-700">
           <h2 className="text-lg font-semibold">Compare filter presets</h2>
-          <button type="button" onClick={onClose} className="text-zinc-500 hover:text-zinc-800">
+          <button
+            type="button"
+            data-testid="cross-pane-visibility-manager-close"
+            onClick={onClose}
+            className="text-zinc-500 hover:text-zinc-800"
+          >
             ✕
           </button>
         </div>
@@ -133,6 +138,7 @@ function CrossPaneVisibilityManagerDialogBody({
             <li>
               <button
                 type="button"
+                data-testid="cross-pane-visibility-new-from-draft"
                 className={`w-full text-left px-2 py-1 rounded text-sm ${selectedId === "new" ? "bg-blue-100 dark:bg-blue-900" : ""}`}
                 onClick={() => {
                   setSelectedId("new");
@@ -147,6 +153,7 @@ function CrossPaneVisibilityManagerDialogBody({
               <li key={p.id}>
                 <button
                   type="button"
+                  data-testid={`cross-pane-visibility-catalog-${p.id}`}
                   className={`w-full text-left px-2 py-1 rounded text-sm truncate ${selectedId === p.id ? "bg-blue-100 dark:bg-blue-900" : ""}`}
                   onClick={() => loadDraft(p)}
                 >
@@ -162,6 +169,7 @@ function CrossPaneVisibilityManagerDialogBody({
               <>
                 <label className="block text-sm font-medium mb-1">Name</label>
                 <input
+                  data-testid="cross-pane-visibility-preset-name"
                   className="w-full border rounded px-2 py-1 mb-3 dark:bg-zinc-800"
                   value={draft.name}
                   onChange={(e) => setDraft({ ...draft, name: e.target.value })}

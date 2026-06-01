@@ -13,7 +13,7 @@ IMPL-MESH_GUI:
       - path: src/app/mesh/page.tsx
         description: Mesh list page
       - path: src/app/mesh/components/MeshListClient.tsx
-        description: IMPL-MESH_GUI_list — note and save-time columns, sortable headers (mesh-list-sort-*)
+        description: IMPL-MESH_GUI_list — note and save-time columns, sortable headers (mesh-list-sort-*), Files startup mesh preference column
       - path: src/app/mesh/[meshId]/depots/page.tsx
         description: IMPL-MESH_GUI_depots — per-mesh depots route
       - path: src/app/mesh/components/MeshDepotsClient.tsx

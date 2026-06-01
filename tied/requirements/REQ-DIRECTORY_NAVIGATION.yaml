@@ -20,6 +20,7 @@ REQ-DIRECTORY_NAVIGATION:
     - criterion: Can navigate to parent directory (Backspace key)
     - criterion: Current path displayed in pane header
     - criterion: Directory entries marked visually (folder icon or indicator)
+    - criterion: make_directory_under_pane_path — Make directory dialog creates basename under targeted pane path via bulk-mkdir
     - criterion: set_base_directory_reroots_pane_path — context menu Set as Base directory on directory rows opens dialog to assign pane path via handleNavigate or appendPaneAtPath for newPane
   validation_criteria:
     - method: Navigation testing
@@ -37,13 +38,20 @@ REQ-DIRECTORY_NAVIGATION:
       - IMPL-FILE_PANE
       - IMPL-FILES_DATA
       - IMPL-FILES_UTILS
+      - IMPL-MAKE_DIRECTORY
+      - IMPL-MAKE_DIRECTORY_DIALOG
       - IMPL-WORKSPACE_VIEW
     tests:
+      - src/app/api/files/route.test.ts
+      - src/app/files/components/MakeDirectoryDialog.test.tsx
       - src/app/files/components/SetBaseDirectoryDialog.test.tsx
       - src/app/files/components/SetBaseDirectoryTargetIcon.test.tsx
       - src/app/files/page.single-pane-url.test.tsx
       - src/app/files/WorkspaceView.cross-pane-visibility.test.tsx
+      - src/app/files/WorkspaceView.make-directory.test.tsx
       - src/app/files/WorkspaceView.set-base-directory.test.tsx
+      - src/lib/make-directory.data.test.ts
+      - src/lib/make-directory.test.ts
       - src/lib/pane-cross-pane-visibility.test.ts
       - src/lib/set-base-directory.test.ts
     code_annotations:
@@ -62,7 +70,7 @@ REQ-DIRECTORY_NAVIGATION:
     last_updated:
       date: "2026-05-31T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — set-base newPane via appendPaneAtPath; dialog target icons
+      reason: LEAP — Make directory under pane path
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

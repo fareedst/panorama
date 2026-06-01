@@ -94,4 +94,60 @@ test.describe("workspace mesh bridge E2E [REQ-WORKSPACE_MESH_BRIDGE]", () => {
       rmSync(dirB, { recursive: true, force: true });
     }
   });
+
+  // [REQ-WORKSPACE_MESH_BRIDGE] files_startup_mesh_restores_workspace_on_plain_files_load
+  test("FILES_STARTUP_MESH_GATE_restores_on_plain_files_load", async ({ page }) => {
+    const dirA = mkdtempSync(join(tmpdir(), "ws-startup-a-"));
+    writeFileSync(join(dirA, "startup-marker.txt"), "startup");
+
+    try {
+      await page.goto(
+        `/files?pane0=${encodeURIComponent(dirA)}&pane1=${encodeURIComponent(dirA)}`,
+      );
+      await expect(page.getByText("startup-marker.txt").first()).toBeVisible({ timeout: 15000 });
+
+      await page.keyboard.press("Control+Shift+M");
+      await expect(page.getByTestId("save-workspace-mesh-dialog")).toBeVisible({ timeout: 5000 });
+      const meshName = `Startup Mesh ${Date.now()}`;
+      await page.getByTestId("save-workspace-mesh-name").fill(meshName);
+      await page.getByTestId("save-workspace-mesh-submit").click();
+      await expect(page.getByTestId("mesh-detail")).toBeVisible({ timeout: 15000 });
+
+      const meshUrl = page.url();
+      const meshIdMatch = meshUrl.match(/\/mesh\/([^/?#]+)/);
+      expect(meshIdMatch).not.toBeNull();
+      const meshId = meshIdMatch![1];
+
+      await page.goto("/mesh");
+      await expect(page.getByTestId("mesh-list-table")).toBeVisible({ timeout: 10000 });
+      await page.getByTestId(`mesh-list-files-startup-${meshId}`).check();
+
+      await page.goto("/files");
+      await expect(page).toHaveURL(new RegExp(`meshId=${meshId}`), { timeout: 15000 });
+      await expect(page.getByTestId("workspace-loaded-name")).toContainText(meshName, {
+        timeout: 10000,
+      });
+      await expect(page.getByText("startup-marker.txt").first()).toBeVisible({ timeout: 10000 });
+    } finally {
+      rmSync(dirA, { recursive: true, force: true });
+    }
+  });
+
+  // [REQ-WORKSPACE_MESH_BRIDGE] files_startup_mesh_invalid_pref_falls_back_to_yaml
+  test("FILES_STARTUP_MESH_GATE_clears_invalid_pref_and_loads_yaml_bootstrap", async ({
+    page,
+  }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem("panorama.filesStartupMeshId", "mesh-does-not-exist");
+    });
+
+    await page.goto("/files");
+    await expect(page).not.toHaveURL(/meshId=/, { timeout: 5000 });
+    await expect(page.getByTestId("pane-0")).toBeVisible({ timeout: 15000 });
+
+    const clearedPref = await page.evaluate(() =>
+      localStorage.getItem("panorama.filesStartupMeshId"),
+    );
+    expect(clearedPref).toBeNull();
+  });
 });

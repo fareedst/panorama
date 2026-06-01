@@ -136,6 +136,13 @@ copy:
     replacementLabel: Replacement text
     renameRegexApply: Apply
     cancel: Cancel
+  # [IMPL-MAKE_DIRECTORY_DIALOG] [REQ-DIRECTORY_NAVIGATION] Make directory dialog copy
+  makeDirectory:
+    makeDirectoryMenu: Make directory…
+    makeDirectoryTitle: Make directory
+    directoryNameLabel: Directory name
+    makeDirectoryApply: Create
+    cancel: Cancel
   # [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE]
   workspaceMesh:
     saveDialogTitle: Save workspace as mesh
@@ -149,6 +156,11 @@ copy:
     diffButton: Diff
     loadedLabel: Workspace
     saveSuccess: Workspace saved as mesh
+    filesStartupColumn: Files startup
+    filesStartupSummary: 'Files startup: {name}'
+    filesStartupSummaryDefault: 'Files startup: config defaults'
+    filesStartupClear: Use config defaults
+    filesStartupAria: Set as Files page startup workspace
 # [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
 # Keyboard shortcut definitions
 keybindings:
@@ -270,13 +282,6 @@ keybindings:
     action: view.comparison
     description: Toggle comparison mode (name/size/time)
     category: view-sort
-  - key: f
-    modifiers:
-      shift: true
-      ctrl: true
-    action: view.displaySpec
-    description: Manage display filter specs
-    category: view-sort
   # [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Linked pane navigation
   - key: l
     action: link.toggle
@@ -396,9 +401,9 @@ keybindings:
 # [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE] Layout preferences
 layout:
   # Default layout type on startup
-  default: tile # tile | oneRow | oneColumn | fullscreen
+  default: oneColumn # tile | oneRow | oneColumn | fullscreen
   # Default number of panes (minimum 3 recommended for typical use)
-  defaultPaneCount: 3
+  defaultPaneCount: 1
   # Allow users to add/remove panes
   allowPaneManagement: true
   # Maximum number of panes (0 = no upper limit)
@@ -441,6 +446,12 @@ toolbars:
     view.columns:
       description: Reorder file columns
       icon: columns
+    view.displaySpec:
+      description: Manage display filter specs
+      icon: filter
+    mesh.diffWorkspace:
+      description: Diff workspace vs saved
+      icon: git-compare
     view.compareFilter.thresholds:
       description: Set compare filter size/time thresholds
       icon: sliders

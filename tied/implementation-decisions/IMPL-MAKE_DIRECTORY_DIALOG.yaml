@@ -1,0 +1,45 @@
+IMPL-MAKE_DIRECTORY_DIALOG:
+  name: Make Directory Dialog and Context Menu
+  status: Active
+  cross_references:
+    - ARCH-MOUSE_SUPPORT
+    - IMPL-MAKE_DIRECTORY
+    - IMPL-MOUSE_SUPPORT
+    - IMPL-WORKSPACE_VIEW
+    - REQ-DIRECTORY_NAVIGATION
+    - REQ-MOUSE_INTERACTION
+  decision: MakeDirectoryDialog secondary workspace dialog with pane target radio group and directory name field; ContextMenu Make directory item; WorkspaceView handleApplyMakeDirectory
+  rationale:
+    why: Matches ExecuteFileDialog shell and wiring pattern for pane-scoped directory creation
+  implementation_approach:
+    summary: MakeDirectoryDialog + ContextMenu + FilePane + WorkspaceView wiring
+  code_locations:
+    files:
+      - path: src/app/files/components/MakeDirectoryDialog.tsx
+        description: Pane target and directory name dialog
+      - path: src/app/files/components/ContextMenu.tsx
+        description: Make directory menu item
+      - path: src/app/files/components/FilePane.tsx
+        description: onMakeDirectory wiring
+      - path: src/app/files/WorkspaceView.tsx
+        description: Dialog state and handleApplyMakeDirectory
+  traceability:
+    requirements:
+      - REQ-DIRECTORY_NAVIGATION
+      - REQ-MOUSE_INTERACTION
+    architecture:
+      - ARCH-MOUSE_SUPPORT
+    tests:
+      - src/app/files/components/ContextMenu.test.tsx
+      - src/app/files/components/MakeDirectoryDialog.test.tsx
+      - src/app/files/WorkspaceView.make-directory.test.tsx
+    code_annotations:
+      - IMPL-MAKE_DIRECTORY_DIALOG
+  related_decisions:
+    depends_on:
+      - IMPL-MAKE_DIRECTORY
+      - IMPL-MOUSE_SUPPORT
+      - IMPL-WORKSPACE_VIEW
+    see_also:
+      - IMPL-EXECUTE_DIALOG
+      - IMPL-TOUCH_DIALOG

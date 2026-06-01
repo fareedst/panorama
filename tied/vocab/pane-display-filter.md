@@ -55,6 +55,17 @@
 
 User-facing strings: `config/files.yaml` → `copy.displaySpec.*` (manager dialog, validation messages). Toolbar **Manage display specs…** uses `copy.displaySpec` keys and `toolbars.actions.view.displaySpec`. This glossary is authoritative for **Display spec** vs Mesh **Policy**. Owning IMPL: [IMPL-PANE_DISPLAY_FILTER_UI](../tied/implementation-decisions/IMPL-PANE_DISPLAY_FILTER_UI.yaml).
 
+## README demo assets
+
+Committed PNGs under `docs/screenshots/` ([REQ-README_DEMO_AUTOMATION](../tied/requirements/REQ-README_DEMO_AUTOMATION.yaml)); regenerate via `npm run demo:screenshots`.
+
+| Asset | Shows |
+| --- | --- |
+| `workspace-pane-filter-controls.png` | Three-pane workspace with distinct **active display spec** per pane (pane-header **spec selector**) |
+| `workspace-pane-filter-header.png` | Focused pane header crop: **DisplaySpecSelector**, indicator `Filter: {name}`, **Manage specs…** entry point |
+| `dialog-display-spec-manager.png` | **DisplaySpecManagerDialog** catalog overview (no spec selected) |
+| `dialog-display-spec-construct.png` | **DisplaySpecManagerDialog** editing state — **filter rules** in `display-spec-rule-editor` |
+
 ## Pseudo-code block names
 
 | Preferred term / concept | UPPER_SNAKE block | Owning IMPL |

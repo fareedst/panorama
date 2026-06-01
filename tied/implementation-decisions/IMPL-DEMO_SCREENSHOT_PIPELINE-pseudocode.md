@@ -1,20 +1,20 @@
 # IMPL-DEMO_SCREENSHOT_PIPELINE essence pseudocode
 
-// [IMPL-DEMO_SCREENSHOT_PIPELINE] [ARCH-DEMO_ASSET_PIPELINE] [REQ-README_DEMO_AUTOMATION]: how: one-command npm demo:screenshots produces all committed docs/screenshots assets via fixture scripts, Playwright capture, GIF conversion, and optional verify
+// [IMPL-DEMO_SCREENSHOT_PIPELINE] [ARCH-DEMO_ASSET_PIPELINE] [REQ-README_DEMO_AUTOMATION]: how: one-command npm demo:screenshots produces all committed docs/screenshots assets via fixture scripts, modular Playwright specs, GIF conversion, and verify
 
 ## SETUP_COMPARISON_FIXTURE
 
-// [IMPL-DEMO_SCREENSHOT_PIPELINE] [ARCH-DEMO_ASSET_PIPELINE] [REQ-README_DEMO_AUTOMATION] [REQ-CROSS_PANE_COMPARISON]: how: bash setup_readme_screenshots.sh wipes /tmp/test-dirs and seeds alpha/beta/gamma with shared filenames and deliberate size/mtime deltas for comparison mode coloring
+// [IMPL-DEMO_SCREENSHOT_PIPELINE] [ARCH-DEMO_ASSET_PIPELINE] [REQ-README_DEMO_AUTOMATION] [REQ-CROSS_PANE_COMPARISON]: how: bash setup_readme_screenshots.sh wipes /tmp/test-dirs and seeds alpha/beta/gamma with shared filenames, demo-folder, projects subdirs, and deliberate size/mtime deltas
 
 CONTRACT SETUP_COMPARISON_FIXTURE
   INPUT: none
   OUTPUT: /tmp/test-dirs/{alpha,beta,gamma} with comparison demo fixture
-  DATA: only-beta.txt, only-gamma.txt, shared file2.txt/file3.txt/config.yaml variants
+  DATA: demo-folder, projects, only-beta.txt, only-gamma.txt, shared file2.txt/file3.txt/config.yaml variants
 
 PROCEDURE IMPL-DEMO_SCREENSHOT_PIPELINE_SETUP_COMPARISON_FIXTURE()
   RM -rf /tmp/test-dirs
   MKDIR alpha beta gamma under /tmp/test-dirs
-  WRITE alpha full sample file set with touch -t mtimes
+  WRITE alpha full sample file set with touch -t mtimes plus demo-folder and projects
   WRITE beta/gamma partial shared files with different sizes and mtimes
   WRITE pane-unique only-beta.txt and only-gamma.txt
 
@@ -33,25 +33,105 @@ PROCEDURE IMPL-DEMO_SCREENSHOT_PIPELINE_SETUP_COPYALL_FIXTURE()
   POPULATE alpha with sample files for marking and copy
   LEAVE beta and gamma empty as destinations
 
-## CAPTURE_WORKSPACE_AND_COMPARISON
+## CAPTURE_WORKSPACE_SURFACES
 
-// [IMPL-DEMO_SCREENSHOT_PIPELINE] [ARCH-DEMO_ASSET_PIPELINE] [REQ-README_DEMO_AUTOMATION] [REQ-MULTI_PANE_LAYOUT] [REQ-CROSS_PANE_COMPARISON] [REQ-TOOLBAR_SYSTEM]: how: Playwright readme-screenshots.spec.ts uses pane URL deep link, toggles toolbar-view.comparison twice, asserts active class, writes 3-pane-workspace.png and 3-pane-comparison.png
+// [IMPL-DEMO_SCREENSHOT_PIPELINE] [ARCH-DEMO_ASSET_PIPELINE] [REQ-README_DEMO_AUTOMATION] [REQ-MULTI_PANE_LAYOUT] [REQ-TOOLBAR_SYSTEM]: how: readme-workspace-surfaces.spec.ts captures workspace-shell, cross-surface nav, pane listing, toolbar compact/expanded/named, and legacy 3-pane-workspace/comparison PNGs
 
-CONTRACT CAPTURE_WORKSPACE_AND_COMPARISON
-  INPUT: dev server at /files, comparison fixture on disk
-  OUTPUT: docs/screenshots/3-pane-workspace.png, 3-pane-comparison.png
-  DATA: viewport 1600x900; data-testid pane-0, toolbar-view.comparison
+CONTRACT CAPTURE_WORKSPACE_SURFACES
+  INPUT: comparison fixture, dev server at /files
+  OUTPUT: workspace-*.png and 3-pane-*.png under docs/screenshots
+  DATA: pane URL deep link; toolbar-compact-toggle cycles display modes
 
-PROCEDURE IMPL-DEMO_SCREENSHOT_PIPELINE_CAPTURE_WORKSPACE_AND_COMPARISON()
-  IN beforeAll INVOKE SETUP_COMPARISON_FIXTURE via execSync setup_readme_screenshots.sh
-  SET viewport 1600 x 900
-  GOTO /files?pane0=/tmp/test-dirs/alpha&pane1=/tmp/test-dirs/beta&pane2=/tmp/test-dirs/gamma
-  WAIT networkidle; PRESS Escape; WAIT pane-0 and file2.txt
-  SCREENSHOT fullPage to 3-pane-workspace.png
-  ASSERT file2.txt visible in at least two panes
-  CLICK toolbar-view.comparison twice; ASSERT comparison button has active class bg-blue
-  SCREENSHOT fullPage to 3-pane-comparison.png
-  ASSERT each PNG file size greater than minimum threshold
+PROCEDURE IMPL-DEMO_SCREENSHOT_PIPELINE_CAPTURE_WORKSPACE_SURFACES()
+  IN beforeAll INVOKE SETUP_COMPARISON_FIXTURE
+  GOTO pane URL deep link; WAIT pane-0
+  SCREENSHOT fullPage workspace-shell and 3-pane-workspace
+  SCREENSHOT workspace-cross-surface-nav and workspace-pane-listing elements
+  CAPTURE toolbar compact default, expanded after one toggle, named after two toggles
+  ENABLE comparison mode; WRITE 3-pane-comparison.png
+
+## CAPTURE_WORKSPACE_PANE_FILTERS
+
+// [IMPL-DEMO_SCREENSHOT_PIPELINE] [ARCH-DEMO_ASSET_PIPELINE] [REQ-README_DEMO_AUTOMATION] [REQ-PANE_DISPLAY_FILTER] [REQ-CROSS_PANE_VISIBILITY]: how: readme-workspace-pane-filters.spec.ts seeds display spec and cross-pane visibility catalogs, applies distinct active spec/preset per pane, captures workspace-pane-filter-controls.png and workspace-pane-filter-header.png
+
+CONTRACT CAPTURE_WORKSPACE_PANE_FILTERS
+  INPUT: comparison fixture, seeded localStorage catalogs via seedReadmePaneFilterDemo
+  OUTPUT: workspace-pane-filter-controls.png, workspace-pane-filter-header.png
+  DATA: pane-display-spec-selector; pane-cross-pane-visibility-selector; pane-filter-header test id; per-pane activeDisplaySpecId and activeCrossPaneVisibilityId
+
+PROCEDURE IMPL-DEMO_SCREENSHOT_PIPELINE_CAPTURE_WORKSPACE_PANE_FILTERS()
+  IN beforeAll INVOKE SETUP_COMPARISON_FIXTURE
+  SEED panorama.displaySpecs.v1 and panorama.crossPaneVisibility.v1 with deterministic demo specs/presets
+  GOTO pane URL deep link; ENABLE comparison mode
+  FOR each pane index SELECT distinct display spec and cross-pane visibility preset via header selectors
+  CAPTURE fullPage workspace-pane-filter-controls showing per-pane independence
+  CAPTURE pane-filter-header crop on focused pane with both selectors and Filter/Compare indicator line
+
+## CAPTURE_WORKSPACE_DIALOGS
+
+// [IMPL-DEMO_SCREENSHOT_PIPELINE] [ARCH-DEMO_ASSET_PIPELINE] [REQ-README_DEMO_AUTOMATION] [REQ-MOUSE_INTERACTION] [REQ-PANE_DISPLAY_FILTER] [REQ-CROSS_PANE_VISIBILITY]: how: readme-workspace-dialogs.spec.ts opens context menu and toolbar/header dialogs; element screenshots for dialog-*.png, popover-layout-picker.png, menu-file-context.png
+
+CONTRACT CAPTURE_WORKSPACE_DIALOGS
+  INPUT: comparison fixture with demo-folder directory row
+  OUTPUT: seventeen static workspace overlay PNGs including filter construction dialogs
+  DATA: context menu test ids; display-spec-catalog-{id}; cross-pane-visibility-catalog-{id}; cross-pane-visibility-new-from-draft; display-spec-rule-editor
+
+PROCEDURE IMPL-DEMO_SCREENSHOT_PIPELINE_CAPTURE_WORKSPACE_DIALOGS()
+  SEED filter catalogs via seedReadmePaneFilterCatalogs before workspace load
+  OPEN context menu on file2.txt; CAPTURE menu-file-context
+  OPEN Touch, Execute, Make directory, Rename Regex dialogs from context menu
+  OPEN Set base directory on demo-folder row
+  OPEN pane order, column order, layout picker dialogs from toolbar
+  SET compare-filter draft sizeGtThreshold include; OPEN compare filter threshold dialog from toolbar
+  OPEN display spec manager overview from pane selector __manage__; CAPTURE dialog-display-spec-manager.png
+  SELECT seeded catalog entry; CAPTURE dialog-display-spec-construct.png with display-spec-rule-editor visible
+  OPEN cross-pane visibility manager overview; CAPTURE dialog-cross-pane-visibility-manager.png
+  SET toolbar tri-state draft on focused pane; OPEN manager and New from focused draft; CAPTURE dialog-cross-pane-visibility-construct.png
+  OPEN save-workspace-mesh create via Control+Shift+M
+
+## CAPTURE_WORKSPACE_MOTION_GIFS
+
+// [IMPL-DEMO_SCREENSHOT_PIPELINE] [ARCH-DEMO_ASSET_PIPELINE] [REQ-README_DEMO_AUTOMATION] [REQ-LINKED_PANES] [REQ-CROSS_PANE_COMPARISON] [REQ-CROSS_PANE_VISIBILITY]: how: readme-workspace-motion.spec.ts records linked-mode-demo, comparison-cycle-demo, cross-pane-visibility-demo, pane-management-demo webms for GIF conversion
+
+CONTRACT CAPTURE_WORKSPACE_MOTION_GIFS
+  INPUT: comparison fixture, Playwright video on
+  OUTPUT: four webm files under test-results matched by describe name
+  DATA: L key linked mode; toolbar-view.comparison cycle; tri-state compareFilter buttons; pane.add swap layout picker
+
+PROCEDURE IMPL-DEMO_SCREENSHOT_PIPELINE_CAPTURE_WORKSPACE_MOTION_GIFS()
+  RECORD linked navigation entering projects directory across panes
+  RECORD comparison mode cycling four clicks
+  RECORD tri-state compare filter toolbar clicks after comparison enabled
+  RECORD layout OneRow, pane add, swap, pane order dialog
+
+## CAPTURE_MESH_SURFACES
+
+// [IMPL-DEMO_SCREENSHOT_PIPELINE] [ARCH-DEMO_ASSET_PIPELINE] [REQ-README_DEMO_AUTOMATION] [REQ-MESH_GUI]: how: readme-mesh-surfaces.spec.ts creates meshes with mkdtemp depots; captures mesh-list and per-route mesh-*.png including workspace-snapshot-summary on detail
+
+CONTRACT CAPTURE_MESH_SURFACES
+  INPUT: ephemeral MESH_DATA_DIR from Playwright webServer env
+  OUTPUT: mesh-list.png and mesh-{route}.png assets
+  DATA: save workspace from /files then add depots and links on mesh detail
+
+PROCEDURE IMPL-DEMO_SCREENSHOT_PIPELINE_CAPTURE_MESH_SURFACES()
+  CREATE two meshes on /mesh for sortable list screenshot
+  SAVE workspace as mesh from three-pane deep link; ADD depots and links
+  CAPTURE detail overview with workspace-snapshot-summary, topology, plan approval, sync session, depots, export, schedule, archive settings, open-workspace link
+
+## CAPTURE_MESH_BRIDGE
+
+// [IMPL-DEMO_SCREENSHOT_PIPELINE] [ARCH-DEMO_ASSET_PIPELINE] [REQ-README_DEMO_AUTOMATION] [REQ-WORKSPACE_MESH_BRIDGE]: how: readme-mesh-bridge.spec.ts restores workspace from mesh, captures workspace-header-status, workspace diff dialog, save update mode dialog
+
+CONTRACT CAPTURE_MESH_BRIDGE
+  INPUT: mkdtemp pane directories
+  OUTPUT: workspace-header-status.png, dialog-workspace-diff.png, dialog-save-workspace-mesh-update.png
+  DATA: layout drift Tile vs OneRow; workspace-diff-header-button; save-workspace-mesh-mode-update
+
+PROCEDURE IMPL-DEMO_SCREENSHOT_PIPELINE_CAPTURE_MESH_BRIDGE()
+  SAVE workspace after OneRow layout change
+  RESTORE via open-workspace-from-mesh in new tab
+  CHANGE layout to Tile; OPEN workspace diff dialog
+  OPEN save dialog in update mode
 
 ## CAPTURE_COPYALL_WORKFLOW
 
@@ -70,62 +150,68 @@ PROCEDURE IMPL-DEMO_SCREENSHOT_PIPELINE_CAPTURE_COPYALL_WORKFLOW()
   CONFIRM dialog; OPTIONAL capture demo-04-progress if visible
   ASSERT file2.txt and file3.txt each appear three times after sync
 
-## CONVERT_COPYALL_GIF
+## CONVERT_README_GIFS
 
-// [IMPL-DEMO_SCREENSHOT_PIPELINE] [ARCH-DEMO_ASSET_PIPELINE] [REQ-README_DEMO_AUTOMATION]: how: convert_demo_to_gif.sh prefers copyall-demo webm then falls back to newest test-results video; writes docs/screenshots/copyall-demo.gif
+// [IMPL-DEMO_SCREENSHOT_PIPELINE] [ARCH-DEMO_ASSET_PIPELINE] [REQ-README_DEMO_AUTOMATION]: how: convert_readme_gif.sh converts one webm to GIF; convert_all_readme_gifs.sh batch-writes five motion GIFs
 
-CONTRACT CONVERT_COPYALL_GIF
-  INPUT: test-results/*.webm
-  OUTPUT: docs/screenshots/copyall-demo.gif
+CONTRACT CONVERT_README_GIFS
+  INPUT: test-results/*.webm matched by describe slug
+  OUTPUT: copyall-demo.gif, linked-mode-demo.gif, comparison-cycle-demo.gif, cross-pane-visibility-demo.gif, pane-management-demo.gif
   DATA: ffmpeg palette + gifsicle optimization
 
-PROCEDURE IMPL-DEMO_SCREENSHOT_PIPELINE_CONVERT_COPYALL_GIF()
-  FIND webm path matching copyall-demo first
-  IF none THEN FIND newest webm in test-results
-  IF none THEN ERROR no video
-  CONVERT to copyall-demo.gif at docs/screenshots
+PROCEDURE IMPL-DEMO_SCREENSHOT_PIPELINE_CONVERT_README_GIFS()
+  FOR each motion slug IN copyall-demo linked-mode-demo comparison-cycle-demo cross-pane-visibility-demo pane-management-demo
+    FIND webm path matching slug
+    CONVERT to docs/screenshots/{slug}.gif
 
 ## VERIFY_DEMO_ASSETS
 
-// [IMPL-DEMO_SCREENSHOT_PIPELINE] [ARCH-DEMO_ASSET_PIPELINE] [REQ-README_DEMO_AUTOMATION]: how: verify_demo_screenshots.sh resolves SCREENSHOT_DIR relative to script repo root and checks required PNG/GIF list
+// [IMPL-DEMO_SCREENSHOT_PIPELINE] [ARCH-DEMO_ASSET_PIPELINE] [REQ-README_DEMO_AUTOMATION]: how: verify_demo_screenshots.sh resolves SCREENSHOT_DIR relative to script repo root and checks full PNG and GIF manifest
 
 CONTRACT VERIFY_DEMO_ASSETS
   INPUT: docs/screenshots directory
-  OUTPUT: exit 0 when all required assets exist with size report
-  DATA: 3-pane-workspace, 3-pane-comparison, demo-01..03, demo-05, copyall-demo.gif
+  OUTPUT: exit 0 when all required assets exist
+  DATA: workspace, dialog, mesh, legacy CopyAll PNGs; five GIFs
 
 PROCEDURE IMPL-DEMO_SCREENSHOT_PIPELINE_VERIFY_DEMO_ASSETS()
   SET SCREENSHOT_DIR := repo_root/docs/screenshots via SCRIPT_DIR/../docs/screenshots
-  FOR each required asset IN REQUIRED_SCREENSHOTS
+  FOR each required asset IN REQUIRED_SCREENSHOTS and REQUIRED_GIFS
     IF missing THEN increment MISSING_COUNT and report
   EXIT non-zero IF any missing
 
 ## NPM_DEMO_SCREENSHOTS
 
-// [IMPL-DEMO_SCREENSHOT_PIPELINE] [ARCH-DEMO_ASSET_PIPELINE] [REQ-README_DEMO_AUTOMATION]: how: package.json demo:screenshots chains setup-readme, setup, playwright preflight, both E2E specs, convert, and demo:verify; demo:record aliases demo:screenshots
+// [IMPL-DEMO_SCREENSHOT_PIPELINE] [ARCH-DEMO_ASSET_PIPELINE] [REQ-README_DEMO_AUTOMATION]: how: package.json demo:screenshots chains setup-readme, setup, playwright preflight, six E2E specs, convert_all_readme_gifs, and demo:verify
 
 CONTRACT NPM_DEMO_SCREENSHOTS
   INPUT: npm run demo:screenshots
-  OUTPUT: refreshed docs/screenshots assets
-  DATA: each E2E spec beforeAll re-runs its fixture because demo:setup wipes /tmp/test-dirs between prelude steps
+  OUTPUT: refreshed docs/screenshots product tour assets
+  DATA: each E2E describe beforeAll re-runs its fixture because demo:setup wipes /tmp/test-dirs between prelude steps
 
 PROCEDURE IMPL-DEMO_SCREENSHOT_PIPELINE_NPM_DEMO_SCREENSHOTS()
   RUN demo:setup-readme
   RUN demo:setup with --clean
   RUN playwright-preflight
-  RUN playwright e2e/readme-screenshots.spec.ts e2e/copyall-demo.spec.ts
-  RUN demo:convert
+  RUN readme-workspace-surfaces, readme-workspace-pane-filters, readme-workspace-dialogs, readme-workspace-motion, readme-mesh-surfaces, readme-mesh-bridge, copyall-demo specs
+  RUN convert_all_readme_gifs
   RUN demo:verify
 
 ## CodeLocations
 
 // [IMPL-DEMO_SCREENSHOT_PIPELINE] [ARCH-DEMO_ASSET_PIPELINE] [REQ-README_DEMO_AUTOMATION]: map implementing artifacts
 
-// FILE: e2e/readme-screenshots.spec.ts — CAPTURE_WORKSPACE_AND_COMPARISON
-// FILE: e2e/copyall-demo.spec.ts — CAPTURE_COPYALL_WORKFLOW
+// FILE: e2e/helpers/readme-demo.ts — shared fixture and screenshot helpers
+// FILE: e2e/readme-workspace-surfaces.spec.ts — CAPTURE_WORKSPACE_SURFACES
+// FILE: e2e/readme-workspace-pane-filters.spec.ts — CAPTURE_WORKSPACE_PANE_FILTERS
+// FILE: e2e/readme-workspace-dialogs.spec.ts — CAPTURE_WORKSPACE_DIALOGS
+// FILE: e2e/readme-workspace-motion.spec.ts — CAPTURE_WORKSPACE_MOTION_GIFS
+// FILE: e2e/readme-mesh-surfaces.spec.ts — CAPTURE_MESH_SURFACES
+// FILE: e2e/readme-mesh-bridge.spec.ts — CAPTURE_MESH_BRIDGE
+// FILE: e2e/z-copyall-demo.spec.ts — CAPTURE_COPYALL_WORKFLOW
 // FILE: scripts/setup_readme_screenshots.sh — SETUP_COMPARISON_FIXTURE
 // FILE: scripts/setup_copyall_demo.sh — SETUP_COPYALL_FIXTURE
-// FILE: scripts/convert_demo_to_gif.sh — CONVERT_COPYALL_GIF
+// FILE: scripts/convert_readme_gif.sh — CONVERT_README_GIFS single
+// FILE: scripts/convert_all_readme_gifs.sh — CONVERT_README_GIFS batch
 // FILE: scripts/verify_demo_screenshots.sh — VERIFY_DEMO_ASSETS
 // FILE: package.json — NPM_DEMO_SCREENSHOTS scripts
 

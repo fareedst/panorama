@@ -4252,3 +4252,23 @@ IMPL-RENAME_REGEX_DIALOG:
     - REQ-BULK_FILE_OPS
     - REQ-MOUSE_INTERACTION
   detail_file: implementation-decisions/IMPL-RENAME_REGEX_DIALOG.yaml
+IMPL-MAKE_DIRECTORY:
+  name: Make Directory Path Resolution and Data Layer
+  status: Active
+  cross_references:
+    - ARCH-FILE_OPERATIONS_API
+    - IMPL-FILES_API
+    - IMPL-FILES_DATA
+    - REQ-DIRECTORY_NAVIGATION
+  detail_file: implementation-decisions/IMPL-MAKE_DIRECTORY.yaml
+IMPL-MAKE_DIRECTORY_DIALOG:
+  name: Make Directory Dialog and Context Menu
+  status: Active
+  cross_references:
+    - ARCH-MOUSE_SUPPORT
+    - IMPL-MAKE_DIRECTORY
+    - IMPL-MOUSE_SUPPORT
+    - IMPL-WORKSPACE_VIEW
+    - REQ-DIRECTORY_NAVIGATION
+    - REQ-MOUSE_INTERACTION
+  detail_file: implementation-decisions/IMPL-MAKE_DIRECTORY_DIALOG.yaml

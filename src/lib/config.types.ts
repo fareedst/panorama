@@ -349,6 +349,14 @@ export interface FilesCopyConfig {
     renameRegexApply?: string;
     cancel?: string;
   };
+  // [IMPL-MAKE_DIRECTORY_DIALOG] [REQ-DIRECTORY_NAVIGATION] Make directory dialog copy
+  makeDirectory?: {
+    makeDirectoryMenu?: string;
+    makeDirectoryTitle?: string;
+    directoryNameLabel?: string;
+    makeDirectoryApply?: string;
+    cancel?: string;
+  };
   // [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE]
   workspaceMesh?: {
     saveDialogTitle?: string;
@@ -361,6 +369,11 @@ export interface FilesCopyConfig {
     diffNoChanges?: string;
     diffButton?: string;
     loadedLabel?: string;
+    filesStartupColumn?: string;
+    filesStartupSummary?: string;
+    filesStartupSummaryDefault?: string;
+    filesStartupClear?: string;
+    filesStartupAria?: string;
   };
 }
 

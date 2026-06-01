@@ -3,7 +3,7 @@ REQ-README_DEMO_AUTOMATION:
   category: Documentation
   priority: P2
   status: Implemented
-  description: 'One-command Playwright pipeline generates committed README demo assets under docs/screenshots/: 3-pane workspace and comparison PNGs, CopyAll step PNGs, and copyall-demo.gif. Uses pane URL deep links and separate comparison vs CopyAll fixtures. Canonical terms: tied/vocab/workspace-pane.md, tied/vocab/cross-pane-comparison.md, tied/vocab/nsync-multi-target.md, tied/vocab/toolbar-keybind.md.'
+  description: 'One-command Playwright pipeline generates committed README product tour assets under docs/screenshots/: Workspace shell and toolbar modes, per-pane filter control PNGs (display spec and cross-pane visibility selectors), workspace dialogs and context menus, motion GIFs (linked mode, comparison cycle, cross-pane visibility, pane management, CopyAll), Mesh list and per-mesh routes, and Workspace-Mesh bridge overlays. Uses pane URL deep links, comparison and CopyAll fixtures, seeded filter catalogs for manager dialogs, and ephemeral mesh E2E data. Canonical terms: tied/vocab/workspace-pane.md, tied/vocab/pane-display-filter.md, tied/vocab/cross-pane-comparison.md, tied/vocab/nsync-multi-target.md, tied/vocab/toolbar-keybind.md, tied/vocab/mesh-platform.md, tied/vocab/linked-navigation.md, tied/vocab/cross-pane-visibility.md.'
   rationale:
     why: README visuals must stay reproducible without manual recording
     problems_solved:
@@ -15,20 +15,28 @@ REQ-README_DEMO_AUTOMATION:
       - npm run demo:screenshots regenerates all assets
       - Repo-relative verify script
   satisfaction_criteria:
-    - criterion: copyall_demo_pngs_and_gif_produced_by_existing_copyall_spec
-    - criterion: demo_screenshots_script_runs_setup_readme_setup_copyall_playwright_and_convert
-    - criterion: release_maintainers_run_demo_screenshots_before_committing_readme_visuals
-    - criterion: verify_demo_screenshots_uses_repo_relative_paths_and_lists_all_required_assets
-    - criterion: workspace_and_comparison_pngs_written_to_docs_screenshots
+    - criterion: copyall_demo_pngs_and_gif_produced_by_copyall_spec
+    - criterion: demo_screenshots_script_runs_all_readme_specs_playwright_and_convert
+    - criterion: filter_construction_dialog_pngs_produced_by_readme_workspace_dialogs_spec
+    - criterion: five_motion_gifs_produced_via_webm_conversion
+    - criterion: verify_demo_screenshots_lists_full_png_and_gif_manifest
+    - criterion: workspace_pane_filter_control_pngs_produced_by_pane_filters_spec
+    - criterion: workspace_shell_toolbar_dialog_and_mesh_pngs_produced_by_readme_playwright_specs
   validation_criteria:
     - method: Playwright
-      coverage: e2e/readme-screenshots.spec.ts captures 3-pane-workspace.png and 3-pane-comparison.png
+      coverage: e2e/readme-workspace-surfaces.spec.ts captures workspace and legacy 3-pane PNGs
     - method: Playwright
-      coverage: e2e/copyall-demo.spec.ts captures demo-01 through demo-05 PNGs and records webm for GIF
+      coverage: e2e/readme-workspace-pane-filters.spec.ts captures per-pane display spec and cross-pane visibility selector PNGs
+    - method: Playwright
+      coverage: e2e/readme-workspace-dialogs.spec.ts captures seventeen static workspace overlays including filter construction dialogs
+    - method: Playwright
+      coverage: e2e/readme-workspace-motion.spec.ts records four motion demo webms
+    - method: Playwright
+      coverage: e2e/readme-mesh-surfaces.spec.ts and e2e/readme-mesh-bridge.spec.ts capture Mesh and bridge PNGs
+    - method: Playwright
+      coverage: e2e/copyall-demo.spec.ts captures CopyAll step PNGs and webm
     - method: Shell
-      coverage: scripts/verify_demo_screenshots.sh
-    - method: npm script
-      coverage: package.json demo:screenshots and demo:record alias
+      coverage: scripts/verify_demo_screenshots.sh and scripts/convert_all_readme_gifs.sh
   traceability:
     architecture:
       - ARCH-DEMO_ASSET_PIPELINE
@@ -37,7 +45,12 @@ REQ-README_DEMO_AUTOMATION:
       - IMPL-DEMO_SCREENSHOT_PIPELINE
     tests:
       - e2e/copyall-demo.spec.ts
-      - e2e/readme-screenshots.spec.ts
+      - e2e/readme-mesh-bridge.spec.ts
+      - e2e/readme-mesh-surfaces.spec.ts
+      - e2e/readme-workspace-dialogs.spec.ts
+      - e2e/readme-workspace-motion.spec.ts
+      - e2e/readme-workspace-pane-filters.spec.ts
+      - e2e/readme-workspace-surfaces.spec.ts
       - scripts/verify_demo_screenshots.sh
     code_annotations:
       - REQ-README_DEMO_AUTOMATION
@@ -45,10 +58,15 @@ REQ-README_DEMO_AUTOMATION:
     depends_on:
       - REQ-BUILD_SYSTEM
       - REQ-CROSS_PANE_COMPARISON
+      - REQ-CROSS_PANE_VISIBILITY
       - REQ-FILE_COMPARISON_VISUAL
+      - REQ-LINKED_PANES
+      - REQ-MESH_GUI
       - REQ-MULTI_PANE_LAYOUT
       - REQ-NSYNC_MULTI_TARGET
+      - REQ-PANE_DISPLAY_FILTER
       - REQ-TOOLBAR_SYSTEM
+      - REQ-WORKSPACE_MESH_BRIDGE
     related_to: []
     supersedes: []
   metadata:
@@ -56,9 +74,9 @@ REQ-README_DEMO_AUTOMATION:
       date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
     last_updated:
-      date: "2026-05-30T00:00:00.000Z"
+      date: "2026-06-01T12:00:00.000Z"
       author: AI Agent
-      reason: README workspace/comparison screenshot automation
+      reason: README filter construction dialog demo assets
     last_validated:
       date: "2026-05-30T00:00:00.000Z"
       validator: AI Agent

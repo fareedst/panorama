@@ -22,6 +22,7 @@ REQ-MOUSE_INTERACTION:
     - criterion: execute_menu_on_file_rows — unified ContextMenu shows Execute… for file and directory rows (REQ-PANE_COMMAND_EXEC)
     - criterion: file_column_right_click_shows_clipboard_menu — Copy filename, Copy path, Copy paths in all panes within unified ContextMenu clipboard section
     - criterion: Left-click selects file and moves cursor
+    - criterion: make_directory_menu_on_file_rows — unified ContextMenu shows Make directory… for file and directory rows (REQ-DIRECTORY_NAVIGATION)
     - criterion: rename_regex_menu_on_file_rows — unified ContextMenu shows Rename Regex… for file and directory rows (REQ-BULK_FILE_OPS)
     - criterion: Right-click shows context menu with operations
     - criterion: Scroll wheel navigates file list
@@ -48,6 +49,7 @@ REQ-MOUSE_INTERACTION:
     implementation:
       - IMPL-EXECUTE_DIALOG
       - IMPL-FILE_PANE
+      - IMPL-MAKE_DIRECTORY_DIALOG
       - IMPL-MOUSE_SUPPORT
       - IMPL-RENAME_REGEX_DIALOG
       - IMPL-TOUCH_DIALOG
@@ -57,12 +59,14 @@ REQ-MOUSE_INTERACTION:
       - src/app/files/components/ExecuteFileDialog.test.tsx
       - src/app/files/components/FileColumnContextMenu.test.tsx
       - src/app/files/components/FilePane.test.tsx
+      - src/app/files/components/MakeDirectoryDialog.test.tsx
       - src/app/files/components/RenameRegexDialog.test.tsx
       - src/app/files/components/SetBaseDirectoryDialog.test.tsx
       - src/app/files/components/SetBaseDirectoryTargetIcon.test.tsx
       - src/app/files/components/TouchFileDialog.test.tsx
       - src/app/files/WorkspaceView.execute.test.tsx
       - src/app/files/WorkspaceView.file-column-clipboard.test.tsx
+      - src/app/files/WorkspaceView.make-directory.test.tsx
       - src/app/files/WorkspaceView.rename-regex.test.tsx
       - src/app/files/WorkspaceView.set-base-directory.test.tsx
       - src/app/files/WorkspaceView.touch.test.tsx
@@ -86,7 +90,7 @@ REQ-MOUSE_INTERACTION:
     last_updated:
       date: "2026-05-31T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — Rename Regex menu criterion and traceability aligned to IMPL-RENAME_REGEX_DIALOG
+      reason: LEAP — Make directory menu criterion and traceability
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

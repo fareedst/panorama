@@ -3,9 +3,16 @@
 // [IMPL-MESH_GUI] [ARCH-MESH_LAYERED] [REQ-MESH_GUI] [REQ-MESH_PLATFORM]: L5 GUI mesh list enriches GET /api/mesh rows with note and save time; POST create; link to mesh detail overview.
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { extractNotePrefixFromDescription } from "@/lib/workspace-mesh-bridge";
 import { formatDateTime } from "@/lib/files.utils";
+import type { FilesCopyConfig } from "@/lib/config.types";
+import {
+  clearFilesStartupMeshId,
+  getFilesStartupMeshSnapshot,
+  setFilesStartupMeshId,
+  subscribeFilesStartupMesh,
+} from "@/lib/files-startup-mesh";
 
 type MeshRow = {
   id: string;
@@ -86,12 +93,44 @@ function SortableHeader({
   );
 }
 
-export function MeshListClient() {
+const DEFAULT_FILES_STARTUP_COPY = {
+  filesStartupColumn: "Files startup",
+  filesStartupSummary: "Files startup: {name}",
+  filesStartupSummaryDefault: "Files startup: config defaults",
+  filesStartupClear: "Use config defaults",
+  filesStartupAria: "Set as Files page startup workspace",
+};
+
+function formatFilesStartupSummary(
+  meshId: string | null,
+  meshes: MeshRow[],
+  copy: NonNullable<FilesCopyConfig["workspaceMesh"]>,
+): string {
+  if (!meshId) {
+    return copy.filesStartupSummaryDefault ?? DEFAULT_FILES_STARTUP_COPY.filesStartupSummaryDefault;
+  }
+  const mesh = meshes.find((m) => m.id === meshId);
+  const name = mesh?.name ?? meshId;
+  const template = copy.filesStartupSummary ?? DEFAULT_FILES_STARTUP_COPY.filesStartupSummary;
+  return template.replace("{name}", name);
+}
+
+export function MeshListClient({
+  workspaceMeshCopy,
+}: {
+  workspaceMeshCopy?: FilesCopyConfig["workspaceMesh"];
+}) {
+  const startupCopy = { ...DEFAULT_FILES_STARTUP_COPY, ...workspaceMeshCopy };
   const [meshes, setMeshes] = useState<MeshRow[]>([]);
   const [includeArchived, setIncludeArchived] = useState(false);
   const [name, setName] = useState("");
   const [sortColumn, setSortColumn] = useState<SortColumn>("name");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const filesStartupMeshId = useSyncExternalStore(
+    subscribeFilesStartupMesh,
+    getFilesStartupMeshSnapshot,
+    () => null,
+  );
 
   const load = useCallback(async () => {
     const res = await fetch(`/api/mesh?includeArchived=${includeArchived}`);
@@ -136,6 +175,22 @@ export function MeshListClient() {
     await load();
   }
 
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_GUI]
+  // how: radio selection persists files startup mesh preference to localStorage.
+  function handleFilesStartupChange(meshId: string) {
+    setFilesStartupMeshId(meshId);
+  }
+
+  function handleFilesStartupClear() {
+    clearFilesStartupMeshId();
+  }
+
+  const filesStartupSummary = formatFilesStartupSummary(
+    filesStartupMeshId,
+    meshes,
+    startupCopy,
+  );
+
   return (
     <div>
       <h1 className="mb-4 text-2xl font-semibold" data-testid="mesh-list-heading">
@@ -166,6 +221,18 @@ export function MeshListClient() {
           />
           Show archived
         </label>
+        <p className="w-full text-sm text-zinc-400" data-testid="files-startup-mesh-summary">
+          {filesStartupSummary}
+        </p>
+        <button
+          type="button"
+          onClick={handleFilesStartupClear}
+          className="rounded border border-zinc-700 px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-800"
+          data-testid="files-startup-mesh-clear"
+          disabled={!filesStartupMeshId}
+        >
+          {startupCopy.filesStartupClear}
+        </button>
       </div>
       <table className="w-full text-sm" data-testid="mesh-list-table">
         <thead>
@@ -210,6 +277,7 @@ export function MeshListClient() {
               onSort={handleSort}
               testId="mesh-list-sort-updated-at"
             />
+            <th className="py-2">{startupCopy.filesStartupColumn}</th>
           </tr>
         </thead>
         <tbody>
@@ -237,6 +305,16 @@ export function MeshListClient() {
                 <td data-testid="mesh-list-note">{note || "—"}</td>
                 <td data-testid="mesh-list-updated-at">
                   {m.updatedAt ? formatDateTime(m.updatedAt) : "—"}
+                </td>
+                <td>
+                  <input
+                    type="radio"
+                    name="files-startup-mesh"
+                    checked={filesStartupMeshId === m.id}
+                    onChange={() => handleFilesStartupChange(m.id)}
+                    aria-label={`${startupCopy.filesStartupAria}: ${m.name}`}
+                    data-testid={`mesh-list-files-startup-${m.id}`}
+                  />
                 </td>
               </tr>
             );

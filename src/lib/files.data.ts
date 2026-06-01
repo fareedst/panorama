@@ -304,6 +304,72 @@ export async function bulkRename(
 }
 
 /**
+ * [IMPL-MAKE_DIRECTORY] [ARCH-FILE_OPERATIONS_API] [REQ-DIRECTORY_NAVIGATION]: how — fs.mkdir non-recursive single level
+ */
+export async function makeDirectory(dirPath: string): Promise<void> {
+  logger.debug(
+    ["IMPL-MAKE_DIRECTORY", "REQ-DIRECTORY_NAVIGATION"],
+    `Creating directory: ${dirPath}`,
+  );
+
+  try {
+    await fs.mkdir(dirPath, { recursive: false });
+    logger.info(
+      ["IMPL-MAKE_DIRECTORY", "REQ-DIRECTORY_NAVIGATION"],
+      `Successfully created directory: ${dirPath}`,
+    );
+  } catch (error) {
+    logger.error(
+      ["IMPL-MAKE_DIRECTORY", "REQ-DIRECTORY_NAVIGATION"],
+      `Failed to create directory: ${dirPath}`,
+      { error: String(error) },
+    );
+    throw error;
+  }
+}
+
+/**
+ * [IMPL-MAKE_DIRECTORY] [IMPL-FILES_DATA] [ARCH-FILE_OPERATIONS_API] [REQ-DIRECTORY_NAVIGATION]: how — Promise.allSettled per entry like bulkTouch
+ */
+export async function bulkMakeDirectory(
+  entries: Array<{ path: string }>,
+): Promise<import("./files.types").OperationResult> {
+  logger.warn(
+    ["IMPL-MAKE_DIRECTORY", "REQ-DIRECTORY_NAVIGATION"],
+    `Bulk mkdir: ${entries.length} paths`,
+  );
+
+  const errors: Array<{ file: string; error: string }> = [];
+
+  const results = await Promise.allSettled(
+    entries.map(async ({ path: dirPath }) => {
+      try {
+        await makeDirectory(dirPath);
+      } catch (error) {
+        const errMsg = String(error);
+        errors.push({ file: dirPath, error: errMsg });
+        throw error;
+      }
+    }),
+  );
+
+  const successCount = results.filter((r) => r.status === "fulfilled").length;
+  const errorCount = results.filter((r) => r.status === "rejected").length;
+
+  logger.info(
+    ["IMPL-MAKE_DIRECTORY", "REQ-DIRECTORY_NAVIGATION"],
+    `Bulk mkdir completed`,
+    { successCount, errorCount },
+  );
+
+  return {
+    successCount,
+    errorCount,
+    errors,
+  };
+}
+
+/**
  * [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: bulkCopy bulkMove bulkDelete in files.data.ts run Promise.allSettled per source without stopping on first failure
  * Copy multiple files with progress tracking
  * 

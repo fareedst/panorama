@@ -3184,3 +3184,11 @@ IMPL-RENAME_REGEX_DIALOG:
   type: implementation
   name: Rename Regex Dialog
   description: RenameRegexDialog ContextMenu WorkspaceView wiring for regex bulk rename
+IMPL-MAKE_DIRECTORY:
+  type: implementation
+  name: Make Directory Path Resolution and Data Layer
+  description: make-directory.ts buildMakeDirectoryEntries bulkMakeDirectory API bulk-mkdir
+IMPL-MAKE_DIRECTORY_DIALOG:
+  type: implementation
+  name: Make Directory Dialog
+  description: MakeDirectoryDialog ContextMenu WorkspaceView wiring for mkdir under pane path

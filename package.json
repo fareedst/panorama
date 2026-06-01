@@ -15,10 +15,10 @@
     "test:e2e:ui": "node scripts/playwright-run.mjs --ui",
     "test:e2e:headed": "node scripts/playwright-run.mjs --headed",
     "demo:record": "npm run demo:screenshots",
-    "demo:screenshots": "npm run demo:setup-readme && npm run demo:setup && node scripts/playwright-preflight.mjs && node scripts/playwright-run.mjs e2e/readme-screenshots.spec.ts e2e/copyall-demo.spec.ts && npm run demo:convert && npm run demo:verify",
+    "demo:screenshots": "npm run demo:setup-readme && npm run demo:setup && node scripts/playwright-preflight.mjs && node scripts/playwright-run.mjs e2e/readme-workspace-surfaces.spec.ts e2e/readme-workspace-pane-filters.spec.ts e2e/readme-workspace-dialogs.spec.ts e2e/readme-workspace-motion.spec.ts e2e/readme-mesh-surfaces.spec.ts e2e/readme-mesh-bridge.spec.ts e2e/z-copyall-demo.spec.ts && npm run demo:convert && npm run demo:verify",
     "demo:setup-readme": "./scripts/setup_readme_screenshots.sh",
     "demo:setup": "./scripts/setup_copyall_demo.sh --clean",
-    "demo:convert": "./scripts/convert_demo_to_gif.sh",
+    "demo:convert": "./scripts/convert_all_readme_gifs.sh",
     "demo:verify": "./scripts/verify_demo_screenshots.sh",
     "validate:vocabulary": "bash scripts/validate-vocabulary.sh"
   },

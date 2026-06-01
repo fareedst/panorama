@@ -8,6 +8,7 @@ import {
   buildMeshCreatePayload,
   captureWorkspaceSnapshot,
 } from "@/lib/workspace-mesh-bridge";
+import { getFilesStartupMeshId } from "@/lib/files-startup-mesh";
 
 describe("MeshListClient [IMPL-MESH_GUI]", () => {
   const snapshot = captureWorkspaceSnapshot({
@@ -32,6 +33,7 @@ describe("MeshListClient [IMPL-MESH_GUI]", () => {
   });
 
   beforeEach(() => {
+    localStorage.clear();
     vi.stubGlobal(
       "fetch",
       vi.fn(async (url: string, init?: RequestInit) => {
@@ -189,6 +191,25 @@ describe("MeshListClient [IMPL-MESH_GUI]", () => {
     await waitFor(() => {
       expect(getRowNames()).toEqual(["Alpha", "Beta"]);
     });
+  });
+
+  it("mesh_list_files_startup_column_sets_preference", async () => {
+    // [REQ-MESH_GUI] [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-MESH_GUI] [IMPL-WORKSPACE_MESH_BRIDGE]: mesh_list_files_startup_column_sets_preference
+    const user = userEvent.setup();
+    render(<MeshListClient />);
+    await waitFor(() => {
+      expect(screen.getByText("Alpha")).toBeInTheDocument();
+    });
+    await user.click(screen.getByTestId("mesh-list-files-startup-m1"));
+    expect(getFilesStartupMeshId()).toBe("m1");
+    expect(screen.getByTestId("files-startup-mesh-summary")).toHaveTextContent(
+      "Files startup: Alpha",
+    );
+    await user.click(screen.getByTestId("files-startup-mesh-clear"));
+    expect(getFilesStartupMeshId()).toBeNull();
+    expect(screen.getByTestId("files-startup-mesh-summary")).toHaveTextContent(
+      "Files startup: config defaults",
+    );
   });
 
   it("mesh_list_can_filter_archived_meshes", async () => {

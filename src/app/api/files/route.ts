@@ -308,6 +308,38 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(renameResult);
       }
 
+      case "bulk-mkdir": {
+        // [IMPL-MAKE_DIRECTORY] [ARCH-FILE_OPERATIONS_API] [REQ-DIRECTORY_NAVIGATION]: how — validate entries array; validateRenameBasename; delegate to bulkMakeDirectory
+        const mkdirEntries = body.entries as Array<{ path?: string }>;
+        if (!mkdirEntries || !Array.isArray(mkdirEntries) || mkdirEntries.length === 0) {
+          logger.warn(["IMPL-MAKE_DIRECTORY", "REQ-DIRECTORY_NAVIGATION"], `Bulk mkdir missing entries`);
+          return NextResponse.json({ error: "Entries array required" }, { status: 400 });
+        }
+
+        const parsedMkdir: Array<{ path: string }> = [];
+        for (const entry of mkdirEntries) {
+          if (!entry.path || typeof entry.path !== "string") {
+            return NextResponse.json({ error: "Each entry requires path" }, { status: 400 });
+          }
+          if (entry.path.includes("..")) {
+            return NextResponse.json({ error: "Invalid path" }, { status: 400 });
+          }
+          const dirBasename = path.basename(entry.path);
+          if (!validateRenameBasename(dirBasename)) {
+            return NextResponse.json({ error: "Invalid directory name" }, { status: 400 });
+          }
+          parsedMkdir.push({ path: entry.path });
+        }
+
+        const { bulkMakeDirectory } = await import("@/lib/files.data");
+        const mkdirResult = await bulkMakeDirectory(parsedMkdir);
+        logger.info(["IMPL-MAKE_DIRECTORY", "REQ-DIRECTORY_NAVIGATION"], `Bulk mkdir completed`, {
+          successCount: mkdirResult.successCount,
+          errorCount: mkdirResult.errors.length,
+        });
+        return NextResponse.json(mkdirResult);
+      }
+
       case "execute-command": {
         // [IMPL-PANE_COMMAND_EXEC] [ARCH-PANE_COMMAND_EXEC] [REQ-PANE_COMMAND_EXEC]: how — validate entries; delegate to executeCommandBatch sequentially
         const execEntries = body.entries as Array<{

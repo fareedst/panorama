@@ -103,6 +103,10 @@ touch -t 202602101230 "$BASE_DIR/alpha/readme.md"
 touch -t 202602101300 "$BASE_DIR/alpha/data.json"
 touch -t 202602101330 "$BASE_DIR/alpha/config.yaml"
 
+mkdir -p "$BASE_DIR/alpha/demo-folder" "$BASE_DIR/alpha/projects"
+echo "demo folder marker" > "$BASE_DIR/alpha/demo-folder/readme.txt"
+echo "project alpha" > "$BASE_DIR/alpha/projects/readme.txt"
+
 # --- beta: shared files with different sizes/mtimes + unique file ---
 cat > "$BASE_DIR/beta/file2.txt" <<EOF
 This is file2.txt (beta variant)
@@ -132,6 +136,10 @@ touch -t 202602101000 "$BASE_DIR/beta/file3.txt"
 touch -t 202602101330 "$BASE_DIR/beta/config.yaml"
 touch -t 202602101400 "$BASE_DIR/beta/only-beta.txt"
 
+mkdir -p "$BASE_DIR/beta/demo-folder" "$BASE_DIR/beta/projects"
+echo "demo folder marker" > "$BASE_DIR/beta/demo-folder/readme.txt"
+echo "project beta" > "$BASE_DIR/beta/projects/readme.txt"
+
 # --- gamma: shared files with different sizes/mtimes + unique file ---
 cat > "$BASE_DIR/gamma/file2.txt" <<EOF
 This is file2.txt
@@ -159,6 +167,10 @@ touch -t 202602100930 "$BASE_DIR/gamma/file2.txt"
 touch -t 202602101500 "$BASE_DIR/gamma/file3.txt"
 touch -t 202602101330 "$BASE_DIR/gamma/config.yaml"
 touch -t 202602101600 "$BASE_DIR/gamma/only-gamma.txt"
+
+mkdir -p "$BASE_DIR/gamma/demo-folder" "$BASE_DIR/gamma/projects"
+echo "demo folder marker" > "$BASE_DIR/gamma/demo-folder/readme.txt"
+echo "project gamma" > "$BASE_DIR/gamma/projects/readme.txt"
 
 echo ""
 echo "✅ README screenshot directories ready at $BASE_DIR"

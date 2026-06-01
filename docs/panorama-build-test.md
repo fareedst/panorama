@@ -7,7 +7,7 @@ This file is an **interactive guide** for the `mde` runner indicated by the sheb
 - **`vars`** — document-level variables injected into following ```bash``` blocks.
 - **`bash :[demo]`** — labeled demo blocks some runners treat specially.
 
-Run all commands from the **repository root** (`panorama/`). This project is a **Next.js 16** app with **Vitest** (unit/integration under `src/`, ~68 test files under `src/`) and **Playwright** (E2E under `e2e/`, 2 specs). Package manager: **`npm`** (`package-lock.json`); `bun` / `pnpm` work if dependencies are installed.
+Run all commands from the **repository root** (`panorama/`). This project is a **Next.js 16** app with **Vitest** (unit/integration under `src/`, ~68 test files under `src/`) and **Playwright** (E2E under `e2e/`, 8 specs). Package manager: **`npm`** (`package-lock.json`); `bun` / `pnpm` work if dependencies are installed.
 
 See also: [TESTING.md](../TESTING.md) (STDD, coverage philosophy) · [README.md § Available Scripts](../README.md#available-scripts) (script inventory).
 
@@ -114,6 +114,52 @@ Local parity with a full pre-release check: lint, typecheck, production build, V
 
 ```bash @r:trace
 npm run lint && npx tsc --noEmit && npm run build && npm test && npm run test:e2e
+```
+
+---
+
+```bash
+npx kill-port 3000
+```
+```bash
+# Or use a different port
+npm run dev -- -p 3001
+```
+```bash
+lsof -i :3000
+```
+```bash
+lsof /Users/fareed/Documents/dev/node/panorama/.next/dev/lock 
+```
+```bash
+pgrep -fl "next dev|next-server" 
+```
+```bash
+kill 92101
+```
+```bash
+npm run clean
+```
+```bash
+npm run build
+```
+```bash
+npm run demo:setup-readme   # Comparison fixture only
+```
+```bash
+npm run demo:setup          # CopyAll fixture only
+```
+```bash
+npm run test:e2e            # All E2E tests (headless)
+```
+```bash
+npm run demo:convert        # Convert recorded webms to GIFs
+```
+```bash
+npm run demo:verify         # Check docs/screenshots manifest
+```
+```bash
+npm run test:e2e:headed     # Visible browser (debugging)
 ```
 
 ---
@@ -377,7 +423,20 @@ curl -sS -X POST "http://127.0.0.1:$PLAYWRIGHT_PORT/api/mesh/credentials" \
 | `MESH_ASYNC_SYNC` | `1` |
 | Timeout | 60s per test |
 
-Specs: **`e2e/mesh-sync.spec.ts`** ([REQ-MESH_E2E_RELEASE]), **`e2e/copyall-demo.spec.ts`** (demo / copy-all GIF pipeline — requires `npm run demo:setup` first or it will fail looking for `/tmp/test-dirs/{alpha,beta,gamma}`).
+Specs:
+
+| Spec | Purpose |
+| --- | --- |
+| **`e2e/mesh-sync.spec.ts`** | Mesh platform sync flows ([REQ-MESH_E2E_RELEASE]) |
+| **`e2e/workspace-mesh-bridge.spec.ts`** | Workspace save/restore via mesh |
+| **`e2e/readme-workspace-surfaces.spec.ts`** | README workspace shell, toolbars, pane listing PNGs |
+| **`e2e/readme-workspace-dialogs.spec.ts`** | README workspace dialog/menu PNGs |
+| **`e2e/readme-workspace-motion.spec.ts`** | README motion demo webms (linked mode, comparison, filters, pane mgmt) |
+| **`e2e/readme-mesh-surfaces.spec.ts`** | README Mesh route PNGs |
+| **`e2e/readme-mesh-bridge.spec.ts`** | README Workspace↔Mesh bridge PNGs |
+| **`e2e/z-copyall-demo.spec.ts`** | CopyAll step PNGs + webm (runs last in demo pipeline; needs `/tmp/test-dirs/`) |
+
+README demo specs use **`npm run demo:setup-readme`** (comparison fixture) and/or **`npm run demo:setup`** (CopyAll fixture) before capture. See [Demo pipeline](#demo-pipeline).
 
 **`e2e/mesh-sync.spec.ts`** scenarios (mirror manual/E2E coverage): `create_mesh_with_two_local_depots_and_sync_file` · `create_mesh_with_three_depots_and_fan_out_sync` · `detect_and_resolve_modify_modify_conflict` · `block_large_delete_without_confirmation` · `pause_resume_and_cancel_session` · `permission_restricted_operator_cannot_manage_credentials` · `export_and_import_mesh_configuration` · `menu_contains_meshes_entry` · `mesh_detail_menu_contains_topology_entry` · `monitoring_dashboard_loads` · `settings_import_export_page` · `permission_restricted_viewer_cannot_create_mesh` · `archived_mesh_is_hidden_but_history_remains`.
 
@@ -404,7 +463,13 @@ npm run test:e2e:ui
 name: E2E_SPEC
 allow:
 - e2e/mesh-sync.spec.ts | Mesh platform sync flows
-- e2e/copyall-demo.spec.ts | Copy-all demo recording
+- e2e/workspace-mesh-bridge.spec.ts | Workspace save/restore via mesh
+- e2e/readme-workspace-surfaces.spec.ts | README workspace surface PNGs
+- e2e/readme-workspace-dialogs.spec.ts | README workspace dialog PNGs
+- e2e/readme-workspace-motion.spec.ts | README motion demo recordings
+- e2e/readme-mesh-surfaces.spec.ts | README Mesh route PNGs
+- e2e/readme-mesh-bridge.spec.ts | README Workspace↔Mesh bridge PNGs
+- e2e/z-copyall-demo.spec.ts | CopyAll demo recording (run after demo:setup)
 validate: '^\s*(?<name>[^|]*\S)\s*\|\s*(?<desc>\S.*)$'
 transform: '%{name}'
 ```
@@ -430,27 +495,81 @@ npx playwright show-trace test-results/*/trace.zip
 
 ## Demo pipeline
 
-Not part of **full test**; records demo assets (setup → E2E → GIF conversion).
+Regenerates committed **README demo assets** under `docs/screenshots/` ([REQ-README_DEMO_AUTOMATION]). Requires **Playwright**, **ffmpeg**, and optionally **gifsicle**. Not part of **full test** unless you add it to a release checklist.
+
+**Canonical command** (fixtures → six README E2E specs → GIF conversion → manifest verify):
 
 ```bash @r:trace
-# Full demo pipeline: setup fixtures, E2E, convert video to GIF.
+# Regenerate all README demo PNGs and GIFs (alias: npm run demo:record).
+npm run demo:screenshots
+```
+
+```bash @r:trace
+# Same as demo:screenshots.
 npm run demo:record
 ```
 
+### Fixture setup (individual steps)
+
 ```bash @r:trace
-# Reset demo directories only.
-npm run demo:setup
+# Comparison fixture: /tmp/test-dirs/{alpha,beta,gamma} with deliberate diffs (workspace + dialog PNGs).
+npm run demo:setup-readme
 ```
 
 ```bash @r:trace
-# Convert recorded video to GIF (after E2E).
+# CopyAll fixture: alpha populated, beta/gamma empty (z-copyall-demo.spec.ts).
+npm run demo:setup
+```
+
+### Capture and convert (partial runs)
+
+Use when iterating on one spec; run **`demo:setup-readme`** / **`demo:setup`** first as needed (the full pipeline runs both before Playwright).
+
+```bash @r:trace
+# README workspace surfaces only (after demo:setup-readme).
+node scripts/playwright-preflight.mjs && node scripts/playwright-run.mjs e2e/readme-workspace-surfaces.spec.ts
+```
+
+```bash @r:trace
+# README workspace dialogs only (after demo:setup-readme).
+node scripts/playwright-preflight.mjs && node scripts/playwright-run.mjs e2e/readme-workspace-dialogs.spec.ts
+```
+
+```bash @r:trace
+# README motion demos only (after demo:setup-readme); then convert GIFs.
+node scripts/playwright-preflight.mjs && node scripts/playwright-run.mjs e2e/readme-workspace-motion.spec.ts
 npm run demo:convert
 ```
 
 ```bash @r:trace
-# Verify demo screenshots exist.
+# README Mesh surfaces + bridge (ephemeral mkdtemp depots; no demo:setup required).
+node scripts/playwright-preflight.mjs && node scripts/playwright-run.mjs e2e/readme-mesh-surfaces.spec.ts e2e/readme-mesh-bridge.spec.ts
+```
+
+```bash @r:trace
+# CopyAll demo only (after demo:setup).
+node scripts/playwright-preflight.mjs && node scripts/playwright-run.mjs e2e/z-copyall-demo.spec.ts
+npm run demo:convert
+```
+
+```bash @r:trace
+# Convert Playwright webms under test-results/ to docs/screenshots/*.gif (five GIFs).
+npm run demo:convert
+```
+
+```bash @r:trace
+# Verify all required PNG/GIF assets exist (repo-relative manifest).
 npm run demo:verify
 ```
+
+### Pre-release README visuals check
+
+```bash @r:trace
+# Regenerate assets and confirm manifest before committing docs/screenshots/ changes.
+npm run demo:screenshots
+```
+
+Asset catalog: [docs/screenshots/README.md](screenshots/README.md) · Product tour embeds: [README.md § Screenshots & Product Tour](../README.md#screenshots--product-tour).
 
 ---
 ```bash
@@ -463,7 +582,9 @@ npm run test:e2e
 
 - [panorama-domain-references.md](panorama-domain-references.md) — canonical domain vocabulary index
 - [vocabulary-index-analysis-and-standards.md](vocabulary-index-analysis-and-standards.md) — mandatory glossary sections, PR checklist
-- Run `bun run validate:vocabulary` (or `bash scripts/validate-vocabulary.sh`) after editing `tied/vocab/*.md`
+- Run `npm run validate:vocabulary` (or `bash scripts/validate-vocabulary.sh`) after editing `tied/vocab/*.md`
+- Run `.cursor/skills/tied-yaml/scripts/tied-cli.sh tied_validate_consistency '{}'` after TIED YAML changes
 - [mesh-platform.md](../tied/vocab/mesh-platform.md) — mesh platform terms
 - [sync-mesh-phase-status.md](sync-mesh-phase-status.md) — mesh sync phase tracker
 - [nsync-multi-target.md](../tied/vocab/nsync-multi-target.md) — file-manager NSYNC vs `/mesh` boundary (**NSYNC**)
+- [screenshots/README.md](screenshots/README.md) — README demo asset catalog and E2E spec index

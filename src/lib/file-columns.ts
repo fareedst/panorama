@@ -3,6 +3,7 @@
 
 import type { FileColumnId, FilesColumnConfig } from "./config.types";
 import type { FileStat } from "./files.types";
+import { WORKSPACE_AGE_REFERENCE_FALLBACK_MS } from "./request-age-reference";
 import { formatAge, formatDateTime, formatSize } from "./files.utils";
 
 const ALL_COLUMN_IDS: FileColumnId[] = ["mtime", "size", "name"];
@@ -87,11 +88,17 @@ export function normalizeFileColumns(
   return parsed;
 }
 
+export type FormatFileColumnCellOptions = {
+  /** Stable clock for relative mtime (SSR/hydration). */
+  referenceNowMs?: number;
+};
+
 /** Formatted cell text for width measurement and display. */
 export function formatFileColumnCell(
   file: FileStat,
   columnId: FileColumnId,
   columns: FilesColumnConfig[],
+  options?: FormatFileColumnCellOptions,
 ): string {
   switch (columnId) {
     case "name":
@@ -102,7 +109,10 @@ export function formatFileColumnCell(
     case "mtime": {
       const column = columns.find((c) => c.id === "mtime");
       const format = column?.format || "age";
-      return format === "age" ? formatAge(file.mtime) : formatDateTime(file.mtime);
+      const ref = options?.referenceNowMs;
+      return format === "age"
+        ? formatAge(file.mtime, ref ?? WORKSPACE_AGE_REFERENCE_FALLBACK_MS)
+        : formatDateTime(file.mtime);
     }
     default:
       return "";
@@ -113,8 +123,11 @@ export function formatFileColumnCell(
 export function measureFileMetadataColumnWidths(
   files: FileStat[],
   visibleColumns: FilesColumnConfig[],
+  referenceNowMs?: number,
 ): MeasuredFileColumnWidths {
   const measured: MeasuredFileColumnWidths = {};
+  const cellOptions: FormatFileColumnCellOptions | undefined =
+    referenceNowMs !== undefined ? { referenceNowMs } : undefined;
 
   for (const col of visibleColumns) {
     if (col.id === "name") continue;
@@ -127,7 +140,7 @@ export function measureFileMetadataColumnWidths(
           : MIN_MTIME_AGE_CH;
 
     for (const file of files) {
-      const text = formatFileColumnCell(file, col.id, visibleColumns);
+      const text = formatFileColumnCell(file, col.id, visibleColumns, cellOptions);
       maxLen = Math.max(maxLen, text.length);
     }
 
@@ -141,9 +154,10 @@ export function measureFileMetadataColumnWidths(
 export function measureFileMetadataColumnWidthsForPanes(
   panesFiles: FileStat[][],
   visibleColumns: FilesColumnConfig[],
+  referenceNowMs?: number,
 ): MeasuredFileColumnWidths {
   const allFiles = panesFiles.flat();
-  return measureFileMetadataColumnWidths(allFiles, visibleColumns);
+  return measureFileMetadataColumnWidths(allFiles, visibleColumns, referenceNowMs);
 }
 
 /** CSS grid template for metadata columns (leading checkbox/icon tracks added by FilePane). */

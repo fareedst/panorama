@@ -121,7 +121,12 @@ function DisplaySpecManagerDialogBody({
       <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] flex flex-col m-4">
         <div className="px-4 py-3 border-b border-zinc-200 dark:border-zinc-700 flex justify-between items-center">
           <h2 className="text-lg font-semibold">Display filter specs</h2>
-          <button type="button" onClick={onClose} className="text-zinc-500 hover:text-zinc-800">
+          <button
+            type="button"
+            data-testid="display-spec-manager-close"
+            onClick={onClose}
+            className="text-zinc-500 hover:text-zinc-800"
+          >
             ✕
           </button>
         </div>
@@ -158,6 +163,7 @@ function DisplaySpecManagerDialogBody({
               <button
                 key={s.id}
                 type="button"
+                data-testid={`display-spec-catalog-${s.id}`}
                 onClick={() => loadDraft(s)}
                 className={`w-full text-left text-sm px-2 py-1 rounded truncate ${
                   selectedId === s.id ? "bg-blue-100 dark:bg-blue-900" : ""

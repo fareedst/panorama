@@ -19,10 +19,12 @@ REQ-MESH_GUI:
       description: SortableHeader buttons toggle client sortColumn/sortDirection per column with aria-sort; testids mesh-list-sort-*
     - criterion: per_mesh_depots_page_supports_depot_crud
       description: Operator reaches /mesh/:meshId/depots; MeshDepotsClient adds and removes depots via form; testids mesh-depots, add-depot-*, depot-summary, manage-credentials-btn
+    - criterion: mesh_list_files_startup_column_sets_preference
     - criterion: plan_page_approves_session_without_starting_sync
     - criterion: sync_page_starts_approved_session_from_sessionStorage_handoff
     - criterion: terminology_aligns_with_docs_mesh_platform_vocabulary
     - criterion: user_can_reach_every_major_feature_from_menu
+      description: Files startup radio per row persists to localStorage via setFilesStartupMeshId; summary and Use config defaults clear control; testids mesh-list-files-startup-*, files-startup-mesh-summary, files-startup-mesh-clear
   validation_criteria:
     - method: Vitest RTL
       coverage: src/app/mesh/components/MeshListClient.test.tsx

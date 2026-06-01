@@ -9,6 +9,10 @@ import {
 } from "@/lib/workspace-mesh-bridge";
 import FilesPage from "./page";
 
+vi.mock("./FilesStartupMeshGate", () => ({
+  FilesStartupMeshGate: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}));
+
 vi.mock("@/lib/files.data", () => ({
   listDirectory: vi.fn(async () => []),
   getUserHomeDirectory: vi.fn(() => "/home/test"),
@@ -20,6 +24,10 @@ function workspaceViewProps(
 ): Record<string, unknown> {
   if (!isValidElement(element)) {
     throw new Error("FilesPage did not return a valid element");
+  }
+  const props = element.props as { children?: ReactElement };
+  if (props.children && isValidElement(props.children)) {
+    return props.children.props as Record<string, unknown>;
   }
   return element.props as Record<string, unknown>;
 }

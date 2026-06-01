@@ -39,6 +39,8 @@ interface ContextMenuProps {
   onTouch?: () => void;
   /** [REQ-PANE_COMMAND_EXEC] [REQ-MOUSE_INTERACTION] Open Execute file dialog */
   onExecute?: () => void;
+  /** [REQ-DIRECTORY_NAVIGATION] [REQ-MOUSE_INTERACTION] Open Make directory dialog */
+  onMakeDirectory?: () => void;
   /** [REQ-BULK_FILE_OPS] [REQ-MOUSE_INTERACTION] Open Rename Regex dialog */
   onRenameRegex?: () => void;
   /** Workspace pane listings for cross-pane path clipboard actions */
@@ -51,6 +53,8 @@ interface ContextMenuProps {
   touchMenuLabel?: string;
   /** Label for Execute menu item */
   executeMenuLabel?: string;
+  /** Label for Make directory menu item */
+  makeDirectoryMenuLabel?: string;
   /** Label for Rename Regex menu item */
   renameRegexMenuLabel?: string;
 }
@@ -72,12 +76,14 @@ export default function ContextMenu({
   onSetBaseDirectory,
   onTouch,
   onExecute,
+  onMakeDirectory,
   onRenameRegex,
   paneFilesList,
   copyText = copyTextToClipboard,
   setBaseDirectoryMenuLabel = "Set as Base directory…",
   touchMenuLabel = "Touch…",
   executeMenuLabel = "Execute…",
+  makeDirectoryMenuLabel = "Make directory…",
   renameRegexMenuLabel = "Rename Regex…",
 }: ContextMenuProps) {
   const menuElementRef = useRef<HTMLDivElement>(null);
@@ -260,6 +266,20 @@ export default function ContextMenu({
         >
           <span className="text-sm">▶️</span>
           <span>{executeMenuLabel}</span>
+        </button>
+      )}
+
+      {/* [IMPL-MAKE_DIRECTORY_DIALOG] [REQ-DIRECTORY_NAVIGATION] [REQ-MOUSE_INTERACTION]: Make directory… opens Make directory dialog */}
+      {onMakeDirectory && (
+        <button
+          type="button"
+          className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+          onClick={() => handleAction(onMakeDirectory)}
+          role="menuitem"
+          data-testid="make-directory-menu-item"
+        >
+          <span className="text-sm">📁</span>
+          <span>{makeDirectoryMenuLabel}</span>
         </button>
       )}
 

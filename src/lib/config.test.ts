@@ -372,8 +372,8 @@ describe("getFilesConfig [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE
 
   it("loads layout config with defaults", () => {
     const config = getFilesConfig();
-    expect(config.layout?.default).toBe("tile");
-    expect(config.layout?.defaultPaneCount).toBe(3);
+    expect(config.layout?.default).toBe("oneColumn");
+    expect(config.layout?.defaultPaneCount).toBe(1);
     expect(config.layout?.allowPaneManagement).toBe(true);
     expect(config.layout?.maxPanes).toBe(0); // 0 = no upper limit
   });

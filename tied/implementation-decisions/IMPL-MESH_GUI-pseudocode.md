@@ -23,6 +23,9 @@ PROCEDURE IMPL-MESH_GUI_list()
   // [IMPL-MESH_GUI] [ARCH-MESH_LAYERED] [REQ-MESH_GUI]
   // how: SortableHeader buttons toggle sortColumn/sortDirection client-side; aria-sort on active column; testids mesh-list-sort-*.
   SORTABLE_HEADERS: click column toggles asc/desc; compareMeshes for name, status, depots, note, updatedAt
+  // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-MESH_GUI]
+  // how: Files startup column — radio per row sets localStorage via setFilesStartupMeshId; summary + clear control; testids mesh-list-files-startup-*, files-startup-mesh-summary, files-startup-mesh-clear
+  DISPLAY Files startup column with radio inputs; toolbar summary and Use config defaults clear
   ON create submit POST with name field testid new-mesh-name
 
 ## MeshDetailClient

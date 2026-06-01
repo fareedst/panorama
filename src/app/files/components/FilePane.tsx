@@ -81,6 +81,8 @@ interface FilePaneProps {
   fileTypes: FileTypesMap;
   /** [IMPL-FILE_COLUMN_CONFIG] [REQ-MULTI_PANE_LAYOUT] OneColumn workspace-wide Size/Time ch (skips per-pane measure) */
   metadataColumnWidths?: MeasuredFileColumnWidths;
+  /** [REQ-REACT_SSR_STABILITY] [IMPL-FILE_AGE_DISPLAY] Stable clock for relative mtime display */
+  mtimeDisplayNowMs?: number;
   /** [REQ-DIRECTORY_NAVIGATION] [REQ-MOUSE_INTERACTION] Open Set as Base directory dialog */
   onSetBaseDirectory?: (directoryPath: string) => void;
   /** Label for Set as Base directory context menu item */
@@ -93,6 +95,10 @@ interface FilePaneProps {
   onExecute?: (file: FileStat, marksAtOpen: Set<string>) => void;
   /** Label for Execute context menu item */
   executeMenuLabel?: string;
+  /** [IMPL-MAKE_DIRECTORY_DIALOG] [IMPL-FILE_PANE] [REQ-DIRECTORY_NAVIGATION] [REQ-MOUSE_INTERACTION]: Open Make directory dialog from row context menu */
+  onMakeDirectory?: () => void;
+  /** Label for Make directory context menu item */
+  makeDirectoryMenuLabel?: string;
   /** [REQ-BULK_FILE_OPS] Open Rename Regex dialog for row or marked files */
   onRenameRegex?: (file: FileStat, marksAtOpen: Set<string>) => void;
   /** Label for Rename Regex context menu item */
@@ -151,6 +157,8 @@ export default function FilePane({
   touchMenuLabel,
   onExecute,
   executeMenuLabel,
+  onMakeDirectory,
+  makeDirectoryMenuLabel,
   onRenameRegex,
   renameRegexMenuLabel,
   onDrop,
@@ -161,6 +169,7 @@ export default function FilePane({
   columns, // [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
   fileTypes, // [REQ-CONFIG_DRIVEN_APPEARANCE] [IMPL-CONFIG_DRIVEN_APPEARANCE]
   metadataColumnWidths,
+  mtimeDisplayNowMs,
   "data-testid": dataTestId,
   displaySpecs = [],
   activeDisplaySpecId = null,
@@ -374,8 +383,12 @@ export default function FilePane({
   const measuredWidths = useMemo(
     () =>
       metadataColumnWidths ??
-      measureFileMetadataColumnWidths(files, getVisibleFileColumns(columns)),
-    [metadataColumnWidths, files, columns],
+      measureFileMetadataColumnWidths(
+        files,
+        getVisibleFileColumns(columns),
+        mtimeDisplayNowMs,
+      ),
+    [metadataColumnWidths, files, columns, mtimeDisplayNowMs],
   );
   const metadataGridTemplate = buildFileRowGridTemplate(visibleColumnIds, measuredWidths);
   const rowGridTemplate = metadataGridTemplate
@@ -388,7 +401,9 @@ export default function FilePane({
     file: FileStat,
   ) => {
     const cellClass = "px-2 truncate tabular-nums";
-    const displayText = formatFileColumnCell(file, columnId, columns);
+    const cellOptions =
+      mtimeDisplayNowMs !== undefined ? { referenceNowMs: mtimeDisplayNowMs } : undefined;
+    const displayText = formatFileColumnCell(file, columnId, columns, cellOptions);
 
     switch (columnId) {
       case "name":
@@ -459,7 +474,9 @@ export default function FilePane({
       onMouseDown={() => onFocusRequest?.()}
     >
       {/* Header with path and display spec [REQ-PANE_DISPLAY_FILTER] */}
-      <div className={`
+      <div
+        data-testid="pane-filter-header"
+        className={`
         px-3 py-2 border-b border-zinc-200 dark:border-zinc-700
         bg-zinc-50 dark:bg-zinc-800
         font-mono text-sm flex flex-col gap-1
@@ -633,6 +650,7 @@ export default function FilePane({
       {/* [IMPL-TOUCH_DIALOG] [IMPL-FILE_PANE] [REQ-TOUCH_MTIME] [REQ-MOUSE_INTERACTION]: how — onTouch passes file and marksAtOpen snapshot to Touch dialog */}
       {/* [IMPL-EXECUTE_DIALOG] [IMPL-FILE_PANE] [ARCH-MOUSE_SUPPORT] [REQ-PANE_COMMAND_EXEC] [REQ-MOUSE_INTERACTION]: how — onExecute passes file and marksAtOpen snapshot to Execute dialog */}
       {/* [IMPL-RENAME_REGEX_DIALOG] [IMPL-FILE_PANE] [REQ-BULK_FILE_OPS] [REQ-MOUSE_INTERACTION]: how — onRenameRegex passes file and marksAtOpen snapshot to Rename Regex dialog */}
+      {/* [IMPL-MAKE_DIRECTORY_DIALOG] [IMPL-FILE_PANE] [REQ-DIRECTORY_NAVIGATION] [REQ-MOUSE_INTERACTION]: how — onMakeDirectory opens Make directory dialog (no marks snapshot) */}
       {contextMenu && (
         <ContextMenu
           x={contextMenu.x}
@@ -664,9 +682,11 @@ export default function FilePane({
               ? () => onExecute(contextMenu.file, new Set(marks))
               : undefined
           }
+          onMakeDirectory={onMakeDirectory ? () => onMakeDirectory() : undefined}
           setBaseDirectoryMenuLabel={setBaseDirectoryMenuLabel}
           touchMenuLabel={touchMenuLabel}
           executeMenuLabel={executeMenuLabel}
+          makeDirectoryMenuLabel={makeDirectoryMenuLabel}
           renameRegexMenuLabel={renameRegexMenuLabel}
           paneFilesList={paneFilesList}
         />

@@ -83,6 +83,19 @@ Compare filter toolbar **Action** ids map to **Icon name** values in `toolbars.a
 
 Compare-filter toolbar labels use `toolbars.actions.view.compareFilter.*` metadata and `toolbars.actions` descriptions in `config/files.yaml`. Dialog copy for thresholds uses toolbar action metadata. This glossary is authoritative for criterion ids and tri-state terms. Owning IMPL: [IMPL-CROSS_PANE_VISIBILITY_UI](../tied/implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_UI.yaml).
 
+## README demo assets
+
+Committed PNG/GIF under `docs/screenshots/` ([REQ-README_DEMO_AUTOMATION](../tied/requirements/REQ-README_DEMO_AUTOMATION.yaml)); regenerate via `npm run demo:screenshots`.
+
+| Asset | Shows |
+| --- | --- |
+| `workspace-pane-filter-controls.png` | Three-pane workspace with distinct **active cross-pane visibility preset** per pane (pane-header **preset selector**) |
+| `workspace-pane-filter-header.png` | Focused pane header crop: **CrossPaneVisibilitySelector**, indicator `Compare: {name}`, **Manage compare filters…** entry point |
+| `dialog-cross-pane-visibility-manager.png` | **CrossPaneVisibilityManagerDialog** catalog overview (no preset selected) |
+| `dialog-cross-pane-visibility-construct.png` | **CrossPaneVisibilityManagerDialog** **+ New from focused draft** with **visibility draft** from toolbar tri-state toggles |
+| `dialog-compare-filter-threshold.png` | **Compare filter thresholds** dialog (`view.compareFilter.thresholds`) |
+| `cross-pane-visibility-demo.gif` | Toolbar **tri-state toggle** / **visibility draft** editing (complements pane-header preset selection; not a substitute) |
+
 ## Pseudo-code block names
 
 | Preferred term / concept | UPPER_SNAKE block | Owning IMPL |

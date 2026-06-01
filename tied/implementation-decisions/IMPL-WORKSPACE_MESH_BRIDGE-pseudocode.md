@@ -194,7 +194,33 @@ RESTORE_ON_FILES_PAGE(meshId):
       restoredFromMesh = true
   meshRestorePending = meshId present AND NOT restoredFromMesh
   IF initialPanes empty AND NOT meshRestorePending THEN default startup panes from config
-  PASS meshId, key={meshId ?? files-workspace}, meshRestorePending, restoreUi, restoreLayout, restorePaneMeta, restoredFromMesh, restoreWarning to WorkspaceView
+  PASS meshId, key={meshId ?? files-workspace}, meshRestorePending, restoreUi, restoreLayout, restorePaneMeta, restoredFromMesh, restoreWarning to WorkspaceView wrapped in FILES_STARTUP_MESH_GATE
+```
+
+## RESOLVE_FILES_STARTUP_MESH
+# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-FILES_CONFIG_COMPLETE]
+# how: localStorage key panorama.filesStartupMeshId; get/set/clear with SSR guards; MeshListClient writes preference; invalid id cleared on gate validation failure.
+
+```
+RESOLVE_FILES_STARTUP_MESH():
+  STORAGE_KEY = panorama.filesStartupMeshId
+  getFilesStartupMeshId(): IF window missing RETURN null ELSE read STORAGE_KEY
+  setFilesStartupMeshId(id): IF window missing RETURN; IF id null THEN remove ELSE set
+  clearFilesStartupMeshId(): remove STORAGE_KEY
+```
+
+## FILES_STARTUP_MESH_GATE
+# [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-FILE_MANAGER_PAGE]
+# how: Client wrapper around WorkspaceView; explicit meshId in URL skips gate; else validate stored pref via GET /api/mesh/:id; redirect to /files?meshId= on 200; clear pref and render YAML bootstrap children on failure; pending shell testid files-startup-mesh-pending.
+
+```
+FILES_STARTUP_MESH_GATE(meshIdFromUrl, children):
+  IF meshIdFromUrl present THEN RENDER children immediately
+  pref = getFilesStartupMeshId()
+  IF pref missing THEN RENDER children
+  FETCH GET /api/mesh/{pref}
+  IF response.ok THEN router.replace(/files?meshId={pref}); RENDER pending shell files-startup-mesh-pending
+  ELSE clearFilesStartupMeshId(); RENDER children (YAML server props)
 ```
 
 ## RESTORE_LAYOUT_IN_WORKSPACE_VIEW
