@@ -1,13 +1,13 @@
 # IMPL-COPY_ATTRS essence pseudocode
 
-// [IMPL-COPY_ATTRS] [REQ-COPY_OPERATIONS] [REQ-FILE_OPERATIONS]: Shared preserveCopyAttributes() after fs.copyFile; stat source then chmod + utimes on dest; each step try/catch so unsupported or denied ops do not fail the copy
+// [IMPL-COPY_ATTRS] [REQ-COPY_OPERATIONS] [REQ-FILE_OPERATIONS]: Shared preserveCopyAttributes() after copy completes (fs.copyFile or fs.cp); stat source then chmod + utimes on dest; each step try/catch so unsupported or denied ops do not fail the copy
 
 ## Summary contract
 
 // [IMPL-COPY_ATTRS] [REQ-COPY_OPERATIONS] [REQ-FILE_OPERATIONS]: how: best-effort attribute preservation; copy operation success does not depend on chmod/utimes
 
 CONTRACT Summary
-  INPUT: sourcePath, destPath (dest must exist after copyFile)
+  INPUT: sourcePath, destPath (dest must exist after copy completes)
   OUTPUT: dest mode and timestamps aligned with source when OS permits
   DATA: fs.stat(sourcePath); stat.mode, stat.atime, stat.mtime
   CONTROL: async; never throws to caller
@@ -38,10 +38,10 @@ PROCEDURE IMPL-COPY_ATTRS_PreserveCopyAttributes(sourcePath, destPath)
 
 ## CallSitesAfterCopyFile
 
-// [IMPL-COPY_ATTRS] [REQ-COPY_OPERATIONS] [REQ-FILE_OPERATIONS]: how: invoke preserveCopyAttributes immediately after successful copyFile in sync engine and files.data copy paths
+// [IMPL-COPY_ATTRS] [REQ-COPY_OPERATIONS] [REQ-FILE_OPERATIONS]: how: invoke preserveCopyAttributes immediately after successful copy (fs.copyFile or fs.cp) in sync engine and files.data copy paths
 
 CONTRACT CallSitesAfterCopyFile
-  INPUT: completed copyFile(source, dest)
+  INPUT: completed copy(source, dest)
   OUTPUT: attributes preserved when supported
   DATA: src/lib/sync/operations.ts, src/lib/files.data.ts
 

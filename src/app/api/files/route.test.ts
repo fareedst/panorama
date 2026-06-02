@@ -24,13 +24,14 @@ vi.mock("@/lib/sync", () => ({
 const mockBulkTouch = vi.fn();
 const mockBulkRename = vi.fn();
 const mockBulkMakeDirectory = vi.fn();
+const mockBulkCopy = vi.fn();
 const mockExecuteCommandBatch = vi.fn();
 vi.mock("@/lib/files.data", () => ({
   copyFile: vi.fn(),
   moveFile: vi.fn(),
   deleteFile: vi.fn(),
   renameFile: vi.fn(),
-  bulkCopy: vi.fn(),
+  bulkCopy: (...args: unknown[]) => mockBulkCopy(...args),
   bulkMove: vi.fn(),
   bulkDelete: vi.fn(),
   bulkTouch: (...args: unknown[]) => mockBulkTouch(...args),
@@ -59,6 +60,11 @@ describe("POST /api/files [TEST-FILES_API] [IMPL-FILES_API] [REQ-FILE_OPERATIONS
       errors: [],
     });
     mockBulkMakeDirectory.mockResolvedValue({
+      successCount: 1,
+      errorCount: 0,
+      errors: [],
+    });
+    mockBulkCopy.mockResolvedValue({
       successCount: 1,
       errorCount: 0,
       errors: [],
@@ -381,6 +387,56 @@ describe("POST /api/files [TEST-FILES_API] [IMPL-FILES_API] [REQ-FILE_OPERATIONS
       expect(mockBulkRename).toHaveBeenCalledWith([
         { src: "/tmp/a.txt", dest: "/tmp/b.txt" },
       ]);
+    });
+  });
+
+  // [IMPL-BULK_OPS] [IMPL-FILES_API] [ARCH-FILE_OPERATIONS_API] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS] [REQ-FILE_OPERATIONS]: how: bulk-copy validates sources and dest then delegates to bulkCopy (which calls copyFile per source including directories)
+  describe("bulk-copy operation [IMPL-BULK_OPS] [IMPL-FILES_API] [ARCH-FILE_OPERATIONS_API] [REQ-BULK_FILE_OPS] [REQ-FILE_OPERATIONS]", () => {
+    it("returns 400 when sources missing [REQ-BULK_FILE_OPS]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ operation: "bulk-copy", dest: "/tmp/dest" }),
+      });
+      const response = await POST(request);
+      const data = await response.json();
+      expect(response.status).toBe(400);
+      expect(data.error).toBe("Sources array required");
+      expect(mockBulkCopy).not.toHaveBeenCalled();
+    });
+
+    it("returns 400 when dest missing [REQ-BULK_FILE_OPS]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "bulk-copy",
+          sources: ["/tmp/src/file.txt"],
+        }),
+      });
+      const response = await POST(request);
+      const data = await response.json();
+      expect(response.status).toBe(400);
+      expect(data.error).toBe("Destination directory required");
+      expect(mockBulkCopy).not.toHaveBeenCalled();
+    });
+
+    it("delegates valid bulk-copy to bulkCopy [REQ-BULK_FILE_OPS] [REQ-FILE_OPERATIONS]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "bulk-copy",
+          sources: ["/tmp/src/file.txt", "/tmp/src/mydir"],
+          dest: "/tmp/dest",
+        }),
+      });
+      const response = await POST(request);
+      expect(response.status).toBe(200);
+      expect(mockBulkCopy).toHaveBeenCalledWith(
+        ["/tmp/src/file.txt", "/tmp/src/mydir"],
+        "/tmp/dest"
+      );
     });
   });
 

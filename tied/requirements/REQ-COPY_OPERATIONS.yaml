@@ -11,16 +11,19 @@ REQ-COPY_OPERATIONS:
     benefits:
       - Best-effort attribute preservation after copyFile
   satisfaction_criteria:
-    - criterion: After copy, destination mode and mtime/atime match source when supported
+    - criterion: After copy, destination mode and mtime/atime match source when supported (regular files only; directories skip attribute preservation)
   validation_criteria:
     - method: Unit tests
-      coverage: sync engine attribute preservation
+      coverage: sync engine attribute preservation (src/lib/sync/engine.test.ts)
+    - method: Integration tests
+      coverage: copy-file.data.test.ts file copy mtime/atime/mode via files.data copyFile and preserveCopyAttributes
   traceability:
     architecture: []
     implementation:
       - IMPL-COPY_ATTRS
     tests:
       - src/lib/sync/engine.test.ts
+      - src/lib/copy-file.data.test.ts
     code_annotations:
       - REQ-COPY_OPERATIONS
       - IMPL-COPY_ATTRS
@@ -34,4 +37,8 @@ REQ-COPY_OPERATIONS:
     created:
       date: "2026-02-09"
       author: migration
+    last_updated:
+      date: "2026-06-02T00:00:00.000Z"
+      author: AI Agent
+      reason: 'LEAP: files.data copy path attribute preservation coverage'
   description: Copied files should preserve mode and timestamps where the platform allows

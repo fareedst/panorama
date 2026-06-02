@@ -1,4 +1,4 @@
-// [IMPL-COPY_ATTRS] [REQ-COPY_OPERATIONS] [REQ-FILE_OPERATIONS]: Top-level Copy Preserve File Attributes: Shared preserveCopyAttributes() after fs.copyFile; stat source then chmod + utimes on dest; each step try/catch so unsupported or denied ops do not fail the copy
+// [IMPL-COPY_ATTRS] [REQ-COPY_OPERATIONS] [REQ-FILE_OPERATIONS]: Top-level Copy Preserve File Attributes: Shared preserveCopyAttributes() after copy completes (fs.copyFile or fs.cp); stat source then chmod + utimes on dest; each step try/catch so unsupported or denied ops do not fail the copy
 // Preserve file attributes (mode, timestamps) after copy where possible.
 
 import fs from "fs/promises";

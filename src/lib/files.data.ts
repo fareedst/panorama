@@ -120,16 +120,25 @@ export function getUserHomeDirectory(): string {
 }
 
 /**
- * Copy file from source to destination
+ * Copy file or directory from source to destination
  * [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_OPERATIONS]
  * 
- * @param src - Source file path
- * @param dest - Destination file path
+ * @param src - Source file or directory path
+ * @param dest - Destination file or directory path
  */
 export async function copyFile(src: string, dest: string): Promise<void> {
   logger.info(["IMPL-FILES_DATA", "REQ-FILE_OPERATIONS"], `Copying file: ${src} -> ${dest}`);
   try {
-    await fs.copyFile(src, dest);
+    // [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_OPERATIONS]: how: destination parent creation — mkdir dest parent so cross-pane and nested dest paths succeed
+    await fs.mkdir(path.dirname(dest), { recursive: true });
+
+    const srcStat = await fs.stat(src);
+    if (srcStat.isDirectory()) {
+      // [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_OPERATIONS]: how: branch copy mechanism — fs.cp recursive for directories; fs.copyFile is files-only
+      await fs.cp(src, dest, { recursive: true });
+    } else {
+      await fs.copyFile(src, dest);
+    }
     // [IMPL-COPY_ATTRS] [REQ-COPY_OPERATIONS] [REQ-FILE_OPERATIONS]: how: after copy apply utimes and chmod from source stat; ignore per-step failures
     await preserveCopyAttributes(src, dest);
     logger.info(["IMPL-FILES_DATA", "REQ-FILE_OPERATIONS"], `Successfully copied file: ${src} -> ${dest}`);
@@ -384,7 +393,7 @@ export async function bulkCopy(
   onProgress?: (progress: import("./files.types").OperationProgress) => void
 ): Promise<import("./files.types").OperationResult> {
   logger.info(["IMPL-BULK_OPS", "REQ-BULK_FILE_OPS"], `Bulk copy: ${sources.length} files to ${destDir}`);
-  
+
   const errors: Array<{ file: string; error: string }> = [];
   let completed = 0;
   
@@ -394,7 +403,7 @@ export async function bulkCopy(
       try {
         const filename = path.basename(src);
         const dest = path.join(destDir, filename);
-        
+
         // Report progress
         if (onProgress) {
           onProgress({

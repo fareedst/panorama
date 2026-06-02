@@ -3192,3 +3192,15 @@ IMPL-MAKE_DIRECTORY_DIALOG:
   type: implementation
   name: Make Directory Dialog
   description: MakeDirectoryDialog ContextMenu WorkspaceView wiring for mkdir under pane path
+TEST-COPY_FILE:
+  type: TEST
+  name: copyFile integration tests
+  status: Active
+  description: Real-filesystem integration tests for files.data copyFile (recursive directory copy, attribute preservation)
+  cross_references:
+    - ARCH-FILESYSTEM_ABSTRACTION
+    - IMPL-COPY_ATTRS
+    - IMPL-FILES_DATA
+    - REQ-COPY_OPERATIONS
+    - REQ-FILE_OPERATIONS
+  source_file: src/lib/copy-file.data.test.ts

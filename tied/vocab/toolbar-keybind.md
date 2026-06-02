@@ -18,6 +18,7 @@
 - [panorama-domain-references.md](panorama-domain-references.md) — behavior inventories pointer
 - [linked-navigation.md](linked-navigation.md) — `link.toggle`
 - [nsync-multi-target.md](nsync-multi-target.md) — `file.copyAll` / `file.moveAll`
+- [file-marking.md](file-marking.md) — `file.copy` (single-dest cross-pane copy) vs `file.copyAll` (NSYNC multi-target)
 - [cross-pane-visibility.md](cross-pane-visibility.md) — `view.compareFilter.*` tri-state filters
 - [workspace-pane.md](workspace-pane.md) — pane management actions
 

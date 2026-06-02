@@ -65,14 +65,20 @@ PROCEDURE IMPL-FILES_DATA_GetFileInfo(filePath)
 
 ## SingleFileOperations
 
-// [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_OPERATIONS]: how: copyFile uses fs.copyFile then preserveCopyAttributes; moveFile/renameFile use fs.rename; deleteFile branches file vs recursive directory
+// [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_OPERATIONS]: how: copyFile mkdirs dest parent, fs.cp recursive for directories else fs.copyFile, then preserveCopyAttributes; moveFile/renameFile use fs.rename; deleteFile branches file vs recursive directory
 
 CONTRACT SingleFileOperations
   INPUT: src, dest OR filePath
   OUTPUT: void OR thrown error after log
 
 PROCEDURE IMPL-FILES_DATA_copyFile(src, dest)
-  AWAIT fs.copyFile(src, dest)
+  // [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_OPERATIONS]: how: destination parent creation — mkdir dest parent so cross-pane and nested dest paths succeed
+  AWAIT fs.mkdir(dirname(dest) recursive true)
+  stats := AWAIT fs.stat(src)
+  // [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_OPERATIONS]: how: branch copy mechanism — fs.cp recursive for directories; fs.copyFile for files only
+  IF stats.isDirectory THEN AWAIT fs.cp(src, dest, recursive true)
+  ELSE AWAIT fs.copyFile(src, dest)
+  // [IMPL-COPY_ATTRS] [REQ-COPY_OPERATIONS] [REQ-FILE_OPERATIONS]: how: after copy completes apply best-effort utimes/chmod from source stat
   AWAIT preserveCopyAttributes(src, dest)
 
 PROCEDURE IMPL-FILES_DATA_moveFile(src, dest)
@@ -122,6 +128,7 @@ PROCEDURE IMPL-FILES_DATA_sortFiles(files, sortType, priorityDir)
 // FILE: src/lib/files.data.ts — server filesystem functions
 // FILE: src/lib/files.types.ts — FileStat, SortType, OperationResult interfaces
 // FILE: src/lib/files.data.test.ts — listDirectory, path helpers, operations, sortFiles, buildComparisonIndex, formatSize re-export tests
+// FILE: src/lib/copy-file.data.test.ts — copyFile integration tests on real filesystem (recursive directory copy, attribute preservation)
 
 ## ErrorHandling
 

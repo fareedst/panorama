@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Recursive directory copy** (`[REQ-FILE_OPERATIONS]`, `[REQ-COPY_OPERATIONS]`, `[ARCH-FILESYSTEM_ABSTRACTION]`, `[IMPL-FILES_DATA]`, `[IMPL-COPY_ATTRS]`): `copyFile` creates destination parent directories and uses `fs.cp` for directory sources; fixes cross-pane copy of marked directories. Module: [`files.data.ts`](src/lib/files.data.ts). Tests: [`files.data.test.ts`](src/lib/files.data.test.ts), [`copy-file.data.test.ts`](src/lib/copy-file.data.test.ts), [`route.test.ts`](src/app/api/files/route.test.ts) (`bulk-copy`). Vocabulary: [`tied/vocab/file-marking.md`](tied/vocab/file-marking.md), [`tied/vocab/nsync-multi-target.md`](tied/vocab/nsync-multi-target.md), [`tied/vocab/toolbar-keybind.md`](tied/vocab/toolbar-keybind.md).
+
 ### Added
 
 - **Make directory** (`[REQ-DIRECTORY_NAVIGATION]`, `[ARCH-FILE_OPERATIONS_API]`, `[IMPL-MAKE_DIRECTORY]`, `[IMPL-MAKE_DIRECTORY_DIALOG]`): file/directory row context menu **Make directory…** opens `MakeDirectoryDialog` with **Make directory pane target** (this pane / all panes) and **Directory name** field; client resolves paths via `buildMakeDirectoryEntries`; `POST /api/files` `bulk-mkdir` via `bulkMakeDirectory`; affected pane listings refresh after apply. Modules: [`make-directory.ts`](src/lib/make-directory.ts), [`MakeDirectoryDialog.tsx`](src/app/files/components/MakeDirectoryDialog.tsx), [`WorkspaceView.tsx`](src/app/files/WorkspaceView.tsx), [`route.ts`](src/app/api/files/route.ts), [`files.data.ts`](src/lib/files.data.ts). Tests: [`make-directory.test.ts`](src/lib/make-directory.test.ts), [`make-directory.data.test.ts`](src/lib/make-directory.data.test.ts), [`MakeDirectoryDialog.test.tsx`](src/app/files/components/MakeDirectoryDialog.test.tsx), [`WorkspaceView.make-directory.test.tsx`](src/app/files/WorkspaceView.make-directory.test.tsx), [`ContextMenu.test.tsx`](src/app/files/components/ContextMenu.test.tsx), [`route.test.ts`](src/app/api/files/route.test.ts). Vocabulary: [`tied/vocab/workspace-pane.md`](tied/vocab/workspace-pane.md).

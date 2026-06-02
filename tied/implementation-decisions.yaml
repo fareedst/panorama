@@ -1281,6 +1281,7 @@ IMPL-FILES_DATA:
   implementation_approach:
     summary: Server-only module wraps Node.js fs/promises API with validation
     details:
+      - 'copyFile: mkdir dest parent recursively; fs.cp for directories, fs.copyFile for files; then preserveCopyAttributes'
       - 'Critical fix: Moved formatSize to files.utils.ts (client-safe)'
       - Created src/lib/files.data.ts (server-only)
       - Error handling for permissions, non-existent paths
@@ -1291,31 +1292,13 @@ IMPL-FILES_DATA:
       - Path validation to prevent directory traversal
       - Re-exports formatSize for backward compatibility
   code_locations:
-    files:
-      - path: src/lib/files.data.ts
-        description: Filesystem data layer (server-only)
-        lines:
-          - 1
-          - 279
-      - path: src/lib/files.types.ts
-        description: TypeScript interfaces
-        lines:
-          - 1
-          - 55
-      - path: src/lib/files.utils.ts
-        description: Client-safe utilities
-        lines:
-          - 1
-          - 26
-      - path: src/lib/files.data.test.ts
-        description: Data layer tests (34 tests)
-        lines:
-          - 1
-          - 595
     functions:
       - name: listDirectory
         file: src/lib/files.data.ts
         description: List directory contents with error handling
+      - name: copyFile
+        file: src/lib/files.data.ts
+        description: Copy file or directory; mkdir dest parent; fs.cp recursive for directories
       - name: sortFiles
         file: src/lib/files.data.ts
         description: Sort files by various criteria with directory priority
@@ -1331,7 +1314,9 @@ IMPL-FILES_DATA:
     requirements:
       - REQ-DIRECTORY_NAVIGATION
       - REQ-FILE_OPERATIONS
-    tests: []
+    tests:
+      - src/lib/files.data.test.ts
+      - src/lib/copy-file.data.test.ts
     code_annotations:
       - IMPL-FILES_DATA
   related_decisions:
@@ -1345,9 +1330,9 @@ IMPL-FILES_DATA:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-07T00:00:00.000Z
+      date: "2026-06-02T00:00:00.000Z"
       author: AI Agent
-      reason: Implementation complete with server/client boundary fix, 34 tests passing
+      reason: 'LEAP: copy-file.data.test.ts integration coverage'
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent
@@ -3481,7 +3466,7 @@ IMPL-COPY_ATTRS:
       - Preserves mode (permissions) on Unix
       - Preserves mtime/atime for comparison and backup semantics
   implementation_approach:
-    summary: Shared preserveCopyAttributes() after fs.copyFile; stat source then chmod + utimes on dest; each step try/catch so unsupported or denied ops do not fail the copy
+    summary: Shared preserveCopyAttributes() after copy completes (fs.copyFile or fs.cp); stat source then chmod + utimes on dest; each step try/catch so unsupported or denied ops do not fail the copy
   code_locations:
     files:
       - path: src/lib/copyAttributes.ts
@@ -3494,7 +3479,9 @@ IMPL-COPY_ATTRS:
     requirements:
       - REQ-COPY_OPERATIONS
       - REQ-FILE_OPERATIONS
-    tests: []
+    tests:
+      - src/lib/sync/engine.test.ts
+      - src/lib/copy-file.data.test.ts
     code_annotations:
       - IMPL-COPY_ATTRS
   related_decisions:
@@ -3508,9 +3495,10 @@ IMPL-COPY_ATTRS:
       date: 2026-02-09T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-09T00:00:00.000Z
+      date: "2026-06-02T00:00:00.000Z"
       author: AI Agent
-      reason: Copy must maintain attributes where possible (TODO)
+      reason: 'LEAP: files.data copy path attribute preservation tests'
+  decision: Shared preserveCopyAttributes() after copy completes (fs.copyFile or fs.cp); stat source then chmod + utimes on dest; each step try/catch so unsupported or denied ops do not fail the copy
 IMPL-NSYNC_HASH:
   name: Hash Computation Implementation
   status: Active

@@ -13,7 +13,6 @@ import {
   seedReadmePaneFilterCatalogs,
   enableComparisonMode,
   README_DEMO_DISPLAY_SPEC_IDS,
-  README_DEMO_CROSS_PANE_PRESET_IDS,
 } from "./helpers/readme-demo";
 
 test.describe("README workspace dialogs [REQ-README_DEMO_AUTOMATION]", () => {

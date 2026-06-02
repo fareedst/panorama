@@ -6,7 +6,7 @@ IMPL-COPY_ATTRS:
     - IMPL-NSYNC_OPERATIONS
     - REQ-COPY_OPERATIONS
     - REQ-FILE_OPERATIONS
-  decision: Shared preserveCopyAttributes() after fs.copyFile; stat source then chmod + utimes on dest; each step try/catch so unsupported or denied ops do not fail the copy
+  decision: Shared preserveCopyAttributes() after copy completes (fs.copyFile or fs.cp); stat source then chmod + utimes on dest; each step try/catch so unsupported or denied ops do not fail the copy
   rationale:
     why: Copying a file with nsync or simpler methods must maintain attributes (mode, timestamps) where possible
     benefits:
@@ -14,21 +14,22 @@ IMPL-COPY_ATTRS:
       - Preserves mode (permissions) on Unix
       - Preserves mtime/atime for comparison and backup semantics
   implementation_approach:
-    summary: Shared preserveCopyAttributes() after fs.copyFile; stat source then chmod + utimes on dest; each step try/catch so unsupported or denied ops do not fail the copy
+    summary: Shared preserveCopyAttributes() after copy completes (fs.copyFile or fs.cp); stat source then chmod + utimes on dest; each step try/catch so unsupported or denied ops do not fail the copy
   code_locations:
     files:
       - path: src/lib/copyAttributes.ts
         description: preserveCopyAttributes() helper
       - path: src/lib/sync/operations.ts
-        description: Called after copyFile
+        description: Called after copy completes
       - path: src/lib/files.data.ts
-        description: Called after copyFile
+        description: Called after copy completes
   traceability:
     requirements:
       - REQ-COPY_OPERATIONS
       - REQ-FILE_OPERATIONS
     tests:
       - src/lib/sync/engine.test.ts
+      - src/lib/copy-file.data.test.ts
     code_annotations:
       - IMPL-COPY_ATTRS
   related_decisions:
@@ -41,6 +42,6 @@ IMPL-COPY_ATTRS:
       date: 2026-02-09T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-29T00:00:00.000Z"
+      date: "2026-06-02T00:00:00.000Z"
       author: AI Agent
-      reason: IMPL essence_pseudocode retrofit 2026-05-29
+      reason: 'LEAP: files.data copy path attribute preservation tests'

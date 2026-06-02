@@ -16,7 +16,7 @@
 ## See also
 
 - [panorama-domain-references.md](panorama-domain-references.md)
-- [file-marking.md](file-marking.md) — how sources are chosen
+- [file-marking.md](file-marking.md) — how sources are chosen; **cross-pane copy** / **recursive directory copy** (single-destination `file.copy`, not NSYNC)
 - [workspace-pane.md](workspace-pane.md) — pane / focus
 - [cross-pane-comparison.md](cross-pane-comparison.md) — visual compare vs sync skip
 - [toolbar-keybind.md](toolbar-keybind.md) — `file.copyAll` / `file.moveAll`

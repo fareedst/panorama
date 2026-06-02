@@ -1291,25 +1291,34 @@ REQ-FILE_OPERATIONS:
       - Cross-pane copy/move support
       - Visual file operations
   satisfaction_criteria:
+    - criterion: Can copy directories recursively (not only files)
     - criterion: Can copy files (keyboard shortcut or button)
     - criterion: Can delete files (keyboard shortcut with confirmation)
     - criterion: Can move files (keyboard shortcut or button)
     - criterion: Can rename files (keyboard shortcut or inline edit)
+    - criterion: Can set modification time on files and directories via Touch dialog (REQ-TOUCH_MTIME)
+    - criterion: Copy creates missing destination parent directories when required
     - criterion: Error handling for failed operations
     - criterion: Operations work on single and marked files
   validation_criteria:
     - method: Operation testing
-      coverage: All CRUD operations work correctly
+      coverage: copy-file.data.test.ts recursive directory copy on real filesystem; all CRUD operations including recursive directory copy
     - method: Error testing
-      coverage: Errors handled gracefully (permissions, non-existent files)
+      coverage: files.data.test.ts copyFile rethrows on failure; errors handled gracefully (permissions, non-existent files)
+    - method: Unit tests
+      coverage: files.data.test.ts copyFile file and directory branches, preserveCopyAttributes invocation, error rethrow; vocabulary tied/vocab/file-marking.md
   traceability:
     architecture:
       - ARCH-FILE_OPERATIONS_API
       - ARCH-FILESYSTEM_ABSTRACTION
+      - ARCH-TOUCH_MTIME
     implementation:
       - IMPL-FILES_API
       - IMPL-FILES_DATA
-    tests: []
+      - IMPL-TOUCH_MTIME
+    tests:
+      - src/lib/files.data.test.ts
+      - src/lib/copy-file.data.test.ts
     code_annotations:
       - REQ-FILE_OPERATIONS
   related_requirements:
@@ -1325,9 +1334,9 @@ REQ-FILE_OPERATIONS:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-07T00:00:00.000Z
+      date: "2026-06-02T00:00:00.000Z"
       author: AI Agent
-      reason: Initial creation
+      reason: 'LEAP: copyFile test coverage — preserveCopyAttributes, error path, integration tests'
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent
@@ -2899,16 +2908,19 @@ REQ-COPY_OPERATIONS:
     benefits:
       - Best-effort attribute preservation after copyFile
   satisfaction_criteria:
-    - criterion: After copy, destination mode and mtime/atime match source when supported
+    - criterion: After copy, destination mode and mtime/atime match source when supported (regular files only; directories skip attribute preservation)
   validation_criteria:
     - method: Unit tests
-      coverage: sync engine attribute preservation
+      coverage: sync engine attribute preservation (src/lib/sync/engine.test.ts)
+    - method: Integration tests
+      coverage: copy-file.data.test.ts file copy mtime/atime/mode via files.data copyFile and preserveCopyAttributes
   traceability:
     architecture: []
     implementation:
       - IMPL-COPY_ATTRS
     tests:
       - src/lib/sync/engine.test.ts
+      - src/lib/copy-file.data.test.ts
     code_annotations:
       - REQ-COPY_OPERATIONS
       - IMPL-COPY_ATTRS
@@ -2922,6 +2934,10 @@ REQ-COPY_OPERATIONS:
     created:
       date: "2026-02-09"
       author: migration
+    last_updated:
+      date: "2026-06-02T00:00:00.000Z"
+      author: AI Agent
+      reason: 'LEAP: files.data copy path attribute preservation coverage'
 REQ-MESH_PLATFORM:
   name: Mesh Sync Platform
   category: Functional

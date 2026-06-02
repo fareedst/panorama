@@ -10,6 +10,8 @@ vi.mock("fs/promises", () => {
     default: {
       readdir: vi.fn(),
       stat: vi.fn(),
+      mkdir: vi.fn(),
+      cp: vi.fn(),
       copyFile: vi.fn(),
       rename: vi.fn(),
       rm: vi.fn(),
@@ -17,6 +19,11 @@ vi.mock("fs/promises", () => {
     },
   };
 });
+
+const mockPreserveCopyAttributes = vi.fn().mockResolvedValue(undefined);
+vi.mock("./copyAttributes", () => ({
+  preserveCopyAttributes: (...args: unknown[]) => mockPreserveCopyAttributes(...args),
+}));
 
 // Now import using the same pattern as the module under test
 import fs from "fs/promises";
@@ -166,22 +173,82 @@ describe("getUserHomeDirectory [REQ_DIRECTORY_NAVIGATION]", () => {
   });
 });
 
-// [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_OPERATIONS]: how: copyFile uses fs.copyFile then preserveCopyAttributes; moveFile/renameFile use fs.rename; deleteFile branches file vs recursive directory
+// [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_OPERATIONS]: how: copyFile mkdirs dest parent, fs.cp recursive for directories else fs.copyFile, then preserveCopyAttributes; moveFile/renameFile use fs.rename; deleteFile branches file vs recursive directory
 describe("File Operations [REQ_FILE_OPERATIONS]", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
   
   describe("copyFile", () => {
+    // [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_OPERATIONS]: how: mkdir dest parent then fs.copyFile for files; preserveCopyAttributes follows
     it("should copy file", async () => {
+      mockedFs.mkdir.mockResolvedValue(undefined);
+      mockedFs.stat.mockResolvedValue({
+        isDirectory: () => false,
+        isFile: () => true,
+      } as never);
       mockedFs.copyFile.mockResolvedValue();
       
       await copyFile("/src/file.txt", "/dest/file.txt");
       
+      expect(mockedFs.mkdir).toHaveBeenCalledWith("/dest", { recursive: true });
       expect(mockedFs.copyFile).toHaveBeenCalledWith(
         "/src/file.txt",
         "/dest/file.txt"
       );
+      expect(mockedFs.cp).not.toHaveBeenCalled();
+      expect(mockPreserveCopyAttributes).toHaveBeenCalledWith(
+        "/src/file.txt",
+        "/dest/file.txt"
+      );
+    });
+
+    // [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_OPERATIONS]: how: directory sources use fs.cp recursive after mkdir dest parent
+    it("should create parent dirs and copy directory recursively", async () => {
+      mockedFs.mkdir.mockResolvedValue(undefined);
+      mockedFs.stat.mockResolvedValue({
+        isDirectory: () => true,
+        isFile: () => false,
+      } as never);
+      mockedFs.cp.mockResolvedValue(undefined);
+
+      await copyFile("/src/mydir", "/dest/parent/mydir");
+
+      expect(mockedFs.mkdir).toHaveBeenCalledWith("/dest/parent", { recursive: true });
+      expect(mockedFs.cp).toHaveBeenCalledWith("/src/mydir", "/dest/parent/mydir", {
+        recursive: true,
+      });
+      expect(mockedFs.copyFile).not.toHaveBeenCalled();
+      expect(mockPreserveCopyAttributes).toHaveBeenCalledWith(
+        "/src/mydir",
+        "/dest/parent/mydir"
+      );
+    });
+
+    // [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_OPERATIONS]: how: copy failures propagate after logging; attribute preservation skipped when copy fails
+    it("should rethrow when directory copy fails", async () => {
+      mockedFs.mkdir.mockResolvedValue(undefined);
+      mockedFs.stat.mockResolvedValue({
+        isDirectory: () => true,
+        isFile: () => false,
+      } as never);
+      mockedFs.cp.mockRejectedValue(new Error("EACCES"));
+
+      await expect(copyFile("/src/mydir", "/dest/parent/mydir")).rejects.toThrow("EACCES");
+      expect(mockPreserveCopyAttributes).not.toHaveBeenCalled();
+    });
+
+    // [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_OPERATIONS]: how: file copy failures propagate after logging; preserveCopyAttributes skipped when copy fails
+    it("should rethrow when file copy fails", async () => {
+      mockedFs.mkdir.mockResolvedValue(undefined);
+      mockedFs.stat.mockResolvedValue({
+        isDirectory: () => false,
+        isFile: () => true,
+      } as never);
+      mockedFs.copyFile.mockRejectedValue(new Error("ENOENT"));
+
+      await expect(copyFile("/src/missing.txt", "/dest/missing.txt")).rejects.toThrow("ENOENT");
+      expect(mockPreserveCopyAttributes).not.toHaveBeenCalled();
     });
   });
   
@@ -526,75 +593,5 @@ describe("formatSize [REQ_FILE_LISTING]", () => {
     expect(formatSize(1048576)).toBe("1.0 MB");
     expect(formatSize(1073741824)).toBe("1.0 GB");
     expect(formatSize(1099511627776)).toBe("1.0 TB");
-  });
-});
-
-// [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_OPERATIONS]: how: copyFile uses fs.copyFile then preserveCopyAttributes; moveFile/renameFile use fs.rename; deleteFile branches file vs recursive directory
-describe("File Operations [REQ_FILE_OPERATIONS]", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-  
-  describe("copyFile", () => {
-    it("should copy file", async () => {
-      mockedFs.copyFile.mockResolvedValue();
-      
-      await copyFile("/src/file.txt", "/dest/file.txt");
-      
-      expect(mockedFs.copyFile).toHaveBeenCalledWith(
-        "/src/file.txt",
-        "/dest/file.txt"
-      );
-    });
-  });
-  
-  describe("moveFile", () => {
-    it("should move file", async () => {
-      mockedFs.rename.mockResolvedValue();
-      
-      await moveFile("/src/file.txt", "/dest/file.txt");
-      
-      expect(mockedFs.rename).toHaveBeenCalledWith(
-        "/src/file.txt",
-        "/dest/file.txt"
-      );
-    });
-  });
-  
-  describe("deleteFile", () => {
-    it("should delete regular file", async () => {
-      mockedFs.stat.mockResolvedValue({
-        isDirectory: () => false,
-      } as never);
-      mockedFs.unlink.mockResolvedValue();
-      
-      await deleteFile("/test/file.txt");
-      
-      expect(mockedFs.unlink).toHaveBeenCalledWith("/test/file.txt");
-    });
-    
-    it("should delete directory recursively", async () => {
-      mockedFs.stat.mockResolvedValue({
-        isDirectory: () => true,
-      } as never);
-      mockedFs.rm.mockResolvedValue();
-      
-      await deleteFile("/test/dir");
-      
-      expect(mockedFs.rm).toHaveBeenCalledWith("/test/dir", { recursive: true });
-    });
-  });
-  
-  describe("renameFile", () => {
-    it("should rename file", async () => {
-      mockedFs.rename.mockResolvedValue();
-      
-      await renameFile("/test/old.txt", "/test/new.txt");
-      
-      expect(mockedFs.rename).toHaveBeenCalledWith(
-        "/test/old.txt",
-        "/test/new.txt"
-      );
-    });
   });
 });

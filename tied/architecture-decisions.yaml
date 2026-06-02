@@ -1142,6 +1142,7 @@ ARCH-FILESYSTEM_ABSTRACTION:
   implementation_approach:
     summary: Data layer module (files.data.ts) wraps Node.js fs/promises API
     details:
+      - 'copyFile: recursive mkdir on dest parent; fs.cp for directories, fs.copyFile for files; attribute preservation via IMPL-COPY_ATTRS'
       - Error handling for permissions, non-existent paths
       - Path validation to prevent directory traversal
       - Server-only module (not imported by client components)
@@ -1152,7 +1153,9 @@ ARCH-FILESYSTEM_ABSTRACTION:
       - REQ-FILE_OPERATIONS
     implementation:
       - IMPL-FILES_DATA
-    tests: []
+    tests:
+      - src/lib/files.data.test.ts
+      - src/lib/copy-file.data.test.ts
     code_annotations:
       - ARCH-FILESYSTEM_ABSTRACTION
   related_decisions:
@@ -1167,9 +1170,9 @@ ARCH-FILESYSTEM_ABSTRACTION:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-07T00:00:00.000Z
+      date: "2026-06-02T00:00:00.000Z"
       author: AI Agent
-      reason: Initial creation
+      reason: 'LEAP: copyFile tests in traceability'
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent
