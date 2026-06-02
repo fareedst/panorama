@@ -28,6 +28,7 @@ REQ-BULK_FILE_OPS:
     - criterion: Move marked files to target pane directory (M key)
     - criterion: Operations are asynchronous (non-blocking UI)
     - criterion: Operations work on marked files if marks exist, otherwise on cursor file
+    - criterion: preserve_relative_path — cross-pane copy/move place each source under destination base at same relative path as under source pane base (sourceBase API field)
     - criterion: Progress bar shows completion percentage, file count, current file
     - criterion: Rename single file or bulk rename with pattern (R key)
     - criterion: rename_regex_dialog_bulk_rename — context menu Rename Regex… opens dialog; apply POSTs resolved { src, dest }[] via bulk-rename
@@ -38,11 +39,14 @@ REQ-BULK_FILE_OPS:
       coverage: Cross-pane operations and progress tracking
     - method: Error tests
       coverage: Permission errors, disk full, non-existent files
+    - method: Unit tests
+      coverage: cross-pane-path.ts relative destination mapping
   traceability:
     architecture:
       - ARCH-BATCH_OPERATIONS
     implementation:
       - IMPL-BULK_OPS
+      - IMPL-DIRECTORY_TREE
       - IMPL-RENAME_REGEX
       - IMPL-RENAME_REGEX_DIALOG
     tests:
@@ -50,6 +54,7 @@ REQ-BULK_FILE_OPS:
       - src/app/files/components/ContextMenu.test.tsx
       - src/app/files/components/RenameRegexDialog.test.tsx
       - src/app/files/WorkspaceView.rename-regex.test.tsx
+      - src/lib/cross-pane-path.test.ts
       - src/lib/regex-validation.test.ts
       - src/lib/rename-regex.data.test.ts
       - src/lib/rename-regex.test.ts
@@ -61,15 +66,16 @@ REQ-BULK_FILE_OPS:
       - REQ-FILE_OPERATIONS
     related_to:
       - REQ-CROSS_PANE_COMPARISON
+      - REQ-DIRECTORY_TREE
     supersedes: []
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-31T00:00:00.000Z"
+      date: "2026-06-01T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — Rename Regex dialog bulk-rename flow and traceability
+      reason: LEAP — preserve relative path on cross-pane bulk copy/move (sourceBase)
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

@@ -1,0 +1,38 @@
+ARCH-DIRECTORY_TREE:
+  name: Directory Tree State Model
+  status: Active
+  cross_references:
+    - REQ-DIRECTORY_TREE
+    - ARCH-FILE_MANAGER_HIERARCHY
+  decision: Pane holds FileTreeState (basePath, expandedPaths, childrenByPath); visible rows are flattened pre-order walk; lazy fetch on expand
+  rationale:
+    why: Separate tree expand from base re-root and support multi-directory operation sources
+    problems_solved:
+      - Single flat listing per pane
+      - Basename-only marks collide across dirs
+    benefits:
+      - Lazy load per directory node
+      - Path-keyed marks on flattened rows
+  implementation_approach:
+    summary: Pure file-tree module plus WorkspaceView integration
+    details:
+      - fetchDirectoryListing on first expand per node
+      - FileTreeState on pane; pane.files = flattenVisibleRows
+      - handleNavigate resets tree; refreshPaneTree reloads expanded nodes
+      - informs relative path mapping in ARCH-BATCH_OPERATIONS and ARCH-NSYNC_INTEGRATION via sourceBase
+      - Linked sync only on handleNavigate not toggleExpand
+  traceability:
+    requirements:
+      - REQ-DIRECTORY_TREE
+    implementation:
+      - IMPL-DIRECTORY_TREE
+      - IMPL-FILE_PANE
+      - IMPL-WORKSPACE_VIEW
+    code_annotations:
+      - ARCH-DIRECTORY_TREE
+  related_decisions:
+    depends_on:
+      - ARCH-FILE_MANAGER_HIERARCHY
+      - ARCH-FILESYSTEM_ABSTRACTION
+    informs:
+      - IMPL-DIRECTORY_TREE

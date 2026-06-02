@@ -39,16 +39,20 @@ export function expandCommandPlaceholders(
 
 function resolveMarkedPathsInPane(
   paneFiles: readonly FileStat[] | undefined,
-  basenames: readonly string[],
+  markSelection: readonly string[],
 ): string[] {
   if (!paneFiles) {
     return [];
   }
   const paths: string[] = [];
-  for (const basename of basenames) {
-    const match = paneFiles.find((f) => f.name === basename);
+  for (const selected of markSelection) {
+    const match = paneFiles.find(
+      (f) => f.path === selected || f.name === selected,
+    );
     if (match) {
       paths.push(match.path);
+    } else if (selected.includes("/")) {
+      paths.push(selected);
     }
   }
   return paths;

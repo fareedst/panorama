@@ -16,10 +16,10 @@ REQ-DIRECTORY_NAVIGATION:
       - Visual directory browsing
   satisfaction_criteria:
     - criterion: After navigating into or out of a directory, pane header path and listing reflect the target directory (not reverted by cross-pane visibility merge)
-    - criterion: Can navigate into subdirectories (Enter key or click)
-    - criterion: Can navigate to parent directory (Backspace key)
-    - criterion: Current path displayed in pane header
-    - criterion: Directory entries marked visually (folder icon or indicator)
+    - criterion: Can navigate to parent directory (Backspace key and header .. button re-root base via handleNavigate)
+    - criterion: Current path displayed in pane header as base directory
+    - criterion: Directory entries marked visually (folder icon, chevron, depth indent)
+    - criterion: enter_toggle_tree_expand — Enter key toggles directory tree expand/collapse on focused row (not re-root)
     - criterion: make_directory_under_pane_path — Make directory dialog creates basename under targeted pane path via bulk-mkdir
     - criterion: set_base_directory_reroots_pane_path — context menu Set as Base directory on directory rows opens dialog to assign pane path via handleNavigate or appendPaneAtPath for newPane
   validation_criteria:
@@ -60,17 +60,18 @@ REQ-DIRECTORY_NAVIGATION:
     depends_on:
       - REQ-FILE_MANAGER_PAGE
     related_to:
-      - REQ-FILE_LISTING
       - REQ-CROSS_PANE_VISIBILITY
+      - REQ-DIRECTORY_TREE
+      - REQ-FILE_LISTING
     supersedes: []
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-31T00:00:00.000Z"
+      date: "2026-06-01T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — Make directory under pane path
+      reason: LEAP — Enter toggles tree expand; parent re-roots base
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

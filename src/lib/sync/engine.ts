@@ -18,6 +18,7 @@ import type {
   SyncObserver,
 } from "../sync.types";
 import { logger } from "../logger";
+import { resolveCrossPaneDestPath } from "../cross-pane-path";
 
 /**
  * Sync engine - orchestrates multi-destination file synchronization
@@ -60,6 +61,7 @@ export class SyncEngine {
       verifyDestination: verify = false,
       observer,
       signal,
+      sourceBase,
     } = options;
     
     logger.info(["IMPL-NSYNC_ENGINE", "REQ-NSYNC_MULTI_TARGET"], 
@@ -133,6 +135,7 @@ export class SyncEngine {
           hashAlgorithm,
           verify,
           move,
+          sourceBase,
         },
         signal
       );
@@ -232,6 +235,7 @@ export class SyncEngine {
       hashAlgorithm: NonNullable<SyncOptions["hashAlgorithm"]>;
       verify: boolean;
       move: boolean;
+      sourceBase?: string;
     },
     signal?: AbortSignal
   ): Promise<ItemResult> {
@@ -316,14 +320,16 @@ export class SyncEngine {
       hashAlgorithm: NonNullable<SyncOptions["hashAlgorithm"]>;
       verify: boolean;
       move: boolean;
+      sourceBase?: string;
     },
     signal?: AbortSignal
   ): Promise<DestResult> {
-    const { compareMethod, hashAlgorithm, verify, move } = options;
+    const { compareMethod, hashAlgorithm, verify, move, sourceBase } = options;
     
-    // Build destination path
-    const filename = path.basename(source);
-    const destPath = path.join(destDir, filename);
+    // [IMPL-NSYNC_ENGINE] [IMPL-BULK_OPS] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-DIRECTORY_TREE]: how — MAP_SOURCE_TO_DEST preserves relative path under destDir when sourceBase provided
+    const destPath = sourceBase
+      ? resolveCrossPaneDestPath(source, sourceBase, destDir)
+      : path.join(destDir, path.basename(source));
     
     const result: DestResult = {
       destPath,

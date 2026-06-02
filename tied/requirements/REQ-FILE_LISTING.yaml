@@ -1,4 +1,3 @@
-# REQ detail — REQ-FILE_LISTING
 REQ-FILE_LISTING:
   name: File Listing Display
   category: Functional
@@ -16,11 +15,12 @@ REQ-FILE_LISTING:
       - Multiple sorting options
       - Visual file type indicators
   satisfaction_criteria:
-    - criterion: Cursor highlights current file
+    - criterion: Cursor highlights current file in visible tree rows
     - criterion: Display file name, size, modification time
-    - criterion: Distinguish directories from regular files
+    - criterion: Distinguish directories from regular files with expand chevron and depth indent
+    - criterion: hierarchical_tree_under_base — lazy tree listing under pane.path base directory
     - criterion: Marked files visually distinguished
-    - criterion: Support sorting by name, size, mtime, extension (ascending/descending)
+    - criterion: Support sorting by name, size, mtime, extension within each directory level
   validation_criteria:
     - method: Display testing
       coverage: All file metadata renders correctly
@@ -46,9 +46,9 @@ REQ-FILE_LISTING:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: 2026-02-07T00:00:00.000Z
+      date: "2026-06-01T00:00:00.000Z"
       author: AI Agent
-      reason: Initial creation
+      reason: LEAP — hierarchical tree listing
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

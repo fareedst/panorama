@@ -20,6 +20,7 @@
 - [workspace-pane.md](workspace-pane.md)
 - [toolbar-keybind.md](toolbar-keybind.md)
 - [pane-display-filter.md](pane-display-filter.md)
+- [directory-tree.md](directory-tree.md) — `navigate.enter` toggles tree expand/collapse; does not re-root pane base when cross-pane visibility is active
 
 ## Preferred term vs synonyms
 

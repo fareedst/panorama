@@ -1674,7 +1674,7 @@ REQ-FILE_MARKING_WEB:
   name: Web-Based File Marking for Batch Operations
   category: Functional
   priority: P0
-  status: Active
+  status: Implemented
   rationale:
     why: Batch operations on multiple files require a selection mechanism optimized for web interfaces
     problems_solved:
@@ -1738,7 +1738,7 @@ REQ-BULK_FILE_OPS:
   name: Bulk File Operations on Marked Files
   category: Functional
   priority: P0
-  status: Active
+  status: Implemented
   rationale:
     why: Users need to perform copy, move, delete operations on multiple files efficiently
     problems_solved:
@@ -3183,3 +3183,14 @@ REQ-PANE_COMMAND_EXEC:
   priority: P1
   status: Implemented
   detail_file: requirements/REQ-PANE_COMMAND_EXEC.yaml
+REQ-DIRECTORY_TREE:
+  name: Directory Tree Listing
+  category: Functional
+  priority: P0
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-DIRECTORY_TREE
+    implementation:
+      - IMPL-DIRECTORY_TREE
+  detail_file: requirements/REQ-DIRECTORY_TREE.yaml

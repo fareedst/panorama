@@ -41,8 +41,8 @@
 
 | Canonical concept | UI label | Icon name | Config / API | Keybind action | Code symbol |
 | --- | --- | --- | --- | --- | --- |
-| Copy to all panes | toolbar “Copy to All” | `copy-all` | POST `operation: "sync-all"`, `move: false` | `file.copyAll` (Shift+C) | `handleCopyAll`, `data-testid="toolbar-file.copyAll"` |
-| Move to all panes | toolbar “Move to All” | `move-all` | POST `sync-all`, `move: true` | `file.moveAll` (Shift+V) | `handleMoveAll` |
+| Copy to all panes | toolbar “Copy to All” | `copy-all` | POST `operation: "sync-all"`, `move: false`, `sourceBase` | `file.copyAll` (Shift+C) | `handleCopyAll`, `data-testid="toolbar-file.copyAll"` |
+| Move to all panes | toolbar “Move to All” | `move-all` | POST `sync-all`, `move: true`, `sourceBase` | `file.moveAll` (Shift+V) | `handleMoveAll` |
 | Default compare | — | `compareMethod: "size-mtime"` (body default) | — | `CompareMethod` |
 | Verify destination | — | `verifyDestination` / `verify` | — | post-copy hash check |
 | Hash algorithm | — | `hashAlgorithm`: `blake3`, `sha256`, `xxh3` | — | `HashAlgorithm` |
@@ -66,6 +66,8 @@
 - **Sync result** — Aggregate `SyncResult`: counts, `errors[]`, `cancelled`, `storeFailureAbort`.
 - **Error class** — `ErrorClass` enum: `file_specific`, `store_unavailable`, `verify_failed`, `cancelled`, `unknown`.
 - **Other pane directories** — Helper concept: paths of all panes except `focusIndex`; becomes `destinations` for sync-all.
+- **Source base** — `sourceBase` API field: source pane `pane.path` sent with `sync-all` and bulk copy/move.
+- **Relative destination mapping** — Each source lands under each destination base at the same relative path as under source base (not basename flatten).
 
 Algorithms: see [IMPL-NSYNC_ENGINE-pseudocode.md](../tied/implementation-decisions/IMPL-NSYNC_ENGINE-pseudocode.md) blocks below — vocabulary only here.
 
@@ -85,6 +87,7 @@ Toolbar labels **Copy to All** / **Move to All** use pane toolbar group copy fro
 | Progress callbacks | `ObserverCallbacks` → `IMPL-NSYNC_ENGINE_ObserverCallbacks` | IMPL-NSYNC_ENGINE |
 | Store failure abort | `StoreMonitor` → `IMPL-NSYNC_ENGINE_StoreMonitor` | IMPL-NSYNC_ENGINE |
 | Copy/move/delete primitives | `CopyFile`, `MoveFile`, `DeleteFile` | IMPL-NSYNC_OPERATIONS |
+| Relative destination mapping | `MAP_SOURCE_TO_DEST` | IMPL-BULK_OPS, IMPL-NSYNC_ENGINE |
 | CopyAll demo capture | `CAPTURE_COPYALL_WORKFLOW` | IMPL-DEMO_SCREENSHOT_PIPELINE |
 | CopyAll GIF convert | `CONVERT_COPYALL_GIF` | IMPL-DEMO_SCREENSHOT_PIPELINE |
 
@@ -96,7 +99,8 @@ Toolbar labels **Copy to All** / **Move to All** use pane toolbar group copy fro
 - **Move semantics** — deferred delete after all destinations succeed
 - **Multi-target sync** — sync-all to all other panes
 - **Skip unchanged** — skip copy when compare says equal
-- **Source** — focused-pane selected paths
+- **Relative destination mapping** — preserve path under destination base via `sourceBase`
+- **Source base** — `sourceBase` API field from source pane path
 - **Store monitor** — abort after repeated store errors
 - **Sync observer** — progress callback surface
 - **Sync plan** — upfront totals for UI

@@ -188,6 +188,8 @@ export interface SyncOptions {
   observer?: SyncObserver;
   /** AbortSignal for cancellation */
   signal?: AbortSignal;
+  /** Source pane base directory for relative destination mapping */
+  sourceBase?: string;
 }
 
 /**

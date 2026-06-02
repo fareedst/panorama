@@ -1,6 +1,6 @@
 # IMPL-FILE_PANE essence pseudocode
 
-// [IMPL-FILE_PANE] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-FILE_LISTING] [REQ-DIRECTORY_NAVIGATION]: Client FilePane renders listing rows, marks, comparison colors, tabular columns, context menus
+// [IMPL-FILE_PANE] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-FILE_LISTING] [REQ-DIRECTORY_NAVIGATION] [REQ-DIRECTORY_TREE]: Client FilePane renders flattened tree rows, marks, comparison colors, tabular columns, context menus
 
 ## Summary contract
 
@@ -8,8 +8,8 @@
 
 ```
 CONTRACT Summary
-  INPUT: path, files[], cursor, marks Set, columns, optional metadataColumnWidths, paneFilesList, scrollTrigger, comparisonMode/Index
-  OUTPUT: rendered file rows; onNavigate, onCursorMove, onToggleMark, onDrop callbacks
+  INPUT: path, files[] (FileTreeRowLike with optional depth/isExpanded), cursor, marks Set of absolute paths, columns, optional metadataColumnWidths, paneFilesList, scrollTrigger, comparisonMode/Index, onToggleExpand?
+  OUTPUT: rendered file rows; onNavigate (re-root base), onToggleExpand (tree expand), onCursorMove, onToggleMark(filePath), onDrop callbacks
   DATA: contextMenu and columnContextMenu state; fileListRef for scrollIntoView
   CONTROL: single contextMenu state for row and column right-click (unified ContextMenu)
 ```
@@ -23,13 +23,26 @@ PROCEDURE RenderFileRows(context)
   IF files.length = 0 THEN RENDER empty OR filter-empty message when rawFileCount > 0
   FOR EACH file AT index
     isCursor := cursor >= 0 AND index = cursor
-    isMarked := marks.has(file.name)
+    isMarked := marks.has(file.path)
     comparisonClass := getComparisonClass(file.name) from comparisonIndex
     RENDER row data-testid=file-row-grid
       style gridTemplateColumns = rowGridTemplate
       class cursor blue OR marked yellow OR comparisonClass OR hover
-      onClick move cursor; onDoubleClick navigate if directory
+      onClick move cursor; onDoubleClick IF directory AND onToggleExpand THEN onToggleExpand(file.path) ELSE onNavigate NOT called
       draggable with handleDragStart (marked set or single file)
+```
+
+## TREE_DEPTH_INDENT_CHEVRON
+
+// [IMPL-FILE_PANE] [IMPL-DIRECTORY_TREE] [ARCH-DIRECTORY_TREE] [REQ-DIRECTORY_TREE] [REQ-DIRECTORY_NAVIGATION]: how: name column applies depth*16px padding and ▶/▼ chevron on directories from FileTreeRow metadata
+
+```
+PROCEDURE TREE_DEPTH_INDENT_CHEVRON(context)
+  depth := file.depth ?? 0
+  paddingLeft := 8 + depth * 16 px on name column span
+  IF file.isDirectory THEN RENDER chevron ▶ when collapsed OR ▼ when isExpanded
+  ELSE RENDER spacer w-3 for column alignment
+  onToggleExpand optional; when absent directories behave as flat rows without expand
 ```
 
 ## TABULAR_FILE_ROW_GRID

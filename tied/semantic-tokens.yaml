@@ -3204,3 +3204,52 @@ TEST-COPY_FILE:
     - REQ-COPY_OPERATIONS
     - REQ-FILE_OPERATIONS
   source_file: src/lib/copy-file.data.test.ts
+REQ-DIRECTORY_TREE:
+  type: REQ
+  name: Directory Tree Listing
+  category: Functional
+  status: Planned
+  description: Lazy hierarchical tree listing under each pane base directory
+  cross_references:
+    - ARCH-DIRECTORY_TREE
+    - IMPL-DIRECTORY_TREE
+    - IMPL-FILE_PANE
+    - IMPL-WORKSPACE_VIEW
+    - REQ-DIRECTORY_NAVIGATION
+    - REQ-FILE_LISTING
+  source_index: requirements.yaml
+  detail_file: requirements/REQ-DIRECTORY_TREE.yaml
+  metadata:
+    registered: "2026-06-01"
+    last_updated: "2026-06-01"
+ARCH-DIRECTORY_TREE:
+  type: ARCH
+  name: Directory Tree State Model
+  status: Active
+  description: Pane FileTreeState with lazy expand and flattened visible rows
+  cross_references:
+    - ARCH-FILE_MANAGER_HIERARCHY
+    - IMPL-DIRECTORY_TREE
+    - IMPL-FILE_PANE
+    - IMPL-WORKSPACE_VIEW
+    - REQ-DIRECTORY_TREE
+  source_index: architecture-decisions.yaml
+  detail_file: architecture-decisions/ARCH-DIRECTORY_TREE.yaml
+  metadata:
+    registered: "2026-06-01"
+    last_updated: "2026-06-01"
+IMPL-DIRECTORY_TREE:
+  type: IMPL
+  name: Directory Tree Module
+  status: Planned
+  description: Pure file-tree module and pane tree integration
+  cross_references:
+    - ARCH-DIRECTORY_TREE
+    - IMPL-FILE_PANE
+    - IMPL-WORKSPACE_VIEW
+    - REQ-DIRECTORY_TREE
+  source_index: implementation-decisions.yaml
+  detail_file: implementation-decisions/IMPL-DIRECTORY_TREE.yaml
+  metadata:
+    registered: "2026-06-01"
+    last_updated: "2026-06-01"

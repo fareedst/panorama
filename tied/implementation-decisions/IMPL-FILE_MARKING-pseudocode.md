@@ -1,74 +1,74 @@
 # IMPL-FILE_MARKING essence pseudocode
 
-// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: Per-pane Set<string> marks in WorkspaceView; keyboard via keybindings; checkbox in FilePane
+// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB] [REQ-DIRECTORY_TREE]: Per-pane Set<string> marks keyed by absolute file.path in WorkspaceView; keyboard via keybindings; checkbox in FilePane; RECONCILE_TREE_SELECTION prunes invisible paths
 
 ## Summary contract
 
-// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: bound module inputs, outputs, and shared data for all runtime blocks below
+// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB] [REQ-DIRECTORY_TREE]: bound module inputs, outputs, and shared data for all runtime blocks below
 
 ```
 CONTRACT Summary
-  INPUT: paneIndex; filename; visibleFiles from crossPaneVisibilityResult.displayFilesByPane OR pane.files
+  INPUT: paneIndex; filePath; visibleFiles from crossPaneVisibilityResult.displayFilesByPane OR pane.files
   OUTPUT: updated pane.marks Set; footer [N marked] when marks.size > 0
-  DATA: PaneState.marks Set<string> keyed by file.name; marks independent per pane index
+  DATA: PaneState.marks Set<string> keyed by absolute file.path; marks independent per pane index
   CONTROL: keybindings mark.toggle (Space), mark.toggle-cursor (m), mark.all, mark.invert, mark.clear
 ```
 
 ## PaneMarkState
 
-// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: each pane initializes marks as empty Set; persists across re-sort by filename
+// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB] [REQ-DIRECTORY_TREE]: how: each pane initializes marks as empty Set; persists across re-sort and tree refresh when path still visible
 
 ```
 PROCEDURE PaneMarkState(context)
-  DATA pane.marks AS Set<string>
-  ON directory reload RETAIN marks for names still in pane.files
+  DATA pane.marks AS Set<string> of absolute paths
+  ON directory reload OR tree refresh RETAIN marks for paths still in visible pane.files
   SKIP parent directory entry (..) for mark targets
 ```
 
 ## MarkToggleCursor
 
-// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: m key and checkbox call handleToggleMark without cursor move
+// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB] [REQ-DIRECTORY_TREE]: how: m key and checkbox call handleToggleMark(filePath) without cursor move
 
 ```
 PROCEDURE MarkToggleCursor(context)
-  INPUT: paneIndex, filename
-  IF filename IN pane.marks THEN DELETE ELSE ADD
+  INPUT: paneIndex, filePath
+  IF filePath IN pane.marks THEN DELETE ELSE ADD
   IMMUTABLE update pane via setPanes copy with new Set
   CURSOR unchanged
 ```
 
 ## MarkToggleAdvance
 
-// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: Space keybinding mark.toggle toggles visible cursor file then advances cursor if not last
+// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB] [REQ-DIRECTORY_TREE]: how: Space keybinding mark.toggle toggles visible cursor file path then advances cursor if not last
 
 ```
 PROCEDURE MarkToggleAdvance(context)
   INPUT: focusIndex, visibleFiles[pane.cursor]
   IF no file at cursor THEN RETURN
-  CALL handleToggleMark(focusIndex, file.name)
+  CALL handleToggleMark(focusIndex, file.path)
   IF cursor < visibleFiles.length - 1 THEN handleCursorMove(focusIndex, cursor + 1)
 ```
 
 ## MarkAllVisible
 
-// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB] [REQ-PANE_DISPLAY_FILTER]: how: Shift+M mark.all sets marks to all names in displayFilesByPane when filter active
+// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB] [REQ-PANE_DISPLAY_FILTER] [REQ-DIRECTORY_TREE]: how: Shift+M mark.all sets marks to all paths in displayFilesByPane when filter active
 
 ```
 PROCEDURE MarkAllVisible(context)
   visible := crossPaneVisibilityResult.displayFilesByPane[paneIndex] ?? pane.files
-  SET pane.marks := new Set(visible.map(f => f.name))
+  SET pane.marks := new Set(visible.map(f => f.path))
 ```
 
 ## InvertMarksVisible
 
-// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB] [REQ-PANE_DISPLAY_FILTER]: how: Ctrl+M mark.invert symmetric difference over visible file names only
+// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB] [REQ-PANE_DISPLAY_FILTER] [REQ-DIRECTORY_TREE]: how: Ctrl+M mark.invert symmetric difference over visible file paths only
 
 ```
 PROCEDURE InvertMarksVisible(context)
   visible := displayFilesByPane[paneIndex] ?? pane.files
   newMarks := empty Set
   FOR EACH file IN visible
-    IF file.name NOT IN pane.marks THEN ADD file.name TO newMarks
+    IF file.path NOT IN pane.marks THEN ADD file.path TO newMarks
   SET pane.marks := newMarks
 ```
 
@@ -84,21 +84,22 @@ PROCEDURE ClearMarks(context)
 
 ## MarkPersistence
 
-// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: marks keyed by filename survive sort/filter/reload; pruned when name absent from listing
+// [IMPL-FILE_MARKING] [IMPL-DIRECTORY_TREE] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB] [REQ-DIRECTORY_TREE]: how: marks keyed by absolute path survive sort/filter/tree refresh; pruned when path absent from visible rows via RECONCILE_TREE_SELECTION
 
 ```
 PROCEDURE MarkPersistence(context)
-  ON sort OR filter OR reload MATCH marks by file.name string not row index
-  DROP marks for names no longer in pane.files when listing changes
+  ON sort OR filter OR reload OR tree expand/collapse MATCH marks by file.path not row index
+  DROP marks for paths no longer in pane.files when listing changes
+  DELEGATE reconcile to IMPL-DIRECTORY_TREE RECONCILE_TREE_SELECTION when tree mutates
 ```
 
 ## MarkVisualFeedback
 
-// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: FilePane checkbox checked when marked; row bg-yellow when marked and not comparison-colored
+// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB] [REQ-DIRECTORY_TREE]: how: FilePane checkbox checked when file.path in marks; row bg-yellow when marked and not comparison-colored
 
 ```
 PROCEDURE MarkVisualFeedback(context)
-  RENDER checkbox per row; checked IF name IN marks
+  RENDER checkbox per row; checked IF file.path IN marks
   APPLY marked background class when isMarked AND no comparison override
   FOOTER show [{marks.size} marked] when marks.size > 0 AND footer visible
 ```
@@ -135,11 +136,12 @@ PROCEDURE MarkWithNavigation(context)
 
 ## CodeLocations
 
-// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: map implementing and verifying source files for this IMPL
+// [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB] [REQ-DIRECTORY_TREE]: map implementing and verifying source files for this IMPL
 
 ```
 // FILE: src/app/files/WorkspaceView.tsx — handleToggleMark, handleMarkAll, handleInvertMarks, handleClearMarks, keybinding handlers
 // FILE: src/app/files/components/FilePane.tsx — checkbox and footer marked count
+// FILE: src/lib/file-tree.ts — reconcileTreeSelection
 // FILE: src/app/files/WorkspaceView.test.tsx — TEST-FILE_MARKING / mark behavior tests
 ```
 

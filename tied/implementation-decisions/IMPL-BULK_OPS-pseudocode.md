@@ -2,22 +2,39 @@
 
 // [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: client bulk copy/move/delete with confirm and progress dialogs; server Promise.allSettled per source via POST /api/files
 
+## MAP_SOURCE_TO_DEST
+
+// [IMPL-BULK_OPS] [IMPL-NSYNC_ENGINE] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-DIRECTORY_TREE] [REQ-BULK_FILE_OPS]: how: map each source absolute path to destination under destBase preserving path relative to sourceBase (not basename flatten)
+
+```
+CONTRACT MAP_SOURCE_TO_DEST
+  INPUT: sourcePath, sourceBase (pane.path), destBase (destination pane.path)
+  OUTPUT: destPath absolute path under destBase
+  DATA: relative slice aligned with linked-nav rules; path.join(destBase, relative)
+
+PROCEDURE IMPL-BULK_OPS_MapSourceToDest(sourcePath, sourceBase, destBase)
+  NORMALIZE sourceBase and destBase trailing slashes
+  IF sourcePath NOT under sourceBase THEN error
+  relative := sourceBase === '/' ? sourcePath.slice(1) : path.relative(sourceBase, sourcePath)
+  RETURN join(destBase, relative) with slash normalization
+```
+
 ## GET_OPERATION_FILES
 
-// [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: resolve source paths from marked visible files or cursor file in focused pane
+// [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS] [REQ-DIRECTORY_TREE] [REQ-FILE_MARKING_WEB]: how: resolve source paths from path-keyed marks visible in pane or cursor file path
 
 ```
 CONTRACT GET_OPERATION_FILES
   INPUT: paneIndex, panes[], crossPaneVisibilityResult.displayFilesByPane
   OUTPUT: string[] of absolute file paths (may be empty)
-  DATA: pane.marks Set, pane.cursor, visible file listing per pane
+  DATA: pane.marks Set of absolute paths, pane.cursor, visible file listing per pane
 
 PROCEDURE IMPL-BULK_OPS_GetOperationFiles(paneIndex)
   visibleFiles := displayFilesByPane[paneIndex] ?? panes[paneIndex].files
+  visiblePaths := Set of visibleFiles.map(f => f.path)
   IF pane.marks.size > 0 THEN
-    FOR EACH filename IN pane.marks
-      FIND file IN visibleFiles WHERE file.name = filename
-      IF found THEN APPEND file.path
+    FOR EACH markPath IN pane.marks
+      IF markPath IN visiblePaths THEN APPEND markPath
     RETURN collected paths
   file := visibleFiles[pane.cursor]
   IF file exists THEN RETURN [file.path]
@@ -40,13 +57,14 @@ PROCEDURE IMPL-BULK_OPS_BulkCopy()
   IF sources empty THEN RETURN
   destPaneIndex := other pane index (0<->1 when two panes)
   destDir := panes[destPaneIndex].path
-  conflicts := FOR EACH source detect basename collision in dest pane listing
+  sourceBase := panes[paneIndex].path
+  conflicts := FOR EACH source destPath := MapSourceToDest(source, sourceBase, destDir); detect collision at destPath in dest pane visible rows
   OPEN ConfirmDialog title Copy Files with optional conflict list
   ON confirm
     OPEN ProgressDialog in-progress Copying Files total sources.length
-    POST /api/files { operation: bulk-copy, sources, dest: destDir, displaySpecId? }
+    POST /api/files { operation: bulk-copy, sources, dest: destDir, sourceBase, displaySpecId? }
     ON success UPDATE ProgressDialog complete with OperationResult counts and errors
-    AWAIT refresh source and destination pane listings
+    AWAIT refreshPaneTree(sourcePaneIndex) AND handleNavigate(destPaneIndex, destDir)
     CLEAR marks on source pane
   ON fetch error alert failure AND close progress dialog
 ```
@@ -134,15 +152,16 @@ PROCEDURE IMPL-BULK_OPS_ProgressDialog()
 
 ```
 CONTRACT SERVER_BULK_HANDLERS
-  INPUT: sources[] paths, destDir (copy/move only), optional onProgress callback
+  INPUT: sources[] paths, destDir (copy/move only), sourceBase?, optional onProgress callback
   OUTPUT: OperationResult { successCount, errorCount, errors[] }
-  DATA: parallel map over sources
+  DATA: parallel map over sources; dest := MapSourceToDest when sourceBase else join(destDir, basename)
 
-PROCEDURE IMPL-BULK_OPS_ServerBulkHandlers(operation, sources, destDir?)
+PROCEDURE IMPL-BULK_OPS_ServerBulkHandlers(operation, sources, destDir?, sourceBase?)
   errors := []
   completed := 0
   results := AWAIT Promise.allSettled FOR EACH source IN sources
-    TRY single copyFile OR moveFile OR deleteFile for source
+    dest := IF sourceBase THEN MapSourceToDest(source, sourceBase, destDir) ELSE join(destDir, basename(source))
+    TRY single copyFile OR moveFile OR deleteFile for source -> dest
       INVOKE onProgress before and after each file with total completed currentFile errors
     ON error PUSH { file: source, error } AND rethrow so entry settles rejected
   successCount := count fulfilled results
@@ -156,7 +175,7 @@ PROCEDURE IMPL-BULK_OPS_ServerBulkHandlers(operation, sources, destDir?)
 
 ```
 CONTRACT API_ROUTE_HANDLERS
-  INPUT: POST body { operation, sources, dest? }
+  INPUT: POST body { operation, sources, dest?, sourceBase? }
   OUTPUT: JSON OperationResult or 400 error
   CONTROL: assertSourcesVisible gate before filesystem mutation
 
@@ -166,7 +185,7 @@ PROCEDURE IMPL-BULK_OPS_ApiRouteHandlers(body)
       IF sources missing or empty THEN RETURN 400 Sources array required
       IF dest missing THEN RETURN 400 Destination directory required
       IF visibility blocked THEN RETURN blocked response
-      result := AWAIT bulkCopy OR bulkMove(sources, dest)
+      result := AWAIT bulkCopy OR bulkMove(sources, dest, { sourceBase })
       RETURN JSON result
     bulk-delete
       IF sources missing or empty THEN RETURN 400 Sources array required
@@ -193,6 +212,7 @@ PROCEDURE IMPL-BULK_OPS_VKeyForMove()
 
 // [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: map implementing and verifying source files for this IMPL
 
+// FILE: src/lib/cross-pane-path.ts — resolveCrossPaneDestPath shared mapper
 // FILE: src/app/files/WorkspaceView.tsx — getOperationFiles, handleBulkCopy/Move/Delete, keybinding file.move
 // FILE: src/app/files/components/ConfirmDialog.tsx — Escape/Enter confirm UX
 // FILE: src/app/files/components/ProgressDialog.tsx — progress bar and completion summary

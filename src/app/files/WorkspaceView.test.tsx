@@ -1243,7 +1243,7 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
 
     // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: linkedMode boolean and syncingRef Set prevent recursive sync during handleNavigate
 
-    it("should sync all panes from root into subdir with correct path [REQ-LINKED_PANES] [IMPL-LINKED_NAV]", async () => {
+    it("should expand directory on Enter without linked pane re-root [REQ-DIRECTORY_TREE] [REQ-LINKED_PANES]", async () => {
       const rootFiles: FileStat[] = [
         { name: "private", path: "/private", isDirectory: true, size: 0, mtime: new Date(), extension: "" },
         { name: "Users", path: "/Users", isDirectory: true, size: 0, mtime: new Date(), extension: "" },
@@ -1285,9 +1285,8 @@ describe("WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANE
           const u = call[0].toString();
           return u.includes("path=%2Fprivate");
         });
-        expect(privateCalls.length).toBeGreaterThanOrEqual(2);
-        const hasRivate = calls.some((call) => call[0].toString().includes("path=%2Frivate"));
-        expect(hasRivate).toBe(false);
+        expect(privateCalls.length).toBe(1);
+        expect(screen.getAllByText("/").length).toBeGreaterThanOrEqual(2);
       }, { timeout: 3000 });
     });
 

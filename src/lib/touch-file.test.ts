@@ -66,20 +66,22 @@ describe("[TEST-TOUCH_FILE] touch-file resolution [IMPL-TOUCH_MTIME]", () => {
     [file("unique.log", "/third/unique.log", t1)],
   ];
 
-  it("resolveTouchBasenames uses marks when non-empty", () => {
-    expect(resolveTouchBasenames(new Set(["a", "b"]), panes[0][0])).toEqual([
-      "a",
-      "b",
-    ]);
+  it("resolveTouchBasenames uses mark paths when non-empty", () => {
+    expect(
+      resolveTouchBasenames(new Set(["/p/a.txt", "/p/b.txt"]), panes[0][0]),
+    ).toEqual(["/p/a.txt", "/p/b.txt"]);
   });
 
-  it("resolveTouchBasenames falls back to clicked file", () => {
+  it("resolveTouchBasenames falls back to clicked file path", () => {
     expect(resolveTouchBasenames(new Set(), panes[0][0])).toEqual([
-      "shared.txt",
+      "/left/shared.txt",
     ]);
   });
 
-  it("resolveTouchPaths thisPane returns initiating pane path only", () => {
+  it("resolveTouchPaths thisPane resolves by path or basename", () => {
+    expect(
+      resolveTouchPaths("thisPane", 0, panes, ["/left/shared.txt"]),
+    ).toEqual([{ path: "/left/shared.txt", basename: "shared.txt" }]);
     expect(
       resolveTouchPaths("thisPane", 0, panes, ["shared.txt"]),
     ).toEqual([{ path: "/left/shared.txt", basename: "shared.txt" }]);
@@ -130,7 +132,7 @@ describe("[TEST-TOUCH_FILE] touch-file resolution [IMPL-TOUCH_MTIME]", () => {
       null,
       0,
       multiPane,
-      new Set(["a.txt", "b.txt"]),
+      new Set(["/p/a.txt", "/p/b.txt"]),
       multiPane[0][0],
     );
     expect(entries.map((e) => e.path).sort()).toEqual(["/p/a.txt", "/p/b.txt"]);

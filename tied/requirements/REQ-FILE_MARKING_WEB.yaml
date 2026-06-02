@@ -4,7 +4,7 @@ REQ-FILE_MARKING_WEB:
   priority: P0
   status: Implemented
   description: |-
-    Users must be able to mark and unmark individual files within a web-based directory listing for batch operations. Marked files are visually distinguished from unmarked files using checkbox icons and background highlighting. The system must support marking/unmarking individual files, toggling marks on all files, and clearing all marks. Mark state must persist when the directory is re-sorted or refreshed, maintaining marks on the same file names. Marked files participate in batch operations (copy, move, delete) as a group.
+    Users must be able to mark and unmark individual files within a web-based directory listing for batch operations. Marked files are visually distinguished from unmarked files using checkbox icons and background highlighting. The system must support marking/unmarking individual files, toggling marks on all visible rows, and clearing all marks. Mark state persists when re-sorted or tree-refreshed by absolute file.path (path-based when directory tree spans multiple subdirectories). Marked files participate in batch operations (copy, move, delete) as a group.
 
     Canonical terms: tied/vocab/file-marking.md; pseudo-code blocks MarkToggle, MarkAll, ClearMarks in IMPL-FILE_MARKING-pseudocode.md.
   rationale:
@@ -20,14 +20,14 @@ REQ-FILE_MARKING_WEB:
       - Persistent client-side selection across sorting/filtering
   satisfaction_criteria:
     - criterion: 'Pane footer displays marked count: [marked/total]'
-    - criterion: Batch operations (copy, move, delete) operate on marked files when marks exist
-    - criterion: Mark persistence is name-based (survives file order changes)
-    - criterion: Mark state persists when directory is re-sorted or refreshed
+    - criterion: Batch operations operate on marked files when marks exist
+    - criterion: Mark persistence is path-based when tree spans multiple directories (absolute file.path)
+    - criterion: Mark state persists when tree is refreshed or re-sorted within visible rows
     - criterion: Marked files visually distinguished with checkbox icon and background color
     - criterion: Parent directory entry (..) cannot be marked
     - criterion: Terminology aligns with tied/vocab/file-marking.md
     - criterion: Users can clear all marks with Escape key
-    - criterion: Users can mark all files (Shift+M) and invert marks (Ctrl+M)
+    - criterion: Users can mark all visible rows (Shift+M) and invert marks (Ctrl+M)
     - criterion: Users can mark individual files by toggling with Space key or checkbox click
   validation_criteria:
     - method: Unit tests
@@ -53,15 +53,16 @@ REQ-FILE_MARKING_WEB:
       - REQ-KEYBOARD_NAVIGATION
     related_to:
       - REQ-BULK_FILE_OPS
+      - REQ-DIRECTORY_TREE
     supersedes: []
   metadata:
     created:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-29T00:00:00.000Z"
+      date: "2026-06-01T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — vocabulary standards; file-marking glossary criterion
+      reason: LEAP — path-keyed marks for tree listing
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

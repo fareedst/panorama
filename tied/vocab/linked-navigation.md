@@ -39,13 +39,15 @@
 | --- | --- | --- | --- | --- |
 | Linked mode on | “Linked” (footer/badge) | `layout.defaultLinkedMode` | `link.toggle` | `linkedMode`, `setLinkedMode` |
 | Parent directory | “..” / Parent | — | `navigate.parent` | `navigateToParent`, `onNavigateParent` |
-| Downward linked nav | — | — | `navigate.enter` (into subdir) | `DownwardNavigation` block |
+| Downward linked nav | — | — | re-root via `handleNavigate` only (not tree expand) | `DownwardNavigation` block |
+| Tree expand toggle | — | — | `navigate.enter` / double-click on directory | `handleToggleExpand` (no linked sync) |
 | Upward linked nav | — | `navigate.parent` | — | `UpwardNavigation` block |
 | Sort sync | — | — | `view.sort` | `SortSynchronization` |
 
 ## Named concepts
 
-- **Linked downward navigation** — Append same **relative subdirectory** to each other pane when structures align.
+- **Linked downward navigation** — Append same **relative subdirectory** to each other pane when structures align. Applies only to **`handleNavigate` re-root** (Set Base, header `..`, bookmarks), **not** tree expand/collapse ([directory-tree.md](directory-tree.md)).
+- **Tree expand (no linked sync)** — Double-click / Enter on a directory toggles expand in the initiating pane only; does not propagate to linked panes.
 - **Linked upward navigation** — Pop same number of path segments on each pane toward root.
 - **Cursor synchronization** — Match `file.name` across panes; cursor `-1` when name missing (graceful degradation).
 - **Cross-pane path clipboard** — File column menu **Copy paths in all panes** reuses the same **cursor filename** match key; independent of whether **linked mode** is ON ([workspace-pane.md](workspace-pane.md)).

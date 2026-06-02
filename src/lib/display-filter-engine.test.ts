@@ -73,9 +73,9 @@ describe("display-filter-engine [IMPL-DISPLAY_FILTER_ENGINE]", () => {
     const pane = reconcilePaneSelection({
       files: [file("a"), file("b")],
       cursor: 5,
-      marks: new Set(["a", "gone"]),
+      marks: new Set(["/tmp/a", "/tmp/gone"]),
     });
-    expect(pane.marks).toEqual(new Set(["a"]));
+    expect(pane.marks).toEqual(new Set(["/tmp/a"]));
     expect(pane.cursor).toBe(1);
   });
 

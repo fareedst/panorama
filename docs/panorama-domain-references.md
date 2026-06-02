@@ -11,6 +11,7 @@ Pick the **preferred term** from the linked vocabulary file before naming pseudo
 | P0 | [workspace-pane.md](../tied/vocab/workspace-pane.md) | **Workspace**, **pane**, **focus**, layout geometry, Page → Workspace → Pane hierarchy, pane lifecycle |
 | P0 | [nsync-multi-target.md](../tied/vocab/nsync-multi-target.md) | **NSYNC** multi-destination sync: sources, destinations, `sync-all`, compare/skip, move semantics, store monitor |
 | P0 | [cross-pane-comparison.md](../tied/vocab/cross-pane-comparison.md) | **Comparison index**, shared filenames, visual comparison modes, size/time coloring |
+| P1 | [directory-tree.md](../tied/vocab/directory-tree.md) | **Directory tree** lazy listing under pane base, expand/collapse, visible rows, path-keyed marks |
 | P1 | [linked-navigation.md](../tied/vocab/linked-navigation.md) | **Linked mode**, synchronized directory/cursor/sort across panes |
 | P1 | [file-marking.md](../tied/vocab/file-marking.md) | **Marks** (per-pane selection sets), bulk operation source resolution |
 | P1 | [pane-display-filter.md](../tied/vocab/pane-display-filter.md) | **Display specs** (named pane filters), active spec, catalog sync — not Mesh Policy |

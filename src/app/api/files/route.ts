@@ -182,7 +182,8 @@ export async function POST(request: NextRequest) {
         const blocked = await assertSourcesVisible(sources);
         if (blocked) return blocked;
         
-        const result = await bulkCopy(sources, dest);
+        const sourceBase = body.sourceBase as string | undefined;
+        const result = await bulkCopy(sources, dest, { sourceBase });
         logger.info(["IMPL-BULK_OPS", "REQ-BULK_FILE_OPS"], `Bulk copy completed`, { 
           successCount: result.successCount, 
           errorCount: result.errors.length 
@@ -204,7 +205,8 @@ export async function POST(request: NextRequest) {
         const blockedMove = await assertSourcesVisible(sources);
         if (blockedMove) return blockedMove;
         
-        const result = await bulkMove(sources, dest);
+        const sourceBase = body.sourceBase as string | undefined;
+        const result = await bulkMove(sources, dest, { sourceBase });
         logger.info(["IMPL-BULK_OPS", "REQ-BULK_FILE_OPS"], `Bulk move completed`, {
           successCount: result.successCount,
           errorCount: result.errors.length
@@ -407,6 +409,8 @@ export async function POST(request: NextRequest) {
         const blockedSync = await assertSourcesVisible(sources);
         if (blockedSync) return blockedSync;
         
+        const sourceBase = body.sourceBase as string | undefined;
+        
         // Import SyncEngine dynamically
         const { SyncEngine } = await import("@/lib/sync");
         
@@ -417,6 +421,7 @@ export async function POST(request: NextRequest) {
           compareMethod: compareMethod || "size-mtime",
           hashAlgorithm: hashAlgorithm || "blake3",
           verifyDestination: verify,
+          sourceBase,
         });
         
         logger.info(["IMPL-NSYNC_ENGINE", "REQ-NSYNC_MULTI_TARGET"], `Sync-all completed`, {

@@ -110,6 +110,33 @@ describe("SyncEngine", () => {
     expect(result.itemsCompleted).toBe(0);
   });
 
+  // [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-DIRECTORY_TREE]: how: sourceBase maps nested sources to matching subpaths under each destination
+  it("should sync nested source paths when sourceBase provided [REQ-DIRECTORY_TREE]", async () => {
+    const subDir = path.join(sourceDir, "sub");
+    await fs.mkdir(subDir);
+    const sourceFile = path.join(subDir, "nested.txt");
+    await fs.writeFile(sourceFile, "nested content");
+
+    const engine = new SyncEngine();
+    const result = await engine.sync([sourceFile], [dest1Dir, dest2Dir], {
+      compareMethod: "size-mtime",
+      sourceBase: sourceDir,
+    });
+
+    expect(result.itemsCompleted).toBe(1);
+
+    const dest1File = path.join(dest1Dir, "sub", "nested.txt");
+    const dest2File = path.join(dest2Dir, "sub", "nested.txt");
+
+    const [dest1Content, dest2Content] = await Promise.all([
+      fs.readFile(dest1File, "utf-8"),
+      fs.readFile(dest2File, "utf-8"),
+    ]);
+
+    expect(dest1Content).toBe("nested content");
+    expect(dest2Content).toBe("nested content");
+  });
+
   // [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: how: onStart(plan), onItemStart, onItemProgress, onItemComplete, onProgress(stats), onFinish(result)
   it("should call observer callbacks [REQ-SDK_OBSERVER]", async () => {
     const sourceFile = path.join(sourceDir, "test.txt");

@@ -25,6 +25,7 @@ const mockBulkTouch = vi.fn();
 const mockBulkRename = vi.fn();
 const mockBulkMakeDirectory = vi.fn();
 const mockBulkCopy = vi.fn();
+const mockBulkMove = vi.fn();
 const mockExecuteCommandBatch = vi.fn();
 vi.mock("@/lib/files.data", () => ({
   copyFile: vi.fn(),
@@ -32,7 +33,7 @@ vi.mock("@/lib/files.data", () => ({
   deleteFile: vi.fn(),
   renameFile: vi.fn(),
   bulkCopy: (...args: unknown[]) => mockBulkCopy(...args),
-  bulkMove: vi.fn(),
+  bulkMove: (...args: unknown[]) => mockBulkMove(...args),
   bulkDelete: vi.fn(),
   bulkTouch: (...args: unknown[]) => mockBulkTouch(...args),
   bulkRename: (...args: unknown[]) => mockBulkRename(...args),
@@ -65,6 +66,11 @@ describe("POST /api/files [TEST-FILES_API] [IMPL-FILES_API] [REQ-FILE_OPERATIONS
       errors: [],
     });
     mockBulkCopy.mockResolvedValue({
+      successCount: 1,
+      errorCount: 0,
+      errors: [],
+    });
+    mockBulkMove.mockResolvedValue({
       successCount: 1,
       errorCount: 0,
       errors: [],
@@ -138,6 +144,27 @@ describe("POST /api/files [TEST-FILES_API] [IMPL-FILES_API] [REQ-FILE_OPERATIONS
       );
       const data = await response.json();
       expect(data.itemsCompleted).toBe(1);
+    });
+
+    it("forwards sourceBase to SyncEngine.sync [REQ-NSYNC_MULTI_TARGET] [REQ-DIRECTORY_TREE]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "sync-all",
+          sources: ["/alpha/sub/file.txt"],
+          destinations: ["/beta", "/gamma"],
+          sourceBase: "/alpha",
+          move: false,
+        }),
+      });
+      const response = await POST(request);
+      expect(response.status).toBe(200);
+      expect(mockSync).toHaveBeenCalledWith(
+        ["/alpha/sub/file.txt"],
+        ["/beta", "/gamma"],
+        expect.objectContaining({ sourceBase: "/alpha", move: false }),
+      );
     });
 
     it("returns 400 when sync-all has no sources [REQ-NSYNC_MULTI_TARGET]", async () => {
@@ -435,7 +462,48 @@ describe("POST /api/files [TEST-FILES_API] [IMPL-FILES_API] [REQ-FILE_OPERATIONS
       expect(response.status).toBe(200);
       expect(mockBulkCopy).toHaveBeenCalledWith(
         ["/tmp/src/file.txt", "/tmp/src/mydir"],
-        "/tmp/dest"
+        "/tmp/dest",
+        { sourceBase: undefined },
+      );
+    });
+
+    it("forwards sourceBase to bulkCopy [REQ-BULK_FILE_OPS] [REQ-DIRECTORY_TREE]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "bulk-copy",
+          sources: ["/alpha/sub/file.txt"],
+          dest: "/beta",
+          sourceBase: "/alpha",
+        }),
+      });
+      const response = await POST(request);
+      expect(response.status).toBe(200);
+      expect(mockBulkCopy).toHaveBeenCalledWith(
+        ["/alpha/sub/file.txt"],
+        "/beta",
+        { sourceBase: "/alpha" },
+      );
+    });
+
+    it("forwards sourceBase to bulkMove [REQ-BULK_FILE_OPS] [REQ-DIRECTORY_TREE]", async () => {
+      const request = new NextRequest("http://localhost/api/files", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          operation: "bulk-move",
+          sources: ["/alpha/sub/file.txt"],
+          dest: "/beta",
+          sourceBase: "/alpha",
+        }),
+      });
+      const response = await POST(request);
+      expect(response.status).toBe(200);
+      expect(mockBulkMove).toHaveBeenCalledWith(
+        ["/alpha/sub/file.txt"],
+        "/beta",
+        { sourceBase: "/alpha" },
       );
     });
   });

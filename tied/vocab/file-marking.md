@@ -2,7 +2,7 @@
 
 ## Scope
 
-**Marks**: per-pane sets of selected **filenames** used as the source list for copy/move/delete and **multi-target sync**. Excludes visual comparison ([cross-pane-comparison.md](cross-pane-comparison.md)) and mark-independent single-file ops (cursor-only when no marks).
+**Marks**: per-pane sets of selected file **absolute paths** (`file.path`) used as the source list for copy/move/delete and **multi-target sync**; path keys disambiguate duplicate basenames when the [directory tree](directory-tree.md) spans multiple subdirectories. Excludes visual comparison ([cross-pane-comparison.md](cross-pane-comparison.md)) and mark-independent single-file ops (cursor-only when no marks).
 
 ## Traceability
 
@@ -24,8 +24,8 @@
 
 | Preferred | Synonyms / notes |
 | --- | --- |
-| **Mark** (noun) | “selection”, “checkbox state” — store is `pane.marks: Set<string>` keyed by **`file.name`** |
-| **Marked file** | File whose `name` is in `pane.marks` |
+| **Mark** (noun) | “selection”, “checkbox state” — store is `pane.marks: Set<string>` keyed by **absolute `file.path`** when tree spans multiple directories ([directory-tree.md](directory-tree.md)) |
+| **Marked file** | File whose `path` is in `pane.marks` |
 | **Marked count** | Footer `[markedCount/totalCount]` — **totalCount** is visible file count when a display spec is active |
 | **Toggle mark** | `mark.toggle` — **M** key |
 | **Mark and advance** | `mark.toggle-cursor` — **Space** (mark then move cursor down) |
@@ -37,6 +37,7 @@
 | **marksAtOpen snapshot** | Frozen copy of `pane.marks` when a secondary dialog opens from the context menu; path resolution uses snapshot, not live marks ([IMPL-RENAME_REGEX](../tied/implementation-decisions/IMPL-RENAME_REGEX.yaml)) |
 | **Per-pane independence** | Marks do not copy across panes; bulk ops use **source pane** marks only |
 | **Cross-pane copy** | Single-destination copy from source pane to another pane’s directory via `file.copy` / `bulk-copy` (not CopyAll/NSYNC); handler `handleBulkCopy` |
+| **Relative destination mapping** | Cross-pane copy/move and NSYNC map each source to `join(destBase, relative(source, sourceBase))` — preserves hierarchy under destination base ([directory-tree.md](directory-tree.md)); API field `sourceBase` |
 | **Recursive directory copy** | When source `stat` is directory, data layer `copyFile` uses `fs.cp(..., { recursive: true })` instead of `fs.copyFile` ([IMPL-FILES_DATA](../tied/implementation-decisions/IMPL-FILES_DATA.yaml)) |
 | **Destination parent creation** | Before copy, `fs.mkdir(path.dirname(dest), { recursive: true })` so nested destination paths succeed |
 
@@ -54,7 +55,7 @@
 
 ## Named concepts
 
-- **Mark persistence** — Marks survive re-sort and directory refresh when **filename** still exists; dropped when name absent.
+- **Mark persistence** — Marks survive re-sort and tree refresh when **absolute path** still appears in visible rows; dropped when path absent.
 - **Parent entry** — `..` parent row is not markable.
 - **Empty directory** — Mark keys on empty listing: no error, no footer count.
 - **Multi-mark workflow** — Sequential mark.all → invert → clear is valid UX.

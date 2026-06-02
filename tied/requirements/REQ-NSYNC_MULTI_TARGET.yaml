@@ -19,6 +19,7 @@ REQ-NSYNC_MULTI_TARGET:
     - criterion: 'Move semantics: delete source only after all destinations succeed (see MoveSemantics / IMPL-NSYNC_ENGINE_MoveSemantics)'
     - criterion: Cancellation support via AbortSignal
     - criterion: Observer pattern for progress callbacks (SyncObserver)
+    - criterion: preserve_relative_path — sync-all maps each source to same relative path under each destination base when sourceBase provided
     - criterion: Sync files to 2+ destinations in parallel via sync-all / SyncEngine
     - criterion: Terminology and block names align with tied/vocab/nsync-multi-target.md
   validation_criteria:
@@ -28,6 +29,8 @@ REQ-NSYNC_MULTI_TARGET:
       coverage: CopyAll/MoveAll from React UI
     - method: Playwright
       coverage: e2e/copyall-demo.spec.ts documents CopyAll workflow and produces demo PNGs plus GIF via IMPL-DEMO_SCREENSHOT_PIPELINE
+    - method: Unit tests
+      coverage: nested source paths with sourceBase in engine.test.ts
   traceability:
     architecture:
       - ARCH-NSYNC_INTEGRATION
@@ -52,9 +55,9 @@ REQ-NSYNC_MULTI_TARGET:
       date: 2026-02-09T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-30T00:00:00.000Z"
+      date: "2026-06-01T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — CopyAll demo E2E and GIF pipeline traceability
+      reason: LEAP — preserve relative path on multi-target sync (sourceBase)
     last_validated:
       date: 2026-02-09T00:00:00.000Z
       validator: AI Agent

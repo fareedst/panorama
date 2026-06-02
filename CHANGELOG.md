@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Directory tree listing** (`[REQ-DIRECTORY_TREE]`, `[ARCH-DIRECTORY_TREE]`, `[IMPL-DIRECTORY_TREE]`, `[IMPL-WORKSPACE_VIEW]`, `[IMPL-FILE_PANE]`, `[IMPL-FILE_MARKING]`, `[IMPL-BULK_OPS]`, `[IMPL-NSYNC_ENGINE]`): lazy hierarchical tree under each pane base directory; Enter/double-click/chevron expand/collapse without linked re-root; path-keyed marks on flattened visible rows; `sourceBase` relative mapping for cross-pane copy/move/sync-all via `resolveCrossPaneDestPath`. Modules: [`file-tree.ts`](src/lib/file-tree.ts), [`pane-file-tree.ts`](src/lib/pane-file-tree.ts), [`cross-pane-path.ts`](src/lib/cross-pane-path.ts), [`WorkspaceView.tsx`](src/app/files/WorkspaceView.tsx), [`FilePane.tsx`](src/app/files/components/FilePane.tsx), [`files.data.ts`](src/lib/files.data.ts), [`sync/engine.ts`](src/lib/sync/engine.ts), [`route.ts`](src/app/api/files/route.ts). Tests: [`file-tree.test.ts`](src/lib/file-tree.test.ts), [`pane-file-tree.test.ts`](src/lib/pane-file-tree.test.ts), [`cross-pane-path.test.ts`](src/lib/cross-pane-path.test.ts), [`WorkspaceView.directory-tree.test.tsx`](src/app/files/WorkspaceView.directory-tree.test.tsx), [`FilePane.test.tsx`](src/app/files/components/FilePane.test.tsx), [`route.test.ts`](src/app/api/files/route.test.ts), [`files.data.test.ts`](src/lib/files.data.test.ts), [`sync/engine.test.ts`](src/lib/sync/engine.test.ts). Vocabulary: [`tied/vocab/directory-tree.md`](tied/vocab/directory-tree.md), [`tied/vocab/file-marking.md`](tied/vocab/file-marking.md), [`tied/vocab/linked-navigation.md`](tied/vocab/linked-navigation.md), [`tied/vocab/nsync-multi-target.md`](tied/vocab/nsync-multi-target.md), [`tied/vocab/workspace-pane.md`](tied/vocab/workspace-pane.md).
+
+### Changed
+
+- **Marks and linked Enter** (`[REQ-FILE_MARKING_WEB]`, `[REQ-LINKED_PANES]`, `[REQ-DIRECTORY_TREE]`): `pane.marks` keyed by absolute `file.path`; linked Enter toggles tree expand in the initiating pane only (no multi-pane re-root).
+
 ### Fixed
 
 - **Recursive directory copy** (`[REQ-FILE_OPERATIONS]`, `[REQ-COPY_OPERATIONS]`, `[ARCH-FILESYSTEM_ABSTRACTION]`, `[IMPL-FILES_DATA]`, `[IMPL-COPY_ATTRS]`): `copyFile` creates destination parent directories and uses `fs.cp` for directory sources; fixes cross-pane copy of marked directories. Module: [`files.data.ts`](src/lib/files.data.ts). Tests: [`files.data.test.ts`](src/lib/files.data.test.ts), [`copy-file.data.test.ts`](src/lib/copy-file.data.test.ts), [`route.test.ts`](src/app/api/files/route.test.ts) (`bulk-copy`). Vocabulary: [`tied/vocab/file-marking.md`](tied/vocab/file-marking.md), [`tied/vocab/nsync-multi-target.md`](tied/vocab/nsync-multi-target.md), [`tied/vocab/toolbar-keybind.md`](tied/vocab/toolbar-keybind.md).

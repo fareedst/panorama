@@ -8,6 +8,7 @@ import type { FileStat, SortType, CompareState, ComparisonIndex } from "./files.
 import { formatSize } from "./files.utils";
 import { logger } from "./logger";
 import { preserveCopyAttributes } from "./copyAttributes";
+import { resolveCrossPaneDestPath } from "./cross-pane-path";
 
 // Re-export formatSize for backward compatibility
 export { formatSize };
@@ -378,20 +379,35 @@ export async function bulkMakeDirectory(
   };
 }
 
+export interface BulkOperationOptions {
+  /** Source pane base directory for relative destination mapping */
+  sourceBase?: string;
+  onProgress?: (progress: import("./files.types").OperationProgress) => void;
+}
+
+// [IMPL-BULK_OPS] [IMPL-NSYNC_ENGINE] [ARCH-BATCH_OPERATIONS] [REQ-DIRECTORY_TREE] [REQ-BULK_FILE_OPS]: how — MAP_SOURCE_TO_DEST via resolveCrossPaneDestPath when sourceBase set
+function resolveBulkDestPath(src: string, destDir: string, sourceBase?: string): string {
+  if (sourceBase) {
+    return resolveCrossPaneDestPath(src, sourceBase, destDir);
+  }
+  return path.join(destDir, path.basename(src));
+}
+
 /**
- * [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: bulkCopy bulkMove bulkDelete in files.data.ts run Promise.allSettled per source without stopping on first failure
+ * [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS] [REQ-DIRECTORY_TREE]: how — bulkCopy with optional sourceBase relative dest mapping; Promise.allSettled per source
  * Copy multiple files with progress tracking
  * 
  * @param sources - Array of source file paths
  * @param destDir - Destination directory path
- * @param onProgress - Optional progress callback
+ * @param options - Optional sourceBase for relative mapping and progress callback
  * @returns Operation result with success/error counts
  */
 export async function bulkCopy(
   sources: string[],
   destDir: string,
-  onProgress?: (progress: import("./files.types").OperationProgress) => void
+  options?: BulkOperationOptions,
 ): Promise<import("./files.types").OperationResult> {
+  const { sourceBase, onProgress } = options ?? {};
   logger.info(["IMPL-BULK_OPS", "REQ-BULK_FILE_OPS"], `Bulk copy: ${sources.length} files to ${destDir}`);
 
   const errors: Array<{ file: string; error: string }> = [];
@@ -401,15 +417,15 @@ export async function bulkCopy(
   const results = await Promise.allSettled(
     sources.map(async (src) => {
       try {
-        const filename = path.basename(src);
-        const dest = path.join(destDir, filename);
+        const dest = resolveBulkDestPath(src, destDir, sourceBase);
+        const displayName = path.basename(dest);
 
         // Report progress
         if (onProgress) {
           onProgress({
             total: sources.length,
             completed,
-            currentFile: filename,
+            currentFile: displayName,
             errors,
           });
         }
@@ -422,7 +438,7 @@ export async function bulkCopy(
           onProgress({
             total: sources.length,
             completed,
-            currentFile: filename,
+            currentFile: displayName,
             errors,
           });
         }
@@ -450,19 +466,20 @@ export async function bulkCopy(
 }
 
 /**
- * [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: bulkCopy bulkMove bulkDelete in files.data.ts run Promise.allSettled per source without stopping on first failure
+ * [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS] [REQ-DIRECTORY_TREE]: how — bulkMove with optional sourceBase relative dest mapping; Promise.allSettled per source
  * Move multiple files with progress tracking
  * 
  * @param sources - Array of source file paths
  * @param destDir - Destination directory path
- * @param onProgress - Optional progress callback
+ * @param options - Optional sourceBase for relative mapping and progress callback
  * @returns Operation result with success/error counts
  */
 export async function bulkMove(
   sources: string[],
   destDir: string,
-  onProgress?: (progress: import("./files.types").OperationProgress) => void
+  options?: BulkOperationOptions,
 ): Promise<import("./files.types").OperationResult> {
+  const { sourceBase, onProgress } = options ?? {};
   logger.info(["IMPL-BULK_OPS", "REQ-BULK_FILE_OPS"], `Bulk move: ${sources.length} files to ${destDir}`);
   
   const errors: Array<{ file: string; error: string }> = [];
@@ -472,15 +489,15 @@ export async function bulkMove(
   const results = await Promise.allSettled(
     sources.map(async (src) => {
       try {
-        const filename = path.basename(src);
-        const dest = path.join(destDir, filename);
+        const dest = resolveBulkDestPath(src, destDir, sourceBase);
+        const displayName = path.basename(dest);
         
         // Report progress
         if (onProgress) {
           onProgress({
             total: sources.length,
             completed,
-            currentFile: filename,
+            currentFile: displayName,
             errors,
           });
         }
@@ -493,7 +510,7 @@ export async function bulkMove(
           onProgress({
             total: sources.length,
             completed,
-            currentFile: filename,
+            currentFile: displayName,
             errors,
           });
         }

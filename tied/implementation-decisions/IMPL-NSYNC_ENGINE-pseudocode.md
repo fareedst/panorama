@@ -7,9 +7,9 @@
 // [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: how: sync() builds plan, iterates sources, syncItem to all destinations in parallel, deletes sources only after all dests succeed when move=true
 
 CONTRACT Summary
-  INPUT: sources[], destinations[], SyncOptions { move, compareMethod, hashAlgorithm, verifyDestination, observer, signal }
+  INPUT: sources[], destinations[], SyncOptions { move, compareMethod, hashAlgorithm, verifyDestination, observer, signal, sourceBase? }
   OUTPUT: SyncResult { cancelled, storeFailureAbort, itemsCompleted, itemsFailed, itemsSkipped, bytesCopied, durationMs, errors[] }
-  DATA: StoreMonitor, SyncObserver, sourcesToDelete Set, delegates to IMPL-NSYNC_COMPARE, IMPL-NSYNC_HASH, IMPL-NSYNC_VERIFY, IMPL-NSYNC_OPERATIONS, IMPL-NSYNC_STORE
+  DATA: StoreMonitor, SyncObserver, sourcesToDelete Set, delegates to IMPL-NSYNC_COMPARE, IMPL-NSYNC_HASH, IMPL-NSYNC_VERIFY, IMPL-NSYNC_OPERATIONS, IMPL-NSYNC_STORE; sourceBase maps nested sources via resolveCrossPaneDestPath
   CONTROL: defaults move=false, compareMethod=size-mtime, hashAlgorithm=blake3, verify=false
 
 ## SyncMethod
@@ -80,6 +80,21 @@ PROCEDURE IMPL-NSYNC_ENGINE_SyncItem(source, destinations, options, signal)
   CALL observer.onItemComplete(item, itemResult)
   RETURN itemResult
 
+## MAP_SOURCE_TO_DEST
+
+// [IMPL-NSYNC_ENGINE] [IMPL-BULK_OPS] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-DIRECTORY_TREE] [REQ-NSYNC_MULTI_TARGET]: how: when sourceBase present map each source to destDir preserving relative path under source base
+
+```
+CONTRACT MAP_SOURCE_TO_DEST
+  INPUT: sourcePath, sourceBase, destDir
+  OUTPUT: destPath absolute under destDir
+  DATA: resolveCrossPaneDestPath in cross-pane-path.ts
+
+PROCEDURE IMPL-NSYNC_ENGINE_MapSourceToDest(source, sourceBase, destDir)
+  IF sourceBase THEN RETURN resolveCrossPaneDestPath(source, sourceBase, destDir)
+  ELSE RETURN join(destDir, basename(source))
+```
+
 ## SyncToDestination
 
 // [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: how: compareFiles skip, copy or moveFile, optional verifyDestination, recordSuccess or classifyError
@@ -89,7 +104,7 @@ CONTRACT SyncToDestination
   OUTPUT: DestResult { destPath, skipped?, error? }
 
 PROCEDURE IMPL-NSYNC_ENGINE_SyncToDestination(source, destDir, item, sourceHash, options, signal)
-  destPath := join(destDir, basename(source))
+  destPath := IF options.sourceBase THEN MapSourceToDest(source, options.sourceBase, destDir) ELSE join(destDir, basename(source))
   IF signal.aborted THEN RETURN { destPath, error: Cancelled }
   IF AWAIT compareFiles(source, destPath, compareMethod, hashAlgorithm) THEN
     RETURN { destPath, skipped: true }; recordSuccess(destPath)

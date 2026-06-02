@@ -9,6 +9,7 @@ import {
   type CrossPaneVisibilityState,
 } from "./cross-pane-visibility";
 import type { CrossPaneVisibilityStore } from "./cross-pane-visibility-store";
+import type { FileTreeState } from "./file-tree";
 import type { PaneWithDisplayFilter } from "./pane-display-filter";
 
 export interface PaneCrossPaneVisibilityFields {
@@ -106,9 +107,9 @@ export type PaneWithCrossPaneVisibility = PaneWithDisplayFilter & PaneCrossPaneV
 
 // [IMPL-CROSS_PANE_VISIBILITY_CATALOG] [ARCH-CROSS_PANE_VISIBILITY] [REQ-CROSS_PANE_VISIBILITY] [REQ-DIRECTORY_NAVIGATION]: how: **Listing merge** via **Cross-pane field pick** — attach visibility catalog fields only; navigation/refresh do not revert path or files (tied/vocab/cross-pane-visibility.md)
 export function mergePaneListingWithCrossPaneFields(
-  listingPane: PaneWithDisplayFilter,
+  listingPane: PaneWithDisplayFilter & { treeState?: FileTreeState },
   crossPane: PaneCrossPaneVisibilityFields,
-): PaneWithCrossPaneVisibility {
+): PaneWithCrossPaneVisibility & { treeState?: FileTreeState } {
   return {
     ...listingPane,
     activeCrossPaneVisibilityId: crossPane.activeCrossPaneVisibilityId,

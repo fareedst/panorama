@@ -63,6 +63,7 @@ ARCH-LINKED_NAV:
       - Modify handleSortChange to apply sort settings to all panes when linked
       - Parent .. button in each pane header (visible when not at root, respects linked mode)
       - Support subdirectory navigation, parent navigation (keyboard + mouse), cursor sync, sort sync
+      - Tree expand/collapse (handleToggleExpand, navigate.enter on directory) does NOT propagate linked navigation — only handleNavigate re-root syncs panes (REQ-DIRECTORY_TREE)
   traceability:
     requirements:
       - REQ-DIRECTORY_NAVIGATION

@@ -1095,7 +1095,7 @@ IMPL-FILE_MANAGER_PAGE:
       result: pass
 IMPL-WORKSPACE_VIEW:
   name: Workspace View Client Component with Stable React Keys
-  status: Implemented
+  status: Active
   cross_references:
     - ARCH-FILE_MANAGER_HIERARCHY
     - IMPL-FILES_API
@@ -1188,7 +1188,7 @@ IMPL-WORKSPACE_VIEW:
       result: pass - no React warnings, 523 tests passing
 IMPL-FILE_PANE:
   name: File Pane Component
-  status: Implemented
+  status: Active
   cross_references:
     - ARCH-FILE_MANAGER_HIERARCHY
     - REQ-DIRECTORY_NAVIGATION
@@ -4260,3 +4260,12 @@ IMPL-MAKE_DIRECTORY_DIALOG:
     - REQ-DIRECTORY_NAVIGATION
     - REQ-MOUSE_INTERACTION
   detail_file: implementation-decisions/IMPL-MAKE_DIRECTORY_DIALOG.yaml
+IMPL-DIRECTORY_TREE:
+  name: Directory Tree Module
+  status: Active
+  traceability:
+    architecture:
+      - ARCH-DIRECTORY_TREE
+    requirements:
+      - REQ-DIRECTORY_TREE
+  detail_file: implementation-decisions/IMPL-DIRECTORY_TREE.yaml

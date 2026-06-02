@@ -1,0 +1,53 @@
+IMPL-DIRECTORY_TREE:
+  name: Directory Tree Module
+  status: Planned
+  cross_references:
+    - ARCH-DIRECTORY_TREE
+    - REQ-DIRECTORY_TREE
+  decision: Pure src/lib/file-tree.ts for tree state; WorkspaceView handleToggleExpand and refreshPaneTree
+  rationale:
+    why: Testable tree logic isolated from React pane shell
+    problems_solved:
+      - Untestable tree flatten in UI component
+    benefits:
+      - Unit-tested flatten and reconcile
+      - Clear IMPL boundary
+  implementation_approach:
+    summary: file-tree.ts pure functions; WorkspaceView wires fetch and pane.files update
+    details:
+      - CREATE_INITIAL_TREE_STATE
+      - FLATTEN_VISIBLE_ROWS
+      - HANDLE_NAVIGATE_TREE_RESET via createPaneTreeFromRootListing
+      - HANDLE_TOGGLE_EXPAND in WorkspaceView
+      - RECONCILE_TREE_SELECTION
+      - REFRESH_PANE_TREE in WorkspaceView
+      - SET_CHILDREN
+      - TOGGLE_EXPANDED
+  code_locations:
+    files:
+      - path: src/lib/file-tree.ts
+        description: Pure tree state module
+      - path: src/lib/file-tree.test.ts
+        description: Unit tests
+      - path: src/lib/pane-file-tree.ts
+        description: Pane tree integration and display filter per level
+      - path: src/lib/pane-file-tree.test.ts
+        description: Pane tree unit tests
+      - path: src/lib/cross-pane-path.ts
+        description: Relative dest mapping for bulk ops and sync
+      - path: src/app/files/WorkspaceView.tsx
+        description: handleToggleExpand, refreshPaneTree, mergePaneState
+  traceability:
+    architecture:
+      - ARCH-DIRECTORY_TREE
+    requirements:
+      - REQ-DIRECTORY_TREE
+    code_annotations:
+      - IMPL-DIRECTORY_TREE
+  related_decisions:
+    depends_on:
+      - IMPL-FILES_DATA
+      - IMPL-PANE_DISPLAY_FILTER_UI
+    see_also:
+      - IMPL-WORKSPACE_VIEW
+      - IMPL-FILE_PANE

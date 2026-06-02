@@ -106,10 +106,10 @@ export function validateSpec(
 /** [IMPL-DISPLAY_FILTER_ENGINE] [REQ-PANE_DISPLAY_FILTER] [REQ-FILE_MARKING_WEB]
  *  how: Drop marks not in visible files; clamp cursor to [0, files.length - 1] or 0 when empty. */
 export function reconcilePaneSelection<T extends PaneListingState>(pane: T): T {
-  const visibleNames = new Set(pane.files.map((f) => f.name));
+  const visiblePaths = new Set(pane.files.map((f) => f.path));
   const marks = new Set<string>();
-  for (const name of pane.marks) {
-    if (visibleNames.has(name)) marks.add(name);
+  for (const markPath of pane.marks) {
+    if (visiblePaths.has(markPath)) marks.add(markPath);
   }
   let cursor = pane.cursor;
   if (pane.files.length === 0) {

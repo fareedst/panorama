@@ -1,0 +1,50 @@
+REQ-DIRECTORY_TREE:
+  name: Directory Tree Listing
+  category: Functional
+  priority: P0
+  status: Planned
+  description: Each pane shows a lazy hierarchical tree under pane.path (base directory). First paint lists immediate children with first-level directories collapsed. Double-click and Enter toggle expand/collapse; re-root uses Set as Base directory, header .., bookmarks, and handleNavigate only.
+  rationale:
+    why: Flat single-directory listings prevent selecting operation files from multiple subdirectories within one pane
+    problems_solved:
+      - Double-click re-root prevents multi-directory selection
+      - No hierarchical view under base directory
+    benefits:
+      - Clear separation from linked re-root navigation
+      - Expand/collapse tree under fixed base
+      - Operation files from multiple dirs in one pane
+  satisfaction_criteria:
+    - criterion: depth_indent_and_chevron — directory rows show depth indent and expand indicator
+    - criterion: double_click_toggle_expand — directory double-click expands or collapses node, not Set as Base
+    - criterion: enter_toggle_expand — navigate.enter toggles directory expand/collapse
+    - criterion: first_level_collapsed_on_paint — root children visible; first-level dirs collapsed initially
+    - criterion: marks_and_cursor_on_visible_rows — selection on flattened visible tree rows including expanded subtrees
+    - criterion: marks_keyed_by_absolute_path — pane.marks stores absolute paths when tree spans multiple dirs
+    - criterion: Terminology aligns with tied/vocab/directory-tree.md
+    - criterion: tree_listing_under_base — pane.path is base; listing is lazy tree not flat re-root on dbl-click
+  validation_criteria:
+    - method: Unit tests
+      coverage: file-tree.ts flatten, toggle, reconcile
+    - method: Component tests
+      coverage: FilePane expand/collapse UI
+    - method: Integration tests
+      coverage: WorkspaceView handleToggleExpand, bulk ops multi-dir sources
+  traceability:
+    architecture:
+      - ARCH-DIRECTORY_TREE
+      - ARCH-FILE_MANAGER_HIERARCHY
+    implementation:
+      - IMPL-DIRECTORY_TREE
+      - IMPL-FILE_PANE
+      - IMPL-WORKSPACE_VIEW
+    code_annotations:
+      - REQ-DIRECTORY_TREE
+  related_requirements:
+    depends_on:
+      - REQ-FILE_LISTING
+      - REQ-DIRECTORY_NAVIGATION
+    related_to:
+      - REQ-BULK_FILE_OPS
+      - REQ-FILE_MARKING_WEB
+      - REQ-LINKED_PANES
+      - REQ-MOUSE_INTERACTION

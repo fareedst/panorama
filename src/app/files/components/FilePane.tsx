@@ -7,7 +7,8 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import type { FileStat, ComparisonMode, EnhancedCompareState } from "@/lib/files.types";
+import type { FileTreeRowLike } from "@/lib/file-tree";
+import type { ComparisonMode, EnhancedCompareState, FileStat } from "@/lib/files.types";
 import type { PaneBounds } from "@/lib/files.layout";
 import type { FilesColumnConfig, FileColumnId } from "@/lib/config.types";
 import {
@@ -29,22 +30,24 @@ import { FileTypeIcon } from "./FileTypeIcon";
 interface FilePaneProps {
   /** Current directory path */
   path: string;
-  /** Files in current directory */
-  files: FileStat[];
+  /** Files in visible tree rows (flattened) */
+  files: FileTreeRowLike[];
   /** Cursor position (0-indexed) */
   cursor: number;
-  /** Set of marked file names */
+  /** Set of marked file absolute paths */
   marks: Set<string>;
   /** Pane bounds from layout calculation */
   bounds: PaneBounds;
   /** Whether this pane has focus */
   focused: boolean;
-  /** Handler for directory navigation */
+  /** Handler for directory navigation (re-root base) */
   onNavigate: (newPath: string) => void;
+  /** [IMPL-DIRECTORY_TREE] [REQ-DIRECTORY_TREE] Toggle tree expand/collapse for directory */
+  onToggleExpand?: (dirPath: string) => void;
   /** Handler for cursor movement */
   onCursorMove: (newCursor: number) => void;
-  /** Handler for file marking */
-  onToggleMark?: (filename: string) => void;
+  /** Handler for file marking by absolute path */
+  onToggleMark?: (filePath: string) => void;
   /** [IMPL-COMPARISON_COLORS] [REQ-FILE_COMPARISON_VISUAL] Comparison mode */
   comparisonMode?: ComparisonMode;
   /** [IMPL-COMPARISON_COLORS] [REQ-FILE_COMPARISON_VISUAL] Enhanced comparison index */
@@ -138,7 +141,7 @@ export default function FilePane({
   marks,
   bounds,
   focused,
-  onNavigate,
+  onToggleExpand,
   onCursorMove,
   onToggleMark,
   comparisonMode = "off",
@@ -228,15 +231,15 @@ export default function FilePane({
   };
   
   const handleFileDoubleClick = (file: FileStat) => {
-    if (file.isDirectory) {
-      onNavigate(file.path);
+    if (file.isDirectory && onToggleExpand) {
+      onToggleExpand(file.path);
     }
   };
   
-  const handleMarkToggle = (filename: string, e: React.MouseEvent<HTMLInputElement>) => {
+  const handleMarkToggle = (filePath: string, e: React.MouseEvent<HTMLInputElement>) => {
     e.stopPropagation();
     if (onToggleMark) {
-      onToggleMark(filename);
+      onToggleMark(filePath);
     }
   };
 
@@ -266,7 +269,7 @@ export default function FilePane({
     // Determine what to drag (marked files or just this file)
     const filesToDrag = marks.size > 0 
       ? Array.from(marks) 
-      : [file.name];
+      : [file.path];
 
     // Store drag data
     e.dataTransfer.effectAllowed = "copyMove";
@@ -398,12 +401,13 @@ export default function FilePane({
   // [IMPL-FILE_PANE] [IMPL-FILE_COLUMN_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER] [REQ-FILE_LISTING]: how — TABULAR_FILE_ROW_GRID renders each metadata cell via columnId and FileStat only; row index stays in files.map for cursor and UNIFIED_CONTEXT_MENU_WIRING, not in renderColumn
   const renderColumn = (
     columnId: FileColumnId,
-    file: FileStat,
+    file: FileTreeRowLike,
   ) => {
     const cellClass = "px-2 truncate tabular-nums";
     const cellOptions =
       mtimeDisplayNowMs !== undefined ? { referenceNowMs: mtimeDisplayNowMs } : undefined;
     const displayText = formatFileColumnCell(file, columnId, columns, cellOptions);
+    const depth = file.depth ?? 0;
 
     switch (columnId) {
       case "name":
@@ -413,13 +417,25 @@ export default function FilePane({
             data-testid="file-column-name"
             className={`
               ${cellClass}
+              flex items-center gap-1 min-w-0
               ${file.isDirectory
                 ? "text-blue-600 dark:text-blue-400 font-semibold"
                 : "text-zinc-900 dark:text-zinc-100"
               }
             `}
+            style={{ paddingLeft: `${8 + depth * 16}px` }}
           >
-            {displayText}
+            {file.isDirectory ? (
+              <span
+                className="w-3 flex-shrink-0 text-zinc-500 dark:text-zinc-400 select-none"
+                aria-hidden
+              >
+                {file.isExpanded ? "▼" : "▶"}
+              </span>
+            ) : (
+              <span className="w-3 flex-shrink-0" aria-hidden />
+            )}
+            <span className="truncate">{displayText}</span>
           </span>
         );
 
@@ -562,13 +578,13 @@ export default function FilePane({
         ) : (
           <div className="font-mono text-sm" data-testid="file-list-table">
             {files.map((file, index) => {
-              const isCursor = cursor >= 0 && index === cursor; // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Handle cursor=-1
-              const isMarked = marks.has(file.name);
+              const isCursor = cursor >= 0 && index === cursor;
+              const isMarked = marks.has(file.path);
               const comparisonClass = getComparisonClass(file.name);
               
               return (
                 <div
-                  key={file.name}
+                  key={file.path}
                   draggable={true}
                   onDragStart={(e) => handleDragStart(e, file, index)}
                   className={`
@@ -593,7 +609,7 @@ export default function FilePane({
                     type="checkbox"
                     checked={isMarked}
                     onChange={() => {}} // Controlled input
-                    onClick={(e) => handleMarkToggle(file.name, e)}
+                    onClick={(e) => handleMarkToggle(file.path, e)}
                     className="w-4 h-4 justify-self-start"
                   />
                   

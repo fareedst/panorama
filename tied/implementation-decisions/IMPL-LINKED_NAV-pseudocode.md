@@ -12,6 +12,20 @@ CONTRACT Summary
   DATA: linkedMode from layout.defaultLinkedMode default true; syncingRef Set of pane indexes
   CONTROL: linking requires panes.length >= 2 for UI and toggle; single pane suppresses badges
 
+## TreeExpandNoLinkedSync
+
+// [IMPL-LINKED_NAV] [IMPL-DIRECTORY_TREE] [REQ-LINKED_PANES] [REQ-DIRECTORY_TREE]: how — handleToggleExpand does not propagate; linked downward/upward sync applies only to handleNavigate re-root
+
+CONTRACT TreeExpandNoLinkedSync
+  INPUT: handleToggleExpand on directory row or navigate.enter
+  OUTPUT: expandedPaths updated on initiating pane only
+  DATA: no syncingRef entries for tree expand
+
+PROCEDURE IMPL-LINKED_NAV_TreeExpandNoLinkedSync()
+  handleToggleExpand MUST NOT call linked DownwardNavigation or UpwardNavigation
+  navigate.enter on directory calls handleToggleExpand NOT handleNavigate
+  Parent button and navigate.parent still call handleNavigate with linked sync
+
 ## LinkedModeStateAndSyncGuard
 
 // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: linkedMode boolean and syncingRef Set prevent recursive sync during handleNavigate

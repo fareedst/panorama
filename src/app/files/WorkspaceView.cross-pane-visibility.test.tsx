@@ -191,8 +191,8 @@ describe("[REQ-CROSS_PANE_VISIBILITY] WorkspaceView cross-pane visibility", () =
     });
   });
 
-  // [IMPL-WORKSPACE_VIEW] [IMPL-CROSS_PANE_VISIBILITY_CATALOG] [ARCH-CROSS_PANE_VISIBILITY] [REQ-DIRECTORY_NAVIGATION] [REQ-CROSS_PANE_VISIBILITY]: how: handleNavigate preserves path after MERGE_LISTING_WITH_CROSS_PANE_FIELDS when panes have visibility fields
-  it("navigate.enter updates pane header path with cross-pane visibility fields on pane", async () => {
+  // [IMPL-WORKSPACE_VIEW] [IMPL-DIRECTORY_TREE] [REQ-DIRECTORY_TREE]: navigate.enter toggles tree expand; base path unchanged
+  it("navigate.enter toggles tree expand without re-rooting pane header path", async () => {
     const parentPath = "/parent";
     const subdirPath = "/parent/subdir";
     const parentFiles: FileStat[] = [
@@ -206,11 +206,21 @@ describe("[REQ-CROSS_PANE_VISIBILITY] WorkspaceView cross-pane visibility", () =
       },
       file("readme.txt", 10),
     ];
+    const subdirFiles: FileStat[] = [
+      {
+        name: "nested.txt",
+        path: `${subdirPath}/nested.txt`,
+        isDirectory: false,
+        size: 5,
+        mtime: "2024-01-01T00:00:00.000Z",
+        extension: ".txt",
+      },
+    ];
 
     (global.fetch as ReturnType<typeof vi.fn>).mockImplementation(async (url: string) => {
       const urlStr = url.toString();
       if (urlStr.includes(encodeURIComponent(subdirPath))) {
-        return { ok: true, json: async () => [] } as Response;
+        return { ok: true, json: async () => subdirFiles } as Response;
       }
       if (urlStr.includes(encodeURIComponent(parentPath))) {
         return { ok: true, json: async () => parentFiles } as Response;
@@ -235,7 +245,8 @@ describe("[REQ-CROSS_PANE_VISIBILITY] WorkspaceView cross-pane visibility", () =
     fireEvent.keyDown(window, { key: "Enter" });
 
     await waitFor(() => {
-      expect(within(pane0).getByText(subdirPath)).toBeInTheDocument();
+      expect(within(pane0).getByText(parentPath)).toBeInTheDocument();
+      expect(within(pane0).getByText("nested.txt")).toBeInTheDocument();
     });
   });
 });

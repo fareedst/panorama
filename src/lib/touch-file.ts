@@ -21,7 +21,7 @@ export interface TouchApplyEntry {
   mtime: Date;
 }
 
-/** [IMPL-TOUCH_MTIME] [REQ-TOUCH_MTIME]: how — marked basenames when marks non-empty; else right-clicked file name */
+/** [IMPL-TOUCH_MTIME] [REQ-TOUCH_MTIME] [REQ-FILE_MARKING_WEB]: how — marked absolute paths when marks non-empty; else context file path */
 export function resolveTouchBasenames(
   marks: Set<string>,
   fallbackFile: FileStat,
@@ -29,7 +29,7 @@ export function resolveTouchBasenames(
   if (marks.size > 0) {
     return [...marks];
   }
-  return [fallbackFile.name];
+  return [fallbackFile.path];
 }
 
 /** [IMPL-TOUCH_MTIME] [ARCH-TOUCH_MTIME] [REQ-TOUCH_MTIME]: how — thisPane from initiating listing; allPanes via cross-pane path resolver */
@@ -41,19 +41,20 @@ export function resolveTouchPaths(
 ): TouchPathEntry[] {
   const entries: TouchPathEntry[] = [];
 
-  for (const basename of basenames) {
+  for (const selected of basenames) {
     if (paneTarget === "thisPane") {
       const paneFiles = paneFilesList[initiatingPaneIndex];
-      const match = paneFiles?.find((f) => f.name === basename);
+      const match = paneFiles?.find((f) => f.path === selected || f.name === selected);
       if (match) {
-        entries.push({ path: match.path, basename });
+        entries.push({ path: match.path, basename: match.name });
       }
     } else {
-      for (const { path } of resolveCrossPanePathsForFilename(
+      const basename = selected.includes("/") ? selected.split("/").pop()! : selected;
+      for (const { path: filePath } of resolveCrossPanePathsForFilename(
         paneFilesList,
         basename,
       )) {
-        entries.push({ path, basename });
+        entries.push({ path: filePath, basename });
       }
     }
   }

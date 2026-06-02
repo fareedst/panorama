@@ -3,7 +3,7 @@ ARCH-MARKING_STATE:
   status: Active
   cross_references:
     - REQ-FILE_MARKING_WEB
-  decision: Store file marking state in client-side React state using Set<string> for marked filenames per pane. Marks persist across sorting and filtering via name-based matching, with no server-side storage.
+  decision: Store file marking state in client-side React state using Set<string> of absolute file.path per pane. Marks persist across sorting, filtering, and tree refresh via path-based matching; RECONCILE_TREE_SELECTION prunes marks not in visible rows.
   rationale:
     why: Web file marking requires client-side state for instant feedback with name-based persistence
     problems_solved:
@@ -30,13 +30,13 @@ ARCH-MARKING_STATE:
         - Breaks when files re-sorted
       rejected_reason: Name-based survives sort changes
   implementation_approach:
-    summary: React state with Set<string> per pane, name-based persistence
+    summary: React state with Set<string> absolute paths per pane, path-based persistence
     details:
       - 'Footer display: [marked/total] format'
-      - 'Mark operations: toggle, markAll, invertMarks, clearMarks'
-      - 'PaneState interface includes marks: Set<string> field'
       - 'Visual feedback: checkbox icon + background color from theme.yaml'
-      - Batch operations check marks.size > 0
+      - Batch operations check marks.size > 0 and use visible path intersection
+      - Mark persistence survives re-sort and refreshPaneTree when path still visible
+      - PaneState.marks stores absolute file.path when directory tree spans multiple subdirectories (REQ-DIRECTORY_TREE)
   traceability:
     requirements:
       - REQ-FILE_MARKING_WEB

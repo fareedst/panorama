@@ -12,6 +12,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import path from "path-browserify";
+import { resolveCrossPaneDestPath } from "@/lib/cross-pane-path";
 import type { FileStat, OperationResult, ComparisonMode } from "@/lib/files.types";
 import {
   swapArrayAt,
@@ -49,6 +50,7 @@ import {
   mergePaneListingWithCrossPaneFields,
   resolvePaneCrossPaneVisibility,
   snapshotPaneCrossPaneVisibilityFields,
+  type PaneCrossPaneVisibilityFields,
   type PaneWithCrossPaneVisibility,
 } from "@/lib/pane-cross-pane-visibility";
 import { CompareFilterThresholdDialog } from "./components/CompareFilterThresholdDialog";
@@ -145,8 +147,25 @@ import { buildTouchEntries } from "@/lib/touch-file";
 import {
   buildPaneFromRawListing,
   fetchDirectoryListing,
+  getActiveSpec,
   type PaneWithDisplayFilter,
 } from "@/lib/pane-display-filter";
+import {
+  createPaneTreeFromRootListing,
+  processListingForTreeLevel,
+  reflattenPaneTree,
+  syncPaneFromTree,
+  type PaneWithTree,
+} from "@/lib/pane-file-tree";
+import {
+  createInitialTreeState,
+  hasLoadedChildren,
+  isDirectoryExpanded,
+  paneSortOptions,
+  setChildren,
+  toggleExpanded,
+  type FileTreeState,
+} from "@/lib/file-tree";
 import { DisplaySpecManagerDialog } from "./components/DisplaySpecManagerDialog";
 import {
   applyMaxPanesLimit,
@@ -160,7 +179,20 @@ import {
   type WorkspaceSnapshot,
 } from "@/lib/workspace-mesh-bridge";
 
-type PaneState = PaneWithCrossPaneVisibility;
+type PaneState = PaneWithCrossPaneVisibility & { treeState: FileTreeState };
+
+// [IMPL-WORKSPACE_VIEW] [IMPL-DIRECTORY_TREE] [ARCH-DIRECTORY_TREE] [REQ-DIRECTORY_TREE]: how — MERGE_PANE_TREE_STATE preserves treeState when merging cross-pane visibility fields
+function mergePaneState(
+  listing: PaneWithTree,
+  crossPane: PaneCrossPaneVisibilityFields | PaneState,
+  cursorOverride?: number,
+): PaneState {
+  return {
+    ...mergePaneListingWithCrossPaneFields(listing, crossPane),
+    treeState: listing.treeState,
+    ...(cursorOverride !== undefined ? { cursor: cursorOverride } : {}),
+  };
+}
 
 // [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] Pane initial state from server
 interface PaneInitialState {
@@ -286,8 +318,9 @@ function buildPaneStatesFromInitial(
     };
     const store = getDisplaySpecStore();
     const withFilter = buildPaneFromRawListing(files, base, store, { preserveMarks: true });
+    const withTree = createPaneTreeFromRootListing(withFilter, withFilter.files);
     return {
-      ...withFilter,
+      ...withTree,
       ...initialPaneCrossPaneVisibilityFields(
         {
           crossPaneVisibilityId: meta?.crossPaneVisibilityId,
@@ -1040,8 +1073,8 @@ export default function WorkspaceView({
                 totalCount: listing.totalCount,
               },
             );
-            updated[idx] = mergePaneListingWithCrossPaneFields(built, updated[idx]);
-            updated[idx].cursor = restored.cursor;
+            const withTree = createPaneTreeFromRootListing(built, built.files);
+            updated[idx] = mergePaneState(withTree, updated[idx], restored.cursor);
             return updated;
           });
         } catch (err) {
@@ -1086,7 +1119,8 @@ export default function WorkspaceView({
             totalCount: listing.totalCount,
           },
         );
-        updated[paneIndex] = mergePaneListingWithCrossPaneFields(built, updated[paneIndex]);
+        const withTree = createPaneTreeFromRootListing(built, built.files);
+        updated[paneIndex] = mergePaneState(withTree, updated[paneIndex]);
         return updated;
       });
     },
@@ -1103,8 +1137,9 @@ export default function WorkspaceView({
     return unsub;
   }, [displaySpecManagerOpen, displaySpecStore, refreshPanesUsingSpec]);
   
-  // Handle navigation into directory
+  // Handle navigation into directory (re-root base; resets tree via createPaneTreeFromRootListing)
   // [IMPL-DIR_HISTORY] [ARCH-DIRECTORY_HISTORY] [REQ-ADVANCED_NAV]
+  // [IMPL-DIRECTORY_TREE] [IMPL-WORKSPACE_VIEW] [ARCH-DIRECTORY_TREE] [REQ-DIRECTORY_TREE] [REQ-DIRECTORY_NAVIGATION]: how — HANDLE_NAVIGATE_TREE_RESET on re-root; linked sync only here
   // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] [ARCH-LINKED_NAV]
   const handleNavigate = useCallback(async (paneIndex: number, newPath: string) => {
     // [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Check if this pane is currently syncing
@@ -1158,10 +1193,8 @@ export default function WorkspaceView({
             totalCount: listing.totalCount,
           },
         );
-        updated[paneIndex] = {
-          ...mergePaneListingWithCrossPaneFields(built, updated[paneIndex]),
-          cursor: restored.cursor,
-        };
+        const withTree = createPaneTreeFromRootListing(built, built.files);
+        updated[paneIndex] = mergePaneState(withTree, updated[paneIndex], restored.cursor);
         return updated;
       });
       
@@ -1273,6 +1306,106 @@ export default function WorkspaceView({
     }
   }, [panes, linkedMode, displaySpecStore]);
 
+  // [IMPL-DIRECTORY_TREE] [IMPL-WORKSPACE_VIEW] [REQ-DIRECTORY_TREE]: how — reload base and expanded dirs; preserve expandedPaths
+  const refreshPaneTree = useCallback(
+    async (paneIndex: number) => {
+      const pane = panes[paneIndex];
+      if (!pane) return;
+      try {
+        const sortOptions = paneSortOptions(pane);
+        const spec = getActiveSpec(displaySpecStore, pane.activeDisplaySpecId);
+        const expandedPaths = [...pane.treeState.expandedPaths];
+        if (pane.activeDisplaySpecId) {
+          await ensureDisplaySpecOnServer(
+            displaySpecStore.get(pane.activeDisplaySpecId),
+          );
+        }
+        const rootListing = await fetchDirectoryListing(
+          pane.path,
+          pane.activeDisplaySpecId,
+        );
+        const { files: rootFiles } = processListingForTreeLevel(
+          rootListing.files,
+          spec,
+          rootListing.serverPreFiltered,
+          sortOptions,
+        );
+        let treeState = createInitialTreeState(pane.path, rootFiles);
+        for (const expandedPath of expandedPaths) {
+          const listing = await fetchDirectoryListing(
+            expandedPath,
+            pane.activeDisplaySpecId,
+          );
+          const { files } = processListingForTreeLevel(
+            listing.files,
+            spec,
+            listing.serverPreFiltered,
+            sortOptions,
+          );
+          treeState = setChildren(treeState, expandedPath, files, sortOptions);
+        }
+        treeState = { ...treeState, expandedPaths: new Set(expandedPaths) };
+        setPanes((prev) => {
+          const updated = [...prev];
+          const nextPane = syncPaneFromTree({ ...updated[paneIndex], treeState });
+          updated[paneIndex] = mergePaneState(nextPane, updated[paneIndex]);
+          return updated;
+        });
+      } catch (error) {
+        console.error("DEBUG: refreshPaneTree failed", error);
+      }
+    },
+    [panes, displaySpecStore],
+  );
+
+  // [IMPL-DIRECTORY_TREE] [IMPL-WORKSPACE_VIEW] [REQ-DIRECTORY_TREE] [REQ-LINKED_PANES]: how — lazy fetch on expand; no linked sync
+  const handleToggleExpand = useCallback(
+    async (paneIndex: number, dirPath: string) => {
+      const pane = panes[paneIndex];
+      if (!pane) return;
+      let treeState = pane.treeState;
+      const sortOptions = paneSortOptions(pane);
+      const spec = getActiveSpec(displaySpecStore, pane.activeDisplaySpecId);
+
+      if (isDirectoryExpanded(treeState, dirPath)) {
+        treeState = toggleExpanded(treeState, dirPath);
+      } else {
+        if (!hasLoadedChildren(treeState, dirPath)) {
+          try {
+            if (pane.activeDisplaySpecId) {
+              await ensureDisplaySpecOnServer(
+                displaySpecStore.get(pane.activeDisplaySpecId),
+              );
+            }
+            const listing = await fetchDirectoryListing(
+              dirPath,
+              pane.activeDisplaySpecId,
+            );
+            const { files } = processListingForTreeLevel(
+              listing.files,
+              spec,
+              listing.serverPreFiltered,
+              sortOptions,
+            );
+            treeState = setChildren(treeState, dirPath, files, sortOptions);
+          } catch (error) {
+            console.error("DEBUG: handleToggleExpand fetch failed", error);
+            return;
+          }
+        }
+        treeState = toggleExpanded(treeState, dirPath);
+      }
+
+      setPanes((prev) => {
+        const updated = [...prev];
+        const nextPane = syncPaneFromTree({ ...updated[paneIndex], treeState });
+        updated[paneIndex] = mergePaneState(nextPane, updated[paneIndex]);
+        return updated;
+      });
+    },
+    [panes, displaySpecStore],
+  );
+
   
   // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: sync cursor to same filename in all panes when linkedMode ON
   const handleCursorMove = useCallback((paneIndex: number, newCursor: number) => {
@@ -1331,16 +1464,16 @@ export default function WorkspaceView({
     });
   }, [linkedMode, panes.length, crossPaneVisibilityResult]);
   
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB]: how: m key and checkbox call handleToggleMark without cursor move
-  const handleToggleMark = useCallback((paneIndex: number, filename: string) => {
+  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB] [REQ-DIRECTORY_TREE]: how — toggle mark by absolute file.path; m key and checkbox call without cursor move
+  const handleToggleMark = useCallback((paneIndex: number, filePath: string) => {
     setPanes((prev) => {
       const updated = [...prev];
       const marks = new Set(updated[paneIndex].marks);
       
-      if (marks.has(filename)) {
-        marks.delete(filename);
+      if (marks.has(filePath)) {
+        marks.delete(filePath);
       } else {
-        marks.add(filename);
+        marks.add(filePath);
       }
       
       updated[paneIndex] = {
@@ -1351,14 +1484,14 @@ export default function WorkspaceView({
     });
   }, []);
   
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB] [REQ-PANE_DISPLAY_FILTER]: how: Shift+M mark.all sets marks to all names in displayFilesByPane when filter active
+  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB] [REQ-PANE_DISPLAY_FILTER] [REQ-DIRECTORY_TREE]: how — Shift+M mark.all sets marks to all visible file.path values
   const handleMarkAll = useCallback((paneIndex: number) => {
     setPanes((prev) => {
       const updated = [...prev];
       const visible =
         crossPaneVisibilityResult.displayFilesByPane[paneIndex] ??
         updated[paneIndex].files;
-      const marks = new Set(visible.map((f) => f.name));
+      const marks = new Set(visible.map((f) => f.path));
 
       updated[paneIndex] = {
         ...updated[paneIndex],
@@ -1368,7 +1501,7 @@ export default function WorkspaceView({
     });
   }, [crossPaneVisibilityResult]);
   
-  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB] [REQ-PANE_DISPLAY_FILTER]: how: Ctrl+M mark.invert symmetric difference over visible file names only
+  // [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] [REQ-FILE_MARKING_WEB] [REQ-PANE_DISPLAY_FILTER] [REQ-DIRECTORY_TREE]: how — Ctrl+M mark.invert symmetric difference over visible file.path values
   const handleInvertMarks = useCallback((paneIndex: number) => {
     setPanes((prev) => {
       const updated = [...prev];
@@ -1378,8 +1511,8 @@ export default function WorkspaceView({
       const marks = new Set<string>();
 
       for (const file of visible) {
-        if (!pane.marks.has(file.name)) {
-          marks.add(file.name);
+        if (!pane.marks.has(file.path)) {
+          marks.add(file.path);
         }
       }
 
@@ -1411,7 +1544,7 @@ export default function WorkspaceView({
     } else {
       // Move cursor to file
       const pane = panes[focusIndex];
-      const fileIndex = pane.files.findIndex(f => f.name === file.name);
+      const fileIndex = pane.files.findIndex((f) => f.path === file.path);
       if (fileIndex !== -1) {
         handleCursorMove(focusIndex, fileIndex);
       }
@@ -1449,24 +1582,23 @@ export default function WorkspaceView({
         const pane = updated[paneIdx];
         
         // Remember current file for cursor preservation
-        const currentFilename = pane.files[pane.cursor]?.name;
+        const currentPath = pane.files[pane.cursor]?.path;
         
-        // Sort files with new settings
-        const sortedFiles = sortFiles(pane.files, criterion, direction, dirsFirst);
-        
-        // Find cursor position on same file
-        const newCursor = currentFilename
-          ? sortedFiles.findIndex((f) => f.name === currentFilename)
-          : 0;
-        
-        updated[paneIdx] = {
+        const withSort = reflattenPaneTree({
           ...pane,
-          files: sortedFiles,
-          cursor: newCursor >= 0 ? newCursor : 0,
           sortBy: criterion,
           sortDirection: direction,
           sortDirsFirst: dirsFirst,
-        };
+        });
+        
+        const newCursor = currentPath
+          ? withSort.files.findIndex((f) => f.path === currentPath)
+          : 0;
+        
+        updated[paneIdx] = {
+          ...withSort,
+          cursor: newCursor >= 0 ? newCursor : 0,
+        } as PaneState;
       }
       
       return updated;
@@ -1533,7 +1665,8 @@ export default function WorkspaceView({
             totalCount: listing.totalCount,
           },
         );
-        const newPane = mergePaneListingWithCrossPaneFields(built, {
+        const withTree = createPaneTreeFromRootListing(built, built.files);
+        const newPane = mergePaneState(withTree, {
           activeCrossPaneVisibilityId: sourcePane.activeCrossPaneVisibilityId,
           crossPaneVisibilityDraft: copyCrossPaneVisibilityState(
             sourcePane.crossPaneVisibilityDraft,
@@ -1758,18 +1891,18 @@ export default function WorkspaceView({
     [panes],
   );
 
-  // [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: resolve source paths from marked visible files or cursor file in focused pane
+  // [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS] [REQ-DIRECTORY_TREE] [REQ-FILE_MARKING_WEB]: how — GET_OPERATION_FILES returns path-keyed marks intersect visible rows or cursor file.path
   const getOperationFiles = useCallback((paneIndex: number): string[] => {
     const pane = panes[paneIndex];
     const visibleFiles =
       crossPaneVisibilityResult.displayFilesByPane[paneIndex] ?? pane.files;
 
     if (pane.marks.size > 0) {
+      const visiblePaths = new Set(visibleFiles.map((f) => f.path));
       const markedFiles: string[] = [];
-      for (const filename of pane.marks) {
-        const file = visibleFiles.find((f) => f.name === filename);
-        if (file) {
-          markedFiles.push(file.path);
+      for (const markPath of pane.marks) {
+        if (visiblePaths.has(markPath)) {
+          markedFiles.push(markPath);
         }
       }
       return markedFiles;
@@ -1779,7 +1912,7 @@ export default function WorkspaceView({
   }, [panes, crossPaneVisibilityResult]);
   
   /**
-   * [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: require 2 panes; dest is other pane path; detect overwrite conflicts; confirm then POST bulk-copy; refresh both panes and clear marks
+   * [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS] [REQ-DIRECTORY_TREE]: how — BULK_COPY with sourceBase relative mapping; refreshPaneTree on source pane after success
    * [IMPL-OVERWRITE_PROMPT]
    */
   const handleBulkCopy = useCallback(async (sourcePaneIndex?: number) => {
@@ -1798,23 +1931,23 @@ export default function WorkspaceView({
     // Destination is the other pane
     const destPaneIndex = paneIndex === 0 ? 1 : 0;
     const destDir = panes[destPaneIndex].path;
+    const sourceBase = panes[paneIndex].path;
     
-    // [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: before confirm, foreach source path compare basename to destination pane file names; build FileConflict when match
+    // [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: foreach source resolve dest path under dest base; build FileConflict when dest path exists in dest pane visible rows
     const conflicts: FileConflict[] = [];
     for (const sourcePath of sources) {
-      const basename = path.basename(sourcePath);
-      const existingFile = panes[destPaneIndex].files.find(f => f.name === basename);
+      const destPath = resolveCrossPaneDestPath(sourcePath, sourceBase, destDir);
+      const existingFile = panes[destPaneIndex].files.find((f) => f.path === destPath);
       
       if (existingFile) {
-        // Find source file stat
-        const sourceFile = panes[paneIndex].files.find(f => f.path === sourcePath);
+        const sourceFile = panes[paneIndex].files.find((f) => f.path === sourcePath);
         if (sourceFile) {
           const { sourceSummary, existingSummary, comparison } = describeFileComparison(
             sourceFile,
             existingFile
           );
           conflicts.push({
-            name: basename,
+            name: path.basename(destPath),
             sourceSummary,
             existingSummary,
             comparison,
@@ -1857,6 +1990,7 @@ export default function WorkspaceView({
               operation: "bulk-copy",
               sources,
               dest: destDir,
+              sourceBase,
               ...displaySpecPayload(paneIndex),
             }),
           });
@@ -1876,7 +2010,7 @@ export default function WorkspaceView({
           });
           
           // Refresh both panes
-          await handleNavigate(paneIndex, panes[paneIndex].path);
+          await refreshPaneTree(paneIndex);
           await handleNavigate(destPaneIndex, panes[destPaneIndex].path);
           
           // Clear marks in source pane
@@ -1888,7 +2022,7 @@ export default function WorkspaceView({
         }
       },
     });
-  }, [panes, focusIndex, getOperationFiles, confirmDialog, progressDialog, handleNavigate, handleClearMarks, displaySpecPayload]);
+  }, [panes, focusIndex, getOperationFiles, confirmDialog, progressDialog, handleNavigate, handleClearMarks, displaySpecPayload, refreshPaneTree]);
   
   /**
    * [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: same client flow as BulkCopy with operation bulk-move and file.move keybinding (V)
@@ -1910,23 +2044,23 @@ export default function WorkspaceView({
     // Destination is the other pane
     const destPaneIndex = paneIndex === 0 ? 1 : 0;
     const destDir = panes[destPaneIndex].path;
+    const sourceBase = panes[paneIndex].path;
     
-    // [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: before confirm, foreach source path compare basename to destination pane file names; build FileConflict when match
+    // [IMPL-OVERWRITE_PROMPT] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: foreach source resolve dest path under dest base; build FileConflict when dest path exists in dest pane visible rows
     const conflicts: FileConflict[] = [];
     for (const sourcePath of sources) {
-      const basename = path.basename(sourcePath);
-      const existingFile = panes[destPaneIndex].files.find(f => f.name === basename);
+      const destPath = resolveCrossPaneDestPath(sourcePath, sourceBase, destDir);
+      const existingFile = panes[destPaneIndex].files.find((f) => f.path === destPath);
       
       if (existingFile) {
-        // Find source file stat
-        const sourceFile = panes[paneIndex].files.find(f => f.path === sourcePath);
+        const sourceFile = panes[paneIndex].files.find((f) => f.path === sourcePath);
         if (sourceFile) {
           const { sourceSummary, existingSummary, comparison } = describeFileComparison(
             sourceFile,
             existingFile
           );
           conflicts.push({
-            name: basename,
+            name: path.basename(destPath),
             sourceSummary,
             existingSummary,
             comparison,
@@ -1969,6 +2103,7 @@ export default function WorkspaceView({
               operation: "bulk-move",
               sources,
               dest: destDir,
+              sourceBase,
               ...displaySpecPayload(paneIndex),
             }),
           });
@@ -1988,7 +2123,7 @@ export default function WorkspaceView({
           });
           
           // Refresh both panes
-          await handleNavigate(paneIndex, panes[paneIndex].path);
+          await refreshPaneTree(paneIndex);
           await handleNavigate(destPaneIndex, panes[destPaneIndex].path);
           
           // Clear marks in source pane
@@ -2000,7 +2135,7 @@ export default function WorkspaceView({
         }
       },
     });
-  }, [panes, focusIndex, getOperationFiles, confirmDialog, progressDialog, handleNavigate, handleClearMarks, displaySpecPayload]);
+  }, [panes, focusIndex, getOperationFiles, confirmDialog, progressDialog, handleNavigate, handleClearMarks, displaySpecPayload, refreshPaneTree]);
   
   /**
    * [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: destructive confirm then POST bulk-delete; refresh focused pane and clear marks
@@ -2057,7 +2192,7 @@ export default function WorkspaceView({
           });
           
           // Refresh current pane
-          await handleNavigate(paneIndex, panes[paneIndex].path);
+          await refreshPaneTree(paneIndex);
           
           // Clear marks
           handleClearMarks(paneIndex);
@@ -2068,8 +2203,8 @@ export default function WorkspaceView({
         }
       },
     });
-  }, [panes, focusIndex, getOperationFiles, confirmDialog, progressDialog, handleNavigate, handleClearMarks, displaySpecPayload]);
-
+  }, [focusIndex, getOperationFiles, confirmDialog, progressDialog, handleClearMarks, displaySpecPayload, refreshPaneTree]);
+  
   // [IMPL-NSYNC_ENGINE] [REQ-NSYNC_MULTI_TARGET] Helper to get other visible pane directories
   /**
    * Get all pane directories except the focused pane
@@ -2099,6 +2234,8 @@ export default function WorkspaceView({
     if (sources.length === 0) {
       return;
     }
+    
+    const sourceBase = panes[focusIndex].path;
     
     // Build message
     const message = `Copy ${sources.length} file(s) to ${destinations.length} pane(s):\n${destinations.join("\n")}`;
@@ -2130,6 +2267,7 @@ export default function WorkspaceView({
               operation: "sync-all",
               sources,
               destinations,
+              sourceBase,
               move: false,
               compareMethod: "size-mtime",
               verify: false,
@@ -2152,7 +2290,7 @@ export default function WorkspaceView({
           });
           
           // Refresh all panes
-          await Promise.all(panes.map((pane, idx) => handleNavigate(idx, pane.path)));
+          await Promise.all(panes.map((_, idx) => refreshPaneTree(idx)));
           
           // Clear marks in source pane
           handleClearMarks(focusIndex);
@@ -2163,8 +2301,8 @@ export default function WorkspaceView({
         }
       },
     });
-  }, [panes, focusIndex, getOperationFiles, getOtherPaneDirs, confirmDialog, progressDialog, handleNavigate, handleClearMarks, displaySpecPayload]);
-
+  }, [panes, focusIndex, getOperationFiles, getOtherPaneDirs, confirmDialog, progressDialog, handleClearMarks, displaySpecPayload, refreshPaneTree]);
+  
   // [IMPL-NSYNC_ENGINE] [REQ-NSYNC_MULTI_TARGET] Move to all other panes
   /**
    * Execute MoveAll operation - move sources to ALL other visible panes
@@ -2183,6 +2321,8 @@ export default function WorkspaceView({
     if (sources.length === 0) {
       return;
     }
+    
+    const sourceBase = panes[focusIndex].path;
     
     // Build message
     const message = `Move ${sources.length} file(s) to ${destinations.length} pane(s):\n${destinations.join("\n")}\n\nSource files will be deleted after successful sync to ALL destinations.`;
@@ -2214,6 +2354,7 @@ export default function WorkspaceView({
               operation: "sync-all",
               sources,
               destinations,
+              sourceBase,
               move: true,
               compareMethod: "size-mtime",
               verify: false,
@@ -2236,7 +2377,7 @@ export default function WorkspaceView({
           });
           
           // Refresh all panes
-          await Promise.all(panes.map((pane, idx) => handleNavigate(idx, pane.path)));
+          await Promise.all(panes.map((_, idx) => refreshPaneTree(idx)));
           
           // Clear marks in source pane
           handleClearMarks(focusIndex);
@@ -2247,7 +2388,7 @@ export default function WorkspaceView({
         }
       },
     });
-  }, [panes, focusIndex, getOperationFiles, getOtherPaneDirs, confirmDialog, progressDialog, handleNavigate, handleClearMarks, displaySpecPayload]);
+  }, [panes, focusIndex, getOperationFiles, getOtherPaneDirs, confirmDialog, progressDialog, handleClearMarks, displaySpecPayload, refreshPaneTree]);
 
   // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [IMPL-RENAME_DIALOG] [ARCH-KEYBIND_SYSTEM] [REQ-FILE_OPERATIONS]: how: build dest path with path.join(dirname, newName); POST operation rename; on success handleNavigate(paneIndex, dir)
   const handleRenameConfirm = useCallback(
@@ -2337,7 +2478,7 @@ export default function WorkspaceView({
             });
           }
           for (const i of paneIndicesToRefresh) {
-            void handleNavigate(i, panes[i].path);
+            void refreshPaneTree(i);
           }
         })
         .catch((e) => {
@@ -2345,7 +2486,7 @@ export default function WorkspaceView({
           alert(`Touch failed: ${String(e)}`);
         });
     },
-    [touchFileDialog, panes, handleNavigate, displaySpecPayload],
+    [touchFileDialog, panes, displaySpecPayload, refreshPaneTree],
   );
 
   // [IMPL-WORKSPACE_VIEW] [IMPL-EXECUTE_DIALOG] [IMPL-PANE_COMMAND_EXEC] [ARCH-PANE_COMMAND_EXEC] [REQ-PANE_COMMAND_EXEC]: how — buildExecuteEntries, POST execute-command, refresh affected pane listings
@@ -2412,7 +2553,7 @@ export default function WorkspaceView({
         .then(() => {
           const paneIndicesToRefresh = new Set(entries.map((entry) => entry.paneIndex));
           for (const i of paneIndicesToRefresh) {
-            void handleNavigate(i, panes[i].path);
+            void refreshPaneTree(i);
           }
         })
         .catch((e) => {
@@ -2420,7 +2561,7 @@ export default function WorkspaceView({
           alert(`Execute failed: ${String(e)}`);
         });
     },
-    [executeFileDialog, panes, handleNavigate],
+    [executeFileDialog, panes, refreshPaneTree],
   );
 
   // [IMPL-WORKSPACE_VIEW] [IMPL-MAKE_DIRECTORY_DIALOG] [IMPL-MAKE_DIRECTORY] [REQ-DIRECTORY_NAVIGATION]: how — buildMakeDirectoryEntries, POST bulk-mkdir, refresh affected pane listings
@@ -2469,7 +2610,7 @@ export default function WorkspaceView({
         .then(() => {
           const paneIndicesToRefresh = new Set(entries.map((entry) => entry.paneIndex));
           for (const i of paneIndicesToRefresh) {
-            void handleNavigate(i, panes[i].path);
+            void refreshPaneTree(i);
           }
         })
         .catch((e) => {
@@ -2477,7 +2618,7 @@ export default function WorkspaceView({
           alert(`Make directory failed: ${String(e)}`);
         });
     },
-    [makeDirectoryDialog, panes, handleNavigate, displaySpecPayload],
+    [makeDirectoryDialog, panes, displaySpecPayload, refreshPaneTree],
   );
 
   // [IMPL-WORKSPACE_VIEW] [IMPL-RENAME_REGEX_DIALOG] [IMPL-RENAME_REGEX] [REQ-BULK_FILE_OPS]: how — buildRenameRegexEntries, POST bulk-rename, refresh affected pane listings
@@ -2540,7 +2681,7 @@ export default function WorkspaceView({
             });
           }
           for (const i of paneIndicesToRefresh) {
-            void handleNavigate(i, panes[i].path);
+            void refreshPaneTree(i);
           }
         })
         .catch((e) => {
@@ -2548,7 +2689,7 @@ export default function WorkspaceView({
           alert(`Rename regex failed: ${String(e)}`);
         });
     },
-    [renameRegexDialog, panes, handleNavigate, displaySpecPayload],
+    [renameRegexDialog, panes, displaySpecPayload, refreshPaneTree],
   );
 
   // [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
@@ -2721,7 +2862,7 @@ export default function WorkspaceView({
     handlers.set("navigate.enter", () => {
       const file = visibleFiles[pane.cursor];
       if (file && file.isDirectory) {
-        handleNavigate(focusIndex, file.path);
+        void handleToggleExpand(focusIndex, file.path);
       }
     });
     
@@ -2791,7 +2932,7 @@ export default function WorkspaceView({
     handlers.set("mark.toggle", () => {
       const file = visibleFiles[pane.cursor];
       if (file) {
-        handleToggleMark(focusIndex, file.name);
+        handleToggleMark(focusIndex, file.path);
         if (pane.cursor < visibleFiles.length - 1) {
           handleCursorMove(focusIndex, pane.cursor + 1);
         }
@@ -2802,7 +2943,7 @@ export default function WorkspaceView({
     handlers.set("mark.toggle-cursor", () => {
       const file = visibleFiles[pane.cursor];
       if (file) {
-        handleToggleMark(focusIndex, file.name);
+        handleToggleMark(focusIndex, file.path);
       }
     });
     
@@ -2967,13 +3108,13 @@ export default function WorkspaceView({
       setPaneOrderDialogOpen(true);
     });
     
-    // [IMPL-PANE_REFRESH] [ARCH-PANE_REFRESH] [ARCH-KEYBIND_SYSTEM] [REQ-PANE_REFRESH] [REQ-KEYBOARD_SHORTCUTS_COMPLETE]: how: pane.refresh action calls handleNavigate(focusIndex, pane.path) for focused pane only
+    // [IMPL-PANE_REFRESH] [IMPL-DIRECTORY_TREE] [REQ-PANE_REFRESH]: how: pane.refresh reloads tree at current base
     handlers.set("pane.refresh", () => {
-      void handleNavigate(focusIndex, pane.path);
+      void refreshPaneTree(focusIndex);
     });
     
     return handlers;
-  }, [panes, focusIndex, crossPaneVisibilityResult, navigateToParent, handleNavigate, handleBulkCopy, handleBulkMove, handleBulkDelete, handleAddPane, handleRemovePane, handleSwapFocusedNext, handleSwapFocusedPrev, handleCyclePanes, handleClearMarks, handleCursorMove, handleToggleMark, handleMarkAll, handleInvertMarks, handleCopyAll, handleMoveAll, handleSetActiveDisplaySpec]);
+  }, [panes, focusIndex, crossPaneVisibilityResult, navigateToParent, handleNavigate, handleBulkCopy, handleBulkMove, handleBulkDelete, handleAddPane, handleRemovePane, handleSwapFocusedNext, handleSwapFocusedPrev, handleCyclePanes, handleClearMarks, handleCursorMove, handleToggleMark, handleMarkAll, handleInvertMarks, handleCopyAll, handleMoveAll, handleSetActiveDisplaySpec, handleToggleExpand, refreshPaneTree]);
 
   const actionHandlers = useMemo(() => {
     const merged = new Map(workspaceActionHandlers);
@@ -3385,7 +3526,8 @@ export default function WorkspaceView({
             focused={index === focusIndex}
             onNavigate={(newPath) => handleNavigate(index, newPath)}
             onCursorMove={(newCursor) => handleCursorMove(index, newCursor)}
-            onToggleMark={(filename) => handleToggleMark(index, filename)}
+            onToggleMark={(filePath) => handleToggleMark(index, filePath)}
+            onToggleExpand={(dirPath) => void handleToggleExpand(index, dirPath)}
             comparisonMode={comparisonMode}
             comparisonIndex={enhancedComparisonIndex}
             paneIndex={index}

@@ -37,6 +37,8 @@ import {
   moveFile,
   deleteFile,
   renameFile,
+  bulkCopy,
+  bulkMove,
   sortFiles,
   buildComparisonIndex,
 } from "./files.data";
@@ -593,5 +595,54 @@ describe("formatSize [REQ_FILE_LISTING]", () => {
     expect(formatSize(1048576)).toBe("1.0 MB");
     expect(formatSize(1073741824)).toBe("1.0 GB");
     expect(formatSize(1099511627776)).toBe("1.0 TB");
+  });
+});
+
+// [IMPL-BULK_OPS] [REQ-BULK_FILE_OPS] [REQ-DIRECTORY_TREE]: how: bulkCopy with sourceBase preserves relative path under destDir
+describe("bulkCopy [REQ-BULK_FILE_OPS] [REQ-DIRECTORY_TREE]", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockedFs.mkdir.mockResolvedValue(undefined);
+    mockedFs.copyFile.mockResolvedValue(undefined);
+    mockedFs.stat.mockResolvedValue({
+      isDirectory: () => false,
+      size: 10,
+      mtime: new Date("2024-01-01"),
+    } as never);
+  });
+
+  it("copies to nested dest path when sourceBase provided", async () => {
+    await bulkCopy(["/alpha/sub/file.txt"], "/beta", { sourceBase: "/alpha" });
+
+    expect(mockedFs.mkdir).toHaveBeenCalledWith("/beta/sub", { recursive: true });
+    expect(mockedFs.copyFile).toHaveBeenCalledWith(
+      "/alpha/sub/file.txt",
+      "/beta/sub/file.txt",
+    );
+  });
+
+  it("flattens to basename when sourceBase omitted (backward compat)", async () => {
+    await bulkCopy(["/alpha/sub/file.txt"], "/beta");
+
+    expect(mockedFs.copyFile).toHaveBeenCalledWith(
+      "/alpha/sub/file.txt",
+      "/beta/file.txt",
+    );
+  });
+});
+
+describe("bulkMove [REQ-BULK_FILE_OPS] [REQ-DIRECTORY_TREE]", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockedFs.rename.mockResolvedValue(undefined);
+  });
+
+  it("moves to nested dest path when sourceBase provided", async () => {
+    await bulkMove(["/alpha/sub/file.txt"], "/beta", { sourceBase: "/alpha" });
+
+    expect(mockedFs.rename).toHaveBeenCalledWith(
+      "/alpha/sub/file.txt",
+      "/beta/sub/file.txt",
+    );
   });
 });

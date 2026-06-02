@@ -134,7 +134,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         path="/home/user"
         files={mockFiles}
         cursor={0}
-        marks={new Set(["file1.txt"])}
+        marks={new Set(["/home/user/file1.txt"])}
         bounds={mockBounds}
         focused={true}
         onNavigate={mockOnNavigate}
@@ -208,7 +208,9 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
     expect(mockOnCursorMove).toHaveBeenCalledWith(1);
   });
   
-  it("should call onNavigate when double-clicking a directory", () => {
+  const mockOnToggleExpand = vi.fn();
+  
+  it("should call onToggleExpand when double-clicking a directory", () => {
     render(
       <FilePane
         path="/home/user"
@@ -218,6 +220,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
         bounds={mockBounds}
         focused={true}
         onNavigate={mockOnNavigate}
+        onToggleExpand={mockOnToggleExpand}
         onCursorMove={mockOnCursorMove}
         columns={mockColumns}
         fileTypes={mockFileTypes}
@@ -227,7 +230,38 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
     const directory = screen.getByText("Documents").closest("div") as HTMLElement;
     fireEvent.doubleClick(directory);
     
-    expect(mockOnNavigate).toHaveBeenCalledWith("/home/user/Documents");
+    expect(mockOnToggleExpand).toHaveBeenCalledWith("/home/user/Documents");
+    expect(mockOnNavigate).not.toHaveBeenCalled();
+  });
+
+  // [IMPL-FILE_PANE] [IMPL-DIRECTORY_TREE] [REQ-DIRECTORY_TREE]: TREE_DEPTH_INDENT_CHEVRON — depth padding and expand indicator
+  it("should render tree depth indent and expanded chevron on directory row [REQ-DIRECTORY_TREE]", () => {
+    const treeFiles = [
+      {
+        ...mockFiles[0],
+        depth: 1,
+        isExpanded: true,
+        hasLoadedChildren: true,
+      },
+    ];
+    render(
+      <FilePane
+        path="/home/user"
+        files={treeFiles}
+        cursor={0}
+        marks={new Set()}
+        bounds={mockBounds}
+        focused={true}
+        onNavigate={mockOnNavigate}
+        onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
+        fileTypes={mockFileTypes}
+      />,
+    );
+
+    expect(screen.getByText("▼")).toBeInTheDocument();
+    const nameCell = screen.getByTestId("file-column-name");
+    expect(nameCell.style.paddingLeft).toBe("24px");
   });
   
   it("should call onToggleMark when checking mark checkbox", () => {
@@ -250,7 +284,7 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
     const checkboxes = screen.getAllByRole("checkbox");
     fireEvent.click(checkboxes[1]); // Click checkbox for file1.txt
     
-    expect(mockOnToggleMark).toHaveBeenCalledWith("file1.txt");
+    expect(mockOnToggleMark).toHaveBeenCalledWith("/home/user/file1.txt");
   });
   
   it("should display empty message for empty directory", () => {
@@ -354,11 +388,13 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
     );
     
     const directoryName = screen.getByText("Documents");
-    expect(directoryName).toHaveClass("text-blue-600");
-    expect(directoryName).toHaveClass("font-semibold");
+    const directoryCell = directoryName.closest("[data-testid='file-column-name']");
+    expect(directoryCell).toHaveClass("text-blue-600");
+    expect(directoryCell).toHaveClass("font-semibold");
     
     const fileName = screen.getByText("file1.txt");
-    expect(fileName).toHaveClass("text-zinc-900");
+    const fileCell = fileName.closest("[data-testid='file-column-name']");
+    expect(fileCell).toHaveClass("text-zinc-900");
   });
 
   // [IMPL-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] Focus request tests

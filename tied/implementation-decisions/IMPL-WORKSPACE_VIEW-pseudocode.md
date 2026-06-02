@@ -103,7 +103,7 @@ PROCEDURE PANE_FILES_LIST_TO_FILEPANE(context)
 
 ## HANDLE_NAVIGATE
 
-// [IMPL-WORKSPACE_VIEW] [IMPL-CROSS_PANE_VISIBILITY_CATALOG] [ARCH-CROSS_PANE_VISIBILITY] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-DIRECTORY_NAVIGATION] [REQ-CROSS_PANE_VISIBILITY]: how: fetch listing, build pane with new path, merge visibility fields via MERGE_LISTING_WITH_CROSS_PANE_FIELDS
+// [IMPL-WORKSPACE_VIEW] [IMPL-DIRECTORY_TREE] [IMPL-CROSS_PANE_VISIBILITY_CATALOG] [ARCH-DIRECTORY_TREE] [ARCH-CROSS_PANE_VISIBILITY] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-DIRECTORY_NAVIGATION] [REQ-DIRECTORY_TREE] [REQ-CROSS_PANE_VISIBILITY]: how: fetch listing, re-root tree via createPaneTreeFromRootListing (HANDLE_NAVIGATE_TREE_RESET), merge visibility fields; linked sync only here not on toggleExpand
 
 ```
 PROCEDURE HandleNavigate(paneIndex, newPath)
@@ -111,9 +111,49 @@ PROCEDURE HandleNavigate(paneIndex, newPath)
   IF panes[paneIndex] missing THEN RETURN
   listing := fetchDirectoryListing(newPath, pane.activeDisplaySpecId)
   built := buildPaneFromRawListing(listing.files, { ...pane, path: newPath }, ...)
-  updated[paneIndex] := MERGE_LISTING_WITH_CROSS_PANE_FIELDS(built, crossPaneFieldsFromPane)
+  withTree := createPaneTreeFromRootListing(built, built.files)  // clears expandedPaths; fresh treeState
+  updated[paneIndex] := mergePaneState(withTree, crossPaneFieldsFromPane, restoredCursor?)
   APPLY restored cursor from directory history
   IF linkedMode AND isInitiatingNavigation THEN sync linked panes downward or upward
+```
+
+## MERGE_PANE_TREE_STATE
+
+// [IMPL-WORKSPACE_VIEW] [IMPL-DIRECTORY_TREE] [ARCH-DIRECTORY_TREE] [REQ-DIRECTORY_TREE]: how: combine listing+treeState with cross-pane visibility fields without dropping treeState
+
+```
+PROCEDURE MERGE_PANE_TREE_STATE(listing, crossPane, cursorOverride?)
+  RETURN { ...mergePaneListingWithCrossPaneFields(listing, crossPane), treeState: listing.treeState, optional cursor override }
+```
+
+## REFRESH_PANE_TREE
+
+// [IMPL-WORKSPACE_VIEW] [IMPL-DIRECTORY_TREE] [ARCH-DIRECTORY_TREE] [REQ-DIRECTORY_TREE] [REQ-PANE_REFRESH]: how: reload base and every expandedPaths listing; preserve expandedPaths; re-flatten via syncPaneFromTree
+
+```
+PROCEDURE REFRESH_PANE_TREE(paneIndex)
+  expandedPaths := copy pane.treeState.expandedPaths
+  rootListing := fetchDirectoryListing(pane.path, activeDisplaySpecId)
+  treeState := createInitialTreeState(pane.path, processed root children)
+  FOR EACH path IN expandedPaths
+    listing := fetchDirectoryListing(path, activeDisplaySpecId)
+    treeState := setChildren(treeState, path, processed children)
+  treeState.expandedPaths := expandedPaths
+  pane := mergePaneState(syncPaneFromTree({ ...pane, treeState }), existing crossPane fields)
+  USE after bulk copy/move/delete on source pane instead of handleNavigate(same path)
+```
+
+## HANDLE_TOGGLE_EXPAND
+
+// [IMPL-WORKSPACE_VIEW] [IMPL-DIRECTORY_TREE] [IMPL-LINKED_NAV] [ARCH-DIRECTORY_TREE] [REQ-DIRECTORY_TREE] [REQ-LINKED_PANES]: how: lazy fetch on first expand; toggle expandedPaths; syncPaneFromTree; NO linked pane propagation
+
+```
+PROCEDURE HANDLE_TOGGLE_EXPAND(paneIndex, dirPath)
+  IF dir expanded THEN toggleExpanded collapse
+  ELSE IF children not loaded THEN fetchDirectoryListing(dirPath) AND setChildren THEN toggleExpanded
+  ELSE toggleExpanded
+  updated[paneIndex] := mergePaneState(syncPaneFromTree({ ...pane, treeState }), crossPane fields)
+  navigate.enter keybinding calls this NOT handleNavigate
 ```
 
 ## LAYOUT_TOOLBAR_PICKER
@@ -241,7 +281,7 @@ PROCEDURE NavigateAbsoluteBase(paneIndex, path, allowLinkedPropagation)
 ```
 CONTRACT TouchApply
   INPUT: touchFileDialog state (paneIndex, file, marksAtOpen), TouchApplySelection from TouchFileDialog
-  OUTPUT: POST bulk-touch; close dialog; refresh affected pane listings via handleNavigate
+  OUTPUT: POST bulk-touch; close dialog; refresh affected pane listings via refreshPaneTree OR handleNavigate when re-root needed
   DATA: buildTouchEntries from touch-file.ts; displaySpecPayload for initiating pane
 
 PROCEDURE handleApplyTouch(dialogState, selection)
@@ -251,7 +291,7 @@ PROCEDURE handleApplyTouch(dialogState, selection)
   POST /api/files { operation: "bulk-touch", entries: ISO mtimes, ...displaySpecPayload }
   ON success:
     paneIndicesToRefresh := { i | panes[i].files contains any entry.path }
-    FOR EACH i IN paneIndicesToRefresh: handleNavigate(i, panes[i].path)
+    FOR EACH i IN paneIndicesToRefresh: refreshPaneTree(i) OR handleNavigate(i, panes[i].path) when tree reset required
   ON error: alert
 ```
 
@@ -280,4 +320,4 @@ PROCEDURE handleApplyExecute(dialogState, selection)
 
 // [IMPL-WORKSPACE_VIEW] [ARCH-FILE_MANAGER_HIERARCHY] [REQ-DIRECTORY_NAVIGATION] [REQ-KEYBOARD_NAVIGATION] [REQ-MULTI_PANE_LAYOUT] [REQ-REACT_SSR_STABILITY]: map implementing and verifying source files for this IMPL
 
-// src/app/files/WorkspaceView.tsx — DIALOG_KEYS, KEYBINDING_INIT, FILE_COLUMNS_STATE, COLUMN_ORDER_DIALOG_HANDLER, SHARED_METADATA_WIDTHS_ONECOLUMN, PANE_FILES_LIST_TO_FILEPANE, HANDLE_NAVIGATE, LAYOUT_TOOLBAR_PICKER, appendPaneAtPath, SetBaseDirectoryApply, TouchApply/handleApplyTouch, ExecuteApply/handleApplyExecute, NavigateAbsoluteBase; src/lib/set-base-directory.ts; src/lib/touch-file.ts; src/lib/execute-command.ts; src/app/files/components/SetBaseDirectoryDialog.tsx; src/app/files/components/SetBaseDirectoryTargetIcon.tsx; src/app/files/components/TouchFileDialog.tsx; src/app/files/components/ExecuteFileDialog.tsx; src/app/files/components/LayoutPickerPopover.tsx; src/app/files/page.tsx SinglePaneWorkspaceUrl; tests WorkspaceView.file-columns.test.tsx, WorkspaceView.file-column-clipboard.test.tsx, WorkspaceView.cross-pane-visibility.test.tsx, WorkspaceView.set-base-directory.test.tsx, WorkspaceView.touch.test.tsx, WorkspaceView.execute.test.tsx, LayoutPickerPopover.test.tsx, set-base-directory.test.ts, SetBaseDirectoryDialog.test.tsx, SetBaseDirectoryTargetIcon.test.tsx, TouchFileDialog.test.tsx, ExecuteFileDialog.test.tsx, touch-file.test.ts, execute-command.test.ts
+// src/app/files/WorkspaceView.tsx — DIALOG_KEYS, KEYBINDING_INIT, FILE_COLUMNS_STATE, COLUMN_ORDER_DIALOG_HANDLER, SHARED_METADATA_WIDTHS_ONECOLUMN, PANE_FILES_LIST_TO_FILEPANE, HANDLE_NAVIGATE, MERGE_PANE_TREE_STATE, REFRESH_PANE_TREE, HANDLE_TOGGLE_EXPAND, LAYOUT_TOOLBAR_PICKER, appendPaneAtPath, SetBaseDirectoryApply, TouchApply/handleApplyTouch, ExecuteApply/handleApplyExecute, NavigateAbsoluteBase; src/lib/file-tree.ts; src/lib/pane-file-tree.ts; src/lib/set-base-directory.ts; src/lib/touch-file.ts; src/lib/execute-command.ts; src/app/files/components/SetBaseDirectoryDialog.tsx; src/app/files/components/SetBaseDirectoryTargetIcon.tsx; src/app/files/components/TouchFileDialog.tsx; src/app/files/components/ExecuteFileDialog.tsx; src/app/files/components/LayoutPickerPopover.tsx; src/app/files/page.tsx SinglePaneWorkspaceUrl; tests WorkspaceView.file-columns.test.tsx, WorkspaceView.file-column-clipboard.test.tsx, WorkspaceView.cross-pane-visibility.test.tsx, WorkspaceView.directory-tree.test.tsx, WorkspaceView.set-base-directory.test.tsx, WorkspaceView.touch.test.tsx, WorkspaceView.execute.test.tsx, LayoutPickerPopover.test.tsx, set-base-directory.test.ts, SetBaseDirectoryDialog.test.tsx, SetBaseDirectoryTargetIcon.test.tsx, TouchFileDialog.test.tsx, ExecuteFileDialog.test.tsx, touch-file.test.ts, execute-command.test.ts, file-tree.test.ts, pane-file-tree.test.ts

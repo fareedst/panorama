@@ -2804,3 +2804,12 @@ ARCH-PANE_COMMAND_EXEC:
   name: Pane Command Execution Architecture
   status: Active
   detail_file: architecture-decisions/ARCH-PANE_COMMAND_EXEC.yaml
+ARCH-DIRECTORY_TREE:
+  name: Directory Tree State Model
+  status: Active
+  traceability:
+    requirements:
+      - REQ-DIRECTORY_TREE
+    implementation:
+      - IMPL-DIRECTORY_TREE
+  detail_file: architecture-decisions/ARCH-DIRECTORY_TREE.yaml

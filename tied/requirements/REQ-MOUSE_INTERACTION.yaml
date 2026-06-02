@@ -17,7 +17,7 @@ REQ-MOUSE_INTERACTION:
       - Touch-friendly on tablets
   satisfaction_criteria:
     - criterion: cross_pane_paths_disabled_when_basename_missing_from_listings — cross-pane copy action disabled when no pane listing contains the basename
-    - criterion: Double-click opens/enters file/directory
+    - criterion: double_click_toggle_directory_expand — double-click on directory row toggles tree expand/collapse; files unchanged
     - criterion: Drag-and-drop moves/copies files between panes
     - criterion: execute_menu_on_file_rows — unified ContextMenu shows Execute… for file and directory rows (REQ-PANE_COMMAND_EXEC)
     - criterion: file_column_right_click_shows_clipboard_menu — Copy filename, Copy path, Copy paths in all panes within unified ContextMenu clipboard section
@@ -88,9 +88,9 @@ REQ-MOUSE_INTERACTION:
       date: 2026-02-07T00:00:00.000Z
       author: AI Agent
     last_updated:
-      date: "2026-05-31T00:00:00.000Z"
+      date: "2026-06-01T00:00:00.000Z"
       author: AI Agent
-      reason: LEAP — Make directory menu criterion and traceability
+      reason: LEAP — double-click toggles tree expand not re-root
     last_validated:
       date: 2026-02-07T00:00:00.000Z
       validator: AI Agent

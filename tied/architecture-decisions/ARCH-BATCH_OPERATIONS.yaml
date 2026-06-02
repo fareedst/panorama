@@ -34,7 +34,9 @@ ARCH-BATCH_OPERATIONS:
       - 'Error collection: continue on error, report at end'
       - 'POST /api/files with operation: bulk-copy/bulk-move/bulk-delete'
       - 'Progress dialog shows: percentage, file count, current file'
+      - 'Relative destination mapping: bulk-copy/move and sync-all accept sourceBase; resolveCrossPaneDestPath preserves path under dest base (REQ-DIRECTORY_TREE)'
       - Check marks.size > 0, use marked files; else use cursor file
+      - Conflict detection compares resolved dest paths not basenames when tree spans subdirectories
       - POST /api/files operation bulk-rename with entries { src, dest }[]; client rename-regex.ts resolves paths then bulkRename Promise.allSettled
       - Server streams progress updates via callbacks
   traceability:
