@@ -1,38 +1,25 @@
 # ARCH detail — ARCH-LOGGING_CONFIG
 ARCH-LOGGING_CONFIG:
-  name: Environment-Based Logging Configuration
-  status: Active
+  alternatives_considered:
+    - name: YAML config file
+      cons:
+        - Cannot change without restart
+        - Requires file deployment
+      pros:
+        - Consistent with project patterns
+        - Structured configuration
+      rejected_reason: Less flexible than environment variables
+    - name: Hard-coded with build-time flags
+      cons:
+        - Not suitable for debugging
+        - Requires rebuild to change
+      pros:
+        - No runtime overhead
+      rejected_reason: Too inflexible for debugging use case
   cross_references:
     - REQ-LOGGING_CONFIG
   decision: Read environment variables with sensible defaults at module initialization
-  rationale:
-    why: Environment variables enable runtime configuration without code changes
-    problems_solved:
-      - Cannot adjust logging in production
-      - Different needs for dev vs prod
-      - Hard-coded logging behavior
-    benefits:
-      - Environment-specific behavior
-      - No code changes needed
-      - Runtime configuration
-  alternatives_considered:
-    - name: YAML config file
-      pros:
-        - Structured configuration
-        - Consistent with project patterns
-      cons:
-        - Requires file deployment
-        - Cannot change without restart
-      rejected_reason: Less flexible than environment variables
-    - name: Hard-coded with build-time flags
-      pros:
-        - No runtime overhead
-      cons:
-        - Requires rebuild to change
-        - Not suitable for debugging
-      rejected_reason: Too inflexible for debugging use case
   implementation_approach:
-    summary: Read environment variables with sensible defaults at module initialization
     details:
       - 'CONSOLE_ERRORS: ''true'' | ''false'' (default: ''true'') - Mirror ERROR/FATAL to console'
       - 'ENABLE_LOGGING: ''true'' | ''false'' (default: ''true'')'
@@ -42,29 +29,42 @@ ARCH-LOGGING_CONFIG:
       - Mirror ERROR and FATAL logs to console.error() by default
       - Output log file path to console on initialization
       - Validate environment variables with fallbacks
-  traceability:
-    requirements:
-      - REQ-LOGGING_CONFIG
-    implementation:
-      - IMPL-LOGGER_CONFIG
-    tests: []
-    code_annotations:
-      - ARCH-LOGGING_CONFIG
+    summary: Read environment variables with sensible defaults at module initialization
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Environment-Based Logging Configuration
+  rationale:
+    benefits:
+      - Environment-specific behavior
+      - No code changes needed
+      - Runtime configuration
+    problems_solved:
+      - Cannot adjust logging in production
+      - Different needs for dev vs prod
+      - Hard-coded logging behavior
+    why: Environment variables enable runtime configuration without code changes
   related_decisions:
     depends_on:
       - ARCH-LOGGING_SYSTEM
     informs:
       - IMPL-LOGGER_CONFIG
     see_also: []
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-      reason: Initial creation
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+  status: Active
+  traceability:
+    code_annotations:
+      - ARCH-LOGGING_CONFIG
+    implementation:
+      - IMPL-LOGGER_CONFIG
+    requirements:
+      - REQ-LOGGING_CONFIG
+    tests: []

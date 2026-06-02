@@ -1,43 +1,43 @@
 ARCH-PANE_COMMAND_EXEC:
-  name: Pane Command Execution Architecture
-  status: Active
   cross_references:
     - ARCH-FILE_OPERATIONS_API
     - ARCH-MOUSE_SUPPORT
     - REQ-PANE_COMMAND_EXEC
   decision: Secondary workspace dialog (ExecuteFileDialog) with pane target and command field; client resolves targets via execute-command.ts; POST /api/files execute-command spawns shell per entry with env context.
-  rationale:
-    why: Reuse Touch dialog pane-target pattern and files API operation shape
-    benefits:
-      - Consistent workspace dialog UX
-      - Cross-pane file context via existing path resolvers
-      - Sequential server spawn for predictable side effects
   implementation_approach:
-    summary: ExecuteFileDialog + execute-command.ts + execute-command API
     details:
       - 'execute-command entries: { paneIndex, cwd, command } with env from filePath and markedPaths'
       - 'ExecuteFilePaneTarget: thisPane | allPanes'
       - 'Placeholder expansion: $FILE, $MARKED on client before POST'
+    summary: ExecuteFileDialog + execute-command.ts + execute-command API
+  name: Pane Command Execution Architecture
+  rationale:
+    benefits:
+      - Consistent workspace dialog UX
+      - Cross-pane file context via existing path resolvers
+      - Sequential server spawn for predictable side effects
+    why: Reuse Touch dialog pane-target pattern and files API operation shape
+  related_decisions:
+    depends_on:
+      - ARCH-FILE_OPERATIONS_API
+      - ARCH-MOUSE_SUPPORT
+    informs:
+      - IMPL-EXECUTE_DIALOG
+      - IMPL-PANE_COMMAND_EXEC
+    see_also:
+      - REQ-TOUCH_MTIME
+  status: Active
   traceability:
+    code_annotations:
+      - ARCH-PANE_COMMAND_EXEC
+    implementation:
+      - IMPL-EXECUTE_DIALOG
+      - IMPL-PANE_COMMAND_EXEC
     requirements:
       - REQ-PANE_COMMAND_EXEC
-    implementation:
-      - IMPL-PANE_COMMAND_EXEC
-      - IMPL-EXECUTE_DIALOG
     tests:
       - src/app/api/files/route.test.ts
       - src/app/files/components/ExecuteFileDialog.test.tsx
       - src/app/files/WorkspaceView.execute.test.tsx
       - src/lib/execute-command.data.test.ts
       - src/lib/execute-command.test.ts
-    code_annotations:
-      - ARCH-PANE_COMMAND_EXEC
-  related_decisions:
-    depends_on:
-      - ARCH-FILE_OPERATIONS_API
-      - ARCH-MOUSE_SUPPORT
-    informs:
-      - IMPL-PANE_COMMAND_EXEC
-      - IMPL-EXECUTE_DIALOG
-    see_also:
-      - REQ-TOUCH_MTIME

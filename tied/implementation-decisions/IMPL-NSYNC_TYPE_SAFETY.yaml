@@ -1,29 +1,4 @@
 IMPL-NSYNC_TYPE_SAFETY:
-  name: TypeScript Type Safety for Node.js Types
-  status: Active
-  cross_references:
-    - IMPL-NSYNC_ENGINE
-    - IMPL-NSYNC_HASH
-  decision: Add type guards and conversions to handle Node.js bigint sizes and stream types; fix import statements to allow value usage
-  rationale:
-    why: Handle Node.js type incompatibilities (bigint file sizes, stream types, import type restrictions) to pass TypeScript strict mode compilation
-    problems_solved:
-      - ErrorClass imported as type but used as value (enum access)
-      - stat.size is number | bigint but code expected only number
-      - Stream 'data' event emits string | Buffer but code expected only Buffer
-    benefits:
-      - Correct stream type handling
-      - Production-ready TypeScript build
-      - Type-safe handling of large files (bigint support)
-      - Zero TypeScript compilation errors
-  implementation_approach:
-    summary: Add type guards and conversions to handle Node.js bigint sizes and stream types; fix import statements to allow value usage
-    details:
-      - 'Apply conversion in 3 locations: plan.totalBytes, result.bytesCopied, ItemInfo.size'
-      - 'Convert stat.size bigint to number: typeof stat.size === ''bigint'' ? Number(stat.size) : stat.size'
-      - 'Fix ErrorClass import: move from ''import type'' to regular import'
-      - 'Fix NoopObserver import: move from separate import to regular import'
-      - 'Handle stream chunk types: typeof chunk === ''string'' ? Buffer.from(chunk) : chunk'
   code_locations:
     files:
       - path: src/lib/sync/engine.ts
@@ -39,29 +14,54 @@ IMPL-NSYNC_TYPE_SAFETY:
           - 111
           - 114
     functions: []
-  traceability:
-    architecture: []
-    requirements: []
-    tests:
-      - npm run build — zero TypeScript errors with strict mode
-    code_annotations:
-      - IMPL-NSYNC_TYPE_SAFETY
+  cross_references:
+    - IMPL-NSYNC_ENGINE
+    - IMPL-NSYNC_HASH
+  decision: Add type guards and conversions to handle Node.js bigint sizes and stream types; fix import statements to allow value usage
+  implementation_approach:
+    details:
+      - 'Apply conversion in 3 locations: plan.totalBytes, result.bytesCopied, ItemInfo.size'
+      - 'Convert stat.size bigint to number: typeof stat.size === ''bigint'' ? Number(stat.size) : stat.size'
+      - 'Fix ErrorClass import: move from ''import type'' to regular import'
+      - 'Fix NoopObserver import: move from separate import to regular import'
+      - 'Handle stream chunk types: typeof chunk === ''string'' ? Buffer.from(chunk) : chunk'
+    summary: Add type guards and conversions to handle Node.js bigint sizes and stream types; fix import statements to allow value usage
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-09T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: NSYNC pseudocode retrofit from production code and tests
+    last_validated:
+      date: 2026-02-09T00:00:00.000Z
+      result: pass - npm run build succeeds with zero errors
+      validator: AI Agent
+  name: TypeScript Type Safety for Node.js Types
+  rationale:
+    benefits:
+      - Correct stream type handling
+      - Production-ready TypeScript build
+      - Type-safe handling of large files (bigint support)
+      - Zero TypeScript compilation errors
+    problems_solved:
+      - ErrorClass imported as type but used as value (enum access)
+      - stat.size is number | bigint but code expected only number
+      - Stream 'data' event emits string | Buffer but code expected only Buffer
+    why: Handle Node.js type incompatibilities (bigint file sizes, stream types, import type restrictions) to pass TypeScript strict mode compilation
   related_decisions:
     depends_on:
       - IMPL-NSYNC_ENGINE
       - IMPL-NSYNC_HASH
-    supersedes: []
     see_also:
       - IMPL-TEST_SETUP
-  metadata:
-    created:
-      date: 2026-02-09T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: NSYNC pseudocode retrofit from production code and tests
-    last_validated:
-      date: 2026-02-09T00:00:00.000Z
-      validator: AI Agent
-      result: pass - npm run build succeeds with zero errors
+    supersedes: []
+  status: Active
+  traceability:
+    architecture: []
+    code_annotations:
+      - IMPL-NSYNC_TYPE_SAFETY
+    requirements: []
+    tests:
+      - npm run build — zero TypeScript errors with strict mode

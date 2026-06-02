@@ -1,41 +1,41 @@
 IMPL-MESH_IMPORT_EXPORT:
-  name: Mesh Import Export
-  status: Active
+  code_locations:
+    files:
+      - path: src/lib/mesh/services/import-export-service.ts
+        description: Import/export service
+    functions: []
   cross_references:
     - ARCH-MESH_LAYERED
     - REQ-MESH_IMPORT_EXPORT
     - REQ-MESH_PLATFORM
   decision: See essence_pseudocode sidecar and src/lib/mesh/services.
   implementation_approach:
-    summary: src/lib/mesh/services/
     details:
       - See essence_pseudocode sidecar
+    summary: src/lib/mesh/services/
+  metadata:
+    created:
+      author: AI Agent
+      date: "2026-05-19T00:00:00.000Z"
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+  name: Mesh Import Export
+  related_decisions:
+    depends_on:
+      - IMPL-MESH_RUNTIME
+    see_also: []
+    supersedes: []
+  status: Active
+  testability: unit
   traceability:
     architecture:
       - ARCH-MESH_LAYERED
+    code_annotations:
+      - IMPL-MESH_IMPORT_EXPORT
     requirements:
       - REQ-MESH_IMPORT_EXPORT
       - REQ-MESH_PLATFORM
     tests:
-      - src/lib/mesh/services/import-export-service.test.ts
       - src/app/api/mesh/import-export.route.test.ts
-    code_annotations:
-      - IMPL-MESH_IMPORT_EXPORT
-  related_decisions:
-    depends_on:
-      - IMPL-MESH_RUNTIME
-    supersedes: []
-    see_also: []
-  testability: unit
-  metadata:
-    created:
-      date: "2026-05-19T00:00:00.000Z"
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-  code_locations:
-    files:
-      - path: src/lib/mesh/services/import-export-service.ts
-        description: Import/export service
-    functions: []
+      - src/lib/mesh/services/import-export-service.test.ts

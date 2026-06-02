@@ -1,51 +1,51 @@
 # ARCH detail — ARCH-CSS_VARIABLES
 ARCH-CSS_VARIABLES:
-  name: CSS Variables for Dark Mode Theming
-  status: Active
+  alternatives_considered: []
   cross_references:
     - REQ-DARK_MODE
     - REQ-GLOBAL_STYLES
   decision: Define CSS variables in globals.css with prefers-color-scheme
-  rationale:
-    why: CSS variables enable dynamic theming and runtime color changes
-    problems_solved:
-      - Static color definitions
-      - Difficult theme switching
-    benefits:
-      - Consistent color usage
-      - Runtime theme changes
-      - Simple dark mode implementation
-  alternatives_considered: []
   implementation_approach:
-    summary: Define CSS variables in globals.css with prefers-color-scheme
     details:
       - Apply variables to body element
       - Define --background and --foreground variables
       - Use prefers-color-scheme media query
-  traceability:
-    requirements:
-      - REQ-DARK_MODE
-      - REQ-GLOBAL_STYLES
-    implementation:
-      - IMPL-DARK_MODE
-    tests: []
-    code_annotations:
-      - REQ-DARK_MODE
+    summary: Define CSS variables in globals.css with prefers-color-scheme
+  metadata:
+    created:
+      author: AI Agent
+      date: 2025-11-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-06T00:00:00.000Z
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: CSS Variables for Dark Mode Theming
+  rationale:
+    benefits:
+      - Consistent color usage
+      - Runtime theme changes
+      - Simple dark mode implementation
+    problems_solved:
+      - Difficult theme switching
+      - Static color definitions
+    why: CSS variables enable dynamic theming and runtime color changes
   related_decisions:
     depends_on:
       - REQ-DARK_MODE
     informs:
       - IMPL-DARK_MODE
     see_also: []
-  metadata:
-    created:
-      date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-06T00:00:00.000Z
-      author: AI Agent
-      reason: Migration to v1.5.0
-    last_validated:
-      date: 2026-02-06T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+  status: Active
+  traceability:
+    code_annotations:
+      - REQ-DARK_MODE
+    implementation:
+      - IMPL-DARK_MODE
+    requirements:
+      - REQ-DARK_MODE
+      - REQ-GLOBAL_STYLES
+    tests: []

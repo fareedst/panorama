@@ -1,14 +1,35 @@
 REQ-MESH_REAL_CONNECTORS:
-  name: Mesh Real Filesystem Connectors
   category: Functional
-  priority: P1
-  status: Implemented
   description: Local filesystem connector for local depots used in E2E and production-like sync.
+  metadata:
+    created:
+      author: AI Agent
+      date: "2026-05-19T00:00:00.000Z"
+  name: Mesh Real Filesystem Connectors
+  priority: P1
+  related_requirements:
+    depends_on:
+      - REQ-MESH_PLATFORM
+    related_to:
+      - REQ-MESH_E2E_RELEASE
+    supersedes: []
   satisfaction_criteria:
     - criterion: connector_lists_and_copies_files_on_disk
     - criterion: local_depot_uses_filesystem_connector
     - criterion: remote_depot_registers_stub_connector_without_network_io
     - criterion: virtual_depot_uses_synthetic_inventory_connector_that_defaults_to_readable_stub_tree
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-MESH_LAYERED
+    code_annotations:
+      - REQ-MESH_REAL_CONNECTORS
+    implementation:
+      - IMPL-MESH_CONNECTOR
+    tests:
+      - src/lib/mesh/connector/local-filesystem-connector.test.ts
+      - src/lib/mesh/connector/remote-connector.test.ts
+      - src/lib/mesh/connector/virtual-connector.test.ts
   validation_criteria:
     - method: Vitest
       coverage: src/lib/mesh/connector/local-filesystem-connector.test.ts
@@ -18,24 +39,3 @@ REQ-MESH_REAL_CONNECTORS:
       coverage: src/lib/mesh/connector/virtual-connector.test.ts
     - method: Playwright
       coverage: e2e/mesh-sync.spec.ts
-  traceability:
-    architecture:
-      - ARCH-MESH_LAYERED
-    implementation:
-      - IMPL-MESH_CONNECTOR
-    tests:
-      - src/lib/mesh/connector/local-filesystem-connector.test.ts
-      - src/lib/mesh/connector/remote-connector.test.ts
-      - src/lib/mesh/connector/virtual-connector.test.ts
-    code_annotations:
-      - REQ-MESH_REAL_CONNECTORS
-  related_requirements:
-    depends_on:
-      - REQ-MESH_PLATFORM
-    related_to:
-      - REQ-MESH_E2E_RELEASE
-    supersedes: []
-  metadata:
-    created:
-      date: "2026-05-19T00:00:00.000Z"
-      author: AI Agent

@@ -1,18 +1,34 @@
 REQ-CROSS_PANE_VISIBILITY:
-  name: Cross-Pane Visibility Filters
   category: Functional
-  priority: P1
-  status: Planned
   description: 'Tri-state toolbar filters use the comparison index to show or hide files in the focused pane (include/exclude rules) and mirror visible basenames in other panes. Named presets live in a client catalog; each pane selects an active preset or edits an ephemeral draft until saved. Workspace toolbar reflects the focused pane. Marks and batch operations apply to visible files only. Per-pane selection persists in workspace snapshot v5. Canonical terms: tied/vocab/cross-pane-visibility.md; pseudo-code blocks EVALUATE_FOCUS_VISIBILITY, MIRROR_OTHER_PANES in IMPL-CROSS_PANE_VISIBILITY_ENGINE-pseudocode.md.'
+  metadata:
+    last_updated:
+      author: AI Agent
+      date: "2026-05-29T00:00:00.000Z"
+      reason: LEAP — vocabulary standards; cross-pane-visibility glossary criterion
+  name: Cross-Pane Visibility Filters
+  priority: P1
   rationale:
-    why: Users need to narrow multi-pane listings by cross-pane name/size/time roles without leaving the file manager
-    problems_solved:
-      - No quick filter for shared or divergent files across panes
-      - Clutter when comparing directories
     benefits:
       - Composable with display specs
       - Focused-pane rules with cross-pane mirroring
       - Mesh restore preserves filter state
+    problems_solved:
+      - Clutter when comparing directories
+      - No quick filter for shared or divergent files across panes
+    why: Users need to narrow multi-pane listings by cross-pane name/size/time roles without leaving the file manager
+  related_requirements:
+    depends_on:
+      - REQ-CROSS_PANE_COMPARISON
+      - REQ-MULTI_PANE_LAYOUT
+      - REQ-PANE_DISPLAY_FILTER
+      - REQ-TOOLBAR_SYSTEM
+      - REQ-WORKSPACE_MESH_BRIDGE
+    related_to:
+      - REQ-BULK_FILE_OPS
+      - REQ-DIRECTORY_NAVIGATION
+      - REQ-FILE_MARKING_WEB
+    supersedes: []
   satisfaction_criteria:
     - criterion: Applying or refreshing cross-pane visibility state must not overwrite directory path or raw listing from navigation
     - criterion: Each pane has activeCrossPaneVisibilityId and ephemeral draft until saved
@@ -26,6 +42,7 @@ REQ-CROSS_PANE_VISIBILITY:
     - criterion: Toolbar tri-state toggles cycle inactive, include, exclude per criterion
     - criterion: When any include toggle is active, files must match at least one include or be hidden
     - criterion: Workspace toolbar tri-states reflect focused pane on focusIndex change
+  status: Planned
   traceability:
     architecture:
       - ARCH-CROSS_PANE_VISIBILITY
@@ -33,20 +50,3 @@ REQ-CROSS_PANE_VISIBILITY:
       - IMPL-CROSS_PANE_VISIBILITY_CATALOG
       - IMPL-CROSS_PANE_VISIBILITY_ENGINE
       - IMPL-CROSS_PANE_VISIBILITY_UI
-  related_requirements:
-    depends_on:
-      - REQ-CROSS_PANE_COMPARISON
-      - REQ-MULTI_PANE_LAYOUT
-      - REQ-PANE_DISPLAY_FILTER
-      - REQ-TOOLBAR_SYSTEM
-      - REQ-WORKSPACE_MESH_BRIDGE
-    related_to:
-      - REQ-BULK_FILE_OPS
-      - REQ-DIRECTORY_NAVIGATION
-      - REQ-FILE_MARKING_WEB
-    supersedes: []
-  metadata:
-    last_updated:
-      date: "2026-05-29T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — vocabulary standards; cross-pane-visibility glossary criterion

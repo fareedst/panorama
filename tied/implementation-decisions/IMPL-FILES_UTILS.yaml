@@ -1,28 +1,4 @@
 IMPL-FILES_UTILS:
-  name: Client-Safe File Utilities
-  status: Implemented
-  cross_references:
-    - ARCH-FILESYSTEM_ABSTRACTION
-    - REQ-FILE_LISTING
-  decision: Created separate files.utils.ts for client-safe utilities like formatSize
-  rationale:
-    why: Separate client-safe utilities from server-only filesystem code
-    problems_solved:
-      - Build errors from Node.js modules in browser bundle
-      - Cannot import fs/promises in client components
-      - Need shared utilities for both server and client
-    benefits:
-      - Clear server/client boundary
-      - No bundling issues
-      - Reusable utility functions
-  implementation_approach:
-    summary: Created separate files.utils.ts for client-safe utilities like formatSize
-    details:
-      - Client components (FilePane) import from files.utils.ts
-      - Created src/lib/files.utils.ts with no Node.js dependencies
-      - files.data.ts re-exports formatSize for server-side consumers
-      - Moved formatSize() from files.data.ts to files.utils.ts
-      - This prevents fs/promises from being pulled into client bundle
   code_locations:
     files:
       - path: src/lib/files.utils.ts
@@ -32,32 +8,56 @@ IMPL-FILES_UTILS:
           - 26
     functions:
       - name: formatSize
-        file: src/lib/files.utils.ts
         description: Format bytes as human-readable size (B, KB, MB, GB, TB)
+        file: src/lib/files.utils.ts
+  cross_references:
+    - ARCH-FILESYSTEM_ABSTRACTION
+    - REQ-FILE_LISTING
+  decision: Created separate files.utils.ts for client-safe utilities like formatSize
+  implementation_approach:
+    details:
+      - Client components (FilePane) import from files.utils.ts
+      - Created src/lib/files.utils.ts with no Node.js dependencies
+      - files.data.ts re-exports formatSize for server-side consumers
+      - Moved formatSize() from files.data.ts to files.utils.ts
+      - This prevents fs/promises from being pulled into client bundle
+    summary: Created separate files.utils.ts for client-safe utilities like formatSize
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Retrofit essence_pseudocode from tests/code; align block-lead comments
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Client-Safe File Utilities
+  rationale:
+    benefits:
+      - Clear server/client boundary
+      - No bundling issues
+      - Reusable utility functions
+    problems_solved:
+      - Build errors from Node.js modules in browser bundle
+      - Cannot import fs/promises in client components
+      - Need shared utilities for both server and client
+    why: Separate client-safe utilities from server-only filesystem code
+  related_decisions:
+    depends_on: []
+    see_also:
+      - IMPL-FILE_PANE
+      - IMPL-FILES_DATA
+    supersedes: []
+  status: Implemented
   traceability:
     architecture:
       - ARCH-FILESYSTEM_ABSTRACTION
+    code_annotations:
+      - IMPL-FILES_UTILS
     requirements:
       - REQ-FILE_LISTING
     tests:
       - src/lib/files.utils.test.ts
-    code_annotations:
-      - IMPL-FILES_UTILS
-  related_decisions:
-    depends_on: []
-    supersedes: []
-    see_also:
-      - IMPL-FILES_DATA
-      - IMPL-FILE_PANE
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit essence_pseudocode from tests/code; align block-lead comments
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass

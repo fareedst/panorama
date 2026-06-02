@@ -1,29 +1,29 @@
 ARCH-SEARCH_ENGINE:
-  name: SEARCH ENGINE
-  status: Active
+  alternatives_considered: []
   cross_references:
     - REQ-FILE_SEARCH
   decision: Implement a hybrid search system with **client-side incremental file finding** and **server-side content searching**, using a modular architecture that separates search logic from UI components.
-  rationale:
-    why: Implement a hybrid search system with **client-side incremental file finding** and **server-side content searching**, using a modular architecture that separates search logic from UI components.
-    problems_solved: []
-    benefits: []
-  alternatives_considered: []
   implementation_approach:
-    summary: Implement a hybrid search system with **client-side incremental file finding** and **server-side content searching**, using a modular architecture that separates search logic from UI components.
     details: []
-  traceability:
-    requirements:
-      - REQ-FILE_SEARCH
-    implementation: []
-    tests: []
-    code_annotations:
-      - ARCH-SEARCH_ENGINE
+    summary: Implement a hybrid search system with **client-side incremental file finding** and **server-side content searching**, using a modular architecture that separates search logic from UI components.
+  metadata:
+    created:
+      author: migration
+      date: "2026-02-07"
+  name: SEARCH ENGINE
+  rationale:
+    benefits: []
+    problems_solved: []
+    why: Implement a hybrid search system with **client-side incremental file finding** and **server-side content searching**, using a modular architecture that separates search logic from UI components.
   related_decisions:
     depends_on: []
     informs: []
     see_also: []
-  metadata:
-    created:
-      date: "2026-02-07"
-      author: migration
+  status: Active
+  traceability:
+    code_annotations:
+      - ARCH-SEARCH_ENGINE
+    implementation: []
+    requirements:
+      - REQ-FILE_SEARCH
+    tests: []

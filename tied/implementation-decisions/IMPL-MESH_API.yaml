@@ -1,14 +1,4 @@
 IMPL-MESH_API:
-  name: Mesh API Route Handlers
-  status: Active
-  cross_references:
-    - REQ-MESH_API
-    - REQ-MESH_PLATFORM
-  decision: Next.js App Router handlers delegate to getMeshRuntime().
-  rationale:
-    why: Phase 15
-  implementation_approach:
-    summary: src/app/api/mesh/**
   code_locations:
     files:
       - path: src/lib/mesh/api/mesh-api-helpers.ts
@@ -20,9 +10,35 @@ IMPL-MESH_API:
       - path: src/app/api/mesh/[meshId]/sessions/route.ts
         description: Session lifecycle API
     functions: []
+  cross_references:
+    - REQ-MESH_API
+    - REQ-MESH_PLATFORM
+  decision: Next.js App Router handlers delegate to getMeshRuntime().
+  implementation_approach:
+    summary: src/app/api/mesh/**
+  metadata:
+    created:
+      author: AI Agent
+      date: "2026-05-19T00:00:00.000Z"
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Retrofit pseudocode and traceability from production/tests
+  name: Mesh API Route Handlers
+  rationale:
+    why: Phase 15
+  related_decisions:
+    depends_on:
+      - IMPL-MESH_CRUD
+    see_also: []
+    supersedes: []
+  status: Active
+  testability: integration
   traceability:
     architecture:
       - ARCH-MESH_LAYERED
+    code_annotations:
+      - IMPL-MESH_API
     requirements:
       - REQ-MESH_API
     tests:
@@ -33,19 +49,3 @@ IMPL-MESH_API:
       - src/app/api/mesh/route.auth.test.ts
       - src/app/api/mesh/route.test.ts
       - src/app/api/mesh/sessions.route.test.ts
-    code_annotations:
-      - IMPL-MESH_API
-  related_decisions:
-    depends_on:
-      - IMPL-MESH_CRUD
-    supersedes: []
-    see_also: []
-  testability: integration
-  metadata:
-    created:
-      date: "2026-05-19T00:00:00.000Z"
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit pseudocode and traceability from production/tests

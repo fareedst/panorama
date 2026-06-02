@@ -1,19 +1,37 @@
 REQ-MULTI_PANE_LAYOUT:
-  name: Multiple Pane Layout Algorithms
   category: Functional
-  priority: P0
-  status: Implemented
   description: 'Different layout types optimize screen space for various file management tasks. Canonical terms: tied/vocab/workspace-pane.md; pseudo-code blocks Tile, OneRow, OneColumn, Fullscreen, WORKSPACE_AREA_MEASUREMENT in IMPL-LAYOUT_CALCULATOR-pseudocode.md; AddPane, SwapPanes, CyclePanes in IMPL-PANE_MANAGEMENT-pseudocode.md.'
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-31T00:00:00.000Z"
+      reason: LEAP — toolbar display mode cycle remeasure
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Multiple Pane Layout Algorithms
+  priority: P0
   rationale:
-    why: Different layout types optimize screen space for various file management tasks
-    problems_solved:
-      - Fixed single-pane view limiting comparison
-      - Inefficient screen space usage
-      - Lack of flexible viewing options
     benefits:
       - Flexible screen space utilization
       - Improved file comparison workflows
       - Optimized layouts for different tasks
+    problems_solved:
+      - Fixed single-pane view limiting comparison
+      - Inefficient screen space usage
+      - Lack of flexible viewing options
+    why: Different layout types optimize screen space for various file management tasks
+  related_requirements:
+    depends_on:
+      - REQ-FILE_MANAGER_PAGE
+    related_to:
+      - REQ-FILE_LISTING
+      - REQ-README_DEMO_AUTOMATION
+    supersedes: []
   satisfaction_criteria:
     - criterion: Layout can be changed dynamically
     - criterion: Pane bounds reflect available workspace area (toolbar and header aware), not fixed viewport heuristics
@@ -29,19 +47,13 @@ REQ-MULTI_PANE_LAYOUT:
     - criterion: Three or more panes support neighbor swap (pane.swap / pane.swapPrev) and full-array cycle (pane.cycle / pane.cyclePrev)
     - criterion: Two panes can be swapped via pane.swap (keyboard and toolbar)
     - criterion: User selects layout via workspace toolbar view.layout pop-over (not header select)
-  validation_criteria:
-    - method: Visual testing
-      coverage: Each layout type renders correctly with 2, 3, 4 panes
-    - method: Geometric testing
-      coverage: Pane bounds calculated correctly, no overlaps (62 tests)
-    - method: Integration tests
-      coverage: useElementSize and WorkspaceView toolbar display mode cycle update pane geometry from measured workspace-area
-    - method: Playwright
-      coverage: e2e/readme-screenshots.spec.ts loads three panes via pane URL deep link
+  status: Implemented
   traceability:
     architecture:
       - ARCH-LAYOUT_ALGORITHMS
       - ARCH-PANE_LIFECYCLE
+    code_annotations:
+      - REQ-MULTI_PANE_LAYOUT
     implementation:
       - IMPL-FILE_MANAGER_PAGE
       - IMPL-LAYOUT_CALCULATOR
@@ -55,24 +67,12 @@ REQ-MULTI_PANE_LAYOUT:
       - src/app/files/WorkspaceView.set-base-directory.test.tsx
       - src/lib/pane-order.test.ts
       - src/lib/set-base-directory.test.ts
-    code_annotations:
-      - REQ-MULTI_PANE_LAYOUT
-  related_requirements:
-    depends_on:
-      - REQ-FILE_MANAGER_PAGE
-    related_to:
-      - REQ-FILE_LISTING
-      - REQ-README_DEMO_AUTOMATION
-    supersedes: []
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-31T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — toolbar display mode cycle remeasure
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+  validation_criteria:
+    - method: Visual testing
+      coverage: Each layout type renders correctly with 2, 3, 4 panes
+    - method: Geometric testing
+      coverage: Pane bounds calculated correctly, no overlaps (62 tests)
+    - method: Integration tests
+      coverage: useElementSize and WorkspaceView toolbar display mode cycle update pane geometry from measured workspace-area
+    - method: Playwright
+      coverage: e2e/readme-screenshots.spec.ts loads three panes via pane URL deep link

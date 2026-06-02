@@ -1,33 +1,33 @@
 REQ-MESH_MONITORING:
-  name: Mesh Operational Monitoring
   category: Functional
-  priority: P2
-  status: Implemented
   description: Dashboard summary of mesh health, sessions, and conflicts via monitoring service and API.
-  satisfaction_criteria:
-    - criterion: monitoring_api_returns_summary
-    - criterion: mesh_health_lists_depot_counts
-  validation_criteria:
-    - method: Vitest
-      coverage: src/lib/mesh/services/monitoring-service.test.ts
-    - method: Vitest
-      coverage: src/app/api/mesh/monitoring/route.ts
-  traceability:
-    architecture:
-      - ARCH-MESH_LAYERED
-    implementation:
-      - IMPL-MESH_MONITORING
-      - IMPL-MESH_API
-    tests:
-      - src/lib/mesh/services/monitoring-service.test.ts
-    code_annotations:
-      - REQ-MESH_MONITORING
+  metadata:
+    created:
+      author: AI Agent
+      date: "2026-05-19T00:00:00.000Z"
+  name: Mesh Operational Monitoring
+  priority: P2
   related_requirements:
     depends_on:
       - REQ-MESH_PLATFORM
     related_to: []
     supersedes: []
-  metadata:
-    created:
-      date: "2026-05-19T00:00:00.000Z"
-      author: AI Agent
+  satisfaction_criteria:
+    - criterion: mesh_health_lists_depot_counts
+    - criterion: monitoring_api_returns_summary
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-MESH_LAYERED
+    code_annotations:
+      - REQ-MESH_MONITORING
+    implementation:
+      - IMPL-MESH_API
+      - IMPL-MESH_MONITORING
+    tests:
+      - src/lib/mesh/services/monitoring-service.test.ts
+  validation_criteria:
+    - method: Vitest
+      coverage: src/lib/mesh/services/monitoring-service.test.ts
+    - method: Vitest
+      coverage: src/app/api/mesh/monitoring/route.ts

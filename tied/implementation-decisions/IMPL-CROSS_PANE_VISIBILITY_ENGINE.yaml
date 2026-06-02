@@ -1,28 +1,28 @@
 IMPL-CROSS_PANE_VISIBILITY_ENGINE:
-  name: Cross-Pane Visibility Engine
-  status: Active
   cross_references:
     - ARCH-CROSS_PANE_VISIBILITY
     - IMPL-COMPARISON_INDEX
     - REQ-CROSS_PANE_VISIBILITY
   decision: Pure functions in src/lib/cross-pane-visibility.ts evaluate criteria and produce per-pane visible file lists and hidden counts.
   implementation_approach:
-    summary: EVALUATE_FOCUS_VISIBILITY, MIRROR_OTHER_PANES, applyCrossPaneVisibility
     details:
       - Criterion predicates use EnhancedCompareState per focused pane index
       - Default visible when no include toggles active
-  traceability:
-    requirements:
-      - REQ-CROSS_PANE_VISIBILITY
-    architecture:
-      - ARCH-CROSS_PANE_VISIBILITY
-    tests:
-      - src/lib/cross-pane-visibility.test.ts
+    summary: EVALUATE_FOCUS_VISIBILITY, MIRROR_OTHER_PANES, applyCrossPaneVisibility
+  metadata:
+    last_updated:
+      author: AI Agent
+      date: "2026-05-29T00:00:00.000Z"
+      reason: IMPL essence_pseudocode retrofit 2026-05-29
+  name: Cross-Pane Visibility Engine
   related_decisions:
     see_also:
       - tied/vocab/cross-pane-visibility.md
-  metadata:
-    last_updated:
-      date: "2026-05-29T00:00:00.000Z"
-      author: AI Agent
-      reason: IMPL essence_pseudocode retrofit 2026-05-29
+  status: Active
+  traceability:
+    architecture:
+      - ARCH-CROSS_PANE_VISIBILITY
+    requirements:
+      - REQ-CROSS_PANE_VISIBILITY
+    tests:
+      - src/lib/cross-pane-visibility.test.ts

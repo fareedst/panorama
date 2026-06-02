@@ -1,19 +1,38 @@
 REQ-DIRECTORY_NAVIGATION:
-  name: Server Filesystem Directory Navigation
   category: Functional
-  priority: P0
-  status: Implemented
   description: Users need to browse the server filesystem to locate and manage files
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-06-01T00:00:00.000Z"
+      reason: LEAP — Enter toggles tree expand; parent re-roots base
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Server Filesystem Directory Navigation
+  priority: P0
   rationale:
-    why: Users need to browse the server filesystem to locate and manage files
-    problems_solved:
-      - Difficulty finding files in nested directories
-      - Lack of parent/child directory traversal
-      - No visual directory navigation
     benefits:
       - Easy parent/child navigation
       - Multiple directory views simultaneously
       - Visual directory browsing
+    problems_solved:
+      - Difficulty finding files in nested directories
+      - Lack of parent/child directory traversal
+      - No visual directory navigation
+    why: Users need to browse the server filesystem to locate and manage files
+  related_requirements:
+    depends_on:
+      - REQ-FILE_MANAGER_PAGE
+    related_to:
+      - REQ-CROSS_PANE_VISIBILITY
+      - REQ-DIRECTORY_TREE
+      - REQ-FILE_LISTING
+    supersedes: []
   satisfaction_criteria:
     - criterion: After navigating into or out of a directory, pane header path and listing reflect the target directory (not reverted by cross-pane visibility merge)
     - criterion: Can navigate to parent directory (Backspace key and header .. button re-root base via handleNavigate)
@@ -22,16 +41,14 @@ REQ-DIRECTORY_NAVIGATION:
     - criterion: enter_toggle_tree_expand — Enter key toggles directory tree expand/collapse on focused row (not re-root)
     - criterion: make_directory_under_pane_path — Make directory dialog creates basename under targeted pane path via bulk-mkdir
     - criterion: set_base_directory_reroots_pane_path — context menu Set as Base directory on directory rows opens dialog to assign pane path via handleNavigate or appendPaneAtPath for newPane
-  validation_criteria:
-    - method: Navigation testing
-      coverage: Can navigate into and out of directories
-    - method: Path testing
-      coverage: Current path updates correctly
+  status: Implemented
   traceability:
     architecture:
       - ARCH-CROSS_PANE_VISIBILITY
       - ARCH-FILESYSTEM_ABSTRACTION
       - ARCH-PANE_LIFECYCLE
+    code_annotations:
+      - REQ-DIRECTORY_NAVIGATION
     implementation:
       - IMPL-CROSS_PANE_VISIBILITY_CATALOG
       - IMPL-FILE_MANAGER_PAGE
@@ -54,25 +71,8 @@ REQ-DIRECTORY_NAVIGATION:
       - src/lib/make-directory.test.ts
       - src/lib/pane-cross-pane-visibility.test.ts
       - src/lib/set-base-directory.test.ts
-    code_annotations:
-      - REQ-DIRECTORY_NAVIGATION
-  related_requirements:
-    depends_on:
-      - REQ-FILE_MANAGER_PAGE
-    related_to:
-      - REQ-CROSS_PANE_VISIBILITY
-      - REQ-DIRECTORY_TREE
-      - REQ-FILE_LISTING
-    supersedes: []
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-06-01T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — Enter toggles tree expand; parent re-roots base
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+  validation_criteria:
+    - method: Navigation testing
+      coverage: Can navigate into and out of directories
+    - method: Path testing
+      coverage: Current path updates correctly

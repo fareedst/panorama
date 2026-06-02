@@ -1,20 +1,19 @@
 IMPL-LOGGER_CONFIG:
-  name: Logger Configuration Implementation
-  status: Implemented
+  code_locations:
+    files:
+      - path: src/lib/logger.ts
+        description: Configuration parsing in module initialization
+      - path: src/lib/logger.types.ts
+        description: LogConfig type definition
+    functions:
+      - name: getLogConfig
+        description: Returns current log configuration
+        file: src/lib/logger.ts
   cross_references:
     - ARCH-LOGGING_CONFIG
     - REQ-LOGGING_CONFIG
   decision: Read environment variables at module initialization with defaults and console output
-  rationale:
-    why: Environment-based configuration enables runtime control
-    problems_solved:
-      - Hard-coded settings
-      - Cannot adjust in production
-    benefits:
-      - Runtime configuration
-      - Environment-specific behavior
   implementation_approach:
-    summary: Read environment variables at module initialization with defaults and console output
     details:
       - 'Read CONSOLE_ERRORS (default: ''true'')'
       - 'Read ENABLE_LOGGING (default: ''true'')'
@@ -25,39 +24,40 @@ IMPL-LOGGER_CONFIG:
       - No-op logging if ENABLE_LOGGING='false'
       - Output log file path to console on first write
       - Parse and validate at module load
-  code_locations:
-    files:
-      - path: src/lib/logger.ts
-        description: Configuration parsing in module initialization
-      - path: src/lib/logger.types.ts
-        description: LogConfig type definition
-    functions:
-      - name: getLogConfig
-        file: src/lib/logger.ts
-        description: Returns current log configuration
+    summary: Read environment variables at module initialization with defaults and console output
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Retrofit traceability from logger.test.ts
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Logger Configuration Implementation
+  rationale:
+    benefits:
+      - Environment-specific behavior
+      - Runtime configuration
+    problems_solved:
+      - Cannot adjust in production
+      - Hard-coded settings
+    why: Environment-based configuration enables runtime control
+  related_decisions:
+    depends_on:
+      - IMPL-LOGGER_MODULE
+    see_also: []
+    supersedes: []
+  status: Implemented
   traceability:
     architecture:
       - ARCH-LOGGING_CONFIG
+    code_annotations:
+      - IMPL-LOGGER_CONFIG
     requirements:
       - REQ-LOGGING_CONFIG
     tests:
       - src/lib/logger.test.ts — Configuration, Log Level Filtering, Disabled Logging, Console Output describes
-    code_annotations:
-      - IMPL-LOGGER_CONFIG
-  related_decisions:
-    depends_on:
-      - IMPL-LOGGER_MODULE
-    supersedes: []
-    see_also: []
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit traceability from logger.test.ts
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass

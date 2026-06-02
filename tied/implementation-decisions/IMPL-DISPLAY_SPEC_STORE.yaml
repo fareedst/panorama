@@ -1,30 +1,30 @@
 IMPL-DISPLAY_SPEC_STORE:
-  name: Display Spec Store Implementation
-  status: Active
   cross_references:
-    - REQ-PANE_DISPLAY_FILTER
     - ARCH-DISPLAY_SPEC_STORE
+    - REQ-PANE_DISPLAY_FILTER
   essence_pseudocode_path: implementation-decisions/IMPL-DISPLAY_SPEC_STORE-pseudocode.md
   implementation_approach:
-    summary: localStorage catalog with CRUD, duplicate, version bump, subscribe
     details:
-      - src/lib/display-spec-store.ts
       - Max 200 rules per spec
-  traceability:
-    requirements:
-      - REQ-PANE_DISPLAY_FILTER
-    architecture:
-      - ARCH-DISPLAY_SPEC_STORE
-    tests:
-      - src/lib/display-spec-store.test.ts
-    code_locations:
       - src/lib/display-spec-store.ts
-      - src/lib/display-spec-store-server.ts
+    summary: localStorage catalog with CRUD, duplicate, version bump, subscribe
+  metadata:
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Retrofit pseudocode and comment alignment per prompts/2026-05-29
+  name: Display Spec Store Implementation
   related_decisions:
     see_also:
       - tied/vocab/pane-display-filter.md
-  metadata:
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit pseudocode and comment alignment per prompts/2026-05-29
+  status: Active
+  traceability:
+    architecture:
+      - ARCH-DISPLAY_SPEC_STORE
+    code_locations:
+      - src/lib/display-spec-store-server.ts
+      - src/lib/display-spec-store.ts
+    requirements:
+      - REQ-PANE_DISPLAY_FILTER
+    tests:
+      - src/lib/display-spec-store.test.ts

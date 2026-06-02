@@ -1,41 +1,29 @@
 REQ-BRANDING:
-  name: Site Branding Configuration
   category: Functional
-  priority: P1
-  status: Implemented
   description: Branding metadata for logos and visual identity is defined in site configuration (config/site.yaml via getSiteConfig) and available to UI surfaces. Dark-mode visibility for SVG logos uses a configurable darkInvert flag and Tailwind dark:invert styling.
+  metadata:
+    created:
+      author: AI Agent
+      date: 2025-11-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: LEAP — config-driven branding; retired home page next/image criteria
+    last_validated:
+      date: "2026-05-30T00:00:00.000Z"
+      result: pass
+      validator: AI Agent
+  name: Site Branding Configuration
+  priority: P1
   rationale:
-    why: Centralized branding supports accessibility and theme consistency without hard-coded assets in components
-    problems_solved:
-      - Inconsistent or missing logo metadata
-      - Poor dark-mode contrast for light SVG logos
     benefits:
       - Configurable darkInvert for theme-aware rendering
       - Testable defaults in config.test.ts and dark-mode pattern test
       - Typed LogoConfig contract in config.types
-  satisfaction_criteria:
-    - criterion: Logo metadata includes descriptive alt text for accessibility
-    - criterion: LogoConfig supports optional darkInvert for dark-mode SVG contrast
-    - criterion: Merged site config defines branding.logo with src, alt, width, and height
-    - criterion: When darkInvert is true, logo rendering applies Tailwind dark:invert (verified in dark-mode.test.tsx)
-  validation_criteria:
-    - method: Config unit tests
-      coverage: config.test.ts asserts default branding.logo fields
-    - method: Dark mode pattern test
-      coverage: dark-mode.test.tsx asserts dark:invert class contract
-    - method: Accessibility review
-      coverage: alt text required in logo config shape
-  traceability:
-    architecture:
-      - ARCH-NEXTJS_FRAMEWORK
-    implementation:
-      - IMPL-IMAGE_OPTIMIZATION
-      - IMPL-CONFIG_LOADER
-    tests:
-      - src/lib/config.test.ts
-      - src/test/dark-mode.test.tsx
-    code_annotations:
-      - REQ-BRANDING
+    problems_solved:
+      - Inconsistent or missing logo metadata
+      - Poor dark-mode contrast for light SVG logos
+    why: Centralized branding supports accessibility and theme consistency without hard-coded assets in components
   related_requirements:
     depends_on: []
     related_to:
@@ -43,15 +31,27 @@ REQ-BRANDING:
       - REQ-DARK_MODE
       - REQ-HOME_PAGE
     supersedes: []
-  metadata:
-    created:
-      date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — config-driven branding; retired home page next/image criteria
-    last_validated:
-      date: "2026-05-30T00:00:00.000Z"
-      validator: AI Agent
-      result: pass
+  satisfaction_criteria:
+    - criterion: Logo metadata includes descriptive alt text for accessibility
+    - criterion: LogoConfig supports optional darkInvert for dark-mode SVG contrast
+    - criterion: Merged site config defines branding.logo with src, alt, width, and height
+    - criterion: When darkInvert is true, logo rendering applies Tailwind dark:invert (verified in dark-mode.test.tsx)
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-NEXTJS_FRAMEWORK
+    code_annotations:
+      - REQ-BRANDING
+    implementation:
+      - IMPL-CONFIG_LOADER
+      - IMPL-IMAGE_OPTIMIZATION
+    tests:
+      - src/lib/config.test.ts
+      - src/test/dark-mode.test.tsx
+  validation_criteria:
+    - method: Config unit tests
+      coverage: config.test.ts asserts default branding.logo fields
+    - method: Dark mode pattern test
+      coverage: dark-mode.test.tsx asserts dark:invert class contract
+    - method: Accessibility review
+      coverage: alt text required in logo config shape

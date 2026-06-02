@@ -1,54 +1,54 @@
 IMPL-GLOBAL_ERROR_BOUNDARY:
-  name: Global Error Boundary Implementation
-  status: Active
-  cross_references:
-    - ARCH-NEXTJS_FRAMEWORK
-    - REQ-ERROR_HANDLING
-  decision: Implement a root-level error boundary component (`global-error.tsx`) that catches unexpected errors at the root layout level and provides users with a friendly error message and recovery option in production.
-  rationale:
-    why: Provides root-level error recovery with full HTML document
-    problems_solved:
-      - Application crashes on errors
-      - No error recovery
-    benefits:
-      - Graceful error recovery
-      - Better error UX
-  implementation_approach:
-    summary: Root-level global-error.tsx client boundary with full HTML document, recovery UI, and error digest
-    details:
-      - Collapsible details show error.message and optional digest
-      - Render html, head, body with self-contained inline styles
-      - Try again button calls reset(); home link to /
-      - use client directive for reset() and onClick
   code_locations:
     files:
       - path: src/app/global-error.tsx
         description: Global error boundary
     functions:
       - name: GlobalError
-        file: src/app/global-error.tsx
         description: Global error boundary component
-  traceability:
-    architecture:
-      - ARCH-NEXTJS_FRAMEWORK
-    requirements:
-      - REQ-ERROR_HANDLING
-    tests: []
-    code_annotations:
-      - REQ-ERROR_HANDLING
-  related_decisions:
-    depends_on: []
-    supersedes: []
-    see_also: []
+        file: src/app/global-error.tsx
+  cross_references:
+    - ARCH-NEXTJS_FRAMEWORK
+    - REQ-ERROR_HANDLING
+  decision: Implement a root-level error boundary component (`global-error.tsx`) that catches unexpected errors at the root layout level and provides users with a friendly error message and recovery option in production.
+  implementation_approach:
+    details:
+      - Collapsible details show error.message and optional digest
+      - Render html, head, body with self-contained inline styles
+      - Try again button calls reset(); home link to /
+      - use client directive for reset() and onClick
+    summary: Root-level global-error.tsx client boundary with full HTML document, recovery UI, and error digest
   metadata:
     created:
+      author: AI Agent
       date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
     last_updated:
-      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
       reason: Retrofit essence_pseudocode from production global-error.tsx
     last_validated:
       date: 2026-02-06T00:00:00.000Z
-      validator: AI Agent
       result: pass
+      validator: AI Agent
+  name: Global Error Boundary Implementation
+  rationale:
+    benefits:
+      - Better error UX
+      - Graceful error recovery
+    problems_solved:
+      - Application crashes on errors
+      - No error recovery
+    why: Provides root-level error recovery with full HTML document
+  related_decisions:
+    depends_on: []
+    see_also: []
+    supersedes: []
+  status: Active
+  traceability:
+    architecture:
+      - ARCH-NEXTJS_FRAMEWORK
+    code_annotations:
+      - REQ-ERROR_HANDLING
+    requirements:
+      - REQ-ERROR_HANDLING
+    tests: []

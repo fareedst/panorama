@@ -1,42 +1,42 @@
 ARCH-KEYBIND_SYSTEM:
-  name: KEYBIND SYSTEM
-  status: Active
+  alternatives_considered: []
   cross_references:
-    - REQ-KEYBOARD_SHORTCUTS_COMPLETE
     - REQ-KEYBOARD_NAVIGATION
+    - REQ-KEYBOARD_SHORTCUTS_COMPLETE
   decision: |-
     Implement a **configuration-driven keyboard shortcut system** with a centralized registry, event-driven architecture, and declarative keybinding definitions in YAML configuration.
 
     ---
-  rationale:
-    why: |-
-      Implement a **configuration-driven keyboard shortcut system** with a centralized registry, event-driven architecture, and declarative keybinding definitions in YAML configuration.
-
-      ---
-    problems_solved: []
-    benefits: []
-  alternatives_considered: []
   implementation_approach:
+    details:
+      - Pane-management category includes pane.add, pane.remove, pane.swap, pane.swapPrev, pane.cycle, pane.cyclePrev (neighbor swap and full-array cycle)
+      - Toolbar-only pane.order has no keybinding row; opens dialog via WorkspaceView handler map
     summary: |-
       Implement a **configuration-driven keyboard shortcut system** with a centralized registry, event-driven architecture, and declarative keybinding definitions in YAML configuration.
 
       ---
-    details:
-      - Pane-management category includes pane.add, pane.remove, pane.swap, pane.swapPrev, pane.cycle, pane.cyclePrev (neighbor swap and full-array cycle)
-      - Toolbar-only pane.order has no keybinding row; opens dialog via WorkspaceView handler map
-  traceability:
-    requirements:
-      - REQ-KEYBOARD_SHORTCUTS_COMPLETE
-      - REQ-KEYBOARD_NAVIGATION
-    implementation: []
-    tests: []
-    code_annotations:
-      - ARCH-KEYBIND_SYSTEM
+  metadata:
+    created:
+      author: migration
+      date: "2026-02-07"
+  name: KEYBIND SYSTEM
+  rationale:
+    benefits: []
+    problems_solved: []
+    why: |-
+      Implement a **configuration-driven keyboard shortcut system** with a centralized registry, event-driven architecture, and declarative keybinding definitions in YAML configuration.
+
+      ---
   related_decisions:
     depends_on: []
     informs: []
     see_also: []
-  metadata:
-    created:
-      date: "2026-02-07"
-      author: migration
+  status: Active
+  traceability:
+    code_annotations:
+      - ARCH-KEYBIND_SYSTEM
+    implementation: []
+    requirements:
+      - REQ-KEYBOARD_NAVIGATION
+      - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+    tests: []

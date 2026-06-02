@@ -1,19 +1,38 @@
 REQ-FILE_OPERATIONS:
-  name: File Copy, Move, Rename, Delete Operations
   category: Functional
-  priority: P1
-  status: Implemented
   description: Users need to perform common file management operations
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-06-02T00:00:00.000Z"
+      reason: 'LEAP: copyFile test coverage — preserveCopyAttributes, error path, integration tests'
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: File Copy, Move, Rename, Delete Operations
+  priority: P1
   rationale:
-    why: Users need to perform common file management operations
-    problems_solved:
-      - Difficulty moving/copying files between directories
-      - Manual command-line operations required
-      - No file manipulation interface
     benefits:
       - Batch operations on marked files
       - Cross-pane copy/move support
       - Visual file operations
+    problems_solved:
+      - Difficulty moving/copying files between directories
+      - Manual command-line operations required
+      - No file manipulation interface
+    why: Users need to perform common file management operations
+  related_requirements:
+    depends_on:
+      - REQ-FILE_LISTING
+      - REQ-KEYBOARD_NAVIGATION
+    related_to:
+      - REQ-CROSS_PANE_COMPARISON
+      - REQ-TOUCH_MTIME
+    supersedes: []
   satisfaction_criteria:
     - criterion: Can copy directories recursively (not only files)
     - criterion: Can copy files (keyboard shortcut or button)
@@ -24,6 +43,21 @@ REQ-FILE_OPERATIONS:
     - criterion: Copy creates missing destination parent directories when required
     - criterion: Error handling for failed operations
     - criterion: Operations work on single and marked files
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-FILE_OPERATIONS_API
+      - ARCH-FILESYSTEM_ABSTRACTION
+      - ARCH-TOUCH_MTIME
+    code_annotations:
+      - REQ-FILE_OPERATIONS
+    implementation:
+      - IMPL-FILES_API
+      - IMPL-FILES_DATA
+      - IMPL-TOUCH_MTIME
+    tests:
+      - src/lib/copy-file.data.test.ts
+      - src/lib/files.data.test.ts
   validation_criteria:
     - method: Operation testing
       coverage: copy-file.data.test.ts recursive directory copy on real filesystem; all CRUD operations including recursive directory copy
@@ -31,37 +65,3 @@ REQ-FILE_OPERATIONS:
       coverage: files.data.test.ts copyFile rethrows on failure; errors handled gracefully (permissions, non-existent files)
     - method: Unit tests
       coverage: files.data.test.ts copyFile file and directory branches, preserveCopyAttributes invocation, error rethrow; vocabulary tied/vocab/file-marking.md
-  traceability:
-    architecture:
-      - ARCH-FILE_OPERATIONS_API
-      - ARCH-FILESYSTEM_ABSTRACTION
-      - ARCH-TOUCH_MTIME
-    implementation:
-      - IMPL-FILES_API
-      - IMPL-FILES_DATA
-      - IMPL-TOUCH_MTIME
-    tests:
-      - src/lib/files.data.test.ts
-      - src/lib/copy-file.data.test.ts
-    code_annotations:
-      - REQ-FILE_OPERATIONS
-  related_requirements:
-    depends_on:
-      - REQ-FILE_LISTING
-      - REQ-KEYBOARD_NAVIGATION
-    related_to:
-      - REQ-CROSS_PANE_COMPARISON
-      - REQ-TOUCH_MTIME
-    supersedes: []
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-06-02T00:00:00.000Z"
-      author: AI Agent
-      reason: 'LEAP: copyFile test coverage — preserveCopyAttributes, error path, integration tests'
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass

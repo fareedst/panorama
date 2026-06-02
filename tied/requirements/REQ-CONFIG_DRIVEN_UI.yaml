@@ -1,59 +1,59 @@
 # REQ detail — REQ-CONFIG_DRIVEN_UI
 REQ-CONFIG_DRIVEN_UI:
-  name: Configuration-Driven UI
   category: Functional
-  priority: P0
-  status: Implemented
   description: Configuration-driven UI makes the project a highly-configurable template that users can customize without code changes
+  metadata:
+    created:
+      author: AI Agent
+      date: 2025-11-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-06T00:00:00.000Z
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Configuration-Driven UI
+  priority: P0
   rationale:
-    why: Configuration-driven UI makes the project a highly-configurable template that users can customize without code changes
-    problems_solved:
-      - Difficult customization for template users
-      - Hard-coded UI values requiring code changes
-      - Lack of separation between content and code
     benefits:
       - Easy customization via YAML files
       - No code changes needed for appearance/content
       - Separation of concerns
       - Template reusability
+    problems_solved:
+      - Difficult customization for template users
+      - Hard-coded UI values requiring code changes
+      - Lack of separation between content and code
+    why: Configuration-driven UI makes the project a highly-configurable template that users can customize without code changes
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-CONFIG_DRIVEN_APPEARANCE
+    supersedes: []
   satisfaction_criteria:
     - criterion: All navigation links come from config
     - criterion: All page text content comes from config
     - criterion: All theme colors come from config
     - criterion: Partial config files work (missing values use defaults)
     - criterion: Two YAML config files exist (config/site.yaml, config/theme.yaml)
-  validation_criteria:
-    - method: Config loader testing
-      coverage: Config loader unit tests pass (31 tests)
-    - method: Integration testing
-      coverage: Changing config values changes rendered output
+  status: Implemented
   traceability:
     architecture:
       - ARCH-CLASS_OVERRIDES
       - ARCH-CONFIG_DRIVEN_UI
       - ARCH-THEME_INJECTION
+    code_annotations:
+      - REQ-CONFIG_DRIVEN_UI
     implementation:
       - IMPL-CLASS_OVERRIDES
       - IMPL-CONFIG_LOADER
       - IMPL-THEME_INJECTION
       - IMPL-YAML_CONFIG
     tests: []
-    code_annotations:
-      - REQ-CONFIG_DRIVEN_UI
-  related_requirements:
-    depends_on: []
-    related_to:
-      - REQ-CONFIG_DRIVEN_APPEARANCE
-    supersedes: []
-  metadata:
-    created:
-      date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-06T00:00:00.000Z
-      author: AI Agent
-      reason: Migration to v1.5.0
-    last_validated:
-      date: 2026-02-06T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+  validation_criteria:
+    - method: Config loader testing
+      coverage: Config loader unit tests pass (31 tests)
+    - method: Integration testing
+      coverage: Changing config values changes rendered output

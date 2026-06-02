@@ -1,13 +1,4 @@
 IMPL-MESH_PERSISTENCE:
-  name: Mesh JSON Persistence
-  status: Active
-  cross_references:
-    - ARCH-MESH_LAYERED
-    - IMPL-MESH_CRUD
-    - REQ-MESH_PLATFORM
-  decision: JsonMeshRepository persists MeshRecord[] to meshes.json; runtime selects repo via MESH_DATA_DIR.
-  implementation_approach:
-    summary: src/lib/mesh/repositories/json-mesh-repository.ts
   code_locations:
     files:
       - path: src/lib/mesh/repositories/json-mesh-repository.ts
@@ -15,26 +6,35 @@ IMPL-MESH_PERSISTENCE:
       - path: src/lib/mesh/repositories/create-mesh-repository.ts
         description: Repository factory
     functions: []
-  traceability:
-    architecture:
-      - ARCH-MESH_LAYERED
-    requirements:
-      - REQ-MESH_PLATFORM
-    tests:
-      - src/lib/mesh/repositories/json-mesh-repository.test.ts
-      - src/lib/mesh/repositories/create-mesh-repository.test.ts
-    code_annotations:
-      - IMPL-MESH_PERSISTENCE
+  cross_references:
+    - ARCH-MESH_LAYERED
+    - IMPL-MESH_CRUD
+    - REQ-MESH_PLATFORM
+  decision: JsonMeshRepository persists MeshRecord[] to meshes.json; runtime selects repo via MESH_DATA_DIR.
+  implementation_approach:
+    summary: src/lib/mesh/repositories/json-mesh-repository.ts
+  metadata:
+    created:
+      author: AI Agent
+      date: "2026-05-19T00:00:00.000Z"
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+  name: Mesh JSON Persistence
   related_decisions:
     depends_on:
       - IMPL-MESH_CRUD
-    supersedes: []
     see_also: []
+    supersedes: []
+  status: Active
   testability: integration
-  metadata:
-    created:
-      date: "2026-05-19T00:00:00.000Z"
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
+  traceability:
+    architecture:
+      - ARCH-MESH_LAYERED
+    code_annotations:
+      - IMPL-MESH_PERSISTENCE
+    requirements:
+      - REQ-MESH_PLATFORM
+    tests:
+      - src/lib/mesh/repositories/create-mesh-repository.test.ts
+      - src/lib/mesh/repositories/json-mesh-repository.test.ts

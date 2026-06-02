@@ -1,6 +1,18 @@
 IMPL-FILES_API:
-  name: File Operations API Routes
-  status: Implemented
+  code_locations:
+    files:
+      - path: src/app/api/files/route.ts
+        description: File operations API route with logging and operation-specific validation
+        lines:
+          - 1
+          - 240
+    functions:
+      - name: GET
+        description: Handle directory listing requests with logging
+        file: src/app/api/files/route.ts
+      - name: POST
+        description: Handle file operations with operation-specific validation and comprehensive logging
+        file: src/app/api/files/route.ts
   cross_references:
     - ARCH-FILE_OPERATIONS_API
     - ARCH-PANE_COMMAND_EXEC
@@ -10,20 +22,7 @@ IMPL-FILES_API:
     - REQ-FILE_OPERATIONS
     - REQ-PANE_COMMAND_EXEC
   decision: GET /api/files for directory listing, POST /api/files for operations (copy, move, delete, rename, bulk-*, sync-all), operation-specific validation, integrated with session logger
-  rationale:
-    why: API routes provide secure server-side file operations with comprehensive logging
-    problems_solved:
-      - Client-side file operations
-      - Inconsistent error handling
-      - Missing error traceability in logs
-      - Security vulnerabilities
-    benefits:
-      - Centralized validation
-      - Complete error logging with semantic tokens
-      - RESTful interface
-      - Secure operations
   implementation_approach:
-    summary: GET /api/files for directory listing, POST /api/files for operations (copy, move, delete, rename, bulk-*, sync-all, execute-command), operation-specific validation, integrated with session logger
     details:
       - 'execute-command: validate entries; delegate executeCommandBatch; return successCount and errorCount'
       - 'GET handler at /api/files (not /api/files/list): accepts path query param, returns sorted directory listing'
@@ -37,52 +36,53 @@ IMPL-FILES_API:
       - Integrated logger module for debug, info, warn, error logging
       - Path validation (..) only when src/dest present
       - Switch on operation type (copy, move, delete, rename, bulk-copy, bulk-move, bulk-delete, sync-all, execute-command)
-  code_locations:
-    files:
-      - path: src/app/api/files/route.ts
-        description: File operations API route with logging and operation-specific validation
-        lines:
-          - 1
-          - 240
-    functions:
-      - name: GET
-        file: src/app/api/files/route.ts
-        description: Handle directory listing requests with logging
-      - name: POST
-        file: src/app/api/files/route.ts
-        description: Handle file operations with operation-specific validation and comprehensive logging
+    summary: GET /api/files for directory listing, POST /api/files for operations (copy, move, delete, rename, bulk-*, sync-all, execute-command), operation-specific validation, integrated with session logger
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-31T00:00:00.000Z"
+      reason: LEAP — execute-command POST case in route.ts
+    last_validated:
+      date: 2026-02-09T00:00:00.000Z
+      result: pass - 6/6 route tests, sync-all accepts request without src
+      validator: AI Agent
+  name: File Operations API Routes
+  rationale:
+    benefits:
+      - Centralized validation
+      - Complete error logging with semantic tokens
+      - RESTful interface
+      - Secure operations
+    problems_solved:
+      - Client-side file operations
+      - Inconsistent error handling
+      - Missing error traceability in logs
+      - Security vulnerabilities
+    why: API routes provide secure server-side file operations with comprehensive logging
+  related_decisions:
+    depends_on:
+      - IMPL-LOGGER_MODULE
+    see_also:
+      - IMPL-FILES_DATA
+      - IMPL-WORKSPACE_VIEW
+    supersedes: []
+  status: Implemented
   traceability:
     architecture:
       - ARCH-FILE_OPERATIONS_API
       - ARCH-LOGGING_SYSTEM
       - ARCH-PANE_COMMAND_EXEC
+    code_annotations:
+      - IMPL-FILES_API
+      - IMPL-LOGGER_MODULE
     requirements:
       - REQ-DIRECTORY_NAVIGATION
       - REQ-FILE_OPERATIONS
       - REQ-LOGGING_SYSTEM
       - REQ-PANE_COMMAND_EXEC
     tests:
-      - src/app/api/files/route.test.ts
       - src/app/api/files/display-filter.route.test.ts
-    code_annotations:
-      - IMPL-FILES_API
-      - IMPL-LOGGER_MODULE
-  related_decisions:
-    depends_on:
-      - IMPL-LOGGER_MODULE
-    supersedes: []
-    see_also:
-      - IMPL-FILES_DATA
-      - IMPL-WORKSPACE_VIEW
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-31T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — execute-command POST case in route.ts
-    last_validated:
-      date: 2026-02-09T00:00:00.000Z
-      validator: AI Agent
-      result: pass - 6/6 route tests, sync-all accepts request without src
+      - src/app/api/files/route.test.ts

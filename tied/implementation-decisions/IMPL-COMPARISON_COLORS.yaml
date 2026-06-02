@@ -1,25 +1,4 @@
 IMPL-COMPARISON_COLORS:
-  name: CSS Class-Based Comparison Coloring
-  status: Implemented
-  cross_references:
-    - ARCH-COMPARISON_COLORING
-    - REQ-FILE_COMPARISON_VISUAL
-  decision: Enhance ComparisonIndex, apply CSS classes from theme
-  rationale:
-    why: CSS classes enable theme-driven comparison colors
-    problems_solved:
-      - Hard-coded comparison colors
-      - No theme integration
-    benefits:
-      - Consistent with existing styling
-      - Easy to customize
-      - Theme.yaml controls all colors
-  implementation_approach:
-    summary: Enhance ComparisonIndex, apply CSS classes from theme
-    details:
-      - 'Apply classes: comparison-equal, comparison-smallest, comparison-largest'
-      - 'buildEnhancedComparisonIndex: compute sizeClass and timeClass'
-      - 'Theme colors: file-manager.comparison section'
   code_locations:
     files:
       - path: src/lib/files.comparison.ts
@@ -30,32 +9,53 @@ IMPL-COMPARISON_COLORS:
         description: files.compareColors reference tokens
     functions:
       - name: buildEnhancedComparisonIndex
-        file: src/lib/files.comparison.ts
         description: Build comparison with size/time analysis
+        file: src/lib/files.comparison.ts
+  cross_references:
+    - ARCH-COMPARISON_COLORING
+    - REQ-FILE_COMPARISON_VISUAL
+  decision: Enhance ComparisonIndex, apply CSS classes from theme
+  implementation_approach:
+    details:
+      - 'Apply classes: comparison-equal, comparison-smallest, comparison-largest'
+      - 'buildEnhancedComparisonIndex: compute sizeClass and timeClass'
+      - 'Theme colors: file-manager.comparison section'
+    summary: Enhance ComparisonIndex, apply CSS classes from theme
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-29T00:00:00.000Z"
+      reason: Retrofit essence_pseudocode from files.comparison.test.ts and FilePane
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: CSS Class-Based Comparison Coloring
+  rationale:
+    benefits:
+      - Consistent with existing styling
+      - Easy to customize
+      - Theme.yaml controls all colors
+    problems_solved:
+      - Hard-coded comparison colors
+      - No theme integration
+    why: CSS classes enable theme-driven comparison colors
+  related_decisions:
+    depends_on:
+      - ARCH-COMPARISON_COLORING
+    see_also:
+      - IMPL-COMPARISON_INDEX
+    supersedes: []
+  status: Implemented
   traceability:
     architecture:
       - ARCH-COMPARISON_COLORING
+    code_annotations:
+      - IMPL-COMPARISON_COLORS
     requirements:
       - REQ-FILE_COMPARISON_VISUAL
     tests:
       - src/lib/files.comparison.test.ts
-    code_annotations:
-      - IMPL-COMPARISON_COLORS
-  related_decisions:
-    depends_on:
-      - ARCH-COMPARISON_COLORING
-    supersedes: []
-    see_also:
-      - IMPL-COMPARISON_INDEX
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-29T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit essence_pseudocode from files.comparison.test.ts and FilePane
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass

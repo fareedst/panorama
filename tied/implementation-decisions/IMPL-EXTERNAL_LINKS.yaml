@@ -1,26 +1,4 @@
 IMPL-EXTERNAL_LINKS:
-  name: External Links Implementation
-  status: Active
-  cross_references:
-    - ARCH-APP_ROUTER
-    - REQ-NAVIGATION_LINKS
-  decision: Add target='_blank' and rel='noopener noreferrer' to external links
-  rationale:
-    why: Implement secure external links with proper attributes
-    problems_solved:
-      - Security vulnerabilities from improper links
-      - Missing security attributes
-    benefits:
-      - Secure external links
-      - Proper referrer handling
-  implementation_approach:
-    summary: Add target='_blank' and rel='noopener noreferrer' to external links
-    details:
-      - Add rel='noopener noreferrer'
-      - Add target='_blank'
-      - Load URLs from config
-      - NewTabLink component also serves internal Mesh ↔ File Manager routes (REQ-WORKSPACE_MESH_BRIDGE)
-      - Use <a> tags for external links
   code_locations:
     files:
       - path: src/components/NewTabLink.tsx
@@ -29,33 +7,55 @@ IMPL-EXTERNAL_LINKS:
         description: Cross-surface Mesh link in file manager toolbar
       - path: src/app/mesh/components/MeshDetailClient.tsx
         description: Cross-surface File Manager link from mesh detail
+  cross_references:
+    - ARCH-APP_ROUTER
+    - REQ-NAVIGATION_LINKS
+  decision: Add target='_blank' and rel='noopener noreferrer' to external links
+  essence_pseudocode_path: implementation-decisions/IMPL-EXTERNAL_LINKS-pseudocode.md
+  implementation_approach:
+    details:
+      - Add rel='noopener noreferrer'
+      - Add target='_blank'
+      - Load URLs from config
+      - NewTabLink component also serves internal Mesh ↔ File Manager routes (REQ-WORKSPACE_MESH_BRIDGE)
+      - Use <a> tags for external links
+    summary: Add target='_blank' and rel='noopener noreferrer' to external links
+  metadata:
+    created:
+      author: AI Agent
+      date: 2025-11-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Retrofit essence_pseudocode; NewTabLink is primary locus (page.tsx redirects)
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: External Links Implementation
+  rationale:
+    benefits:
+      - Proper referrer handling
+      - Secure external links
+    problems_solved:
+      - Missing security attributes
+      - Security vulnerabilities from improper links
+    why: Implement secure external links with proper attributes
+  related_decisions:
+    depends_on: []
+    see_also:
+      - docs/FILE_MANAGER_SOLE_PURPOSE.md
+      - tied/vocab/mesh-platform.md
+      - tied/vocab/workspace-pane.md
+    supersedes: []
+  status: Active
   traceability:
     architecture:
       - ARCH-APP_ROUTER
+    code_annotations:
+      - REQ-NAVIGATION_LINKS
     requirements:
       - REQ-NAVIGATION_LINKS
       - REQ-WORKSPACE_MESH_BRIDGE
     tests:
       - src/components/NewTabLink.test.tsx
-    code_annotations:
-      - REQ-NAVIGATION_LINKS
-  related_decisions:
-    depends_on: []
-    supersedes: []
-    see_also:
-      - docs/FILE_MANAGER_SOLE_PURPOSE.md
-      - tied/vocab/mesh-platform.md
-      - tied/vocab/workspace-pane.md
-  metadata:
-    created:
-      date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit essence_pseudocode; NewTabLink is primary locus (page.tsx redirects)
-    last_validated:
-      date: 2026-02-06T00:00:00.000Z
-      validator: AI Agent
-      result: pass
-  essence_pseudocode_path: implementation-decisions/IMPL-EXTERNAL_LINKS-pseudocode.md

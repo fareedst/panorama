@@ -1,28 +1,4 @@
 IMPL-SORT_FILTER:
-  name: Client-Side Sort and Filter Functions
-  status: Implemented
-  cross_references:
-    - REQ-FILE_SORTING_ADVANCED
-  decision: Sort functions in files.utils.ts with comparator dispatch
-  rationale:
-    why: Client-side sorting avoids server round-trips for instant feedback
-    problems_solved:
-      - Server sorting adds latency
-      - Cannot sort without network
-    benefits:
-      - Directory prioritization
-      - Instant sort updates
-      - Multiple criteria support
-  implementation_approach:
-    summary: Sort functions in files.utils.ts with comparator dispatch; workspace sharedSort Share/Shared in SortDialog
-    details:
-      - 'Comparators: byName, bySize, byTime, byExtension'
-      - 'Directory priority: if (dirsFirst && a.isDir !== b.isDir)'
-      - 'SharedSortWorkspace: Share updates sharedSort; Shared applies to focused pane via singlePaneOnly'
-      - Cursor preservation via filename match after sort
-      - New panes inherit sharedSort not focused pane sort
-      - PaneSortSettings, DEFAULT_PANE_SORT, paneSortSettingsEqual for Shared/Share disable logic
-      - sortFiles(files, sortBy, ascending, dirsFirst)
   code_locations:
     files:
       - path: src/lib/files.utils.ts
@@ -36,14 +12,57 @@ IMPL-SORT_FILTER:
         lines: []
     functions:
       - name: sortFiles
-        file: src/lib/files.utils.ts
         description: Main sort function with criteria dispatch
-      - name: paneSortSettingsEqual
         file: src/lib/files.utils.ts
+      - name: paneSortSettingsEqual
         description: Equality for Share/Shared button disable
+        file: src/lib/files.utils.ts
+  cross_references:
+    - REQ-FILE_SORTING_ADVANCED
+  decision: Sort functions in files.utils.ts with comparator dispatch
+  implementation_approach:
+    details:
+      - 'Comparators: byName, bySize, byTime, byExtension'
+      - 'Directory priority: if (dirsFirst && a.isDir !== b.isDir)'
+      - 'SharedSortWorkspace: Share updates sharedSort; Shared applies to focused pane via singlePaneOnly'
+      - Cursor preservation via filename match after sort
+      - New panes inherit sharedSort not focused pane sort
+      - PaneSortSettings, DEFAULT_PANE_SORT, paneSortSettingsEqual for Shared/Share disable logic
+      - sortFiles(files, sortBy, ascending, dirsFirst)
+    summary: Sort functions in files.utils.ts with comparator dispatch; workspace sharedSort Share/Shared in SortDialog
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Retrofit traceability for sort pseudo-code alignment
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Client-Side Sort and Filter Functions
+  rationale:
+    benefits:
+      - Directory prioritization
+      - Instant sort updates
+      - Multiple criteria support
+    problems_solved:
+      - Cannot sort without network
+      - Server sorting adds latency
+    why: Client-side sorting avoids server round-trips for instant feedback
+  related_decisions:
+    depends_on: []
+    see_also:
+      - IMPL-FILES_UTILS
+    supersedes: []
+  status: Implemented
   traceability:
     architecture:
       - ARCH-SORT_PIPELINE
+    code_annotations:
+      - IMPL-SORT_FILTER
     requirements:
       - REQ-FILE_SORTING_ADVANCED
       - REQ-WORKSPACE_MESH_BRIDGE
@@ -51,22 +70,3 @@ IMPL-SORT_FILTER:
       - src/app/files/components/SortDialog.test.tsx
       - src/app/files/WorkspaceView.shared-sort.test.tsx
       - src/lib/files.utils.test.ts
-    code_annotations:
-      - IMPL-SORT_FILTER
-  related_decisions:
-    depends_on: []
-    supersedes: []
-    see_also:
-      - IMPL-FILES_UTILS
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit traceability for sort pseudo-code alignment
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass

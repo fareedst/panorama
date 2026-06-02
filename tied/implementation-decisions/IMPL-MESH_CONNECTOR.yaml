@@ -1,13 +1,4 @@
 IMPL-MESH_CONNECTOR:
-  name: Mesh Connector Contract
-  status: Active
-  cross_references:
-    - IMPL-MESH_DOMAIN_TYPES
-    - REQ-MESH_PLATFORM
-    - REQ-MESH_REAL_CONNECTORS
-  decision: Connector interface with FakeConnector, VirtualConnector (synthetic default tree), LocalFilesystemConnector, and RemoteConnector stub implementations.
-  implementation_approach:
-    summary: src/lib/mesh/connector/
   code_locations:
     files:
       - path: src/lib/mesh/connector/types.ts
@@ -17,9 +8,34 @@ IMPL-MESH_CONNECTOR:
       - path: src/lib/mesh/connector/virtual-connector.ts
         description: Synthetic virtual depot connector for virtual-kind depots
     functions: []
+  cross_references:
+    - IMPL-MESH_DOMAIN_TYPES
+    - REQ-MESH_PLATFORM
+    - REQ-MESH_REAL_CONNECTORS
+  decision: Connector interface with FakeConnector, VirtualConnector (synthetic default tree), LocalFilesystemConnector, and RemoteConnector stub implementations.
+  implementation_approach:
+    summary: src/lib/mesh/connector/
+  metadata:
+    created:
+      author: AI Agent
+      date: "2026-05-19T00:00:00.000Z"
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Retrofit pseudocode and traceability from production/tests
+  name: Mesh Connector Contract
+  related_decisions:
+    depends_on:
+      - IMPL-MESH_DOMAIN_TYPES
+    see_also: []
+    supersedes: []
+  status: Active
+  testability: unit
   traceability:
     architecture:
       - ARCH-MESH_LAYERED
+    code_annotations:
+      - IMPL-MESH_CONNECTOR
     requirements:
       - REQ-MESH_PLATFORM
       - REQ-MESH_REAL_CONNECTORS
@@ -28,19 +44,3 @@ IMPL-MESH_CONNECTOR:
       - src/lib/mesh/connector/local-filesystem-connector.test.ts
       - src/lib/mesh/connector/remote-connector.test.ts
       - src/lib/mesh/connector/virtual-connector.test.ts
-    code_annotations:
-      - IMPL-MESH_CONNECTOR
-  related_decisions:
-    depends_on:
-      - IMPL-MESH_DOMAIN_TYPES
-    supersedes: []
-    see_also: []
-  testability: unit
-  metadata:
-    created:
-      date: "2026-05-19T00:00:00.000Z"
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit pseudocode and traceability from production/tests

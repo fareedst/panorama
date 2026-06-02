@@ -1,30 +1,4 @@
 IMPL-FILES_CONFIG:
-  name: Files Configuration Loader
-  status: Implemented
-  cross_references:
-    - ARCH-CONFIG_DRIVEN_UI
-    - REQ-CONFIG_DRIVEN_FILE_MANAGER
-  decision: Add getFilesConfig() to config.ts, extend types, create config/files.yaml
-  rationale:
-    why: Config loader provides files-specific configuration following existing patterns
-    problems_solved:
-      - Hard-coded UI text
-      - Inconsistent with project
-      - No configuration support
-    benefits:
-      - Config-driven UI
-      - Consistent patterns
-      - Easy customization
-  implementation_approach:
-    summary: Add getFilesConfig() to config.ts, extend types, create config/files.yaml
-    details:
-      - Added files? field to ThemeConfig interface
-      - Added FilesCopyConfig interface to config.types.ts
-      - Added FilesThemeConfig and FilesThemeOverrides interfaces
-      - Added getFilesConfig() function to config.ts
-      - Added getFilesOverride() helper function
-      - Created config/files.yaml with copy section
-      - Extended theme.yaml with files.overrides and compareColors sections
   code_locations:
     files:
       - path: config/files.yaml
@@ -35,8 +9,8 @@ IMPL-FILES_CONFIG:
       - path: config/theme.yaml
         description: Extended with files section
         lines:
-          - 85
           - 101
+          - 85
       - path: src/lib/config.ts
         description: Config loader with getFilesConfig()
         lines:
@@ -49,34 +23,60 @@ IMPL-FILES_CONFIG:
           - 342
     functions:
       - name: getFilesConfig
-        file: src/lib/config.ts
         description: Load files configuration with defaults
-      - name: getFilesOverride
         file: src/lib/config.ts
+      - name: getFilesOverride
         description: Get theme override for files component
+        file: src/lib/config.ts
+  cross_references:
+    - ARCH-CONFIG_DRIVEN_UI
+    - REQ-CONFIG_DRIVEN_FILE_MANAGER
+  decision: Add getFilesConfig() to config.ts, extend types, create config/files.yaml
+  implementation_approach:
+    details:
+      - Added files? field to ThemeConfig interface
+      - Added FilesCopyConfig interface to config.types.ts
+      - Added FilesThemeConfig and FilesThemeOverrides interfaces
+      - Added getFilesConfig() function to config.ts
+      - Added getFilesOverride() helper function
+      - Created config/files.yaml with copy section
+      - Extended theme.yaml with files.overrides and compareColors sections
+    summary: Add getFilesConfig() to config.ts, extend types, create config/files.yaml
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Retrofit essence_pseudocode from tests/code; align block-lead comments
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Files Configuration Loader
+  rationale:
+    benefits:
+      - Config-driven UI
+      - Consistent patterns
+      - Easy customization
+    problems_solved:
+      - Hard-coded UI text
+      - Inconsistent with project
+      - No configuration support
+    why: Config loader provides files-specific configuration following existing patterns
+  related_decisions:
+    depends_on: []
+    see_also:
+      - IMPL-CONFIG_LOADER
+    supersedes: []
+  status: Implemented
   traceability:
     architecture:
       - ARCH-CONFIG_DRIVEN_UI
+    code_annotations:
+      - IMPL-FILES_CONFIG
     requirements:
       - REQ-CONFIG_DRIVEN_FILE_MANAGER
     tests:
       - src/lib/config.test.ts
-    code_annotations:
-      - IMPL-FILES_CONFIG
-  related_decisions:
-    depends_on: []
-    supersedes: []
-    see_also:
-      - IMPL-CONFIG_LOADER
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit essence_pseudocode from tests/code; align block-lead comments
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass

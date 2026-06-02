@@ -1,52 +1,52 @@
 IMPL-TEST_CONFIG:
-  name: Vitest Configuration
-  status: Active
-  cross_references:
-    - ARCH-TEST_FRAMEWORK
-    - REQ-BUILD_SYSTEM
-  decision: Configure Vitest with React Testing Library and coverage
-  rationale:
-    why: Configure Vitest for fast test execution
-    problems_solved:
-      - Slow test runs
-      - Missing test configuration
-    benefits:
-      - Fast test execution
-      - Coverage reporting
-  implementation_approach:
-    summary: Configure Vitest with React Testing Library and coverage
-    details:
-      - Configure test environment (jsdom)
-      - Configure test setup file
-      - Create vitest.config.ts
-      - Set up coverage with 80% threshold
   code_locations:
     files:
       - path: vitest.config.ts
         description: Vitest configuration
     functions: []
-  traceability:
-    architecture:
-      - ARCH-TEST_FRAMEWORK
-    requirements:
-      - REQ-BUILD_SYSTEM
-    tests: []
-    code_annotations:
-      - REQ-BUILD_SYSTEM
-  related_decisions:
-    depends_on: []
-    supersedes: []
-    see_also:
-      - IMPL-TEST_SETUP
+  cross_references:
+    - ARCH-TEST_FRAMEWORK
+    - REQ-BUILD_SYSTEM
+  decision: Configure Vitest with React Testing Library and coverage
+  implementation_approach:
+    details:
+      - Configure test environment (jsdom)
+      - Configure test setup file
+      - Create vitest.config.ts
+      - Set up coverage with 80% threshold
+    summary: Configure Vitest with React Testing Library and coverage
   metadata:
     created:
+      author: AI Agent
       date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
     last_updated:
-      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
       reason: Retrofit vitest.config pseudo-code alignment
     last_validated:
       date: 2026-02-06T00:00:00.000Z
-      validator: AI Agent
       result: pass
+      validator: AI Agent
+  name: Vitest Configuration
+  rationale:
+    benefits:
+      - Coverage reporting
+      - Fast test execution
+    problems_solved:
+      - Missing test configuration
+      - Slow test runs
+    why: Configure Vitest for fast test execution
+  related_decisions:
+    depends_on: []
+    see_also:
+      - IMPL-TEST_SETUP
+    supersedes: []
+  status: Active
+  traceability:
+    architecture:
+      - ARCH-TEST_FRAMEWORK
+    code_annotations:
+      - REQ-BUILD_SYSTEM
+    requirements:
+      - REQ-BUILD_SYSTEM
+    tests: []

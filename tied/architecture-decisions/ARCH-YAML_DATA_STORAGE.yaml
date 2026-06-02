@@ -1,44 +1,44 @@
 # ARCH detail — ARCH-YAML_DATA_STORAGE
 ARCH-YAML_DATA_STORAGE:
-  name: YAML Data Storage Pattern
-  status: Active
+  alternatives_considered: []
   cross_references: []
   decision: Use YAML files for persistent data storage of application records, leveraging the existing `js-yaml` dependency for both reading and writing. Data files reside in the `data/` directory at project root, separate from configuration files in `config/`.
-  rationale:
-    why: YAML provides human-readable, version-controllable data storage
-    problems_solved:
-      - Database complexity
-      - Binary data formats
-    benefits:
-      - Human-readable
-      - Simple to use
-      - Version-controllable
-  alternatives_considered: []
   implementation_approach:
-    summary: Store data in YAML files in data/ directory
     details:
       - Create data/ directory
       - Store records in YAML format
       - Use YAML parser for read/write
-  traceability:
-    requirements: []
-    implementation: []
-    tests: []
-    code_annotations: []
+    summary: Store data in YAML files in data/ directory
+  metadata:
+    created:
+      author: AI Agent
+      date: 2025-11-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-06T00:00:00.000Z
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: YAML Data Storage Pattern
+  rationale:
+    benefits:
+      - Human-readable
+      - Simple to use
+      - Version-controllable
+    problems_solved:
+      - Binary data formats
+      - Database complexity
+    why: YAML provides human-readable, version-controllable data storage
   related_decisions:
     depends_on: []
     informs: []
     see_also:
       - ARCH-CONFIG_DRIVEN_UI
-  metadata:
-    created:
-      date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-06T00:00:00.000Z
-      author: AI Agent
-      reason: Migration to v1.5.0
-    last_validated:
-      date: 2026-02-06T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+  status: Active
+  traceability:
+    code_annotations: []
+    implementation: []
+    requirements: []
+    tests: []

@@ -1,44 +1,44 @@
 REQ-COPY_OPERATIONS:
-  name: Copy Operations Preserve File Attributes
   category: Functional
+  description: Copied files should preserve mode and timestamps where the platform allows
+  detail_file: requirements/REQ-COPY_OPERATIONS.yaml
+  metadata:
+    created:
+      author: migration
+      date: "2026-02-09"
+    last_updated:
+      author: AI Agent
+      date: "2026-06-02T00:00:00.000Z"
+      reason: 'LEAP: files.data copy path attribute preservation coverage'
+  name: Copy Operations Preserve File Attributes
   priority: P1
-  status: Implemented
   rationale:
-    why: Copied files should preserve mode and timestamps where the platform allows
+    benefits:
+      - Best-effort attribute preservation after copyFile
     problems_solved:
       - Loss of mtime breaks comparison
       - Permission loss on Unix copies
-    benefits:
-      - Best-effort attribute preservation after copyFile
-  satisfaction_criteria:
-    - criterion: After copy, destination mode and mtime/atime match source when supported (regular files only; directories skip attribute preservation)
-  validation_criteria:
-    - method: Unit tests
-      coverage: sync engine attribute preservation (src/lib/sync/engine.test.ts)
-    - method: Integration tests
-      coverage: copy-file.data.test.ts file copy mtime/atime/mode via files.data copyFile and preserveCopyAttributes
-  traceability:
-    architecture: []
-    implementation:
-      - IMPL-COPY_ATTRS
-    tests:
-      - src/lib/sync/engine.test.ts
-      - src/lib/copy-file.data.test.ts
-    code_annotations:
-      - REQ-COPY_OPERATIONS
-      - IMPL-COPY_ATTRS
+    why: Copied files should preserve mode and timestamps where the platform allows
   related_requirements:
     depends_on:
       - REQ-FILE_OPERATIONS
     related_to: []
     supersedes: []
-  detail_file: requirements/REQ-COPY_OPERATIONS.yaml
-  metadata:
-    created:
-      date: "2026-02-09"
-      author: migration
-    last_updated:
-      date: "2026-06-02T00:00:00.000Z"
-      author: AI Agent
-      reason: 'LEAP: files.data copy path attribute preservation coverage'
-  description: Copied files should preserve mode and timestamps where the platform allows
+  satisfaction_criteria:
+    - criterion: After copy, destination mode and mtime/atime match source when supported (regular files only; directories skip attribute preservation)
+  status: Implemented
+  traceability:
+    architecture: []
+    code_annotations:
+      - IMPL-COPY_ATTRS
+      - REQ-COPY_OPERATIONS
+    implementation:
+      - IMPL-COPY_ATTRS
+    tests:
+      - src/lib/copy-file.data.test.ts
+      - src/lib/sync/engine.test.ts
+  validation_criteria:
+    - method: Unit tests
+      coverage: sync engine attribute preservation (src/lib/sync/engine.test.ts)
+    - method: Integration tests
+      coverage: copy-file.data.test.ts file copy mtime/atime/mode via files.data copyFile and preserveCopyAttributes

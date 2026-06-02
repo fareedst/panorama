@@ -1,41 +1,31 @@
 # REQ detail — REQ-KEYBOARD_NAVIGATION
 REQ-KEYBOARD_NAVIGATION:
-  name: Keyboard-Driven Navigation
   category: Functional
-  priority: P0
-  status: Implemented
   description: Terminal-like keyboard navigation provides efficient file management workflow
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Keyboard-Driven Navigation
+  priority: P0
   rationale:
-    why: Terminal-like keyboard navigation provides efficient file management workflow
-    problems_solved:
-      - Inconsistent navigation metaphors
-      - Lack of keyboard shortcuts
-      - Mouse-dependent navigation inefficient
     benefits:
       - Fast keyboard-driven workflow
       - Reduced reliance on mouse
       - Terminal-like user experience
-  satisfaction_criteria:
-    - criterion: Arrow keys move cursor within pane
-    - criterion: Backspace navigates to parent
-    - criterion: Enter navigates into directory
-    - criterion: Marking shortcuts (m to toggle, space to select)
-    - criterion: Operation shortcuts (c copy, v paste, d delete, r rename)
-    - criterion: Tab key moves focus between panes
-  validation_criteria:
-    - method: Keyboard testing
-      coverage: All keyboard shortcuts work correctly
-    - method: Focus testing
-      coverage: Focus indicator visible and updates correctly
-  traceability:
-    architecture:
-      - ARCH-FILE_MANAGER_HIERARCHY
-    implementation:
-      - IMPL-WORKSPACE_VIEW
-      - IMPL-FILE_PANE
-    tests: []
-    code_annotations:
-      - REQ-KEYBOARD_NAVIGATION
+    problems_solved:
+      - Inconsistent navigation metaphors
+      - Lack of keyboard shortcuts
+      - Mouse-dependent navigation inefficient
+    why: Terminal-like keyboard navigation provides efficient file management workflow
   related_requirements:
     depends_on:
       - REQ-FILE_LISTING
@@ -43,15 +33,25 @@ REQ-KEYBOARD_NAVIGATION:
     related_to:
       - REQ-FILE_OPERATIONS
     supersedes: []
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-      reason: Initial creation
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+  satisfaction_criteria:
+    - criterion: Arrow keys move cursor within pane
+    - criterion: Backspace navigates to parent
+    - criterion: Enter navigates into directory
+    - criterion: Marking shortcuts (m to toggle, space to select)
+    - criterion: Operation shortcuts (c copy, v paste, d delete, r rename)
+    - criterion: Tab key moves focus between panes
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-FILE_MANAGER_HIERARCHY
+    code_annotations:
+      - REQ-KEYBOARD_NAVIGATION
+    implementation:
+      - IMPL-FILE_PANE
+      - IMPL-WORKSPACE_VIEW
+    tests: []
+  validation_criteria:
+    - method: Keyboard testing
+      coverage: All keyboard shortcuts work correctly
+    - method: Focus testing
+      coverage: Focus indicator visible and updates correctly

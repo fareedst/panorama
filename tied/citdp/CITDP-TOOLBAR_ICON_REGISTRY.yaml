@@ -1,23 +1,6 @@
 # CITDP change-analysis record — toolbar icon registry completeness
 # change_request_id: REQ-TOOLBAR_SYSTEM
 CITDP-TOOLBAR_ICON_REGISTRY:
-  record_identity:
-    change_request_id: REQ-TOOLBAR_SYSTEM
-    title: Extensible toolbar icon registry; registered glyphs for all mapped actions
-    recorded_at: 2026-05-24
-    workspace_root: /Users/fareed/Documents/dev/node/panorama
-    tied_context:
-      requirements:
-        - REQ-CROSS_PANE_VISIBILITY
-        - REQ-KEYBOARD_SHORTCUTS_COMPLETE
-        - REQ-TOOLBAR_CONFIG
-        - REQ-TOOLBAR_SYSTEM
-        - REQ-WORKSPACE_MESH_BRIDGE
-      architecture:
-        - ARCH-TOOLBAR_ACTIONS
-        - ARCH-TOOLBAR_LAYOUT
-      implementation:
-        - IMPL-TOOLBAR_COMPONENT
   change_definition:
     current_behavior_prior: |
       ACTION_ICON_MAP and toolbars.actions reference icon names not present in Icon.tsx;
@@ -27,9 +10,6 @@ CITDP-TOOLBAR_ICON_REGISTRY:
       Merged icon registry (lucide-icons + panorama-icons); isIconRegistered and unit tests
       for all referenced names; file.copyAll/move-all use copy-all/move-all icons;
       unmapped actions use icon-unknown, not help-circle; vocabulary indexes document icon names.
-    unchanged_behavior: |
-      Toolbar dispatch, tri-state compare filters, compact/expanded layout, deriveToolbarButton
-      keybinding-first semantics, theme.yaml listing emoji icons.
     non_goals:
       - lucide-react npm dependency
       - public/ asset icons for toolbar
@@ -38,13 +18,38 @@ CITDP-TOOLBAR_ICON_REGISTRY:
       - Every ACTION_ICON_MAP value and toolbars.actions icon name is registered
       - file.copyAll and file.moveAll render distinct icons from Help
       - registry.test.ts passes; existing toolbar tests pass
+    unchanged_behavior: |
+      Toolbar dispatch, tri-state compare filters, compact/expanded layout, deriveToolbarButton
+      keybinding-first semantics, theme.yaml listing emoji icons.
+  completion_criteria:
+    verification_gate_notes: Vitest pass; bunx tsc -b; tied_validate_consistency
   impact_analysis:
+    modules_or_boundaries: |
+      src/components/icons/*; Icon.tsx; toolbar.utils.ts; tied/vocab/*.md (toolbar, cross-pane-visibility, nsync, mesh, pane-display-filter)
     tied_tokens_affected:
       - ARCH-TOOLBAR_ACTIONS
       - IMPL-TOOLBAR_COMPONENT
       - REQ-TOOLBAR_SYSTEM
-    modules_or_boundaries: |
-      src/components/icons/*; Icon.tsx; toolbar.utils.ts; tied/vocab/*.md (toolbar, cross-pane-visibility, nsync, mesh, pane-display-filter)
+  leap_feedback:
+    e2e_only_reason: N/A — unit tests cover registry completeness
+    record_status: complete
+  record_identity:
+    change_request_id: REQ-TOOLBAR_SYSTEM
+    recorded_at: 2026-05-24
+    tied_context:
+      architecture:
+        - ARCH-TOOLBAR_ACTIONS
+        - ARCH-TOOLBAR_LAYOUT
+      implementation:
+        - IMPL-TOOLBAR_COMPONENT
+      requirements:
+        - REQ-CROSS_PANE_VISIBILITY
+        - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+        - REQ-TOOLBAR_CONFIG
+        - REQ-TOOLBAR_SYSTEM
+        - REQ-WORKSPACE_MESH_BRIDGE
+    title: Extensible toolbar icon registry; registered glyphs for all mapped actions
+    workspace_root: /Users/fareed/Documents/dev/node/panorama
   risk_analysis:
     risks:
       - id: RISK-001
@@ -57,8 +62,3 @@ CITDP-TOOLBAR_ICON_REGISTRY:
     summary: |
       registry.test.ts; toolbar.utils.test.ts copy-all mapping; vitest toolbar component tests;
       manual compact toolbar visual check.
-  completion_criteria:
-    verification_gate_notes: Vitest pass; bunx tsc -b; tied_validate_consistency
-  leap_feedback:
-    record_status: complete
-    e2e_only_reason: N/A — unit tests cover registry completeness

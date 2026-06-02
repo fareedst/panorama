@@ -1,31 +1,4 @@
 IMPL-FILES_CONFIG_COMPLETE:
-  name: Complete File Manager Configuration Implementation
-  status: Active
-  cross_references:
-    - ARCH-CONFIG_DRIVEN_UI
-    - REQ-CONFIG_DRIVEN_FILE_MANAGER
-    - REQ-FILES_CONFIG_COMPLETE
-  decision: Extended YAML configuration files with new sections (layout, startup, fileTypes), updated TypeScript types, added defaults, and provided helper functions for configuration access
-  rationale:
-    why: Complete file manager configuration system by externalizing all UI text, layout preferences, startup behavior, and file type indicators
-    problems_solved:
-      - Fixed layout and startup behavior
-      - Hard-coded UI strings scattered across components
-      - Incomplete theme configuration
-      - Non-customizable file type indicators
-    benefits:
-      - Complete visual customization of file types
-      - Easy workflow personalization via YAML
-      - Future internationalization support ready
-      - Zero code changes for appearance customization
-  implementation_approach:
-    summary: Extended YAML configuration files with new sections (layout, startup, fileTypes), updated TypeScript types, added defaults, and provided helper functions for configuration access
-    details:
-      - Added FileTypeConfig, FilesLayoutConfig, FilesStartupConfig TypeScript interfaces
-      - Extended config/files.yaml with marking/help/commandPalette copy, layout preferences, startup configuration
-      - Extended config/theme.yaml with fileTypes section (9 common types with icon/color/patterns)
-      - Extended DEFAULT_FILES_CONFIG with all new sections and defaults
-      - Implemented getFileTypeConfig() for pattern-based file type matching
   code_locations:
     files:
       - path: config/files.yaml
@@ -55,40 +28,67 @@ IMPL-FILES_CONFIG_COMPLETE:
           - 503
     functions:
       - name: getFileTypeConfig
-        file: src/lib/config.ts
         description: Matches filename against configured file type patterns and returns icon/color config
-      - name: getFilesConfig
         file: src/lib/config.ts
+      - name: getFilesConfig
         description: Loads and merges files configuration with defaults
-  traceability:
-    architecture:
-      - ARCH-CONFIG_DRIVEN_UI
-    requirements:
-      - REQ-FILES_CONFIG_COMPLETE
-      - REQ-CONFIG_DRIVEN_FILE_MANAGER
-    tests:
-      - src/lib/config.test.ts
-    code_annotations:
-      - IMPL-FILES_CONFIG_COMPLETE
-      - REQ-FILES_CONFIG_COMPLETE
+        file: src/lib/config.ts
+  cross_references:
+    - ARCH-CONFIG_DRIVEN_UI
+    - REQ-CONFIG_DRIVEN_FILE_MANAGER
+    - REQ-FILES_CONFIG_COMPLETE
+  decision: Extended YAML configuration files with new sections (layout, startup, fileTypes), updated TypeScript types, added defaults, and provided helper functions for configuration access
+  implementation_approach:
+    details:
+      - Added FileTypeConfig, FilesLayoutConfig, FilesStartupConfig TypeScript interfaces
+      - Extended config/files.yaml with marking/help/commandPalette copy, layout preferences, startup configuration
+      - Extended config/theme.yaml with fileTypes section (9 common types with icon/color/patterns)
+      - Extended DEFAULT_FILES_CONFIG with all new sections and defaults
+      - Implemented getFileTypeConfig() for pattern-based file type matching
+    summary: Extended YAML configuration files with new sections (layout, startup, fileTypes), updated TypeScript types, added defaults, and provided helper functions for configuration access
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Retrofit essence_pseudocode from tests/code; align block-lead comments
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass - 570 tests passing (55 config tests)
+      validator: AI Agent
+  name: Complete File Manager Configuration Implementation
+  rationale:
+    benefits:
+      - Complete visual customization of file types
+      - Easy workflow personalization via YAML
+      - Future internationalization support ready
+      - Zero code changes for appearance customization
+    problems_solved:
+      - Fixed layout and startup behavior
+      - Hard-coded UI strings scattered across components
+      - Incomplete theme configuration
+      - Non-customizable file type indicators
+    why: Complete file manager configuration system by externalizing all UI text, layout preferences, startup behavior, and file type indicators
   related_decisions:
     depends_on:
       - IMPL-CONFIG_LOADER
       - IMPL-FILES_CONFIG
       - IMPL-KEYBINDS
-    supersedes: []
     see_also:
-      - IMPL-THEME_INJECTION
       - IMPL-COMPARISON_COLORS
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit essence_pseudocode from tests/code; align block-lead comments
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass - 570 tests passing (55 config tests)
+      - IMPL-THEME_INJECTION
+    supersedes: []
+  status: Active
+  traceability:
+    architecture:
+      - ARCH-CONFIG_DRIVEN_UI
+    code_annotations:
+      - IMPL-FILES_CONFIG_COMPLETE
+      - REQ-FILES_CONFIG_COMPLETE
+    requirements:
+      - REQ-CONFIG_DRIVEN_FILE_MANAGER
+      - REQ-FILES_CONFIG_COMPLETE
+    tests:
+      - src/lib/config.test.ts

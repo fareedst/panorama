@@ -1,23 +1,52 @@
 REQ-HOME_PAGE:
-  name: Root Entry Redirect
   category: Functional
-  priority: P0
-  status: Implemented
   description: The application root URL (/) immediately routes users to the file manager at /files. Panorama is a file-manager-only product with no marketing or template home page at the root.
+  metadata:
+    created:
+      author: AI Agent
+      date: 2025-11-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: LEAP — sole-purpose root redirect; retired welcome/logo criteria
+    last_validated:
+      date: "2026-05-30T00:00:00.000Z"
+      result: pass
+      validator: AI Agent
+  name: Root Entry Redirect
+  priority: P0
   rationale:
-    why: Users should land directly in the primary workspace without an intermediate welcome page
-    problems_solved:
-      - Legacy Create Next App home page obscured product purpose
-      - Unclear entry point before sole-purpose refactor
     benefits:
       - Aligns with file-manager sole-purpose architecture
       - Minimal root route surface
       - Single clear entry to /files
+    problems_solved:
+      - Legacy Create Next App home page obscured product purpose
+      - Unclear entry point before sole-purpose refactor
+    why: Users should land directly in the primary workspace without an intermediate welcome page
+  related_requirements:
+    depends_on:
+      - REQ-APP_STRUCTURE
+    related_to:
+      - REQ-BRANDING
+      - REQ-FILE_MANAGER_PAGE
+    supersedes: []
   satisfaction_criteria:
     - criterion: Home route exists at src/app/page.tsx as a server component
     - criterion: Primary application UI remains at /files per REQ-FILE_MANAGER_PAGE
     - criterion: Root page does not render welcome content, logos, or external marketing links
     - criterion: Visiting / redirects to /files using next/navigation redirect
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-SERVER_COMPONENTS
+    code_annotations:
+      - REQ-HOME_PAGE
+    implementation:
+      - IMPL-HOME_PAGE
+    tests:
+      - e2e/root-redirect.spec.ts
+      - src/test/integration/app.test.tsx
   validation_criteria:
     - method: Static structure check
       coverage: page.tsx exports Home and invokes redirect(/files)
@@ -25,32 +54,3 @@ REQ-HOME_PAGE:
       coverage: app.test.tsx documents root redirect to file manager
     - method: E2E browser navigation
       coverage: e2e/root-redirect.spec.ts asserts / resolves to /files URL (redirect() not unit-testable)
-  traceability:
-    architecture:
-      - ARCH-SERVER_COMPONENTS
-    implementation:
-      - IMPL-HOME_PAGE
-    tests:
-      - src/test/integration/app.test.tsx
-      - e2e/root-redirect.spec.ts
-    code_annotations:
-      - REQ-HOME_PAGE
-  related_requirements:
-    depends_on:
-      - REQ-APP_STRUCTURE
-    related_to:
-      - REQ-FILE_MANAGER_PAGE
-      - REQ-BRANDING
-    supersedes: []
-  metadata:
-    created:
-      date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — sole-purpose root redirect; retired welcome/logo criteria
-    last_validated:
-      date: "2026-05-30T00:00:00.000Z"
-      validator: AI Agent
-      result: pass

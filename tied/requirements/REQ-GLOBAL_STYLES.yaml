@@ -1,53 +1,53 @@
 # REQ detail — REQ-GLOBAL_STYLES
 REQ-GLOBAL_STYLES:
-  name: Global CSS with Theme Variables
   category: Non-Functional
-  priority: P1
-  status: Implemented
   description: CSS custom properties enable dynamic theming and consistent color usage
+  metadata:
+    created:
+      author: AI Agent
+      date: 2025-11-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-06T00:00:00.000Z
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Global CSS with Theme Variables
+  priority: P1
   rationale:
-    why: CSS custom properties enable dynamic theming and consistent color usage
-    problems_solved:
-      - Difficulty changing themes
-      - Inconsistent color usage
-      - Style duplication
     benefits:
       - Consistent color usage
       - Dynamic theming capability
       - Reduced duplication
       - Runtime theme switching support
-  satisfaction_criteria:
-    - criterion: Base body styles are applied globally
-    - criterion: CSS variables defined for --background and --foreground colors
-    - criterion: globals.css file exists and is imported in layout
-    - criterion: Variables have different values for light and dark modes
-  validation_criteria:
-    - method: CSS inspection
-      coverage: CSS variables are defined in :root
-    - method: Dark mode testing
-      coverage: Variables change when dark mode is active
-  traceability:
-    architecture:
-      - ARCH-CSS_VARIABLES
-    implementation:
-      - IMPL-DARK_MODE
-    tests: []
-    code_annotations:
-      - REQ-GLOBAL_STYLES
+    problems_solved:
+      - Difficulty changing themes
+      - Inconsistent color usage
+      - Style duplication
+    why: CSS custom properties enable dynamic theming and consistent color usage
   related_requirements:
     depends_on: []
     related_to:
       - REQ-DARK_MODE
     supersedes: []
-  metadata:
-    created:
-      date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-06T00:00:00.000Z
-      author: AI Agent
-      reason: Migration to v1.5.0
-    last_validated:
-      date: 2026-02-06T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+  satisfaction_criteria:
+    - criterion: Base body styles are applied globally
+    - criterion: CSS variables defined for --background and --foreground colors
+    - criterion: globals.css file exists and is imported in layout
+    - criterion: Variables have different values for light and dark modes
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-CSS_VARIABLES
+    code_annotations:
+      - REQ-GLOBAL_STYLES
+    implementation:
+      - IMPL-DARK_MODE
+    tests: []
+  validation_criteria:
+    - method: CSS inspection
+      coverage: CSS variables are defined in :root
+    - method: Dark mode testing
+      coverage: Variables change when dark mode is active

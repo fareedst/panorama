@@ -1,6 +1,9 @@
 IMPL-MESH_DEPOT:
-  name: Mesh Depot Service
-  status: Active
+  code_locations:
+    files:
+      - path: src/lib/mesh/services/depot-service.ts
+        description: Depot CRUD on mesh
+    functions: []
   cross_references:
     - IMPL-MESH_CRUD
     - IMPL-MESH_DOMAIN_TYPES
@@ -8,31 +11,28 @@ IMPL-MESH_DEPOT:
   decision: DepotService manages depots embedded in mesh records via MeshRepository.
   implementation_approach:
     summary: src/lib/mesh/services/depot-service.ts
-  code_locations:
-    files:
-      - path: src/lib/mesh/services/depot-service.ts
-        description: Depot CRUD on mesh
-    functions: []
+  metadata:
+    created:
+      author: AI Agent
+      date: "2026-05-19T00:00:00.000Z"
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: retrofit pseudocode from tests/code; three-way comment alignment
+  name: Mesh Depot Service
+  related_decisions:
+    depends_on:
+      - IMPL-MESH_CRUD
+    see_also: []
+    supersedes: []
+  status: Active
+  testability: unit
   traceability:
     architecture:
       - ARCH-MESH_LAYERED
+    code_annotations:
+      - IMPL-MESH_DEPOT
     requirements:
       - REQ-MESH_PLATFORM
     tests:
       - src/lib/mesh/services/depot-service.test.ts
-    code_annotations:
-      - IMPL-MESH_DEPOT
-  related_decisions:
-    depends_on:
-      - IMPL-MESH_CRUD
-    supersedes: []
-    see_also: []
-  testability: unit
-  metadata:
-    created:
-      date: "2026-05-19T00:00:00.000Z"
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: retrofit pseudocode from tests/code; three-way comment alignment

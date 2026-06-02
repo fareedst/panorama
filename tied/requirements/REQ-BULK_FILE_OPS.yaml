@@ -1,25 +1,44 @@
 REQ-BULK_FILE_OPS:
-  name: Bulk File Operations on Marked Files
   category: Functional
-  priority: P0
-  status: Implemented
   description: |-
     Users must be able to perform copy, move, delete, and rename operations on multiple files efficiently using the marking system. Operations work on marked files when marks exist, otherwise on the cursor file. All operations are asynchronous (non-blocking UI) with real-time progress tracking, error handling, and confirmation dialogs for destructive operations.
 
     Rename Regex bulk rename: context menu Rename Regex… opens a secondary dialog with pane target (this pane / all panes), match pattern, and replacement text; client resolves paths via rename-regex.ts (reusing touch-file basename/path helpers) and POSTs bulk-rename with { src, dest }[] entries; server validates same-directory rename and destination basename.
 
     This requirement extends the file marking system to enable efficient batch operations across panes in the web file manager.
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-06-01T00:00:00.000Z"
+      reason: LEAP — preserve relative path on cross-pane bulk copy/move (sourceBase)
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Bulk File Operations on Marked Files
+  priority: P0
   rationale:
-    why: Users need to perform copy, move, delete operations on multiple files efficiently
-    problems_solved:
-      - Manual error recovery for failed operations
-      - No progress visibility for batch operations
-      - Tedious repetition of single-file operations
     benefits:
       - Automatic error handling and reporting
       - Cross-pane operations (source pane to destination pane)
       - Efficient multi-file operations via marking system
       - Real-time progress tracking with cancellation support
+    problems_solved:
+      - Manual error recovery for failed operations
+      - No progress visibility for batch operations
+      - Tedious repetition of single-file operations
+    why: Users need to perform copy, move, delete operations on multiple files efficiently
+  related_requirements:
+    depends_on:
+      - REQ-FILE_MARKING_WEB
+      - REQ-FILE_OPERATIONS
+    related_to:
+      - REQ-CROSS_PANE_COMPARISON
+      - REQ-DIRECTORY_TREE
+    supersedes: []
   satisfaction_criteria:
     - criterion: Confirmation dialogs before destructive operations
     - criterion: Copy marked files to target pane directory (C key)
@@ -32,18 +51,12 @@ REQ-BULK_FILE_OPS:
     - criterion: Progress bar shows completion percentage, file count, current file
     - criterion: Rename single file or bulk rename with pattern (R key)
     - criterion: rename_regex_dialog_bulk_rename — context menu Rename Regex… opens dialog; apply POSTs resolved { src, dest }[] via bulk-rename
-  validation_criteria:
-    - method: Unit tests
-      coverage: Bulk copy, move, delete on marked files
-    - method: Integration tests
-      coverage: Cross-pane operations and progress tracking
-    - method: Error tests
-      coverage: Permission errors, disk full, non-existent files
-    - method: Unit tests
-      coverage: cross-pane-path.ts relative destination mapping
+  status: Implemented
   traceability:
     architecture:
       - ARCH-BATCH_OPERATIONS
+    code_annotations:
+      - REQ-BULK_FILE_OPS
     implementation:
       - IMPL-BULK_OPS
       - IMPL-DIRECTORY_TREE
@@ -58,25 +71,12 @@ REQ-BULK_FILE_OPS:
       - src/lib/regex-validation.test.ts
       - src/lib/rename-regex.data.test.ts
       - src/lib/rename-regex.test.ts
-    code_annotations:
-      - REQ-BULK_FILE_OPS
-  related_requirements:
-    depends_on:
-      - REQ-FILE_MARKING_WEB
-      - REQ-FILE_OPERATIONS
-    related_to:
-      - REQ-CROSS_PANE_COMPARISON
-      - REQ-DIRECTORY_TREE
-    supersedes: []
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-06-01T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — preserve relative path on cross-pane bulk copy/move (sourceBase)
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+  validation_criteria:
+    - method: Unit tests
+      coverage: Bulk copy, move, delete on marked files
+    - method: Integration tests
+      coverage: Cross-pane operations and progress tracking
+    - method: Error tests
+      coverage: Permission errors, disk full, non-existent files
+    - method: Unit tests
+      coverage: cross-pane-path.ts relative destination mapping

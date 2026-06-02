@@ -1,23 +1,27 @@
 IMPL-FILES_DATA:
-  name: Filesystem Data Layer
-  status: Implemented
+  code_locations:
+    functions:
+      - name: listDirectory
+        description: List directory contents with error handling
+        file: src/lib/files.data.ts
+      - name: copyFile
+        description: Copy file or directory; mkdir dest parent; fs.cp recursive for directories
+        file: src/lib/files.data.ts
+      - name: sortFiles
+        description: Sort files by various criteria with directory priority
+        file: src/lib/files.data.ts
+      - name: buildComparisonIndex
+        description: Build cross-pane comparison index
+        file: src/lib/files.data.ts
+      - name: formatSize
+        description: Format bytes for display (client-safe)
+        file: src/lib/files.utils.ts
   cross_references:
     - ARCH-FILESYSTEM_ABSTRACTION
     - REQ-DIRECTORY_NAVIGATION
     - REQ-FILE_OPERATIONS
   decision: Server-only module wraps Node.js fs/promises API with validation
-  rationale:
-    why: Server-side data layer provides secure filesystem access with consistent API
-    problems_solved:
-      - Direct filesystem access
-      - Inconsistent error handling
-      - Security vulnerabilities
-    benefits:
-      - Consistent API
-      - Secure access
-      - Testable with mocks
   implementation_approach:
-    summary: Server-only module wraps Node.js fs/promises API with validation
     details:
       - 'copyFile: mkdir dest parent recursively; fs.cp for directories, fs.copyFile for files; then preserveCopyAttributes'
       - 'Critical fix: Moved formatSize to files.utils.ts (client-safe)'
@@ -29,48 +33,44 @@ IMPL-FILES_DATA:
       - Implemented sortFiles with SortType enum
       - Path validation to prevent directory traversal
       - Re-exports formatSize for backward compatibility
-  code_locations:
-    functions:
-      - name: listDirectory
-        file: src/lib/files.data.ts
-        description: List directory contents with error handling
-      - name: copyFile
-        file: src/lib/files.data.ts
-        description: Copy file or directory; mkdir dest parent; fs.cp recursive for directories
-      - name: sortFiles
-        file: src/lib/files.data.ts
-        description: Sort files by various criteria with directory priority
-      - name: buildComparisonIndex
-        file: src/lib/files.data.ts
-        description: Build cross-pane comparison index
-      - name: formatSize
-        file: src/lib/files.utils.ts
-        description: Format bytes for display (client-safe)
+    summary: Server-only module wraps Node.js fs/promises API with validation
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-06-02T00:00:00.000Z"
+      reason: 'LEAP: copy-file.data.test.ts integration coverage'
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Filesystem Data Layer
+  rationale:
+    benefits:
+      - Consistent API
+      - Secure access
+      - Testable with mocks
+    problems_solved:
+      - Direct filesystem access
+      - Inconsistent error handling
+      - Security vulnerabilities
+    why: Server-side data layer provides secure filesystem access with consistent API
+  related_decisions:
+    depends_on: []
+    see_also:
+      - IMPL-FILES_UTILS
+    supersedes: []
+  status: Implemented
   traceability:
     architecture:
       - ARCH-FILESYSTEM_ABSTRACTION
+    code_annotations:
+      - IMPL-FILES_DATA
     requirements:
       - REQ-DIRECTORY_NAVIGATION
       - REQ-FILE_OPERATIONS
     tests:
-      - src/lib/files.data.test.ts
       - src/lib/copy-file.data.test.ts
-    code_annotations:
-      - IMPL-FILES_DATA
-  related_decisions:
-    depends_on: []
-    supersedes: []
-    see_also:
-      - IMPL-FILES_UTILS
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-06-02T00:00:00.000Z"
-      author: AI Agent
-      reason: 'LEAP: copy-file.data.test.ts integration coverage'
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+      - src/lib/files.data.test.ts

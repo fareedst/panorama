@@ -1,62 +1,55 @@
 ARCH-NEXTJS_FRAMEWORK:
-  name: Next.js 16.1 Framework Choice
-  status: Active
+  alternatives_considered:
+    - name: Create React App
+      cons:
+        - Limited optimization
+        - No SSR support
+      pros:
+        - Simple setup
+      rejected_reason: Lacks server-side rendering and modern features
+    - name: Remix
+      cons:
+        - Smaller ecosystem
+      pros:
+        - Good SSR support
+      rejected_reason: Next.js has larger ecosystem and better tooling
   cross_references:
     - REQ-APP_STRUCTURE
     - REQ-BRANDING
     - REQ-BUILD_SYSTEM
     - REQ-METADATA
   decision: Use Next.js 16.1+ with App Router pattern
-  rationale:
-    why: Next.js provides best-in-class React framework with server components, optimized builds, and excellent developer experience
-    problems_solved:
-      - Complex React setup and configuration
-      - Manual routing implementation
-      - Server-side rendering complexity
-    benefits:
-      - Excellent performance optimizations
-      - File-based routing system
-      - Server components by default
-      - Strong TypeScript support
-  alternatives_considered:
-    - name: Create React App
-      pros:
-        - Simple setup
-      cons:
-        - No SSR support
-        - Limited optimization
-      rejected_reason: Lacks server-side rendering and modern features
-    - name: Remix
-      pros:
-        - Good SSR support
-      cons:
-        - Smaller ecosystem
-      rejected_reason: Next.js has larger ecosystem and better tooling
   implementation_approach:
-    summary: Next.js 16.1 App Router; config-driven metadata and branding contract
     details:
       - Branding logo metadata in site config with optional darkInvert; home page next/image usage retired
       - Configure TypeScript strict mode and server components by default
       - Primary UI at /files file manager route
       - Root layout exports metadata from getSiteConfig per REQ-METADATA
-  traceability:
-    requirements:
-      - REQ-APP_STRUCTURE
-      - REQ-BRANDING
-      - REQ-BUILD_SYSTEM
-      - REQ-METADATA
-    implementation:
-      - IMPL-BUILD_SCRIPTS
-      - IMPL-HOME_PAGE
-      - IMPL-IMAGE_OPTIMIZATION
-      - IMPL-METADATA
-      - IMPL-ROOT_LAYOUT
-    tests:
-      - src/lib/config.test.ts
-      - src/test/dark-mode.test.tsx
-    code_annotations:
-      - REQ-APP_STRUCTURE
-      - REQ-BRANDING
+    summary: Next.js 16.1 App Router; config-driven metadata and branding contract
+  metadata:
+    created:
+      author: AI Agent
+      date: 2025-11-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: LEAP — config-driven branding; retired home page Image criteria
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Next.js 16.1 Framework Choice
+  rationale:
+    benefits:
+      - Excellent performance optimizations
+      - File-based routing system
+      - Server components by default
+      - Strong TypeScript support
+    problems_solved:
+      - Complex React setup and configuration
+      - Manual routing implementation
+      - Server-side rendering complexity
+    why: Next.js provides best-in-class React framework with server components, optimized builds, and excellent developer experience
   related_decisions:
     depends_on:
       - REQ-APP_STRUCTURE
@@ -65,15 +58,22 @@ ARCH-NEXTJS_FRAMEWORK:
       - ARCH-REACT_VERSION
     see_also:
       - tied/vocab/workspace-pane.md
-  metadata:
-    created:
-      date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — config-driven branding; retired home page Image criteria
-    last_validated:
-      date: 2026-02-06T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+  status: Active
+  traceability:
+    code_annotations:
+      - REQ-APP_STRUCTURE
+      - REQ-BRANDING
+    implementation:
+      - IMPL-BUILD_SCRIPTS
+      - IMPL-HOME_PAGE
+      - IMPL-IMAGE_OPTIMIZATION
+      - IMPL-METADATA
+      - IMPL-ROOT_LAYOUT
+    requirements:
+      - REQ-APP_STRUCTURE
+      - REQ-BRANDING
+      - REQ-BUILD_SYSTEM
+      - REQ-METADATA
+    tests:
+      - src/lib/config.test.ts
+      - src/test/dark-mode.test.tsx

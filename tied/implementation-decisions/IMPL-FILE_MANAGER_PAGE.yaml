@@ -1,28 +1,4 @@
 IMPL-FILE_MANAGER_PAGE:
-  name: File Manager Page Implementation
-  status: Implemented
-  cross_references:
-    - ARCH-FILE_MANAGER_HIERARCHY
-    - REQ-FILE_MANAGER_PAGE
-  decision: Server component loads directory data and config, renders WorkspaceView
-  rationale:
-    why: Server component pattern loads initial data and config, follows existing patterns
-    problems_solved:
-      - Client-side filesystem access
-      - Config injection
-      - Initial data loading
-    benefits:
-      - Config-driven UI
-      - Consistent with existing patterns
-      - Server-side data loading
-  implementation_approach:
-    summary: Server component loads directory data and config, renders WorkspaceView
-    details:
-      - 'SinglePaneWorkspaceUrl: when panes=1 and pane0 query params without meshId, bootstrap one initial pane at pane0 path'
-      - Created src/app/files/page.tsx as server component
-      - Loads initial directory (user home)
-      - Passes data to WorkspaceView client component
-      - Sorts files server-side before passing to client
   code_locations:
     files:
       - path: src/app/files/page.tsx
@@ -32,12 +8,55 @@ IMPL-FILE_MANAGER_PAGE:
           - 21
     functions:
       - name: FilesPage
-        file: src/app/files/page.tsx
         description: Server component page function
+        file: src/app/files/page.tsx
+  cross_references:
+    - ARCH-FILE_MANAGER_HIERARCHY
+    - REQ-FILE_MANAGER_PAGE
+  decision: Server component loads directory data and config, renders WorkspaceView
+  implementation_approach:
+    details:
+      - 'SinglePaneWorkspaceUrl: when panes=1 and pane0 query params without meshId, bootstrap one initial pane at pane0 path'
+      - Created src/app/files/page.tsx as server component
+      - Loads initial directory (user home)
+      - Passes data to WorkspaceView client component
+      - Sorts files server-side before passing to client
+    summary: Server component loads directory data and config, renders WorkspaceView
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: LEAP — SinglePaneWorkspaceUrl bootstrap
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: File Manager Page Implementation
+  rationale:
+    benefits:
+      - Config-driven UI
+      - Consistent with existing patterns
+      - Server-side data loading
+    problems_solved:
+      - Client-side filesystem access
+      - Config injection
+      - Initial data loading
+    why: Server component pattern loads initial data and config, follows existing patterns
+  related_decisions:
+    depends_on: []
+    see_also:
+      - IMPL-WORKSPACE_VIEW
+    supersedes: []
+  status: Implemented
   traceability:
     architecture:
       - ARCH-FILE_MANAGER_HIERARCHY
       - ARCH-PANE_LIFECYCLE
+    code_annotations:
+      - IMPL-FILE_MANAGER_PAGE
     requirements:
       - REQ-DIRECTORY_NAVIGATION
       - REQ-FILE_MANAGER_PAGE
@@ -46,22 +65,3 @@ IMPL-FILE_MANAGER_PAGE:
       - src/app/files/page.mesh-restore.test.tsx
       - src/app/files/page.single-pane-url.test.tsx
       - src/test/integration/app.test.tsx
-    code_annotations:
-      - IMPL-FILE_MANAGER_PAGE
-  related_decisions:
-    depends_on: []
-    supersedes: []
-    see_also:
-      - IMPL-WORKSPACE_VIEW
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — SinglePaneWorkspaceUrl bootstrap
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass

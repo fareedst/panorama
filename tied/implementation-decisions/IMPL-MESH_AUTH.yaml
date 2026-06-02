@@ -1,27 +1,27 @@
 IMPL-MESH_AUTH:
-  name: Mesh Authorization Service
-  status: Active
-  cross_references:
-    - REQ-MESH_AUTH
-  decision: AuthorizationService with role matrix.
   code_locations:
     files:
       - path: src/lib/mesh/services/authorization-service.ts
         description: AuthorizationService and parseMeshRole
     functions: []
+  cross_references:
+    - REQ-MESH_AUTH
+  decision: AuthorizationService with role matrix.
+  metadata:
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Retrofit pseudocode and traceability from production/tests
+  name: Mesh Authorization Service
+  status: Active
   traceability:
     architecture:
       - ARCH-MESH_LAYERED
+    code_annotations:
+      - IMPL-MESH_AUTH
     requirements:
       - REQ-MESH_AUTH
       - REQ-MESH_PLATFORM
     tests:
-      - src/lib/mesh/services/authorization-service.test.ts
       - src/app/api/mesh/route.auth.test.ts
-    code_annotations:
-      - IMPL-MESH_AUTH
-  metadata:
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit pseudocode and traceability from production/tests
+      - src/lib/mesh/services/authorization-service.test.ts

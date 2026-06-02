@@ -1,37 +1,39 @@
 ARCH-CONFIG_DRIVEN_APPEARANCE:
-  name: Config-Driven Appearance for File Manager
-  status: Active
+  alternatives_considered: []
   cross_references:
     - REQ-CONFIG_DRIVEN_APPEARANCE
     - REQ-CONFIG_DRIVEN_UI
   decision: The file manager is the sole product surface. Appearance and user-facing copy come from config/site.yaml (document metadata), config/theme.yaml (colors, fonts, files.fileTypes icons/classes), and config/files.yaml (WorkspaceView copy, layout defaults, keybindings). No route or file-manager component may rely on hard-coded layout classes or user-facing strings for those concerns. Historical jobs routes and config/jobs.yaml were removed in the file-manager sole-purpose refactor; appearance tokens describe the surviving scope only.
-  rationale:
-    why: Panorama is a configurable file-manager template; YAML must drive what users see without code edits
-    problems_solved:
-      - Hard-coded classes and copy in file-manager UI
-      - Incomplete template configurability
-      - Stale jobs-specific config paths after jobs removal
-    benefits:
-      - Consistent pattern with ARCH-CONFIG_DRIVEN_UI loaders
-      - File-manager UI fully driven by config
-      - Template reusable without forking TSX for copy or icons
-  alternatives_considered: []
   implementation_approach:
-    summary: YAML-driven file manager copy, layout, theme classes, and per-file-type icons via existing config loaders
     details:
       - config/files.yaml merged by getFilesConfig for WorkspaceView props
       - config/site.yaml metadata via getSiteConfig for root layout
       - config/theme.yaml files.fileTypes and overrides via getFileTypeConfig and getFilesOverride
       - Jobs config loader and pages retired — see docs/FILE_MANAGER_SOLE_PURPOSE.md
-  traceability:
-    requirements:
-      - REQ-CONFIG_DRIVEN_APPEARANCE
-    implementation:
-      - IMPL-CONFIG_DRIVEN_APPEARANCE
-    tests:
-      - src/lib/config.test.ts
-    code_annotations:
-      - REQ-CONFIG_DRIVEN_APPEARANCE
+    summary: YAML-driven file manager copy, layout, theme classes, and per-file-type icons via existing config loaders
+  metadata:
+    created:
+      author: AI Agent
+      date: 2025-11-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-29T00:00:00.000Z"
+      reason: LEAP align with IMPL — file manager scope; jobs retired
+    last_validated:
+      date: "2026-05-29T00:00:00.000Z"
+      result: pass — aligned with config.test.ts and sole-purpose refactor
+      validator: AI Agent
+  name: Config-Driven Appearance for File Manager
+  rationale:
+    benefits:
+      - Consistent pattern with ARCH-CONFIG_DRIVEN_UI loaders
+      - File-manager UI fully driven by config
+      - Template reusable without forking TSX for copy or icons
+    problems_solved:
+      - Hard-coded classes and copy in file-manager UI
+      - Incomplete template configurability
+      - Stale jobs-specific config paths after jobs removal
+    why: Panorama is a configurable file-manager template; YAML must drive what users see without code edits
   related_decisions:
     depends_on:
       - ARCH-CONFIG_DRIVEN_UI
@@ -41,15 +43,13 @@ ARCH-CONFIG_DRIVEN_APPEARANCE:
       - docs/FILE_MANAGER_SOLE_PURPOSE.md
       - IMPL-CONFIG_LOADER
       - IMPL-FILES_CONFIG_COMPLETE
-  metadata:
-    created:
-      date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-29T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP align with IMPL — file manager scope; jobs retired
-    last_validated:
-      date: "2026-05-29T00:00:00.000Z"
-      validator: AI Agent
-      result: pass — aligned with config.test.ts and sole-purpose refactor
+  status: Active
+  traceability:
+    code_annotations:
+      - REQ-CONFIG_DRIVEN_APPEARANCE
+    implementation:
+      - IMPL-CONFIG_DRIVEN_APPEARANCE
+    requirements:
+      - REQ-CONFIG_DRIVEN_APPEARANCE
+    tests:
+      - src/lib/config.test.ts

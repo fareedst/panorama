@@ -1,33 +1,33 @@
 ARCH-DISPLAY_FILTER_ENGINE:
-  name: Display Filter Rule Engine
-  status: Accepted
   cross_references:
-    - REQ-PANE_DISPLAY_FILTER
     - IMPL-DISPLAY_FILTER_ENGINE
+    - REQ-PANE_DISPLAY_FILTER
   decision: Shared glob-based evaluator with ordered rules and last-match-wins precedence; default visible when no rule matches. Client applies before display when server omits filter; server re-applies for GET /api/files?displaySpecId= and POST bulk validation.
-  rationale:
-    why: Single source of truth for visibility semantics across UI and API
-    benefits:
-      - Consistent precedence
-      - Reusable glob matcher
-      - Testable pure functions
   implementation_approach:
-    summary: src/lib/display-filter-engine.ts + glob-match.ts
     details:
       - filterFileStats and evaluateEntry exports
       - Last enabled matching rule by order wins
       - Match on entry name and directory/file target
-  traceability:
-    requirements:
-      - REQ-PANE_DISPLAY_FILTER
-    implementation:
-      - IMPL-DISPLAY_FILTER_ENGINE
-      - IMPL-DISPLAY_FILTER_API
+    summary: src/lib/display-filter-engine.ts + glob-match.ts
+  metadata:
+    last_updated:
+      author: AI Agent
+      date: "2026-05-29T00:00:00.000Z"
+      reason: LEAP — vocabulary see_also back-link
+  name: Display Filter Rule Engine
+  rationale:
+    benefits:
+      - Consistent precedence
+      - Reusable glob matcher
+      - Testable pure functions
+    why: Single source of truth for visibility semantics across UI and API
   related_decisions:
     see_also:
       - tied/vocab/pane-display-filter.md
-  metadata:
-    last_updated:
-      date: "2026-05-29T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — vocabulary see_also back-link
+  status: Accepted
+  traceability:
+    implementation:
+      - IMPL-DISPLAY_FILTER_API
+      - IMPL-DISPLAY_FILTER_ENGINE
+    requirements:
+      - REQ-PANE_DISPLAY_FILTER

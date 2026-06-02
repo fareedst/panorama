@@ -1,30 +1,30 @@
 ARCH-STORE_MONITORING:
-  name: Store Monitoring Design
-  status: Active
-  cross_references:
-    - REQ-STORE_FAILURE_DETECT
-    - IMPL-NSYNC_STORE
-  decision: Simplified store monitoring using error streak tracking instead of device IDs
-  rationale:
-    why: Simplified store monitoring using error streak tracking instead of device IDs
-    problems_solved: []
-    benefits: []
   alternatives_considered: []
+  cross_references:
+    - IMPL-NSYNC_STORE
+    - REQ-STORE_FAILURE_DETECT
+  decision: Simplified store monitoring using error streak tracking instead of device IDs
   implementation_approach:
-    summary: Simplified store monitoring using error streak tracking instead of device IDs
     details: []
-  traceability:
-    requirements:
-      - REQ-STORE_FAILURE_DETECT
-    implementation:
-      - IMPL-NSYNC_STORE
-    tests: []
-    code_annotations:
-      - ARCH-STORE_MONITORING
+    summary: Simplified store monitoring using error streak tracking instead of device IDs
+  metadata:
+    last_updated: 2026-02-09T00:00:00.000Z
+    registered: 2026-02-09T00:00:00.000Z
+  name: Store Monitoring Design
+  rationale:
+    benefits: []
+    problems_solved: []
+    why: Simplified store monitoring using error streak tracking instead of device IDs
   related_decisions:
     depends_on: []
     informs: []
     see_also: []
-  metadata:
-    registered: 2026-02-09T00:00:00.000Z
-    last_updated: 2026-02-09T00:00:00.000Z
+  status: Active
+  traceability:
+    code_annotations:
+      - ARCH-STORE_MONITORING
+    implementation:
+      - IMPL-NSYNC_STORE
+    requirements:
+      - REQ-STORE_FAILURE_DETECT
+    tests: []

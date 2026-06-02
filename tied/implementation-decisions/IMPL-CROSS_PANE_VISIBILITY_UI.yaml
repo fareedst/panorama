@@ -1,6 +1,4 @@
 IMPL-CROSS_PANE_VISIBILITY_UI:
-  name: Cross-Pane Visibility UI
-  status: Active
   cross_references:
     - ARCH-CROSS_PANE_VISIBILITY
     - IMPL-CROSS_PANE_VISIBILITY_CATALOG
@@ -8,30 +6,32 @@ IMPL-CROSS_PANE_VISIBILITY_UI:
     - REQ-CROSS_PANE_VISIBILITY
   decision: TriStateToolbarButton and CompareFilterThresholdDialog; view.compareFilter.* actions in config/files.yaml.
   implementation_approach:
-    summary: CYCLE_TRI_STATE, THRESHOLD_DIALOG, toolbar wiring in WorkspaceView
     details:
       - CrossPaneVisibilitySelector and CrossPaneVisibilityManagerDialog
       - Tri-state buttons for view.compareFilter.* prefix; SYNC_TOOLBAR_TO_FOCUS
       - view.compareFilter.thresholds opens threshold dialog
+    summary: CYCLE_TRI_STATE, THRESHOLD_DIALOG, toolbar wiring in WorkspaceView
+  metadata:
+    last_updated:
+      author: AI Agent
+      date: "2026-05-29T00:00:00.000Z"
+      reason: IMPL essence_pseudocode retrofit 2026-05-29
+  name: Cross-Pane Visibility UI
+  related_decisions:
+    see_also:
+      - tied/vocab/cross-pane-visibility.md
+      - tied/vocab/toolbar-keybind.md
+  status: Active
   traceability:
-    requirements:
-      - REQ-CROSS_PANE_VISIBILITY
-      - REQ-TOOLBAR_SYSTEM
     architecture:
       - ARCH-CROSS_PANE_VISIBILITY
       - ARCH-TOOLBAR_LAYOUT
+    requirements:
+      - REQ-CROSS_PANE_VISIBILITY
+      - REQ-TOOLBAR_SYSTEM
     tests:
       - src/app/files/components/CompareFilterThresholdDialog.test.tsx
       - src/app/files/components/CrossPaneVisibilityManagerDialog.test.tsx
       - src/app/files/components/CrossPaneVisibilitySelector.test.tsx
       - src/app/files/components/TriStateToolbarButton.test.tsx
       - src/app/files/WorkspaceView.cross-pane-visibility.test.tsx
-  related_decisions:
-    see_also:
-      - tied/vocab/cross-pane-visibility.md
-      - tied/vocab/toolbar-keybind.md
-  metadata:
-    last_updated:
-      date: "2026-05-29T00:00:00.000Z"
-      author: AI Agent
-      reason: IMPL essence_pseudocode retrofit 2026-05-29

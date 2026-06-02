@@ -1,60 +1,60 @@
 # ARCH detail — ARCH-CONFIG_DRIVEN_UI
 ARCH-CONFIG_DRIVEN_UI:
-  name: YAML Configuration-Driven UI Architecture
-  status: Active
+  alternatives_considered:
+    - name: Environment variables
+      cons:
+        - Limited structure
+      pros:
+        - Simple
+      rejected_reason: YAML provides better structure and readability
   cross_references:
     - REQ-CONFIG_DRIVEN_UI
   decision: All page element appearance, layout, and content are driven by two YAML configuration files rather than hard-coded values in TSX and CSS. A typed config loader module reads these files at server render time, merges user values with built-in defaults, and provides them to server components.
-  rationale:
-    why: Configuration-driven UI makes the project a highly-configurable template
-    problems_solved:
-      - Code changes for appearance
-      - Difficult customization
-      - Hard-coded UI values
-    benefits:
-      - Easy customization via YAML
-      - No code changes needed
-      - Separation of concerns
-      - Template reusability
-  alternatives_considered:
-    - name: Environment variables
-      pros:
-        - Simple
-      cons:
-        - Limited structure
-      rejected_reason: YAML provides better structure and readability
   implementation_approach:
-    summary: Two YAML config files (site.yaml, theme.yaml) with typed loader and deep merge
     details:
       - Build typed config loader with deep merge
       - Create config/site.yaml for content
       - Create config/theme.yaml for styling
       - Support partial configs with defaults
-  traceability:
-    requirements:
-      - REQ-CONFIG_DRIVEN_UI
-    implementation:
-      - IMPL-YAML_CONFIG
-      - IMPL-CONFIG_LOADER
-    tests: []
-    code_annotations:
-      - REQ-CONFIG_DRIVEN_UI
+    summary: Two YAML config files (site.yaml, theme.yaml) with typed loader and deep merge
+  metadata:
+    created:
+      author: AI Agent
+      date: 2025-11-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-06T00:00:00.000Z
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: YAML Configuration-Driven UI Architecture
+  rationale:
+    benefits:
+      - Easy customization via YAML
+      - No code changes needed
+      - Separation of concerns
+      - Template reusability
+    problems_solved:
+      - Code changes for appearance
+      - Difficult customization
+      - Hard-coded UI values
+    why: Configuration-driven UI makes the project a highly-configurable template
   related_decisions:
     depends_on:
       - REQ-CONFIG_DRIVEN_UI
     informs:
-      - ARCH-THEME_INJECTION
       - ARCH-CLASS_OVERRIDES
+      - ARCH-THEME_INJECTION
     see_also: []
-  metadata:
-    created:
-      date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-06T00:00:00.000Z
-      author: AI Agent
-      reason: Migration to v1.5.0
-    last_validated:
-      date: 2026-02-06T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+  status: Active
+  traceability:
+    code_annotations:
+      - REQ-CONFIG_DRIVEN_UI
+    implementation:
+      - IMPL-CONFIG_LOADER
+      - IMPL-YAML_CONFIG
+    requirements:
+      - REQ-CONFIG_DRIVEN_UI
+    tests: []

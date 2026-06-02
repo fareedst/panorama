@@ -1,6 +1,13 @@
 ARCH-SORT_PIPELINE:
-  name: Multi-Criteria Sort Pipeline Architecture
-  status: Active
+  alternatives_considered:
+    - option: Server-side sorting
+      cons:
+        - More complex state management
+        - Network latency on every sort
+      pros:
+        - Handles very large directories
+        - Reduces client bundle size
+      rejected_reason: User expects instant sort feedback; latency breaks UX
   cross_references:
     - REQ-FILE_SORTING_ADVANCED
   decision: |-
@@ -30,6 +37,52 @@ ARCH-SORT_PIPELINE:
     3. Directory Priority: Optional layer that runs before primary sort
     4. Immutability: Returns new sorted array, preserves original
     5. Cursor Preservation: Track filename before/after sort to maintain cursor position
+  implementation_approach:
+    details:
+      - 'Client-Side Execution: All sorting happens in browser for instant feedback'
+      - 'Comparator Pattern: Separate comparator functions for each criterion'
+      - 'Cursor Preservation: Track filename before/after sort to maintain cursor position'
+      - 'Directory Priority: Optional layer that runs before primary sort'
+      - 'Immutability: Returns new sorted array, preserves original'
+      - 'Workspace sharedSort: PaneSortSettings default for new panes; persisted in mesh snapshot v3'
+      - Sort menu Share copies dialog draft into sharedSort without resorting until Shared is clicked
+      - Sort menu Shared applies sharedSort to focused pane only (singlePaneOnly bypasses linked-all apply)
+    summary: |-
+      Architecture: Composable sort pipeline with pluggable comparators
+
+      ```typescript
+      // Sort function signature
+      sortFiles(
+        files: FileStat[],
+        sortBy: SortCriterion,    // "name" | "size" | "mtime" | "extension"
+        ascending: boolean,
+        dirsFirst: boolean
+      ): FileStat[]
+
+      // Comparator composition
+      function buildComparator(
+        criterion: SortCriterion,
+        ascending: boolean,
+        dirsFirst: boolean
+      ): (a: FileStat, b: FileStat) => number
+      ```
+
+      Key Design Principles:
+
+      1. Client-Side Execution: All sorting happens in browser for instant feedback
+      2. Comparator Pattern: Separate comparator functions for each criterion
+      3. Directory Priority: Optional layer that runs before primary sort
+      4. Immutability: Returns new sorted array, preserves original
+      5. Cursor Preservation: Track filename before/after sort to maintain cursor position
+  metadata:
+    created:
+      author: AI Agent
+      date: "2026-02-07"
+    last_updated:
+      author: AI Agent
+      date: "2026-05-22T22:00:00.000Z"
+      reason: LEAP — workspace sharedSort and Sort menu Share/Shared actions
+  name: Multi-Criteria Sort Pipeline Architecture
   rationale:
     why: |-
       Architecture: Composable sort pipeline with pluggable comparators
@@ -58,63 +111,10 @@ ARCH-SORT_PIPELINE:
       3. Directory Priority: Optional layer that runs before primary sort
       4. Immutability: Returns new sorted array, preserves original
       5. Cursor Preservation: Track filename before/after sort to maintain cursor position
-  alternatives_considered:
-    - option: Server-side sorting
-      pros:
-        - Handles very large directories
-        - Reduces client bundle size
-      cons:
-        - Network latency on every sort
-        - More complex state management
-      rejected_reason: User expects instant sort feedback; latency breaks UX
-  implementation_approach:
-    summary: |-
-      Architecture: Composable sort pipeline with pluggable comparators
-
-      ```typescript
-      // Sort function signature
-      sortFiles(
-        files: FileStat[],
-        sortBy: SortCriterion,    // "name" | "size" | "mtime" | "extension"
-        ascending: boolean,
-        dirsFirst: boolean
-      ): FileStat[]
-
-      // Comparator composition
-      function buildComparator(
-        criterion: SortCriterion,
-        ascending: boolean,
-        dirsFirst: boolean
-      ): (a: FileStat, b: FileStat) => number
-      ```
-
-      Key Design Principles:
-
-      1. Client-Side Execution: All sorting happens in browser for instant feedback
-      2. Comparator Pattern: Separate comparator functions for each criterion
-      3. Directory Priority: Optional layer that runs before primary sort
-      4. Immutability: Returns new sorted array, preserves original
-      5. Cursor Preservation: Track filename before/after sort to maintain cursor position
-    details:
-      - 'Client-Side Execution: All sorting happens in browser for instant feedback'
-      - 'Comparator Pattern: Separate comparator functions for each criterion'
-      - 'Cursor Preservation: Track filename before/after sort to maintain cursor position'
-      - 'Directory Priority: Optional layer that runs before primary sort'
-      - 'Immutability: Returns new sorted array, preserves original'
-      - 'Workspace sharedSort: PaneSortSettings default for new panes; persisted in mesh snapshot v3'
-      - Sort menu Share copies dialog draft into sharedSort without resorting until Shared is clicked
-      - Sort menu Shared applies sharedSort to focused pane only (singlePaneOnly bypasses linked-all apply)
+  status: Active
   traceability:
-    requirements:
-      - REQ-FILE_SORTING_ADVANCED
     implementation:
       - IMPL-SORT_FILTER
+    requirements:
+      - REQ-FILE_SORTING_ADVANCED
     tests: []
-  metadata:
-    created:
-      date: "2026-02-07"
-      author: AI Agent
-    last_updated:
-      date: "2026-05-22T22:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — workspace sharedSort and Sort menu Share/Shared actions

@@ -3,35 +3,29 @@
 # index/detail aligned; tied_validate_consistency ok (2026-05-19).
 # Prior: persist-implementation-records verify-only; gate-pseudocode-validation pre_red.
 agent_preload:
-  workspace:
-    cwd: /Users/fareed/Documents/dev/node/panorama
-    project_summary: Panorama Next.js file manager with TIED traceability; mesh sync program adds layered subsystem under src/lib/mesh/ separate from pane-level nsync (src/lib/sync/).
-    top_level_entries:
-      - config/
-      - e2e/
-      - src/
-      - tied/
-    vcs_present: true
-  session_bootstrap_docs:
-    ai_principles_path: ./tied/docs/ai-principles.md
-    semantic_tokens_index: ./tied/semantic-tokens.yaml
-    semantic_tokens_guide: ./tied/docs/semantic-tokens.md
-    architecture_decisions_index: ./tied/architecture-decisions.yaml
-    implementation_decisions_index: ./tied/implementation-decisions.yaml
-    implementation_decisions_guide: ./tied/docs/implementation-decisions.md
-    processes_path: ./tied/docs/processes.md
-    agent_req_checklist_path: ./tied/docs/agent-req-implementation-checklist.md
-    detail_files_schema: ./tied/docs/detail-files-schema.md
-    requirements_index: ./tied/requirements.yaml
-  methodology_vs_project:
-    methodology_readonly: true
-    project_tokens_only_writable: true
+  active_user_intent:
+    checklist_step_id: traceable-commit
+    checklist_token: PROC-AGENT_REQ_CHECKLIST
+    primary_query_summary: Mesh phase 1 — CITDP persisted; next traceable-commit
+  discovery_already_done:
+    gemfile_present: false
+    grep_patterns_satisfied:
+      repo_layout_scan: true
+      token_scan_in_sources: false
+    mesh_domain_paths_on_disk: true
+    mesh_domain_paths_planned_not_on_disk: false
+    mesh_impl_persisted: true
+    ruby_files_present: false
+    ruby_test_files_present: false
+    semantic_tokens_present: true
+  impl_pseudocode_sidecar:
+    IMPL-MESH_DOMAIN_TYPES: tied/implementation-decisions/IMPL-MESH_DOMAIN_TYPES-pseudocode.md
   implementation_contract:
+    citdp_artifact_paths:
+      - tied/citdp/CITDP-REQ-MESH_DOMAIN_MODEL.yaml
+    invalid_input: structured domain validation errors (DomainValidationError); reject invalid mesh domain objects
     language: TypeScript
     language_version: "5"
-    test_framework: Vitest
-    test_cohabit_code: true
-    invalid_input: structured domain validation errors (DomainValidationError); reject invalid mesh domain objects
     target_source_paths:
       - src/lib/mesh/domain/index.ts
       - src/lib/mesh/domain/internal.ts
@@ -43,47 +37,53 @@ agent_preload:
       - src/lib/mesh/domain/domain.test-helpers.ts
       - src/lib/mesh/domain/serialize.test.ts
       - src/lib/mesh/domain/validators.test.ts
-    citdp_artifact_paths:
-      - tied/citdp/CITDP-REQ-MESH_DOMAIN_MODEL.yaml
+    test_cohabit_code: true
+    test_framework: Vitest
+  mesh_program_tokens:
+    architecture:
+      - ARCH-MESH_DOMAIN
+      - ARCH-MESH_LAYERED
+    implementation:
+      - IMPL-MESH_DOMAIN_TYPES
+    requirements:
+      - REQ-MESH_DOMAIN_MODEL
+      - REQ-MESH_PLATFORM
+  methodology_vs_project:
+    methodology_readonly: true
+    project_tokens_only_writable: true
+  session_bootstrap_docs:
+    agent_req_checklist_path: ./tied/docs/agent-req-implementation-checklist.md
+    ai_principles_path: ./tied/docs/ai-principles.md
+    architecture_decisions_index: ./tied/architecture-decisions.yaml
+    detail_files_schema: ./tied/docs/detail-files-schema.md
+    implementation_decisions_guide: ./tied/docs/implementation-decisions.md
+    implementation_decisions_index: ./tied/implementation-decisions.yaml
+    processes_path: ./tied/docs/processes.md
+    requirements_index: ./tied/requirements.yaml
+    semantic_tokens_guide: ./tied/docs/semantic-tokens.md
+    semantic_tokens_index: ./tied/semantic-tokens.yaml
   tied_mcp:
     base_path_resolved: true
-    yaml_detail_batch_done: true
     tied_cli_stdio_ok_without_cursor_mcp: true
+    yaml_detail_batch_done: true
   tied_paths:
-    TIED_BASE_PATH: /Users/fareed/Documents/dev/node/panorama/tied
+    mcp_tied_yaml_verified_this_session: true
+    methodology_readonly_glob: methodology/**
     project_yaml_writable_globs:
       - '*.yaml'
       - architecture-decisions/*.yaml
       - implementation-decisions/*.yaml
       - requirements/*.yaml
-    methodology_readonly_glob: methodology/**
-    mcp_tied_yaml_verified_this_session: true
-  discovery_already_done:
-    ruby_files_present: false
-    ruby_test_files_present: false
-    gemfile_present: false
-    semantic_tokens_present: true
-    mesh_impl_persisted: true
-    mesh_domain_paths_on_disk: true
-    mesh_domain_paths_planned_not_on_disk: false
-    grep_patterns_satisfied:
-      token_scan_in_sources: false
-      repo_layout_scan: true
-  active_user_intent:
-    primary_query_summary: Mesh phase 1 — CITDP persisted; next traceable-commit
-    checklist_token: PROC-AGENT_REQ_CHECKLIST
-    checklist_step_id: traceable-commit
-  mesh_program_tokens:
-    requirements:
-      - REQ-MESH_PLATFORM
-      - REQ-MESH_DOMAIN_MODEL
-    architecture:
-      - ARCH-MESH_LAYERED
-      - ARCH-MESH_DOMAIN
-    implementation:
-      - IMPL-MESH_DOMAIN_TYPES
-  impl_pseudocode_sidecar:
-    IMPL-MESH_DOMAIN_TYPES: tied/implementation-decisions/IMPL-MESH_DOMAIN_TYPES-pseudocode.md
+    TIED_BASE_PATH: /Users/fareed/Documents/dev/node/panorama/tied
+  workspace:
+    cwd: /Users/fareed/Documents/dev/node/panorama
+    project_summary: Panorama Next.js file manager with TIED traceability; mesh sync program adds layered subsystem under src/lib/mesh/ separate from pane-level nsync (src/lib/sync/).
+    top_level_entries:
+      - config/
+      - e2e/
+      - src/
+      - tied/
+    vcs_present: true
 preload_instructions: |
   Treat agent_preload as authoritative for mesh phase-1 scope. TIED_BASE_PATH is
   /Users/fareed/Documents/dev/node/panorama/tied. Do not edit tied/methodology/**.

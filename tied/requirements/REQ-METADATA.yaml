@@ -1,51 +1,51 @@
 # REQ detail — REQ-METADATA
 REQ-METADATA:
-  name: Page Metadata Configuration
   category: Non-Functional
-  priority: P1
-  status: Implemented
   description: Proper metadata improves SEO and enables social media sharing with appropriate previews
+  metadata:
+    created:
+      author: AI Agent
+      date: 2025-11-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-06T00:00:00.000Z
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Page Metadata Configuration
+  priority: P1
   rationale:
-    why: Proper metadata improves SEO and enables social media sharing with appropriate previews
-    problems_solved:
-      - Lack of context for search engines
-      - Missing social media previews
-      - Poor SEO performance
     benefits:
       - Improved SEO
       - Social media sharing support
       - Type-safe metadata with Next.js API
-  satisfaction_criteria:
-    - criterion: Metadata appears in HTML <head> when rendered
-    - criterion: Metadata includes title and description fields
-    - criterion: Root layout exports metadata object
-  validation_criteria:
-    - method: View source
-      coverage: <title> and <meta description> tags are present
-    - method: TypeScript validation
-      coverage: TypeScript compilation validates metadata structure
-  traceability:
-    architecture:
-      - ARCH-NEXTJS_FRAMEWORK
-    implementation:
-      - IMPL-METADATA
-    tests: []
-    code_annotations:
-      - REQ-METADATA
+    problems_solved:
+      - Lack of context for search engines
+      - Missing social media previews
+      - Poor SEO performance
+    why: Proper metadata improves SEO and enables social media sharing with appropriate previews
   related_requirements:
     depends_on: []
     related_to:
       - REQ-ROOT_LAYOUT
     supersedes: []
-  metadata:
-    created:
-      date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-06T00:00:00.000Z
-      author: AI Agent
-      reason: Migration to v1.5.0
-    last_validated:
-      date: 2026-02-06T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+  satisfaction_criteria:
+    - criterion: Metadata appears in HTML <head> when rendered
+    - criterion: Metadata includes title and description fields
+    - criterion: Root layout exports metadata object
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-NEXTJS_FRAMEWORK
+    code_annotations:
+      - REQ-METADATA
+    implementation:
+      - IMPL-METADATA
+    tests: []
+  validation_criteria:
+    - method: View source
+      coverage: <title> and <meta description> tags are present
+    - method: TypeScript validation
+      coverage: TypeScript compilation validates metadata structure

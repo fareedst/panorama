@@ -1,56 +1,56 @@
 IMPL-FONT_LOADING:
-  name: Font Loading Implementation
-  status: Active
-  cross_references:
-    - ARCH-CSS_VARIABLES_FONTS
-    - ARCH-GOOGLE_FONTS
-    - REQ-FONT_SYSTEM
-  decision: Use next/font/google for Geist fonts with CSS variables
-  rationale:
-    why: Implements optimized font loading with next/font/google
-    problems_solved:
-      - Font loading causing layout shift
-      - Large font files
-    benefits:
-      - Automatic subsetting
-      - CSS variables for fonts
-      - No layout shift
-  implementation_approach:
-    summary: Use next/font/google for Geist fonts with CSS variables
-    details:
-      - Apply to body element
-      - Configure subsetting (latin)
-      - Create CSS variables
-      - Import Geist_Sans and Geist_Mono from next/font/google
   code_locations:
     files:
       - path: src/app/layout.tsx
         description: Font loading and application
     functions: []
+  cross_references:
+    - ARCH-CSS_VARIABLES_FONTS
+    - ARCH-GOOGLE_FONTS
+    - REQ-FONT_SYSTEM
+  decision: Use next/font/google for Geist fonts with CSS variables
+  implementation_approach:
+    details:
+      - Apply to body element
+      - Configure subsetting (latin)
+      - Create CSS variables
+      - Import Geist_Sans and Geist_Mono from next/font/google
+    summary: Use next/font/google for Geist fonts with CSS variables
+  metadata:
+    created:
+      author: AI Agent
+      date: 2025-11-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Retrofit essence_pseudocode from tests/code; align block-lead comments
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Font Loading Implementation
+  rationale:
+    benefits:
+      - Automatic subsetting
+      - CSS variables for fonts
+      - No layout shift
+    problems_solved:
+      - Font loading causing layout shift
+      - Large font files
+    why: Implements optimized font loading with next/font/google
+  related_decisions:
+    depends_on: []
+    see_also:
+      - IMPL-ROOT_LAYOUT
+    supersedes: []
+  status: Active
   traceability:
     architecture:
-      - ARCH-GOOGLE_FONTS
       - ARCH-CSS_VARIABLES_FONTS
+      - ARCH-GOOGLE_FONTS
+    code_annotations:
+      - REQ-FONT_SYSTEM
     requirements:
       - REQ-FONT_SYSTEM
     tests:
       - src/app/layout.test.tsx
-    code_annotations:
-      - REQ-FONT_SYSTEM
-  related_decisions:
-    depends_on: []
-    supersedes: []
-    see_also:
-      - IMPL-ROOT_LAYOUT
-  metadata:
-    created:
-      date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit essence_pseudocode from tests/code; align block-lead comments
-    last_validated:
-      date: 2026-02-06T00:00:00.000Z
-      validator: AI Agent
-      result: pass

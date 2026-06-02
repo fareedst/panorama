@@ -1,27 +1,16 @@
 ARCH-MESH_DOMAIN:
-  name: Mesh Pure Domain Module
-  status: Active
-  cross_references:
-    - REQ-MESH_DOMAIN_MODEL
-    - ARCH-MESH_LAYERED
-  decision: Phase-1 domain types, validators, and serialization live in src/lib/mesh/domain as a pure TypeScript module with no filesystem, HTTP, or database imports.
-  rationale:
-    why: Sponsor phase domain_language_and_core_types maps directly to L1 in ARCH-MESH_LAYERED.
-    problems_solved:
-      - No shared mesh vocabulary in codebase today
-      - Risk of testing through GUI or API only
-    benefits:
-      - Enables sponsor unit_tests list for phase 1
-      - IMPL-MESH_DOMAIN_TYPES can anchor code_locations to src/lib/mesh/domain/**
   alternatives_considered:
     - name: Validation only in tests
-      pros:
-        - Minimal code
       cons:
         - No reusable invariants for services
+      pros:
+        - Minimal code
       rejected_reason: REQ satisfaction requires runtime rejection of invalid objects
+  cross_references:
+    - ARCH-MESH_LAYERED
+    - REQ-MESH_DOMAIN_MODEL
+  decision: Phase-1 domain types, validators, and serialization live in src/lib/mesh/domain as a pure TypeScript module with no filesystem, HTTP, or database imports.
   implementation_approach:
-    summary: Pure domain package with types, validate*, toDTO/fromDTO
     details:
       - 'Depot: requires name, kind enum, root path; optional credentialReferenceId'
       - 'Mesh: requires non-empty name; depots array may be empty'
@@ -29,27 +18,38 @@ ARCH-MESH_DOMAIN:
       - 'Policy: defaults for delete/conflict/retry/verification policies'
       - 'SyncLink: valid sourceDepotId and targetDepotId referencing mesh depots'
       - No import from next, fs, or database clients in domain layer
-  traceability:
-    requirements:
-      - REQ-MESH_DOMAIN_MODEL
-    implementation:
-      - IMPL-MESH_DOMAIN_TYPES
-    tests:
-      - src/lib/mesh/domain/domain.composition.test.ts
-      - src/lib/mesh/domain/serialize.test.ts
-      - src/lib/mesh/domain/validators.test.ts
-    code_annotations:
-      - ARCH-MESH_DOMAIN
+    summary: Pure domain package with types, validate*, toDTO/fromDTO
+  metadata:
+    created:
+      author: AI Agent
+      date: "2026-05-19T00:00:00.000Z"
+    last_updated:
+      author: AI Agent
+      date: "2026-05-19T20:15:00.000Z"
+      reason: 'sync-tied-stack: traceability.tests and on-disk path notes aligned with IMPL-MESH_DOMAIN_TYPES'
+  name: Mesh Pure Domain Module
+  rationale:
+    benefits:
+      - Enables sponsor unit_tests list for phase 1
+      - IMPL-MESH_DOMAIN_TYPES can anchor code_locations to src/lib/mesh/domain/**
+    problems_solved:
+      - No shared mesh vocabulary in codebase today
+      - Risk of testing through GUI or API only
+    why: Sponsor phase domain_language_and_core_types maps directly to L1 in ARCH-MESH_LAYERED.
   related_decisions:
     depends_on:
       - ARCH-MESH_LAYERED
     informs: []
     see_also: []
-  metadata:
-    created:
-      date: "2026-05-19T00:00:00.000Z"
-      author: AI Agent
-    last_updated:
-      date: "2026-05-19T20:15:00.000Z"
-      author: AI Agent
-      reason: 'sync-tied-stack: traceability.tests and on-disk path notes aligned with IMPL-MESH_DOMAIN_TYPES'
+  status: Active
+  traceability:
+    code_annotations:
+      - ARCH-MESH_DOMAIN
+    implementation:
+      - IMPL-MESH_DOMAIN_TYPES
+    requirements:
+      - REQ-MESH_DOMAIN_MODEL
+    tests:
+      - src/lib/mesh/domain/domain.composition.test.ts
+      - src/lib/mesh/domain/serialize.test.ts
+      - src/lib/mesh/domain/validators.test.ts

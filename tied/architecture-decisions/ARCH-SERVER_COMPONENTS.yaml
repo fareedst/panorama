@@ -1,53 +1,53 @@
 ARCH-SERVER_COMPONENTS:
-  name: Server Components as Default
-  status: Active
+  alternatives_considered: []
   cross_references:
     - REQ-APP_STRUCTURE
     - REQ-HOME_PAGE
   decision: Use server components by default, client components only when needed
-  rationale:
-    why: Server components reduce bundle size and improve performance
-    problems_solved:
-      - Large client bundles
-      - Slow initial page loads
-    benefits:
-      - Better SEO
-      - Faster page loads
-      - Smaller bundles
-  alternatives_considered: []
   implementation_approach:
-    summary: Server components by default; root / is a server redirect to /files
     details:
       - Add use client directive only for interactivity
       - All components are server components by default
       - Root page.tsx calls redirect(/files) without rendering welcome UI per REQ-HOME_PAGE
-  traceability:
-    requirements:
-      - REQ-APP_STRUCTURE
-      - REQ-HOME_PAGE
-    implementation:
-      - IMPL-HOME_PAGE
-    tests:
-      - src/test/integration/app.test.tsx
-    code_annotations:
-      - REQ-APP_STRUCTURE
-      - REQ-HOME_PAGE
+    summary: Server components by default; root / is a server redirect to /files
+  metadata:
+    created:
+      author: AI Agent
+      date: 2025-11-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: LEAP — root entry redirect server component pattern
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Server Components as Default
+  rationale:
+    benefits:
+      - Better SEO
+      - Faster page loads
+      - Smaller bundles
+    problems_solved:
+      - Large client bundles
+      - Slow initial page loads
+    why: Server components reduce bundle size and improve performance
   related_decisions:
     depends_on:
       - ARCH-REACT_VERSION
     informs: []
     see_also:
-      - tied/vocab/workspace-pane.md
       - docs/FILE_MANAGER_SOLE_PURPOSE.md
-  metadata:
-    created:
-      date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — root entry redirect server component pattern
-    last_validated:
-      date: 2026-02-06T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+      - tied/vocab/workspace-pane.md
+  status: Active
+  traceability:
+    code_annotations:
+      - REQ-APP_STRUCTURE
+      - REQ-HOME_PAGE
+    implementation:
+      - IMPL-HOME_PAGE
+    requirements:
+      - REQ-APP_STRUCTURE
+      - REQ-HOME_PAGE
+    tests:
+      - src/test/integration/app.test.tsx

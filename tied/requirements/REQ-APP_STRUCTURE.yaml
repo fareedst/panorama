@@ -1,26 +1,53 @@
 # REQ detail — REQ-APP_STRUCTURE
 REQ-APP_STRUCTURE:
-  name: Next.js App Router Application Structure
   category: Functional
-  priority: P0
-  status: Implemented
   description: App Router provides better performance through server components, improved data fetching patterns, and simplified routing
+  metadata:
+    created:
+      author: AI Agent
+      date: 2025-11-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-06T00:00:00.000Z
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Next.js App Router Application Structure
+  priority: P0
   rationale:
-    why: App Router provides better performance through server components, improved data fetching patterns, and simplified routing
-    problems_solved:
-      - Complex client-side routing and data fetching patterns
-      - Performance overhead of client-side rendering for all content
     benefits:
       - Better performance through server components
       - Future scalability
       - Modern React features support
       - Simplified routing with file-based system
+    problems_solved:
+      - Complex client-side routing and data fetching patterns
+      - Performance overhead of client-side rendering for all content
+    why: App Router provides better performance through server components, improved data fetching patterns, and simplified routing
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-BUILD_SYSTEM
+    supersedes: []
   satisfaction_criteria:
     - criterion: App Router directory structure (src/app/) exists
     - criterion: Build and development scripts execute successfully
     - criterion: File-based routing works correctly
     - criterion: Next.js 16.1+ is installed and configured
     - criterion: Server components render by default
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-APP_ROUTER
+      - ARCH-NEXTJS_FRAMEWORK
+    code_annotations:
+      - REQ-APP_STRUCTURE
+    implementation:
+      - IMPL-HOME_PAGE
+      - IMPL-ROOT_LAYOUT
+    tests: []
   validation_criteria:
     - method: Manual testing
       coverage: Application starts without errors using npm run dev
@@ -28,30 +55,3 @@ REQ-APP_STRUCTURE:
       coverage: Application builds successfully using npm run build
     - method: Route testing
       coverage: Routes defined in src/app/ are accessible
-  traceability:
-    architecture:
-      - ARCH-NEXTJS_FRAMEWORK
-      - ARCH-APP_ROUTER
-    implementation:
-      - IMPL-ROOT_LAYOUT
-      - IMPL-HOME_PAGE
-    tests: []
-    code_annotations:
-      - REQ-APP_STRUCTURE
-  related_requirements:
-    depends_on: []
-    related_to:
-      - REQ-BUILD_SYSTEM
-    supersedes: []
-  metadata:
-    created:
-      date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-06T00:00:00.000Z
-      author: AI Agent
-      reason: Migration to v1.5.0
-    last_validated:
-      date: 2026-02-06T00:00:00.000Z
-      validator: AI Agent
-      result: pass

@@ -1,6 +1,21 @@
 IMPL-PANE_MANAGEMENT:
-  name: Runtime Pane Management Controls
-  status: Active
+  code_locations:
+    functions:
+      - name: appendPaneAtPath
+        description: Append pane at path with template inheritance
+        file: src/app/files/WorkspaceView.tsx
+      - name: handleAddPane
+        description: Add pane at focused path via appendPaneAtPath
+        file: src/app/files/WorkspaceView.tsx
+      - name: handleSwapPanes
+        description: Swap two pane indices with focus and history remap
+        file: src/app/files/WorkspaceView.tsx
+      - name: handleCyclePanes
+        description: Rotate all panes one slot
+        file: src/app/files/WorkspaceView.tsx
+      - name: handleApplyPaneOrder
+        description: Apply dialog index order to panes[]
+        file: src/app/files/WorkspaceView.tsx
   cross_references:
     - ARCH-KEYBIND_SYSTEM
     - ARCH-PANE_LIFECYCLE
@@ -8,20 +23,8 @@ IMPL-PANE_MANAGEMENT:
     - REQ-MULTI_PANE_LAYOUT
     - REQ-TOOLBAR_SYSTEM
   decision: Add/remove/swap/cycle pane handlers with config validation, keyboard shortcuts, pane order dialog, command palette integration
-  rationale:
-    why: Implements runtime controls for adding and removing file panes to support flexible multi-panel workflows per ARCH-PANE_LIFECYCLE
-    problems_solved:
-      - Cannot adapt layout to current task needs
-      - No UI affordance for pane management
-      - Pane count fixed at initialization
-      - Users cannot adjust pane count without reloading page
-    benefits:
-      - Config validation prevents invalid states
-      - Dynamic workflow adjustment without page reload
-      - Keyboard shortcuts integrate with existing keybind system
-      - Respects user's maxPanes and allowPaneManagement preferences
+  essence_pseudocode_path: implementation-decisions/IMPL-PANE_MANAGEMENT-pseudocode.md
   implementation_approach:
-    summary: Add/remove/swap/cycle pane handlers with config validation, keyboard shortcuts, pane order dialog
     details:
       - 'appendPaneAtPath(directoryPath, templatePaneIndex): shared append with display-spec and cross-pane inheritance'
       - 'Command palette actions: pane.add, pane.remove, pane.swap, pane.swapPrev, pane.cycle, pane.cyclePrev, pane.order'
@@ -36,27 +39,51 @@ IMPL-PANE_MANAGEMENT:
       - 'SetBaseDirectoryApply newPane: consumer of appendPaneAtPath at dialog directory path'
       - 'SetBaseDirectorySwapCompose: after neighbor navigate to base path, handleSwapPanes swaps initiating pane with neighbor for swap targets'
       - State updates trigger comparison index rebuild and layout recalculation
-  code_locations:
-    functions:
-      - name: appendPaneAtPath
-        file: src/app/files/WorkspaceView.tsx
-        description: Append pane at path with template inheritance
-      - name: handleAddPane
-        file: src/app/files/WorkspaceView.tsx
-        description: Add pane at focused path via appendPaneAtPath
-      - name: handleSwapPanes
-        file: src/app/files/WorkspaceView.tsx
-        description: Swap two pane indices with focus and history remap
-      - name: handleCyclePanes
-        file: src/app/files/WorkspaceView.tsx
-        description: Rotate all panes one slot
-      - name: handleApplyPaneOrder
-        file: src/app/files/WorkspaceView.tsx
-        description: Apply dialog index order to panes[]
+    summary: Add/remove/swap/cycle pane handlers with config validation, keyboard shortcuts, pane order dialog
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-31T00:00:00.000Z"
+      reason: LEAP — appendPaneAtPath shared helper; set-base newPane consumer
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass - build succeeds, 570 tests passing
+      validator: AI Agent
+  name: Runtime Pane Management Controls
+  rationale:
+    benefits:
+      - Config validation prevents invalid states
+      - Dynamic workflow adjustment without page reload
+      - Keyboard shortcuts integrate with existing keybind system
+      - Respects user's maxPanes and allowPaneManagement preferences
+    problems_solved:
+      - Cannot adapt layout to current task needs
+      - No UI affordance for pane management
+      - Pane count fixed at initialization
+      - Users cannot adjust pane count without reloading page
+    why: Implements runtime controls for adding and removing file panes to support flexible multi-panel workflows per ARCH-PANE_LIFECYCLE
+  related_decisions:
+    depends_on:
+      - IMPL-FILES_CONFIG_COMPLETE
+      - IMPL-KEYBINDS
+      - IMPL-WORKSPACE_VIEW
+    see_also:
+      - IMPL-COMPARISON_INDEX
+      - IMPL-LAYOUT_CALCULATOR
+      - tied/vocab/workspace-pane.md
+    supersedes: []
+  status: Active
   traceability:
     architecture:
-      - ARCH-PANE_LIFECYCLE
       - ARCH-KEYBIND_SYSTEM
+      - ARCH-PANE_LIFECYCLE
+    code_annotations:
+      - ARCH-PANE_LIFECYCLE
+      - IMPL-PANE_MANAGEMENT
+      - REQ-MULTI_PANE_LAYOUT
     requirements:
       - REQ-DIRECTORY_NAVIGATION
       - REQ-FILES_CONFIG_COMPLETE
@@ -70,30 +97,3 @@ IMPL-PANE_MANAGEMENT:
       - src/lib/files.history.test.ts
       - src/lib/pane-order.test.ts
       - src/lib/set-base-directory.test.ts
-    code_annotations:
-      - ARCH-PANE_LIFECYCLE
-      - IMPL-PANE_MANAGEMENT
-      - REQ-MULTI_PANE_LAYOUT
-  related_decisions:
-    depends_on:
-      - IMPL-FILES_CONFIG_COMPLETE
-      - IMPL-KEYBINDS
-      - IMPL-WORKSPACE_VIEW
-    supersedes: []
-    see_also:
-      - IMPL-COMPARISON_INDEX
-      - IMPL-LAYOUT_CALCULATOR
-      - tied/vocab/workspace-pane.md
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-31T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — appendPaneAtPath shared helper; set-base newPane consumer
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass - build succeeds, 570 tests passing
-  essence_pseudocode_path: implementation-decisions/IMPL-PANE_MANAGEMENT-pseudocode.md

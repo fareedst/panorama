@@ -1,35 +1,4 @@
 IMPL-LAYOUT_CALCULATOR:
-  name: Layout Calculation Algorithms
-  status: Implemented
-  cross_references:
-    - ARCH-LAYOUT_ALGORITHMS
-    - IMPL-TOOLBAR_COMPONENT
-    - REQ-MULTI_PANE_LAYOUT
-    - REQ-TOOLBAR_SYSTEM
-  decision: Pure TypeScript functions calculate PaneBounds[] from container dimensions and layout type
-  rationale:
-    why: Pure functions calculate pane bounds for different layout types
-    problems_solved:
-      - Difficult layout changes
-      - Layout inconsistencies
-      - Manual pane positioning
-    benefits:
-      - Automatic pane allocation
-      - Easy layout switching
-      - Testable layout logic
-  implementation_approach:
-    summary: Pure TypeScript functions calculate PaneBounds[] from container dimensions and layout type
-    details:
-      - 'Fullscreen: all panes at (0,0) with full dimensions'
-      - 'Helper functions: getTotalArea, doOverlap for validation'
-      - 'OneColumn: equal height vertically'
-      - 'OneRow: equal width horizontally'
-      - 'Tile: first pane left 50%, others stacked vertically right 50%'
-      - Created src/lib/files.layout.ts
-      - Exported LayoutType = 'Tile' | 'OneRow' | 'OneColumn' | 'Fullscreen'
-      - Exported PaneBounds interface (x, y, width, height)
-      - Implemented calculateLayout(containerWidth, containerHeight, numPanes, layoutType)
-      - WorkspaceView measures flex workspace-area via useElementSize; container dimensions feed calculateLayout (toolbar-aware, not viewport heuristics)
   code_locations:
     files:
       - path: src/lib/files.layout.ts
@@ -50,46 +19,77 @@ IMPL-LAYOUT_CALCULATOR:
         description: Consumer — workspaceAreaRef, useElementSize, calculateLayout
     functions:
       - name: useElementSize
-        file: src/lib/useElementSize.ts
         description: Track element client width/height for pane layout
+        file: src/lib/useElementSize.ts
       - name: calculateLayout
-        file: src/lib/files.layout.ts
         description: Calculate pane bounds for layout type
+        file: src/lib/files.layout.ts
       - name: calculateTileLayout
-        file: src/lib/files.layout.ts
         description: Tile layout algorithm
+        file: src/lib/files.layout.ts
       - name: calculateOneRowLayout
-        file: src/lib/files.layout.ts
         description: One row layout algorithm
-      - name: calculateOneColumnLayout
         file: src/lib/files.layout.ts
+      - name: calculateOneColumnLayout
         description: One column layout algorithm
+        file: src/lib/files.layout.ts
+  cross_references:
+    - ARCH-LAYOUT_ALGORITHMS
+    - IMPL-TOOLBAR_COMPONENT
+    - REQ-MULTI_PANE_LAYOUT
+    - REQ-TOOLBAR_SYSTEM
+  decision: Pure TypeScript functions calculate PaneBounds[] from container dimensions and layout type
+  implementation_approach:
+    details:
+      - 'Fullscreen: all panes at (0,0) with full dimensions'
+      - 'Helper functions: getTotalArea, doOverlap for validation'
+      - 'OneColumn: equal height vertically'
+      - 'OneRow: equal width horizontally'
+      - 'Tile: first pane left 50%, others stacked vertically right 50%'
+      - Created src/lib/files.layout.ts
+      - Exported LayoutType = 'Tile' | 'OneRow' | 'OneColumn' | 'Fullscreen'
+      - Exported PaneBounds interface (x, y, width, height)
+      - Implemented calculateLayout(containerWidth, containerHeight, numPanes, layoutType)
+      - WorkspaceView measures flex workspace-area via useElementSize; container dimensions feed calculateLayout (toolbar-aware, not viewport heuristics)
+    summary: Pure TypeScript functions calculate PaneBounds[] from container dimensions and layout type
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Retrofit essence_pseudocode from files.layout and useElementSize
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Layout Calculation Algorithms
+  rationale:
+    benefits:
+      - Automatic pane allocation
+      - Easy layout switching
+      - Testable layout logic
+    problems_solved:
+      - Difficult layout changes
+      - Layout inconsistencies
+      - Manual pane positioning
+    why: Pure functions calculate pane bounds for different layout types
+  related_decisions:
+    depends_on: []
+    see_also:
+      - IMPL-WORKSPACE_VIEW
+      - tied/vocab/workspace-pane.md
+    supersedes: []
+  status: Implemented
   traceability:
     architecture:
       - ARCH-LAYOUT_ALGORITHMS
+    code_annotations:
+      - IMPL-LAYOUT_CALCULATOR
     requirements:
       - REQ-MULTI_PANE_LAYOUT
       - REQ-TOOLBAR_SYSTEM
     tests:
       - src/lib/files.layout.test.ts
       - src/lib/useElementSize.test.ts
-    code_annotations:
-      - IMPL-LAYOUT_CALCULATOR
-  related_decisions:
-    depends_on: []
-    supersedes: []
-    see_also:
-      - IMPL-WORKSPACE_VIEW
-      - tied/vocab/workspace-pane.md
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit essence_pseudocode from files.layout and useElementSize
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass

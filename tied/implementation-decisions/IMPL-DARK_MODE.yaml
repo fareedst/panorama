@@ -1,55 +1,55 @@
 IMPL-DARK_MODE:
-  name: Dark Mode Implementation
-  status: Active
-  cross_references:
-    - ARCH-CSS_VARIABLES
-    - REQ-DARK_MODE
-  decision: Define CSS variables in globals.css with prefers-color-scheme media query
-  rationale:
-    why: Implements dark mode using CSS variables and prefers-color-scheme
-    problems_solved:
-      - Manual theme switching
-      - Static colors
-    benefits:
-      - Automatic system preference detection
-      - Dynamic theming
-  implementation_approach:
-    summary: Define CSS variables in globals.css with prefers-color-scheme media query
-    details:
-      - 'Define dark mode values with @media (prefers-color-scheme: dark)'
-      - Apply variables to body
-      - Define --background and --foreground in :root
   code_locations:
     files:
       - path: src/app/globals.css
         description: Global CSS with dark mode variables
     functions: []
-  traceability:
-    architecture:
-      - ARCH-CSS_VARIABLES
-    requirements:
-      - REQ-DARK_MODE
-    tests:
-      - src/test/dark-mode.test.tsx
-      - src/lib/config.test.ts
-    code_annotations:
-      - IMPL-DARK_MODE
-      - REQ-DARK_MODE
-  related_decisions:
-    depends_on: []
-    supersedes: []
-    see_also:
-      - IMPL-THEME_INJECTION
+  cross_references:
+    - ARCH-CSS_VARIABLES
+    - REQ-DARK_MODE
+  decision: Define CSS variables in globals.css with prefers-color-scheme media query
+  essence_pseudocode_path: implementation-decisions/IMPL-DARK_MODE-pseudocode.md
+  implementation_approach:
+    details:
+      - 'Define dark mode values with @media (prefers-color-scheme: dark)'
+      - Apply variables to body
+      - Define --background and --foreground in :root
+    summary: Define CSS variables in globals.css with prefers-color-scheme media query
   metadata:
     created:
+      author: AI Agent
       date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
     last_updated:
-      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
       reason: Retrofit essence_pseudocode from production/tests per prompts/2026-05-29
     last_validated:
       date: 2026-02-06T00:00:00.000Z
-      validator: AI Agent
       result: pass
-  essence_pseudocode_path: implementation-decisions/IMPL-DARK_MODE-pseudocode.md
+      validator: AI Agent
+  name: Dark Mode Implementation
+  rationale:
+    benefits:
+      - Automatic system preference detection
+      - Dynamic theming
+    problems_solved:
+      - Manual theme switching
+      - Static colors
+    why: Implements dark mode using CSS variables and prefers-color-scheme
+  related_decisions:
+    depends_on: []
+    see_also:
+      - IMPL-THEME_INJECTION
+    supersedes: []
+  status: Active
+  traceability:
+    architecture:
+      - ARCH-CSS_VARIABLES
+    code_annotations:
+      - IMPL-DARK_MODE
+      - REQ-DARK_MODE
+    requirements:
+      - REQ-DARK_MODE
+    tests:
+      - src/lib/config.test.ts
+      - src/test/dark-mode.test.tsx

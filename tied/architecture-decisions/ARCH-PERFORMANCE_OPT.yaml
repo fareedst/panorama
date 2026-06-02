@@ -1,26 +1,26 @@
 ARCH-PERFORMANCE_OPT:
-  name: Performance Optimization Architecture
-  status: Planned
+  alternatives_considered: []
   cross_references:
     - REQ-FILES_PERFORMANCE
   decision: Virtual scrolling, lazy metadata, debounced comparison index, optimized sort
-  rationale:
-    why: Virtual scrolling, lazy metadata, debounced comparison index, optimized sort
-    problems_solved: []
-    benefits: []
-  alternatives_considered: []
   implementation_approach:
-    summary: Virtual scrolling, lazy metadata, debounced comparison index, optimized sort
     details: []
-  traceability:
-    requirements:
-      - REQ-FILES_PERFORMANCE
-    implementation: []
-    tests: []
-    code_annotations:
-      - ARCH-PERFORMANCE_OPT
+    summary: Virtual scrolling, lazy metadata, debounced comparison index, optimized sort
+  metadata: {}
+  name: Performance Optimization Architecture
+  rationale:
+    benefits: []
+    problems_solved: []
+    why: Virtual scrolling, lazy metadata, debounced comparison index, optimized sort
   related_decisions:
     depends_on: []
     informs: []
     see_also: []
-  metadata: {}
+  status: Planned
+  traceability:
+    code_annotations:
+      - ARCH-PERFORMANCE_OPT
+    implementation: []
+    requirements:
+      - REQ-FILES_PERFORMANCE
+    tests: []

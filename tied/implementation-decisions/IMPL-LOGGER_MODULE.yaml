@@ -1,31 +1,4 @@
 IMPL-LOGGER_MODULE:
-  name: Logger Module Implementation
-  status: Implemented
-  cross_references:
-    - ARCH-LOGGING_SYSTEM
-    - REQ-LOGGING_SYSTEM
-  decision: Create logger module with session-based file writing and six log levels
-  rationale:
-    why: Centralized logging module provides consistent API and file management
-    problems_solved:
-      - Inconsistent log formats
-      - No file management
-      - Scattered logging code
-    benefits:
-      - Automatic file management
-      - Consistent log format
-      - Single source of truth for logging
-  implementation_approach:
-    summary: Create logger module with session-based file writing and six log levels
-    details:
-      - 'API: logger.fatal(), logger.error(), logger.warn(), logger.info(), logger.debug(), logger.trace()'
-      - 'Each method signature: (tokens: string | string[], message: string, metadata?: object)'
-      - 'Format: [ISO_TIMESTAMP] [LEVEL] [TOKENS] message [metadata]'
-      - 'Six log levels: FATAL=0, ERROR=1, WARN=2, INFO=3, DEBUG=4, TRACE=5'
-      - Created src/lib/logger.ts as server-only module
-      - Initialize log file on first write with timestamp in filename
-      - Synchronous write for FATAL, buffered for others
-      - Write to os.tmpdir() with filename nx1-log-YYYY-MM-DD-HH-mm-ss-SSS.log
   code_locations:
     files:
       - path: src/lib/logger.ts
@@ -45,47 +18,74 @@ IMPL-LOGGER_MODULE:
           - 356
     functions:
       - name: fatal
-        file: src/lib/logger.ts
         description: Log fatal error (level 0)
+        file: src/lib/logger.ts
       - name: error
-        file: src/lib/logger.ts
         description: Log error (level 1)
+        file: src/lib/logger.ts
       - name: warn
-        file: src/lib/logger.ts
         description: Log warning (level 2)
+        file: src/lib/logger.ts
       - name: info
-        file: src/lib/logger.ts
         description: Log info (level 3)
+        file: src/lib/logger.ts
       - name: debug
-        file: src/lib/logger.ts
         description: Log debug (level 4)
-      - name: trace
         file: src/lib/logger.ts
+      - name: trace
         description: Log trace (level 5)
+        file: src/lib/logger.ts
+  cross_references:
+    - ARCH-LOGGING_SYSTEM
+    - REQ-LOGGING_SYSTEM
+  decision: Create logger module with session-based file writing and six log levels
+  implementation_approach:
+    details:
+      - 'API: logger.fatal(), logger.error(), logger.warn(), logger.info(), logger.debug(), logger.trace()'
+      - 'Each method signature: (tokens: string | string[], message: string, metadata?: object)'
+      - 'Format: [ISO_TIMESTAMP] [LEVEL] [TOKENS] message [metadata]'
+      - 'Six log levels: FATAL=0, ERROR=1, WARN=2, INFO=3, DEBUG=4, TRACE=5'
+      - Created src/lib/logger.ts as server-only module
+      - Initialize log file on first write with timestamp in filename
+      - Synchronous write for FATAL, buffered for others
+      - Write to os.tmpdir() with filename nx1-log-YYYY-MM-DD-HH-mm-ss-SSS.log
+    summary: Create logger module with session-based file writing and six log levels
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Retrofit traceability from logger.test.ts
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Logger Module Implementation
+  rationale:
+    benefits:
+      - Automatic file management
+      - Consistent log format
+      - Single source of truth for logging
+    problems_solved:
+      - Inconsistent log formats
+      - No file management
+      - Scattered logging code
+    why: Centralized logging module provides consistent API and file management
+  related_decisions:
+    depends_on: []
+    see_also:
+      - IMPL-LOGGER_CONFIG
+      - IMPL-LOGGER_TOKENS
+    supersedes: []
+  status: Implemented
   traceability:
     architecture:
       - ARCH-LOGGING_SYSTEM
+    code_annotations:
+      - IMPL-LOGGER_MODULE
     requirements:
       - REQ-LOGGING_SYSTEM
     tests:
       - src/lib/logger.test.ts — Log Levels, Metadata, File Creation, Synchronous vs Asynchronous Writing describes
-    code_annotations:
-      - IMPL-LOGGER_MODULE
-  related_decisions:
-    depends_on: []
-    supersedes: []
-    see_also:
-      - IMPL-LOGGER_CONFIG
-      - IMPL-LOGGER_TOKENS
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit traceability from logger.test.ts
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass

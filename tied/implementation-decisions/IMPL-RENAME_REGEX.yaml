@@ -1,42 +1,42 @@
 IMPL-RENAME_REGEX:
-  name: Rename Regex Path Resolution and Basename Transform
-  status: Active
   cross_references:
     - ARCH-BATCH_OPERATIONS
     - REQ-BULK_FILE_OPS
   decision: 'Client lib rename-regex.ts: resolve paths via touch-file helpers, computeRenamedBasename with String.replace(RegExp), validateRenameBasename, buildRenameRegexEntries; bulkRename in files.data.ts'
+  essence_pseudocode_path: implementation-decisions/IMPL-RENAME_REGEX-pseudocode.md
+  implementation_approach:
+    details:
+      - bulk-rename API validates same-dir rename and dest basename
+      - validateRegex extracted from search route for ReDoS-safe pattern validation
+    summary: rename-regex.ts + regex-validation.ts + bulkRename server function
+  metadata:
+    created:
+      author: AI Agent
+      date: "2026-05-31T00:00:00.000Z"
+    last_updated:
+      author: AI Agent
+      date: "2026-05-31T00:00:00.000Z"
+      reason: Split essence pseudocode sidecar; expand traceability tests
+  name: Rename Regex Path Resolution and Basename Transform
   rationale:
     why: Pure client resolution plus server bulk rename mirrors Touch bulk-touch split
-  implementation_approach:
-    summary: rename-regex.ts + regex-validation.ts + bulkRename server function
-    details:
-      - validateRegex extracted from search route for ReDoS-safe pattern validation
-      - bulk-rename API validates same-dir rename and dest basename
+  related_decisions:
+    depends_on:
+      - IMPL-FILES_DATA
+      - IMPL-TOUCH_MTIME
+    see_also:
+      - IMPL-RENAME_REGEX_DIALOG
+  status: Active
   traceability:
-    requirements:
-      - REQ-BULK_FILE_OPS
     architecture:
       - ARCH-BATCH_OPERATIONS
       - ARCH-FILE_OPERATIONS_API
+    code_annotations:
+      - IMPL-RENAME_REGEX
+    requirements:
+      - REQ-BULK_FILE_OPS
     tests:
       - src/app/api/files/route.test.ts
       - src/lib/regex-validation.test.ts
       - src/lib/rename-regex.data.test.ts
       - src/lib/rename-regex.test.ts
-    code_annotations:
-      - IMPL-RENAME_REGEX
-  related_decisions:
-    depends_on:
-      - IMPL-TOUCH_MTIME
-      - IMPL-FILES_DATA
-    see_also:
-      - IMPL-RENAME_REGEX_DIALOG
-  metadata:
-    created:
-      date: "2026-05-31T00:00:00.000Z"
-      author: AI Agent
-    last_updated:
-      date: "2026-05-31T00:00:00.000Z"
-      author: AI Agent
-      reason: Split essence pseudocode sidecar; expand traceability tests
-  essence_pseudocode_path: implementation-decisions/IMPL-RENAME_REGEX-pseudocode.md

@@ -1,27 +1,4 @@
 IMPL-LOGGER_TOKENS:
-  name: Semantic Token Integration Implementation
-  status: Implemented
-  cross_references:
-    - ARCH-LOGGING_SEMANTIC_TOKENS
-    - REQ-LOGGING_SEMANTIC_TOKENS
-  decision: TypeScript API requires tokens as first parameter
-  rationale:
-    why: Required tokens parameter ensures TIED traceability
-    problems_solved:
-      - Optional tokens easily forgotten
-      - Inconsistent token usage
-    benefits:
-      - 100% token coverage
-      - Compile-time enforcement
-      - Easy grep/search
-  implementation_approach:
-    summary: TypeScript API requires tokens as first parameter
-    details:
-      - 'All log methods: (tokens: string | string[], message: string, metadata?: object)'
-      - 'Helper: formatTokens(tokens: string | string[]): string'
-      - Format tokens as space-separated in output
-      - No validation in PROD for performance
-      - Validate token format at runtime (DEV mode)
   code_locations:
     files:
       - path: src/lib/logger.ts
@@ -30,34 +7,57 @@ IMPL-LOGGER_TOKENS:
         description: SemanticToken type
     functions:
       - name: formatTokens
-        file: src/lib/logger.ts
         description: Format tokens for log output
-      - name: validateTokens
         file: src/lib/logger.ts
+      - name: validateTokens
         description: Validate token format (DEV only)
+        file: src/lib/logger.ts
+  cross_references:
+    - ARCH-LOGGING_SEMANTIC_TOKENS
+    - REQ-LOGGING_SEMANTIC_TOKENS
+  decision: TypeScript API requires tokens as first parameter
+  implementation_approach:
+    details:
+      - 'All log methods: (tokens: string | string[], message: string, metadata?: object)'
+      - 'Helper: formatTokens(tokens: string | string[]): string'
+      - Format tokens as space-separated in output
+      - No validation in PROD for performance
+      - Validate token format at runtime (DEV mode)
+    summary: TypeScript API requires tokens as first parameter
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Retrofit traceability from logger.test.ts
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Semantic Token Integration Implementation
+  rationale:
+    benefits:
+      - 100% token coverage
+      - Compile-time enforcement
+      - Easy grep/search
+    problems_solved:
+      - Inconsistent token usage
+      - Optional tokens easily forgotten
+    why: Required tokens parameter ensures TIED traceability
+  related_decisions:
+    depends_on:
+      - IMPL-LOGGER_MODULE
+    see_also: []
+    supersedes: []
+  status: Implemented
   traceability:
     architecture:
       - ARCH-LOGGING_SEMANTIC_TOKENS
+    code_annotations:
+      - IMPL-LOGGER_TOKENS
     requirements:
       - REQ-LOGGING_SEMANTIC_TOKENS
     tests:
       - src/lib/logger.test.ts — Semantic Tokens describe
-    code_annotations:
-      - IMPL-LOGGER_TOKENS
-  related_decisions:
-    depends_on:
-      - IMPL-LOGGER_MODULE
-    supersedes: []
-    see_also: []
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit traceability from logger.test.ts
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass

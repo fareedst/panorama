@@ -1,39 +1,39 @@
 IMPL-NSYNC_STORE:
-  name: Store Monitoring Implementation
-  status: Active
-  cross_references:
-    - REQ-STORE_FAILURE_DETECT
-    - ARCH-STORE_MONITORING
-  decision: Simplified store failure detection using error streak tracking per destination
-  rationale:
-    why: Simplified store failure detection using error streak tracking per destination
-    problems_solved: []
-    benefits: []
-  implementation_approach:
-    summary: Simplified store failure detection using error streak tracking per destination
-    details: []
   code_locations:
     files:
       - path: src/lib/sync/store.ts
         description: IMPL-NSYNC_STORE
     functions: []
+  cross_references:
+    - ARCH-STORE_MONITORING
+    - REQ-STORE_FAILURE_DETECT
+  decision: Simplified store failure detection using error streak tracking per destination
+  implementation_approach:
+    details: []
+    summary: Simplified store failure detection using error streak tracking per destination
+  metadata:
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: NSYNC pseudocode retrofit from production code and tests
+    registered: 2026-02-09T00:00:00.000Z
+  name: Store Monitoring Implementation
+  rationale:
+    benefits: []
+    problems_solved: []
+    why: Simplified store failure detection using error streak tracking per destination
+  related_decisions:
+    depends_on: []
+    see_also: []
+    supersedes: []
+  status: Active
   traceability:
     architecture:
       - ARCH-STORE_MONITORING
+    code_annotations:
+      - IMPL-NSYNC_STORE
+      - REQ-STORE_FAILURE_DETECT
     requirements:
       - REQ-STORE_FAILURE_DETECT
     tests:
       - src/lib/sync/engine.test.ts — integration via syncToDestination error handling
-    code_annotations:
-      - IMPL-NSYNC_STORE
-      - REQ-STORE_FAILURE_DETECT
-  related_decisions:
-    depends_on: []
-    supersedes: []
-    see_also: []
-  metadata:
-    registered: 2026-02-09T00:00:00.000Z
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: NSYNC pseudocode retrofit from production code and tests

@@ -1,19 +1,50 @@
 # CITDP change-analysis record — cross-pane visibility toolbar filters + snapshot v5
 # change_request_id: REQ-CROSS_PANE_VISIBILITY
 CITDP-CROSS_PANE_VISIBILITY:
+  change_definition:
+    current_behavior_prior: |
+      Toolbar starts expanded; partial mesh rehydrate may skip comparisonMode sync;
+      no comparison-index-driven visibility toggles; panes show full post-display-spec listings.
+    desired_behavior: |
+      Session toolbar compact at startup; comparisonMode restored on all mesh paths;
+      tri-state view.compareFilter.* toolbar actions; focused-pane include/exclude with other-pane basename mirror;
+      threshold dialog for size/time; named preset catalog; per-pane activeCrossPaneVisibilityId
+      and ephemeral draft; workspace toolbar syncs to focused pane; snapshot v5 per-pane fields.
+    non_goals:
+      - Replacing display spec catalog
+      - Server-side cross-pane visibility API
+    success_criteria:
+      - comparisonMode from snapshot after partial client rehydrate
+      - Default toolbar compact on load
+      - Exclude beats include; include-gating when any include toggle active
+      - Marks reconcile to visible files
+      - Other panes mirror focused visible basenames
+      - v5 snapshot round-trip
+    unchanged_behavior: |
+      Display spec glob filters remain separate; comparison coloring still gated by comparisonMode.
+  completion_criteria:
+    verification_gate_notes: Vitest pass; npx tsc --noEmit; tied_validate_consistency
+  impact_analysis:
+    modules_or_boundaries: |
+      src/lib/cross-pane-visibility.ts; WorkspaceView; Toolbar/TriStateToolbarButton;
+      CompareFilterThresholdDialog; workspace-mesh-bridge v5; config/files.yaml
+    tied_tokens_affected:
+      - ARCH-CROSS_PANE_VISIBILITY
+      - ARCH-TOOLBAR_LAYOUT
+      - IMPL-CROSS_PANE_VISIBILITY_ENGINE
+      - IMPL-CROSS_PANE_VISIBILITY_UI
+      - IMPL-TOOLBAR_COMPONENT
+      - IMPL-WORKSPACE_MESH_BRIDGE
+      - IMPL-WORKSPACE_VIEW
+      - REQ-CROSS_PANE_VISIBILITY
+      - REQ-TOOLBAR_SYSTEM
+  leap_feedback:
+    e2e_only_reason: N/A — Vitest covers toolbar tri-state and pane listing visibility
+    record_status: complete
   record_identity:
     change_request_id: REQ-CROSS_PANE_VISIBILITY
-    title: Tri-state cross-pane visibility filters, threshold dialog, snapshot v5
     recorded_at: 2026-05-23
-    workspace_root: /Users/fareed/Documents/dev/node/panorama
     tied_context:
-      requirements:
-        - REQ-CROSS_PANE_COMPARISON
-        - REQ-CROSS_PANE_VISIBILITY
-        - REQ-MULTI_PANE_LAYOUT
-        - REQ-PANE_DISPLAY_FILTER
-        - REQ-TOOLBAR_SYSTEM
-        - REQ-WORKSPACE_MESH_BRIDGE
       architecture:
         - ARCH-COMPARISON_INDEX
         - ARCH-CROSS_PANE_VISIBILITY
@@ -26,41 +57,15 @@ CITDP-CROSS_PANE_VISIBILITY:
         - IMPL-TOOLBAR_COMPONENT
         - IMPL-WORKSPACE_MESH_BRIDGE
         - IMPL-WORKSPACE_VIEW
-  change_definition:
-    current_behavior_prior: |
-      Toolbar starts expanded; partial mesh rehydrate may skip comparisonMode sync;
-      no comparison-index-driven visibility toggles; panes show full post-display-spec listings.
-    desired_behavior: |
-      Session toolbar compact at startup; comparisonMode restored on all mesh paths;
-      tri-state view.compareFilter.* toolbar actions; focused-pane include/exclude with other-pane basename mirror;
-      threshold dialog for size/time; named preset catalog; per-pane activeCrossPaneVisibilityId
-      and ephemeral draft; workspace toolbar syncs to focused pane; snapshot v5 per-pane fields.
-    unchanged_behavior: |
-      Display spec glob filters remain separate; comparison coloring still gated by comparisonMode.
-    non_goals:
-      - Server-side cross-pane visibility API
-      - Replacing display spec catalog
-    success_criteria:
-      - comparisonMode from snapshot after partial client rehydrate
-      - Default toolbar compact on load
-      - Exclude beats include; include-gating when any include toggle active
-      - Marks reconcile to visible files
-      - Other panes mirror focused visible basenames
-      - v5 snapshot round-trip
-  impact_analysis:
-    tied_tokens_affected:
-      - ARCH-CROSS_PANE_VISIBILITY
-      - ARCH-TOOLBAR_LAYOUT
-      - IMPL-CROSS_PANE_VISIBILITY_ENGINE
-      - IMPL-CROSS_PANE_VISIBILITY_UI
-      - IMPL-TOOLBAR_COMPONENT
-      - IMPL-WORKSPACE_MESH_BRIDGE
-      - IMPL-WORKSPACE_VIEW
-      - REQ-CROSS_PANE_VISIBILITY
-      - REQ-TOOLBAR_SYSTEM
-    modules_or_boundaries: |
-      src/lib/cross-pane-visibility.ts; WorkspaceView; Toolbar/TriStateToolbarButton;
-      CompareFilterThresholdDialog; workspace-mesh-bridge v5; config/files.yaml
+      requirements:
+        - REQ-CROSS_PANE_COMPARISON
+        - REQ-CROSS_PANE_VISIBILITY
+        - REQ-MULTI_PANE_LAYOUT
+        - REQ-PANE_DISPLAY_FILTER
+        - REQ-TOOLBAR_SYSTEM
+        - REQ-WORKSPACE_MESH_BRIDGE
+    title: Tri-state cross-pane visibility filters, threshold dialog, snapshot v5
+    workspace_root: /Users/fareed/Documents/dev/node/panorama
   risk_analysis:
     risks:
       - id: RISK-001
@@ -77,8 +82,3 @@ CITDP-CROSS_PANE_VISIBILITY:
       Unit cross-pane-visibility.test.ts; bridge v5; TriStateToolbarButton;
       CompareFilterThresholdDialog; WorkspaceView.cross-pane-visibility;
       mesh-restore comparison + v5 tests; toolbar-compact default test.
-  completion_criteria:
-    verification_gate_notes: Vitest pass; npx tsc --noEmit; tied_validate_consistency
-  leap_feedback:
-    record_status: complete
-    e2e_only_reason: N/A — Vitest covers toolbar tri-state and pane listing visibility

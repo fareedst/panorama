@@ -1,41 +1,41 @@
 IMPL-MESH_PLANNING:
-  name: Mesh Planning Service
-  status: Active
+  code_locations:
+    files:
+      - path: src/lib/mesh/services/planning-service.ts
+        description: Dry-run planning and pagination
+    functions: []
   cross_references:
     - ARCH-MESH_LAYERED
     - REQ-MESH_HARDENING
     - REQ-MESH_PLATFORM
   decision: See essence_pseudocode sidecar and src/lib/mesh/services.
   implementation_approach:
-    summary: src/lib/mesh/services/
     details:
       - See essence_pseudocode sidecar
-  traceability:
-    architecture:
-      - ARCH-MESH_LAYERED
-    requirements:
-      - REQ-MESH_PLATFORM
-      - REQ-MESH_HARDENING
-    tests:
-      - src/lib/mesh/services/planning-service.test.ts
-      - src/app/api/mesh/plan-conflicts.route.test.ts
-    code_annotations:
-      - IMPL-MESH_PLANNING
+    summary: src/lib/mesh/services/
+  metadata:
+    created:
+      author: AI Agent
+      date: "2026-05-19T00:00:00.000Z"
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+  name: Mesh Planning Service
   related_decisions:
     depends_on:
       - IMPL-MESH_RUNTIME
-    supersedes: []
     see_also: []
+    supersedes: []
+  status: Active
   testability: unit
-  metadata:
-    created:
-      date: "2026-05-19T00:00:00.000Z"
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-  code_locations:
-    files:
-      - path: src/lib/mesh/services/planning-service.ts
-        description: Dry-run planning and pagination
-    functions: []
+  traceability:
+    architecture:
+      - ARCH-MESH_LAYERED
+    code_annotations:
+      - IMPL-MESH_PLANNING
+    requirements:
+      - REQ-MESH_HARDENING
+      - REQ-MESH_PLATFORM
+    tests:
+      - src/app/api/mesh/plan-conflicts.route.test.ts
+      - src/lib/mesh/services/planning-service.test.ts

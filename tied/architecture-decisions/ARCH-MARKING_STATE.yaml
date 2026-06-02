@@ -1,50 +1,53 @@
 ARCH-MARKING_STATE:
-  name: Client-Side Mark State Management
-  status: Active
+  alternatives_considered:
+    - name: Server-side mark storage in session
+      cons:
+        - Complex session management
+        - Network latency on every mark toggle
+      pros:
+        - Persists across page refresh
+      rejected_reason: Latency unacceptable for interactive marking
+    - name: Index-based marking
+      cons:
+        - Breaks when files re-sorted
+      pros:
+        - Simple integer storage
+      rejected_reason: Name-based survives sort changes
   cross_references:
     - REQ-FILE_MARKING_WEB
   decision: Store file marking state in client-side React state using Set<string> of absolute file.path per pane. Marks persist across sorting, filtering, and tree refresh via path-based matching; RECONCILE_TREE_SELECTION prunes marks not in visible rows.
-  rationale:
-    why: Web file marking requires client-side state for instant feedback with name-based persistence
-    problems_solved:
-      - Complex synchronization between client and server
-      - Mark state lost on page refresh
-      - Server-side mark storage adds latency
-    benefits:
-      - Independent mark sets per pane
-      - Instant mark toggle feedback
-      - Name-based persistence survives re-sorts
-      - Simple Set<string> storage in React state
-  alternatives_considered:
-    - name: Server-side mark storage in session
-      pros:
-        - Persists across page refresh
-      cons:
-        - Network latency on every mark toggle
-        - Complex session management
-      rejected_reason: Latency unacceptable for interactive marking
-    - name: Index-based marking
-      pros:
-        - Simple integer storage
-      cons:
-        - Breaks when files re-sorted
-      rejected_reason: Name-based survives sort changes
   implementation_approach:
-    summary: React state with Set<string> absolute paths per pane, path-based persistence
     details:
       - 'Footer display: [marked/total] format'
       - 'Visual feedback: checkbox icon + background color from theme.yaml'
       - Batch operations check marks.size > 0 and use visible path intersection
       - Mark persistence survives re-sort and refreshPaneTree when path still visible
       - PaneState.marks stores absolute file.path when directory tree spans multiple subdirectories (REQ-DIRECTORY_TREE)
-  traceability:
-    requirements:
-      - REQ-FILE_MARKING_WEB
-    implementation:
-      - IMPL-FILE_MARKING
-    tests: []
-    code_annotations:
-      - ARCH-MARKING_STATE
+    summary: React state with Set<string> absolute paths per pane, path-based persistence
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-29T00:00:00.000Z"
+      reason: LEAP — vocabulary see_also back-link
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Client-Side Mark State Management
+  rationale:
+    benefits:
+      - Independent mark sets per pane
+      - Instant mark toggle feedback
+      - Name-based persistence survives re-sorts
+      - Simple Set<string> storage in React state
+    problems_solved:
+      - Complex synchronization between client and server
+      - Mark state lost on page refresh
+      - Server-side mark storage adds latency
+    why: Web file marking requires client-side state for instant feedback with name-based persistence
   related_decisions:
     depends_on:
       - REQ-FILE_MARKING_WEB
@@ -53,15 +56,12 @@ ARCH-MARKING_STATE:
     see_also:
       - ARCH-BATCH_OPERATIONS
       - tied/vocab/file-marking.md
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-29T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — vocabulary see_also back-link
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+  status: Active
+  traceability:
+    code_annotations:
+      - ARCH-MARKING_STATE
+    implementation:
+      - IMPL-FILE_MARKING
+    requirements:
+      - REQ-FILE_MARKING_WEB
+    tests: []

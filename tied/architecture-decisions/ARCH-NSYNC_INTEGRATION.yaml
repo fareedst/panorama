@@ -1,30 +1,30 @@
 ARCH-NSYNC_INTEGRATION:
-  name: Nsync Integration Architecture
-  status: Active
-  cross_references:
-    - REQ-NSYNC_MULTI_TARGET
-    - IMPL-NSYNC_ENGINE
-  decision: Architecture for integrating multi-destination sync engine into nx1 file manager
-  rationale:
-    why: Architecture for integrating multi-destination sync engine into nx1 file manager
-    problems_solved: []
-    benefits: []
   alternatives_considered: []
+  cross_references:
+    - IMPL-NSYNC_ENGINE
+    - REQ-NSYNC_MULTI_TARGET
+  decision: Architecture for integrating multi-destination sync engine into nx1 file manager
   implementation_approach:
-    summary: Architecture for integrating multi-destination sync engine into nx1 file manager
     details: []
-  traceability:
-    requirements:
-      - REQ-NSYNC_MULTI_TARGET
-    implementation:
-      - IMPL-NSYNC_ENGINE
-    tests: []
-    code_annotations:
-      - ARCH-NSYNC_INTEGRATION
+    summary: Architecture for integrating multi-destination sync engine into nx1 file manager
+  metadata:
+    last_updated: 2026-02-09T00:00:00.000Z
+    registered: 2026-02-09T00:00:00.000Z
+  name: Nsync Integration Architecture
+  rationale:
+    benefits: []
+    problems_solved: []
+    why: Architecture for integrating multi-destination sync engine into nx1 file manager
   related_decisions:
     depends_on: []
     informs: []
     see_also: []
-  metadata:
-    registered: 2026-02-09T00:00:00.000Z
-    last_updated: 2026-02-09T00:00:00.000Z
+  status: Active
+  traceability:
+    code_annotations:
+      - ARCH-NSYNC_INTEGRATION
+    implementation:
+      - IMPL-NSYNC_ENGINE
+    requirements:
+      - REQ-NSYNC_MULTI_TARGET
+    tests: []

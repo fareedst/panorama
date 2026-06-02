@@ -1,20 +1,4 @@
 IMPL-COPY_ATTRS:
-  name: Copy Preserve File Attributes
-  status: Active
-  cross_references:
-    - IMPL-FILES_DATA
-    - IMPL-NSYNC_OPERATIONS
-    - REQ-COPY_OPERATIONS
-    - REQ-FILE_OPERATIONS
-  decision: Shared preserveCopyAttributes() after copy completes (fs.copyFile or fs.cp); stat source then chmod + utimes on dest; each step try/catch so unsupported or denied ops do not fail the copy
-  rationale:
-    why: Copying a file with nsync or simpler methods must maintain attributes (mode, timestamps) where possible
-    benefits:
-      - 'Best-effort: copy still succeeds if chmod/utimes fail'
-      - Preserves mode (permissions) on Unix
-      - Preserves mtime/atime for comparison and backup semantics
-  implementation_approach:
-    summary: Shared preserveCopyAttributes() after copy completes (fs.copyFile or fs.cp); stat source then chmod + utimes on dest; each step try/catch so unsupported or denied ops do not fail the copy
   code_locations:
     files:
       - path: src/lib/copyAttributes.ts
@@ -23,25 +7,41 @@ IMPL-COPY_ATTRS:
         description: Called after copy completes
       - path: src/lib/files.data.ts
         description: Called after copy completes
+  cross_references:
+    - IMPL-FILES_DATA
+    - IMPL-NSYNC_OPERATIONS
+    - REQ-COPY_OPERATIONS
+    - REQ-FILE_OPERATIONS
+  decision: Shared preserveCopyAttributes() after copy completes (fs.copyFile or fs.cp); stat source then chmod + utimes on dest; each step try/catch so unsupported or denied ops do not fail the copy
+  implementation_approach:
+    summary: Shared preserveCopyAttributes() after copy completes (fs.copyFile or fs.cp); stat source then chmod + utimes on dest; each step try/catch so unsupported or denied ops do not fail the copy
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-09T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-06-02T00:00:00.000Z"
+      reason: 'LEAP: files.data copy path attribute preservation tests'
+  name: Copy Preserve File Attributes
+  rationale:
+    benefits:
+      - 'Best-effort: copy still succeeds if chmod/utimes fail'
+      - Preserves mode (permissions) on Unix
+      - Preserves mtime/atime for comparison and backup semantics
+    why: Copying a file with nsync or simpler methods must maintain attributes (mode, timestamps) where possible
+  related_decisions:
+    depends_on:
+      - IMPL-FILES_DATA
+      - IMPL-NSYNC_OPERATIONS
+    see_also: []
+  status: Active
   traceability:
+    code_annotations:
+      - IMPL-COPY_ATTRS
     requirements:
       - REQ-COPY_OPERATIONS
       - REQ-FILE_OPERATIONS
     tests:
-      - src/lib/sync/engine.test.ts
       - src/lib/copy-file.data.test.ts
-    code_annotations:
-      - IMPL-COPY_ATTRS
-  related_decisions:
-    depends_on:
-      - IMPL-NSYNC_OPERATIONS
-      - IMPL-FILES_DATA
-    see_also: []
-  metadata:
-    created:
-      date: 2026-02-09T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-06-02T00:00:00.000Z"
-      author: AI Agent
-      reason: 'LEAP: files.data copy path attribute preservation tests'
+      - src/lib/sync/engine.test.ts

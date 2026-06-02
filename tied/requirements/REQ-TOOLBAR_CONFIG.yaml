@@ -1,28 +1,57 @@
 # REQ detail — REQ-TOOLBAR_CONFIG
 REQ-TOOLBAR_CONFIG:
-  name: Configuration-Driven Toolbar Customization
   category: Functional
-  priority: P1
-  status: Planned
   description: To maintain consistency with configuration-driven UI architecture and enable toolbar customization without code changes
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-08T00:00:00.000Z
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-08T00:00:00.000Z
+      result: planned
+      validator: AI Agent
+  name: Configuration-Driven Toolbar Customization
+  priority: P1
   rationale:
-    why: To maintain consistency with configuration-driven UI architecture and enable toolbar customization without code changes
-    problems_solved:
-      - Fixed button selection
-      - Hard-coded toolbar layout
-      - Inflexible styling
-      - Template rigidity
     benefits:
       - Easy experimentation and A/B testing
       - Internationalization ready
       - Template flexibility
       - Zero code changes for customization
+    problems_solved:
+      - Fixed button selection
+      - Hard-coded toolbar layout
+      - Inflexible styling
+      - Template rigidity
+    why: To maintain consistency with configuration-driven UI architecture and enable toolbar customization without code changes
+  related_requirements:
+    depends_on:
+      - REQ-CONFIG_DRIVEN_UI
+      - REQ-TOOLBAR_SYSTEM
+    related_to:
+      - REQ-CONFIG_DRIVEN_FILE_MANAGER
+    supersedes: []
   satisfaction_criteria:
     - criterion: Configuration validation with helpful error messages
     - criterion: Sensible default configuration when custom config omitted
     - criterion: Toolbar visibility, position, button selection, grouping, and styling all configurable
     - criterion: TypeScript interfaces for all configuration structures
     - criterion: Well-defined YAML schema in config/files.yaml and config/theme.yaml
+  status: Planned
+  traceability:
+    architecture:
+      - ARCH-CONFIG_DRIVEN_UI
+      - ARCH-TOOLBAR_LAYOUT
+    code_annotations:
+      - REQ-TOOLBAR_CONFIG
+    implementation:
+      - IMPL-CONFIG_LOADER
+      - IMPL-TOOLBAR_CONFIG
+    tests: []
   validation_criteria:
     - method: Schema validation tests
       coverage: Configuration structure validation
@@ -30,32 +59,3 @@ REQ-TOOLBAR_CONFIG:
       coverage: Invalid config handling, fallbacks
     - method: Integration tests
       coverage: Configuration application to UI
-  traceability:
-    architecture:
-      - ARCH-TOOLBAR_LAYOUT
-      - ARCH-CONFIG_DRIVEN_UI
-    implementation:
-      - IMPL-TOOLBAR_CONFIG
-      - IMPL-CONFIG_LOADER
-    tests: []
-    code_annotations:
-      - REQ-TOOLBAR_CONFIG
-  related_requirements:
-    depends_on:
-      - REQ-TOOLBAR_SYSTEM
-      - REQ-CONFIG_DRIVEN_UI
-    related_to:
-      - REQ-CONFIG_DRIVEN_FILE_MANAGER
-    supersedes: []
-  metadata:
-    created:
-      date: 2026-02-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-08T00:00:00.000Z
-      author: AI Agent
-      reason: Initial creation
-    last_validated:
-      date: 2026-02-08T00:00:00.000Z
-      validator: AI Agent
-      result: planned

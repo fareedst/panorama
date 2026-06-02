@@ -1,33 +1,33 @@
 IMPL-DISPLAY_FILTER_ENGINE:
-  name: Display Filter Engine Implementation
-  status: Active
   cross_references:
-    - REQ-PANE_DISPLAY_FILTER
     - ARCH-DISPLAY_FILTER_ENGINE
+    - REQ-PANE_DISPLAY_FILTER
   essence_pseudocode_path: implementation-decisions/IMPL-DISPLAY_FILTER_ENGINE-pseudocode.md
   implementation_approach:
-    summary: Pure TS modules for glob match, rule evaluation, pane listing apply, selection reconcile
     details:
       - src/lib/display-filter-engine.ts
       - src/lib/display-filter.types.ts
       - src/lib/glob-match.ts
       - Unit tests before UI integration
+    summary: Pure TS modules for glob match, rule evaluation, pane listing apply, selection reconcile
+  metadata:
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Retrofit pseudocode and comment alignment per prompts/2026-05-29
+  name: Display Filter Engine Implementation
+  related_decisions:
+    see_also:
+      - tied/vocab/pane-display-filter.md
+  status: Active
   traceability:
-    requirements:
-      - REQ-PANE_DISPLAY_FILTER
     architecture:
       - ARCH-DISPLAY_FILTER_ENGINE
-    tests:
-      - src/lib/display-filter-engine.test.ts
     code_locations:
       - src/lib/display-filter-engine.ts
       - src/lib/display-filter.types.ts
       - src/lib/glob-match.ts
-  related_decisions:
-    see_also:
-      - tied/vocab/pane-display-filter.md
-  metadata:
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit pseudocode and comment alignment per prompts/2026-05-29
+    requirements:
+      - REQ-PANE_DISPLAY_FILTER
+    tests:
+      - src/lib/display-filter-engine.test.ts

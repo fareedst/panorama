@@ -1,32 +1,4 @@
 IMPL-NSYNC_ENGINE:
-  name: Sync Engine Core Implementation
-  status: Active
-  cross_references:
-    - ARCH-NSYNC_INTEGRATION
-    - REQ-MOVE_SEMANTICS
-    - REQ-NSYNC_MULTI_TARGET
-  decision: SyncEngine class orchestrates sync loop iterating over sources, syncing each to all destinations in parallel, tracking results, and handling move deletion
-  rationale:
-    why: Implements multi-destination file synchronization engine orchestrating parallel sync with observer pattern, move semantics, and store monitoring
-    problems_solved:
-      - No progress tracking during long operations
-      - Sequential sync to multiple destinations is slow
-      - Source deleted before all destinations verified
-    benefits:
-      - Parallel sync to all destinations
-      - Real-time progress callbacks via observer
-      - Safe move semantics (delete source only after ALL succeed)
-      - Store failure detection and abort
-  implementation_approach:
-    summary: SyncEngine class orchestrates sync loop iterating over sources, syncing each to all destinations in parallel, tracking results, and handling move deletion
-    details:
-      - 'For each source: syncItem() syncs to all destinations via Promise.all'
-      - 'Move semantics: track sourcesToDelete, delete only after ALL destinations succeed'
-      - 'Observer callbacks: onStart, onItemStart, onItemProgress, onItemComplete, onProgress, onFinish'
-      - 'sync() method: validate inputs, build plan, iterate sources'
-      - StoreMonitor tracks error streaks, marks stores unavailable
-      - SyncEngine constructor accepts optional SyncObserver
-      - syncToDestination() handles single source->dest copy with compare, hash, verify
   code_locations:
     files:
       - path: src/lib/sync/engine.ts
@@ -40,27 +12,53 @@ IMPL-NSYNC_ENGINE:
         lines: []
     functions:
       - name: sync
-        file: src/lib/sync/engine.ts
         description: Main entry point for multi-destination sync
+        file: src/lib/sync/engine.ts
       - name: syncItem
-        file: src/lib/sync/engine.ts
         description: Sync single source to all destinations in parallel
-      - name: syncToDestination
         file: src/lib/sync/engine.ts
+      - name: syncToDestination
         description: Sync source to single destination with compare/verify
-  traceability:
-    architecture:
-      - ARCH-NSYNC_INTEGRATION
-    requirements:
-      - REQ-NSYNC_MULTI_TARGET
-      - REQ-MOVE_SEMANTICS
-    tests:
-      - src/lib/sync/engine.test.ts — multi-target sync, skip unchanged, observer, move semantics
-      - src/app/api/files/route.test.ts — sync-all validation and delegation
-    code_annotations:
-      - IMPL-NSYNC_ENGINE
-      - REQ-MOVE_SEMANTICS
-      - REQ-NSYNC_MULTI_TARGET
+        file: src/lib/sync/engine.ts
+  cross_references:
+    - ARCH-NSYNC_INTEGRATION
+    - REQ-MOVE_SEMANTICS
+    - REQ-NSYNC_MULTI_TARGET
+  decision: SyncEngine class orchestrates sync loop iterating over sources, syncing each to all destinations in parallel, tracking results, and handling move deletion
+  implementation_approach:
+    details:
+      - 'For each source: syncItem() syncs to all destinations via Promise.all'
+      - 'Move semantics: track sourcesToDelete, delete only after ALL destinations succeed'
+      - 'Observer callbacks: onStart, onItemStart, onItemProgress, onItemComplete, onProgress, onFinish'
+      - 'sync() method: validate inputs, build plan, iterate sources'
+      - StoreMonitor tracks error streaks, marks stores unavailable
+      - SyncEngine constructor accepts optional SyncObserver
+      - syncToDestination() handles single source->dest copy with compare, hash, verify
+    summary: SyncEngine class orchestrates sync loop iterating over sources, syncing each to all destinations in parallel, tracking results, and handling move deletion
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-09T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: NSYNC pseudocode retrofit from production code and tests
+    last_validated:
+      date: 2026-02-09T00:00:00.000Z
+      result: pass - 4/4 engine tests, 6/6 route tests, Copy to All Panes verified
+      validator: AI Agent
+  name: Sync Engine Core Implementation
+  rationale:
+    benefits:
+      - Parallel sync to all destinations
+      - Real-time progress callbacks via observer
+      - Safe move semantics (delete source only after ALL succeed)
+      - Store failure detection and abort
+    problems_solved:
+      - No progress tracking during long operations
+      - Sequential sync to multiple destinations is slow
+      - Source deleted before all destinations verified
+    why: Implements multi-destination file synchronization engine orchestrating parallel sync with observer pattern, move semantics, and store monitoring
   related_decisions:
     depends_on:
       - IMPL-NSYNC_COMPARE
@@ -68,19 +66,21 @@ IMPL-NSYNC_ENGINE:
       - IMPL-NSYNC_OPERATIONS
       - IMPL-NSYNC_STORE
       - IMPL-NSYNC_VERIFY
-    supersedes: []
     see_also:
-      - tied/vocab/nsync-multi-target.md
       - docs/panorama-domain-references.md
-  metadata:
-    created:
-      date: 2026-02-09T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: NSYNC pseudocode retrofit from production code and tests
-    last_validated:
-      date: 2026-02-09T00:00:00.000Z
-      validator: AI Agent
-      result: pass - 4/4 engine tests, 6/6 route tests, Copy to All Panes verified
+      - tied/vocab/nsync-multi-target.md
+    supersedes: []
+  status: Active
+  traceability:
+    architecture:
+      - ARCH-NSYNC_INTEGRATION
+    code_annotations:
+      - IMPL-NSYNC_ENGINE
+      - REQ-MOVE_SEMANTICS
+      - REQ-NSYNC_MULTI_TARGET
+    requirements:
+      - REQ-MOVE_SEMANTICS
+      - REQ-NSYNC_MULTI_TARGET
+    tests:
+      - src/app/api/files/route.test.ts — sync-all validation and delegation
+      - src/lib/sync/engine.test.ts — multi-target sync, skip unchanged, observer, move semantics

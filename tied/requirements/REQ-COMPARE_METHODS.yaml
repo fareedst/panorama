@@ -1,49 +1,49 @@
 # REQ detail — REQ-COMPARE_METHODS
 REQ-COMPARE_METHODS:
-  name: File Comparison Methods
   category: Functional
-  priority: P1
-  status: Implemented
   description: Skip unchanged files during sync to save time and bandwidth
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-09T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-09T00:00:00.000Z
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-09T00:00:00.000Z
+      result: implemented
+      validator: AI Agent
+  name: File Comparison Methods
+  priority: P1
   rationale:
-    why: Skip unchanged files during sync to save time and bandwidth
-    problems_solved:
-      - Need different comparison methods for different scenarios
-      - Slow sync when most files unchanged
-      - Unnecessary copying of identical files
     benefits:
       - Accurate hash-based comparison (optional)
       - Fast size-based comparison (default)
       - Flexible comparison methods for different use cases
-  satisfaction_criteria:
-    - criterion: Allow per-operation comparison method selection
-    - criterion: Default to size-mtime for speed
-    - criterion: Support none, size, mtime, size-mtime, hash comparison
-  validation_criteria:
-    - method: Unit tests
-      coverage: All comparison methods, edge cases
-  traceability:
-    architecture: []
-    implementation:
-      - IMPL-NSYNC_COMPARE
-    tests: []
-    code_annotations:
-      - REQ-COMPARE_METHODS
+    problems_solved:
+      - Need different comparison methods for different scenarios
+      - Slow sync when most files unchanged
+      - Unnecessary copying of identical files
+    why: Skip unchanged files during sync to save time and bandwidth
   related_requirements:
     depends_on: []
     related_to:
       - REQ-HASH_COMPUTATION
       - REQ-NSYNC_MULTI_TARGET
     supersedes: []
-  metadata:
-    created:
-      date: 2026-02-09T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-09T00:00:00.000Z
-      author: AI Agent
-      reason: Initial creation
-    last_validated:
-      date: 2026-02-09T00:00:00.000Z
-      validator: AI Agent
-      result: implemented
+  satisfaction_criteria:
+    - criterion: Allow per-operation comparison method selection
+    - criterion: Default to size-mtime for speed
+    - criterion: Support none, size, mtime, size-mtime, hash comparison
+  status: Implemented
+  traceability:
+    architecture: []
+    code_annotations:
+      - REQ-COMPARE_METHODS
+    implementation:
+      - IMPL-NSYNC_COMPARE
+    tests: []
+  validation_criteria:
+    - method: Unit tests
+      coverage: All comparison methods, edge cases

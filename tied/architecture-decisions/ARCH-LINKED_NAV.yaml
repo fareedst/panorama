@@ -1,54 +1,31 @@
 ARCH-LINKED_NAV:
-  name: Linked Pane Navigation Architecture
-  status: Implemented
-  cross_references:
-    - REQ-LINKED_PANES
-  decision: "Summary\n\nAdd `linkedMode` boolean state to `WorkspaceView` with L key toggle. When enabled, `handleNavigate` automatically navigates all panes, `handleCursorMove` syncs cursor by filename, and `handleSortChange` applies sort to all panes. Auto-disable triggers when subdirectory navigation partially fails.\n\nContext\n\n• File manager already has multi-pane support (`IMPL-PANE_MANAGEMENT`)\n• Navigation system is centralized in `handleNavigate` callback\n• Cursor management in `handleCursorMove` callback\n• Sort management in `handleSortChange` function\n• Keybinding system can easily add new action (`link.toggle`)\n• Footer already shows session info (can add link badge)\n\nTechnical Approach\n\n1. Link State Management\n\n```typescript\n// WorkspaceView.tsx\nconst [linkedMode, setLinkedMode] = useState<boolean>(false);\n\n// Track panes currently syncing to prevent infinite recursion\nconst syncingRef = useRef<Set<number>>(new Set());\n```\n\nImplementation: Simple boolean applies to all panes\n\nFuture Enhancement: Link groups allow independent synchronization (e.g., panes 0+1 linked, panes 2+3 linked separately)\n\n2. Navigation Synchronization\n\n```typescript\n// handleNavigate in WorkspaceView.tsx\nif (isInitiatingNavigation && linkedMode && panes.length > 1) {\n  // Track success/failure for auto-disable\n  let successCount = 1; // Source pane always succeeds\n  let failureCount = 0;\n  \n  // Navigate other panes to matching subdirectory\n  for (let i = 0; i < panes.length; i++) {\n    if (i === paneIndex) continue;\n    \n    syncingRef.current.add(i);\n    // ... check existence and navigate ...\n    \n    // Auto-disable if partial failure\n    if (successCount > 0 && failureCount > 0) {\n      setLinkedMode(false);\n      console.warn(\"IMPL-LINKED_NAV Linked navigation disabled - directory structures diverged\");\n    }\n  }\n}\n```\n\nKey Design Points:\n• Relative path resolution for subdirectories (when at root `/`, use `newPath.slice(1)` so the segment name is preserved, e.g. \"private\" not \"rivate\")\n• Treat \"navigate to root\" as upward (newPath `\"/\"` → isUpward when oldPath is not root)\n• Treat \"from root to subdir\" as downward (oldPath `\"/\"` → isDownward when newPath is e.g. `/private`)\n• Parent navigation by step count (including to root)\n• Existence check before navigation\n• Success/failure tracking for auto-disable\n• Sync ref prevents infinite recursion\n\n3. Cursor Synchronization\n\n```typescript\n// handleCursorMove in WorkspaceView.tsx\nif (linkedMode && panes.length > 1 && clampedCursor < pane.files.length) {\n  const cursorFilename = pane.files[clampedCursor].name;\n  \n  // Sync cursor to matching filename in all other panes\n  for (let i = 0; i < updated.length; i++) {\n    if (i === paneIndex) continue;\n    \n    const matchIndex = linkedPane.files.findIndex((f) => f.name === cursorFilename);\n    if (matchIndex !== -1) {\n      updated[i] = { ...linkedPane, cursor: matchIndex };\n    }\n  }\n}\n```\n\nBenefits:\n• Instant visual feedback across panes\n• Filename-based matching survives sort changes\n• Graceful degradation (no match = no change)\n\n4. Sort Synchronization\n\n```typescript\n// handleSortChange in WorkspaceView.tsx\nconst panesToUpdate = linkedMode && panes.length > 1\n  ? updated.map((_, idx) => idx) // All panes\n  : [focusIndex]; // Just focused pane\n\nfor (const paneIdx of panesToUpdate) {\n  // Apply sort settings to pane\n  // Preserve cursor by filename\n}\n```\n\nBenefits:\n• Consistent ordering for visual comparison\n• Cursor preservation during sort\n• Works with all sort criteria (name, size, time, extension)\n\n5. Link Toggle Handler\n\n```typescript\n// Action handler for L key\nhandlers.set(\"link.toggle\", () => {\n  setLinkedMode((prev) => !prev);\n});\n```\n\nKeybinding Configuration (`config/files.yaml`):\n\n```yaml\nkeybindings:\n  - key: \"l\"\n    action: \"link.toggle\"\n    description: \"Toggle linked pane navigation\"\n    category: \"view-sort\"\n```\n\n6. Visual Indicator\n\n```tsx\n// WorkspaceView.tsx - Link indicator in footer\n{linkedMode && panes.length >= 2 && (\n  <span className=\"text-blue-600 dark:text-blue-400 font-bold\">\n    \U0001F517 L: Linked\n  </span>\n)}\n```\n\nAlternatives Considered\n\nOption 1: Server-side link state\n\nPros:\n• Persists across page refreshes\n• Centralized state management\n\nCons:\n• Network latency on toggle\n• Requires session storage or database\n• Over-engineered for simple toggle\n\nRejected: Client-side state sufficient; session persistence not required for toggle mode\n\nOption 2: Link groups with UI configuration\n\nPros:\n• Maximum flexibility (panes 0+1 linked, 2+3 separate)\n• Advanced workflows\n\nCons:\n• Complex UI for group management\n• Increased state complexity\n• Unclear use case for most users\n\nRejected: Defer to future enhancement; simple global toggle covers 90% of use cases\n\nOption 3: Automatic link detection\n\nPros:\n• No manual toggle needed\n• \"Smart\" behavior based on similar paths\n\nCons:\n• Unpredictable behavior\n• Difficult to disable when not wanted\n• Path similarity heuristics unreliable\n\nRejected: Explicit user control (L key toggle) provides predictability"
-  rationale:
-    why: Synchronized directory navigation, cursor position, and sort order eliminates manual coordination overhead for comparison tasks while preserving independent pane state
-    problems_solved:
-      - Asymmetric directory handling when target doesn't exist in linked pane
-      - Auto-disable preventing broken sync state on divergence
-      - Cursor position synchronization for visual comparison
-      - Manual synchronization of multiple panes to same subdirectory
-      - Sort order consistency across comparison panes
-      - State complexity managing linked mode without interfering with existing pane state
-      - Synchronization timing ensuring linked panes update together
-      - Visual feedback indicating linked state
-    benefits:
-      - "Clear visual indicators in footer and pane headers (\U0001F517 badge)"
-      - Automatic propagation via handleNavigate, handleCursorMove, handleSortChange
-      - Backward compatible (disabled by default)
-      - Complete feature parity with Goful implementation
-      - Graceful degradation on partial failures
-      - Minimal state overhead (single boolean + sync ref)
-      - Mouse-accessible parent navigation via .. button in pane header
-      - Simple boolean toggle model (linkedMode state)
   alternatives_considered:
     - name: Server-side link state
-      pros:
-        - Persists across page refreshes
-        - Centralized state management
       cons:
         - Network latency on toggle
         - Requires session storage
+      pros:
+        - Centralized state management
+        - Persists across page refreshes
       rejected_reason: Client-side state sufficient; session persistence not required
     - name: Link groups with UI configuration
-      pros:
-        - Maximum flexibility for advanced workflows
       cons:
         - Complex UI for group management
         - Unclear use case for most users
+      pros:
+        - Maximum flexibility for advanced workflows
       rejected_reason: Defer to future enhancement; simple global toggle covers 90% of use cases
     - name: Automatic link detection
+      cons:
+        - Difficult to disable
+        - Unpredictable behavior
       pros:
         - No manual toggle needed
-      cons:
-        - Unpredictable behavior
-        - Difficult to disable
       rejected_reason: Explicit user control provides predictability
+  cross_references:
+    - REQ-LINKED_PANES
+  decision: "Summary\n\nAdd `linkedMode` boolean state to `WorkspaceView` with L key toggle. When enabled, `handleNavigate` automatically navigates all panes, `handleCursorMove` syncs cursor by filename, and `handleSortChange` applies sort to all panes. Auto-disable triggers when subdirectory navigation partially fails.\n\nContext\n\n• File manager already has multi-pane support (`IMPL-PANE_MANAGEMENT`)\n• Navigation system is centralized in `handleNavigate` callback\n• Cursor management in `handleCursorMove` callback\n• Sort management in `handleSortChange` function\n• Keybinding system can easily add new action (`link.toggle`)\n• Footer already shows session info (can add link badge)\n\nTechnical Approach\n\n1. Link State Management\n\n```typescript\n// WorkspaceView.tsx\nconst [linkedMode, setLinkedMode] = useState<boolean>(false);\n\n// Track panes currently syncing to prevent infinite recursion\nconst syncingRef = useRef<Set<number>>(new Set());\n```\n\nImplementation: Simple boolean applies to all panes\n\nFuture Enhancement: Link groups allow independent synchronization (e.g., panes 0+1 linked, panes 2+3 linked separately)\n\n2. Navigation Synchronization\n\n```typescript\n// handleNavigate in WorkspaceView.tsx\nif (isInitiatingNavigation && linkedMode && panes.length > 1) {\n  // Track success/failure for auto-disable\n  let successCount = 1; // Source pane always succeeds\n  let failureCount = 0;\n  \n  // Navigate other panes to matching subdirectory\n  for (let i = 0; i < panes.length; i++) {\n    if (i === paneIndex) continue;\n    \n    syncingRef.current.add(i);\n    // ... check existence and navigate ...\n    \n    // Auto-disable if partial failure\n    if (successCount > 0 && failureCount > 0) {\n      setLinkedMode(false);\n      console.warn(\"IMPL-LINKED_NAV Linked navigation disabled - directory structures diverged\");\n    }\n  }\n}\n```\n\nKey Design Points:\n• Relative path resolution for subdirectories (when at root `/`, use `newPath.slice(1)` so the segment name is preserved, e.g. \"private\" not \"rivate\")\n• Treat \"navigate to root\" as upward (newPath `\"/\"` → isUpward when oldPath is not root)\n• Treat \"from root to subdir\" as downward (oldPath `\"/\"` → isDownward when newPath is e.g. `/private`)\n• Parent navigation by step count (including to root)\n• Existence check before navigation\n• Success/failure tracking for auto-disable\n• Sync ref prevents infinite recursion\n\n3. Cursor Synchronization\n\n```typescript\n// handleCursorMove in WorkspaceView.tsx\nif (linkedMode && panes.length > 1 && clampedCursor < pane.files.length) {\n  const cursorFilename = pane.files[clampedCursor].name;\n  \n  // Sync cursor to matching filename in all other panes\n  for (let i = 0; i < updated.length; i++) {\n    if (i === paneIndex) continue;\n    \n    const matchIndex = linkedPane.files.findIndex((f) => f.name === cursorFilename);\n    if (matchIndex !== -1) {\n      updated[i] = { ...linkedPane, cursor: matchIndex };\n    }\n  }\n}\n```\n\nBenefits:\n• Instant visual feedback across panes\n• Filename-based matching survives sort changes\n• Graceful degradation (no match = no change)\n\n4. Sort Synchronization\n\n```typescript\n// handleSortChange in WorkspaceView.tsx\nconst panesToUpdate = linkedMode && panes.length > 1\n  ? updated.map((_, idx) => idx) // All panes\n  : [focusIndex]; // Just focused pane\n\nfor (const paneIdx of panesToUpdate) {\n  // Apply sort settings to pane\n  // Preserve cursor by filename\n}\n```\n\nBenefits:\n• Consistent ordering for visual comparison\n• Cursor preservation during sort\n• Works with all sort criteria (name, size, time, extension)\n\n5. Link Toggle Handler\n\n```typescript\n// Action handler for L key\nhandlers.set(\"link.toggle\", () => {\n  setLinkedMode((prev) => !prev);\n});\n```\n\nKeybinding Configuration (`config/files.yaml`):\n\n```yaml\nkeybindings:\n  - key: \"l\"\n    action: \"link.toggle\"\n    description: \"Toggle linked pane navigation\"\n    category: \"view-sort\"\n```\n\n6. Visual Indicator\n\n```tsx\n// WorkspaceView.tsx - Link indicator in footer\n{linkedMode && panes.length >= 2 && (\n  <span className=\"text-blue-600 dark:text-blue-400 font-bold\">\n    \U0001F517 L: Linked\n  </span>\n)}\n```\n\nAlternatives Considered\n\nOption 1: Server-side link state\n\nPros:\n• Persists across page refreshes\n• Centralized state management\n\nCons:\n• Network latency on toggle\n• Requires session storage or database\n• Over-engineered for simple toggle\n\nRejected: Client-side state sufficient; session persistence not required for toggle mode\n\nOption 2: Link groups with UI configuration\n\nPros:\n• Maximum flexibility (panes 0+1 linked, 2+3 separate)\n• Advanced workflows\n\nCons:\n• Complex UI for group management\n• Increased state complexity\n• Unclear use case for most users\n\nRejected: Defer to future enhancement; simple global toggle covers 90% of use cases\n\nOption 3: Automatic link detection\n\nPros:\n• No manual toggle needed\n• \"Smart\" behavior based on similar paths\n\nCons:\n• Unpredictable behavior\n• Difficult to disable when not wanted\n• Path similarity heuristics unreliable\n\nRejected: Explicit user control (L key toggle) provides predictability"
   implementation_approach:
-    summary: Boolean linkedMode state in WorkspaceView with L key toggle; handleNavigate propagates navigation, handleCursorMove syncs by filename, handleSortChange applies to all panes; auto-disable on divergence
     details:
       - "Link indicator badge in each pane header (\U0001F517 shows when linked)"
       - "Link indicator badge in footer: \U0001F517 L: Linked (shows only with 2+ panes)"
@@ -64,18 +41,40 @@ ARCH-LINKED_NAV:
       - Parent .. button in each pane header (visible when not at root, respects linked mode)
       - Support subdirectory navigation, parent navigation (keyboard + mouse), cursor sync, sort sync
       - Tree expand/collapse (handleToggleExpand, navigate.enter on directory) does NOT propagate linked navigation — only handleNavigate re-root syncs panes (REQ-DIRECTORY_TREE)
-  traceability:
-    requirements:
-      - REQ-DIRECTORY_NAVIGATION
-      - REQ-LINKED_PANES
-      - REQ-MULTI_PANE_LAYOUT
-    implementation:
-      - IMPL-LINKED_NAV
-    tests: []
-    code_annotations:
-      - ARCH-LINKED_NAV
-      - IMPL-LINKED_NAV
-      - REQ-LINKED_PANES
+    summary: Boolean linkedMode state in WorkspaceView with L key toggle; handleNavigate propagates navigation, handleCursorMove syncs by filename, handleSortChange applies to all panes; auto-disable on divergence
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-29T00:00:00.000Z"
+      reason: LEAP — vocabulary see_also back-link
+    last_validated:
+      date: 2026-02-08T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Linked Pane Navigation Architecture
+  rationale:
+    benefits:
+      - "Clear visual indicators in footer and pane headers (\U0001F517 badge)"
+      - Automatic propagation via handleNavigate, handleCursorMove, handleSortChange
+      - Backward compatible (disabled by default)
+      - Complete feature parity with Goful implementation
+      - Graceful degradation on partial failures
+      - Minimal state overhead (single boolean + sync ref)
+      - Mouse-accessible parent navigation via .. button in pane header
+      - Simple boolean toggle model (linkedMode state)
+    problems_solved:
+      - Asymmetric directory handling when target doesn't exist in linked pane
+      - Auto-disable preventing broken sync state on divergence
+      - Cursor position synchronization for visual comparison
+      - Manual synchronization of multiple panes to same subdirectory
+      - Sort order consistency across comparison panes
+      - State complexity managing linked mode without interfering with existing pane state
+      - Synchronization timing ensuring linked panes update together
+      - Visual feedback indicating linked state
+    why: Synchronized directory navigation, cursor position, and sort order eliminates manual coordination overhead for comparison tasks while preserving independent pane state
   related_decisions:
     depends_on:
       - ARCH-FILE_MANAGER_HIERARCHY
@@ -87,15 +86,16 @@ ARCH-LINKED_NAV:
       - ARCH-COMPARISON_INDEX
       - ARCH-DIRECTORY_HISTORY
       - tied/vocab/linked-navigation.md
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-29T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — vocabulary see_also back-link
-    last_validated:
-      date: 2026-02-08T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+  status: Implemented
+  traceability:
+    code_annotations:
+      - ARCH-LINKED_NAV
+      - IMPL-LINKED_NAV
+      - REQ-LINKED_PANES
+    implementation:
+      - IMPL-LINKED_NAV
+    requirements:
+      - REQ-DIRECTORY_NAVIGATION
+      - REQ-LINKED_PANES
+      - REQ-MULTI_PANE_LAYOUT
+    tests: []

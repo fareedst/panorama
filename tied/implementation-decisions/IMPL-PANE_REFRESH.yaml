@@ -1,35 +1,4 @@
 IMPL-PANE_REFRESH:
-  name: Manual Pane Refresh Implementation
-  status: Active
-  cross_references:
-    - ARCH-KEYBIND_SYSTEM
-    - ARCH-PANE_REFRESH
-    - REQ-KEYBOARD_SHORTCUTS_COMPLETE
-    - REQ-PANE_REFRESH
-  decision: Add Ctrl+R and Ctrl+Shift+R keybindings, handlers call handleNavigate with current path
-  rationale:
-    why: Implements ARCH-PANE_REFRESH by reusing handleNavigate mechanism to refresh directory listings when external file system changes occur
-    problems_solved:
-      - Browser default refresh would reload entire page
-      - Need for both single and multi-pane refresh
-      - No refresh mechanism in original implementation
-      - Stale directory listings when files modified externally
-    benefits:
-      - Browser default prevented by existing keybinding system
-      - Consistent with existing post-operation refresh pattern
-      - Leverages existing handleNavigate logic (API fetch, sort, cursor restoration)
-      - Minimal code (2 keybindings + 2 handlers = 10 lines total)
-      - Parallel multi-pane refresh using Promise.all
-  implementation_approach:
-    summary: Add Ctrl+R and Ctrl+Shift+R keybindings, handlers call handleNavigate with current path
-    details:
-      - 'config/files.yaml: Add pane.refresh (Ctrl+R) and pane.refresh-all (Ctrl+Shift+R) keybindings'
-      - 'handleNavigate already provides: fetch from /api/files, sortFiles application, cursor restoration'
-      - 'WorkspaceView.tsx actionHandlers: pane.refresh calls handleNavigate(focusIndex, pane.path)'
-      - Both actions in pane-management category for organization
-      - Marks cleared automatically (existing handleNavigate behavior)
-      - No changes needed to useMemo dependencies (handleNavigate and panes already included)
-      - pane.refresh-all uses Promise.all(panes.map((p, idx) => handleNavigate(idx, p.path)))
   code_locations:
     files:
       - path: config/files.yaml
@@ -44,42 +13,73 @@ IMPL-PANE_REFRESH:
           - 1166
     functions:
       - name: pane.refresh handler
-        file: src/app/files/WorkspaceView.tsx
         description: Refreshes currently focused pane by calling handleNavigate with current path
-      - name: pane.refresh-all handler
         file: src/app/files/WorkspaceView.tsx
+      - name: pane.refresh-all handler
         description: Refreshes all panes in parallel using Promise.all
-  traceability:
-    architecture:
-      - ARCH-PANE_REFRESH
-      - ARCH-KEYBIND_SYSTEM
-    requirements:
-      - REQ-PANE_REFRESH
-      - REQ-KEYBOARD_SHORTCUTS_COMPLETE
-    tests: []
-    code_annotations:
-      - ARCH-PANE_REFRESH
-      - IMPL-PANE_REFRESH
-      - REQ-PANE_REFRESH
+        file: src/app/files/WorkspaceView.tsx
+  cross_references:
+    - ARCH-KEYBIND_SYSTEM
+    - ARCH-PANE_REFRESH
+    - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+    - REQ-PANE_REFRESH
+  decision: Add Ctrl+R and Ctrl+Shift+R keybindings, handlers call handleNavigate with current path
+  essence_pseudocode_path: implementation-decisions/IMPL-PANE_REFRESH-pseudocode.md
+  implementation_approach:
+    details:
+      - 'config/files.yaml: Add pane.refresh (Ctrl+R) and pane.refresh-all (Ctrl+Shift+R) keybindings'
+      - 'handleNavigate already provides: fetch from /api/files, sortFiles application, cursor restoration'
+      - 'WorkspaceView.tsx actionHandlers: pane.refresh calls handleNavigate(focusIndex, pane.path)'
+      - Both actions in pane-management category for organization
+      - Marks cleared automatically (existing handleNavigate behavior)
+      - No changes needed to useMemo dependencies (handleNavigate and panes already included)
+      - pane.refresh-all uses Promise.all(panes.map((p, idx) => handleNavigate(idx, p.path)))
+    summary: Add Ctrl+R and Ctrl+Shift+R keybindings, handlers call handleNavigate with current path
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Retrofit essence_pseudocode from production code and tests
+    last_validated:
+      date: 2026-02-08T00:00:00.000Z
+      result: pass - build succeeds, 36 keybindings loaded
+      validator: AI Agent
+  name: Manual Pane Refresh Implementation
+  rationale:
+    benefits:
+      - Browser default prevented by existing keybinding system
+      - Consistent with existing post-operation refresh pattern
+      - Leverages existing handleNavigate logic (API fetch, sort, cursor restoration)
+      - Minimal code (2 keybindings + 2 handlers = 10 lines total)
+      - Parallel multi-pane refresh using Promise.all
+    problems_solved:
+      - Browser default refresh would reload entire page
+      - Need for both single and multi-pane refresh
+      - No refresh mechanism in original implementation
+      - Stale directory listings when files modified externally
+    why: Implements ARCH-PANE_REFRESH by reusing handleNavigate mechanism to refresh directory listings when external file system changes occur
   related_decisions:
     depends_on:
       - IMPL-FILES_API
       - IMPL-KEYBINDS
       - IMPL-WORKSPACE_VIEW
-    supersedes: []
     see_also:
-      - IMPL-PANE_MANAGEMENT
       - IMPL-BULK_OPS
-  metadata:
-    created:
-      date: 2026-02-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit essence_pseudocode from production code and tests
-    last_validated:
-      date: 2026-02-08T00:00:00.000Z
-      validator: AI Agent
-      result: pass - build succeeds, 36 keybindings loaded
-  essence_pseudocode_path: implementation-decisions/IMPL-PANE_REFRESH-pseudocode.md
+      - IMPL-PANE_MANAGEMENT
+    supersedes: []
+  status: Active
+  traceability:
+    architecture:
+      - ARCH-KEYBIND_SYSTEM
+      - ARCH-PANE_REFRESH
+    code_annotations:
+      - ARCH-PANE_REFRESH
+      - IMPL-PANE_REFRESH
+      - REQ-PANE_REFRESH
+    requirements:
+      - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+      - REQ-PANE_REFRESH
+    tests: []

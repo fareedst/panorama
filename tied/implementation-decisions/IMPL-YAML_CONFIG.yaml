@@ -1,24 +1,4 @@
 IMPL-YAML_CONFIG:
-  name: YAML Configuration Structure
-  status: Active
-  cross_references:
-    - ARCH-CONFIG_DRIVEN_UI
-    - REQ-CONFIG_DRIVEN_UI
-  decision: Two YAML configuration files define all customizable aspects of the template UI.
-  rationale:
-    why: Defines YAML configuration file structure for site and theme
-    problems_solved:
-      - Hard-coded configuration
-      - Lack of structure
-    benefits:
-      - Structured configuration
-      - Easy editing
-  implementation_approach:
-    summary: 'Define two YAML files: site.yaml and theme.yaml'
-    details:
-      - Both support partial configs with defaults
-      - config/site.yaml for content (metadata, branding, links)
-      - config/theme.yaml for styling (colors, spacing, overrides)
   code_locations:
     files:
       - path: config/site.yaml
@@ -26,30 +6,50 @@ IMPL-YAML_CONFIG:
       - path: config/theme.yaml
         description: Theme configuration
     functions: []
+  cross_references:
+    - ARCH-CONFIG_DRIVEN_UI
+    - REQ-CONFIG_DRIVEN_UI
+  decision: Two YAML configuration files define all customizable aspects of the template UI.
+  essence_pseudocode_path: implementation-decisions/IMPL-YAML_CONFIG-pseudocode.md
+  implementation_approach:
+    details:
+      - Both support partial configs with defaults
+      - config/site.yaml for content (metadata, branding, links)
+      - config/theme.yaml for styling (colors, spacing, overrides)
+    summary: 'Define two YAML files: site.yaml and theme.yaml'
+  metadata:
+    created:
+      author: AI Agent
+      date: 2025-11-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Retrofit essence_pseudocode from config loader tests
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: YAML Configuration Structure
+  rationale:
+    benefits:
+      - Easy editing
+      - Structured configuration
+    problems_solved:
+      - Hard-coded configuration
+      - Lack of structure
+    why: Defines YAML configuration file structure for site and theme
+  related_decisions:
+    depends_on: []
+    see_also:
+      - IMPL-CONFIG_LOADER
+    supersedes: []
+  status: Active
   traceability:
     architecture:
       - ARCH-CONFIG_DRIVEN_UI
+    code_annotations:
+      - REQ-CONFIG_DRIVEN_UI
     requirements:
       - REQ-CONFIG_DRIVEN_UI
     tests:
       - src/lib/config.test.ts
-    code_annotations:
-      - REQ-CONFIG_DRIVEN_UI
-  related_decisions:
-    depends_on: []
-    supersedes: []
-    see_also:
-      - IMPL-CONFIG_LOADER
-  metadata:
-    created:
-      date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit essence_pseudocode from config loader tests
-    last_validated:
-      date: 2026-02-06T00:00:00.000Z
-      validator: AI Agent
-      result: pass
-  essence_pseudocode_path: implementation-decisions/IMPL-YAML_CONFIG-pseudocode.md

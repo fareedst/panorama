@@ -1,22 +1,39 @@
 # REQ detail — REQ-ADVANCED_NAV
 REQ-ADVANCED_NAV:
-  name: Advanced Navigation Features
   category: Functional
-  priority: P1
-  status: Implemented
   description: Users must be able to navigate efficiently beyond basic directory traversal with per-directory cursor position history, bookmark system, goto dialog, and recent directories list. Cursor position is restored when revisiting directories, and parent navigation positions cursor on the previous subdirectory.
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+      reason: Initial creation - adapted from Goful ARCH-DIRECTORY_HISTORY for web
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Advanced Navigation Features
+  priority: P1
   rationale:
-    why: Users need efficient navigation beyond basic directory traversal
-    problems_solved:
-      - Lost context when navigating away and returning
-      - No quick way to jump to specific paths
-      - Repetitive navigation to frequently accessed directories
     benefits:
       - Bookmark system for frequently accessed locations
       - Goto dialog for direct path entry
       - Parent navigation positions cursor on previous directory
       - Per-directory cursor position history
       - Recent directories list (LRU cache)
+    problems_solved:
+      - Lost context when navigating away and returning
+      - No quick way to jump to specific paths
+      - Repetitive navigation to frequently accessed directories
+    why: Users need efficient navigation beyond basic directory traversal
+  related_requirements:
+    depends_on:
+      - REQ-DIRECTORY_NAVIGATION
+    related_to:
+      - REQ-FILE_LISTING
+    supersedes: []
   satisfaction_criteria:
     - criterion: Bookmark add (B key) and bookmark list (Ctrl+B)
     - criterion: Bookmarks stored in localStorage for persistence
@@ -25,6 +42,15 @@ REQ-ADVANCED_NAV:
     - criterion: Home shortcut (~ key) navigates to home directory
     - criterion: Parent navigation (Backspace) positions cursor on previous subdirectory
     - criterion: Recent directories accessible via Alt+Left/Right
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-DIRECTORY_HISTORY
+    code_annotations:
+      - REQ-ADVANCED_NAV
+    implementation:
+      - IMPL-DIR_HISTORY
+    tests: []
   validation_criteria:
     - method: Unit tests
       coverage: History save/restore, bookmark CRUD operations
@@ -32,29 +58,3 @@ REQ-ADVANCED_NAV:
       coverage: Parent navigation cursor positioning
     - method: localStorage tests
       coverage: Bookmark persistence across sessions
-  traceability:
-    architecture:
-      - ARCH-DIRECTORY_HISTORY
-    implementation:
-      - IMPL-DIR_HISTORY
-    tests: []
-    code_annotations:
-      - REQ-ADVANCED_NAV
-  related_requirements:
-    depends_on:
-      - REQ-DIRECTORY_NAVIGATION
-    related_to:
-      - REQ-FILE_LISTING
-    supersedes: []
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-      reason: Initial creation - adapted from Goful ARCH-DIRECTORY_HISTORY for web
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass

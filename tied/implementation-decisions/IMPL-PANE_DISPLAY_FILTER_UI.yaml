@@ -1,36 +1,36 @@
 IMPL-PANE_DISPLAY_FILTER_UI:
-  name: Pane Display Filter UI
-  status: Active
   cross_references:
     - IMPL-DISPLAY_FILTER_ENGINE
     - IMPL-DISPLAY_SPEC_STORE
     - REQ-PANE_DISPLAY_FILTER
   essence_pseudocode_path: implementation-decisions/IMPL-PANE_DISPLAY_FILTER_UI-pseudocode.md
   implementation_approach:
-    summary: Pane selector, manager dialog, rule editor, WorkspaceView integration
     details:
       - config/files.yaml copy and keybinds
       - DisplaySpecManagerDialog.tsx
       - DisplaySpecRuleEditor.tsx
       - FilePane header selector and indicator
+    summary: Pane selector, manager dialog, rule editor, WorkspaceView integration
+  metadata:
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Retrofit essence_pseudocode from production code and tests
+  name: Pane Display Filter UI
+  related_decisions:
+    see_also:
+      - tied/vocab/pane-display-filter.md
+  status: Active
   traceability:
-    requirements:
+    code_annotations:
+      - IMPL-PANE_DISPLAY_FILTER_UI
       - REQ-PANE_DISPLAY_FILTER
     implementation:
       - IMPL-DISPLAY_FILTER_ENGINE
       - IMPL-DISPLAY_SPEC_STORE
+    requirements:
+      - REQ-PANE_DISPLAY_FILTER
     tests:
       - src/app/files/components/DisplaySpecSelector.test.tsx
       - src/app/files/components/FilePane.test.tsx
       - src/lib/pane-display-filter.test.ts
-    code_annotations:
-      - IMPL-PANE_DISPLAY_FILTER_UI
-      - REQ-PANE_DISPLAY_FILTER
-  related_decisions:
-    see_also:
-      - tied/vocab/pane-display-filter.md
-  metadata:
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit essence_pseudocode from production code and tests

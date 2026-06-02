@@ -1,12 +1,62 @@
 # CITDP change-analysis record — [PROC-CITDP] step 8; [PROC-AGENT_REQ_CHECKLIST] persist-citdp-record
 # change_request_id: REQ-MESH_DOMAIN_MODEL
 CITDP-REQ-MESH_DOMAIN_MODEL:
+  change_definition:
+    current_behavior_prior: |
+      No shared mesh vocabulary or validation in src/lib/mesh/; multi-pane sync remains REQ-NSYNC_MULTI_TARGET under src/lib/sync/.
+    desired_behavior: |
+      Callers construct and validate domain entities via synchronous pure functions; invalid inputs yield DomainValidationError;
+      TO_DTO/FROM_DTO round-trip mesh and credential references without secret fields; CREATE_MESH_SNAPSHOT deep-clones mesh for sessions.
+    non_goals:
+      - Persistence, connectors, mesh API, or mesh GUI (later REQ slices)
+      - Playwright E2E for phase 1 (no UI-only behavior)
+      - Replace or extend src/lib/sync/ as the mesh engine
+    references:
+      - tied/architecture-decisions/ARCH-MESH_DOMAIN.yaml
+      - tied/architecture-decisions/ARCH-MESH_LAYERED.yaml
+      - tied/implementation-decisions/IMPL-MESH_DOMAIN_TYPES-pseudocode.md
+      - tied/implementation-decisions/IMPL-MESH_DOMAIN_TYPES.yaml
+      - tied/requirements/REQ-MESH_DOMAIN_MODEL.yaml
+      - tied/requirements/REQ-MESH_PLATFORM.yaml
+    success_criteria:
+      - Module validated independently per REQ-MODULE_VALIDATION before L2+ integration
+      - REQ status Implemented; IMPL-MESH_DOMAIN_TYPES Active; tied_validate_consistency ok
+      - REQ-MESH_DOMAIN_MODEL satisfaction criteria covered by Vitest in src/lib/mesh/domain/
+    summary: |
+      Introduce a pure TypeScript mesh domain module (mesh, depot, sync link, policy, filter, credential reference,
+      sync session, change set, operations, events, conflict) with construction-time validation, JSON-safe DTO
+      serialization, and immutable mesh snapshots — foundation for later mesh services without altering pane nsync.
+    unchanged_behavior: |
+      Pane-level nsync (Shift+C/V, multi-destination copy) and existing Next.js file manager UI unchanged. No mesh API routes or GUI in this slice.
+  completion_criteria:
+    verification_gate_notes: |
+      Vitest 50/50 pass on src/lib/mesh/domain; TypeScript check clean for mesh paths; tied_validate_consistency ok;
+      agent_req_checklist post-test pseudo-code validation pass; REQ-MESH_DOMAIN_MODEL Implemented via tied_verify;
+      IMPL-MESH_DOMAIN_TYPES Active; README/CHANGELOG not required (no user-facing delta).
+  impact_analysis:
+    impl_inventory_notes: |
+      Production: types.ts, internal.ts, validators.ts, serialize.ts, index.ts.
+      Tests: validators.test.ts (33), serialize.test.ts (9), domain.composition.test.ts (8) — 50 Vitest total.
+    modules_or_boundaries: |
+      New L1 module src/lib/mesh/domain/ (types, internal, validators, serialize, index) isolated from fs/HTTP/DB.
+      Boundaries: public exports via index.ts only; internal.ts not re-exported. Coexists with src/lib/sync/ (nsync).
+      Tests colocated: validators.test.ts, serialize.test.ts, domain.composition.test.ts, domain.test-helpers.ts.
+    tied_tokens_affected:
+      - REQ-MESH_PLATFORM
+    tied_tokens_new:
+      - ARCH-MESH_DOMAIN
+      - ARCH-MESH_LAYERED
+      - IMPL-MESH_DOMAIN_TYPES
+      - REQ-MESH_DOMAIN_MODEL
+  leap_feedback:
+    divergences_from_analysis: |
+      sync-tied-stack corrected implementation-decisions.yaml index drift (missing domain.composition.test.ts and internal.ts
+      in code_locations/traceability.tests; stale metadata) — detail file was authoritative after verification-gate.
+    record_status: complete
+    tied_stack_updates_required: []
   record_identity:
     change_request_id: REQ-MESH_DOMAIN_MODEL
-    title: Mesh phase 1 — domain language and core types (L1 pure module)
     checklist_process: '[PROC-AGENT_REQ_CHECKLIST]'
-    checklist_version: agent_req_implementation_checklist v1.5.2
-    checklist_step_completed: persist-citdp-record
     checklist_session_note: |
       author-requirement / author-architecture / persist-implementation-records: REQ-MESH_PLATFORM, REQ-MESH_DOMAIN_MODEL, ARCH-MESH_LAYERED, ARCH-MESH_DOMAIN, IMPL-MESH_DOMAIN_TYPES.
       resolve-pseudocode / gate-pseudocode-validation: IMPL-MESH_DOMAIN_TYPES sidecar with per-block REQ/ARCH/IMPL comments.
@@ -16,107 +66,57 @@ CITDP-REQ-MESH_DOMAIN_MODEL:
       verification-gate: Vitest 50/50 mesh domain tests; mesh tsc clean; tied_validate_consistency ok.
       sync-tied-stack: index/detail/traceability aligned; REQ-MESH_DOMAIN_MODEL Implemented via tied_verify.
       user-facing-release-notes: skipped — no end-user or setup delta (domain-only, deployable false).
+    checklist_step_completed: persist-citdp-record
+    checklist_version: agent_req_implementation_checklist v1.5.2
     recorded_at: 2026-05-19
-    workspace_root: /Users/fareed/Documents/dev/node/panorama
     tied_context:
-      requirements:
-        - REQ-MESH_PLATFORM
-        - REQ-MESH_DOMAIN_MODEL
       architecture:
-        - ARCH-MESH_LAYERED
         - ARCH-MESH_DOMAIN
+        - ARCH-MESH_LAYERED
       implementation:
         - IMPL-MESH_DOMAIN_TYPES
-  change_definition:
-    summary: |
-      Introduce a pure TypeScript mesh domain module (mesh, depot, sync link, policy, filter, credential reference,
-      sync session, change set, operations, events, conflict) with construction-time validation, JSON-safe DTO
-      serialization, and immutable mesh snapshots — foundation for later mesh services without altering pane nsync.
-    current_behavior_prior: |
-      No shared mesh vocabulary or validation in src/lib/mesh/; multi-pane sync remains REQ-NSYNC_MULTI_TARGET under src/lib/sync/.
-    desired_behavior: |
-      Callers construct and validate domain entities via synchronous pure functions; invalid inputs yield DomainValidationError;
-      TO_DTO/FROM_DTO round-trip mesh and credential references without secret fields; CREATE_MESH_SNAPSHOT deep-clones mesh for sessions.
-    unchanged_behavior: |
-      Pane-level nsync (Shift+C/V, multi-destination copy) and existing Next.js file manager UI unchanged. No mesh API routes or GUI in this slice.
-    non_goals:
-      - Persistence, connectors, mesh API, or mesh GUI (later REQ slices)
-      - Playwright E2E for phase 1 (no UI-only behavior)
-      - Replace or extend src/lib/sync/ as the mesh engine
-    success_criteria:
-      - Module validated independently per REQ-MODULE_VALIDATION before L2+ integration
-      - REQ status Implemented; IMPL-MESH_DOMAIN_TYPES Active; tied_validate_consistency ok
-      - REQ-MESH_DOMAIN_MODEL satisfaction criteria covered by Vitest in src/lib/mesh/domain/
-    references:
-      - tied/architecture-decisions/ARCH-MESH_DOMAIN.yaml
-      - tied/architecture-decisions/ARCH-MESH_LAYERED.yaml
-      - tied/implementation-decisions/IMPL-MESH_DOMAIN_TYPES-pseudocode.md
-      - tied/implementation-decisions/IMPL-MESH_DOMAIN_TYPES.yaml
-      - tied/requirements/REQ-MESH_DOMAIN_MODEL.yaml
-      - tied/requirements/REQ-MESH_PLATFORM.yaml
-  impact_analysis:
-    tied_tokens_affected:
-      - REQ-MESH_PLATFORM
-    tied_tokens_new:
-      - ARCH-MESH_DOMAIN
-      - ARCH-MESH_LAYERED
-      - IMPL-MESH_DOMAIN_TYPES
-      - REQ-MESH_DOMAIN_MODEL
-    modules_or_boundaries: |
-      New L1 module src/lib/mesh/domain/ (types, internal, validators, serialize, index) isolated from fs/HTTP/DB.
-      Boundaries: public exports via index.ts only; internal.ts not re-exported. Coexists with src/lib/sync/ (nsync).
-      Tests colocated: validators.test.ts, serialize.test.ts, domain.composition.test.ts, domain.test-helpers.ts.
-    impl_inventory_notes: |
-      Production: types.ts, internal.ts, validators.ts, serialize.ts, index.ts.
-      Tests: validators.test.ts (33), serialize.test.ts (9), domain.composition.test.ts (8) — 50 Vitest total.
+      requirements:
+        - REQ-MESH_DOMAIN_MODEL
+        - REQ-MESH_PLATFORM
+    title: Mesh phase 1 — domain language and core types (L1 pure module)
+    workspace_root: /Users/fareed/Documents/dev/node/panorama
   risk_analysis:
     risks:
       - id: RISK-MESH-001
         description: |
           Developers confuse mesh domain (src/lib/mesh/) with pane nsync (src/lib/sync/) and wire the wrong module.
-        severity: Medium
         likelihood: Medium
         mitigation: ARCH-MESH_LAYERED documents separation; CITDP and agent-preload-contract name both paths; no imports between modules in phase 1.
+        severity: Medium
       - id: RISK-MESH-002
         description: |
           Secret material appears in serialized mesh or credential DTOs.
-        severity: High
         likelihood: Low
         mitigation: VALIDATE_CREDENTIAL_REFERENCE rejects secret fields; serialize tests assert no leakage on round-trip.
+        severity: High
       - id: RISK-MESH-003
         description: |
           Invalid mesh graphs accepted without validation before later services persist them.
-        severity: Medium
         likelihood: Low
         mitigation: VALIDATE_MESH orchestrates depot/link/policy checks; invalid_core_objects_are_rejected unit tests.
+        severity: Medium
       - id: RISK-MESH-004
         description: |
           Live mesh configuration mutated during sync session via shared object references.
-        severity: Medium
         likelihood: Low
         mitigation: CREATE_MESH_SNAPSHOT uses deep clone; sync_session_requires_mesh_snapshot tests.
-  test_strategy:
+        severity: Medium
+  tdd_sequence:
     summary: |
-      [PROC-TEST_STRATEGY] / [REQ-MODULE_VALIDATION]: unit tests for all VALIDATE_* and TO_DTO/FROM_DTO procedures;
-      composition tests for index.ts public barrel; Phase H E2E N/A (e2e_only none in pseudo-code).
+      IMPL pseudo-code (sidecar) → unit-test-red (Pattern A tests, optional minimal shims) → unit-test-green (validators, serialize, types, internal)
+      → composition-integration (domain.composition.test.ts) → end-to-end-ui skipped → verification-gate → sync-tied-stack.
+  test_strategy:
     matrix_notes: |
       validators.test.ts — mesh_requires_name, depot_requires_name_kind_and_root, sync_link_requires_valid_source_and_target_depots,
       policy_has_default_safe_values, sync_session_requires_mesh_snapshot, change_set_contains_ordered_operations,
       conflict_has_type_participants_and_status, invalid_core_objects_are_rejected.
       serialize.test.ts — all_core_objects_can_be_serialized, credential_reference_does_not_expose_secret_material, mesh round-trip.
       domain.composition.test.ts — Phase G public export bindings per IntraImplComposition graph.
-  tdd_sequence:
     summary: |
-      IMPL pseudo-code (sidecar) → unit-test-red (Pattern A tests, optional minimal shims) → unit-test-green (validators, serialize, types, internal)
-      → composition-integration (domain.composition.test.ts) → end-to-end-ui skipped → verification-gate → sync-tied-stack.
-  completion_criteria:
-    verification_gate_notes: |
-      Vitest 50/50 pass on src/lib/mesh/domain; TypeScript check clean for mesh paths; tied_validate_consistency ok;
-      agent_req_checklist post-test pseudo-code validation pass; REQ-MESH_DOMAIN_MODEL Implemented via tied_verify;
-      IMPL-MESH_DOMAIN_TYPES Active; README/CHANGELOG not required (no user-facing delta).
-  leap_feedback:
-    divergences_from_analysis: |
-      sync-tied-stack corrected implementation-decisions.yaml index drift (missing domain.composition.test.ts and internal.ts
-      in code_locations/traceability.tests; stale metadata) — detail file was authoritative after verification-gate.
-    tied_stack_updates_required: []
-    record_status: complete
+      [PROC-TEST_STRATEGY] / [REQ-MODULE_VALIDATION]: unit tests for all VALIDATE_* and TO_DTO/FROM_DTO procedures;
+      composition tests for index.ts public barrel; Phase H E2E N/A (e2e_only none in pseudo-code).

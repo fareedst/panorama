@@ -1,49 +1,49 @@
 # ARCH detail — ARCH-GOOGLE_FONTS
 ARCH-GOOGLE_FONTS:
-  name: Google Fonts Optimization with next/font
-  status: Active
+  alternatives_considered: []
   cross_references:
     - REQ-FONT_SYSTEM
   decision: Use next/font/google for Geist fonts
-  rationale:
-    why: next/font provides automatic font optimization without layout shift
-    problems_solved:
-      - Font loading causing layout shift
-      - Large font files
-    benefits:
-      - Automatic subsetting
-      - No layout shift
-      - Preloading
-  alternatives_considered: []
   implementation_approach:
-    summary: Use next/font/google for Geist fonts
     details:
       - Create CSS variables
       - Enable subsetting (latin)
       - Import fonts with next/font/google
-  traceability:
-    requirements:
-      - REQ-FONT_SYSTEM
-    implementation:
-      - IMPL-FONT_LOADING
-    tests: []
-    code_annotations:
-      - REQ-FONT_SYSTEM
+    summary: Use next/font/google for Geist fonts
+  metadata:
+    created:
+      author: AI Agent
+      date: 2025-11-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-06T00:00:00.000Z
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Google Fonts Optimization with next/font
+  rationale:
+    benefits:
+      - Automatic subsetting
+      - No layout shift
+      - Preloading
+    problems_solved:
+      - Font loading causing layout shift
+      - Large font files
+    why: next/font provides automatic font optimization without layout shift
   related_decisions:
     depends_on:
       - REQ-FONT_SYSTEM
     informs:
       - IMPL-FONT_LOADING
     see_also: []
-  metadata:
-    created:
-      date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-06T00:00:00.000Z
-      author: AI Agent
-      reason: Migration to v1.5.0
-    last_validated:
-      date: 2026-02-06T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+  status: Active
+  traceability:
+    code_annotations:
+      - REQ-FONT_SYSTEM
+    implementation:
+      - IMPL-FONT_LOADING
+    requirements:
+      - REQ-FONT_SYSTEM
+    tests: []

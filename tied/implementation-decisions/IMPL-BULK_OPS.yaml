@@ -1,27 +1,4 @@
 IMPL-BULK_OPS:
-  name: Parallel Bulk Operations with Progress
-  status: Active
-  cross_references:
-    - ARCH-BATCH_OPERATIONS
-    - REQ-BULK_FILE_OPS
-  decision: API routes for bulk operations, Promise.allSettled with progress callbacks
-  rationale:
-    why: Promise.allSettled enables parallel operations with progress tracking and error collection
-    problems_solved:
-      - Slow sequential operations
-      - No progress feedback
-    benefits:
-      - Error collection without stopping on first failure
-      - Parallel execution via Promise.allSettled (continue on error, report all at end)
-      - Real-time progress callbacks
-  implementation_approach:
-    summary: API routes for bulk operations, Promise.allSettled with progress callbacks
-    details:
-      - 'Client: ProgressDialog with percentage bar, current file, error list, summary'
-      - 'ConfirmDialog: Escape to cancel, Enter to confirm; destructive styling for delete'
-      - 'POST /api/files { operation: ''bulk-copy'' | ''bulk-move'' | ''bulk-delete'', sources, dest }'
-      - 'Server: bulkCopy/bulkMove/bulkDelete in files.data.ts use Promise.allSettled'
-      - V key for move (not M) to avoid conflict with marking shortcut
   code_locations:
     files:
       - path: src/app/files/WorkspaceView.tsx
@@ -36,40 +13,63 @@ IMPL-BULK_OPS:
         description: bulkCopy, bulkMove, bulkDelete with Promise.allSettled
     functions:
       - name: bulkCopy
-        file: src/lib/files.data.ts
         description: Copy multiple files with progress
+        file: src/lib/files.data.ts
       - name: bulkMove
-        file: src/lib/files.data.ts
         description: Move multiple files with progress
-      - name: bulkDelete
         file: src/lib/files.data.ts
+      - name: bulkDelete
         description: Delete multiple files with progress
-  traceability:
-    architecture:
-      - ARCH-BATCH_OPERATIONS
-    requirements:
-      - REQ-BULK_FILE_OPS
-    tests:
-      - src/app/files/BulkOperations.test.tsx
-    code_annotations:
-      - IMPL-BULK_OPS
+        file: src/lib/files.data.ts
+  cross_references:
+    - ARCH-BATCH_OPERATIONS
+    - REQ-BULK_FILE_OPS
+  decision: API routes for bulk operations, Promise.allSettled with progress callbacks
+  implementation_approach:
+    details:
+      - 'Client: ProgressDialog with percentage bar, current file, error list, summary'
+      - 'ConfirmDialog: Escape to cancel, Enter to confirm; destructive styling for delete'
+      - 'POST /api/files { operation: ''bulk-copy'' | ''bulk-move'' | ''bulk-delete'', sources, dest }'
+      - 'Server: bulkCopy/bulkMove/bulkDelete in files.data.ts use Promise.allSettled'
+      - V key for move (not M) to avoid conflict with marking shortcut
+    summary: API routes for bulk operations, Promise.allSettled with progress callbacks
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-29T00:00:00.000Z"
+      reason: Retrofit essence_pseudocode from bulk ops code and BulkOperations.test.tsx
+    last_validated:
+      date: 2026-02-08T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Parallel Bulk Operations with Progress
+  rationale:
+    benefits:
+      - Error collection without stopping on first failure
+      - Parallel execution via Promise.allSettled (continue on error, report all at end)
+      - Real-time progress callbacks
+    problems_solved:
+      - No progress feedback
+      - Slow sequential operations
+    why: Promise.allSettled enables parallel operations with progress tracking and error collection
   related_decisions:
     depends_on:
       - ARCH-BATCH_OPERATIONS
       - IMPL-FILE_MARKING
-    supersedes: []
     see_also:
       - IMPL-FILES_API
       - IMPL-OVERWRITE_PROMPT
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-29T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit essence_pseudocode from bulk ops code and BulkOperations.test.tsx
-    last_validated:
-      date: 2026-02-08T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+    supersedes: []
+  status: Active
+  traceability:
+    architecture:
+      - ARCH-BATCH_OPERATIONS
+    code_annotations:
+      - IMPL-BULK_OPS
+    requirements:
+      - REQ-BULK_FILE_OPS
+    tests:
+      - src/app/files/BulkOperations.test.tsx

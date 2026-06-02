@@ -5,107 +5,56 @@
 # Color palette – CSS custom property values for light and dark modes.
 # These are injected as CSS variables (:root / @media prefers-color-scheme).
 colors:
-  light:
-    background: '#ffffff'
-    foreground: '#171717'
   dark:
     background: '#0a0a0a'
     foreground: '#ededed'
 # Font system – CSS variable names created by next/font and fallback stacks.
 # NOTE: Changing the actual Google Font family requires editing layout.tsx
 # because next/font/google needs static analysis at build time.
-fonts:
-  sans:
-    variable: --font-geist-sans
-    fallback: Arial, Helvetica, sans-serif
-  mono:
-    variable: --font-geist-mono
-    fallback: monospace
-# Spacing values – Tailwind size tokens (e.g. "32" maps to py-32).
-spacing:
-  page:
-    paddingY: "32"
-    paddingX: "16"
-  contentGap: "6"
-  buttonGap: "4"
-# Sizing constraints
-sizing:
-  # Tailwind max-width token (e.g. "3xl" → max-w-3xl)
-  maxContentWidth: 3xl
-  # Tailwind height token (e.g. "12" → h-12)
-  buttonHeight: "12"
-  # Exact pixel width for buttons on desktop viewports
-  buttonDesktopWidth: 158px
-# Per-element Tailwind class overrides (advanced).
-# Add extra classes here to customize specific elements without editing TSX.
-# These are MERGED with (not replacing) the default classes using tailwind-merge.
-# Leave empty strings or omit keys to use defaults only.
-overrides:
-  outerContainer: ""
-  main: ""
-  heading: ""
-  paragraph: ""
-  contentSection: ""
-  buttonGroup: ""
-  primaryButton: ""
-  secondaryButton: ""
-  inlineLink: ""
-# [REQ-CONFIG_DRIVEN_FILE_MANAGER] File manager layout and style classes.
-# Override these to customize file manager appearance without editing code.
+  light:
+    background: '#ffffff'
+    foreground: '#171717'
 files:
-  overrides:
-    pageContainer: ""
-    paneContainer: ""
-    paneFocused: ""
-    paneHeader: ""
-    fileRow: ""
-    fileCursor: ""
-    fileMarked: ""
-    directoryIndicator: ""
-    footer: ""
-  # Comparison colors for cross-pane file comparison
-  # [REQ-FILE_COMPARISON_VISUAL] [IMPL-COMPARISON_COLORS]
   compareColors:
     # Filename comparison (existing)
-    same: bg-zinc-100 dark:bg-zinc-800
     different: bg-red-100 dark:bg-red-900
-    unique: bg-yellow-100 dark:bg-yellow-900
-    # Size comparison (new)
+    same: bg-zinc-100 dark:bg-zinc-800
     sizeEqual: bg-green-50 dark:bg-green-950 border-l-2 border-green-500
-    sizeSmallest: bg-blue-50 dark:bg-blue-950 border-l-2 border-blue-500
     sizeLargest: bg-red-50 dark:bg-red-950 border-l-2 border-red-500
     # Time comparison (new)
-    timeEqual: bg-green-50 dark:bg-green-950 border-l-2 border-green-500
+    sizeSmallest: bg-blue-50 dark:bg-blue-950 border-l-2 border-blue-500
     timeEarliest: bg-blue-50 dark:bg-blue-950 border-l-2 border-blue-500
+    timeEqual: bg-green-50 dark:bg-green-950 border-l-2 border-green-500
     timeLatest: bg-red-50 dark:bg-red-950 border-l-2 border-red-500
   # [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE] File type indicators
   # Configure icons and colors for different file types
+    unique: bg-yellow-100 dark:bg-yellow-900
+    # Size comparison (new)
   fileTypes:
     # Default for all files
-    file:
-      icon: "\U0001F4C4"
-      iconClass: text-gray-500 dark:text-gray-400
-    # Directories
-    directory:
-      icon: "\U0001F4C1"
-      iconClass: text-blue-500 dark:text-blue-400
-    # Images
-    image:
-      icon: "\U0001F5BC️"
-      iconClass: text-green-500 dark:text-green-400
+    archive:
+      icon: "\U0001F4E6"
+      iconClass: text-orange-500 dark:text-orange-400
       patterns:
-        - '*.bmp'
-        - '*.gif'
-        - '*.heic'
-        - '*.ico'
-        - '*.jpeg'
-        - '*.jpg'
-        - '*.png'
-        - '*.svg'
-        - '*.tif'
-        - '*.tiff'
-        - '*.webp'
-    # Code files
+        - '*.7z'
+        - '*.bz2'
+        - '*.gz'
+        - '*.rar'
+        - '*.tar'
+        - '*.tgz'
+        - '*.xz'
+        - '*.zip'
+    # Documents
+    audio:
+      icon: "\U0001F3B5"
+      iconClass: text-pink-500 dark:text-pink-400
+      patterns:
+        - '*.flac'
+        - '*.m4a'
+        - '*.mp3'
+        - '*.ogg'
+        - '*.wav'
+    # Config files
     code:
       icon: "\U0001F4BB"
       iconClass: text-purple-500 dark:text-purple-400
@@ -143,57 +92,6 @@ files:
         - '*.vue'
         - '*.zsh'
     # Archives
-    archive:
-      icon: "\U0001F4E6"
-      iconClass: text-orange-500 dark:text-orange-400
-      patterns:
-        - '*.7z'
-        - '*.bz2'
-        - '*.gz'
-        - '*.rar'
-        - '*.tar'
-        - '*.tgz'
-        - '*.xz'
-        - '*.zip'
-    # Documents
-    document:
-      icon: "\U0001F4DD"
-      iconClass: text-blue-600 dark:text-blue-300
-      patterns:
-        - '*.doc'
-        - '*.docx'
-        - '*.md'
-        - '*.pdf'
-        - '*.rtf'
-        - '*.txt'
-    # Spreadsheets
-    spreadsheet:
-      icon: "\U0001F4CA"
-      iconClass: text-green-600 dark:text-green-300
-      patterns:
-        - '*.csv'
-        - '*.xls'
-        - '*.xlsx'
-    # Media
-    video:
-      icon: "\U0001F3AC"
-      iconClass: text-red-500 dark:text-red-400
-      patterns:
-        - '*.avi'
-        - '*.mkv'
-        - '*.mov'
-        - '*.mp4'
-        - '*.webm'
-    audio:
-      icon: "\U0001F3B5"
-      iconClass: text-pink-500 dark:text-pink-400
-      patterns:
-        - '*.flac'
-        - '*.m4a'
-        - '*.mp3'
-        - '*.ogg'
-        - '*.wav'
-    # Config files
     config:
       icon: ⚙️
       iconClass: text-gray-600 dark:text-gray-300
@@ -213,10 +111,112 @@ files:
         - GNUmakefile
         - Makefile
   # [REQ-TOOLBAR_CONFIG] [IMPL-TOOLBAR_CONFIG] Toolbar theme configuration
+    directory:
+      icon: "\U0001F4C1"
+      iconClass: text-blue-500 dark:text-blue-400
+    # Images
+    document:
+      icon: "\U0001F4DD"
+      iconClass: text-blue-600 dark:text-blue-300
+      patterns:
+        - '*.doc'
+        - '*.docx'
+        - '*.md'
+        - '*.pdf'
+        - '*.rtf'
+        - '*.txt'
+    # Spreadsheets
+    file:
+      icon: "\U0001F4C4"
+      iconClass: text-gray-500 dark:text-gray-400
+    # Directories
+    image:
+      icon: "\U0001F5BC️"
+      iconClass: text-green-500 dark:text-green-400
+      patterns:
+        - '*.bmp'
+        - '*.gif'
+        - '*.heic'
+        - '*.ico'
+        - '*.jpeg'
+        - '*.jpg'
+        - '*.png'
+        - '*.svg'
+        - '*.tif'
+        - '*.tiff'
+        - '*.webp'
+    # Code files
+    spreadsheet:
+      icon: "\U0001F4CA"
+      iconClass: text-green-600 dark:text-green-300
+      patterns:
+        - '*.csv'
+        - '*.xls'
+        - '*.xlsx'
+    # Media
+    video:
+      icon: "\U0001F3AC"
+      iconClass: text-red-500 dark:text-red-400
+      patterns:
+        - '*.avi'
+        - '*.mkv'
+        - '*.mov'
+        - '*.mp4'
+        - '*.webm'
+  overrides:
+    directoryIndicator: ""
+    fileCursor: ""
+    fileMarked: ""
+    fileRow: ""
+    footer: ""
+  # Comparison colors for cross-pane file comparison
+  # [REQ-FILE_COMPARISON_VISUAL] [IMPL-COMPARISON_COLORS]
+    pageContainer: ""
+    paneContainer: ""
+    paneFocused: ""
+    paneHeader: ""
   toolbar:
     background: bg-gray-100 dark:bg-gray-900
     border: border-b border-gray-300 dark:border-gray-700
-    buttonBase: px-3 py-2 text-sm rounded hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors duration-150
     buttonActive: bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200
+    buttonBase: px-3 py-2 text-sm rounded hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors duration-150
     buttonDisabled: opacity-50 cursor-not-allowed
     groupSeparator: border-l border-gray-300 dark:border-gray-700
+fonts:
+  mono:
+    fallback: monospace
+# Spacing values – Tailwind size tokens (e.g. "32" maps to py-32).
+    variable: --font-geist-mono
+  sans:
+    fallback: Arial, Helvetica, sans-serif
+    variable: --font-geist-sans
+overrides:
+  buttonGroup: ""
+  contentSection: ""
+  heading: ""
+  inlineLink: ""
+# [REQ-CONFIG_DRIVEN_FILE_MANAGER] File manager layout and style classes.
+# Override these to customize file manager appearance without editing code.
+  main: ""
+  outerContainer: ""
+  paragraph: ""
+  primaryButton: ""
+  secondaryButton: ""
+sizing:
+  # Tailwind max-width token (e.g. "3xl" → max-w-3xl)
+  buttonDesktopWidth: 158px
+# Per-element Tailwind class overrides (advanced).
+# Add extra classes here to customize specific elements without editing TSX.
+# These are MERGED with (not replacing) the default classes using tailwind-merge.
+# Leave empty strings or omit keys to use defaults only.
+  buttonHeight: "12"
+  # Exact pixel width for buttons on desktop viewports
+  maxContentWidth: 3xl
+  # Tailwind height token (e.g. "12" → h-12)
+spacing:
+  buttonGap: "4"
+# Sizing constraints
+  contentGap: "6"
+  page:
+    paddingX: "16"
+    paddingY: "32"

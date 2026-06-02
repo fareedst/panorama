@@ -1,15 +1,28 @@
 REQ-MESH_GUI:
-  name: Mesh Web GUI
   category: Functional
-  priority: P1
-  status: Implemented
   description: 'Mesh UI at src/app/mesh: list, detail, topology, plan, sync, conflicts, schedule, export, history, rules, settings, per-mesh depots page. Canonical terms: tied/vocab/mesh-platform.md; two-phase plan approve then sync start per IMPL-MESH_GUI-pseudocode.'
+  metadata:
+    created:
+      author: AI Agent
+      date: "2026-05-19T00:00:00.000Z"
+    last_updated:
+      author: AI Agent
+      date: "2026-05-24T00:00:00.000Z"
+      reason: LEAP — per_mesh_depots_page_supports_depot_crud criterion
+  name: Mesh Web GUI
+  priority: P1
   rationale:
-    why: Deployment plan phases 17-22.
-    problems_solved:
-      - No visual mesh management
     benefits:
       - Operators can inspect topology and plans
+    problems_solved:
+      - No visual mesh management
+    why: Deployment plan phases 17-22.
+  related_requirements:
+    depends_on:
+      - REQ-MESH_API
+    related_to:
+      - REQ-MESH_PLATFORM
+    supersedes: []
   satisfaction_criteria:
     - criterion: menu_reaches_schedule_export_history_archive_settings
     - criterion: mesh_list_displays_mesh_name_state_and_depot_count
@@ -25,6 +38,21 @@ REQ-MESH_GUI:
     - criterion: terminology_aligns_with_docs_mesh_platform_vocabulary
     - criterion: user_can_reach_every_major_feature_from_menu
       description: Files startup radio per row persists to localStorage via setFilesStartupMeshId; summary and Use config defaults clear control; testids mesh-list-files-startup-*, files-startup-mesh-summary, files-startup-mesh-clear
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-MESH_LAYERED
+    code_annotations:
+      - REQ-MESH_GUI
+    implementation:
+      - IMPL-MESH_GUI
+    tests:
+      - e2e/mesh-sync.spec.ts
+      - src/app/mesh/components/MeshArchiveClient.test.tsx
+      - src/app/mesh/components/MeshDepotsClient.test.tsx
+      - src/app/mesh/components/MeshExportClient.test.tsx
+      - src/app/mesh/components/MeshListClient.test.tsx
+      - src/app/mesh/components/MeshScheduleClient.test.tsx
   validation_criteria:
     - method: Vitest RTL
       coverage: src/app/mesh/components/MeshListClient.test.tsx
@@ -48,31 +76,3 @@ REQ-MESH_GUI:
       coverage: src/app/mesh/components/MeshArchiveClient.test.tsx
     - method: Playwright
       coverage: e2e/mesh-sync.spec.ts
-  traceability:
-    architecture:
-      - ARCH-MESH_LAYERED
-    implementation:
-      - IMPL-MESH_GUI
-    tests:
-      - e2e/mesh-sync.spec.ts
-      - src/app/mesh/components/MeshArchiveClient.test.tsx
-      - src/app/mesh/components/MeshDepotsClient.test.tsx
-      - src/app/mesh/components/MeshExportClient.test.tsx
-      - src/app/mesh/components/MeshListClient.test.tsx
-      - src/app/mesh/components/MeshScheduleClient.test.tsx
-    code_annotations:
-      - REQ-MESH_GUI
-  related_requirements:
-    depends_on:
-      - REQ-MESH_API
-    related_to:
-      - REQ-MESH_PLATFORM
-    supersedes: []
-  metadata:
-    created:
-      date: "2026-05-19T00:00:00.000Z"
-      author: AI Agent
-    last_updated:
-      date: "2026-05-24T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — per_mesh_depots_page_supports_depot_crud criterion

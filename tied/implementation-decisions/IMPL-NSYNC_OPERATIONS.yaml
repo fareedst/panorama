@@ -1,40 +1,40 @@
 IMPL-NSYNC_OPERATIONS:
-  name: File Operations Wrappers
-  status: Active
-  cross_references:
-    - REQ-NSYNC_MULTI_TARGET
-    - REQ-MOVE_SEMANTICS
-  decision: Copy, move, delete operation wrappers ensuring destination directories exist
-  rationale:
-    why: Copy, move, delete operation wrappers ensuring destination directories exist
-    problems_solved: []
-    benefits: []
-  implementation_approach:
-    summary: Copy, move, delete operation wrappers ensuring destination directories exist
-    details: []
   code_locations:
     files:
       - path: src/lib/sync/operations.ts
         description: IMPL-NSYNC_OPERATIONS
     functions: []
+  cross_references:
+    - REQ-MOVE_SEMANTICS
+    - REQ-NSYNC_MULTI_TARGET
+  decision: Copy, move, delete operation wrappers ensuring destination directories exist
+  implementation_approach:
+    details: []
+    summary: Copy, move, delete operation wrappers ensuring destination directories exist
+  metadata:
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: NSYNC pseudocode retrofit from production code and tests
+    registered: 2026-02-09T00:00:00.000Z
+  name: File Operations Wrappers
+  rationale:
+    benefits: []
+    problems_solved: []
+    why: Copy, move, delete operation wrappers ensuring destination directories exist
+  related_decisions:
+    depends_on: []
+    see_also: []
+    supersedes: []
+  status: Active
   traceability:
     architecture: []
-    requirements:
-      - REQ-NSYNC_MULTI_TARGET
-      - REQ-MOVE_SEMANTICS
-    tests:
-      - src/lib/sync/engine.test.ts — multi-target sync, move semantics, attribute preservation
     code_annotations:
       - IMPL-NSYNC_OPERATIONS
       - REQ-MOVE_SEMANTICS
       - REQ-NSYNC_MULTI_TARGET
-  related_decisions:
-    depends_on: []
-    supersedes: []
-    see_also: []
-  metadata:
-    registered: 2026-02-09T00:00:00.000Z
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: NSYNC pseudocode retrofit from production code and tests
+    requirements:
+      - REQ-MOVE_SEMANTICS
+      - REQ-NSYNC_MULTI_TARGET
+    tests:
+      - src/lib/sync/engine.test.ts — multi-target sync, move semantics, attribute preservation

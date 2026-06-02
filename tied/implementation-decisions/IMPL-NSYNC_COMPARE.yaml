@@ -1,37 +1,37 @@
 IMPL-NSYNC_COMPARE:
-  name: File Comparison Implementation
-  status: Active
-  cross_references:
-    - REQ-COMPARE_METHODS
-  decision: File comparison using size, mtime, hash methods to skip unchanged files
-  rationale:
-    why: File comparison using size, mtime, hash methods to skip unchanged files
-    problems_solved: []
-    benefits: []
-  implementation_approach:
-    summary: File comparison using size, mtime, hash methods to skip unchanged files
-    details: []
   code_locations:
     files:
       - path: src/lib/sync/compare.ts
         description: IMPL-NSYNC_COMPARE
     functions: []
+  cross_references:
+    - REQ-COMPARE_METHODS
+  decision: File comparison using size, mtime, hash methods to skip unchanged files
+  implementation_approach:
+    details: []
+    summary: File comparison using size, mtime, hash methods to skip unchanged files
+  metadata:
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: NSYNC pseudocode retrofit from production code and tests
+    registered: 2026-02-09T00:00:00.000Z
+  name: File Comparison Implementation
+  rationale:
+    benefits: []
+    problems_solved: []
+    why: File comparison using size, mtime, hash methods to skip unchanged files
+  related_decisions:
+    depends_on: []
+    see_also: []
+    supersedes: []
+  status: Active
   traceability:
     architecture: []
+    code_annotations:
+      - IMPL-NSYNC_COMPARE
+      - REQ-COMPARE_METHODS
     requirements:
       - REQ-COMPARE_METHODS
     tests:
       - src/lib/sync/engine.test.ts — should skip unchanged files [REQ-COMPARE_METHODS]
-    code_annotations:
-      - IMPL-NSYNC_COMPARE
-      - REQ-COMPARE_METHODS
-  related_decisions:
-    depends_on: []
-    supersedes: []
-    see_also: []
-  metadata:
-    registered: 2026-02-09T00:00:00.000Z
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: NSYNC pseudocode retrofit from production code and tests

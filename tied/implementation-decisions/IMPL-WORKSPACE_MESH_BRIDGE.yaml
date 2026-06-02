@@ -1,7 +1,4 @@
 IMPL-WORKSPACE_MESH_BRIDGE:
-  name: Workspace Mesh Bridge Implementation
-  status: Implemented
-  description: workspace-mesh-bridge.ts (capture v5 with cross-pane visibility, sharedSort, fileColumns, parse, diff, planDepotSync, patch payload, appendSnapshotLayoutWarnings, buildWorkspaceRestoreBundle, listDirectoryViaFilesApi, WORKSPACE_SNAPSHOT_SUMMARY, WORKSPACE_SNAPSHOT_SUMMARY_LIST, FORMAT_PANE_SORT_SETTINGS, FORMAT_DISPLAY_SPEC_LABEL), normalizeLayoutType in files.layout, SaveWorkspaceMeshDialog (update/create), WorkspaceDiffDialog, LayoutPickerPopover via WorkspaceView, NewTabLink, WorkspaceView store/restore/update/diff with meshRestorePending client full rehydrate, compact header banner with WORKSPACE_HEADER_STATUS, FilesPage meshId bootstrap, PUT /api/mesh/:meshId/workspace, MeshDetailClient summary wiring and open-workspace NewTabLink, WorkspaceSnapshotSummaryList per-pane Compare filter labels. E2E justified for full save/restore/update/diff UI path.
   code_locations:
     files:
       - path: src/lib/workspace-mesh-bridge.ts
@@ -29,13 +26,30 @@ IMPL-WORKSPACE_MESH_BRIDGE:
       - path: src/app/files/FilesStartupMeshGate.tsx
         description: FILES_STARTUP_MESH_GATE — validate stored mesh id and redirect to /files?meshId= before WorkspaceView
     functions: []
+  description: workspace-mesh-bridge.ts (capture v5 with cross-pane visibility, sharedSort, fileColumns, parse, diff, planDepotSync, patch payload, appendSnapshotLayoutWarnings, buildWorkspaceRestoreBundle, listDirectoryViaFilesApi, WORKSPACE_SNAPSHOT_SUMMARY, WORKSPACE_SNAPSHOT_SUMMARY_LIST, FORMAT_PANE_SORT_SETTINGS, FORMAT_DISPLAY_SPEC_LABEL), normalizeLayoutType in files.layout, SaveWorkspaceMeshDialog (update/create), WorkspaceDiffDialog, LayoutPickerPopover via WorkspaceView, NewTabLink, WorkspaceView store/restore/update/diff with meshRestorePending client full rehydrate, compact header banner with WORKSPACE_HEADER_STATUS, FilesPage meshId bootstrap, PUT /api/mesh/:meshId/workspace, MeshDetailClient summary wiring and open-workspace NewTabLink, WorkspaceSnapshotSummaryList per-pane Compare filter labels. E2E justified for full save/restore/update/diff UI path.
   essence_pseudocode_path: implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE-pseudocode.md
+  metadata:
+    created:
+      author: AI Agent
+      date: "2026-05-21T00:00:00.000Z"
+    last_updated:
+      author: AI Agent
+      date: "2026-05-29T00:00:00.000Z"
+      reason: LEAP — vocabulary see_also back-link
+  name: Workspace Mesh Bridge Implementation
+  related_decisions:
+    see_also:
+      - tied/vocab/mesh-platform.md
+      - tied/vocab/workspace-pane.md
+  status: Implemented
   traceability:
-    requirements:
-      - REQ-WORKSPACE_MESH_BRIDGE
     architecture:
       - ARCH-WORKSPACE_MESH_BRIDGE
+    code_annotations:
+      - IMPL-WORKSPACE_MESH_BRIDGE
     implementation: []
+    requirements:
+      - REQ-WORKSPACE_MESH_BRIDGE
     tests:
       - e2e/workspace-mesh-bridge.spec.ts
       - src/app/api/mesh/[meshId]/workspace/workspace.route.test.ts
@@ -51,17 +65,3 @@ IMPL-WORKSPACE_MESH_BRIDGE:
       - src/lib/files-startup-mesh.test.ts
       - src/lib/files.layout.test.ts
       - src/lib/workspace-mesh-bridge.test.ts
-    code_annotations:
-      - IMPL-WORKSPACE_MESH_BRIDGE
-  metadata:
-    created:
-      date: "2026-05-21T00:00:00.000Z"
-      author: AI Agent
-    last_updated:
-      date: "2026-05-29T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — vocabulary see_also back-link
-  related_decisions:
-    see_also:
-      - tied/vocab/mesh-platform.md
-      - tied/vocab/workspace-pane.md

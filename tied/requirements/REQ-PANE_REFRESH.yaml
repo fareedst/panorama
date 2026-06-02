@@ -1,44 +1,33 @@
 # REQ detail — REQ-PANE_REFRESH
 REQ-PANE_REFRESH:
-  name: Manual Pane Refresh
   category: Functional
-  priority: P1
-  status: Implemented
   description: Users need to manually refresh directory listings when external changes occur outside the file manager (e.g., files added/modified by other processes)
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-08T00:00:00.000Z
+      reason: Initial implementation with Ctrl+R and Ctrl+Shift+R shortcuts
+    last_validated:
+      date: 2026-02-08T00:00:00.000Z
+      result: pass - build succeeds with 36 keybindings loaded
+      validator: AI Agent
+  name: Manual Pane Refresh
+  priority: P1
   rationale:
-    why: Users need to manually refresh directory listings when external changes occur outside the file manager (e.g., files added/modified by other processes)
-    problems_solved:
-      - Directory listings become stale when external processes modify files
-      - Multiple panes cannot be refreshed simultaneously
-      - No way to reload pane contents without navigating away and back
-      - Users must restart application to see external file system changes
     benefits:
       - Ability to refresh all panes at once for system-wide updates
       - Browser-familiar keyboard shortcuts (Ctrl+R, Ctrl+Shift+R)
       - Instant refresh of current pane file listing
       - Maintains cursor position and sort settings after refresh
-  satisfaction_criteria:
-    - criterion: Ctrl+R refreshes the currently focused pane
-    - criterion: Ctrl+Shift+R refreshes all visible panes
-    - criterion: Cursor position preserved after refresh
-    - criterion: Marks cleared after refresh (existing behavior)
-    - criterion: Shortcuts visible in help overlay (? key)
-    - criterion: Sort settings maintained after refresh
-  validation_criteria:
-    - method: Keystroke testing
-      coverage: Both refresh shortcuts trigger correctly
-    - method: State preservation testing
-      coverage: Cursor and sort settings maintained
-    - method: Integration testing
-      coverage: Refresh works with all layout types and pane counts
-  traceability:
-    architecture:
-      - ARCH-PANE_REFRESH
-    implementation:
-      - IMPL-PANE_REFRESH
-    tests: []
-    code_annotations:
-      - REQ-PANE_REFRESH
+    problems_solved:
+      - Directory listings become stale when external processes modify files
+      - Multiple panes cannot be refreshed simultaneously
+      - No way to reload pane contents without navigating away and back
+      - Users must restart application to see external file system changes
+    why: Users need to manually refresh directory listings when external changes occur outside the file manager (e.g., files added/modified by other processes)
   related_requirements:
     depends_on:
       - REQ-DIRECTORY_NAVIGATION
@@ -47,15 +36,26 @@ REQ-PANE_REFRESH:
     related_to:
       - REQ-FILE_OPERATIONS
     supersedes: []
-  metadata:
-    created:
-      date: 2026-02-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-08T00:00:00.000Z
-      author: AI Agent
-      reason: Initial implementation with Ctrl+R and Ctrl+Shift+R shortcuts
-    last_validated:
-      date: 2026-02-08T00:00:00.000Z
-      validator: AI Agent
-      result: pass - build succeeds with 36 keybindings loaded
+  satisfaction_criteria:
+    - criterion: Ctrl+R refreshes the currently focused pane
+    - criterion: Ctrl+Shift+R refreshes all visible panes
+    - criterion: Cursor position preserved after refresh
+    - criterion: Marks cleared after refresh (existing behavior)
+    - criterion: Shortcuts visible in help overlay (? key)
+    - criterion: Sort settings maintained after refresh
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-PANE_REFRESH
+    code_annotations:
+      - REQ-PANE_REFRESH
+    implementation:
+      - IMPL-PANE_REFRESH
+    tests: []
+  validation_criteria:
+    - method: Keystroke testing
+      coverage: Both refresh shortcuts trigger correctly
+    - method: State preservation testing
+      coverage: Cursor and sort settings maintained
+    - method: Integration testing
+      coverage: Refresh works with all layout types and pane counts

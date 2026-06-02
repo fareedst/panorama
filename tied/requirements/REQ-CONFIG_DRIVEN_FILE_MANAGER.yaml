@@ -1,19 +1,36 @@
 REQ-CONFIG_DRIVEN_FILE_MANAGER:
-  name: Configuration-Driven File Manager UI
   category: Functional
-  priority: P1
-  status: Implemented
   description: Consistent with project architecture, all UI text and styling should be configurable
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-23T00:00:00.000Z"
+      reason: LEAP — tabular file columns, column-order dialog, mesh snapshot v4 fileColumns
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Configuration-Driven File Manager UI
+  priority: P1
   rationale:
-    why: Consistent with project architecture, all UI text and styling should be configurable
-    problems_solved:
-      - Difficult customization
-      - Hard-coded UI text
-      - Inconsistent with existing config pattern
     benefits:
       - All UI text from config
       - Consistent with project architecture
       - Easy customization
+    problems_solved:
+      - Difficult customization
+      - Hard-coded UI text
+      - Inconsistent with existing config pattern
+    why: Consistent with project architecture, all UI text and styling should be configurable
+  related_requirements:
+    depends_on:
+      - REQ-CONFIG_DRIVEN_UI
+      - REQ-FILE_MANAGER_PAGE
+    related_to: []
+    supersedes: []
   satisfaction_criteria:
     - criterion: All styling overrides in config/theme.yaml
     - criterion: All user-facing text comes from config/files.yaml
@@ -23,14 +40,12 @@ REQ-CONFIG_DRIVEN_FILE_MANAGER:
     - criterion: file_list_tabular_columns_align_visible_metadata_with_padding
     - criterion: one_column_layout_shared_size_time_ch_across_panes_name_flex_remainder
     - criterion: view_columns_toolbar_opens_dialog_to_reorder_column_names_no_shortcut_required
-  validation_criteria:
-    - method: Config testing
-      coverage: Config changes reflected in UI
-    - method: Code inspection
-      coverage: No hard-coded user-facing text in components
+  status: Implemented
   traceability:
     architecture:
       - ARCH-CONFIG_DRIVEN_UI
+    code_annotations:
+      - REQ-CONFIG_DRIVEN_FILE_MANAGER
     implementation:
       - IMPL-FILE_COLUMN_CONFIG
       - IMPL-FILE_MANAGER_PAGE
@@ -45,23 +60,8 @@ REQ-CONFIG_DRIVEN_FILE_MANAGER:
       - src/app/files/WorkspaceView.file-columns.test.tsx
       - src/lib/file-columns.test.ts
       - src/lib/workspace-mesh-bridge.test.ts
-    code_annotations:
-      - REQ-CONFIG_DRIVEN_FILE_MANAGER
-  related_requirements:
-    depends_on:
-      - REQ-CONFIG_DRIVEN_UI
-      - REQ-FILE_MANAGER_PAGE
-    related_to: []
-    supersedes: []
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-23T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — tabular file columns, column-order dialog, mesh snapshot v4 fileColumns
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+  validation_criteria:
+    - method: Config testing
+      coverage: Config changes reflected in UI
+    - method: Code inspection
+      coverage: No hard-coded user-facing text in components

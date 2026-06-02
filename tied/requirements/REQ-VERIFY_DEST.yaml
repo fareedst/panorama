@@ -1,50 +1,50 @@
 # REQ detail — REQ-VERIFY_DEST
 REQ-VERIFY_DEST:
-  name: Destination Verification by Hash
   category: Functional
-  priority: P2
-  status: Implemented
   description: Optional verification that destination files match source after copy to detect corruption
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-09T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-09T00:00:00.000Z
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-09T00:00:00.000Z
+      result: implemented
+      validator: AI Agent
+  name: Destination Verification by Hash
+  priority: P2
   rationale:
-    why: Optional verification that destination files match source after copy to detect corruption
-    problems_solved:
-      - Network interruptions causing incomplete copies
-      - Silent data corruption during copy
-      - Unreliable external drives
     benefits:
       - Detect corrupted copies immediately
       - Guarantee destination integrity
       - Optional feature (off by default for speed)
-  satisfaction_criteria:
-    - criterion: Compare destination hash to source hash
-    - criterion: Recompute hash on destination after copy
-    - criterion: Report verification failure with clear error
-  validation_criteria:
-    - method: Unit tests
-      coverage: Verification success and failure cases
-  traceability:
-    architecture:
-      - ARCH-HASH_VERIFICATION
-    implementation:
-      - IMPL-NSYNC_VERIFY
-    tests: []
-    code_annotations:
-      - REQ-VERIFY_DEST
+    problems_solved:
+      - Network interruptions causing incomplete copies
+      - Silent data corruption during copy
+      - Unreliable external drives
+    why: Optional verification that destination files match source after copy to detect corruption
   related_requirements:
     depends_on:
       - REQ-HASH_COMPUTATION
     related_to:
       - REQ-NSYNC_MULTI_TARGET
     supersedes: []
-  metadata:
-    created:
-      date: 2026-02-09T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-09T00:00:00.000Z
-      author: AI Agent
-      reason: Initial creation
-    last_validated:
-      date: 2026-02-09T00:00:00.000Z
-      validator: AI Agent
-      result: implemented
+  satisfaction_criteria:
+    - criterion: Compare destination hash to source hash
+    - criterion: Recompute hash on destination after copy
+    - criterion: Report verification failure with clear error
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-HASH_VERIFICATION
+    code_annotations:
+      - REQ-VERIFY_DEST
+    implementation:
+      - IMPL-NSYNC_VERIFY
+    tests: []
+  validation_criteria:
+    - method: Unit tests
+      coverage: Verification success and failure cases

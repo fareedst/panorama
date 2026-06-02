@@ -1,27 +1,53 @@
 # REQ detail — REQ-FILES_PERFORMANCE
 REQ-FILES_PERFORMANCE:
-  name: File Manager Performance Optimization
   category: Non-Functional
-  priority: P1
-  status: Planned
   description: '[Placeholder - requirement description from plan]'
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+      reason: Initial creation - web-specific performance requirement
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: File Manager Performance Optimization
+  priority: P1
   rationale:
-    why: Large directories must remain responsive and efficient
-    problems_solved:
-      - Excessive memory usage
-      - Laggy scrolling
-      - Slow rendering with 1000+ files
     benefits:
       - Debounced comparison updates
       - Lazy loading of file metadata
       - Optimized sort algorithms
       - Virtual scrolling for large lists
+    problems_solved:
+      - Excessive memory usage
+      - Laggy scrolling
+      - Slow rendering with 1000+ files
+    why: Large directories must remain responsive and efficient
+  related_requirements:
+    depends_on:
+      - REQ-FILE_LISTING
+    related_to:
+      - REQ-FILE_COMPARISON_VISUAL
+    supersedes: []
   satisfaction_criteria:
     - criterion: Debounced comparison index updates (300ms)
     - criterion: Lazy load metadata (only visible files stat'd)
     - criterion: Memory usage scales sub-linearly with file count
     - criterion: Render 1000 files in < 1 second
     - criterion: Smooth scrolling with 5000+ files via virtual scrolling
+  status: Planned
+  traceability:
+    architecture:
+      - ARCH-PERFORMANCE_OPT
+    code_annotations:
+      - REQ-FILES_PERFORMANCE
+    implementation:
+      - IMPL-PERFORMANCE_OPT
+    tests: []
   validation_criteria:
     - method: Performance tests
       coverage: 1000+ file directory rendering
@@ -29,29 +55,3 @@ REQ-FILES_PERFORMANCE:
       coverage: Scrolling performance with virtual scrolling
     - method: Memory tests
       coverage: Memory usage profiling
-  traceability:
-    architecture:
-      - ARCH-PERFORMANCE_OPT
-    implementation:
-      - IMPL-PERFORMANCE_OPT
-    tests: []
-    code_annotations:
-      - REQ-FILES_PERFORMANCE
-  related_requirements:
-    depends_on:
-      - REQ-FILE_LISTING
-    related_to:
-      - REQ-FILE_COMPARISON_VISUAL
-    supersedes: []
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-      reason: Initial creation - web-specific performance requirement
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass

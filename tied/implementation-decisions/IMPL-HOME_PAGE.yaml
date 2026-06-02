@@ -1,57 +1,57 @@
 IMPL-HOME_PAGE:
-  name: Home Page Implementation
-  status: Active
-  cross_references:
-    - ARCH-SERVER_COMPONENTS
-    - REQ-HOME_PAGE
-  decision: Root page server component redirects / to /files (file manager sole-purpose entry)
-  rationale:
-    why: Implements home page with config-driven content
-    problems_solved:
-      - Hard-coded home page content
-      - Difficult customization
-    benefits:
-      - Config-driven content
-      - Easy customization
-  implementation_approach:
-    summary: Server component at src/app/page.tsx calls redirect("/files")
-    details:
-      - No welcome content or logo on root route
-      - Redirect uses next/navigation redirect helper
-      - Site branding config retained for layout/metadata elsewhere
   code_locations:
     files:
       - path: src/app/page.tsx
         description: Home page component
     functions:
       - name: Home
-        file: src/app/page.tsx
         description: Home page component function
-  traceability:
-    architecture:
-      - ARCH-SERVER_COMPONENTS
-    requirements:
-      - REQ-HOME_PAGE
-    tests:
-      - src/test/integration/app.test.tsx
-    code_annotations:
-      - REQ-HOME_PAGE
+        file: src/app/page.tsx
+  cross_references:
+    - ARCH-SERVER_COMPONENTS
+    - REQ-HOME_PAGE
+  decision: Root page server component redirects / to /files (file manager sole-purpose entry)
+  implementation_approach:
+    details:
+      - No welcome content or logo on root route
+      - Redirect uses next/navigation redirect helper
+      - Site branding config retained for layout/metadata elsewhere
+    summary: Server component at src/app/page.tsx calls redirect("/files")
+  metadata:
+    created:
+      author: AI Agent
+      date: 2025-11-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Retrofit — root redirect matches production page.tsx
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Home Page Implementation
+  rationale:
+    benefits:
+      - Config-driven content
+      - Easy customization
+    problems_solved:
+      - Difficult customization
+      - Hard-coded home page content
+    why: Implements home page with config-driven content
   related_decisions:
     depends_on: []
-    supersedes: []
     see_also:
       - docs/FILE_MANAGER_SOLE_PURPOSE.md
       - tied/vocab/mesh-platform.md
       - tied/vocab/workspace-pane.md
-  metadata:
-    created:
-      date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit — root redirect matches production page.tsx
-    last_validated:
-      date: 2026-02-06T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+    supersedes: []
+  status: Active
+  traceability:
+    architecture:
+      - ARCH-SERVER_COMPONENTS
+    code_annotations:
+      - REQ-HOME_PAGE
+    requirements:
+      - REQ-HOME_PAGE
+    tests:
+      - src/test/integration/app.test.tsx

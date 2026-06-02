@@ -1,55 +1,39 @@
 # ARCH detail — ARCH-PANE_REFRESH
 ARCH-PANE_REFRESH:
-  name: Pane Refresh Architecture
-  status: Active
-  cross_references:
-    - REQ-KEYBOARD_SHORTCUTS_COMPLETE
-    - REQ-MULTI_PANE_LAYOUT
-    - REQ-PANE_REFRESH
-  decision: Add pane.refresh and pane.refresh-all actions to keybinding system; handlers call handleNavigate with current path
-  rationale:
-    why: Reuse existing handleNavigate mechanism to refresh panes by re-fetching current directory, providing consistent state management and minimal code duplication
-    problems_solved:
-      - Browser default refresh would reload entire page
-      - Need for both single-pane and all-pane refresh operations
-      - No dedicated refresh mechanism in original design
-      - Stale directory listings from external file system changes
-    benefits:
-      - Consistent with existing post-operation refresh pattern
-      - Leverages existing, battle-tested handleNavigate logic
-      - Parallel refresh for all panes using Promise.all
-      - Preserves cursor position and sort settings automatically
-      - Prevents browser default refresh with e.preventDefault()
   alternatives_considered:
     - name: Dedicated refresh API endpoint
-      pros:
-        - Explicit refresh semantics
-        - Could implement optimized refresh logic
       cons:
         - Additional API endpoint to maintain
         - Code duplication with navigation logic
         - Would require separate state management
+      pros:
+        - Could implement optimized refresh logic
+        - Explicit refresh semantics
       rejected_reason: handleNavigate already provides all needed functionality
     - name: Auto-refresh with file system watchers
-      pros:
-        - Automatic updates without user intervention
-        - Real-time file system synchronization
       cons:
         - Complex server-side implementation
         - Potential performance issues with large directories
         - Unpredictable UI updates
         - Websocket or polling overhead
+      pros:
+        - Automatic updates without user intervention
+        - Real-time file system synchronization
       rejected_reason: Manual refresh is simpler and gives users control
     - name: F5 key for refresh
-      pros:
-        - Traditional browser refresh key
       cons:
         - Conflicts with browser default (full page reload)
         - Harder to prevent default behavior reliably
         - Less familiar in terminal-like interfaces
+      pros:
+        - Traditional browser refresh key
       rejected_reason: Ctrl+R is safer and more terminal-like
+  cross_references:
+    - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+    - REQ-MULTI_PANE_LAYOUT
+    - REQ-PANE_REFRESH
+  decision: Add pane.refresh and pane.refresh-all actions to keybinding system; handlers call handleNavigate with current path
   implementation_approach:
-    summary: Add pane.refresh and pane.refresh-all actions to keybinding system; handlers call handleNavigate with current path
     details:
       - 'All panes refresh: Promise.all(panes.map((p, idx) => handleNavigate(idx, p.path)))'
       - 'handleNavigate already handles: API fetch, sort application, cursor restoration'
@@ -58,17 +42,33 @@ ARCH-PANE_REFRESH:
       - Browser default prevented by existing e.preventDefault() in keyboard handler
       - Register actions in pane-management category
       - Use void operator to handle async without blocking
-  traceability:
-    requirements:
-      - REQ-PANE_REFRESH
-      - REQ-KEYBOARD_SHORTCUTS_COMPLETE
-    implementation:
-      - IMPL-PANE_REFRESH
-      - IMPL-KEYBINDS
-    tests: []
-    code_annotations:
-      - ARCH-PANE_REFRESH
-      - REQ-PANE_REFRESH
+    summary: Add pane.refresh and pane.refresh-all actions to keybinding system; handlers call handleNavigate with current path
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-08T00:00:00.000Z
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-08T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Pane Refresh Architecture
+  rationale:
+    benefits:
+      - Consistent with existing post-operation refresh pattern
+      - Leverages existing, battle-tested handleNavigate logic
+      - Parallel refresh for all panes using Promise.all
+      - Preserves cursor position and sort settings automatically
+      - Prevents browser default refresh with e.preventDefault()
+    problems_solved:
+      - Browser default refresh would reload entire page
+      - Need for both single-pane and all-pane refresh operations
+      - No dedicated refresh mechanism in original design
+      - Stale directory listings from external file system changes
+    why: Reuse existing handleNavigate mechanism to refresh panes by re-fetching current directory, providing consistent state management and minimal code duplication
   related_decisions:
     depends_on:
       - ARCH-FILE_MANAGER_HIERARCHY
@@ -78,15 +78,15 @@ ARCH-PANE_REFRESH:
       - IMPL-PANE_REFRESH
     see_also:
       - ARCH-FILE_OPERATIONS_API
-  metadata:
-    created:
-      date: 2026-02-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-08T00:00:00.000Z
-      author: AI Agent
-      reason: Initial creation
-    last_validated:
-      date: 2026-02-08T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+  status: Active
+  traceability:
+    code_annotations:
+      - ARCH-PANE_REFRESH
+      - REQ-PANE_REFRESH
+    implementation:
+      - IMPL-KEYBINDS
+      - IMPL-PANE_REFRESH
+    requirements:
+      - REQ-KEYBOARD_SHORTCUTS_COMPLETE
+      - REQ-PANE_REFRESH
+    tests: []

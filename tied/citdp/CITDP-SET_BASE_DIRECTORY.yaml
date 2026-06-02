@@ -1,12 +1,7 @@
 CITDP-SET_BASE_DIRECTORY:
-  record_identity:
-    change_request_id: SET_BASE_DIRECTORY
-    title: Directory row context menu — Set as Base directory with multi-pane target dialog
-    recorded_at: "2026-05-31"
   change_definition:
     current_behavior: Set base directory dialog offers eight pane-target actions without per-target icons; no in-workspace append-at-directory target
     desired_behavior: Nine pane-target actions including In a new pane via appendPaneAtPath; SetBaseDirectoryTargetIcon semantic SVG on each button; handleNavigate/swap/newWorkspace unchanged for other targets
-    unchanged_behavior: File rows keep unified menu without set-base; mesh save unchanged; linked mode applies on In this pane only; newWorkspace single-pane URL tab
     non_goals:
       - E2E for set-base dialog (composition tests sufficient)
       - Keybind for set base directory
@@ -20,7 +15,12 @@ CITDP-SET_BASE_DIRECTORY:
       - New workspace opens new tab with single pane at directory path
       - newPane appends pane at directory path via appendPaneAtPath and focuses new pane
       - Swap variants navigate neighbor then swap initiating pane with neighbor
+    unchanged_behavior: File rows keep unified menu without set-base; mesh save unchanged; linked mode applies on In this pane only; newWorkspace single-pane URL tab
+  completion_criteria:
+    verification_gate_notes: bun run lint:ts; vitest affected suites; tied_validate_consistency
   impact_analysis:
+    impl_inventory_notes: Extracted appendPaneAtPath shared by handleAddPane and SetBaseDirectoryApply newPane; dialog icons for UX discoverability
+    modules_or_boundaries: ContextMenu, FilePane, WorkspaceView, appendPaneAtPath, SetBaseDirectoryDialog, SetBaseDirectoryTargetIcon, set-base-directory lib, Files page bootstrap
     tied_tokens_affected:
       - ARCH-MOUSE_SUPPORT
       - ARCH-PANE_LIFECYCLE
@@ -32,8 +32,16 @@ CITDP-SET_BASE_DIRECTORY:
       - REQ-MOUSE_INTERACTION
       - REQ-MULTI_PANE_LAYOUT
     tied_tokens_new: []
-    modules_or_boundaries: ContextMenu, FilePane, WorkspaceView, appendPaneAtPath, SetBaseDirectoryDialog, SetBaseDirectoryTargetIcon, set-base-directory lib, Files page bootstrap
-    impl_inventory_notes: Extracted appendPaneAtPath shared by handleAddPane and SetBaseDirectoryApply newPane; dialog icons for UX discoverability
+  leap_feedback:
+    divergences_from_analysis:
+      - Ninth target newPane and SetBaseDirectoryTargetIcon added after initial eight-target CR; REQ-MULTI_PANE_LAYOUT and ARCH stacks updated via LEAP
+      - Unified row/column ContextMenu replaces separate FileColumnContextMenu in FilePane; REQ-MOUSE_INTERACTION criterion updated via LEAP
+    record_status: complete
+    tied_stack_updates_required: []
+  record_identity:
+    change_request_id: SET_BASE_DIRECTORY
+    recorded_at: "2026-05-31"
+    title: Directory row context menu — Set as Base directory with multi-pane target dialog
   risk_analysis:
     risks:
       - id: RISK-001
@@ -45,17 +53,9 @@ CITDP-SET_BASE_DIRECTORY:
       - id: RISK-003
         description: Swap or newPane when allowPaneManagement false or at maxPanes
         mitigation: Disable dialog buttons via isSetBaseDirectoryTargetRequiresPaneManagement and atMaxPanes; appendPaneAtPath guards
-  test_strategy:
-    summary: Unit tests for target resolution and icons; component tests for dialog; composition tests for newPane and pane.add regression
-    matrix_notes: 1-pane and 3-pane workspaces; atMaxPanes disable; directory vs file rows; newWorkspace window.open mock; e2e_only_reason N/A — composition invokes dialog apply
-    e2e_only_reason: N/A — composition tests invoke dialog apply without browser-only behavior
   tdd_sequence:
     summary: set-base-directory lib (newPane) → SetBaseDirectoryTargetIcon → SetBaseDirectoryDialog → appendPaneAtPath → WorkspaceView handler
-  completion_criteria:
-    verification_gate_notes: bun run lint:ts; vitest affected suites; tied_validate_consistency
-  leap_feedback:
-    divergences_from_analysis:
-      - Unified row/column ContextMenu replaces separate FileColumnContextMenu in FilePane; REQ-MOUSE_INTERACTION criterion updated via LEAP
-      - Ninth target newPane and SetBaseDirectoryTargetIcon added after initial eight-target CR; REQ-MULTI_PANE_LAYOUT and ARCH stacks updated via LEAP
-    tied_stack_updates_required: []
-    record_status: complete
+  test_strategy:
+    e2e_only_reason: N/A — composition tests invoke dialog apply without browser-only behavior
+    matrix_notes: 1-pane and 3-pane workspaces; atMaxPanes disable; directory vs file rows; newWorkspace window.open mock; e2e_only_reason N/A — composition invokes dialog apply
+    summary: Unit tests for target resolution and icons; component tests for dialog; composition tests for newPane and pane.add regression

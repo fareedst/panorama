@@ -1,23 +1,10 @@
 ARCH-CROSS_PANE_VISIBILITY:
-  name: Cross-Pane Visibility Architecture
-  status: Planned
   cross_references:
     - ARCH-COMPARISON_INDEX
     - ARCH-DISPLAY_FILTER_ENGINE
     - REQ-CROSS_PANE_VISIBILITY
   decision: Client-side visibility engine evaluates comparison-index criteria on the focused pane listing (after display specs), then mirrors visible basenames to other panes. Named presets in a client catalog parallel display specs; each pane keeps activeCrossPaneVisibilityId plus draft; workspace toolbar edits the focused pane draft. Mirroring remains focus-driven (not independent per-pane mirror rules).
-  rationale:
-    why: Keeps visibility semantics separate from glob display specs and server listing APIs
-    problems_solved:
-      - Mixing glob and comparison rules
-      - Independent per-pane filters breaking compare workflows
-    benefits:
-      - Client catalog localStorage persistence
-      - Per-pane snapshot v5 fields crossPaneVisibilityId and inline crossPaneVisibility
-      - Reuse EnhancedCompareState
-      - Single engine for include/exclude composition
   implementation_approach:
-    summary: cross-pane-visibility.ts + WorkspaceView derivation layer + tri-state toolbar
     details:
       - Apply display spec first then cross-pane visibility on pane.files
       - Build comparison index whenever two or more panes exist for filter criteria
@@ -26,19 +13,32 @@ ARCH-CROSS_PANE_VISIBILITY:
       - Listing state (path, files, cursor, marks) owned by directory navigation / display-spec pipeline; cross-pane catalog fields merged via MERGE_LISTING_WITH_CROSS_PANE_FIELDS explicit pick only
       - Per-pane snapshot v5 fields crossPaneVisibilityId and inline crossPaneVisibility
       - RECONCILE_AFTER_VISIBILITY on focused pane marks and cursor
+    summary: cross-pane-visibility.ts + WorkspaceView derivation layer + tri-state toolbar
+  metadata:
+    last_updated:
+      author: AI Agent
+      date: "2026-05-29T00:00:00.000Z"
+      reason: LEAP — vocabulary see_also back-link
+  name: Cross-Pane Visibility Architecture
+  rationale:
+    benefits:
+      - Client catalog localStorage persistence
+      - Per-pane snapshot v5 fields crossPaneVisibilityId and inline crossPaneVisibility
+      - Reuse EnhancedCompareState
+      - Single engine for include/exclude composition
+    problems_solved:
+      - Independent per-pane filters breaking compare workflows
+      - Mixing glob and comparison rules
+    why: Keeps visibility semantics separate from glob display specs and server listing APIs
+  related_decisions:
+    see_also:
+      - tied/vocab/cross-pane-visibility.md
+  status: Planned
   traceability:
-    requirements:
-      - REQ-CROSS_PANE_VISIBILITY
     implementation:
       - IMPL-CROSS_PANE_VISIBILITY_CATALOG
       - IMPL-CROSS_PANE_VISIBILITY_ENGINE
       - IMPL-CROSS_PANE_VISIBILITY_UI
       - IMPL-WORKSPACE_VIEW
-  related_decisions:
-    see_also:
-      - tied/vocab/cross-pane-visibility.md
-  metadata:
-    last_updated:
-      date: "2026-05-29T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — vocabulary see_also back-link
+    requirements:
+      - REQ-CROSS_PANE_VISIBILITY

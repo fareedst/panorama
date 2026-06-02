@@ -1,34 +1,61 @@
 IMPL-DEMO_SCREENSHOT_PIPELINE:
-  name: Demo Screenshot Pipeline Implementation
-  status: Active
-  cross_references:
-    - ARCH-DEMO_ASSET_PIPELINE
-    - REQ-README_DEMO_AUTOMATION
-  decision: Bash fixture scripts and Playwright E2E specs capture README demo PNGs and GIF; npm scripts chain setup, test, convert, and verify.
-  rationale:
-    why: Implements REQ-README_DEMO_AUTOMATION with traceable automation artifacts
-    problems_solved:
-      - Missing automated 3-pane comparison screenshots
-      - verify script used developer-absolute path
-    benefits:
-      - Literal token comments in E2E and shell scripts
-      - essence_pseudocode blocks map to test steps
-  implementation_approach:
-    summary: 'Thirteen pseudo-code blocks: fixtures, workspace surfaces/pane-filters/dialogs/motion, mesh surfaces/bridge, CopyAll, GIF convert batch, verify assets, npm orchestration'
-    details:
-      - convert_readme_gif.sh generalizes single-GIF conversion; convert_all_readme_gifs.sh batch-converts five GIFs
-      - e2e/helpers/readme-demo.ts shared helpers including seedReadmePaneFilterDemo catalog seeding
-      - Seven Playwright specs replace single readme-screenshots.spec.ts
   code_locations:
     files:
       - path: e2e/z-copyall-demo.spec.ts
         description: CopyAll workflow PNGs and video
       - path: e2e/readme-workspace-pane-filters.spec.ts
         description: Per-pane display spec and cross-pane visibility selector PNGs
+  cross_references:
+    - ARCH-DEMO_ASSET_PIPELINE
+    - REQ-README_DEMO_AUTOMATION
+  decision: Bash fixture scripts and Playwright E2E specs capture README demo PNGs and GIF; npm scripts chain setup, test, convert, and verify.
+  implementation_approach:
+    details:
+      - convert_readme_gif.sh generalizes single-GIF conversion; convert_all_readme_gifs.sh batch-converts five GIFs
+      - e2e/helpers/readme-demo.ts shared helpers including seedReadmePaneFilterDemo catalog seeding
+      - Seven Playwright specs replace single readme-screenshots.spec.ts
+    summary: 'Thirteen pseudo-code blocks: fixtures, workspace surfaces/pane-filters/dialogs/motion, mesh surfaces/bridge, CopyAll, GIF convert batch, verify assets, npm orchestration'
+  metadata:
+    created:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+    last_updated:
+      author: AI Agent
+      date: "2026-06-01T00:00:00.000Z"
+      reason: README per-pane filter control demo assets
+    last_validated:
+      date: "2026-05-30T00:00:00.000Z"
+      result: pass
+      validator: AI Agent
+  name: Demo Screenshot Pipeline Implementation
+  rationale:
+    benefits:
+      - essence_pseudocode blocks map to test steps
+      - Literal token comments in E2E and shell scripts
+    problems_solved:
+      - Missing automated 3-pane comparison screenshots
+      - verify script used developer-absolute path
+    why: Implements REQ-README_DEMO_AUTOMATION with traceable automation artifacts
+  related_decisions:
+    depends_on:
+      - IMPL-TEST_SETUP
+    see_also:
+      - docs/screenshots/README.md
+      - tied/vocab/cross-pane-comparison.md
+      - tied/vocab/cross-pane-visibility.md
+      - tied/vocab/nsync-multi-target.md
+      - tied/vocab/pane-display-filter.md
+      - tied/vocab/toolbar-keybind.md
+      - tied/vocab/workspace-pane.md
+    supersedes: []
+  status: Active
   traceability:
     architecture:
       - ARCH-DEMO_ASSET_PIPELINE
       - ARCH-TEST_FRAMEWORK
+    code_annotations:
+      - IMPL-DEMO_SCREENSHOT_PIPELINE
+      - REQ-README_DEMO_AUTOMATION
     requirements:
       - REQ-CROSS_PANE_COMPARISON
       - REQ-CROSS_PANE_VISIBILITY
@@ -48,30 +75,3 @@ IMPL-DEMO_SCREENSHOT_PIPELINE:
       - e2e/readme-workspace-pane-filters.spec.ts
       - e2e/readme-workspace-surfaces.spec.ts
       - e2e/z-copyall-demo.spec.ts
-    code_annotations:
-      - REQ-README_DEMO_AUTOMATION
-      - IMPL-DEMO_SCREENSHOT_PIPELINE
-  related_decisions:
-    depends_on:
-      - IMPL-TEST_SETUP
-    supersedes: []
-    see_also:
-      - docs/screenshots/README.md
-      - tied/vocab/cross-pane-comparison.md
-      - tied/vocab/cross-pane-visibility.md
-      - tied/vocab/nsync-multi-target.md
-      - tied/vocab/pane-display-filter.md
-      - tied/vocab/toolbar-keybind.md
-      - tied/vocab/workspace-pane.md
-  metadata:
-    created:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-    last_updated:
-      date: "2026-06-01T00:00:00.000Z"
-      author: AI Agent
-      reason: README per-pane filter control demo assets
-    last_validated:
-      date: "2026-05-30T00:00:00.000Z"
-      validator: AI Agent
-      result: pass

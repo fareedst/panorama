@@ -1,52 +1,52 @@
 # REQ detail — REQ-HASH_COMPUTATION
 REQ-HASH_COMPUTATION:
-  name: Hash Computation for File Verification
   category: Functional
-  priority: P2
-  status: Implemented
   description: Support optional hash-based file comparison and verification for critical sync operations
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-09T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-09T00:00:00.000Z
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-09T00:00:00.000Z
+      result: implemented
+      validator: AI Agent
+  name: Hash Computation for File Verification
+  priority: P2
   rationale:
-    why: Support optional hash-based file comparison and verification for critical sync operations
-    problems_solved:
-      - Multiple hash algorithms needed for different use cases
-      - Need cryptographic verification for critical backups
-      - Size+mtime comparison insufficient for detecting file corruption
     benefits:
       - Detect file corruption or incomplete copies
       - Streaming hash computation for large files
       - Support BLAKE3 (fast), SHA-256 (standard), XXH3 (fastest non-crypto)
+    problems_solved:
+      - Multiple hash algorithms needed for different use cases
+      - Need cryptographic verification for critical backups
+      - Size+mtime comparison insufficient for detecting file corruption
+    why: Support optional hash-based file comparison and verification for critical sync operations
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-COMPARE_METHODS
+      - REQ-VERIFY_DEST
+    supersedes: []
   satisfaction_criteria:
     - criterion: Buffer-based hash for small files
     - criterion: Streaming hash computation for files > 1MB
     - criterion: Support BLAKE3, SHA-256, XXH3 algorithms
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-HASH_VERIFICATION
+    code_annotations:
+      - REQ-HASH_COMPUTATION
+    implementation:
+      - IMPL-NSYNC_HASH
+    tests: []
   validation_criteria:
     - method: Unit tests
       coverage: Hash computation correctness
     - method: Performance tests
       coverage: Streaming vs buffer performance
-  traceability:
-    architecture:
-      - ARCH-HASH_VERIFICATION
-    implementation:
-      - IMPL-NSYNC_HASH
-    tests: []
-    code_annotations:
-      - REQ-HASH_COMPUTATION
-  related_requirements:
-    depends_on: []
-    related_to:
-      - REQ-VERIFY_DEST
-      - REQ-COMPARE_METHODS
-    supersedes: []
-  metadata:
-    created:
-      date: 2026-02-09T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-09T00:00:00.000Z
-      author: AI Agent
-      reason: Initial creation
-    last_validated:
-      date: 2026-02-09T00:00:00.000Z
-      validator: AI Agent
-      result: implemented

@@ -1,9 +1,6 @@
 ARCH-WORKSPACE_MESH_BRIDGE:
-  name: Workspace Mesh Bridge Architecture
-  status: Accepted
   decision: 'Bridge workspace and mesh via a pure module (workspace-mesh-bridge.ts): pane paths map to local depots; UI state lives in mesh description JSON (workspaceSnapshot v1/v2/v3/v4) and tag workspace-snapshot. Snapshot v4 adds workspace fileColumns; v3 adds sharedSort; v2 adds per-pane displaySpecId; v1 legacy omits later fields with defaults on parse. File manager and mesh remain separate surfaces. Restore uses force-dynamic FilesPage server bootstrap plus client full rehydrate when meshRestorePending (server getMesh miss). Layout aliases normalize to canonical LayoutType at capture, parse, and WorkspaceView init. Layout selection via workspace toolbar view.layout (header layout select removed). Cross-surface navigation uses NewTabLink (target=_blank, rel, a11y disclosure) between Mesh detail and workspace header.'
   implementation_approach:
-    summary: Pure bridge module, POST /api/mesh, /files?meshId= restore with dual server/client layout channels
     details:
       - 'Dual-path restore: server RESTORE_ON_FILES_PAGE bootstrap plus client full rehydrate when meshRestorePending (server getMesh miss, client GET /api/mesh/:meshId).'
       - 'Files startup mesh precedence: explicit searchParams.meshId, then localStorage files startup mesh preference (FILES_STARTUP_MESH_GATE), then YAML startup bootstrap from config/files.yaml'
@@ -31,11 +28,34 @@ ARCH-WORKSPACE_MESH_BRIDGE:
       - WorkspaceSnapshot v3 includes sharedSort; v2 displaySpecId; v1 base pane fields
       - WorkspaceSnapshot v4 includes fileColumns; capture always writes v4; validateWorkspaceSnapshot accepts v1/v2/v3/v4; v1–v3 omit fileColumns and callers use YAML defaults
       - WorkspaceSnapshotSummaryList (WORKSPACE_SNAPSHOT_SUMMARY_LIST) renders workspace-snapshot-summary on mesh detail with per-pane Compare filter labels; no workspace-level Compare filters aggregate line in GUI
+    summary: Pure bridge module, POST /api/mesh, /files?meshId= restore with dual server/client layout channels
+  metadata:
+    created:
+      author: AI Agent
+      date: "2026-05-21T00:00:00.000Z"
+    last_updated:
+      author: AI Agent
+      date: "2026-05-29T00:00:00.000Z"
+      reason: LEAP — vocabulary see_also back-link
+  name: Workspace Mesh Bridge Architecture
+  related_decisions:
+    depends_on:
+      - ARCH-FILE_MANAGER_HIERARCHY
+      - ARCH-MESH_LAYERED
+      - ARCH-PANE_LIFECYCLE
+    informs:
+      - IMPL-WORKSPACE_MESH_BRIDGE
+    see_also:
+      - tied/vocab/mesh-platform.md
+      - tied/vocab/workspace-pane.md
+  status: Accepted
   traceability:
-    requirements:
-      - REQ-WORKSPACE_MESH_BRIDGE
+    code_annotations:
+      - ARCH-WORKSPACE_MESH_BRIDGE
     implementation:
       - IMPL-WORKSPACE_MESH_BRIDGE
+    requirements:
+      - REQ-WORKSPACE_MESH_BRIDGE
     tests:
       - e2e/workspace-mesh-bridge.spec.ts
       - src/app/api/mesh/[meshId]/workspace/workspace.route.test.ts
@@ -51,23 +71,3 @@ ARCH-WORKSPACE_MESH_BRIDGE:
       - src/lib/files-startup-mesh.test.ts
       - src/lib/files.layout.test.ts
       - src/lib/workspace-mesh-bridge.test.ts
-    code_annotations:
-      - ARCH-WORKSPACE_MESH_BRIDGE
-  related_decisions:
-    depends_on:
-      - ARCH-FILE_MANAGER_HIERARCHY
-      - ARCH-MESH_LAYERED
-      - ARCH-PANE_LIFECYCLE
-    informs:
-      - IMPL-WORKSPACE_MESH_BRIDGE
-    see_also:
-      - tied/vocab/mesh-platform.md
-      - tied/vocab/workspace-pane.md
-  metadata:
-    created:
-      date: "2026-05-21T00:00:00.000Z"
-      author: AI Agent
-    last_updated:
-      date: "2026-05-29T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — vocabulary see_also back-link

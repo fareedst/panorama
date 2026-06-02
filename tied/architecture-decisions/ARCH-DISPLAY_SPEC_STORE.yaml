@@ -1,32 +1,32 @@
 ARCH-DISPLAY_SPEC_STORE:
-  name: Display Spec Catalog Store
-  status: Accepted
   cross_references:
-    - REQ-PANE_DISPLAY_FILTER
     - IMPL-DISPLAY_SPEC_STORE
+    - REQ-PANE_DISPLAY_FILTER
   decision: 'Hybrid catalog: client localStorage (panorama.displaySpecs.v1) is authoritative for edits with change listeners; server mirror at data/display-specs.json and REST /api/display-specs supports GET listing filter (displaySpecId query) and bulk path validation. Panes reference spec by stable uuid id. Delete clears activeDisplaySpecId on affected panes.'
-  rationale:
-    why: Named reusable profiles must outlive a single pane session
-    benefits:
-      - Cross-pane sync via version
-      - Duplicate without disrupting other panes
   implementation_approach:
-    summary: DisplaySpecStore class + phase 2 API adapter
     details:
       - Delete falls back panes to no filter
       - Storage key panorama.displaySpecs.v1
       - Unique spec names enforced on save
-  traceability:
-    requirements:
-      - REQ-PANE_DISPLAY_FILTER
-    implementation:
-      - IMPL-DISPLAY_SPEC_STORE
-      - IMPL-DISPLAY_FILTER_API
+    summary: DisplaySpecStore class + phase 2 API adapter
+  metadata:
+    last_updated:
+      author: AI Agent
+      date: "2026-05-29T00:00:00.000Z"
+      reason: LEAP — vocabulary see_also back-link
+  name: Display Spec Catalog Store
+  rationale:
+    benefits:
+      - Cross-pane sync via version
+      - Duplicate without disrupting other panes
+    why: Named reusable profiles must outlive a single pane session
   related_decisions:
     see_also:
       - tied/vocab/pane-display-filter.md
-  metadata:
-    last_updated:
-      date: "2026-05-29T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — vocabulary see_also back-link
+  status: Accepted
+  traceability:
+    implementation:
+      - IMPL-DISPLAY_FILTER_API
+      - IMPL-DISPLAY_SPEC_STORE
+    requirements:
+      - REQ-PANE_DISPLAY_FILTER

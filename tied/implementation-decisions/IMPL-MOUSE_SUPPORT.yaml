@@ -1,21 +1,4 @@
 IMPL-MOUSE_SUPPORT:
-  name: Mouse and Touch Interaction Implementation
-  status: Active
-  cross_references:
-    - ARCH-MOUSE_SUPPORT
-    - REQ-MOUSE_INTERACTION
-  decision: Mouse and Touch Interaction Implementation
-  rationale:
-    why: Mouse and Touch Interaction Implementation
-  implementation_approach:
-    summary: Portal context menus, HTML5 drag-drop, click handlers, and file column clipboard menu on metadata cells
-    details:
-      - 'ContextMenu: row file operations (copy, move, delete, rename)'
-      - 'file-column-clipboard.ts: format and resolveCrossPanePathsForFilename by cursor filename'
-      - 'FileColumnContextMenu: clipboard-only on file column cells (filename, path, cross-pane paths)'
-      - 'RENAME_REGEX_MENU: ContextMenu Rename Regex… menu item opens RenameRegexDialog (marks allowed unlike single Rename)'
-      - 'SET_BASE_DIRECTORY_MENU: directory rows show Set as Base directory menu item (data-testid=set-base-directory-menu-item)'
-      - 'UNIFIED_ROW_CONTEXT_MENU: ContextMenu portal combines file ops, SET_BASE_DIRECTORY_MENU on directories, Touch and Execute menu items, and clipboard section'
   code_locations:
     files:
       - path: src/lib/file-column-clipboard.ts
@@ -32,13 +15,50 @@ IMPL-MOUSE_SUPPORT:
         description: Rename Regex secondary workspace dialog
       - path: src/lib/rename-regex.ts
         description: Rename Regex path resolution and basename transform
+  cross_references:
+    - ARCH-MOUSE_SUPPORT
+    - REQ-MOUSE_INTERACTION
+  decision: Mouse and Touch Interaction Implementation
+  implementation_approach:
+    details:
+      - 'ContextMenu: row file operations (copy, move, delete, rename)'
+      - 'file-column-clipboard.ts: format and resolveCrossPanePathsForFilename by cursor filename'
+      - 'FileColumnContextMenu: clipboard-only on file column cells (filename, path, cross-pane paths)'
+      - 'RENAME_REGEX_MENU: ContextMenu Rename Regex… menu item opens RenameRegexDialog (marks allowed unlike single Rename)'
+      - 'SET_BASE_DIRECTORY_MENU: directory rows show Set as Base directory menu item (data-testid=set-base-directory-menu-item)'
+      - 'UNIFIED_ROW_CONTEXT_MENU: ContextMenu portal combines file ops, SET_BASE_DIRECTORY_MENU on directories, Touch and Execute menu items, and clipboard section'
+    summary: Portal context menus, HTML5 drag-drop, click handlers, and file column clipboard menu on metadata cells
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-31T00:00:00.000Z"
+      reason: LEAP — Rename Regex menu item in unified ContextMenu
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass - 554 tests passing
+      validator: AI Agent
+  name: Mouse and Touch Interaction Implementation
+  rationale:
+    why: Mouse and Touch Interaction Implementation
+  related_decisions:
+    see_also:
+      - IMPL-EXECUTE_DIALOG
+      - tied/vocab/workspace-pane.md
+  status: Active
   traceability:
+    architecture:
+      - ARCH-MOUSE_SUPPORT
+    code_annotations:
+      - ARCH-MOUSE_SUPPORT
+      - IMPL-MOUSE_SUPPORT
+      - REQ-MOUSE_INTERACTION
     requirements:
       - REQ-DIRECTORY_NAVIGATION
       - REQ-LINKED_PANES
       - REQ-MOUSE_INTERACTION
-    architecture:
-      - ARCH-MOUSE_SUPPORT
     tests:
       - src/app/files/components/ContextMenu.test.tsx
       - src/app/files/components/FileColumnContextMenu.test.tsx
@@ -48,23 +68,3 @@ IMPL-MOUSE_SUPPORT:
       - src/app/files/WorkspaceView.rename-regex.test.tsx
       - src/lib/file-column-clipboard.test.ts
       - src/lib/set-base-directory.test.ts
-    code_annotations:
-      - ARCH-MOUSE_SUPPORT
-      - IMPL-MOUSE_SUPPORT
-      - REQ-MOUSE_INTERACTION
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-31T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — Rename Regex menu item in unified ContextMenu
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass - 554 tests passing
-  related_decisions:
-    see_also:
-      - IMPL-EXECUTE_DIALOG
-      - tied/vocab/workspace-pane.md

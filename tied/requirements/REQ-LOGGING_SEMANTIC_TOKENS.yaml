@@ -1,25 +1,50 @@
 # REQ detail — REQ-LOGGING_SEMANTIC_TOKENS
 REQ-LOGGING_SEMANTIC_TOKENS:
-  name: Semantic Token Integration in Logs
   category: Functional
-  priority: P0
-  status: Implemented
   description: Ensure all logs are traceable to requirements, architecture, and implementation
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Semantic Token Integration in Logs
+  priority: P0
   rationale:
-    why: Ensure all logs are traceable to requirements, architecture, and implementation
-    problems_solved:
-      - Cannot trace log entries to feature requirements
-      - Difficult to understand which module logged a message
-      - No connection between logs and TIED documentation
     benefits:
       - Complete traceability from logs to requirements
       - Easy identification of logging module
       - Searchable semantic tokens in log files
+    problems_solved:
+      - Cannot trace log entries to feature requirements
+      - Difficult to understand which module logged a message
+      - No connection between logs and TIED documentation
+    why: Ensure all logs are traceable to requirements, architecture, and implementation
+  related_requirements:
+    depends_on:
+      - REQ-LOGGING_SYSTEM
+    related_to: []
+    supersedes: []
   satisfaction_criteria:
     - criterion: All log entries must include at least one semantic token
     - criterion: Logger API enforces token parameter
     - criterion: Multiple tokens can be included per log entry
     - criterion: Semantic tokens formatted as [REQ-*], [ARCH-*], [IMPL-*]
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-LOGGING_SEMANTIC_TOKENS
+    code_annotations:
+      - REQ-LOGGING_SEMANTIC_TOKENS
+    implementation:
+      - IMPL-LOGGER_TOKENS
+    tests: []
   validation_criteria:
     - method: Unit tests
       coverage: Token formatting and inclusion
@@ -27,28 +52,3 @@ REQ-LOGGING_SEMANTIC_TOKENS:
       coverage: All logger calls include tokens
     - method: Log file inspection
       coverage: Tokens present in actual log output
-  traceability:
-    architecture:
-      - ARCH-LOGGING_SEMANTIC_TOKENS
-    implementation:
-      - IMPL-LOGGER_TOKENS
-    tests: []
-    code_annotations:
-      - REQ-LOGGING_SEMANTIC_TOKENS
-  related_requirements:
-    depends_on:
-      - REQ-LOGGING_SYSTEM
-    related_to: []
-    supersedes: []
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-      reason: Initial creation
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass

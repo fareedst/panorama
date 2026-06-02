@@ -1,26 +1,4 @@
 IMPL-IMAGE_OPTIMIZATION:
-  name: Image Optimization Implementation
-  status: Active
-  cross_references:
-    - ARCH-NEXTJS_FRAMEWORK
-    - REQ-BRANDING
-  decision: Branding logo config with darkInvert flag; dark:invert Tailwind pattern for SVG logos (next/image home usage retired)
-  rationale:
-    why: Use Next.js Image component for optimized image loading
-    problems_solved:
-      - Large image files
-      - Layout shift from images
-    benefits:
-      - Automatic optimization
-      - Modern formats
-      - Responsive sizing
-  implementation_approach:
-    summary: SiteConfig branding.logo metadata and dark-mode invert class contract
-    details:
-      - dark-mode.test.tsx asserts dark:invert class pattern
-      - Defaults in config.ts; validated in config.test.ts
-      - LogoConfig includes src, alt, width, height, darkInvert in config.types
-      - No next/image on root page after redirect to /files
   code_locations:
     files:
       - path: src/lib/config.ts
@@ -32,32 +10,54 @@ IMPL-IMAGE_OPTIMIZATION:
       - path: src/test/dark-mode.test.tsx
         description: dark:invert pattern test
     functions: []
-  traceability:
-    architecture:
-      - ARCH-NEXTJS_FRAMEWORK
-    requirements:
-      - REQ-BRANDING
-    tests:
-      - src/test/dark-mode.test.tsx
-      - src/lib/config.test.ts
-    code_annotations:
-      - REQ-BRANDING
+  cross_references:
+    - ARCH-NEXTJS_FRAMEWORK
+    - REQ-BRANDING
+  decision: Branding logo config with darkInvert flag; dark:invert Tailwind pattern for SVG logos (next/image home usage retired)
+  implementation_approach:
+    details:
+      - dark-mode.test.tsx asserts dark:invert class pattern
+      - Defaults in config.ts; validated in config.test.ts
+      - LogoConfig includes src, alt, width, height, darkInvert in config.types
+      - No next/image on root page after redirect to /files
+    summary: SiteConfig branding.logo metadata and dark-mode invert class contract
+  metadata:
+    created:
+      author: AI Agent
+      date: 2025-11-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Retrofit — branding contract without home page Image
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Image Optimization Implementation
+  rationale:
+    benefits:
+      - Automatic optimization
+      - Modern formats
+      - Responsive sizing
+    problems_solved:
+      - Large image files
+      - Layout shift from images
+    why: Use Next.js Image component for optimized image loading
   related_decisions:
     depends_on: []
-    supersedes: []
     see_also:
       - docs/FILE_MANAGER_SOLE_PURPOSE.md
       - tied/vocab/mesh-platform.md
       - tied/vocab/workspace-pane.md
-  metadata:
-    created:
-      date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit — branding contract without home page Image
-    last_validated:
-      date: 2026-02-06T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+    supersedes: []
+  status: Active
+  traceability:
+    architecture:
+      - ARCH-NEXTJS_FRAMEWORK
+    code_annotations:
+      - REQ-BRANDING
+    requirements:
+      - REQ-BRANDING
+    tests:
+      - src/lib/config.test.ts
+      - src/test/dark-mode.test.tsx

@@ -1,25 +1,4 @@
 IMPL-RESPONSIVE_CLASSES:
-  name: Responsive Classes Implementation
-  status: Active
-  cross_references:
-    - ARCH-RESPONSIVE_FIRST
-    - REQ-RESPONSIVE_DESIGN
-  decision: Use Tailwind breakpoints (sm:, md:, lg:) with mobile-first approach
-  rationale:
-    why: Implement responsive design with Tailwind breakpoints
-    problems_solved:
-      - Fixed layouts not adapting
-      - Poor mobile experience
-    benefits:
-      - Mobile-first responsive design
-      - Progressive enhancement
-  implementation_approach:
-    summary: Use Tailwind breakpoints (sm:, md:, lg:) with mobile-first approach
-    details:
-      - 'Add md:, lg: for desktop'
-      - 'Add sm: for tablets'
-      - Default styles for mobile
-      - Use flexbox and grid for layouts
   code_locations:
     files:
       - path: src/app/files/components/HelpOverlay.tsx
@@ -28,28 +7,49 @@ IMPL-RESPONSIVE_CLASSES:
         description: max-w-[90vw] dialog viewport guard
       - path: src/app/files/components/FilePane.tsx
         description: flex flex-col pane layout
-  traceability:
-    architecture:
-      - ARCH-RESPONSIVE_FIRST
-    requirements:
-      - REQ-RESPONSIVE_DESIGN
-    tests: []
-    code_annotations:
-      - REQ-RESPONSIVE_DESIGN
-  related_decisions:
-    depends_on: []
-    supersedes: []
-    see_also:
-      - IMPL-FLEX_LAYOUT
+  cross_references:
+    - ARCH-RESPONSIVE_FIRST
+    - REQ-RESPONSIVE_DESIGN
+  decision: Use Tailwind breakpoints (sm:, md:, lg:) with mobile-first approach
+  implementation_approach:
+    details:
+      - 'Add md:, lg: for desktop'
+      - 'Add sm: for tablets'
+      - Default styles for mobile
+      - Use flexbox and grid for layouts
+    summary: Use Tailwind breakpoints (sm:, md:, lg:) with mobile-first approach
   metadata:
     created:
+      author: AI Agent
       date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
     last_updated:
-      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
       reason: Retrofit files workspace responsive Tailwind locations
     last_validated:
       date: 2026-02-06T00:00:00.000Z
-      validator: AI Agent
       result: pass
+      validator: AI Agent
+  name: Responsive Classes Implementation
+  rationale:
+    benefits:
+      - Mobile-first responsive design
+      - Progressive enhancement
+    problems_solved:
+      - Fixed layouts not adapting
+      - Poor mobile experience
+    why: Implement responsive design with Tailwind breakpoints
+  related_decisions:
+    depends_on: []
+    see_also:
+      - IMPL-FLEX_LAYOUT
+    supersedes: []
+  status: Active
+  traceability:
+    architecture:
+      - ARCH-RESPONSIVE_FIRST
+    code_annotations:
+      - REQ-RESPONSIVE_DESIGN
+    requirements:
+      - REQ-RESPONSIVE_DESIGN
+    tests: []

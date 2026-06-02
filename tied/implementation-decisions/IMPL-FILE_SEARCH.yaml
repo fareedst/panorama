@@ -1,33 +1,4 @@
 IMPL-FILE_SEARCH:
-  name: Dual-Mode Search Implementation with SSR Guards
-  status: Implemented
-  cross_references:
-    - ARCH-SEARCH_ENGINE
-    - REQ-FILE_SEARCH
-    - REQ-REACT_SSR_STABILITY
-  decision: Client-side incremental finder + server-side content search API with SSR guards
-  rationale:
-    why: Different search modes for filename vs content search with SSR-safe localStorage access
-    problems_solved:
-      - Cannot search file contents
-      - localStorage access causing SSR errors
-      - No quick filename filtering
-    benefits:
-      - 'Content search: comprehensive server-side'
-      - 'Incremental finder: instant client-side'
-      - SSR-safe history loading
-  implementation_approach:
-    summary: Client-side incremental finder + server-side content search API with SSR guards
-    details:
-      - 'Security: regex validation, ReDoS prevention, path validation, file size limits'
-      - 'SSR guards: typeof window === ''undefined'' checks in add(), getAll(), clear() methods'
-      - Config-driven UI text and keybindings
-      - FinderDialog component (Ctrl+F) for file name search with keyboard navigation
-      - Search utilities module (files.search.ts) with fuzzy matching, history
-      - SearchDialog component (Ctrl+Shift+F) for content search with options
-      - SearchHistory class with localStorage persistence (max 20)
-      - Server API (POST /api/files/search) for content searching with security
-      - Server context returns empty results without errors
   code_locations:
     files:
       - path: src/lib/files.search.ts
@@ -57,26 +28,55 @@ IMPL-FILE_SEARCH:
           - 1018
     functions:
       - name: SearchHistory.add
-        file: src/lib/files.search.ts
         description: 'SSR guard: early return if typeof window === ''undefined'''
+        file: src/lib/files.search.ts
       - name: SearchHistory.getAll
-        file: src/lib/files.search.ts
         description: 'SSR guard: return [] if typeof window === ''undefined'''
-      - name: SearchHistory.clear
         file: src/lib/files.search.ts
+      - name: SearchHistory.clear
         description: 'SSR guard: early return if typeof window === ''undefined'''
+        file: src/lib/files.search.ts
+  cross_references:
+    - ARCH-SEARCH_ENGINE
+    - REQ-FILE_SEARCH
+    - REQ-REACT_SSR_STABILITY
+  decision: Client-side incremental finder + server-side content search API with SSR guards
+  implementation_approach:
+    details:
+      - 'Security: regex validation, ReDoS prevention, path validation, file size limits'
+      - 'SSR guards: typeof window === ''undefined'' checks in add(), getAll(), clear() methods'
+      - Config-driven UI text and keybindings
+      - FinderDialog component (Ctrl+F) for file name search with keyboard navigation
+      - Search utilities module (files.search.ts) with fuzzy matching, history
+      - SearchDialog component (Ctrl+Shift+F) for content search with options
+      - SearchHistory class with localStorage persistence (max 20)
+      - Server API (POST /api/files/search) for content searching with security
+      - Server context returns empty results without errors
+    summary: Client-side incremental finder + server-side content search API with SSR guards
   metadata:
     created:
+      author: AI Agent
       date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
     last_updated:
-      date: "2026-05-30T00:00:00.000Z"
       author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
       reason: Retrofit pseudocode; expand test traceability
     last_validated:
       date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
       result: pass - 523 total tests passing, no SSR errors, production build successful
+      validator: AI Agent
+  name: Dual-Mode Search Implementation with SSR Guards
+  rationale:
+    benefits:
+      - 'Content search: comprehensive server-side'
+      - 'Incremental finder: instant client-side'
+      - SSR-safe history loading
+    problems_solved:
+      - Cannot search file contents
+      - localStorage access causing SSR errors
+      - No quick filename filtering
+    why: Different search modes for filename vs content search with SSR-safe localStorage access
+  status: Implemented
   traceability:
     tests:
       - src/app/api/files/search/route.test.ts

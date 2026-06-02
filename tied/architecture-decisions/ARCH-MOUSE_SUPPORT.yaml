@@ -1,35 +1,21 @@
 ARCH-MOUSE_SUPPORT:
-  name: Mouse and Touch Interaction Architecture
-  status: Active
+  alternatives_considered:
+    - name: Third-party drag-drop library
+      cons:
+        - Extra dependency, bundle size
+      pros:
+        - Polished DX, handles edge cases
+      rejected_reason: HTML5 API sufficient
+    - name: Custom context menu library
+      cons:
+        - Dependency, configuration overhead
+      pros:
+        - Advanced features (submenus, icons)
+      rejected_reason: Simple portal component meets requirements
   cross_references:
     - REQ-MOUSE_INTERACTION
   decision: "Approach\n\n1. Context Menu: Portal-rendered menu component positioned at click coordinates\n2. Click Selection: Existing `onClick` handlers in FilePane (already implemented)\n3. Double-Click: Existing `onDoubleClick` handlers in FilePane (already implemented)\n4. Drag-and-Drop: HTML5 drag-and-drop API with custom drag image\n5. Scroll: Native browser scrolling (no custom implementation needed)\n\nKey Components\n\nContextMenu Component\n\n```typescript\ninterface ContextMenuProps {\n  x: number; // Click coordinates\n  y: number;\n  file: FileStat;\n  marks: Set<string>;\n  onClose: () => void;\n  onCopy: () => void;\n  onMove: () => void;\n  onDelete: () => void;\n  onRename: () => void;\n}\n```\n\n• Portal-rendered to document.body to escape parent overflow\n• Position calculated to keep menu on-screen\n• Close on outside click or Escape key\n• Keyboard navigation within menu (arrow keys, Enter)\n\nDrag-and-Drop Implementation\n\n```typescript\n// Source pane (draggable files)\n<div \n  draggable={true}\n  onDragStart={handleDragStart}\n  onDragEnd={handleDragEnd}\n>\n\n// Target pane (drop zone)\n<div\n  onDragOver={handleDragOver}\n  onDrop={handleDrop}\n  onDragEnter={handleDragEnter}\n  onDragLeave={handleDragLeave}\n>\n```\n\n• Store drag data in `dataTransfer` object\n• Use custom drag image with file count badge\n• Highlight drop target on drag hover\n• Detect Ctrl key for copy vs move"
-  rationale:
-    why: Web users expect mouse and touch interactions for accessibility and familiar UX
-    problems_solved:
-      - Cannot drag-drop files between panes
-      - Keyboard-only interface not accessible to all users
-      - No context menu for operation discoverability
-    benefits:
-      - Click to select matches desktop file manager UX
-      - Drag-and-drop provides intuitive cross-pane file operations
-      - Right-click context menu provides operation discoverability
-      - Touch-friendly for tablet users
-  alternatives_considered:
-    - name: Third-party drag-drop library
-      pros:
-        - Polished DX, handles edge cases
-      cons:
-        - Extra dependency, bundle size
-      rejected_reason: HTML5 API sufficient
-    - name: Custom context menu library
-      pros:
-        - Advanced features (submenus, icons)
-      cons:
-        - Dependency, configuration overhead
-      rejected_reason: Simple portal component meets requirements
   implementation_approach:
-    summary: Portal-based context menus (row operations and file column clipboard), HTML5 drag-drop, existing click handlers
     details:
       - 'Click: Existing onClick handlers (already implemented)'
       - 'Column menu mutual exclusion: stopPropagation on column cells; clearing sibling menu state when opening the other menu'
@@ -43,14 +29,31 @@ ARCH-MOUSE_SUPPORT:
       - 'Set as Base directory: directory rows open secondary dialog with nine pane-target actions and SetBaseDirectoryTargetIcon semantic SVG (IMPL-WORKSPACE_VIEW SetBaseDirectoryDialog)'
       - 'Touch mtime: TouchFileDialog secondary dialog with pane target and mtime mode groups (ARCH-TOUCH_MTIME)'
       - 'Unified file context menu: row and column right-click use one ContextMenu portal with file ops, clipboard section, and set-base on directories (UNIFIED_ROW_CONTEXT_MENU)'
-  traceability:
-    requirements:
-      - REQ-MOUSE_INTERACTION
-    implementation:
-      - IMPL-MOUSE_SUPPORT
-    tests: []
-    code_annotations:
-      - ARCH-MOUSE_SUPPORT
+    summary: Portal-based context menus (row operations and file column clipboard), HTML5 drag-drop, existing click handlers
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-31T00:00:00.000Z"
+      reason: LEAP — pane command execution ExecuteFileDialog (ARCH-PANE_COMMAND_EXEC)
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass - 554 tests passing
+      validator: AI Agent
+  name: Mouse and Touch Interaction Architecture
+  rationale:
+    benefits:
+      - Click to select matches desktop file manager UX
+      - Drag-and-drop provides intuitive cross-pane file operations
+      - Right-click context menu provides operation discoverability
+      - Touch-friendly for tablet users
+    problems_solved:
+      - Cannot drag-drop files between panes
+      - Keyboard-only interface not accessible to all users
+      - No context menu for operation discoverability
+    why: Web users expect mouse and touch interactions for accessibility and familiar UX
   related_decisions:
     depends_on:
       - ARCH-FILE_MANAGER_HIERARCHY
@@ -59,15 +62,12 @@ ARCH-MOUSE_SUPPORT:
       - IMPL-MOUSE_SUPPORT
     see_also:
       - ARCH-KEYBIND_SYSTEM
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-31T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — pane command execution ExecuteFileDialog (ARCH-PANE_COMMAND_EXEC)
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass - 554 tests passing
+  status: Active
+  traceability:
+    code_annotations:
+      - ARCH-MOUSE_SUPPORT
+    implementation:
+      - IMPL-MOUSE_SUPPORT
+    requirements:
+      - REQ-MOUSE_INTERACTION
+    tests: []

@@ -1,37 +1,4 @@
 IMPL-WORKSPACE_VIEW:
-  name: Workspace View Client Component with Stable React Keys
-  status: Implemented
-  cross_references:
-    - ARCH-FILE_MANAGER_HIERARCHY
-    - ARCH-PANE_COMMAND_EXEC
-    - IMPL-EXECUTE_DIALOG
-    - IMPL-FILES_API
-    - IMPL-PANE_COMMAND_EXEC
-    - REQ-KEYBOARD_NAVIGATION
-    - REQ-MULTI_PANE_LAYOUT
-    - REQ-PANE_COMMAND_EXEC
-    - REQ-REACT_SSR_STABILITY
-  decision: Client component with unique dialog keys, useMemo keybinding initialization, and API integration
-  rationale:
-    why: Client component manages pane state, layout, focus, and keyboard handling with unique React keys
-    problems_solved:
-      - Complex state management
-      - Focus management
-      - Layout coordination
-      - React duplicate key warnings from dialog components
-    benefits:
-      - Centralized state management
-      - Event handling hub
-      - Layout coordination
-      - Stable component rendering without warnings
-  implementation_approach:
-    summary: Client component with unique dialog keys, useMemo keybinding initialization, layout toolbar picker, sharedSort state, Set as Base directory dialog, Execute file dialog, and API integration
-    details:
-      - 'ExecuteApply: handleApplyExecute builds entries, POST execute-command, refreshes affected panes'
-      - 'NavigateAbsoluteBase: syncingRef for multi-target set-base except thisPane'
-      - 'PANE_FILES_LIST_TO_FILEPANE: pass paneFilesList to each FilePane'
-      - 'SetBaseDirectoryApply: handleNavigate loop; newPane via appendPaneAtPath; newWorkspace single-pane URL tab'
-      - 'SetBaseDirectoryDialog: nine pane-target actions with SetBaseDirectoryTargetIcon semantic SVG; atMaxPanes disables newPane'
   code_locations:
     files:
       - path: src/app/files/WorkspaceView.tsx
@@ -57,17 +24,75 @@ IMPL-WORKSPACE_VIEW:
         lines: []
     functions:
       - name: handleApplySetBaseDirectory
-        file: src/app/files/WorkspaceView.tsx
         description: Apply set-base dialog target
+        file: src/app/files/WorkspaceView.tsx
       - name: handleApplyExecute
-        file: src/app/files/WorkspaceView.tsx
         description: Apply execute dialog; POST execute-command and refresh panes
+        file: src/app/files/WorkspaceView.tsx
       - name: appendPaneAtPath
-        file: src/app/files/WorkspaceView.tsx
         description: Append pane at directory with template inheritance
-      - name: handleNavigate
         file: src/app/files/WorkspaceView.tsx
+      - name: handleNavigate
         description: Navigate pane to directory
+        file: src/app/files/WorkspaceView.tsx
+  cross_references:
+    - ARCH-FILE_MANAGER_HIERARCHY
+    - ARCH-PANE_COMMAND_EXEC
+    - IMPL-EXECUTE_DIALOG
+    - IMPL-FILES_API
+    - IMPL-PANE_COMMAND_EXEC
+    - REQ-KEYBOARD_NAVIGATION
+    - REQ-MULTI_PANE_LAYOUT
+    - REQ-PANE_COMMAND_EXEC
+    - REQ-REACT_SSR_STABILITY
+  decision: Client component with unique dialog keys, useMemo keybinding initialization, and API integration
+  essence_pseudocode_path: implementation-decisions/IMPL-WORKSPACE_VIEW-pseudocode.md
+  implementation_approach:
+    details:
+      - 'ExecuteApply: handleApplyExecute builds entries, POST execute-command, refreshes affected panes'
+      - 'NavigateAbsoluteBase: syncingRef for multi-target set-base except thisPane'
+      - 'PANE_FILES_LIST_TO_FILEPANE: pass paneFilesList to each FilePane'
+      - 'SetBaseDirectoryApply: handleNavigate loop; newPane via appendPaneAtPath; newWorkspace single-pane URL tab'
+      - 'SetBaseDirectoryDialog: nine pane-target actions with SetBaseDirectoryTargetIcon semantic SVG; atMaxPanes disables newPane'
+    summary: Client component with unique dialog keys, useMemo keybinding initialization, layout toolbar picker, sharedSort state, Set as Base directory dialog, Execute file dialog, and API integration
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-31T00:00:00.000Z"
+      reason: LEAP — ExecuteApply handleApplyExecute and ExecuteFileDialog wiring
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass - no React warnings, 523 tests passing
+      validator: AI Agent
+  name: Workspace View Client Component with Stable React Keys
+  rationale:
+    benefits:
+      - Centralized state management
+      - Event handling hub
+      - Layout coordination
+      - Stable component rendering without warnings
+    problems_solved:
+      - Complex state management
+      - Focus management
+      - Layout coordination
+      - React duplicate key warnings from dialog components
+    why: Client component manages pane state, layout, focus, and keyboard handling with unique React keys
+  related_decisions:
+    depends_on:
+      - IMPL-FILES_API
+    see_also:
+      - IMPL-EXECUTE_DIALOG
+      - IMPL-FILE_PANE
+      - IMPL-KEYBINDS
+      - IMPL-LAYOUT_CALCULATOR
+      - IMPL-PANE_COMMAND_EXEC
+      - tied/implementation-decisions/IMPL-DEMO_SCREENSHOT_PIPELINE-pseudocode.md
+      - tied/vocab/workspace-pane.md
+    supersedes: []
+  status: Implemented
   traceability:
     architecture:
       - ARCH-FILE_MANAGER_HIERARCHY
@@ -75,6 +100,8 @@ IMPL-WORKSPACE_VIEW:
       - ARCH-PANE_COMMAND_EXEC
       - ARCH-PANE_LIFECYCLE
       - ARCH-TOOLBAR_LAYOUT
+    code_annotations:
+      - IMPL-WORKSPACE_VIEW
     requirements:
       - REQ-CONFIG_DRIVEN_FILE_MANAGER
       - REQ-DIRECTORY_NAVIGATION
@@ -97,30 +124,3 @@ IMPL-WORKSPACE_VIEW:
       - src/app/files/WorkspaceView.file-columns.test.tsx
       - src/app/files/WorkspaceView.set-base-directory.test.tsx
       - src/lib/set-base-directory.test.ts
-    code_annotations:
-      - IMPL-WORKSPACE_VIEW
-  related_decisions:
-    depends_on:
-      - IMPL-FILES_API
-    supersedes: []
-    see_also:
-      - IMPL-EXECUTE_DIALOG
-      - IMPL-FILE_PANE
-      - IMPL-KEYBINDS
-      - IMPL-LAYOUT_CALCULATOR
-      - IMPL-PANE_COMMAND_EXEC
-      - tied/implementation-decisions/IMPL-DEMO_SCREENSHOT_PIPELINE-pseudocode.md
-      - tied/vocab/workspace-pane.md
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-31T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — ExecuteApply handleApplyExecute and ExecuteFileDialog wiring
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass - no React warnings, 523 tests passing
-  essence_pseudocode_path: implementation-decisions/IMPL-WORKSPACE_VIEW-pseudocode.md

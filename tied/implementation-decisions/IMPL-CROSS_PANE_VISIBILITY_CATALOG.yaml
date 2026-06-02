@@ -1,32 +1,32 @@
 IMPL-CROSS_PANE_VISIBILITY_CATALOG:
-  name: Cross-Pane Visibility Catalog
-  status: Active
   cross_references:
     - ARCH-CROSS_PANE_VISIBILITY
     - IMPL-CROSS_PANE_VISIBILITY_UI
     - REQ-CROSS_PANE_VISIBILITY
   decision: Client localStorage catalog stores named CrossPaneVisibilityPreset records; panes reference presets by id and keep ephemeral drafts until saved.
   implementation_approach:
-    summary: cross-pane-visibility-store.ts with CRUD, duplicate, version bump, subscribe
     details:
       - mergePaneListingWithCrossPaneFields implements MERGE_LISTING_WITH_CROSS_PANE_FIELDS — explicit cross-pane field pick only (never spread full prior pane)
       - Storage key panorama.crossPaneVisibility.v1
       - Unique preset names (case-insensitive)
+    summary: cross-pane-visibility-store.ts with CRUD, duplicate, version bump, subscribe
+  metadata:
+    last_updated:
+      author: AI Agent
+      date: "2026-05-29T00:00:00.000Z"
+      reason: IMPL essence_pseudocode retrofit 2026-05-29
+  name: Cross-Pane Visibility Catalog
+  related_decisions:
+    see_also:
+      - tied/vocab/cross-pane-visibility.md
+  status: Active
   traceability:
+    architecture:
+      - ARCH-CROSS_PANE_VISIBILITY
     requirements:
       - REQ-CROSS_PANE_VISIBILITY
       - REQ-DIRECTORY_NAVIGATION
-    architecture:
-      - ARCH-CROSS_PANE_VISIBILITY
     tests:
       - src/app/files/WorkspaceView.cross-pane-visibility.test.tsx
       - src/lib/cross-pane-visibility-store.test.ts
       - src/lib/pane-cross-pane-visibility.test.ts
-  related_decisions:
-    see_also:
-      - tied/vocab/cross-pane-visibility.md
-  metadata:
-    last_updated:
-      date: "2026-05-29T00:00:00.000Z"
-      author: AI Agent
-      reason: IMPL essence_pseudocode retrofit 2026-05-29

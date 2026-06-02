@@ -1,30 +1,47 @@
 IMPL-MESH_RUNTIME:
-  name: Mesh Runtime Composition Root
-  status: Active
+  code_locations:
+    files:
+      - path: src/lib/mesh/runtime/mesh-runtime.ts
+        description: MeshRuntime and getMeshRuntime
+    functions: []
   cross_references:
     - ARCH-MESH_LAYERED
     - IMPL-MESH_CRUD
     - IMPL-MESH_DEPOT
     - REQ-MESH_PLATFORM
   decision: MeshRuntime singleton composes repository, services, connectors, auth, and safety for API and tests.
-  rationale:
-    why: L4 composition layer per ARCH-MESH_LAYERED.
-    problems_solved:
-      - Ad-hoc service wiring in each route
-    benefits:
-      - Single getMeshRuntime() for API handlers
   implementation_approach:
-    summary: src/lib/mesh/runtime/mesh-runtime.ts
     details:
       - See essence_pseudocode sidecar
-  code_locations:
-    files:
-      - path: src/lib/mesh/runtime/mesh-runtime.ts
-        description: MeshRuntime and getMeshRuntime
-    functions: []
+    summary: src/lib/mesh/runtime/mesh-runtime.ts
+  metadata:
+    created:
+      author: AI Agent
+      date: "2026-05-19T00:00:00.000Z"
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Pseudocode retrofit from production code and tests
+  name: Mesh Runtime Composition Root
+  rationale:
+    benefits:
+      - Single getMeshRuntime() for API handlers
+    problems_solved:
+      - Ad-hoc service wiring in each route
+    why: L4 composition layer per ARCH-MESH_LAYERED.
+  related_decisions:
+    depends_on:
+      - IMPL-MESH_CRUD
+      - IMPL-MESH_DEPOT
+    see_also: []
+    supersedes: []
+  status: Active
+  testability: integration
   traceability:
     architecture:
       - ARCH-MESH_LAYERED
+    code_annotations:
+      - IMPL-MESH_RUNTIME
     requirements:
       - REQ-MESH_AUTH
       - REQ-MESH_E2E_RELEASE
@@ -33,20 +50,3 @@ IMPL-MESH_RUNTIME:
       - REQ-MESH_REAL_CONNECTORS
     tests:
       - src/lib/mesh/services/services.integration.test.ts
-    code_annotations:
-      - IMPL-MESH_RUNTIME
-  related_decisions:
-    depends_on:
-      - IMPL-MESH_CRUD
-      - IMPL-MESH_DEPOT
-    supersedes: []
-    see_also: []
-  testability: integration
-  metadata:
-    created:
-      date: "2026-05-19T00:00:00.000Z"
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Pseudocode retrofit from production code and tests

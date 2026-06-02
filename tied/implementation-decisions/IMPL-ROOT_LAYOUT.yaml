@@ -1,60 +1,60 @@
 IMPL-ROOT_LAYOUT:
-  name: Root Layout Implementation
-  status: Active
-  cross_references:
-    - ARCH-LAYOUT_PATTERN
-    - REQ-ROOT_LAYOUT
-  decision: Create layout.tsx with html/body tags, font variables, and metadata
-  rationale:
-    why: Implements root layout pattern for consistent HTML structure and font loading
-    problems_solved:
-      - Inconsistent HTML structure
-      - Font loading management
-    benefits:
-      - Centralized HTML structure
-      - Consistent font loading
-      - Metadata management
-  implementation_approach:
-    summary: Create layout.tsx with html/body tags, font variables, and metadata
-    details:
-      - Export default RootLayout function
-      - Export metadata object
-      - Include body tag with font variables
-      - Include html tag with lang from config
-      - Render children
   code_locations:
     files:
       - path: src/app/layout.tsx
         description: Root layout component
     functions:
       - name: RootLayout
-        file: src/app/layout.tsx
         description: Root layout component function
+        file: src/app/layout.tsx
+  cross_references:
+    - ARCH-LAYOUT_PATTERN
+    - REQ-ROOT_LAYOUT
+  decision: Create layout.tsx with html/body tags, font variables, and metadata
+  implementation_approach:
+    details:
+      - Export default RootLayout function
+      - Export metadata object
+      - Include body tag with font variables
+      - Include html tag with lang from config
+      - Render children
+    summary: Create layout.tsx with html/body tags, font variables, and metadata
+  metadata:
+    created:
+      author: AI Agent
+      date: 2025-11-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Retrofit traceability for root layout pseudo-code
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Root Layout Implementation
+  rationale:
+    benefits:
+      - Centralized HTML structure
+      - Consistent font loading
+      - Metadata management
+    problems_solved:
+      - Font loading management
+      - Inconsistent HTML structure
+    why: Implements root layout pattern for consistent HTML structure and font loading
+  related_decisions:
+    depends_on: []
+    see_also:
+      - IMPL-FONT_LOADING
+      - IMPL-THEME_INJECTION
+    supersedes: []
+  status: Active
   traceability:
     architecture:
       - ARCH-LAYOUT_PATTERN
+    code_annotations:
+      - REQ-ROOT_LAYOUT
     requirements:
       - REQ-ROOT_LAYOUT
     tests:
       - src/app/layout.test.tsx
       - src/test/integration/app.test.tsx
-    code_annotations:
-      - REQ-ROOT_LAYOUT
-  related_decisions:
-    depends_on: []
-    supersedes: []
-    see_also:
-      - IMPL-FONT_LOADING
-      - IMPL-THEME_INJECTION
-  metadata:
-    created:
-      date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit traceability for root layout pseudo-code
-    last_validated:
-      date: 2026-02-06T00:00:00.000Z
-      validator: AI Agent
-      result: pass

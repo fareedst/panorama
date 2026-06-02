@@ -1,19 +1,31 @@
 REQ-PANE_DISPLAY_FILTER:
-  name: Pane Display Filter Specs
   category: Functional
-  priority: P1
-  status: Implemented
   description: 'Users can create named display filter specs with ordered include/exclude glob rules, apply a spec per pane by stable id, and have saved edits refresh all panes using that spec. Hidden entries are not shown, selectable, or included in mark-all or batch operations. Specs are display filters only, not access control. Canonical terms: tied/vocab/pane-display-filter.md; pseudo-code blocks EVALUATE_ENTRY, APPLY_PANE_LISTING in IMPL-DISPLAY_FILTER_ENGINE-pseudocode.md.'
+  metadata:
+    last_updated:
+      author: AI Agent
+      date: "2026-05-29T00:00:00.000Z"
+      reason: LEAP — vocabulary standards; pane-display-filter glossary criterion
+  name: Pane Display Filter Specs
+  priority: P1
   rationale:
-    why: Reduce visual noise in large directory trees without implying security boundaries
-    problems_solved:
-      - Accidental batch ops on invisible files
-      - Clutter from build artifacts and dependencies
-      - Inconsistent filters across panes
     benefits:
       - Cross-pane sync on save
       - Reusable named profiles
       - Server-side listing filter and bulk path validation via displaySpecId
+    problems_solved:
+      - Accidental batch ops on invisible files
+      - Clutter from build artifacts and dependencies
+      - Inconsistent filters across panes
+    why: Reduce visual noise in large directory trees without implying security boundaries
+  related_requirements:
+    depends_on:
+      - REQ-BULK_FILE_OPS
+      - REQ-FILE_LISTING
+      - REQ-FILE_MARKING_WEB
+      - REQ-MULTI_PANE_LAYOUT
+    related_to:
+      - REQ-WORKSPACE_MESH_BRIDGE
   satisfaction_criteria:
     - criterion: Active spec name visible in pane UI
     - criterion: Create, save, select, edit, rename, duplicate, and delete named specs
@@ -22,6 +34,7 @@ REQ-PANE_DISPLAY_FILTER:
     - criterion: Pane shows only items allowed by active spec
     - criterion: Terminology aligns with tied/vocab/pane-display-filter.md
     - criterion: Two panes sharing a spec refresh after save
+  status: Implemented
   traceability:
     architecture:
       - ARCH-DISPLAY_FILTER_ENGINE
@@ -31,16 +44,3 @@ REQ-PANE_DISPLAY_FILTER:
       - IMPL-DISPLAY_FILTER_ENGINE
       - IMPL-DISPLAY_SPEC_STORE
       - IMPL-PANE_DISPLAY_FILTER_UI
-  related_requirements:
-    depends_on:
-      - REQ-BULK_FILE_OPS
-      - REQ-FILE_LISTING
-      - REQ-FILE_MARKING_WEB
-      - REQ-MULTI_PANE_LAYOUT
-    related_to:
-      - REQ-WORKSPACE_MESH_BRIDGE
-  metadata:
-    last_updated:
-      date: "2026-05-29T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — vocabulary standards; pane-display-filter glossary criterion

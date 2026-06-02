@@ -1,27 +1,27 @@
 IMPL-MESH_SAFETY:
-  name: Mesh Safety Service
-  status: Active
+  code_locations:
+    files:
+      - path: src/lib/mesh/services/safety-service.ts
   cross_references:
     - ARCH-MESH_LAYERED
     - IMPL-MESH_TOPOLOGY
     - REQ-MESH_PLATFORM
     - REQ-MESH_SAFETY
   decision: SafetyService guards plan execution.
-  code_locations:
-    files:
-      - path: src/lib/mesh/services/safety-service.ts
+  metadata:
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Pseudocode retrofit from production code and tests
+  name: Mesh Safety Service
+  status: Active
   traceability:
     architecture:
       - ARCH-MESH_LAYERED
-    requirements:
-      - REQ-MESH_SAFETY
-      - REQ-MESH_PLATFORM
-    tests:
-      - src/lib/mesh/services/safety-service.test.ts
     code_annotations:
       - IMPL-MESH_SAFETY
-  metadata:
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Pseudocode retrofit from production code and tests
+    requirements:
+      - REQ-MESH_PLATFORM
+      - REQ-MESH_SAFETY
+    tests:
+      - src/lib/mesh/services/safety-service.test.ts

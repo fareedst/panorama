@@ -1,13 +1,4 @@
 IMPL-MESH_GUI:
-  name: Mesh React UI
-  status: Active
-  cross_references:
-    - REQ-MESH_GUI
-  decision: Client components under src/app/mesh/components consume /api/mesh endpoints.
-  rationale:
-    why: Phases 17-22 GUI
-  implementation_approach:
-    summary: Next.js pages + client components
   code_locations:
     files:
       - path: src/app/mesh/page.tsx
@@ -19,27 +10,36 @@ IMPL-MESH_GUI:
       - path: src/app/mesh/components/MeshDepotsClient.tsx
         description: IMPL-MESH_GUI_depots — depot CRUD and credential stub
     functions: []
-  traceability:
-    architecture:
-      - ARCH-MESH_LAYERED
-    requirements:
-      - REQ-MESH_GUI
-    tests:
-      - src/app/mesh/components/MeshListClient.test.tsx
-      - src/app/mesh/components/MeshDepotsClient.test.tsx
-    code_annotations:
-      - IMPL-MESH_GUI
+  cross_references:
+    - REQ-MESH_GUI
+  decision: Client components under src/app/mesh/components consume /api/mesh endpoints.
+  implementation_approach:
+    summary: Next.js pages + client components
+  metadata:
+    created:
+      author: AI Agent
+      date: "2026-05-19T00:00:00.000Z"
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: retrofit pseudocode; MeshListClient and MeshDepotsClient comment alignment
+  name: Mesh React UI
+  rationale:
+    why: Phases 17-22 GUI
   related_decisions:
     depends_on:
       - IMPL-MESH_API
-    supersedes: []
     see_also: []
+    supersedes: []
+  status: Active
   testability: component
-  metadata:
-    created:
-      date: "2026-05-19T00:00:00.000Z"
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: retrofit pseudocode; MeshListClient and MeshDepotsClient comment alignment
+  traceability:
+    architecture:
+      - ARCH-MESH_LAYERED
+    code_annotations:
+      - IMPL-MESH_GUI
+    requirements:
+      - REQ-MESH_GUI
+    tests:
+      - src/app/mesh/components/MeshDepotsClient.test.tsx
+      - src/app/mesh/components/MeshListClient.test.tsx

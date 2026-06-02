@@ -1,43 +1,4 @@
 IMPL-FILE_COLUMN_CONFIG:
-  name: Configurable File Column Display
-  status: Active
-  cross_references:
-    - ARCH-CONFIG_DRIVEN_UI
-    - IMPL-FILE_PANE
-    - IMPL-FILES_CONFIG
-    - IMPL-TOOLBAR_COMPONENT
-    - IMPL-WORKSPACE_MESH_BRIDGE
-    - IMPL-WORKSPACE_VIEW
-    - REQ-CONFIG_DRIVEN_FILE_MANAGER
-    - REQ-FILE_LISTING
-    - REQ-MULTI_PANE_LAYOUT
-    - REQ-TOOLBAR_SYSTEM
-    - REQ-WORKSPACE_MESH_BRIDGE
-  decision: Config-driven file metadata columns with tabular CSS grid rows, content-measured Size/Time ch tracks, workspace column-order dialog (view.columns), OneColumn shared metadata widths, and mesh workspace snapshot v4 fileColumns persistence.
-  rationale:
-    why: Implements configurable column display for file panes to meet user requirement for customizable file metadata display order and format
-    problems_solved:
-      - Column display not integrated with existing YAML configuration system
-      - Column order was YAML-only with no in-session reorder or mesh restore
-      - Flex rows did not align metadata across panes in OneColumn layout
-      - Hard-coded column order (checkbox, icon, name, size, mtime) cannot be changed
-      - No way to hide/show specific columns based on user preference
-    benefits:
-      - 'Default order optimized for most recent changes: mtime, size, name'
-      - 'Users can hide unwanted columns (visible: false)'
-      - Column order dialog via toolbar view.columns (no shortcut)
-      - Full integration with existing config-driven architecture
-      - Mesh snapshot v4 round-trips fileColumns
-      - Tabular grid aligns metadata; Name column flex remainder
-  implementation_approach:
-    summary: file-columns.ts helpers; FilePane CSS grid; ColumnOrderDialog; WorkspaceView state; mesh v4 capture/parse/diff
-    details:
-      - captureWorkspaceSnapshot version 4 includes fileColumns; parse v1–v3 omit uses YAML defaults
-      - config/files.yaml columns and copy.columns; toolbars.actions.view.columns for toolbar-only metadata
-      - deriveToolbarButton falls back to toolbars.actions when no keybinding
-      - FilePane tabular rows (file-row-grid) without listing header row; optional metadataColumnWidths from workspace
-      - src/lib/file-columns.ts — getVisibleFileColumns, reorderFileColumns, normalizeFileColumns, measure widths, buildFileRowGridTemplate, formatFileColumnCell, formatFileColumnsLabel
-      - WorkspaceView fileColumns state; view.columns opens ColumnOrderDialog; OneColumn shared metadata ch
   code_locations:
     files:
       - path: config/files.yaml
@@ -64,19 +25,85 @@ IMPL-FILE_COLUMN_CONFIG:
         description: fileColumns state, handlers, OneColumn shared widths
     functions:
       - name: normalizeFileColumns
-        file: src/lib/file-columns.ts
         description: Merge snapshot or raw column array with YAML defaults
-      - name: buildFileRowGridTemplate
         file: src/lib/file-columns.ts
+      - name: buildFileRowGridTemplate
         description: Build CSS grid template for metadata columns
+        file: src/lib/file-columns.ts
       - name: renderColumn
-        file: src/app/files/components/FilePane.tsx
         description: Render single metadata cell by FileColumnId
+        file: src/app/files/components/FilePane.tsx
+  cross_references:
+    - ARCH-CONFIG_DRIVEN_UI
+    - IMPL-FILE_PANE
+    - IMPL-FILES_CONFIG
+    - IMPL-TOOLBAR_COMPONENT
+    - IMPL-WORKSPACE_MESH_BRIDGE
+    - IMPL-WORKSPACE_VIEW
+    - REQ-CONFIG_DRIVEN_FILE_MANAGER
+    - REQ-FILE_LISTING
+    - REQ-MULTI_PANE_LAYOUT
+    - REQ-TOOLBAR_SYSTEM
+    - REQ-WORKSPACE_MESH_BRIDGE
+  decision: Config-driven file metadata columns with tabular CSS grid rows, content-measured Size/Time ch tracks, workspace column-order dialog (view.columns), OneColumn shared metadata widths, and mesh workspace snapshot v4 fileColumns persistence.
+  implementation_approach:
+    details:
+      - captureWorkspaceSnapshot version 4 includes fileColumns; parse v1–v3 omit uses YAML defaults
+      - config/files.yaml columns and copy.columns; toolbars.actions.view.columns for toolbar-only metadata
+      - deriveToolbarButton falls back to toolbars.actions when no keybinding
+      - FilePane tabular rows (file-row-grid) without listing header row; optional metadataColumnWidths from workspace
+      - src/lib/file-columns.ts — getVisibleFileColumns, reorderFileColumns, normalizeFileColumns, measure widths, buildFileRowGridTemplate, formatFileColumnCell, formatFileColumnsLabel
+      - WorkspaceView fileColumns state; view.columns opens ColumnOrderDialog; OneColumn shared metadata ch
+    summary: file-columns.ts helpers; FilePane CSS grid; ColumnOrderDialog; WorkspaceView state; mesh v4 capture/parse/diff
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Retrofit essence_pseudocode from tests and production code
+    last_validated:
+      date: "2026-05-23T00:00:00.000Z"
+      result: pending vitest gate
+      validator: AI Agent
+  name: Configurable File Column Display
+  rationale:
+    benefits:
+      - 'Default order optimized for most recent changes: mtime, size, name'
+      - 'Users can hide unwanted columns (visible: false)'
+      - Column order dialog via toolbar view.columns (no shortcut)
+      - Full integration with existing config-driven architecture
+      - Mesh snapshot v4 round-trips fileColumns
+      - Tabular grid aligns metadata; Name column flex remainder
+    problems_solved:
+      - Column display not integrated with existing YAML configuration system
+      - Column order was YAML-only with no in-session reorder or mesh restore
+      - Flex rows did not align metadata across panes in OneColumn layout
+      - Hard-coded column order (checkbox, icon, name, size, mtime) cannot be changed
+      - No way to hide/show specific columns based on user preference
+    why: Implements configurable column display for file panes to meet user requirement for customizable file metadata display order and format
+  related_decisions:
+    depends_on:
+      - ARCH-CONFIG_DRIVEN_UI
+      - IMPL-FILE_PANE
+      - IMPL-FILES_CONFIG
+    see_also:
+      - IMPL-FILES_CONFIG_COMPLETE
+      - IMPL-TOOLBAR_COMPONENT
+      - IMPL-WORKSPACE_MESH_BRIDGE
+      - IMPL-WORKSPACE_VIEW
+      - tied/vocab/workspace-pane.md
+    supersedes: []
+  status: Active
   traceability:
     architecture:
       - ARCH-CONFIG_DRIVEN_UI
       - ARCH-TOOLBAR_ACTIONS
       - ARCH-WORKSPACE_MESH_BRIDGE
+    code_annotations:
+      - IMPL-FILE_COLUMN_CONFIG
+      - REQ-CONFIG_DRIVEN_FILE_MANAGER
     requirements:
       - REQ-CONFIG_DRIVEN_FILE_MANAGER
       - REQ-FILE_LISTING
@@ -94,30 +121,3 @@ IMPL-FILE_COLUMN_CONFIG:
       - src/lib/file-columns.test.ts
       - src/lib/toolbar.utils.test.ts
       - src/lib/workspace-mesh-bridge.test.ts
-    code_annotations:
-      - IMPL-FILE_COLUMN_CONFIG
-      - REQ-CONFIG_DRIVEN_FILE_MANAGER
-  related_decisions:
-    depends_on:
-      - ARCH-CONFIG_DRIVEN_UI
-      - IMPL-FILE_PANE
-      - IMPL-FILES_CONFIG
-    supersedes: []
-    see_also:
-      - IMPL-FILES_CONFIG_COMPLETE
-      - IMPL-TOOLBAR_COMPONENT
-      - IMPL-WORKSPACE_MESH_BRIDGE
-      - IMPL-WORKSPACE_VIEW
-      - tied/vocab/workspace-pane.md
-  metadata:
-    created:
-      date: 2026-02-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit essence_pseudocode from tests and production code
-    last_validated:
-      date: "2026-05-23T00:00:00.000Z"
-      validator: AI Agent
-      result: pending vitest gate

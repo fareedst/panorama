@@ -1,67 +1,67 @@
 # ARCH detail — ARCH-LOGGING_SEMANTIC_TOKENS
 ARCH-LOGGING_SEMANTIC_TOKENS:
-  name: Semantic Token Integration in Logging
-  status: Active
-  cross_references:
-    - REQ-LOGGING_SEMANTIC_TOKENS
-  decision: Logger API requires tokens parameter as string or array of strings
-  rationale:
-    why: Semantic tokens in logs enable complete traceability from runtime to requirements
-    problems_solved:
-      - Cannot trace logs to feature requirements
-      - No connection to TIED documentation
-      - Unclear which module generated log
-    benefits:
-      - Complete end-to-end traceability
-      - Connects runtime behavior to design docs
-      - Easy grep/search by token
   alternatives_considered:
     - name: Module name only (no tokens)
-      pros:
-        - Simpler API
-        - Less verbose
       cons:
-        - No requirement traceability
         - Cannot track feature-level activity
+        - No requirement traceability
+      pros:
+        - Less verbose
+        - Simpler API
       rejected_reason: Does not meet TIED traceability requirements
     - name: Optional tokens
-      pros:
-        - Flexible
       cons:
         - Easy to forget
         - Inconsistent usage
+      pros:
+        - Flexible
       rejected_reason: Tokens must be mandatory for TIED compliance
+  cross_references:
+    - REQ-LOGGING_SEMANTIC_TOKENS
+  decision: Logger API requires tokens parameter as string or array of strings
   implementation_approach:
-    summary: Logger API requires tokens parameter as string or array of strings
     details:
       - 'Log format: [TIMESTAMP] [LEVEL] [TOKEN1] [TOKEN2] message'
       - 'tokens: string | string[] - required parameter'
       - Format tokens as space-separated in log output
       - TypeScript types enforce token presence at compile time
       - Validate token format [REQ-*], [ARCH-*], [IMPL-*]
-  traceability:
-    requirements:
-      - REQ-LOGGING_SEMANTIC_TOKENS
-    implementation:
-      - IMPL-LOGGER_TOKENS
-    tests: []
-    code_annotations:
-      - ARCH-LOGGING_SEMANTIC_TOKENS
+    summary: Logger API requires tokens parameter as string or array of strings
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Semantic Token Integration in Logging
+  rationale:
+    benefits:
+      - Complete end-to-end traceability
+      - Connects runtime behavior to design docs
+      - Easy grep/search by token
+    problems_solved:
+      - Cannot trace logs to feature requirements
+      - No connection to TIED documentation
+      - Unclear which module generated log
+    why: Semantic tokens in logs enable complete traceability from runtime to requirements
   related_decisions:
     depends_on:
       - ARCH-LOGGING_SYSTEM
     informs:
       - IMPL-LOGGER_TOKENS
     see_also: []
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-      reason: Initial creation
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+  status: Active
+  traceability:
+    code_annotations:
+      - ARCH-LOGGING_SEMANTIC_TOKENS
+    implementation:
+      - IMPL-LOGGER_TOKENS
+    requirements:
+      - REQ-LOGGING_SEMANTIC_TOKENS
+    tests: []

@@ -1,42 +1,26 @@
 # ARCH detail — ARCH-SERVER_CLIENT_BOUNDARY
 ARCH-SERVER_CLIENT_BOUNDARY:
-  name: Server-Client Code Boundary Separation
-  status: Active
-  cross_references:
-    - REQ-FILE_MANAGER_PAGE
-    - REQ-DIRECTORY_NAVIGATION
-  decision: Separate server-only code and client-safe utilities into different files; align API routes with Next.js App Router conventions
-  rationale:
-    why: Prevent Node.js modules from being bundled into client JavaScript and maintain correct API route paths
-    problems_solved:
-      - 404 errors from mismatched API routes and client calls
-      - Accidental server code imports in client components
-      - Build errors from fs/promises in client bundle
-      - Unclear boundaries between server and client code
-    benefits:
-      - Clear architectural boundary
-      - Correct API route URLs aligned with file structure
-      - Easier to reason about code dependencies
-      - Follows Next.js best practices
-      - Prevents build-time errors
   alternatives_considered:
     - name: Mark files as server-only with 'server-only' package
-      pros:
-        - Explicit marker
-        - Build-time enforcement
       cons:
-        - Still need separate utility files
         - Extra dependency
+        - Still need separate utility files
+      pros:
+        - Build-time enforcement
+        - Explicit marker
       rejected_reason: Adds dependency without solving the utility sharing problem
     - name: Use dynamic imports in client code
+      cons:
+        - Adds runtime complexity
+        - Doesn't work for server-only modules like fs
       pros:
         - Can import server code conditionally
-      cons:
-        - Doesn't work for server-only modules like fs
-        - Adds runtime complexity
       rejected_reason: Cannot dynamically import Node.js built-in modules in browser
+  cross_references:
+    - REQ-DIRECTORY_NAVIGATION
+    - REQ-FILE_MANAGER_PAGE
+  decision: Separate server-only code and client-safe utilities into different files; align API routes with Next.js App Router conventions
   implementation_approach:
-    summary: Separate server-only code and client-safe utilities into different files; align API routes with Next.js App Router conventions
     details:
       - 'API routes follow Next.js convention: src/app/api/files/route.ts creates /api/files endpoint (not /api/files/list)'
       - 'files.data.ts: Server-only, imports fs/promises, path, os'
@@ -47,19 +31,33 @@ ARCH-SERVER_CLIENT_BOUNDARY:
       - files.data.ts can re-export utilities from files.utils.ts for convenience
       - Import traces in build errors reveal exactly where server code leaks into client
       - Server components and API routes import from files.data.ts
-  traceability:
-    requirements:
-      - REQ-FILE_MANAGER_PAGE
-      - REQ-DIRECTORY_NAVIGATION
-    implementation:
-      - IMPL-FILE_PANE
-      - IMPL-FILES_API
-      - IMPL-FILES_DATA
-      - IMPL-FILES_UTILS
-      - IMPL-WORKSPACE_VIEW
-    tests: []
-    code_annotations:
-      - ARCH-SERVER_CLIENT_BOUNDARY
+    summary: Separate server-only code and client-safe utilities into different files; align API routes with Next.js App Router conventions
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+      reason: Added API route URL alignment lesson; fixed 404 error from /api/files/list vs /api/files mismatch
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Server-Client Code Boundary Separation
+  rationale:
+    benefits:
+      - Clear architectural boundary
+      - Correct API route URLs aligned with file structure
+      - Easier to reason about code dependencies
+      - Follows Next.js best practices
+      - Prevents build-time errors
+    problems_solved:
+      - 404 errors from mismatched API routes and client calls
+      - Accidental server code imports in client components
+      - Build errors from fs/promises in client bundle
+      - Unclear boundaries between server and client code
+    why: Prevent Node.js modules from being bundled into client JavaScript and maintain correct API route paths
   related_decisions:
     depends_on: []
     informs:
@@ -71,15 +69,17 @@ ARCH-SERVER_CLIENT_BOUNDARY:
       - ARCH-FILE_MANAGER_HIERARCHY
       - ARCH-FILE_OPERATIONS_API
       - ARCH-FILESYSTEM_ABSTRACTION
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-      reason: Added API route URL alignment lesson; fixed 404 error from /api/files/list vs /api/files mismatch
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+  status: Active
+  traceability:
+    code_annotations:
+      - ARCH-SERVER_CLIENT_BOUNDARY
+    implementation:
+      - IMPL-FILE_PANE
+      - IMPL-FILES_API
+      - IMPL-FILES_DATA
+      - IMPL-FILES_UTILS
+      - IMPL-WORKSPACE_VIEW
+    requirements:
+      - REQ-DIRECTORY_NAVIGATION
+      - REQ-FILE_MANAGER_PAGE
+    tests: []

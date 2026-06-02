@@ -1,39 +1,39 @@
 IMPL-NSYNC_VERIFY:
-  name: Destination Verification Implementation
-  status: Active
-  cross_references:
-    - REQ-VERIFY_DEST
-    - ARCH-HASH_VERIFICATION
-  decision: Destination file verification by recomputing hash and comparing to source
-  rationale:
-    why: Destination file verification by recomputing hash and comparing to source
-    problems_solved: []
-    benefits: []
-  implementation_approach:
-    summary: Destination file verification by recomputing hash and comparing to source
-    details: []
   code_locations:
     files:
       - path: src/lib/sync/verify.ts
         description: IMPL-NSYNC_VERIFY
     functions: []
+  cross_references:
+    - ARCH-HASH_VERIFICATION
+    - REQ-VERIFY_DEST
+  decision: Destination file verification by recomputing hash and comparing to source
+  implementation_approach:
+    details: []
+    summary: Destination file verification by recomputing hash and comparing to source
+  metadata:
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: NSYNC pseudocode retrofit from production code and tests
+    registered: 2026-02-09T00:00:00.000Z
+  name: Destination Verification Implementation
+  rationale:
+    benefits: []
+    problems_solved: []
+    why: Destination file verification by recomputing hash and comparing to source
+  related_decisions:
+    depends_on: []
+    see_also: []
+    supersedes: []
+  status: Active
   traceability:
     architecture:
       - ARCH-HASH_VERIFICATION
+    code_annotations:
+      - IMPL-NSYNC_VERIFY
+      - REQ-VERIFY_DEST
     requirements:
       - REQ-VERIFY_DEST
     tests:
       - src/lib/sync/engine.test.ts — integration when verifyDestination enabled
-    code_annotations:
-      - IMPL-NSYNC_VERIFY
-      - REQ-VERIFY_DEST
-  related_decisions:
-    depends_on: []
-    supersedes: []
-    see_also: []
-  metadata:
-    registered: 2026-02-09T00:00:00.000Z
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: NSYNC pseudocode retrofit from production code and tests

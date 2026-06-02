@@ -1,57 +1,57 @@
 REQ-CONFIG_DRIVEN_APPEARANCE:
-  name: File Manager Appearance and Layout from Config
   category: Functional
-  priority: P0
-  status: Implemented
   description: All file-manager UI copy, layout defaults, theme-driven row icons/classes, and site metadata must be dictated by YAML configuration (site, theme, files). The application root redirects to /files; jobs tracker appearance is out of scope and was removed.
+  metadata:
+    created:
+      author: AI Agent
+      date: 2025-11-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-29T00:00:00.000Z"
+      reason: LEAP align with IMPL/ARCH — file manager scope; jobs criteria removed
+    last_validated:
+      date: "2026-05-29T00:00:00.000Z"
+      result: pass — satisfaction criteria match production and config tests
+      validator: AI Agent
+  name: File Manager Appearance and Layout from Config
+  priority: P0
   rationale:
-    why: Panorama serves as a configurable file-manager template without hard-coded presentation in components
-    problems_solved:
-      - Code changes required for customization
-      - Hard-coded classes and copy in file-manager components
-      - Obsolete jobs-page criteria after sole-purpose refactor
     benefits:
       - Complete file-manager configurability from YAML
       - No code changes for copy, layout defaults, or file-type icons
       - Template reusability for other file-manager deployments
+    problems_solved:
+      - Code changes required for customization
+      - Hard-coded classes and copy in file-manager components
+      - Obsolete jobs-page criteria after sole-purpose refactor
+    why: Panorama serves as a configurable file-manager template without hard-coded presentation in components
+  related_requirements:
+    depends_on:
+      - REQ-CONFIG_DRIVEN_UI
+    related_to: []
+    supersedes: []
   satisfaction_criteria:
     - criterion: 'Single source of truth: config/site.yaml, config/theme.yaml, config/files.yaml'
     - criterion: File manager (/files) receives copy and layout from getFilesConfig without hard-coded user-facing strings for those fields
     - criterion: File rows use getFileTypeConfig (theme.files.fileTypes) for icon and iconClass
     - criterion: No jobs routes or config/jobs.yaml in the repository
     - criterion: Root layout uses getSiteConfig for document title and description
-  validation_criteria:
-    - method: Unit tests
-      coverage: src/lib/config.test.ts asserts merged files config, theme file types, and site metadata from YAML
-    - method: Code inspection
-      coverage: WorkspaceView and file UI consume config props; no hard-coded file-manager copy for configured fields
+  status: Implemented
   traceability:
     architecture:
-      - ARCH-CONFIG_DRIVEN_UI
       - ARCH-CONFIG_DRIVEN_APPEARANCE
+      - ARCH-CONFIG_DRIVEN_UI
+    code_annotations:
+      - REQ-CONFIG_DRIVEN_APPEARANCE
     implementation:
       - IMPL-CONFIG_DRIVEN_APPEARANCE
       - IMPL-CONFIG_LOADER
       - IMPL-FILES_CONFIG_COMPLETE
     tests:
-      - src/lib/config.test.ts
       - src/app/layout.test.tsx
-    code_annotations:
-      - REQ-CONFIG_DRIVEN_APPEARANCE
-  related_requirements:
-    depends_on:
-      - REQ-CONFIG_DRIVEN_UI
-    related_to: []
-    supersedes: []
-  metadata:
-    created:
-      date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-29T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP align with IMPL/ARCH — file manager scope; jobs criteria removed
-    last_validated:
-      date: "2026-05-29T00:00:00.000Z"
-      validator: AI Agent
-      result: pass — satisfaction criteria match production and config tests
+      - src/lib/config.test.ts
+  validation_criteria:
+    - method: Unit tests
+      coverage: src/lib/config.test.ts asserts merged files config, theme file types, and site metadata from YAML
+    - method: Code inspection
+      coverage: WorkspaceView and file UI consume config props; no hard-coded file-manager copy for configured fields

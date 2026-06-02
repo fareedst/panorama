@@ -1,50 +1,50 @@
 # ARCH detail — ARCH-LAYOUT_PATTERN
 ARCH-LAYOUT_PATTERN:
-  name: Root Layout Pattern
-  status: Active
+  alternatives_considered: []
   cross_references:
     - REQ-ROOT_LAYOUT
   decision: Create root layout at src/app/layout.tsx
-  rationale:
-    why: Root layouts enable shared UI, consistent styling, and centralized metadata
-    problems_solved:
-      - Code duplication across pages
-      - Inconsistent styling
-    benefits:
-      - Centralized font loading
-      - Consistent metadata
-      - Shared UI across routes
-  alternatives_considered: []
   implementation_approach:
-    summary: Create root layout at src/app/layout.tsx
     details:
       - Apply font variables
       - Export default RootLayout function
       - Export metadata
       - Include html and body tags
-  traceability:
-    requirements:
-      - REQ-ROOT_LAYOUT
-    implementation:
-      - IMPL-ROOT_LAYOUT
-    tests: []
-    code_annotations:
-      - REQ-ROOT_LAYOUT
+    summary: Create root layout at src/app/layout.tsx
+  metadata:
+    created:
+      author: AI Agent
+      date: 2025-11-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-06T00:00:00.000Z
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Root Layout Pattern
+  rationale:
+    benefits:
+      - Centralized font loading
+      - Consistent metadata
+      - Shared UI across routes
+    problems_solved:
+      - Code duplication across pages
+      - Inconsistent styling
+    why: Root layouts enable shared UI, consistent styling, and centralized metadata
   related_decisions:
     depends_on:
       - ARCH-APP_ROUTER
     informs:
       - IMPL-ROOT_LAYOUT
     see_also: []
-  metadata:
-    created:
-      date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-06T00:00:00.000Z
-      author: AI Agent
-      reason: Migration to v1.5.0
-    last_validated:
-      date: 2026-02-06T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+  status: Active
+  traceability:
+    code_annotations:
+      - REQ-ROOT_LAYOUT
+    implementation:
+      - IMPL-ROOT_LAYOUT
+    requirements:
+      - REQ-ROOT_LAYOUT
+    tests: []

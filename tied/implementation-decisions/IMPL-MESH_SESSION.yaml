@@ -1,36 +1,36 @@
 IMPL-MESH_SESSION:
-  name: Mesh Session Lifecycle
-  status: Active
   cross_references:
     - ARCH-MESH_LAYERED
     - IMPL-MESH_PERSISTENCE
     - REQ-MESH_PLATFORM
   decision: See essence_pseudocode sidecar and src/lib/mesh/services.
   implementation_approach:
-    summary: src/lib/mesh/services/
     details:
       - See essence_pseudocode sidecar
+    summary: src/lib/mesh/services/
+  metadata:
+    created:
+      author: AI Agent
+      date: "2026-05-19T00:00:00.000Z"
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Pseudocode retrofit from production code and tests
+  name: Mesh Session Lifecycle
+  related_decisions:
+    depends_on:
+      - IMPL-MESH_RUNTIME
+    see_also: []
+    supersedes: []
+  status: Active
+  testability: unit
   traceability:
     architecture:
       - ARCH-MESH_LAYERED
+    code_annotations:
+      - IMPL-MESH_PERSISTENCE
+      - IMPL-MESH_SESSION
     requirements:
       - REQ-MESH_PLATFORM
     tests:
       - src/lib/mesh/services/session-service.test.ts
-    code_annotations:
-      - IMPL-MESH_SESSION
-      - IMPL-MESH_PERSISTENCE
-  related_decisions:
-    depends_on:
-      - IMPL-MESH_RUNTIME
-    supersedes: []
-    see_also: []
-  testability: unit
-  metadata:
-    created:
-      date: "2026-05-19T00:00:00.000Z"
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Pseudocode retrofit from production code and tests

@@ -1,23 +1,42 @@
 REQ-FILE_MARKING_WEB:
-  name: Web-Based File Marking for Batch Operations
   category: Functional
-  priority: P0
-  status: Implemented
   description: |-
     Users must be able to mark and unmark individual files within a web-based directory listing for batch operations. Marked files are visually distinguished from unmarked files using checkbox icons and background highlighting. The system must support marking/unmarking individual files, toggling marks on all visible rows, and clearing all marks. Mark state persists when re-sorted or tree-refreshed by absolute file.path (path-based when directory tree spans multiple subdirectories). Marked files participate in batch operations (copy, move, delete) as a group.
 
     Canonical terms: tied/vocab/file-marking.md; pseudo-code blocks MarkToggle, MarkAll, ClearMarks in IMPL-FILE_MARKING-pseudocode.md.
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-06-01T00:00:00.000Z"
+      reason: LEAP — path-keyed marks for tree listing
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Web-Based File Marking for Batch Operations
+  priority: P0
   rationale:
-    why: Batch operations on multiple files require a selection mechanism optimized for web interfaces
-    problems_solved:
-      - Complex multi-file selection patterns with mouse/keyboard
-      - Loss of selection after view refresh or sorting
-      - Tedious individual file operations in web UI
     benefits:
       - Clear visual feedback via checkboxes and highlighting
       - Efficient batch operations on arbitrary file sets
       - Keyboard-driven marking workflow (Space, Shift+M, Escape)
       - Persistent client-side selection across sorting/filtering
+    problems_solved:
+      - Complex multi-file selection patterns with mouse/keyboard
+      - Loss of selection after view refresh or sorting
+      - Tedious individual file operations in web UI
+    why: Batch operations on multiple files require a selection mechanism optimized for web interfaces
+  related_requirements:
+    depends_on:
+      - REQ-FILE_LISTING
+      - REQ-KEYBOARD_NAVIGATION
+    related_to:
+      - REQ-BULK_FILE_OPS
+      - REQ-DIRECTORY_TREE
+    supersedes: []
   satisfaction_criteria:
     - criterion: 'Pane footer displays marked count: [marked/total]'
     - criterion: Batch operations operate on marked files when marks exist
@@ -29,6 +48,16 @@ REQ-FILE_MARKING_WEB:
     - criterion: Users can clear all marks with Escape key
     - criterion: Users can mark all visible rows (Shift+M) and invert marks (Ctrl+M)
     - criterion: Users can mark individual files by toggling with Space key or checkbox click
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-MARKING_STATE
+    code_annotations:
+      - REQ-FILE_MARKING_WEB
+    implementation:
+      - IMPL-FILE_MARKING
+    tests:
+      - TEST-FILE_MARKING
   validation_criteria:
     - method: Unit tests
       coverage: Mark toggle, mark all, invert, clear operations
@@ -38,32 +67,3 @@ REQ-FILE_MARKING_WEB:
       coverage: Batch operations use marked files correctly
     - method: UI tests
       coverage: Visual distinction of marked files
-  traceability:
-    architecture:
-      - ARCH-MARKING_STATE
-    implementation:
-      - IMPL-FILE_MARKING
-    tests:
-      - TEST-FILE_MARKING
-    code_annotations:
-      - REQ-FILE_MARKING_WEB
-  related_requirements:
-    depends_on:
-      - REQ-FILE_LISTING
-      - REQ-KEYBOARD_NAVIGATION
-    related_to:
-      - REQ-BULK_FILE_OPS
-      - REQ-DIRECTORY_TREE
-    supersedes: []
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-06-01T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — path-keyed marks for tree listing
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass

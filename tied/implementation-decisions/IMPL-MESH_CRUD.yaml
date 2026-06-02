@@ -1,21 +1,4 @@
 IMPL-MESH_CRUD:
-  name: Mesh CRUD Service Implementation
-  status: Active
-  cross_references:
-    - ARCH-MESH_CRUD
-    - IMPL-MESH_DOMAIN_TYPES
-    - REQ-MESH_CRUD
-  decision: MeshService implements create/read/update/archive/hardDelete/list using validateMesh and InMemoryMeshRepository.
-  rationale:
-    why: Fulfills REQ-MESH_CRUD phase 2.
-    problems_solved:
-      - Ad-hoc mesh storage
-    benefits:
-      - Deterministic unit tests
-  implementation_approach:
-    summary: Pure TypeScript service module
-    details:
-      - See essence_pseudocode sidecar
   code_locations:
     files:
       - path: src/lib/mesh/services/mesh-service.ts
@@ -25,26 +8,43 @@ IMPL-MESH_CRUD:
       - path: src/lib/mesh/repositories/memory-mesh-repository.ts
         description: In-memory store
     functions: []
+  cross_references:
+    - ARCH-MESH_CRUD
+    - IMPL-MESH_DOMAIN_TYPES
+    - REQ-MESH_CRUD
+  decision: MeshService implements create/read/update/archive/hardDelete/list using validateMesh and InMemoryMeshRepository.
+  implementation_approach:
+    details:
+      - See essence_pseudocode sidecar
+    summary: Pure TypeScript service module
+  metadata:
+    created:
+      author: AI Agent
+      date: "2026-05-19T00:00:00.000Z"
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Retrofit pseudocode — optimistic configurationVersion lock
+  name: Mesh CRUD Service Implementation
+  rationale:
+    benefits:
+      - Deterministic unit tests
+    problems_solved:
+      - Ad-hoc mesh storage
+    why: Fulfills REQ-MESH_CRUD phase 2.
+  related_decisions:
+    depends_on:
+      - IMPL-MESH_DOMAIN_TYPES
+    see_also: []
+    supersedes: []
+  status: Active
+  testability: unit
   traceability:
     architecture:
       - ARCH-MESH_CRUD
+    code_annotations:
+      - IMPL-MESH_CRUD
     requirements:
       - REQ-MESH_CRUD
     tests:
       - src/lib/mesh/services/mesh-service.test.ts
-    code_annotations:
-      - IMPL-MESH_CRUD
-  related_decisions:
-    depends_on:
-      - IMPL-MESH_DOMAIN_TYPES
-    supersedes: []
-    see_also: []
-  testability: unit
-  metadata:
-    created:
-      date: "2026-05-19T00:00:00.000Z"
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit pseudocode — optimistic configurationVersion lock

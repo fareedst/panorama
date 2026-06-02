@@ -1,29 +1,4 @@
 IMPL-COMPARISON_INDEX:
-  name: Comparison Index Implementation
-  status: Implemented
-  cross_references:
-    - ARCH-COMPARISON_INDEX
-    - REQ-CROSS_PANE_COMPARISON
-  decision: Build Map-based index from pane contents, provide query interface
-  rationale:
-    why: Centralized index enables efficient cross-pane file comparison
-    problems_solved:
-      - Performance issues
-      - Repeated comparisons
-      - Scattered comparison logic
-    benefits:
-      - Centralized logic
-      - Easy to rebuild
-      - O(1) lookup
-  implementation_approach:
-    summary: Build Map-based index from pane contents, provide query interface
-    details:
-      - 'buildComparisonIndex(panes: FileStat[][]): ComparisonIndex'
-      - 'CompareState interface (panes: number[], sizes: number[], mtimes: Date[])'
-      - 'ComparisonIndex.get(paneIndex: number, filename: string): CompareState | null'
-      - getSharedFilenames() returns sorted list of files in 2+ panes
-      - Implemented in src/lib/files.data.ts
-      - Returns null if file only in one pane or not in requested pane
   code_locations:
     files:
       - path: src/lib/files.data.ts
@@ -38,32 +13,57 @@ IMPL-COMPARISON_INDEX:
           - 55
     functions:
       - name: buildComparisonIndex
-        file: src/lib/files.data.ts
         description: Build comparison index from pane arrays
+        file: src/lib/files.data.ts
+  cross_references:
+    - ARCH-COMPARISON_INDEX
+    - REQ-CROSS_PANE_COMPARISON
+  decision: Build Map-based index from pane contents, provide query interface
+  implementation_approach:
+    details:
+      - 'buildComparisonIndex(panes: FileStat[][]): ComparisonIndex'
+      - 'CompareState interface (panes: number[], sizes: number[], mtimes: Date[])'
+      - 'ComparisonIndex.get(paneIndex: number, filename: string): CompareState | null'
+      - getSharedFilenames() returns sorted list of files in 2+ panes
+      - Implemented in src/lib/files.data.ts
+      - Returns null if file only in one pane or not in requested pane
+    summary: Build Map-based index from pane contents, provide query interface
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-29T00:00:00.000Z"
+      reason: Retrofit essence_pseudocode from buildComparisonIndex tests
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Comparison Index Implementation
+  rationale:
+    benefits:
+      - Centralized logic
+      - Easy to rebuild
+      - O(1) lookup
+    problems_solved:
+      - Performance issues
+      - Repeated comparisons
+      - Scattered comparison logic
+    why: Centralized index enables efficient cross-pane file comparison
+  related_decisions:
+    depends_on: []
+    see_also:
+      - docs/panorama-domain-references.md
+      - tied/vocab/cross-pane-comparison.md
+    supersedes: []
+  status: Implemented
   traceability:
     architecture:
       - ARCH-COMPARISON_INDEX
+    code_annotations:
+      - IMPL-COMPARISON_INDEX
     requirements:
       - REQ-CROSS_PANE_COMPARISON
     tests:
       - src/lib/files.data.test.ts
-    code_annotations:
-      - IMPL-COMPARISON_INDEX
-  related_decisions:
-    depends_on: []
-    supersedes: []
-    see_also:
-      - tied/vocab/cross-pane-comparison.md
-      - docs/panorama-domain-references.md
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-29T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit essence_pseudocode from buildComparisonIndex tests
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass

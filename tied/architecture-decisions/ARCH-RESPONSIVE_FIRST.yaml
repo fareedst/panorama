@@ -1,49 +1,49 @@
 # ARCH detail — ARCH-RESPONSIVE_FIRST
 ARCH-RESPONSIVE_FIRST:
-  name: Mobile-First Responsive Design
-  status: Active
+  alternatives_considered: []
   cross_references:
     - REQ-RESPONSIVE_DESIGN
   decision: Use Tailwind breakpoints with mobile-first approach
-  rationale:
-    why: Mobile-first ensures good performance on smaller devices with progressive enhancement
-    problems_solved:
-      - Poor mobile experience
-      - Desktop-first performance issues
-    benefits:
-      - Better mobile performance
-      - Meets user expectations
-      - Progressive enhancement
-  alternatives_considered: []
   implementation_approach:
-    summary: Use Tailwind breakpoints with mobile-first approach
     details:
       - 'Use sm:, md:, lg: for larger screens'
       - Default styles for mobile
       - Test at 320px, 768px, 1024px
-  traceability:
-    requirements:
-      - REQ-RESPONSIVE_DESIGN
-    implementation:
-      - IMPL-RESPONSIVE_CLASSES
-    tests: []
-    code_annotations:
-      - REQ-RESPONSIVE_DESIGN
+    summary: Use Tailwind breakpoints with mobile-first approach
+  metadata:
+    created:
+      author: AI Agent
+      date: 2025-11-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-06T00:00:00.000Z
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Mobile-First Responsive Design
+  rationale:
+    benefits:
+      - Better mobile performance
+      - Meets user expectations
+      - Progressive enhancement
+    problems_solved:
+      - Desktop-first performance issues
+      - Poor mobile experience
+    why: Mobile-first ensures good performance on smaller devices with progressive enhancement
   related_decisions:
     depends_on:
       - ARCH-TAILWIND_V4
     informs:
       - IMPL-RESPONSIVE_CLASSES
     see_also: []
-  metadata:
-    created:
-      date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-06T00:00:00.000Z
-      author: AI Agent
-      reason: Migration to v1.5.0
-    last_validated:
-      date: 2026-02-06T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+  status: Active
+  traceability:
+    code_annotations:
+      - REQ-RESPONSIVE_DESIGN
+    implementation:
+      - IMPL-RESPONSIVE_CLASSES
+    requirements:
+      - REQ-RESPONSIVE_DESIGN
+    tests: []

@@ -1,19 +1,33 @@
 REQ-MESH_DOMAIN_MODEL:
-  name: Mesh Domain Language and Core Types
   category: Functional
-  priority: P0
-  status: Implemented
   description: 'Define mesh, depot, sync_link, policy, filter, credential_reference, sync_session, change_set, sync_operation, sync_event, and conflict as language-agnostic domain types with validation and serialization. Outputs: domain_model, object_validation_rules, serialization_contracts. Deployable: false (domain-only slice).'
+  metadata:
+    created:
+      author: AI Agent
+      date: "2026-05-19T00:00:00.000Z"
+    last_updated:
+      author: AI Agent
+      date: "2026-05-19T20:15:00.000Z"
+      reason: 'sync-tied-stack: tied_verify after 50/50 mesh domain Vitest pass'
+  name: Mesh Domain Language and Core Types
+  priority: P0
   rationale:
-    why: Foundation for mesh CRUD, topology, planning, sessions, and GUI; must exist before production modules under src/lib/mesh/.
-    problems_solved:
-      - Ad-hoc structs without shared invariants
-      - Ambiguous session vs configuration mutability
-      - Secrets embedded in domain documents
     benefits:
       - Deterministic validation at construction time
       - Serialization safe for API and persistence layers
       - TDD-friendly pure domain module
+    problems_solved:
+      - Ad-hoc structs without shared invariants
+      - Ambiguous session vs configuration mutability
+      - Secrets embedded in domain documents
+    why: Foundation for mesh CRUD, topology, planning, sessions, and GUI; must exist before production modules under src/lib/mesh/.
+  related_requirements:
+    depends_on:
+      - REQ-MESH_PLATFORM
+    related_to:
+      - REQ-MESH_PLATFORM
+      - REQ-MODULE_VALIDATION
+    supersedes: []
   satisfaction_criteria:
     - criterion: all_core_objects_can_be_constructed_independently
     - criterion: all_core_objects_can_be_serialized (round-trip without secret leakage)
@@ -27,35 +41,21 @@ REQ-MESH_DOMAIN_MODEL:
     - criterion: policy_has_default_safe_values
     - criterion: sync_link_requires_valid_source_and_target_depots
     - criterion: sync_session_requires_mesh_snapshot
-  validation_criteria:
-    - method: Unit tests (Vitest)
-      coverage: src/lib/mesh/domain/validators.test.ts, serialize.test.ts, domain.composition.test.ts — mesh_requires_name through invalid_core_objects_are_rejected
-    - method: tied_validate_consistency
-      coverage: REQ-MESH_DOMAIN_MODEL traceability after sync-tied-stack
+  status: Implemented
   traceability:
     architecture:
-      - ARCH-MESH_LAYERED
       - ARCH-MESH_DOMAIN
+      - ARCH-MESH_LAYERED
+    code_annotations:
+      - REQ-MESH_DOMAIN_MODEL
     implementation:
       - IMPL-MESH_DOMAIN_TYPES
     tests:
       - src/lib/mesh/domain/domain.composition.test.ts
       - src/lib/mesh/domain/serialize.test.ts
       - src/lib/mesh/domain/validators.test.ts
-    code_annotations:
-      - REQ-MESH_DOMAIN_MODEL
-  related_requirements:
-    depends_on:
-      - REQ-MESH_PLATFORM
-    related_to:
-      - REQ-MODULE_VALIDATION
-      - REQ-MESH_PLATFORM
-    supersedes: []
-  metadata:
-    created:
-      date: "2026-05-19T00:00:00.000Z"
-      author: AI Agent
-    last_updated:
-      date: "2026-05-19T20:15:00.000Z"
-      author: AI Agent
-      reason: 'sync-tied-stack: tied_verify after 50/50 mesh domain Vitest pass'
+  validation_criteria:
+    - method: Unit tests (Vitest)
+      coverage: src/lib/mesh/domain/validators.test.ts, serialize.test.ts, domain.composition.test.ts — mesh_requires_name through invalid_core_objects_are_rejected
+    - method: tied_validate_consistency
+      coverage: REQ-MESH_DOMAIN_MODEL traceability after sync-tied-stack

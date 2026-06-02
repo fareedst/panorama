@@ -1,42 +1,27 @@
 ARCH-PANE_LIFECYCLE:
-  name: Multi-Pane Initialization and Management
-  status: Active
-  cross_references:
-    - REQ-MULTI_PANE_LAYOUT
-    - REQ-FILES_CONFIG_COMPLETE
-  decision: Server-side multi-pane initialization based on config, client-side pane management with keyboard shortcuts and config validation
-  rationale:
-    why: Defines how multiple file panes are initialized from configuration and managed at runtime to enable productive multi-panel file management workflows
-    problems_solved:
-      - File manager only initialized with single pane despite config specifying defaultPaneCount
-      - No mechanism to add/remove panes dynamically at runtime
-      - Startup paths configuration not respected
-      - Users forced to work with single pane even when multi-panel layout configured
-    benefits:
-      - Configuration-driven pane initialization matching user preferences
-      - Dynamic pane management for flexible workflows
-      - Multiple startup modes (home, configured, last)
-      - Respects layout constraints (maxPanes, allowPaneManagement)
   alternatives_considered:
     - name: Client-side initialization only
-      pros:
-        - Simpler server code
-        - All logic in one place
       cons:
         - Duplicated directory reading logic
         - Requires multiple API calls to initialize each pane
         - Slower initial page load
+      pros:
+        - All logic in one place
+        - Simpler server code
       rejected_reason: Server-side initialization provides better performance and cleaner separation of concerns
     - name: Fixed pane count without runtime management
-      pros:
-        - Simpler state management
-        - No need for add/remove logic
       cons:
-        - Users cannot adjust layout to current task
         - Configuration changes require page reload
+        - Users cannot adjust layout to current task
+      pros:
+        - No need for add/remove logic
+        - Simpler state management
       rejected_reason: Runtime management enables flexible workflows without page reloads
+  cross_references:
+    - REQ-FILES_CONFIG_COMPLETE
+    - REQ-MULTI_PANE_LAYOUT
+  decision: Server-side multi-pane initialization based on config, client-side pane management with keyboard shortcuts and config validation
   implementation_approach:
-    summary: Server-side multi-pane initialization based on config, client-side pane management with keyboard shortcuts and config validation
     details:
       - 'Add pane: clones focused pane state or creates new pane at home directory'
       - 'appendPaneAtPath: append at arbitrary directoryPath with template-pane display spec and cross-pane inheritance; shared by handleAddPane and Set-base newPane'
@@ -53,38 +38,53 @@ ARCH-PANE_LIFECYCLE:
       - Keyboard shortcuts (+ add, - remove, pane.swap/cycle reorder) integrated with keybinding system
       - Server initializes array of PaneState objects with appropriate directories
       - Server page reads layout.defaultPaneCount and startup.mode from config
-  traceability:
-    requirements:
-      - REQ-MULTI_PANE_LAYOUT
-      - REQ-FILES_CONFIG_COMPLETE
-    implementation:
+    summary: Server-side multi-pane initialization based on config, client-side pane management with keyboard shortcuts and config validation
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-31T00:00:00.000Z"
+      reason: LEAP — appendPaneAtPath shared append helper
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass - build succeeds, 570 tests passing
+      validator: AI Agent
+  name: Multi-Pane Initialization and Management
+  rationale:
+    benefits:
+      - Configuration-driven pane initialization matching user preferences
+      - Dynamic pane management for flexible workflows
+      - Multiple startup modes (home, configured, last)
+      - Respects layout constraints (maxPanes, allowPaneManagement)
+    problems_solved:
+      - File manager only initialized with single pane despite config specifying defaultPaneCount
+      - No mechanism to add/remove panes dynamically at runtime
+      - Startup paths configuration not respected
+      - Users forced to work with single pane even when multi-panel layout configured
+    why: Defines how multiple file panes are initialized from configuration and managed at runtime to enable productive multi-panel file management workflows
+  related_decisions:
+    depends_on:
+      - ARCH-CONFIG_DRIVEN_UI
+      - ARCH-FILE_MANAGER_HIERARCHY
+    informs:
       - IMPL-FILE_MANAGER_PAGE
       - IMPL-PANE_MANAGEMENT
-      - IMPL-WORKSPACE_VIEW
-    tests: []
+    see_also:
+      - ARCH-LAYOUT_ALGORITHMS
+      - tied/vocab/workspace-pane.md
+  status: Active
+  traceability:
     code_annotations:
       - ARCH-PANE_LIFECYCLE
       - IMPL-PANE_MANAGEMENT
       - REQ-MULTI_PANE_LAYOUT
-  related_decisions:
-    depends_on:
-      - ARCH-FILE_MANAGER_HIERARCHY
-      - ARCH-CONFIG_DRIVEN_UI
-    informs:
-      - IMPL-PANE_MANAGEMENT
+    implementation:
       - IMPL-FILE_MANAGER_PAGE
-    see_also:
-      - ARCH-LAYOUT_ALGORITHMS
-      - tied/vocab/workspace-pane.md
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-31T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — appendPaneAtPath shared append helper
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass - build succeeds, 570 tests passing
+      - IMPL-PANE_MANAGEMENT
+      - IMPL-WORKSPACE_VIEW
+    requirements:
+      - REQ-FILES_CONFIG_COMPLETE
+      - REQ-MULTI_PANE_LAYOUT
+    tests: []

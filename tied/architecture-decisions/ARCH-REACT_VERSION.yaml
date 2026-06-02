@@ -1,49 +1,49 @@
 # ARCH detail — ARCH-REACT_VERSION
 ARCH-REACT_VERSION:
-  name: React 19.2 with Server Components
-  status: Active
+  alternatives_considered: []
   cross_references:
     - REQ-APP_STRUCTURE
   decision: Use React 19.2 with Next.js App Router
-  rationale:
-    why: React 19 provides server components, improved performance, and modern features
-    problems_solved:
-      - Client-side rendering overhead
-      - Waterfall data fetching
-    benefits:
-      - Better performance
-      - Modern React features
-      - Server components reduce bundle size
-  alternatives_considered: []
   implementation_approach:
-    summary: Use React 19.2 with Next.js App Router
     details:
       - Client components only when needed
       - Install React 19.2
       - Use server components by default
-  traceability:
-    requirements:
-      - REQ-APP_STRUCTURE
-    implementation:
-      - IMPL-HOME_PAGE
-    tests: []
-    code_annotations:
-      - REQ-APP_STRUCTURE
+    summary: Use React 19.2 with Next.js App Router
+  metadata:
+    created:
+      author: AI Agent
+      date: 2025-11-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-06T00:00:00.000Z
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: React 19.2 with Server Components
+  rationale:
+    benefits:
+      - Better performance
+      - Modern React features
+      - Server components reduce bundle size
+    problems_solved:
+      - Client-side rendering overhead
+      - Waterfall data fetching
+    why: React 19 provides server components, improved performance, and modern features
   related_decisions:
     depends_on:
       - ARCH-NEXTJS_FRAMEWORK
     informs:
       - ARCH-SERVER_COMPONENTS
     see_also: []
-  metadata:
-    created:
-      date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-06T00:00:00.000Z
-      author: AI Agent
-      reason: Migration to v1.5.0
-    last_validated:
-      date: 2026-02-06T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+  status: Active
+  traceability:
+    code_annotations:
+      - REQ-APP_STRUCTURE
+    implementation:
+      - IMPL-HOME_PAGE
+    requirements:
+      - REQ-APP_STRUCTURE
+    tests: []

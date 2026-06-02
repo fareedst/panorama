@@ -1,26 +1,4 @@
 IMPL-TOOLBAR_COMPONENT:
-  name: Toolbar React Component Implementation
-  status: Implemented
-  cross_references:
-    - ARCH-TOOLBAR_ACTIONS
-    - ARCH-TOOLBAR_LAYOUT
-    - IMPL-LAYOUT_CALCULATOR
-    - REQ-MULTI_PANE_LAYOUT
-    - REQ-TOOLBAR_SYSTEM
-  decision: React components for toolbar system including base and specialized toolbars with compact icon-only button design
-  rationale:
-    why: React components for toolbar system including base and specialized toolbars with compact icon-only button design
-    problems_solved: []
-    benefits: []
-  implementation_approach:
-    summary: React components for toolbar system including compact, expanded, and named display modes
-    details:
-      - Icon registry in src/components/icons (lucide-icons, panorama-icons, registry.ts); getReferencedToolbarIconNames for test coverage
-      - mergeTopToolbarConfigs merges enabled top-position tiers for compact single-row layout
-      - ToolbarButton showActionLabel prop surfaces deriveToolbarButton labels in named mode
-      - ToolbarButton showKeystroke prop hides badge while preserving tooltip shortcuts
-      - ToolbarDisplayMode type compact | expanded | named; ToolbarCompactToggle cycles compact → expanded → named → compact
-      - useElementSize on workspace-area ref remeasures pane bounds when toolbar display mode changes
   code_locations:
     files:
       - path: src/app/files/components/ToolbarCompactToggle.tsx
@@ -64,13 +42,49 @@ IMPL-TOOLBAR_COMPONENT:
         file: src/lib/toolbar.utils.ts
       - name: ToolbarCompactToggle
         file: src/app/files/components/ToolbarCompactToggle.tsx
+  cross_references:
+    - ARCH-TOOLBAR_ACTIONS
+    - ARCH-TOOLBAR_LAYOUT
+    - IMPL-LAYOUT_CALCULATOR
+    - REQ-MULTI_PANE_LAYOUT
+    - REQ-TOOLBAR_SYSTEM
+  decision: React components for toolbar system including base and specialized toolbars with compact icon-only button design
+  essence_pseudocode_path: implementation-decisions/IMPL-TOOLBAR_COMPONENT-pseudocode.md
+  implementation_approach:
+    details:
+      - Icon registry in src/components/icons (lucide-icons, panorama-icons, registry.ts); getReferencedToolbarIconNames for test coverage
+      - mergeTopToolbarConfigs merges enabled top-position tiers for compact single-row layout
+      - ToolbarButton showActionLabel prop surfaces deriveToolbarButton labels in named mode
+      - ToolbarButton showKeystroke prop hides badge while preserving tooltip shortcuts
+      - ToolbarDisplayMode type compact | expanded | named; ToolbarCompactToggle cycles compact → expanded → named → compact
+      - useElementSize on workspace-area ref remeasures pane bounds when toolbar display mode changes
+    summary: React components for toolbar system including compact, expanded, and named display modes
+  metadata:
+    last_updated:
+      author: AI Agent
+      date: "2026-05-31T00:00:00.000Z"
+      reason: LEAP — named toolbar display mode
+    registered: 2026-02-08T00:00:00.000Z
+  name: Toolbar React Component Implementation
+  rationale:
+    benefits: []
+    problems_solved: []
+    why: React components for toolbar system including base and specialized toolbars with compact icon-only button design
+  related_decisions:
+    depends_on: []
+    see_also:
+      - tied/vocab/toolbar-keybind.md
+    supersedes: []
+  status: Implemented
   traceability:
     architecture:
-      - ARCH-TOOLBAR_LAYOUT
       - ARCH-TOOLBAR_ACTIONS
+      - ARCH-TOOLBAR_LAYOUT
+    code_annotations:
+      - IMPL-TOOLBAR_COMPONENT
     requirements:
-      - REQ-TOOLBAR_SYSTEM
       - REQ-MULTI_PANE_LAYOUT
+      - REQ-TOOLBAR_SYSTEM
     tests:
       - src/app/files/components/Toolbar.test.tsx
       - src/app/files/components/ToolbarButton.test.tsx
@@ -80,17 +94,3 @@ IMPL-TOOLBAR_COMPONENT:
       - src/components/icons/registry.test.tsx
       - src/lib/toolbar.utils.test.ts
       - src/lib/useElementSize.test.ts
-    code_annotations:
-      - IMPL-TOOLBAR_COMPONENT
-  related_decisions:
-    depends_on: []
-    supersedes: []
-    see_also:
-      - tied/vocab/toolbar-keybind.md
-  metadata:
-    registered: 2026-02-08T00:00:00.000Z
-    last_updated:
-      date: "2026-05-31T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — named toolbar display mode
-  essence_pseudocode_path: implementation-decisions/IMPL-TOOLBAR_COMPONENT-pseudocode.md

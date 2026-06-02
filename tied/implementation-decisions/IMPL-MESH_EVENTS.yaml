@@ -1,34 +1,34 @@
 IMPL-MESH_EVENTS:
-  name: Mesh Event Log
-  status: Active
   cross_references:
     - ARCH-MESH_LAYERED
     - REQ-MESH_PLATFORM
   decision: See essence_pseudocode sidecar and src/lib/mesh/services.
   implementation_approach:
-    summary: src/lib/mesh/services/
     details:
       - See essence_pseudocode sidecar
+    summary: src/lib/mesh/services/
+  metadata:
+    created:
+      author: AI Agent
+      date: "2026-05-19T00:00:00.000Z"
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: retrofit pseudocode from tests/code; three-way comment alignment
+  name: Mesh Event Log
+  related_decisions:
+    depends_on:
+      - IMPL-MESH_RUNTIME
+    see_also: []
+    supersedes: []
+  status: Active
+  testability: unit
   traceability:
     architecture:
       - ARCH-MESH_LAYERED
+    code_annotations:
+      - IMPL-MESH_EVENTS
     requirements:
       - REQ-MESH_PLATFORM
     tests:
       - src/lib/mesh/services/event-service.test.ts
-    code_annotations:
-      - IMPL-MESH_EVENTS
-  related_decisions:
-    depends_on:
-      - IMPL-MESH_RUNTIME
-    supersedes: []
-    see_also: []
-  testability: unit
-  metadata:
-    created:
-      date: "2026-05-19T00:00:00.000Z"
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: retrofit pseudocode from tests/code; three-way comment alignment

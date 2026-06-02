@@ -1,30 +1,4 @@
 IMPL-FILE_MARKING:
-  name: React State Mark Management
-  status: Active
-  cross_references:
-    - ARCH-MARKING_STATE
-    - REQ-FILE_MARKING_WEB
-    - REQ-PANE_DISPLAY_FILTER
-  decision: React useState with Set<string> per pane, keyboard and mouse handlers
-  rationale:
-    why: Client-side marking with Set<string> provides instant feedback and name-based persistence
-    problems_solved:
-      - Network latency on mark toggles
-      - Mark loss on re-sort
-    benefits:
-      - Instant UI updates
-      - Persistent across view changes
-      - Simple state structure
-  implementation_approach:
-    summary: React useState with Set<string> per pane, keyboard and mouse handlers
-    details:
-      - 'Footer: [${marks.size}/${files.length}]'
-      - 'handleClearMarks: marks.clear()'
-      - 'handleInvertMarks: symmetric difference'
-      - 'handleMarkAll: new Set(files.map(f => f.name))'
-      - 'handleToggleMark: Add/remove filename from set'
-      - 'PaneState: { path, files, cursor, marks: Set<string>, scrollTop }'
-      - 'Visual: checkbox icon + bg-marked CSS class'
   code_locations:
     files:
       - path: src/app/files/WorkspaceView.tsx
@@ -35,36 +9,62 @@ IMPL-FILE_MARKING:
         lines: []
     functions:
       - name: handleToggleMark
-        file: src/app/files/WorkspaceView.tsx
         description: Toggle mark on specific file
-      - name: handleMarkAll
         file: src/app/files/WorkspaceView.tsx
+      - name: handleMarkAll
         description: Mark all files in pane
+        file: src/app/files/WorkspaceView.tsx
+  cross_references:
+    - ARCH-MARKING_STATE
+    - REQ-FILE_MARKING_WEB
+    - REQ-PANE_DISPLAY_FILTER
+  decision: React useState with Set<string> per pane, keyboard and mouse handlers
+  implementation_approach:
+    details:
+      - 'Footer: [${marks.size}/${files.length}]'
+      - 'handleClearMarks: marks.clear()'
+      - 'handleInvertMarks: symmetric difference'
+      - 'handleMarkAll: new Set(files.map(f => f.name))'
+      - 'handleToggleMark: Add/remove filename from set'
+      - 'PaneState: { path, files, cursor, marks: Set<string>, scrollTop }'
+      - 'Visual: checkbox icon + bg-marked CSS class'
+    summary: React useState with Set<string> per pane, keyboard and mouse handlers
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Retrofit pseudocode; visible-file mark scope
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: React State Mark Management
+  rationale:
+    benefits:
+      - Instant UI updates
+      - Persistent across view changes
+      - Simple state structure
+    problems_solved:
+      - Mark loss on re-sort
+      - Network latency on mark toggles
+    why: Client-side marking with Set<string> provides instant feedback and name-based persistence
+  related_decisions:
+    depends_on:
+      - ARCH-MARKING_STATE
+    see_also:
+      - IMPL-BULK_OPS
+      - tied/vocab/file-marking.md
+    supersedes: []
+  status: Active
   traceability:
     architecture:
       - ARCH-MARKING_STATE
+    code_annotations:
+      - IMPL-FILE_MARKING
     requirements:
       - REQ-FILE_MARKING_WEB
     tests:
       - src/app/files/WorkspaceView.test.tsx
-    code_annotations:
-      - IMPL-FILE_MARKING
-  related_decisions:
-    depends_on:
-      - ARCH-MARKING_STATE
-    supersedes: []
-    see_also:
-      - IMPL-BULK_OPS
-      - tied/vocab/file-marking.md
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit pseudocode; visible-file mark scope
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass

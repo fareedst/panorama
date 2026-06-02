@@ -1,39 +1,39 @@
 IMPL-NSYNC_HASH:
-  name: Hash Computation Implementation
-  status: Active
-  cross_references:
-    - REQ-HASH_COMPUTATION
-    - ARCH-HASH_VERIFICATION
-  decision: Hash computation with BLAKE3, SHA-256, XXH3 support and streaming for large files
-  rationale:
-    why: Hash computation with BLAKE3, SHA-256, XXH3 support and streaming for large files
-    problems_solved: []
-    benefits: []
-  implementation_approach:
-    summary: Hash computation with BLAKE3, SHA-256, XXH3 support and streaming for large files
-    details: []
   code_locations:
     files:
       - path: src/lib/sync/hash.ts
         description: IMPL-NSYNC_HASH
     functions: []
+  cross_references:
+    - ARCH-HASH_VERIFICATION
+    - REQ-HASH_COMPUTATION
+  decision: Hash computation with BLAKE3, SHA-256, XXH3 support and streaming for large files
+  implementation_approach:
+    details: []
+    summary: Hash computation with BLAKE3, SHA-256, XXH3 support and streaming for large files
+  metadata:
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: NSYNC pseudocode retrofit from production code and tests
+    registered: 2026-02-09T00:00:00.000Z
+  name: Hash Computation Implementation
+  rationale:
+    benefits: []
+    problems_solved: []
+    why: Hash computation with BLAKE3, SHA-256, XXH3 support and streaming for large files
+  related_decisions:
+    depends_on: []
+    see_also: []
+    supersedes: []
+  status: Active
   traceability:
     architecture:
       - ARCH-HASH_VERIFICATION
+    code_annotations:
+      - IMPL-NSYNC_HASH
+      - REQ-HASH_COMPUTATION
     requirements:
       - REQ-HASH_COMPUTATION
     tests:
       - src/lib/sync/engine.test.ts — integration via compareMethod hash and verify
-    code_annotations:
-      - IMPL-NSYNC_HASH
-      - REQ-HASH_COMPUTATION
-  related_decisions:
-    depends_on: []
-    supersedes: []
-    see_also: []
-  metadata:
-    registered: 2026-02-09T00:00:00.000Z
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: NSYNC pseudocode retrofit from production code and tests

@@ -1,31 +1,4 @@
 IMPL-FILE_PANE:
-  name: File Pane Component
-  status: Implemented
-  cross_references:
-    - ARCH-FILE_MANAGER_HIERARCHY
-    - IMPL-MOUSE_SUPPORT
-    - REQ-DIRECTORY_NAVIGATION
-    - REQ-FILE_LISTING
-    - REQ-LINKED_PANES
-    - REQ-MOUSE_INTERACTION
-  decision: Client component renders file list with cursor, marks, comparison colors, and proper date conversion
-  rationale:
-    why: Individual pane component displays files and handles pane-level interactions with proper date handling
-    problems_solved:
-      - File rendering
-      - JSON date serialization issues
-      - Pane-level state
-      - Visual indicators
-    benefits:
-      - Clear visual feedback
-      - Independent rendering
-      - Reusable pane component
-      - Robust date handling for API responses
-  implementation_approach:
-    summary: Client component renders file list with cursor, marks, comparison colors, and unified context menu
-    details:
-      - 'UNIFIED_CONTEXT_MENU_WIRING: row and column right-click open ContextMenu with clipboard and onSetBaseDirectory'
-      - 'PANE_FILES_LIST_PROP: paneFilesList for cross-pane clipboard in unified menu'
   code_locations:
     files:
       - path: src/app/files/components/FilePane.tsx
@@ -40,42 +13,69 @@ IMPL-FILE_PANE:
           - 680
     functions:
       - name: handleColumnContextMenu
-        file: src/app/files/components/FilePane.tsx
         description: Column cell right-click handler
-      - name: renderColumn
         file: src/app/files/components/FilePane.tsx
+      - name: renderColumn
         description: Attaches onContextMenu to metadata cells
+        file: src/app/files/components/FilePane.tsx
+  cross_references:
+    - ARCH-FILE_MANAGER_HIERARCHY
+    - IMPL-MOUSE_SUPPORT
+    - REQ-DIRECTORY_NAVIGATION
+    - REQ-FILE_LISTING
+    - REQ-LINKED_PANES
+    - REQ-MOUSE_INTERACTION
+  decision: Client component renders file list with cursor, marks, comparison colors, and proper date conversion
+  implementation_approach:
+    details:
+      - 'PANE_FILES_LIST_PROP: paneFilesList for cross-pane clipboard in unified menu'
+      - 'UNIFIED_CONTEXT_MENU_WIRING: row and column right-click open ContextMenu with clipboard and onSetBaseDirectory'
+    summary: Client component renders file list with cursor, marks, comparison colors, and unified context menu
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: LEAP — unified ContextMenu wiring and set-base
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: File Pane Component
+  rationale:
+    benefits:
+      - Clear visual feedback
+      - Independent rendering
+      - Reusable pane component
+      - Robust date handling for API responses
+    problems_solved:
+      - File rendering
+      - JSON date serialization issues
+      - Pane-level state
+      - Visual indicators
+    why: Individual pane component displays files and handles pane-level interactions with proper date handling
+  related_decisions:
+    depends_on: []
+    see_also:
+      - IMPL-FILES_UTILS
+      - IMPL-MOUSE_SUPPORT
+      - IMPL-WORKSPACE_VIEW
+      - tied/vocab/workspace-pane.md
+    supersedes: []
+  status: Implemented
   traceability:
     architecture:
       - ARCH-FILE_MANAGER_HIERARCHY
       - ARCH-MOUSE_SUPPORT
+    code_annotations:
+      - IMPL-FILE_PANE
     requirements:
       - REQ-DIRECTORY_NAVIGATION
       - REQ-FILE_LISTING
       - REQ-LINKED_PANES
       - REQ-MOUSE_INTERACTION
     tests:
-      - src/app/files/components/FilePane.test.tsx
       - src/app/files/components/ContextMenu.test.tsx
-    code_annotations:
-      - IMPL-FILE_PANE
-  related_decisions:
-    depends_on: []
-    supersedes: []
-    see_also:
-      - IMPL-FILES_UTILS
-      - IMPL-MOUSE_SUPPORT
-      - IMPL-WORKSPACE_VIEW
-      - tied/vocab/workspace-pane.md
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — unified ContextMenu wiring and set-base
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+      - src/app/files/components/FilePane.test.tsx

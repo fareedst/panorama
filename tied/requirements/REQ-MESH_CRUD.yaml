@@ -1,17 +1,30 @@
 REQ-MESH_CRUD:
-  name: Mesh CRUD Unit Logic
   category: Functional
-  priority: P0
-  status: Implemented
   description: 'Isolated CRUD for mesh configuration: create, read, update metadata, archive, hard delete, list with archived filter, validate identity. Deployable false until API slice.'
+  metadata:
+    created:
+      author: AI Agent
+      date: "2026-05-19T00:00:00.000Z"
+    last_updated:
+      author: AI Agent
+      date: "2026-05-19T00:00:00.000Z"
+      reason: Phase 2 mesh CRUD slice
+  name: Mesh CRUD Unit Logic
+  priority: P0
   rationale:
-    why: Deployment plan phase 2; mutable mesh lifecycle on top of L1 domain validation.
-    problems_solved:
-      - No persisted mesh registry
-      - No archive vs active listing
     benefits:
-      - Testable without database or GUI
       - Explicit state transitions
+      - Testable without database or GUI
+    problems_solved:
+      - No archive vs active listing
+      - No persisted mesh registry
+    why: Deployment plan phase 2; mutable mesh lifecycle on top of L1 domain validation.
+  related_requirements:
+    depends_on:
+      - REQ-MESH_DOMAIN_MODEL
+    related_to:
+      - REQ-MESH_PLATFORM
+    supersedes: []
   satisfaction_criteria:
     - criterion: archive_mesh_without_deleting_history
     - criterion: create_mesh_with_name_and_description
@@ -21,30 +34,17 @@ REQ-MESH_CRUD:
     - criterion: reject_mesh_without_name
     - criterion: update_mesh_name
     - criterion: update_mesh_tags
-  validation_criteria:
-    - method: Unit tests (Vitest)
-      coverage: src/lib/mesh/services/mesh-service.test.ts
+  status: Implemented
   traceability:
     architecture:
-      - ARCH-MESH_LAYERED
       - ARCH-MESH_CRUD
+      - ARCH-MESH_LAYERED
+    code_annotations:
+      - REQ-MESH_CRUD
     implementation:
       - IMPL-MESH_CRUD
     tests:
       - src/lib/mesh/services/mesh-service.test.ts
-    code_annotations:
-      - REQ-MESH_CRUD
-  related_requirements:
-    depends_on:
-      - REQ-MESH_DOMAIN_MODEL
-    related_to:
-      - REQ-MESH_PLATFORM
-    supersedes: []
-  metadata:
-    created:
-      date: "2026-05-19T00:00:00.000Z"
-      author: AI Agent
-    last_updated:
-      date: "2026-05-19T00:00:00.000Z"
-      author: AI Agent
-      reason: Phase 2 mesh CRUD slice
+  validation_criteria:
+    - method: Unit tests (Vitest)
+      coverage: src/lib/mesh/services/mesh-service.test.ts

@@ -1,49 +1,49 @@
 # REQ detail — REQ-MOVE_SEMANTICS
 REQ-MOVE_SEMANTICS:
-  name: Safe Move Semantics
   category: Functional
-  priority: P0
-  status: Implemented
   description: Ensure source files only deleted after ALL destinations succeed to prevent data loss
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-09T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-09T00:00:00.000Z
+      reason: Initial creation
+    last_validated:
+      date: 2026-02-09T00:00:00.000Z
+      result: implemented
+      validator: AI Agent
+  name: Safe Move Semantics
+  priority: P0
   rationale:
-    why: Ensure source files only deleted after ALL destinations succeed to prevent data loss
-    problems_solved:
-      - Data loss on partial move failure
-      - Inconsistent state across destinations
-      - Source deleted even when some destinations failed
     benefits:
       - Clear failure recovery (source preserved)
       - Data safety guarantee
       - Predictable move behavior
-  satisfaction_criteria:
-    - criterion: Clear error reporting for partial failures
-    - criterion: Source deleted only after ALL destinations succeed
-    - criterion: Source preserved if ANY destination fails
-  validation_criteria:
-    - method: Unit tests
-      coverage: Move success, partial failure, full failure
-  traceability:
-    architecture: []
-    implementation:
-      - IMPL-NSYNC_ENGINE
-      - IMPL-NSYNC_OPERATIONS
-    tests: []
-    code_annotations:
-      - REQ-MOVE_SEMANTICS
+    problems_solved:
+      - Data loss on partial move failure
+      - Inconsistent state across destinations
+      - Source deleted even when some destinations failed
+    why: Ensure source files only deleted after ALL destinations succeed to prevent data loss
   related_requirements:
     depends_on: []
     related_to:
       - REQ-NSYNC_MULTI_TARGET
     supersedes: []
-  metadata:
-    created:
-      date: 2026-02-09T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-09T00:00:00.000Z
-      author: AI Agent
-      reason: Initial creation
-    last_validated:
-      date: 2026-02-09T00:00:00.000Z
-      validator: AI Agent
-      result: implemented
+  satisfaction_criteria:
+    - criterion: Clear error reporting for partial failures
+    - criterion: Source deleted only after ALL destinations succeed
+    - criterion: Source preserved if ANY destination fails
+  status: Implemented
+  traceability:
+    architecture: []
+    code_annotations:
+      - REQ-MOVE_SEMANTICS
+    implementation:
+      - IMPL-NSYNC_ENGINE
+      - IMPL-NSYNC_OPERATIONS
+    tests: []
+  validation_criteria:
+    - method: Unit tests
+      coverage: Move success, partial failure, full failure

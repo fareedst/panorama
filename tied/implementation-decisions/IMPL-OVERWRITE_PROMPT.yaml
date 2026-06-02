@@ -1,29 +1,4 @@
 IMPL-OVERWRITE_PROMPT:
-  name: Overwrite Confirmation with File Comparison
-  status: Active
-  cross_references:
-    - ARCH-BATCH_OPERATIONS
-    - IMPL-BULK_OPS
-    - REQ-BULK_FILE_OPS
-  decision: Implement an enhanced overwrite confirmation prompt for copy and move operations that displays existing file attributes, source file attributes, and a clear comparison before the user confirms the operation.
-  rationale:
-    why: Users need to see existing file attributes and comparison before overwriting
-    problems_solved:
-      - No visibility into what will be replaced
-      - Risk of overwriting newer/larger files
-      - Silent overwriting without user awareness
-    benefits:
-      - Clear comparison of source vs existing files
-      - No additional API calls (uses existing pane data)
-      - Shows size and time differences
-  implementation_approach:
-    summary: Detect file conflicts before confirmation, display comparison details in ConfirmDialog
-    details:
-      - Before opening confirm dialog, check destination pane files for matching names
-      - Build FileConflict array with formatted summaries and comparison text
-      - ConfirmDialog extended with optional conflicts prop and scrollable detail section
-      - describeFileComparison() utility provides size/time comparison logic
-      - Uses path-browserify for basename extraction in browser
   code_locations:
     files:
       - path: src/app/files/WorkspaceView.tsx
@@ -37,42 +12,67 @@ IMPL-OVERWRITE_PROMPT:
         lines: []
     functions:
       - name: describeFileComparison
-        file: src/lib/files.utils.ts
         description: Compare two files and describe size/time differences
+        file: src/lib/files.utils.ts
       - name: handleBulkCopy
-        file: src/app/files/WorkspaceView.tsx
         description: Copy with conflict detection
-      - name: handleBulkMove
         file: src/app/files/WorkspaceView.tsx
+      - name: handleBulkMove
         description: Move with conflict detection
-  traceability:
-    architecture:
-      - ARCH-BATCH_OPERATIONS
-    requirements:
-      - REQ-BULK_FILE_OPS
-    tests:
-      - src/app/files/BulkOperations.test.tsx
-    code_annotations:
-      - ARCH-BATCH_OPERATIONS
-      - IMPL-OVERWRITE_PROMPT
-      - REQ-BULK_FILE_OPS
+        file: src/app/files/WorkspaceView.tsx
+  cross_references:
+    - ARCH-BATCH_OPERATIONS
+    - IMPL-BULK_OPS
+    - REQ-BULK_FILE_OPS
+  decision: Implement an enhanced overwrite confirmation prompt for copy and move operations that displays existing file attributes, source file attributes, and a clear comparison before the user confirms the operation.
+  essence_pseudocode_path: implementation-decisions/IMPL-OVERWRITE_PROMPT-pseudocode.md
+  implementation_approach:
+    details:
+      - Before opening confirm dialog, check destination pane files for matching names
+      - Build FileConflict array with formatted summaries and comparison text
+      - ConfirmDialog extended with optional conflicts prop and scrollable detail section
+      - describeFileComparison() utility provides size/time comparison logic
+      - Uses path-browserify for basename extraction in browser
+    summary: Detect file conflicts before confirmation, display comparison details in ConfirmDialog
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+      reason: Retrofit essence_pseudocode from production code and tests
+    last_validated:
+      date: 2026-02-08T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Overwrite Confirmation with File Comparison
+  rationale:
+    benefits:
+      - Clear comparison of source vs existing files
+      - No additional API calls (uses existing pane data)
+      - Shows size and time differences
+    problems_solved:
+      - No visibility into what will be replaced
+      - Risk of overwriting newer/larger files
+      - Silent overwriting without user awareness
+    why: Users need to see existing file attributes and comparison before overwriting
   related_decisions:
     depends_on:
       - IMPL-BULK_OPS
       - IMPL-FILES_DATA
-    supersedes: []
     see_also:
       - IMPL-COMPARISON_COLORS
-  metadata:
-    created:
-      date: 2026-02-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-      reason: Retrofit essence_pseudocode from production code and tests
-    last_validated:
-      date: 2026-02-08T00:00:00.000Z
-      validator: AI Agent
-      result: pass
-  essence_pseudocode_path: implementation-decisions/IMPL-OVERWRITE_PROMPT-pseudocode.md
+    supersedes: []
+  status: Active
+  traceability:
+    architecture:
+      - ARCH-BATCH_OPERATIONS
+    code_annotations:
+      - ARCH-BATCH_OPERATIONS
+      - IMPL-OVERWRITE_PROMPT
+      - REQ-BULK_FILE_OPS
+    requirements:
+      - REQ-BULK_FILE_OPS
+    tests:
+      - src/app/files/BulkOperations.test.tsx

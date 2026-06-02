@@ -1,22 +1,22 @@
 # [REQ-CONFIG_DRIVEN_UI] Site Configuration
 # Minimal site configuration for file manager application
-metadata:
-  title: File Manager
-  description: Server-side file manager with multi-pane workspace
-# HTML lang attribute (BCP 47 language tag)
-locale: en
-# Branding assets (kept for potential future use in layout)
 branding:
   logo:
-    src: /next.svg
     alt: File Manager
-    width: 100
-    height: 20
     darkInvert: true
 # Navigation structure (minimal - no longer used by home page)
+    height: 20
+    src: /next.svg
+    width: 100
+locale: en
+# Branding assets (kept for potential future use in layout)
+metadata:
+  description: Server-side file manager with multi-pane workspace
+# HTML lang attribute (BCP 47 language tag)
+  title: File Manager
 navigation:
-  inlineLinks: {}
   buttons: []
+  inlineLinks: {}
   security:
-    target: _blank
     rel: noopener noreferrer
+    target: _blank

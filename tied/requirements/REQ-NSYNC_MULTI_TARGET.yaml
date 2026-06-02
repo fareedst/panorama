@@ -1,20 +1,38 @@
 REQ-NSYNC_MULTI_TARGET:
-  name: Multi-Destination File Synchronization
   category: Functional
-  priority: P1
-  status: Implemented
   description: 'Enable efficient copying/moving of files from the focused pane (sources) to all other visible panes (destinations) in parallel. Canonical terms: tied/vocab/nsync-multi-target.md; pseudo-code blocks IMPL-NSYNC_ENGINE_* in tied/implementation-decisions/IMPL-NSYNC_ENGINE-pseudocode.md.'
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-09T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-06-01T00:00:00.000Z"
+      reason: LEAP — preserve relative path on multi-target sync (sourceBase)
+    last_validated:
+      date: 2026-02-09T00:00:00.000Z
+      result: implemented
+      validator: AI Agent
+  name: Multi-Destination File Synchronization
+  priority: P1
   rationale:
-    why: Enable efficient copying/moving of files from source to multiple destinations in parallel, inspired by Goful's nsync usage
-    problems_solved:
-      - Difficult to verify that all destinations received files correctly
-      - No built-in way to sync files to all visible panes
-      - Sequential copy to multiple destinations is slow and inefficient
     benefits:
       - CopyAll/MoveAll keyboard shortcuts for productivity
       - Parallel sync to multiple destinations for speed
       - Progress tracking and error reporting per destination
       - Safe move semantics (delete source only after ALL succeed)
+    problems_solved:
+      - Difficult to verify that all destinations received files correctly
+      - No built-in way to sync files to all visible panes
+      - Sequential copy to multiple destinations is slow and inefficient
+    why: Enable efficient copying/moving of files from source to multiple destinations in parallel, inspired by Goful's nsync usage
+  related_requirements:
+    depends_on: []
+    related_to:
+      - REQ-BULK_FILE_OPS
+      - REQ-MOVE_SEMANTICS
+      - REQ-README_DEMO_AUTOMATION
+    supersedes: []
   satisfaction_criteria:
     - criterion: 'Move semantics: delete source only after all destinations succeed (see MoveSemantics / IMPL-NSYNC_ENGINE_MoveSemantics)'
     - criterion: Cancellation support via AbortSignal
@@ -22,6 +40,19 @@ REQ-NSYNC_MULTI_TARGET:
     - criterion: preserve_relative_path — sync-all maps each source to same relative path under each destination base when sourceBase provided
     - criterion: Sync files to 2+ destinations in parallel via sync-all / SyncEngine
     - criterion: Terminology and block names align with tied/vocab/nsync-multi-target.md
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-DEMO_ASSET_PIPELINE
+      - ARCH-NSYNC_INTEGRATION
+    code_annotations:
+      - REQ-NSYNC_MULTI_TARGET
+    implementation:
+      - IMPL-DEMO_SCREENSHOT_PIPELINE
+      - IMPL-NSYNC_ENGINE
+      - IMPL-NSYNC_OPERATIONS
+    tests:
+      - e2e/copyall-demo.spec.ts
   validation_criteria:
     - method: Unit tests
       coverage: Multi-destination sync, move semantics, observer callbacks
@@ -31,34 +62,3 @@ REQ-NSYNC_MULTI_TARGET:
       coverage: e2e/copyall-demo.spec.ts documents CopyAll workflow and produces demo PNGs plus GIF via IMPL-DEMO_SCREENSHOT_PIPELINE
     - method: Unit tests
       coverage: nested source paths with sourceBase in engine.test.ts
-  traceability:
-    architecture:
-      - ARCH-NSYNC_INTEGRATION
-      - ARCH-DEMO_ASSET_PIPELINE
-    implementation:
-      - IMPL-DEMO_SCREENSHOT_PIPELINE
-      - IMPL-NSYNC_ENGINE
-      - IMPL-NSYNC_OPERATIONS
-    tests:
-      - e2e/copyall-demo.spec.ts
-    code_annotations:
-      - REQ-NSYNC_MULTI_TARGET
-  related_requirements:
-    depends_on: []
-    related_to:
-      - REQ-BULK_FILE_OPS
-      - REQ-MOVE_SEMANTICS
-      - REQ-README_DEMO_AUTOMATION
-    supersedes: []
-  metadata:
-    created:
-      date: 2026-02-09T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-06-01T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — preserve relative path on multi-target sync (sourceBase)
-    last_validated:
-      date: 2026-02-09T00:00:00.000Z
-      validator: AI Agent
-      result: implemented

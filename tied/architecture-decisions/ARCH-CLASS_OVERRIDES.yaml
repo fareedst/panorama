@@ -1,33 +1,36 @@
 # ARCH detail — ARCH-CLASS_OVERRIDES
 ARCH-CLASS_OVERRIDES:
-  name: Tailwind Class Override System via Config
-  status: Active
+  alternatives_considered: []
   cross_references:
     - REQ-CONFIG_DRIVEN_UI
   decision: Per-element Tailwind CSS class overrides are supported via the `overrides` section in `config/theme.yaml`. Override strings are merged with default component classes using `tailwind-merge`, which intelligently resolves conflicting utilities (e.g., `bg-red-500` overrides `bg-white`).
-  rationale:
-    why: Allow per-element Tailwind class overrides through configuration
-    problems_solved:
-      - Hard-coded component classes
-      - Difficult styling customization
-    benefits:
-      - Flexible styling
-      - No code changes for styling
-  alternatives_considered: []
   implementation_approach:
-    summary: Use tailwind-merge to apply config-driven class overrides
     details:
       - Apply to components
       - Define class overrides in theme config
       - Use tailwind-merge to merge classes
-  traceability:
-    requirements:
-      - REQ-CONFIG_DRIVEN_UI
-    implementation:
-      - IMPL-CLASS_OVERRIDES
-    tests: []
-    code_annotations:
-      - REQ-CONFIG_DRIVEN_UI
+    summary: Use tailwind-merge to apply config-driven class overrides
+  metadata:
+    created:
+      author: AI Agent
+      date: 2025-11-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-06T00:00:00.000Z
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Tailwind Class Override System via Config
+  rationale:
+    benefits:
+      - Flexible styling
+      - No code changes for styling
+    problems_solved:
+      - Difficult styling customization
+      - Hard-coded component classes
+    why: Allow per-element Tailwind class overrides through configuration
   related_decisions:
     depends_on:
       - ARCH-CONFIG_DRIVEN_UI
@@ -35,15 +38,12 @@ ARCH-CLASS_OVERRIDES:
       - IMPL-CLASS_OVERRIDES
     see_also:
       - ARCH-TAILWIND_V4
-  metadata:
-    created:
-      date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-06T00:00:00.000Z
-      author: AI Agent
-      reason: Migration to v1.5.0
-    last_validated:
-      date: 2026-02-06T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+  status: Active
+  traceability:
+    code_annotations:
+      - REQ-CONFIG_DRIVEN_UI
+    implementation:
+      - IMPL-CLASS_OVERRIDES
+    requirements:
+      - REQ-CONFIG_DRIVEN_UI
+    tests: []

@@ -1,9 +1,17 @@
 REQ-MESH_HARDENING:
-  name: Mesh Executor Hardening
   category: Functional
-  priority: P2
-  status: Implemented
   description: Concurrency slots, retry backoff, optional outbound bandwidth pacing, optimistic mesh configuration versioning, and plan pagination knobs for large change sets ([REQ-MESH_PLATFORM] prompts phase 29).
+  metadata:
+    created:
+      author: AI Agent
+      date: "2026-05-19T00:00:00.000Z"
+  name: Mesh Executor Hardening
+  priority: P2
+  related_requirements:
+    depends_on:
+      - REQ-MESH_PLATFORM
+    related_to: []
+    supersedes: []
   satisfaction_criteria:
     - criterion: concurrent_operations_limited_per_mesh
     - criterion: executor_retries_apply_exponential_backoff_via_hardening_delay_between_attempts_when_runtime_executes_operations
@@ -12,6 +20,20 @@ REQ-MESH_HARDENING:
     - criterion: outbound_bandwidth_cap_throttles_approximate_bytes_after_successful_copy_or_update_when_configured
     - criterion: retries_stop_at_max_attempts
     - criterion: stale_mesh_patch_rejected_when_expected_configuration_version_provided_but_mismatched
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-MESH_LAYERED
+    code_annotations:
+      - REQ-MESH_HARDENING
+    implementation:
+      - IMPL-MESH_HARDENING
+    tests:
+      - src/app/api/mesh/plan-conflicts.route.test.ts
+      - src/lib/mesh/repositories/json-mesh-repository.test.ts
+      - src/lib/mesh/services/hardening-service.test.ts
+      - src/lib/mesh/services/mesh-service.test.ts
+      - src/lib/mesh/services/planning-service.test.ts
   validation_criteria:
     - method: Vitest
       coverage: src/lib/mesh/services/hardening-service.test.ts
@@ -23,25 +45,3 @@ REQ-MESH_HARDENING:
       coverage: src/lib/mesh/services/planning-service.test.ts
     - method: Vitest
       coverage: src/app/api/mesh/plan-conflicts.route.test.ts
-  traceability:
-    architecture:
-      - ARCH-MESH_LAYERED
-    implementation:
-      - IMPL-MESH_HARDENING
-    tests:
-      - src/app/api/mesh/plan-conflicts.route.test.ts
-      - src/lib/mesh/repositories/json-mesh-repository.test.ts
-      - src/lib/mesh/services/hardening-service.test.ts
-      - src/lib/mesh/services/mesh-service.test.ts
-      - src/lib/mesh/services/planning-service.test.ts
-    code_annotations:
-      - REQ-MESH_HARDENING
-  related_requirements:
-    depends_on:
-      - REQ-MESH_PLATFORM
-    related_to: []
-    supersedes: []
-  metadata:
-    created:
-      date: "2026-05-19T00:00:00.000Z"
-      author: AI Agent

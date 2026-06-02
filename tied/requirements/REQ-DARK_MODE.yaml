@@ -1,53 +1,53 @@
 # REQ detail — REQ-DARK_MODE
 REQ-DARK_MODE:
-  name: Dark Mode Theme Support
   category: Non-Functional
-  priority: P0
-  status: Implemented
   description: Dark mode is a modern UI expectation that improves user experience in low-light conditions
+  metadata:
+    created:
+      author: AI Agent
+      date: 2025-11-08T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-06T00:00:00.000Z
+      reason: Migration to v1.5.0
+    last_validated:
+      date: 2026-02-06T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Dark Mode Theme Support
+  priority: P0
   rationale:
-    why: Dark mode is a modern UI expectation that improves user experience in low-light conditions
-    problems_solved:
-      - Battery drain on OLED displays
-      - Eye strain in low-light environments
-      - Lack of user preference respect
     benefits:
       - Automatic system preference detection
       - Battery savings on OLED displays
       - Improved user experience in low-light conditions
       - Reduced eye strain
-  satisfaction_criteria:
-    - criterion: All UI elements have appropriate dark mode variants
-    - criterion: Application detects system dark mode preference automatically
-    - criterion: Color scheme switches between light and dark modes
-    - criterion: Text remains readable in both modes
-  validation_criteria:
-    - method: System preference testing
-      coverage: Application switches theme when system preference changes
-    - method: Contrast testing
-      coverage: All text has sufficient contrast in both modes (WCAG AA minimum)
-  traceability:
-    architecture:
-      - ARCH-CSS_VARIABLES
-    implementation:
-      - IMPL-DARK_MODE
-    tests: []
-    code_annotations:
-      - REQ-DARK_MODE
+    problems_solved:
+      - Battery drain on OLED displays
+      - Eye strain in low-light environments
+      - Lack of user preference respect
+    why: Dark mode is a modern UI expectation that improves user experience in low-light conditions
   related_requirements:
     depends_on: []
     related_to:
       - REQ-GLOBAL_STYLES
     supersedes: []
-  metadata:
-    created:
-      date: 2025-11-08T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-06T00:00:00.000Z
-      author: AI Agent
-      reason: Migration to v1.5.0
-    last_validated:
-      date: 2026-02-06T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+  satisfaction_criteria:
+    - criterion: All UI elements have appropriate dark mode variants
+    - criterion: Application detects system dark mode preference automatically
+    - criterion: Color scheme switches between light and dark modes
+    - criterion: Text remains readable in both modes
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-CSS_VARIABLES
+    code_annotations:
+      - REQ-DARK_MODE
+    implementation:
+      - IMPL-DARK_MODE
+    tests: []
+  validation_criteria:
+    - method: System preference testing
+      coverage: Application switches theme when system preference changes
+    - method: Contrast testing
+      coverage: All text has sufficient contrast in both modes (WCAG AA minimum)

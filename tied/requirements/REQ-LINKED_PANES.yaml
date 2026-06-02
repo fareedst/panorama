@@ -1,45 +1,31 @@
 REQ-LINKED_PANES:
-  name: Linked Pane Navigation
   category: Functional
-  priority: P2
-  status: Implemented
   description: 'Toggleable linked mode synchronizes directory navigation, cursor position (by filename), and sort across panes. Canonical terms: tied/vocab/linked-navigation.md; pseudo-code blocks IMPL-LINKED_NAV_* in tied/implementation-decisions/IMPL-LINKED_NAV-pseudocode.md.'
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: "2026-06-01T00:00:00.000Z"
+      reason: LEAP — linked sync on re-root not tree expand
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass
+      validator: AI Agent
+  name: Linked Pane Navigation
+  priority: P2
   rationale:
-    why: Users need synchronized navigation across panes for comparison tasks
-    problems_solved:
-      - Difficulty keeping panes synchronized
-      - Manual navigation of multiple panes to same subdirectory
-      - No visual indicator of linked state
     benefits:
       - Automatic synchronized directory changes
       - Configurable link groups (future enhancement)
       - Toggle linked mode on/off (L key)
       - Visual indicator in pane headers
-  satisfaction_criteria:
-    - criterion: cross_pane_path_clipboard_reuses_cursor_filename — file column cross-pane path copy matches file.name across pane listings regardless of linkedMode
-    - criterion: Link groups configurable (future enhancement)
-    - criterion: Linked mode persists across directory changes
-    - criterion: Linked panes navigate to same subdirectory together via handleNavigate re-root only (not tree expand/collapse)
-    - criterion: Terminology aligns with tied/vocab/linked-navigation.md
-    - criterion: Toggle linked mode with L key (link.toggle)
-    - criterion: Visual indicator shows linked state in pane headers (VisualIndicators)
-  validation_criteria:
-    - method: Unit tests
-      coverage: Link state management and sync logic
-    - method: Integration tests
-      coverage: Synchronized navigation across panes
-  traceability:
-    architecture:
-      - ARCH-LINKED_NAV
-    implementation:
-      - IMPL-FILE_PANE
-      - IMPL-LINKED_NAV
-      - IMPL-MOUSE_SUPPORT
-    tests:
-      - src/lib/file-column-clipboard.test.ts
-      - src/app/files/components/FileColumnContextMenu.test.tsx
-    code_annotations:
-      - REQ-LINKED_PANES
+    problems_solved:
+      - Difficulty keeping panes synchronized
+      - Manual navigation of multiple panes to same subdirectory
+      - No visual indicator of linked state
+    why: Users need synchronized navigation across panes for comparison tasks
   related_requirements:
     depends_on:
       - REQ-DIRECTORY_NAVIGATION
@@ -48,15 +34,29 @@ REQ-LINKED_PANES:
     related_to:
       - REQ-FILE_COMPARISON_VISUAL
     supersedes: []
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: "2026-06-01T00:00:00.000Z"
-      author: AI Agent
-      reason: LEAP — linked sync on re-root not tree expand
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass
+  satisfaction_criteria:
+    - criterion: cross_pane_path_clipboard_reuses_cursor_filename — file column cross-pane path copy matches file.name across pane listings regardless of linkedMode
+    - criterion: Link groups configurable (future enhancement)
+    - criterion: Linked mode persists across directory changes
+    - criterion: Linked panes navigate to same subdirectory together via handleNavigate re-root only (not tree expand/collapse)
+    - criterion: Terminology aligns with tied/vocab/linked-navigation.md
+    - criterion: Toggle linked mode with L key (link.toggle)
+    - criterion: Visual indicator shows linked state in pane headers (VisualIndicators)
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-LINKED_NAV
+    code_annotations:
+      - REQ-LINKED_PANES
+    implementation:
+      - IMPL-FILE_PANE
+      - IMPL-LINKED_NAV
+      - IMPL-MOUSE_SUPPORT
+    tests:
+      - src/app/files/components/FileColumnContextMenu.test.tsx
+      - src/lib/file-column-clipboard.test.ts
+  validation_criteria:
+    - method: Unit tests
+      coverage: Link state management and sync logic
+    - method: Integration tests
+      coverage: Synchronized navigation across panes

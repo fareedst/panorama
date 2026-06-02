@@ -1,72 +1,72 @@
 # ARCH detail — ARCH-FILES_CONFIG_COMPLETE
 ARCH-FILES_CONFIG_COMPLETE:
-  name: Complete File Manager Configuration Architecture
-  status: Active
-  cross_references:
-    - REQ-FILES_CONFIG_COMPLETE
-    - REQ-CONFIG_DRIVEN_FILE_MANAGER
-  decision: Extend existing YAML configuration with layout/startup/fileTypes sections and pattern-based matching
-  rationale:
-    why: Complete configuration system enables full template customization without code changes
-    problems_solved:
-      - Fixed layout and startup behavior
-      - Hard-coded UI text and styling
-      - Incomplete configurability
-      - Non-customizable file type indicators
-    benefits:
-      - Complete visual and behavioral control
-      - Easy A/B testing of configurations
-      - Future internationalization ready
-      - Zero code changes for customization
   alternatives_considered:
     - name: Component-level configuration
-      pros:
-        - More granular control
       cons:
         - Complex to maintain
         - Scattered configuration
+      pros:
+        - More granular control
       rejected_reason: Centralized YAML config more maintainable
     - name: Database-driven configuration
+      cons:
+        - More complex setup
+        - Requires database infrastructure
       pros:
         - Runtime updates possible
-      cons:
-        - Requires database infrastructure
-        - More complex setup
       rejected_reason: YAML file config simpler for template use case
+  cross_references:
+    - REQ-CONFIG_DRIVEN_FILE_MANAGER
+    - REQ-FILES_CONFIG_COMPLETE
+  decision: Extend existing YAML configuration with layout/startup/fileTypes sections and pattern-based matching
   implementation_approach:
-    summary: Extend existing YAML configuration with layout/startup/fileTypes sections and pattern-based matching
     details:
       - Added TypeScript interfaces for new sections
       - Extended config/files.yaml with layout and startup configuration
       - Extended config/theme.yaml with fileTypes (icon, color, patterns)
       - Extended defaults to handle missing configuration gracefully
       - Implemented glob-to-regex pattern matching for file types
-  traceability:
-    requirements:
-      - REQ-FILES_CONFIG_COMPLETE
-      - REQ-CONFIG_DRIVEN_FILE_MANAGER
-    implementation:
-      - IMPL-FILES_CONFIG_COMPLETE
-    tests: []
-    code_annotations:
-      - ARCH-FILES_CONFIG_COMPLETE
+    summary: Extend existing YAML configuration with layout/startup/fileTypes sections and pattern-based matching
+  metadata:
+    created:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+    last_updated:
+      author: AI Agent
+      date: 2026-02-07T00:00:00.000Z
+      reason: Phase 11 architecture complete
+    last_validated:
+      date: 2026-02-07T00:00:00.000Z
+      result: pass - 567 tests passing
+      validator: AI Agent
+  name: Complete File Manager Configuration Architecture
+  rationale:
+    benefits:
+      - Complete visual and behavioral control
+      - Easy A/B testing of configurations
+      - Future internationalization ready
+      - Zero code changes for customization
+    problems_solved:
+      - Fixed layout and startup behavior
+      - Hard-coded UI text and styling
+      - Incomplete configurability
+      - Non-customizable file type indicators
+    why: Complete configuration system enables full template customization without code changes
   related_decisions:
     depends_on:
       - ARCH-CONFIG_DRIVEN_UI
     informs:
       - IMPL-FILES_CONFIG_COMPLETE
     see_also:
-      - ARCH-KEYBIND_SYSTEM
       - ARCH-COMPARISON_COLORING
-  metadata:
-    created:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-    last_updated:
-      date: 2026-02-07T00:00:00.000Z
-      author: AI Agent
-      reason: Phase 11 architecture complete
-    last_validated:
-      date: 2026-02-07T00:00:00.000Z
-      validator: AI Agent
-      result: pass - 567 tests passing
+      - ARCH-KEYBIND_SYSTEM
+  status: Active
+  traceability:
+    code_annotations:
+      - ARCH-FILES_CONFIG_COMPLETE
+    implementation:
+      - IMPL-FILES_CONFIG_COMPLETE
+    requirements:
+      - REQ-CONFIG_DRIVEN_FILE_MANAGER
+      - REQ-FILES_CONFIG_COMPLETE
+    tests: []

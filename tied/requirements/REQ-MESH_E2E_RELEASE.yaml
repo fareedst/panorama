@@ -1,7 +1,6 @@
 REQ-MESH_E2E_RELEASE:
-  name: Mesh E2E Release Validation
-  status: Implemented
   description: 'Playwright flows for mesh UI release validation. Covers two-local-depot sync, fan-out, conflict resolution, destructive-operation guard, pause/resume/cancel, RBAC credentials, export/import, navigation, monitoring, archive. Canonical terms: tied/vocab/mesh-platform.md.'
+  name: Mesh E2E Release Validation
   satisfaction_criteria:
     - criterion: e2e_archived_mesh_hidden_history_retained
     - criterion: e2e_conflict_detect_and_resolve
@@ -11,15 +10,16 @@ REQ-MESH_E2E_RELEASE:
     - criterion: e2e_pause_resume_cancel_session
     - criterion: e2e_rbac_restricts_credentials_and_create_mesh
     - criterion: e2e_two_depot_sync_copies_file_to_target
-  validation_criteria:
-    - method: Playwright
-      coverage: e2e/mesh-sync.spec.ts
+  status: Implemented
   traceability:
     architecture:
       - ARCH-MESH_LAYERED
+    code_annotations:
+      - REQ-MESH_E2E_RELEASE
     implementation:
       - IMPL-MESH_GUI
     tests:
       - e2e/mesh-sync.spec.ts
-    code_annotations:
-      - REQ-MESH_E2E_RELEASE
+  validation_criteria:
+    - method: Playwright
+      coverage: e2e/mesh-sync.spec.ts

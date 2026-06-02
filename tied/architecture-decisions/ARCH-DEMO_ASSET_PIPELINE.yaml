@@ -1,28 +1,16 @@
 ARCH-DEMO_ASSET_PIPELINE:
-  name: Demo Asset Pipeline
-  status: Active
-  cross_references:
-    - REQ-README_DEMO_AUTOMATION
-    - ARCH-TEST_FRAMEWORK
-  decision: Modular Playwright E2E specs plus bash fixture scripts produce committed docs/screenshots product tour assets; comparison and CopyAll fixtures are separate; mesh demos use ephemeral MESH_DATA_DIR with mkdtemp depot roots.
-  rationale:
-    why: Documentation visuals are release artifacts requiring deterministic automation
-    problems_solved:
-      - Manual screenshot drift
-      - Fixture overwrite when chaining npm setup scripts
-    benefits:
-      - GIF conversion prefers CopyAll webm
-      - Per-spec beforeAll restores correct fixture
-      - Single demo:screenshots entry point
   alternatives_considered:
     - name: Manual recording only
-      pros:
-        - No Playwright maintenance
       cons:
         - Non-reproducible assets
+      pros:
+        - No Playwright maintenance
       rejected_reason: Automation already exists for CopyAll; extend for comparison
+  cross_references:
+    - ARCH-TEST_FRAMEWORK
+    - REQ-README_DEMO_AUTOMATION
+  decision: Modular Playwright E2E specs plus bash fixture scripts produce committed docs/screenshots product tour assets; comparison and CopyAll fixtures are separate; mesh demos use ephemeral MESH_DATA_DIR with mkdtemp depot roots.
   implementation_approach:
-    summary: npm demo:screenshots orchestrates setup scripts, six targeted Playwright specs, batch GIF convert, and verify
     details:
       - convert_all_readme_gifs.sh writes five motion GIFs
       - Each E2E describe beforeAll re-runs its fixture script because demo:setup wipes /tmp/test-dirs between prelude steps
@@ -30,23 +18,29 @@ ARCH-DEMO_ASSET_PIPELINE:
       - readme-workspace-dialogs.spec.ts captures fifteen static workspace overlays
       - readme-workspace-motion.spec.ts records four motion demo webms
       - readme-workspace-surfaces.spec.ts captures workspace shell, toolbars, and legacy 3-pane PNGs
-  traceability:
-    requirements:
-      - REQ-BUILD_SYSTEM
-      - REQ-MESH_GUI
-      - REQ-README_DEMO_AUTOMATION
-      - REQ-WORKSPACE_MESH_BRIDGE
-    implementation:
-      - IMPL-DEMO_SCREENSHOT_PIPELINE
-    tests:
-      - e2e/copyall-demo.spec.ts
-      - e2e/readme-mesh-bridge.spec.ts
-      - e2e/readme-mesh-surfaces.spec.ts
-      - e2e/readme-workspace-dialogs.spec.ts
-      - e2e/readme-workspace-motion.spec.ts
-      - e2e/readme-workspace-surfaces.spec.ts
-    code_annotations:
-      - REQ-README_DEMO_AUTOMATION
+    summary: npm demo:screenshots orchestrates setup scripts, six targeted Playwright specs, batch GIF convert, and verify
+  metadata:
+    created:
+      author: AI Agent
+      date: "2026-05-30T00:00:00.000Z"
+    last_updated:
+      author: AI Agent
+      date: "2026-05-31T00:00:00.000Z"
+      reason: README product tour modular spec split
+    last_validated:
+      date: "2026-05-30T00:00:00.000Z"
+      result: pass
+      validator: AI Agent
+  name: Demo Asset Pipeline
+  rationale:
+    benefits:
+      - GIF conversion prefers CopyAll webm
+      - Per-spec beforeAll restores correct fixture
+      - Single demo:screenshots entry point
+    problems_solved:
+      - Fixture overwrite when chaining npm setup scripts
+      - Manual screenshot drift
+    why: Documentation visuals are release artifacts requiring deterministic automation
   related_decisions:
     depends_on:
       - ARCH-TEST_FRAMEWORK
@@ -54,15 +48,21 @@ ARCH-DEMO_ASSET_PIPELINE:
       - IMPL-DEMO_SCREENSHOT_PIPELINE
     see_also:
       - docs/screenshots/README.md
-  metadata:
-    created:
-      date: "2026-05-30T00:00:00.000Z"
-      author: AI Agent
-    last_updated:
-      date: "2026-05-31T00:00:00.000Z"
-      author: AI Agent
-      reason: README product tour modular spec split
-    last_validated:
-      date: "2026-05-30T00:00:00.000Z"
-      validator: AI Agent
-      result: pass
+  status: Active
+  traceability:
+    code_annotations:
+      - REQ-README_DEMO_AUTOMATION
+    implementation:
+      - IMPL-DEMO_SCREENSHOT_PIPELINE
+    requirements:
+      - REQ-BUILD_SYSTEM
+      - REQ-MESH_GUI
+      - REQ-README_DEMO_AUTOMATION
+      - REQ-WORKSPACE_MESH_BRIDGE
+    tests:
+      - e2e/copyall-demo.spec.ts
+      - e2e/readme-mesh-bridge.spec.ts
+      - e2e/readme-mesh-surfaces.spec.ts
+      - e2e/readme-workspace-dialogs.spec.ts
+      - e2e/readme-workspace-motion.spec.ts
+      - e2e/readme-workspace-surfaces.spec.ts
