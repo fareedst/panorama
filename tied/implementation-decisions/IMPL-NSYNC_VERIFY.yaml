@@ -1,8 +1,8 @@
 IMPL-NSYNC_VERIFY:
   code_locations:
     files:
-      - path: src/lib/sync/verify.ts
-        description: IMPL-NSYNC_VERIFY
+      - description: IMPL-NSYNC_VERIFY
+        path: src/lib/sync/verify.ts
     functions: []
   cross_references:
     - ARCH-HASH_VERIFICATION
@@ -14,9 +14,9 @@ IMPL-NSYNC_VERIFY:
   metadata:
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: NSYNC pseudocode retrofit from production code and tests
-    registered: 2026-02-09T00:00:00.000Z
+    registered: {}
   name: Destination Verification Implementation
   rationale:
     benefits: []

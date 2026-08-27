@@ -1,17 +1,16 @@
-# REQ detail — REQ-MOVE_SEMANTICS
 REQ-MOVE_SEMANTICS:
   category: Functional
   description: Ensure source files only deleted after ALL destinations succeed to prevent data loss
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       result: implemented
       validator: AI Agent
   name: Safe Move Semantics
@@ -45,5 +44,5 @@ REQ-MOVE_SEMANTICS:
       - IMPL-NSYNC_OPERATIONS
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: Move success, partial failure, full failure
+    - coverage: Move success, partial failure, full failure
+      method: Unit tests

@@ -14,7 +14,7 @@ IMPL-PANE_DISPLAY_FILTER_UI:
   metadata:
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit essence_pseudocode from production code and tests
   name: Pane Display Filter UI
   related_decisions:

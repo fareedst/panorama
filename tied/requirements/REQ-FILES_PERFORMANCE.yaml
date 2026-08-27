@@ -1,17 +1,16 @@
-# REQ detail — REQ-FILES_PERFORMANCE
 REQ-FILES_PERFORMANCE:
   category: Non-Functional
   description: '[Placeholder - requirement description from plan]'
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation - web-specific performance requirement
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: File Manager Performance Optimization
@@ -49,9 +48,9 @@ REQ-FILES_PERFORMANCE:
       - IMPL-PERFORMANCE_OPT
     tests: []
   validation_criteria:
-    - method: Performance tests
-      coverage: 1000+ file directory rendering
-    - method: Performance tests
-      coverage: Scrolling performance with virtual scrolling
-    - method: Memory tests
-      coverage: Memory usage profiling
+    - coverage: Memory usage profiling
+      method: Memory tests
+    - coverage: 1000+ file directory rendering
+      method: Performance tests
+    - coverage: Scrolling performance with virtual scrolling
+      method: Performance tests

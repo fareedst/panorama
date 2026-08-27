@@ -1,20 +1,20 @@
 IMPL-MOUSE_SUPPORT:
   code_locations:
     files:
-      - path: src/lib/file-column-clipboard.ts
-        description: FILE_COLUMN_CLIPBOARD formatters and cross-pane path resolution
-      - path: src/lib/file-column-clipboard.test.ts
-        description: Unit tests for file-column-clipboard
-      - path: src/app/files/components/FileColumnContextMenu.tsx
-        description: FILE_COLUMN_CONTEXT_MENU portal component
-      - path: src/app/files/components/FileColumnContextMenu.test.tsx
-        description: FileColumnContextMenu component unit tests
-      - path: src/app/files/components/ContextMenu.tsx
-        description: Row file operations context menu
-      - path: src/app/files/components/RenameRegexDialog.tsx
-        description: Rename Regex secondary workspace dialog
-      - path: src/lib/rename-regex.ts
-        description: Rename Regex path resolution and basename transform
+      - description: FILE_COLUMN_CLIPBOARD formatters and cross-pane path resolution
+        path: src/lib/file-column-clipboard.ts
+      - description: FILE_COLUMN_CONTEXT_MENU portal component
+        path: src/app/files/components/FileColumnContextMenu.tsx
+      - description: FileColumnContextMenu component unit tests
+        path: src/app/files/components/FileColumnContextMenu.test.tsx
+      - description: Rename Regex path resolution and basename transform
+        path: src/lib/rename-regex.ts
+      - description: Rename Regex secondary workspace dialog
+        path: src/app/files/components/RenameRegexDialog.tsx
+      - description: Row file operations context menu
+        path: src/app/files/components/ContextMenu.tsx
+      - description: Unit tests for file-column-clipboard
+        path: src/lib/file-column-clipboard.test.ts
   cross_references:
     - ARCH-MOUSE_SUPPORT
     - REQ-MOUSE_INTERACTION
@@ -31,13 +31,13 @@ IMPL-MOUSE_SUPPORT:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
       reason: LEAP — Rename Regex menu item in unified ContextMenu
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass - 554 tests passing
       validator: AI Agent
   name: Mouse and Touch Interaction Implementation

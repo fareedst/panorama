@@ -12,10 +12,10 @@ ARCH-MESH_CRUD:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
       reason: Phase 2
   name: Mesh CRUD Service Layer
   rationale:

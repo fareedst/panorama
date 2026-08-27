@@ -1,8 +1,8 @@
 IMPL-MESH_RUNTIME:
   code_locations:
     files:
-      - path: src/lib/mesh/runtime/mesh-runtime.ts
-        description: MeshRuntime and getMeshRuntime
+      - description: MeshRuntime and getMeshRuntime
+        path: src/lib/mesh/runtime/mesh-runtime.ts
     functions: []
   cross_references:
     - ARCH-MESH_LAYERED
@@ -17,10 +17,10 @@ IMPL-MESH_RUNTIME:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Pseudocode retrofit from production code and tests
   name: Mesh Runtime Composition Root
   rationale:

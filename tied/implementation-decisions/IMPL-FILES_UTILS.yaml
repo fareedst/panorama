@@ -1,15 +1,15 @@
 IMPL-FILES_UTILS:
   code_locations:
     files:
-      - path: src/lib/files.utils.ts
-        description: Client-safe utilities (no Node.js dependencies)
+      - description: Client-safe utilities (no Node.js dependencies)
         lines:
           - 1
           - 26
+        path: src/lib/files.utils.ts
     functions:
-      - name: formatSize
-        description: Format bytes as human-readable size (B, KB, MB, GB, TB)
+      - description: Format bytes as human-readable size (B, KB, MB, GB, TB)
         file: src/lib/files.utils.ts
+        name: formatSize
   cross_references:
     - ARCH-FILESYSTEM_ABSTRACTION
     - REQ-FILE_LISTING
@@ -25,13 +25,13 @@ IMPL-FILES_UTILS:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit essence_pseudocode from tests/code; align block-lead comments
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Client-Safe File Utilities

@@ -1,18 +1,18 @@
 ARCH-PANE_LIFECYCLE:
   alternatives_considered:
-    - name: Client-side initialization only
-      cons:
+    - cons:
         - Duplicated directory reading logic
         - Requires multiple API calls to initialize each pane
         - Slower initial page load
+      name: Client-side initialization only
       pros:
         - All logic in one place
         - Simpler server code
       rejected_reason: Server-side initialization provides better performance and cleaner separation of concerns
-    - name: Fixed pane count without runtime management
-      cons:
+    - cons:
         - Configuration changes require page reload
         - Users cannot adjust layout to current task
+      name: Fixed pane count without runtime management
       pros:
         - No need for add/remove logic
         - Simpler state management
@@ -25,30 +25,30 @@ ARCH-PANE_LIFECYCLE:
     details:
       - 'Add pane: clones focused pane state or creates new pane at home directory'
       - 'appendPaneAtPath: append at arbitrary directoryPath with template-pane display spec and cross-pane inheritance; shared by handleAddPane and Set-base newPane'
+      - Client WorkspaceView receives initialPanes array instead of single path/files
+      - Config validation prevents adding beyond maxPanes or removing last pane
       - 'Cycle panes: rotate panes[] one slot; remap focus and history'
+      - Keyboard shortcuts (+ add, - remove, pane.swap/cycle reorder) integrated with keybinding system
       - 'Pane order dialog: arbitrary reorder via index permutation'
       - 'Remove pane: removes pane from array, adjusts focusIndex if necessary'
+      - Server initializes array of PaneState objects with appropriate directories
+      - Server page reads layout.defaultPaneCount and startup.mode from config
       - 'Single-pane workspace URL: server Files page honors ?panes=1&pane0= to bootstrap one pane at path when no mesh restore (IMPL-FILE_MANAGER_PAGE SinglePaneWorkspaceUrl)'
       - 'Startup mode configured: each pane starts at paths.pane1, pane2, etc.'
       - 'Startup mode home: all panes start at user home directory'
       - 'Startup mode last: future enhancement using localStorage'
       - 'Swap panes: exchange panes[i] and panes[j]; remap focusIndex and directory history'
-      - Client WorkspaceView receives initialPanes array instead of single path/files
-      - Config validation prevents adding beyond maxPanes or removing last pane
-      - Keyboard shortcuts (+ add, - remove, pane.swap/cycle reorder) integrated with keybinding system
-      - Server initializes array of PaneState objects with appropriate directories
-      - Server page reads layout.defaultPaneCount and startup.mode from config
     summary: Server-side multi-pane initialization based on config, client-side pane management with keyboard shortcuts and config validation
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
       reason: LEAP — appendPaneAtPath shared append helper
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass - build succeeds, 570 tests passing
       validator: AI Agent
   name: Multi-Pane Initialization and Management

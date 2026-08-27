@@ -1,8 +1,8 @@
 ARCH-DEMO_ASSET_PIPELINE:
   alternatives_considered:
-    - name: Manual recording only
-      cons:
+    - cons:
         - Non-reproducible assets
+      name: Manual recording only
       pros:
         - No Playwright maintenance
       rejected_reason: Automation already exists for CopyAll; extend for comparison
@@ -22,13 +22,13 @@ ARCH-DEMO_ASSET_PIPELINE:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
       reason: README product tour modular spec split
     last_validated:
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       result: pass
       validator: AI Agent
   name: Demo Asset Pipeline

@@ -1,40 +1,40 @@
 IMPL-WORKSPACE_VIEW:
   code_locations:
     files:
-      - path: src/app/files/WorkspaceView.tsx
-        description: Workspace client; appendPaneAtPath, set-base and execute handlers
+      - description: Execute file dialog pane target and command field
         lines: []
-      - path: src/lib/set-base-directory.ts
-        description: Set base directory target resolution
+        path: src/app/files/components/ExecuteFileDialog.tsx
+      - description: Execute target resolution and placeholder expansion
         lines: []
-      - path: src/lib/execute-command.ts
-        description: Execute target resolution and placeholder expansion
+        path: src/lib/execute-command.ts
+      - description: Layout toolbar picker
         lines: []
-      - path: src/app/files/components/SetBaseDirectoryDialog.tsx
-        description: Set base directory dialog
+        path: src/app/files/components/LayoutPickerPopover.tsx
+      - description: Semantic SVG icons per set-base target
         lines: []
-      - path: src/app/files/components/SetBaseDirectoryTargetIcon.tsx
-        description: Semantic SVG icons per set-base target
+        path: src/app/files/components/SetBaseDirectoryTargetIcon.tsx
+      - description: Set base directory dialog
         lines: []
-      - path: src/app/files/components/ExecuteFileDialog.tsx
-        description: Execute file dialog pane target and command field
+        path: src/app/files/components/SetBaseDirectoryDialog.tsx
+      - description: Set base directory target resolution
         lines: []
-      - path: src/app/files/components/LayoutPickerPopover.tsx
-        description: Layout toolbar picker
+        path: src/lib/set-base-directory.ts
+      - description: Workspace client; appendPaneAtPath, set-base and execute handlers
         lines: []
+        path: src/app/files/WorkspaceView.tsx
     functions:
-      - name: handleApplySetBaseDirectory
-        description: Apply set-base dialog target
+      - description: Append pane at directory with template inheritance
         file: src/app/files/WorkspaceView.tsx
-      - name: handleApplyExecute
-        description: Apply execute dialog; POST execute-command and refresh panes
+        name: appendPaneAtPath
+      - description: Apply execute dialog; POST execute-command and refresh panes
         file: src/app/files/WorkspaceView.tsx
-      - name: appendPaneAtPath
-        description: Append pane at directory with template inheritance
+        name: handleApplyExecute
+      - description: Apply set-base dialog target
         file: src/app/files/WorkspaceView.tsx
-      - name: handleNavigate
-        description: Navigate pane to directory
+        name: handleApplySetBaseDirectory
+      - description: Navigate pane to directory
         file: src/app/files/WorkspaceView.tsx
+        name: handleNavigate
   cross_references:
     - ARCH-FILE_MANAGER_HIERARCHY
     - ARCH-PANE_COMMAND_EXEC
@@ -58,13 +58,13 @@ IMPL-WORKSPACE_VIEW:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
       reason: LEAP — ExecuteApply handleApplyExecute and ExecuteFileDialog wiring
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass - no React warnings, 523 tests passing
       validator: AI Agent
   name: Workspace View Client Component with Stable React Keys

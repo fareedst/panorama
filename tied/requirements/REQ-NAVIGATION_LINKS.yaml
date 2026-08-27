@@ -4,13 +4,13 @@ REQ-NAVIGATION_LINKS:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: LEAP — NewTabLink + config security; retired home-page Templates/Learning links criteria
     last_validated:
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       result: pass
       validator: AI Agent
   name: Secure New-Tab Navigation Links
@@ -48,9 +48,9 @@ REQ-NAVIGATION_LINKS:
       - src/components/NewTabLink.test.tsx
       - src/lib/config.test.ts
   validation_criteria:
-    - method: Component unit tests
-      coverage: NewTabLink.test.tsx asserts target, rel, and aria-label behavior
-    - method: Config unit tests
-      coverage: config.test.ts asserts navigation.security defaults
-    - method: Security validation
-      coverage: Rendered links include noopener noreferrer in DOM
+    - coverage: NewTabLink.test.tsx asserts target, rel, and aria-label behavior
+      method: Component unit tests
+    - coverage: config.test.ts asserts navigation.security defaults
+      method: Config unit tests
+    - coverage: Rendered links include noopener noreferrer in DOM
+      method: Security validation

@@ -4,7 +4,7 @@ REQ-PANE_DISPLAY_FILTER:
   metadata:
     last_updated:
       author: AI Agent
-      date: "2026-05-29T00:00:00.000Z"
+      date: '2026-05-29T00:00:00.000Z'
       reason: LEAP — vocabulary standards; pane-display-filter glossary criterion
   name: Pane Display Filter Specs
   priority: P1

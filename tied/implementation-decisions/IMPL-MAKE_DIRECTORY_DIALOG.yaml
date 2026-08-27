@@ -1,14 +1,14 @@
 IMPL-MAKE_DIRECTORY_DIALOG:
   code_locations:
     files:
-      - path: src/app/files/components/MakeDirectoryDialog.tsx
-        description: Pane target and directory name dialog
-      - path: src/app/files/components/ContextMenu.tsx
-        description: Make directory menu item
-      - path: src/app/files/components/FilePane.tsx
-        description: onMakeDirectory wiring
-      - path: src/app/files/WorkspaceView.tsx
-        description: Dialog state and handleApplyMakeDirectory
+      - description: Dialog state and handleApplyMakeDirectory
+        path: src/app/files/WorkspaceView.tsx
+      - description: Make directory menu item
+        path: src/app/files/components/ContextMenu.tsx
+      - description: onMakeDirectory wiring
+        path: src/app/files/components/FilePane.tsx
+      - description: Pane target and directory name dialog
+        path: src/app/files/components/MakeDirectoryDialog.tsx
   cross_references:
     - ARCH-MOUSE_SUPPORT
     - IMPL-MAKE_DIRECTORY

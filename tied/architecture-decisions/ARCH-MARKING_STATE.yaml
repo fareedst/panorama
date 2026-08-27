@@ -1,39 +1,39 @@
 ARCH-MARKING_STATE:
   alternatives_considered:
-    - name: Server-side mark storage in session
-      cons:
-        - Complex session management
-        - Network latency on every mark toggle
-      pros:
-        - Persists across page refresh
-      rejected_reason: Latency unacceptable for interactive marking
-    - name: Index-based marking
-      cons:
+    - cons:
         - Breaks when files re-sorted
+      name: Index-based marking
       pros:
         - Simple integer storage
       rejected_reason: Name-based survives sort changes
+    - cons:
+        - Complex session management
+        - Network latency on every mark toggle
+      name: Server-side mark storage in session
+      pros:
+        - Persists across page refresh
+      rejected_reason: Latency unacceptable for interactive marking
   cross_references:
     - REQ-FILE_MARKING_WEB
   decision: Store file marking state in client-side React state using Set<string> of absolute file.path per pane. Marks persist across sorting, filtering, and tree refresh via path-based matching; RECONCILE_TREE_SELECTION prunes marks not in visible rows.
   implementation_approach:
     details:
-      - 'Footer display: [marked/total] format'
-      - 'Visual feedback: checkbox icon + background color from theme.yaml'
       - Batch operations check marks.size > 0 and use visible path intersection
+      - 'Footer display: [marked/total] format'
       - Mark persistence survives re-sort and refreshPaneTree when path still visible
       - PaneState.marks stores absolute file.path when directory tree spans multiple subdirectories (REQ-DIRECTORY_TREE)
+      - 'Visual feedback: checkbox icon + background color from theme.yaml'
     summary: React state with Set<string> absolute paths per pane, path-based persistence
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-29T00:00:00.000Z"
+      date: '2026-05-29T00:00:00.000Z'
       reason: LEAP — vocabulary see_also back-link
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Client-Side Mark State Management

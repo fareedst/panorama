@@ -1,10 +1,10 @@
 IMPL-DEMO_SCREENSHOT_PIPELINE:
   code_locations:
     files:
-      - path: e2e/z-copyall-demo.spec.ts
-        description: CopyAll workflow PNGs and video
-      - path: e2e/readme-workspace-pane-filters.spec.ts
-        description: Per-pane display spec and cross-pane visibility selector PNGs
+      - description: CopyAll workflow PNGs and video
+        path: e2e/z-copyall-demo.spec.ts
+      - description: Per-pane display spec and cross-pane visibility selector PNGs
+        path: e2e/readme-workspace-pane-filters.spec.ts
   cross_references:
     - ARCH-DEMO_ASSET_PIPELINE
     - REQ-README_DEMO_AUTOMATION
@@ -18,13 +18,13 @@ IMPL-DEMO_SCREENSHOT_PIPELINE:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-06-01T00:00:00.000Z"
+      date: '2026-06-01T00:00:00.000Z'
       reason: README per-pane filter control demo assets
     last_validated:
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       result: pass
       validator: AI Agent
   name: Demo Screenshot Pipeline Implementation

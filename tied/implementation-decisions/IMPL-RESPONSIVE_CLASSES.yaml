@@ -1,12 +1,12 @@
 IMPL-RESPONSIVE_CLASSES:
   code_locations:
     files:
-      - path: src/app/files/components/HelpOverlay.tsx
-        description: lg:grid-cols-2 responsive shortcut grid
-      - path: src/app/files/components/SortDialog.tsx
-        description: max-w-[90vw] dialog viewport guard
-      - path: src/app/files/components/FilePane.tsx
-        description: flex flex-col pane layout
+      - description: flex flex-col pane layout
+        path: src/app/files/components/FilePane.tsx
+      - description: lg:grid-cols-2 responsive shortcut grid
+        path: src/app/files/components/HelpOverlay.tsx
+      - description: max-w-[90vw] dialog viewport guard
+        path: src/app/files/components/SortDialog.tsx
   cross_references:
     - ARCH-RESPONSIVE_FIRST
     - REQ-RESPONSIVE_DESIGN
@@ -21,13 +21,13 @@ IMPL-RESPONSIVE_CLASSES:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit files workspace responsive Tailwind locations
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Responsive Classes Implementation

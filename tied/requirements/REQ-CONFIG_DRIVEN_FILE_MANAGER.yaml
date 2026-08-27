@@ -4,13 +4,13 @@ REQ-CONFIG_DRIVEN_FILE_MANAGER:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-23T00:00:00.000Z"
+      date: '2026-05-23T00:00:00.000Z'
       reason: LEAP — tabular file columns, column-order dialog, mesh snapshot v4 fileColumns
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Configuration-Driven File Manager UI
@@ -61,7 +61,7 @@ REQ-CONFIG_DRIVEN_FILE_MANAGER:
       - src/lib/file-columns.test.ts
       - src/lib/workspace-mesh-bridge.test.ts
   validation_criteria:
-    - method: Config testing
-      coverage: Config changes reflected in UI
-    - method: Code inspection
-      coverage: No hard-coded user-facing text in components
+    - coverage: No hard-coded user-facing text in components
+      method: Code inspection
+    - coverage: Config changes reflected in UI
+      method: Config testing

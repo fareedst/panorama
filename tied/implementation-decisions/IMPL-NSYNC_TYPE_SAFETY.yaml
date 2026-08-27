@@ -1,18 +1,18 @@
 IMPL-NSYNC_TYPE_SAFETY:
   code_locations:
     files:
-      - path: src/lib/sync/engine.ts
-        description: Type conversions for stat.size (3 locations), ErrorClass import fix
+      - description: Stream chunk type handling
+        lines:
+          - 111
+          - 114
+        path: src/lib/sync/hash.ts
+      - description: Type conversions for stat.size (3 locations), ErrorClass import fix
         lines:
           - 169
           - 261
           - 7
           - 89
-      - path: src/lib/sync/hash.ts
-        description: Stream chunk type handling
-        lines:
-          - 111
-          - 114
+        path: src/lib/sync/engine.ts
     functions: []
   cross_references:
     - IMPL-NSYNC_ENGINE
@@ -29,13 +29,13 @@ IMPL-NSYNC_TYPE_SAFETY:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: NSYNC pseudocode retrofit from production code and tests
     last_validated:
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       result: pass - npm run build succeeds with zero errors
       validator: AI Agent
   name: TypeScript Type Safety for Node.js Types

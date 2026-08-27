@@ -1,17 +1,16 @@
-# REQ detail — REQ-LOGGING_CONFIG
 REQ-LOGGING_CONFIG:
   category: Functional
   description: Enable runtime control of logging behavior without code changes
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Configurable Logging Behavior
@@ -47,7 +46,7 @@ REQ-LOGGING_CONFIG:
       - IMPL-LOGGER_CONFIG
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: Configuration parsing and defaults
-    - method: Integration tests
-      coverage: Environment variable overrides
+    - coverage: Environment variable overrides
+      method: Integration tests
+    - coverage: Configuration parsing and defaults
+      method: Unit tests

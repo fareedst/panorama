@@ -1,0 +1,168 @@
+CITDP-BATCH_TIED_RETROFIT:
+  change_definition:
+    current_behavior: Project TIED records, methodology documentation, tooling configuration, agent bootstrap guidance, and two config-related source/test files are already changed in the supplied staged-clean batch.
+    desired_behavior: The batch has synchronized REQ/ARCH/IMPL/vocabulary evidence, reproducible verification results, and an auditable close-out Tracker without changing runtime behavior beyond the supplied staged work.
+    non_goals:
+      - No git add, commit, push, or plan-file edit
+      - No methodology YAML mutation
+      - No new product feature implementation
+    success_criteria:
+      - All applicable test, TypeScript, vocabulary, and YAML checks pass
+      - CHANGELOG receives one concise Unreleased entry
+      - The close-out gate returns allowed true
+      - TIED consistency returns ok true with detail and pseudo-code checks
+    unchanged_behavior: No new product runtime semantics, authentication, network behavior, persistence model, or external-input contract are introduced by this close-out.
+  completion_criteria:
+    checklist_gate:
+      dispositions:
+        - completed
+        - not_applicable
+        - pending
+        - waived
+      fail_closed: true
+      phases:
+        - close_out
+        - pre_implementation
+        - verification
+    close_out_gate:
+      activation: not supplied by policy
+      allowed: true
+      depth_tier: minimal
+      diagnostics: []
+      ok: true
+      phase: close_out
+    verification_gate_notes: Tests, TypeScript, vocabulary validation, TIED consistency, and project YAML lint all passed. Minimal depth supplied no activation payload.
+  evidence:
+    commands:
+      - command: bun run test
+        exit_code: 0
+        result: 142 test files passed; 1268 tests passed; 3 skipped
+      - command: bun run validate:vocabulary
+        exit_code: 0
+        result: 10 client glossaries passed
+      - command: bunx tsc -b
+        exit_code: 0
+        result: passed
+      - command: Final Tracker and CHANGELOG artifact review
+        exit_code: 0
+        result: passed; no plan-file or git mutation
+      - command: lint_yaml.sh on project TIED roots and batch records
+        exit_code: 0
+        result: passed
+      - command: tied-cli.sh pseudocode_validate IMPL-CONFIG_LOADER
+        exit_code: 0
+        result: completed with bounded legacy Layer-B contract findings recorded below
+      - command: tied-cli.sh tied_checklist_gate_validate phase close_out
+        exit_code: 0
+        result: allowed true; ok true; no diagnostics
+      - command: tied-cli.sh tied_validate_consistency {"include_detail_files":true,"include_pseudocode":true,"require_detail_record":true}
+        exit_code: 0
+        result: ok true; no diagnostics
+    final_artifacts:
+      - CHANGELOG.md [Unreleased]
+      - scripts/validate-vocabulary.sh
+      - tied/vocab/directory-tree.md
+      - tied/vocab/domain-references.md
+      - tied/vocab/routing.md
+      - working/batch-close-out/BATCH_CLOSEOUT_20260826.yaml
+    manifest_reference: null
+    profile_reference: null
+    proof_boundaries:
+      - executable_behavior
+      - human_decision
+      - pseudo_code_structure
+      - traceability_structure
+  impact_analysis:
+    impl_inventory_notes: Batch inventory covers TIED tooling configuration, methodology and QA documentation, mass ARCH/IMPL pseudo-code retrofit, agent bootstrap, config loader/integration test alignment, existing CITDP records, and release documentation. Primary implementation touchpoints include IMPL-TIED_FILES, IMPL-CONFIG_LOADER, and PROC-IMPL_PSEUDOCODE_TOKENS.
+    modules_or_boundaries: Project TIED YAML and sidecars; client-owned vocabulary routing; TypeScript config loader; integration test harness; release documentation. Methodology YAML under tied/methodology remains read-only.
+    tied_tokens_affected:
+      - ARCH-CONFIG_DRIVEN_UI
+      - ARCH-TIED_STRUCTURE
+      - IMPL-CONFIG_LOADER
+      - IMPL-TIED_FILES
+      - PROC-IMPL_PSEUDOCODE_TOKENS
+      - PROC-TOKEN_AUDIT
+      - PROC-TOKEN_VALIDATION
+      - PROC-VOCABULARY_INDEX
+      - REQ-CONFIG_DRIVEN_UI
+      - REQ-TIED_SETUP
+    tied_tokens_new: []
+  leap_feedback:
+    divergences_from_analysis: Representative Layer-B pseudocode_validate strict mode reports legacy sidecar contract-shape findings (CONTRACT heading syntax, PRE/POST/EFFECTS, and the existing error handler block). No new runtime divergence was introduced by this close-out; the findings remain a follow-up for a future sidecar grammar pass.
+    record_status: complete
+    tied_stack_updates_required:
+      - Final verification evidence and close-out gate result recorded here and in the Tracker
+      - Future Layer-B grammar remediation must update IMPL sidecars first, then ARCH/REQ only if scope changes
+  record_identity:
+    change_request_id: REQ-TIED_SETUP
+    recorded_at: '2026-08-26'
+    title: Batch TIED traceability retrofit close-out
+  risk_analysis:
+    abuse_cases: []
+    adversarial_inquiry:
+      assurance_profile: baseline-functional
+      close_out_inquiry_waiver: null
+      counterexamples:
+        - A sidecar block contains implementation logic but no complete REQ/ARCH/IMPL comment.
+        - A verification command passes while a project index points to a missing detail file.
+      depth_change_waiver: null
+      depth_tier: minimal
+      disconfirming_observations:
+        - Any close-out gate diagnostic that blocks progression
+        - Any nonzero verification exit code
+        - Any tied_validate_consistency diagnostic or missing detail/pseudo-code report
+      eligibility_triggers_matched: []
+      evidence_references:
+        - tied/citdp/CITDP-BATCH_TIED_RETROFIT.yaml
+        - verification command output recorded in the final CITDP evidence.commands
+        - working/batch-close-out/BATCH_CLOSEOUT_20260826.yaml
+      falsification_questions:
+        - Can a full consistency check detect a missing or mismatched token reference?
+        - Can the verification suite fail if the config loader/test alignment is broken?
+      gate_policy: advisory
+      integrated_waiver: null
+      prior_depth_tier: null
+      rationale: Batch documentation and traceability retrofit; no runtime behavior change under integrated external-input, auth, network, or persistence triggers. The sub-adversarial-inquiry-pass is not_applicable at minimal depth; any gate warning about close-out eligibility will be retained as a documented advisory diagnostic rather than treated as a silent waiver.
+      research_profile: integrated-agent
+      strict_eligibility_prerequisites: []
+    quality_evidence_matrix:
+      - applicability: applicable
+        attribute: baseline-functional
+        command_or_test: bun run test; bunx tsc -b; bun run validate:vocabulary; tied-cli tied_validate_consistency; lint_yaml
+        evidence_method: Project test suite, TypeScript compiler, vocabulary validation, YAML lint, and TIED consistency validation.
+        limitation: Structural and executable checks do not prove unrelated security, performance, privacy, or usability properties.
+        owner: close-out operator
+        rationale: The batch changes traceability and includes config/test alignment that must remain verifiable.
+        result: pending verification
+        risk: medium
+        threshold: All required commands exit 0 and TIED reports ok true.
+        waiver:
+          expiry: null
+          owner: null
+          reason: null
+          required: false
+    quality_profiles:
+      - baseline-functional
+    residual_risk:
+      expiry: '2026-09-26'
+      owner: close-out operator
+      summary: Residual risk is limited to review of the supplied staged batch and any warnings emitted by minimal-depth close-out gating.
+    risks:
+      - description: Large traceability retrofit can leave index, detail, sidecar, test, or code references out of sync.
+        likelihood: medium
+        mitigation: Run tied_validate_consistency, YAML validation, pseudo-code spot checks, and the full applicable verification suite.
+        quality_attribute: maintainability
+        severity: medium
+        tied_token_references:
+          - ARCH-TIED_STRUCTURE
+          - IMPL-TIED_FILES
+          - REQ-TIED_SETUP
+    scenarios:
+      - A config loader or integration test token points to a different REQ/ARCH/IMPL set.
+      - A project YAML index or detail file is syntactically valid but inconsistent with its traceability links.
+      - A retrofitted IMPL sidecar lacks a required block token comment.
+  tdd_sequence:
+    summary: Close-out verification of supplied staged work; no new RED/GREEN implementation iteration is authorized.
+  test_strategy:
+    matrix_notes: The existing staged source/test pair is reviewed for token parity; mass IMPL sidecars are checked structurally and through tied_validate_consistency.
+    summary: Run the repository test suite, TypeScript build check, vocabulary validation, YAML lint for project-owned changed YAML, and TIED consistency with pseudo-code enabled.

@@ -115,3 +115,4 @@ data
 .mesh-data-local
 .tied-payloads
 scripts/lint.sh
+.markscope-preview-cache

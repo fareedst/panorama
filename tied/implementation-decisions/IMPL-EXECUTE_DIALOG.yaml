@@ -1,14 +1,14 @@
 IMPL-EXECUTE_DIALOG:
   code_locations:
     files:
-      - path: src/app/files/components/ExecuteFileDialog.tsx
-        description: Pane target and command dialog
-      - path: src/app/files/components/ContextMenu.tsx
-        description: Execute menu item
-      - path: src/app/files/components/FilePane.tsx
-        description: onExecute wiring
-      - path: src/app/files/WorkspaceView.tsx
-        description: Dialog state and handleApplyExecute
+      - description: Dialog state and handleApplyExecute
+        path: src/app/files/WorkspaceView.tsx
+      - description: Execute menu item
+        path: src/app/files/components/ContextMenu.tsx
+      - description: onExecute wiring
+        path: src/app/files/components/FilePane.tsx
+      - description: Pane target and command dialog
+        path: src/app/files/components/ExecuteFileDialog.tsx
   cross_references:
     - ARCH-MOUSE_SUPPORT
     - ARCH-PANE_COMMAND_EXEC

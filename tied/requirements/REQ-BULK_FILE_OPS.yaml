@@ -9,13 +9,13 @@ REQ-BULK_FILE_OPS:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-06-01T00:00:00.000Z"
+      date: '2026-06-01T00:00:00.000Z'
       reason: LEAP — preserve relative path on cross-pane bulk copy/move (sourceBase)
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Bulk File Operations on Marked Files
@@ -72,11 +72,11 @@ REQ-BULK_FILE_OPS:
       - src/lib/rename-regex.data.test.ts
       - src/lib/rename-regex.test.ts
   validation_criteria:
-    - method: Unit tests
-      coverage: Bulk copy, move, delete on marked files
-    - method: Integration tests
-      coverage: Cross-pane operations and progress tracking
-    - method: Error tests
-      coverage: Permission errors, disk full, non-existent files
-    - method: Unit tests
-      coverage: cross-pane-path.ts relative destination mapping
+    - coverage: Permission errors, disk full, non-existent files
+      method: Error tests
+    - coverage: Cross-pane operations and progress tracking
+      method: Integration tests
+    - coverage: Bulk copy, move, delete on marked files
+      method: Unit tests
+    - coverage: cross-pane-path.ts relative destination mapping
+      method: Unit tests

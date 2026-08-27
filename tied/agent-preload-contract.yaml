@@ -1,7 +1,3 @@
-# Agent preload contract — Panorama mesh program (IMPL-locked)
-# Refreshed at sync-tied-stack: REQ-MESH_DOMAIN_MODEL Implemented; traceability.tests on REQ/ARCH/IMPL;
-# index/detail aligned; tied_validate_consistency ok (2026-05-19).
-# Prior: persist-implementation-records verify-only; gate-pseudocode-validation pre_red.
 agent_preload:
   active_user_intent:
     checklist_step_id: traceable-commit
@@ -25,7 +21,7 @@ agent_preload:
       - tied/citdp/CITDP-REQ-MESH_DOMAIN_MODEL.yaml
     invalid_input: structured domain validation errors (DomainValidationError); reject invalid mesh domain objects
     language: TypeScript
-    language_version: "5"
+    language_version: '5'
     target_source_paths:
       - src/lib/mesh/domain/index.ts
       - src/lib/mesh/domain/internal.ts

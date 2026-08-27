@@ -1,17 +1,16 @@
-# ARCH detail — ARCH-FILES_CONFIG_COMPLETE
 ARCH-FILES_CONFIG_COMPLETE:
   alternatives_considered:
-    - name: Component-level configuration
-      cons:
+    - cons:
         - Complex to maintain
         - Scattered configuration
+      name: Component-level configuration
       pros:
         - More granular control
       rejected_reason: Centralized YAML config more maintainable
-    - name: Database-driven configuration
-      cons:
+    - cons:
         - More complex setup
         - Requires database infrastructure
+      name: Database-driven configuration
       pros:
         - Runtime updates possible
       rejected_reason: YAML file config simpler for template use case
@@ -30,13 +29,13 @@ ARCH-FILES_CONFIG_COMPLETE:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Phase 11 architecture complete
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass - 567 tests passing
       validator: AI Agent
   name: Complete File Manager Configuration Architecture

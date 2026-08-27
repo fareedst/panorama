@@ -9,7 +9,7 @@ ARCH-SEARCH_ENGINE:
   metadata:
     created:
       author: migration
-      date: "2026-02-07"
+      date: '2026-02-07'
   name: SEARCH ENGINE
   rationale:
     benefits: []

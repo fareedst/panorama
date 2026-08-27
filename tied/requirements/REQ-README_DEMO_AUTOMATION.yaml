@@ -4,13 +4,13 @@ REQ-README_DEMO_AUTOMATION:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-06-01T12:00:00.000Z"
+      date: '2026-06-01T12:00:00.000Z'
       reason: README filter construction dialog demo assets
     last_validated:
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       result: pass
       validator: AI Agent
   name: README Demo Screenshot Automation
@@ -67,17 +67,17 @@ REQ-README_DEMO_AUTOMATION:
       - e2e/readme-workspace-surfaces.spec.ts
       - scripts/verify_demo_screenshots.sh
   validation_criteria:
-    - method: Playwright
-      coverage: e2e/readme-workspace-surfaces.spec.ts captures workspace and legacy 3-pane PNGs
-    - method: Playwright
-      coverage: e2e/readme-workspace-pane-filters.spec.ts captures per-pane display spec and cross-pane visibility selector PNGs
-    - method: Playwright
-      coverage: e2e/readme-workspace-dialogs.spec.ts captures seventeen static workspace overlays including filter construction dialogs
-    - method: Playwright
-      coverage: e2e/readme-workspace-motion.spec.ts records four motion demo webms
-    - method: Playwright
-      coverage: e2e/readme-mesh-surfaces.spec.ts and e2e/readme-mesh-bridge.spec.ts capture Mesh and bridge PNGs
-    - method: Playwright
-      coverage: e2e/copyall-demo.spec.ts captures CopyAll step PNGs and webm
-    - method: Shell
-      coverage: scripts/verify_demo_screenshots.sh and scripts/convert_all_readme_gifs.sh
+    - coverage: e2e/copyall-demo.spec.ts captures CopyAll step PNGs and webm
+      method: Playwright
+    - coverage: e2e/readme-mesh-surfaces.spec.ts and e2e/readme-mesh-bridge.spec.ts capture Mesh and bridge PNGs
+      method: Playwright
+    - coverage: e2e/readme-workspace-dialogs.spec.ts captures seventeen static workspace overlays including filter construction dialogs
+      method: Playwright
+    - coverage: e2e/readme-workspace-motion.spec.ts records four motion demo webms
+      method: Playwright
+    - coverage: e2e/readme-workspace-pane-filters.spec.ts captures per-pane display spec and cross-pane visibility selector PNGs
+      method: Playwright
+    - coverage: e2e/readme-workspace-surfaces.spec.ts captures workspace and legacy 3-pane PNGs
+      method: Playwright
+    - coverage: scripts/verify_demo_screenshots.sh and scripts/convert_all_readme_gifs.sh
+      method: Shell

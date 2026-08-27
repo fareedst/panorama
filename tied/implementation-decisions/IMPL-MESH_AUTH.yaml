@@ -1,8 +1,8 @@
 IMPL-MESH_AUTH:
   code_locations:
     files:
-      - path: src/lib/mesh/services/authorization-service.ts
-        description: AuthorizationService and parseMeshRole
+      - description: AuthorizationService and parseMeshRole
+        path: src/lib/mesh/services/authorization-service.ts
     functions: []
   cross_references:
     - REQ-MESH_AUTH
@@ -10,7 +10,7 @@ IMPL-MESH_AUTH:
   metadata:
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit pseudocode and traceability from production/tests
   name: Mesh Authorization Service
   status: Active

@@ -1,33 +1,33 @@
 IMPL-FILES_CONFIG:
   code_locations:
     files:
-      - path: config/files.yaml
-        description: Files configuration
-        lines:
-          - 1
-          - 32
-      - path: config/theme.yaml
-        description: Extended with files section
-        lines:
-          - 101
-          - 85
-      - path: src/lib/config.ts
-        description: Config loader with getFilesConfig()
+      - description: Config loader with getFilesConfig()
         lines:
           - 376
           - 438
-      - path: src/lib/config.types.ts
-        description: Files config types
+        path: src/lib/config.ts
+      - description: Extended with files section
+        lines:
+          - 101
+          - 85
+        path: config/theme.yaml
+      - description: Files config types
         lines:
           - 279
           - 342
+        path: src/lib/config.types.ts
+      - description: Files configuration
+        lines:
+          - 1
+          - 32
+        path: config/files.yaml
     functions:
-      - name: getFilesConfig
-        description: Load files configuration with defaults
+      - description: Get theme override for files component
         file: src/lib/config.ts
-      - name: getFilesOverride
-        description: Get theme override for files component
+        name: getFilesOverride
+      - description: Load files configuration with defaults
         file: src/lib/config.ts
+        name: getFilesConfig
   cross_references:
     - ARCH-CONFIG_DRIVEN_UI
     - REQ-CONFIG_DRIVEN_FILE_MANAGER
@@ -45,13 +45,13 @@ IMPL-FILES_CONFIG:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit essence_pseudocode from tests/code; align block-lead comments
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Files Configuration Loader

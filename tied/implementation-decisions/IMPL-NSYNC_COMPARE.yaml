@@ -1,8 +1,8 @@
 IMPL-NSYNC_COMPARE:
   code_locations:
     files:
-      - path: src/lib/sync/compare.ts
-        description: IMPL-NSYNC_COMPARE
+      - description: IMPL-NSYNC_COMPARE
+        path: src/lib/sync/compare.ts
     functions: []
   cross_references:
     - REQ-COMPARE_METHODS
@@ -13,9 +13,9 @@ IMPL-NSYNC_COMPARE:
   metadata:
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: NSYNC pseudocode retrofit from production code and tests
-    registered: 2026-02-09T00:00:00.000Z
+    registered: {}
   name: File Comparison Implementation
   rationale:
     benefits: []

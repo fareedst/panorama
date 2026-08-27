@@ -1,5 +1,3 @@
-# CITDP change-analysis record — [PROC-CITDP] step 8; [PROC-AGENT_REQ_CHECKLIST] persist-citdp-record
-# change_request_id: REQ-MESH_DOMAIN_MODEL
 CITDP-REQ-MESH_DOMAIN_MODEL:
   change_definition:
     current_behavior_prior: |
@@ -68,7 +66,7 @@ CITDP-REQ-MESH_DOMAIN_MODEL:
       user-facing-release-notes: skipped — no end-user or setup delta (domain-only, deployable false).
     checklist_step_completed: persist-citdp-record
     checklist_version: agent_req_implementation_checklist v1.5.2
-    recorded_at: 2026-05-19
+    recorded_at: {}
     tied_context:
       architecture:
         - ARCH-MESH_DOMAIN
@@ -82,30 +80,30 @@ CITDP-REQ-MESH_DOMAIN_MODEL:
     workspace_root: /Users/fareed/Documents/dev/node/panorama
   risk_analysis:
     risks:
-      - id: RISK-MESH-001
-        description: |
+      - description: |
           Developers confuse mesh domain (src/lib/mesh/) with pane nsync (src/lib/sync/) and wire the wrong module.
+        id: RISK-MESH-001
         likelihood: Medium
         mitigation: ARCH-MESH_LAYERED documents separation; CITDP and agent-preload-contract name both paths; no imports between modules in phase 1.
         severity: Medium
-      - id: RISK-MESH-002
-        description: |
-          Secret material appears in serialized mesh or credential DTOs.
-        likelihood: Low
-        mitigation: VALIDATE_CREDENTIAL_REFERENCE rejects secret fields; serialize tests assert no leakage on round-trip.
-        severity: High
-      - id: RISK-MESH-003
-        description: |
+      - description: |
           Invalid mesh graphs accepted without validation before later services persist them.
+        id: RISK-MESH-003
         likelihood: Low
         mitigation: VALIDATE_MESH orchestrates depot/link/policy checks; invalid_core_objects_are_rejected unit tests.
         severity: Medium
-      - id: RISK-MESH-004
-        description: |
+      - description: |
           Live mesh configuration mutated during sync session via shared object references.
+        id: RISK-MESH-004
         likelihood: Low
         mitigation: CREATE_MESH_SNAPSHOT uses deep clone; sync_session_requires_mesh_snapshot tests.
         severity: Medium
+      - description: |
+          Secret material appears in serialized mesh or credential DTOs.
+        id: RISK-MESH-002
+        likelihood: Low
+        mitigation: VALIDATE_CREDENTIAL_REFERENCE rejects secret fields; serialize tests assert no leakage on round-trip.
+        severity: High
   tdd_sequence:
     summary: |
       IMPL pseudo-code (sidecar) → unit-test-red (Pattern A tests, optional minimal shims) → unit-test-green (validators, serialize, types, internal)

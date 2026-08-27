@@ -1,14 +1,14 @@
 ARCH-BATCH_OPERATIONS:
   alternatives_considered:
-    - name: Sequential operations
-      cons:
+    - cons:
         - Slower for large file sets
+      name: Sequential operations
       pros:
         - Simpler implementation
       rejected_reason: Parallel operations significantly faster
-    - name: Server-side job queue
-      cons:
+    - cons:
         - Complex job management infrastructure
+      name: Server-side job queue
       pros:
         - Survives page refresh
       rejected_reason: Over-engineered for current needs
@@ -17,25 +17,25 @@ ARCH-BATCH_OPERATIONS:
   decision: '[See architecture-decisions.yaml for details]'
   implementation_approach:
     details:
+      - Check marks.size > 0, use marked files; else use cursor file
+      - Conflict detection compares resolved dest paths not basenames when tree spans subdirectories
       - 'Error collection: continue on error, report at end'
+      - POST /api/files operation bulk-rename with entries { src, dest }[]; client rename-regex.ts resolves paths then bulkRename Promise.allSettled
       - 'POST /api/files with operation: bulk-copy/bulk-move/bulk-delete'
       - 'Progress dialog shows: percentage, file count, current file'
       - 'Relative destination mapping: bulk-copy/move and sync-all accept sourceBase; resolveCrossPaneDestPath preserves path under dest base (REQ-DIRECTORY_TREE)'
-      - Check marks.size > 0, use marked files; else use cursor file
-      - Conflict detection compares resolved dest paths not basenames when tree spans subdirectories
-      - POST /api/files operation bulk-rename with entries { src, dest }[]; client rename-regex.ts resolves paths then bulkRename Promise.allSettled
       - Server streams progress updates via callbacks
     summary: Promise.all with progress callbacks, fallback to cursor file
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
       reason: LEAP — bulk-rename via IMPL-RENAME_REGEX traceability
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Async Batch File Operations Architecture

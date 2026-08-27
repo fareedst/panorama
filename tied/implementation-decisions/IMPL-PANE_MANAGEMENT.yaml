@@ -1,21 +1,21 @@
 IMPL-PANE_MANAGEMENT:
   code_locations:
     functions:
-      - name: appendPaneAtPath
-        description: Append pane at path with template inheritance
+      - description: Add pane at focused path via appendPaneAtPath
         file: src/app/files/WorkspaceView.tsx
-      - name: handleAddPane
-        description: Add pane at focused path via appendPaneAtPath
+        name: handleAddPane
+      - description: Append pane at path with template inheritance
         file: src/app/files/WorkspaceView.tsx
-      - name: handleSwapPanes
-        description: Swap two pane indices with focus and history remap
+        name: appendPaneAtPath
+      - description: Apply dialog index order to panes[]
         file: src/app/files/WorkspaceView.tsx
-      - name: handleCyclePanes
-        description: Rotate all panes one slot
+        name: handleApplyPaneOrder
+      - description: Rotate all panes one slot
         file: src/app/files/WorkspaceView.tsx
-      - name: handleApplyPaneOrder
-        description: Apply dialog index order to panes[]
+        name: handleCyclePanes
+      - description: Swap two pane indices with focus and history remap
         file: src/app/files/WorkspaceView.tsx
+        name: handleSwapPanes
   cross_references:
     - ARCH-KEYBIND_SYSTEM
     - ARCH-PANE_LIFECYCLE
@@ -43,13 +43,13 @@ IMPL-PANE_MANAGEMENT:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
       reason: LEAP — appendPaneAtPath shared helper; set-base newPane consumer
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass - build succeeds, 570 tests passing
       validator: AI Agent
   name: Runtime Pane Management Controls

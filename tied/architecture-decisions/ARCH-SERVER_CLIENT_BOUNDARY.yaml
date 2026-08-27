@@ -1,18 +1,17 @@
-# ARCH detail — ARCH-SERVER_CLIENT_BOUNDARY
 ARCH-SERVER_CLIENT_BOUNDARY:
   alternatives_considered:
-    - name: Mark files as server-only with 'server-only' package
-      cons:
+    - cons:
         - Extra dependency
         - Still need separate utility files
+      name: Mark files as server-only with 'server-only' package
       pros:
         - Build-time enforcement
         - Explicit marker
       rejected_reason: Adds dependency without solving the utility sharing problem
-    - name: Use dynamic imports in client code
-      cons:
+    - cons:
         - Adds runtime complexity
         - Doesn't work for server-only modules like fs
+      name: Use dynamic imports in client code
       pros:
         - Can import server code conditionally
       rejected_reason: Cannot dynamically import Node.js built-in modules in browser
@@ -23,25 +22,25 @@ ARCH-SERVER_CLIENT_BOUNDARY:
   implementation_approach:
     details:
       - 'API routes follow Next.js convention: src/app/api/files/route.ts creates /api/files endpoint (not /api/files/list)'
-      - 'files.data.ts: Server-only, imports fs/promises, path, os'
-      - 'files.types.ts: Shared types, no runtime code'
-      - 'files.utils.ts: Client-safe, pure TypeScript with no Node.js dependencies'
       - Client code must call exact API route URLs matching file structure
       - Client components import only from files.utils.ts
       - files.data.ts can re-export utilities from files.utils.ts for convenience
+      - 'files.data.ts: Server-only, imports fs/promises, path, os'
+      - 'files.types.ts: Shared types, no runtime code'
+      - 'files.utils.ts: Client-safe, pure TypeScript with no Node.js dependencies'
       - Import traces in build errors reveal exactly where server code leaks into client
       - Server components and API routes import from files.data.ts
     summary: Separate server-only code and client-safe utilities into different files; align API routes with Next.js App Router conventions
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Added API route URL alignment lesson; fixed 404 error from /api/files/list vs /api/files mismatch
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Server-Client Code Boundary Separation

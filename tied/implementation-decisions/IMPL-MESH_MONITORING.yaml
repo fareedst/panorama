@@ -1,8 +1,8 @@
 IMPL-MESH_MONITORING:
   code_locations:
     files:
-      - path: src/lib/mesh/services/monitoring-service.ts
-        description: Monitoring summary service
+      - description: Monitoring summary service
+        path: src/lib/mesh/services/monitoring-service.ts
     functions: []
   cross_references:
     - ARCH-MESH_LAYERED
@@ -16,10 +16,10 @@ IMPL-MESH_MONITORING:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
   name: Mesh Monitoring Service
   related_decisions:
     depends_on:

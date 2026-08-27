@@ -1,17 +1,16 @@
-# REQ detail — REQ-VERIFY_DEST
 REQ-VERIFY_DEST:
   category: Functional
   description: Optional verification that destination files match source after copy to detect corruption
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       result: implemented
       validator: AI Agent
   name: Destination Verification by Hash
@@ -46,5 +45,5 @@ REQ-VERIFY_DEST:
       - IMPL-NSYNC_VERIFY
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: Verification success and failure cases
+    - coverage: Verification success and failure cases
+      method: Unit tests

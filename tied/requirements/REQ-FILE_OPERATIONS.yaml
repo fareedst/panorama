@@ -4,13 +4,13 @@ REQ-FILE_OPERATIONS:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-06-02T00:00:00.000Z"
+      date: '2026-06-02T00:00:00.000Z'
       reason: 'LEAP: copyFile test coverage — preserveCopyAttributes, error path, integration tests'
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: File Copy, Move, Rename, Delete Operations
@@ -59,9 +59,9 @@ REQ-FILE_OPERATIONS:
       - src/lib/copy-file.data.test.ts
       - src/lib/files.data.test.ts
   validation_criteria:
-    - method: Operation testing
-      coverage: copy-file.data.test.ts recursive directory copy on real filesystem; all CRUD operations including recursive directory copy
-    - method: Error testing
-      coverage: files.data.test.ts copyFile rethrows on failure; errors handled gracefully (permissions, non-existent files)
-    - method: Unit tests
-      coverage: files.data.test.ts copyFile file and directory branches, preserveCopyAttributes invocation, error rethrow; vocabulary tied/vocab/file-marking.md
+    - coverage: files.data.test.ts copyFile rethrows on failure; errors handled gracefully (permissions, non-existent files)
+      method: Error testing
+    - coverage: copy-file.data.test.ts recursive directory copy on real filesystem; all CRUD operations including recursive directory copy
+      method: Operation testing
+    - coverage: files.data.test.ts copyFile file and directory branches, preserveCopyAttributes invocation, error rethrow; vocabulary tied/vocab/file-marking.md
+      method: Unit tests

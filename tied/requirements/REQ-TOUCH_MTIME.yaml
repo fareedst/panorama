@@ -4,10 +4,10 @@ REQ-TOUCH_MTIME:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
       reason: tied_verify after touch mtime test pass
   name: Touch Modification Time
   priority: P1
@@ -56,11 +56,11 @@ REQ-TOUCH_MTIME:
       - src/lib/touch-file.test.ts
       - src/lib/touch-mtime.data.test.ts
   validation_criteria:
-    - method: Unit tests
-      coverage: touch-file.ts and resolveAggregateMtime
-    - method: API tests
-      coverage: bulk-touch route validation
-    - method: Component tests
-      coverage: TouchFileDialog and ContextMenu Touch item
-    - method: Integration tests
-      coverage: WorkspaceView touch apply and pane refresh
+    - coverage: bulk-touch route validation
+      method: API tests
+    - coverage: TouchFileDialog and ContextMenu Touch item
+      method: Component tests
+    - coverage: WorkspaceView touch apply and pane refresh
+      method: Integration tests
+    - coverage: touch-file.ts and resolveAggregateMtime
+      method: Unit tests

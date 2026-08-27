@@ -1,40 +1,40 @@
 IMPL-LOGGER_MODULE:
   code_locations:
     files:
-      - path: src/lib/logger.ts
-        description: Main logger module implementation
-        lines:
-          - 1
-          - 295
-      - path: src/lib/logger.types.ts
-        description: TypeScript types for logging
-        lines:
-          - 1
-          - 135
-      - path: src/lib/logger.test.ts
-        description: Logger tests (26 passing)
+      - description: Logger tests (26 passing)
         lines:
           - 1
           - 356
+        path: src/lib/logger.test.ts
+      - description: Main logger module implementation
+        lines:
+          - 1
+          - 295
+        path: src/lib/logger.ts
+      - description: TypeScript types for logging
+        lines:
+          - 1
+          - 135
+        path: src/lib/logger.types.ts
     functions:
-      - name: fatal
-        description: Log fatal error (level 0)
+      - description: Log debug (level 4)
         file: src/lib/logger.ts
-      - name: error
-        description: Log error (level 1)
+        name: debug
+      - description: Log error (level 1)
         file: src/lib/logger.ts
-      - name: warn
-        description: Log warning (level 2)
+        name: error
+      - description: Log fatal error (level 0)
         file: src/lib/logger.ts
-      - name: info
-        description: Log info (level 3)
+        name: fatal
+      - description: Log info (level 3)
         file: src/lib/logger.ts
-      - name: debug
-        description: Log debug (level 4)
+        name: info
+      - description: Log trace (level 5)
         file: src/lib/logger.ts
-      - name: trace
-        description: Log trace (level 5)
+        name: trace
+      - description: Log warning (level 2)
         file: src/lib/logger.ts
+        name: warn
   cross_references:
     - ARCH-LOGGING_SYSTEM
     - REQ-LOGGING_SYSTEM
@@ -42,24 +42,24 @@ IMPL-LOGGER_MODULE:
   implementation_approach:
     details:
       - 'API: logger.fatal(), logger.error(), logger.warn(), logger.info(), logger.debug(), logger.trace()'
+      - Created src/lib/logger.ts as server-only module
       - 'Each method signature: (tokens: string | string[], message: string, metadata?: object)'
       - 'Format: [ISO_TIMESTAMP] [LEVEL] [TOKENS] message [metadata]'
-      - 'Six log levels: FATAL=0, ERROR=1, WARN=2, INFO=3, DEBUG=4, TRACE=5'
-      - Created src/lib/logger.ts as server-only module
       - Initialize log file on first write with timestamp in filename
+      - 'Six log levels: FATAL=0, ERROR=1, WARN=2, INFO=3, DEBUG=4, TRACE=5'
       - Synchronous write for FATAL, buffered for others
       - Write to os.tmpdir() with filename nx1-log-YYYY-MM-DD-HH-mm-ss-SSS.log
     summary: Create logger module with session-based file writing and six log levels
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit traceability from logger.test.ts
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Logger Module Implementation

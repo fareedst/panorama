@@ -1,9 +1,8 @@
-# ARCH detail — ARCH-TAILWIND_V4
 ARCH-TAILWIND_V4:
   alternatives_considered:
-    - name: CSS Modules
-      cons:
+    - cons:
         - More boilerplate
+      name: CSS Modules
       pros:
         - Component-scoped styles
       rejected_reason: Tailwind is more efficient for utility-first approach
@@ -20,13 +19,13 @@ ARCH-TAILWIND_V4:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Tailwind CSS v4 Styling System

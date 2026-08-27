@@ -1,17 +1,16 @@
-# REQ detail — REQ-CONFIG_DRIVEN_UI
 REQ-CONFIG_DRIVEN_UI:
   category: Functional
   description: Configuration-driven UI makes the project a highly-configurable template that users can customize without code changes
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Configuration-Driven UI
@@ -53,7 +52,7 @@ REQ-CONFIG_DRIVEN_UI:
       - IMPL-YAML_CONFIG
     tests: []
   validation_criteria:
-    - method: Config loader testing
-      coverage: Config loader unit tests pass (31 tests)
-    - method: Integration testing
-      coverage: Changing config values changes rendered output
+    - coverage: Config loader unit tests pass (31 tests)
+      method: Config loader testing
+    - coverage: Changing config values changes rendered output
+      method: Integration testing

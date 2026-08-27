@@ -1,9 +1,9 @@
 ARCH-FILE_OPERATIONS_API:
   alternatives_considered:
-    - name: Server actions
-      cons:
+    - cons:
         - Less flexible for programmatic calls
         - Tied to forms
+      name: Server actions
       pros:
         - Simpler than API routes
       rejected_reason: API routes more flexible for file operations
@@ -14,22 +14,22 @@ ARCH-FILE_OPERATIONS_API:
     details:
       - 'bulk-mkdir: validate entries paths; validateRenameBasename on basename; bulkMakeDirectory (REQ-DIRECTORY_NAVIGATION)'
       - 'bulk-rename: validate entries; same-dir rename; validateRenameBasename; bulkRename (ARCH-BATCH_OPERATIONS)'
+      - Call data layer functions
       - 'execute-command: validate entries array; spawn shell per entry via executeCommandBatch (ARCH-PANE_COMMAND_EXEC)'
       - 'Request body: { operation, src, dest }'
-      - Call data layer functions
       - Return success/error responses
       - Switch on operation type
     summary: POST /api/files endpoint handles copy, move, delete, rename, bulk-touch, bulk-rename, bulk-mkdir, execute-command
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
       reason: LEAP — bulk-mkdir POST operation
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: File Operations API Routes

@@ -1,12 +1,12 @@
 IMPL-FLEX_LAYOUT:
   code_locations:
     files:
-      - path: src/app/page.tsx
-        description: Root redirect to /files (historical flex home retired)
-      - path: src/app/files/WorkspaceView.tsx
-        description: Primary workspace flex shell
-      - path: src/app/files/components
-        description: Dialogs and toolbars using Tailwind flex utilities
+      - description: Dialogs and toolbars using Tailwind flex utilities
+        path: src/app/files/components
+      - description: Primary workspace flex shell
+        path: src/app/files/WorkspaceView.tsx
+      - description: Root redirect to /files (historical flex home retired)
+        path: src/app/page.tsx
   cross_references:
     - ARCH-TAILWIND_V4
     - REQ-ROOT_LAYOUT
@@ -20,13 +20,13 @@ IMPL-FLEX_LAYOUT:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit essence_pseudocode; flex locus moved to file manager UI
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Flexbox Layout Implementation

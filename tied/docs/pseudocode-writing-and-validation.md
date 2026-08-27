@@ -6,7 +6,7 @@
 
 **Purpose**: Single guide for IMPL **`essence_pseudocode`**: where it lives on disk, how to edit it (editor vs MCP/CLI), **literal linkage** to tests and production code, **three-way alignment** from discovery through TDD to composition/E2E, **LEAP** when logic drifts, and **validation** (Layer A TIED + Layer B application checklist). The machine-readable Layer B definition remains [pseudocode-validation-checklist.yaml](pseudocode-validation-checklist.yaml).
 
-**Related (portable / template):** [docs/pseudocode-format-and-practices.md](../../docs/pseudocode-format-and-practices.md). Canonical sidecar body template: [templates/impl-essence-pseudocode-template.md](../../templates/impl-essence-pseudocode-template.md). RSpec/Bats in IMPL sidecars: [pseudocode-rspec-bats-policy.md](pseudocode-rspec-bats-policy.md).
+**Related (portable / template):** [pseudocode-format-and-practices.md](pseudocode-format-and-practices.md). Canonical sidecar body template: [templates/impl-essence-pseudocode-template.md](../../templates/impl-essence-pseudocode-template.md). RSpec/Bats in IMPL sidecars: [pseudocode-rspec-bats-policy.md](pseudocode-rspec-bats-policy.md).
 
 ---
 
@@ -27,7 +27,7 @@ Machine-readable validation rules: [pseudocode-validation-checklist.yaml](pseudo
 ## Table of contents
 
 1. [Definition of IMPL pseudocode](#definition-of-impl-pseudocode)
-2. [Choose your path](#choose-your-path) — Track A (new feature) vs Track B (fix already implemented)
+2. [Choose your path](#choose-your-path) — Track A (new feature), Track B (fix already implemented), Track C (code/tests without pseudo-code)
 3. [Foundations: how to write IMPL pseudo-code](#foundations-how-to-write-impl-pseudo-code)
 4. [Block lead and literal copy in tests and code](#block-lead-and-literal-copy-in-tests-and-code)
 5. [Mechanics: editing the sidecar (MCP and CLI)](#mechanics-editing-the-sidecar-mcp-and-cli)
@@ -51,7 +51,7 @@ flowchart LR
     RP[resolve_pseudocode]
     GV[gate_pseudocode_validation]
     UR[unit_test_red_green]
-    VG[verification_gate_post_test]
+    VG[verification_gate]
     CP --> RP --> GV --> UR --> VG
   end
   subgraph fixTrack [TrackB_PostFix_LEAP]
@@ -59,6 +59,12 @@ flowchart LR
     T[Tests]
     C[Code_comments]
     IMPL --> T --> C
+  end
+  subgraph retrofitTrack [TrackC_FromCodeTests]
+    EV[Read_tests_and_code]
+    W[Write_IMPL_sidecar]
+    AL[Align_block_lead_comments]
+    EV --> W --> AL
   end
 ```
 
@@ -70,14 +76,14 @@ Executable step-by-step procedure: [agent-req-implementation-checklist.md](agent
 
 | Checklist slug (YAML) | Role for pseudo-code | Where in this document |
 |----------------------|----------------------|-------------------------|
-| `catalog-pseudocode-contracts` (Phase B) | Read `essence_pseudocode`; extract INPUT/OUTPUT/DATA, procedures, branches | [Three-way alignment § Phase B](#phase-b--reasoning); [Foundations](#foundations-how-to-write-impl-pseudo-code) |
+| `catalog-pseudocode-contracts` (Phase B) | Read `essence_pseudocode`; extract INPUT/OUTPUT/DATA, PRE/POST/EFFECTS/FAILURE_MODES/DATA_TRANSITION/TERMINATION, procedures, branches | [Three-way alignment § Phase B](#phase-b--reasoning); [Foundations](#foundations-how-to-write-impl-pseudo-code) |
 | `flag-insufficient-specs` / `flag-contradictory-specs` | Feed `resolve-pseudocode` | Phase B |
 | `resolve-pseudocode` | Edit IMPL sidecar; compatible contracts; every block token-commented | Phase B–C; [Block lead](#block-lead-and-literal-copy-in-tests-and-code) |
-| `gate-pseudocode-validation` | Layer A + sub-pass with profile `agent_req_checklist_pre_red` | [Validation layers](#validation-layers); [pseudocode-validation-checklist.yaml](pseudocode-validation-checklist.yaml) `tailoring.profiles` |
+| `gate-pseudocode-validation` | Layer A + pre-RED structural Layer B pass | [Validation layers](#validation-layers) (Pre-RED vs post-test) |
 | `persist-implementation-records` | IMPL YAML detail + sidecar consistent; `tied_validate_consistency` | [Mechanics](#mechanics-editing-the-sidecar-mcp-and-cli); [detail-files-schema.md](detail-files-schema.md) |
 | `unit-test-red` / `unit-test-green` | Literal block leads (or full blocks per policy) in tests then code | [Block lead](#block-lead-and-literal-copy-in-tests-and-code); Phases D–F |
 | `composition-integration` | IMPL describes bindings; composition tests + code | Phase G |
-| `verification-gate` | `sub-pseudocode-validation-pass` with **`agent_req_checklist_post_test`** closes deferred Layer B rows | [Validation layers](#validation-layers) |
+| `verification-gate` | `sub-pseudocode-validation-pass` — full Layer B including **minimum_gating_rules** | [Validation layers](#validation-layers) (Pre-RED vs post-test) |
 | `traceable-commit` | Suite green; token validation; IMPL metadata | Phase I |
 
 **Mandatory global sequence** (from checklist): token-commented IMPL `essence_pseudocode` → `gate-pseudocode-validation` → `persist-implementation-records` when authoring new IMPL **before** RED tests or production implementation files.
@@ -93,10 +99,22 @@ Use this when a **fix landed in code/tests** (or both) without a prior IMPL upda
 3. **Run Layer A** — `tied_validate_consistency` after sidecar changes; `lint_yaml` on touched IMPL detail YAML per [PROC-YAML_EDIT_LOOP].
 4. **Update tests** — Align assertions and **literal** block lead (or full-block) comments with the revised sidecar.
 5. **Update production code** — Same literal traceability text at implementing loci; product logic matches IMPL.
-6. **Layer B** — Run checklist pass appropriate to phase (`agent_req_checklist_post_test` when executable tests exist).
+6. **Layer B** — Run full checklist pass when executable tests exist (verification-gate context); otherwise structural subset only (see [Validation layers](#validation-layers)).
 7. **Metadata** — Refresh `traceability.tests`, `code_locations`, `metadata.last_updated` on affected IMPL detail records.
 
 This is the same **IMPL → test → code** order as the [LEAP micro-cycle](#leap-micro-cycle-and-post-fix-recovery), applied as **recovery** after an out-of-order fix.
+
+<a id="track-c-code-and-tests-without-pseudocode"></a>
+
+### Track C — Code and tests exist; pseudo-code does not (brownfield retrofit)
+
+Use when **production code and tests already implement the behavior** but **`IMPL-*-pseudocode.md` is missing, empty, or no longer matches** what tests and code do. You are **reverse-documenting** implemented behavior into language-agnostic pseudo-code, then aligning **literal block leads** in tests and code ([PROC-IMPL_CODE_TEST_SYNC]).
+
+**Evidence order for this track:** read **tests and code** → author or refresh **IMPL sidecar** → sync **comments** (and optional full-block copies per policy). Do **not** rewrite passing tests or product logic except to fix comments/traceability or documented bugs.
+
+**Executable agent prompt (copy-paste):** [impl-pseudocode-from-code-agent-prompt.md](impl-pseudocode-from-code-agent-prompt.md).
+
+If REQ/ARCH/IMPL indexes are thin, seed traceability with [PROC-TIED_BOOTSTRAP_FROM_TESTS] in [processes.md](processes.md) before Track C.
 
 ---
 
@@ -116,19 +134,19 @@ The merged field is the **primary and authoritative source of implementation log
 
 ### Canonical structure for essence_pseudocode
 
-Hand-authored IMPL bodies usually start from [templates/impl-essence-pseudocode-template.md](../../templates/impl-essence-pseudocode-template.md) (copy the Markdown after the `---` separator into `IMPL-{TOKEN}-pseudocode.md`). For a standalone summary of vocabulary and validation, see [docs/pseudocode-format-and-practices.md](../../docs/pseudocode-format-and-practices.md).
+Hand-authored IMPL bodies usually start from [templates/impl-essence-pseudocode-template.md](../../templates/impl-essence-pseudocode-template.md) (copy the Markdown after the `---` separator into `IMPL-{TOKEN}-pseudocode.md`). For a standalone summary of vocabulary and validation, see [pseudocode-format-and-practices.md](pseudocode-format-and-practices.md).
 
-**markdown_exec project conventions (this repo):** File title uses H1 with bracket tokens in order **IMPL, ARCH, REQ** (stay consistent with [implementation-decisions.md](implementation-decisions.md) top-level naming). Open with `## Summary contract` when the IMPL needs file-level INPUT/OUTPUT/DATA before the first runtime H2. Under `## EMBEDDED_MINITEST: …`, express each block lead as a **list item** (`- [IMPL-…] [ARCH-…] [REQ-…] …`), not a second H1. Prefer **language-agnostic** steps in CONTRACT/CONTROL.
+**markdown_exec project conventions (this repo):** File title uses H1 with bracket tokens in order **IMPL, ARCH, REQ** (stay consistent with [implementation-decisions.md](implementation-decisions.md) top-level naming). Open with `## Summary contract` when the IMPL needs file-level INPUT/OUTPUT/DATA (and PRE/POST/EFFECTS when documenting a shared Active contract) before the first runtime H2. Under `## EMBEDDED_MINITEST: …`, express each block lead as a **list item** (`- [IMPL-…] [ARCH-…] [REQ-…] …`), not a second H1. Prefer **language-agnostic** steps in CONTRACT/CONTROL/EFFECTS.
 
 ### Writing rules (summary)
 
 - **Mandatory structure**: Address all logical and flow issues in essence **before** writing tests or code.
 - **No code chunks in pseudocode (mandatory)**: `essence_pseudocode` must not contain language-specific snippets or pasted production/test code. Keep logic language-agnostic.
-- **Contract block**: Use explicit `INPUT:`, `OUTPUT:`, `DATA:` (and `CONTROL:` when relevant). Procedure names in UPPER_SNAKE or camelCase.
+- **Contract block**: Use explicit `INPUT:`, `OUTPUT:`, `DATA:` when needed, plus precision fields for new/changed Active procedure blocks: `PRE:`, `POST:`, `EFFECTS:`, and when applicable `FAILURE_MODES:`, `DATA_TRANSITION:`, `TERMINATION:`; `CONTROL:` when env/flags/ordering matter. Procedure names in UPPER_SNAKE or camelCase.
 - **One action per step**: Each logical step expresses one clear action or decision.
 - **Token comments in every block** ([PROC-IMPL_PSEUDOCODE_TOKENS]): Every block names the relevant REQ, ARCH, and IMPL tokens and states **how** the block implements them. When listing all three in one line, use bracket order **IMPL, ARCH, REQ** (same as the top-level file heading). Top-level file heading: `# [IMPL-X] [ARCH-Y] [REQ-Z]` (H1). Sub-blocks with the same token set: *how* only. Sub-blocks with a different set: full token list and *how*.
-- **Preferred vocabulary**: INPUT, OUTPUT, DATA, CONTROL; ON, WHEN; IF, ELSE; ON error, RETURN error; AWAIT, Promise. Full list: [implementation-decisions.md](implementation-decisions.md).
-- **Collision detection**: When IMPLs compose or share code paths, document ordering, shared data, and pre/post conditions.
+- **Preferred vocabulary**: INPUT, OUTPUT, DATA, CONTROL; PRE, POST, EFFECTS, FAILURE_MODES, DATA_TRANSITION, TERMINATION; ON, WHEN; IF, ELSE; ON error, RETURN error; AWAIT, Promise. Full list and requiredness: [implementation-decisions.md](implementation-decisions.md).
+- **Collision detection**: When IMPLs compose or share code paths, document ordering, shared data, EFFECTS rows, and PRE/POST conditions.
 - **LEAP drift rule**: If tests or code contain logic not in pseudocode, update IMPL first, then ARCH/REQ if needed.
 
 **Full methodology:** [implementation-decisions.md](implementation-decisions.md) — mandatory essence, vocabulary, sequence, managed code.
@@ -314,7 +332,7 @@ IMPL `essence_pseudocode` is the **source of consistent logic**. Tests validate 
 
 **Goal:** Resolve gaps/conflicts **before** tests or code.
 
-- **B1.** Catalog INPUT/OUTPUT/DATA and procedure names per IMPL.
+- **B1.** Catalog INPUT/OUTPUT/DATA, PRE/POST/EFFECTS/FAILURE_MODES/DATA_TRANSITION/TERMINATION (when present or required), and procedure names per IMPL.
 - **B2.** Flag insufficient specs, stubs on Active IMPLs, blocks without token comments.
 - **B3.** Flag contradictions across IMPLs.
 - **B4.** Update pseudo-code; LEAP to ARCH/REQ if scope changed; **`lint_yaml`** on touched YAML.
@@ -332,7 +350,7 @@ IMPL `essence_pseudocode` is the **source of consistent logic**. Tests validate 
 
 - One pseudo-code block maps to one test group.
 - **D3.** RED before production code; REQ token in test naming.
-- **D4.** Assertions match pseudo-code OUTPUT; else `e2e_only` + reason.
+- **D4.** Assertions match pseudo-code OUTPUT, POST, and named FAILURE_MODES; else `e2e_only` + reason.
 
 **Shell pitfall (Bash):** `out=$(cmd)` strips trailing newlines—use temp files/`cmp` for exact byte contracts.
 
@@ -366,16 +384,26 @@ Full suite; lint; **`tied_validate_consistency`**; three-way audit; update **`tr
 # [IMPL-SAVE] [ARCH-PERSISTENCE] [REQ-DATA_SAVE]
 # Validates input and persists a record via the storage index.
 
-INPUT: record (object), options? (object)
-OUTPUT: { ok: boolean } or { error: string }
+Contract:
+  INPUT: record (object), options? (object)
+  PRE: record is non-empty
+  OUTPUT: { ok: true } | { error: EmptyRecord | PersistFailed }
+  POST:
+    success => index contains normalized record
+    error EmptyRecord => index unchanged
+  FAILURE_MODES: EmptyRecord, PersistFailed
+  DATA: storage index (map)
+  DATA_TRANSITION: on success, index updated with normalized record; else unchanged
+  EFFECTS: pure
+  TERMINATION: total
 
 SAVE_WORKFLOW(record, options):
-  IF record empty: RETURN { error: "record required" }
+  IF record empty: RETURN { error: EmptyRecord }
   normalized = NORMALIZE(record)
   # [IMPL-INDEX] [ARCH-PERSISTENCE] [REQ-DATA_SAVE] — delegates index update to IMPL-INDEX.
   INDEX_UPDATE(normalized)
+  IF index update failed: RETURN { error: PersistFailed }
   RETURN { ok: true }
-  ON error: RETURN { error: message }
 ```
 
 **Test:**
@@ -490,14 +518,24 @@ During GREEN (Phase E), if pseudo-code is incomplete or wrong: **stop** coding; 
 
 Validation is **two layers**, complementary: **Layer A (TIED)** = repository/traceability on merged essence; **Layer B (application checklist)** = shape, contracts, coverage, traceability to tests.
 
-**Order:** Run **Layer A** when essence changes, then **Layer B** (or tailored subset). Use **`tailoring.profiles`** in [pseudocode-validation-checklist.yaml](pseudocode-validation-checklist.yaml):
-
-- **`agent_req_checklist_pre_red`** — Before executable tests: defer checklist rows that **require** tests (behavioral_coverage/traceability-to-tests minimums); **still run** `tied_validate_consistency` / TIED-POE-001.
-- **`agent_req_checklist_post_test`** — After tests exist: close deferred rules from pre_red (`verification-gate` invokes **`sub-pseudocode-validation-pass`** with this profile).
+**Order:** Run **Layer A** when essence changes, then **Layer B** (full checklist or structural subset per invocation context below).
 
 **Layer A — `tied_validate_consistency`** — After editing the sidecar or merged essence, with default **`include_pseudocode`**. Validates token comments and cross-references. See [mcp-server README](../mcp-server/README.md).
 
-**Layer B — [pseudocode-validation-checklist.yaml](pseudocode-validation-checklist.yaml)** — Parse, schema, symbol resolution, contracts, dependency graph, behavioral coverage, traceability, optional lint/simulation/generation, reporting. Apply to **`IMPL-{TOKEN}-pseudocode.md`** or merged `yaml_detail_read` text.
+**Layer B — [pseudocode-validation-checklist.yaml](pseudocode-validation-checklist.yaml)** — Use the executable `pseudocode_validate` MCP/CLI handler for deterministic parsing, source-located diagnostics, block discovery, schema/contract shape, token linkage, symbol closure, and dependency graph; then apply the checklist for behavioral coverage, traceability, optional lint/simulation/generation, and reporting. Apply to **`IMPL-{TOKEN}-pseudocode.md`** or merged `yaml_detail_read` text. The executable validator proves structural pseudo-code properties only, not runtime correctness or complete behavioral coverage.
+
+### Pre-RED vs post-test
+
+The same checklist file applies in two **invocation contexts** (no YAML profiles). See [agent-req-implementation-checklist.yaml](agent-req-implementation-checklist.yaml) for caller slugs.
+
+| Invocation | When | Layer A | Layer B scope | Gating |
+|------------|------|---------|---------------|--------|
+| `gate-pseudocode-validation` → `sub-pseudocode-validation-pass` | Before RED; no executable tests yet | Required (`TIED-POE-001`) | parsing, schema (including SHAPE-003..006), symbol_resolution, contract_validation, dependency_graph, reporting | Structural rows must pass; **behavioral_coverage** and **traceability** rows that require test artifacts → mark **N/A** with rationale ("no tests yet"), not ad-hoc waivers. Precision-contract rows: N/A only for `status Template`, or unchanged legacy Active blocks with rationale `pre-contract-grammar` |
+| `verification-gate` → `sub-pseudocode-validation-pass` | After unit/composition tests exist | Re-run if essence changed | Full checklist including **minimum_gating_rules** | All required rows + minimum gating rules must pass or be documented N/A with rationale. New/changed Active blocks may not use `pre-contract-grammar` |
+
+A pre-RED pass does **not** replace **[PROC-LEAP]** when pseudo-code changes alter REQ or ARCH scope.
+
+**Contract precision N/A policy:** `SHAPE-003`..`SHAPE-006` and related CONTRACT/COVER checks that depend on PRE/POST/EFFECTS/FAILURE_MODES/DATA_TRANSITION/TERMINATION accept N/A for (1) Template/stub IMPLs, (2) applicability skips (e.g. no error OUTPUT → FAILURE_MODES N/A; read-only DATA and EFFECTS without State → DATA_TRANSITION N/A; no recursion/WHILE/open wait → TERMINATION may be N/A or stated `total`), and (3) **unchanged** legacy Active blocks with rationale `pre-contract-grammar` until that block is next edited — then the full Active contract is required.
 
 ### Intended use
 
@@ -522,11 +560,11 @@ Matches YAML `recommended_validation_order`: **tied_data** → parsing → schem
 
 ### Minimum gating rules
 
-See YAML **`minimum_gating_rules`**; pre_red profile **defers** some items until tests exist—document deferrals, do not ad-hoc waive.
+See YAML **`minimum_gating_rules`**. Before executable tests exist, the pre-RED gate evaluates structural checks only; coverage and traceability minimums apply at **verification-gate** when tests exist. Document N/A rows with rationale—do not ad-hoc waive.
 
 ### Tailoring
 
-Project-specific block kinds, safety rules, architecture constraints—see YAML **`tailoring`**.
+Project-specific block kinds, safety rules, architecture constraints—see YAML **`tailoring.notes`**.
 
 ### If no parser
 
@@ -539,9 +577,9 @@ Manual walk of checklist categories in order; document pass/fail/waived per item
 ## When to run validation
 
 - **Layer A** — After any change to **`IMPL-*-pseudocode.md`** or merged essence; before commits affecting TIED.
-- **Layer B** — Per phase (pre_red vs post_test profiles).
-- **Agent flow** — After authoring/updating pseudo-code and token comments: Layer A + Layer B subset **before** RED tests where checklist mandates (`gate-pseudocode-validation`).
-- **Post-fix** — Re-run Layer A after IMPL edits; Layer B when closing deferred rows after tests exist.
+- **Layer B** — Pre-RED structural pass at `gate-pseudocode-validation` using `pseudocode_validate` plus the checklist; full pass at `verification-gate` when tests exist.
+- **Agent flow** — After authoring/updating pseudo-code and token comments: Layer A + pre-RED structural Layer B **before** RED tests (`gate-pseudocode-validation`).
+- **Post-fix** — Re-run Layer A after IMPL edits; full Layer B at verification-gate when tests exist.
 
 ---
 
@@ -569,14 +607,16 @@ Mechanical generation from tests does **not** replace verbatim block-lead rules 
 
 | Document | What it provides |
 |----------|------------------|
-| [pseudocode-validation-checklist.yaml](pseudocode-validation-checklist.yaml) | Layer B checklist; **`tailoring.profiles`** for agent REQ flow |
+| [pseudocode-validation-checklist.yaml](pseudocode-validation-checklist.yaml) | Layer B checklist; pre-RED vs post-test contexts in this guide |
 | [`script/extract_test_pseudocode_to_impl_sidecars.py`](../../script/extract_test_pseudocode_to_impl_sidecars.py) | Optional Rust test → Markdown sidecar |
 | `tied_validate_consistency` (MCP/CLI) | Layer A; default `include_pseudocode` |
 | [detail-files-schema.md](detail-files-schema.md) | IMPL detail fields; sidecar merge |
 | [`templates/impl-essence-pseudocode-template.md`](../../templates/impl-essence-pseudocode-template.md) | Hand-authored sidecar body template |
-| [`docs/pseudocode-format-and-practices.md`](../../docs/pseudocode-format-and-practices.md) | Portable format |
+| [pseudocode-format-and-practices.md](pseudocode-format-and-practices.md) | Portable format |
 | [implementation-decisions.md](implementation-decisions.md) | Mandatory essence, vocabulary, managed code |
 | [agent-req-implementation-checklist.md](agent-req-implementation-checklist.md) | Executable REQ checklist (`[PROC-AGENT_REQ_CHECKLIST]`) |
+| [impl-pseudocode-from-code-agent-prompt.md](impl-pseudocode-from-code-agent-prompt.md) | Track C: retrofit pseudo-code from existing code and tests |
+| [pseudocode-fidelity-audit-agent-prompt.md](pseudocode-fidelity-audit-agent-prompt.md) | Audit whether existing pseudo-code is a reliable + complete transform of tests/code; report then LEAP-fix gaps |
 | [processes.md](processes.md) | `[PROC-PSEUDOCODE_VALIDATION]`, `[PROC-IMPL_CODE_TEST_SYNC]`, `[PROC-LEAP]` |
 | [yaml-update-mcp-runbook.md](yaml-update-mcp-runbook.md) | MCP routing, `TIED_BASE_PATH` |
 | [tied-yaml skill](../../.cursor/skills/tied-yaml/SKILL.md), [reference.md](../../.cursor/skills/tied-yaml/reference.md) | CLI/MCP tools |

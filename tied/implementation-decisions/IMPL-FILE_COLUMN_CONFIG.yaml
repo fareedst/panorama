@@ -1,38 +1,38 @@
 IMPL-FILE_COLUMN_CONFIG:
   code_locations:
     files:
-      - path: config/files.yaml
-        description: columns defaults, copy.columns, toolbars.actions.view.columns
-      - path: src/lib/config.types.ts
-        description: FileColumnId, FilesColumnConfig, ToolbarActionMeta
-      - path: src/lib/file-columns.ts
-        description: Column helpers and grid measurement
-      - path: src/lib/file-columns.test.ts
-        description: Unit tests for file-columns module
-      - path: src/lib/toolbar.utils.ts
-        description: deriveToolbarButton actionsMeta fallback
-      - path: src/lib/workspace-mesh-bridge.ts
-        description: Snapshot v4 fileColumns capture, parse, diff, summary label
-      - path: src/app/files/components/ColumnOrderDialog.tsx
-        description: Column reorder dialog
-      - path: src/app/files/components/ColumnOrderDialog.test.tsx
-        description: Dialog unit tests
-      - path: src/app/files/components/FilePane.tsx
-        description: Tabular grid file rows
-      - path: src/app/files/components/FilePane.test.tsx
-        description: Grid and width tests
-      - path: src/app/files/WorkspaceView.tsx
-        description: fileColumns state, handlers, OneColumn shared widths
+      - description: Column helpers and grid measurement
+        path: src/lib/file-columns.ts
+      - description: Column reorder dialog
+        path: src/app/files/components/ColumnOrderDialog.tsx
+      - description: columns defaults, copy.columns, toolbars.actions.view.columns
+        path: config/files.yaml
+      - description: deriveToolbarButton actionsMeta fallback
+        path: src/lib/toolbar.utils.ts
+      - description: Dialog unit tests
+        path: src/app/files/components/ColumnOrderDialog.test.tsx
+      - description: FileColumnId, FilesColumnConfig, ToolbarActionMeta
+        path: src/lib/config.types.ts
+      - description: fileColumns state, handlers, OneColumn shared widths
+        path: src/app/files/WorkspaceView.tsx
+      - description: Grid and width tests
+        path: src/app/files/components/FilePane.test.tsx
+      - description: Snapshot v4 fileColumns capture, parse, diff, summary label
+        path: src/lib/workspace-mesh-bridge.ts
+      - description: Tabular grid file rows
+        path: src/app/files/components/FilePane.tsx
+      - description: Unit tests for file-columns module
+        path: src/lib/file-columns.test.ts
     functions:
-      - name: normalizeFileColumns
-        description: Merge snapshot or raw column array with YAML defaults
+      - description: Build CSS grid template for metadata columns
         file: src/lib/file-columns.ts
-      - name: buildFileRowGridTemplate
-        description: Build CSS grid template for metadata columns
+        name: buildFileRowGridTemplate
+      - description: Merge snapshot or raw column array with YAML defaults
         file: src/lib/file-columns.ts
-      - name: renderColumn
-        description: Render single metadata cell by FileColumnId
+        name: normalizeFileColumns
+      - description: Render single metadata cell by FileColumnId
         file: src/app/files/components/FilePane.tsx
+        name: renderColumn
   cross_references:
     - ARCH-CONFIG_DRIVEN_UI
     - IMPL-FILE_PANE
@@ -58,24 +58,24 @@ IMPL-FILE_COLUMN_CONFIG:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit essence_pseudocode from tests and production code
     last_validated:
-      date: "2026-05-23T00:00:00.000Z"
+      date: '2026-05-23T00:00:00.000Z'
       result: pending vitest gate
       validator: AI Agent
   name: Configurable File Column Display
   rationale:
     benefits:
-      - 'Default order optimized for most recent changes: mtime, size, name'
-      - 'Users can hide unwanted columns (visible: false)'
       - Column order dialog via toolbar view.columns (no shortcut)
+      - 'Default order optimized for most recent changes: mtime, size, name'
       - Full integration with existing config-driven architecture
       - Mesh snapshot v4 round-trips fileColumns
       - Tabular grid aligns metadata; Name column flex remainder
+      - 'Users can hide unwanted columns (visible: false)'
     problems_solved:
       - Column display not integrated with existing YAML configuration system
       - Column order was YAML-only with no in-session reorder or mesh restore

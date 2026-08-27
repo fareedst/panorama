@@ -2,12 +2,12 @@ ARCH-WORKSPACE_MESH_BRIDGE:
   decision: 'Bridge workspace and mesh via a pure module (workspace-mesh-bridge.ts): pane paths map to local depots; UI state lives in mesh description JSON (workspaceSnapshot v1/v2/v3/v4) and tag workspace-snapshot. Snapshot v4 adds workspace fileColumns; v3 adds sharedSort; v2 adds per-pane displaySpecId; v1 legacy omits later fields with defaults on parse. File manager and mesh remain separate surfaces. Restore uses force-dynamic FilesPage server bootstrap plus client full rehydrate when meshRestorePending (server getMesh miss). Layout aliases normalize to canonical LayoutType at capture, parse, and WorkspaceView init. Layout selection via workspace toolbar view.layout (header layout select removed). Cross-surface navigation uses NewTabLink (target=_blank, rel, a11y disclosure) between Mesh detail and workspace header.'
   implementation_approach:
     details:
-      - 'Dual-path restore: server RESTORE_ON_FILES_PAGE bootstrap plus client full rehydrate when meshRestorePending (server getMesh miss, client GET /api/mesh/:meshId).'
-      - 'Files startup mesh precedence: explicit searchParams.meshId, then localStorage files startup mesh preference (FILES_STARTUP_MESH_GATE), then YAML startup bootstrap from config/files.yaml'
       - applyMaxPanesLimit truncates restored panes; FilesPage surfaces restoreWarning including layout unreadable cases
       - Compact workspace header banner (WORKSPACE_HEADER_STATUS); status row groups loaded name, amber warnings (restoredFromMesh + restoreWarning), and red errors (bootstrap failure)
       - diffWorkspaceSnapshots compares live state to saved baseline including sharedSort and fileColumns; mesh.diffWorkspace toolbar action
+      - 'Dual-path restore: server RESTORE_ON_FILES_PAGE bootstrap plus client full rehydrate when meshRestorePending (server getMesh miss, client GET /api/mesh/:meshId).'
       - File manager shows loaded mesh name; save dialog supports update existing or save as new
+      - 'Files startup mesh precedence: explicit searchParams.meshId, then localStorage files startup mesh preference (FILES_STARTUP_MESH_GATE), then YAML startup bootstrap from config/files.yaml'
       - FilesPage export const dynamic = force-dynamic for per-request meshId restore
       - Invalid stored startup mesh preference clears localStorage and falls back to YAML without meshRestorePending; explicit invalid meshId query keeps existing client rehydrate path
       - Layout selection via workspace toolbar view.layout; header layout select removed
@@ -32,10 +32,10 @@ ARCH-WORKSPACE_MESH_BRIDGE:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-21T00:00:00.000Z"
+      date: '2026-05-21T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-29T00:00:00.000Z"
+      date: '2026-05-29T00:00:00.000Z'
       reason: LEAP — vocabulary see_also back-link
   name: Workspace Mesh Bridge Architecture
   related_decisions:

@@ -1,12 +1,12 @@
 IMPL-MAKE_DIRECTORY:
   code_locations:
     files:
-      - path: src/lib/make-directory.ts
-        description: Pane target path resolution
-      - path: src/lib/files.data.ts
-        description: makeDirectory bulkMakeDirectory
-      - path: src/app/api/files/route.ts
-        description: bulk-mkdir operation
+      - description: bulk-mkdir operation
+        path: src/app/api/files/route.ts
+      - description: makeDirectory bulkMakeDirectory
+        path: src/lib/files.data.ts
+      - description: Pane target path resolution
+        path: src/lib/make-directory.ts
   cross_references:
     - ARCH-FILE_OPERATIONS_API
     - IMPL-FILES_API

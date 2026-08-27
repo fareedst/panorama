@@ -4,13 +4,13 @@ REQ-HOME_PAGE:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: LEAP — sole-purpose root redirect; retired welcome/logo criteria
     last_validated:
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       result: pass
       validator: AI Agent
   name: Root Entry Redirect
@@ -48,9 +48,9 @@ REQ-HOME_PAGE:
       - e2e/root-redirect.spec.ts
       - src/test/integration/app.test.tsx
   validation_criteria:
-    - method: Static structure check
-      coverage: page.tsx exports Home and invokes redirect(/files)
-    - method: Integration test
-      coverage: app.test.tsx documents root redirect to file manager
-    - method: E2E browser navigation
-      coverage: e2e/root-redirect.spec.ts asserts / resolves to /files URL (redirect() not unit-testable)
+    - coverage: e2e/root-redirect.spec.ts asserts / resolves to /files URL (redirect() not unit-testable)
+      method: E2E browser navigation
+    - coverage: app.test.tsx documents root redirect to file manager
+      method: Integration test
+    - coverage: page.tsx exports Home and invokes redirect(/files)
+      method: Static structure check

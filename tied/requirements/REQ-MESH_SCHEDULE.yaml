@@ -4,7 +4,7 @@ REQ-MESH_SCHEDULE:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
   name: Mesh Sync Scheduling
   priority: P2
   related_requirements:
@@ -28,7 +28,7 @@ REQ-MESH_SCHEDULE:
       - src/app/mesh/components/MeshScheduleClient.test.tsx
       - src/lib/mesh/services/schedule-service.test.ts
   validation_criteria:
-    - method: Vitest
-      coverage: src/lib/mesh/services/schedule-service.test.ts
-    - method: Vitest RTL
-      coverage: src/app/mesh/components/MeshScheduleClient.test.tsx
+    - coverage: src/lib/mesh/services/schedule-service.test.ts
+      method: Vitest
+    - coverage: src/app/mesh/components/MeshScheduleClient.test.tsx
+      method: Vitest RTL

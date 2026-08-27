@@ -1,20 +1,74 @@
 ARCH-MOUSE_SUPPORT:
   alternatives_considered:
-    - name: Third-party drag-drop library
-      cons:
-        - Extra dependency, bundle size
-      pros:
-        - Polished DX, handles edge cases
-      rejected_reason: HTML5 API sufficient
-    - name: Custom context menu library
-      cons:
+    - cons:
         - Dependency, configuration overhead
+      name: Custom context menu library
       pros:
         - Advanced features (submenus, icons)
       rejected_reason: Simple portal component meets requirements
+    - cons:
+        - Extra dependency, bundle size
+      name: Third-party drag-drop library
+      pros:
+        - Polished DX, handles edge cases
+      rejected_reason: HTML5 API sufficient
   cross_references:
     - REQ-MOUSE_INTERACTION
-  decision: "Approach\n\n1. Context Menu: Portal-rendered menu component positioned at click coordinates\n2. Click Selection: Existing `onClick` handlers in FilePane (already implemented)\n3. Double-Click: Existing `onDoubleClick` handlers in FilePane (already implemented)\n4. Drag-and-Drop: HTML5 drag-and-drop API with custom drag image\n5. Scroll: Native browser scrolling (no custom implementation needed)\n\nKey Components\n\nContextMenu Component\n\n```typescript\ninterface ContextMenuProps {\n  x: number; // Click coordinates\n  y: number;\n  file: FileStat;\n  marks: Set<string>;\n  onClose: () => void;\n  onCopy: () => void;\n  onMove: () => void;\n  onDelete: () => void;\n  onRename: () => void;\n}\n```\n\n• Portal-rendered to document.body to escape parent overflow\n• Position calculated to keep menu on-screen\n• Close on outside click or Escape key\n• Keyboard navigation within menu (arrow keys, Enter)\n\nDrag-and-Drop Implementation\n\n```typescript\n// Source pane (draggable files)\n<div \n  draggable={true}\n  onDragStart={handleDragStart}\n  onDragEnd={handleDragEnd}\n>\n\n// Target pane (drop zone)\n<div\n  onDragOver={handleDragOver}\n  onDrop={handleDrop}\n  onDragEnter={handleDragEnter}\n  onDragLeave={handleDragLeave}\n>\n```\n\n• Store drag data in `dataTransfer` object\n• Use custom drag image with file count badge\n• Highlight drop target on drag hover\n• Detect Ctrl key for copy vs move"
+  decision: |-
+    Approach
+
+    1. Context Menu: Portal-rendered menu component positioned at click coordinates
+    2. Click Selection: Existing `onClick` handlers in FilePane (already implemented)
+    3. Double-Click: Existing `onDoubleClick` handlers in FilePane (already implemented)
+    4. Drag-and-Drop: HTML5 drag-and-drop API with custom drag image
+    5. Scroll: Native browser scrolling (no custom implementation needed)
+
+    Key Components
+
+    ContextMenu Component
+
+    ```typescript
+    interface ContextMenuProps {
+      x: number; // Click coordinates
+      y: number;
+      file: FileStat;
+      marks: Set<string>;
+      onClose: () => void;
+      onCopy: () => void;
+      onMove: () => void;
+      onDelete: () => void;
+      onRename: () => void;
+    }
+    ```
+
+    • Portal-rendered to document.body to escape parent overflow
+    • Position calculated to keep menu on-screen
+    • Close on outside click or Escape key
+    • Keyboard navigation within menu (arrow keys, Enter)
+
+    Drag-and-Drop Implementation
+
+    ```typescript
+    // Source pane (draggable files)
+    <div 
+      draggable={true}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+    >
+
+    // Target pane (drop zone)
+    <div
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+    >
+    ```
+
+    • Store drag data in `dataTransfer` object
+    • Use custom drag image with file count badge
+    • Highlight drop target on drag hover
+    • Detect Ctrl key for copy vs move
   implementation_approach:
     details:
       - 'Click: Existing onClick handlers (already implemented)'
@@ -33,13 +87,13 @@ ARCH-MOUSE_SUPPORT:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
       reason: LEAP — pane command execution ExecuteFileDialog (ARCH-PANE_COMMAND_EXEC)
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass - 554 tests passing
       validator: AI Agent
   name: Mouse and Touch Interaction Architecture

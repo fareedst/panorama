@@ -4,10 +4,10 @@ REQ-MESH_CRUD:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
       reason: Phase 2 mesh CRUD slice
   name: Mesh CRUD Unit Logic
   priority: P0
@@ -46,5 +46,5 @@ REQ-MESH_CRUD:
     tests:
       - src/lib/mesh/services/mesh-service.test.ts
   validation_criteria:
-    - method: Unit tests (Vitest)
-      coverage: src/lib/mesh/services/mesh-service.test.ts
+    - coverage: src/lib/mesh/services/mesh-service.test.ts
+      method: Unit tests (Vitest)

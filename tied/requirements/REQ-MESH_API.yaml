@@ -4,10 +4,10 @@ REQ-MESH_API:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
       reason: Phase 15 API
   name: Mesh Management API
   priority: P0
@@ -42,7 +42,7 @@ REQ-MESH_API:
       - src/app/api/mesh/route.test.ts
       - src/app/api/mesh/sessions.route.test.ts
   validation_criteria:
-    - method: Vitest
-      coverage: src/app/api/mesh/route.test.ts, depots-links.route.test.ts
-    - method: Vitest
-      coverage: src/app/api/mesh/sessions.route.test.ts
+    - coverage: src/app/api/mesh/route.test.ts, depots-links.route.test.ts
+      method: Vitest
+    - coverage: src/app/api/mesh/sessions.route.test.ts
+      method: Vitest

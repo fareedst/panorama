@@ -1,17 +1,16 @@
-# REQ detail — REQ-HASH_COMPUTATION
 REQ-HASH_COMPUTATION:
   category: Functional
   description: Support optional hash-based file comparison and verification for critical sync operations
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       result: implemented
       validator: AI Agent
   name: Hash Computation for File Verification
@@ -46,7 +45,7 @@ REQ-HASH_COMPUTATION:
       - IMPL-NSYNC_HASH
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: Hash computation correctness
-    - method: Performance tests
-      coverage: Streaming vs buffer performance
+    - coverage: Streaming vs buffer performance
+      method: Performance tests
+    - coverage: Hash computation correctness
+      method: Unit tests

@@ -1,30 +1,29 @@
-# ARCH detail — ARCH-PANE_REFRESH
 ARCH-PANE_REFRESH:
   alternatives_considered:
-    - name: Dedicated refresh API endpoint
-      cons:
-        - Additional API endpoint to maintain
-        - Code duplication with navigation logic
-        - Would require separate state management
-      pros:
-        - Could implement optimized refresh logic
-        - Explicit refresh semantics
-      rejected_reason: handleNavigate already provides all needed functionality
-    - name: Auto-refresh with file system watchers
-      cons:
+    - cons:
         - Complex server-side implementation
         - Potential performance issues with large directories
         - Unpredictable UI updates
         - Websocket or polling overhead
+      name: Auto-refresh with file system watchers
       pros:
         - Automatic updates without user intervention
         - Real-time file system synchronization
       rejected_reason: Manual refresh is simpler and gives users control
-    - name: F5 key for refresh
-      cons:
+    - cons:
+        - Additional API endpoint to maintain
+        - Code duplication with navigation logic
+        - Would require separate state management
+      name: Dedicated refresh API endpoint
+      pros:
+        - Could implement optimized refresh logic
+        - Explicit refresh semantics
+      rejected_reason: handleNavigate already provides all needed functionality
+    - cons:
         - Conflicts with browser default (full page reload)
         - Harder to prevent default behavior reliably
         - Less familiar in terminal-like interfaces
+      name: F5 key for refresh
       pros:
         - Traditional browser refresh key
       rejected_reason: Ctrl+R is safer and more terminal-like
@@ -35,24 +34,24 @@ ARCH-PANE_REFRESH:
   decision: Add pane.refresh and pane.refresh-all actions to keybinding system; handlers call handleNavigate with current path
   implementation_approach:
     details:
-      - 'All panes refresh: Promise.all(panes.map((p, idx) => handleNavigate(idx, p.path)))'
-      - 'handleNavigate already handles: API fetch, sort application, cursor restoration'
-      - 'Single pane refresh: handleNavigate(focusIndex, currentPane.path)'
       - Add two keybinding definitions to config/files.yaml (Ctrl+R, Ctrl+Shift+R)
+      - 'All panes refresh: Promise.all(panes.map((p, idx) => handleNavigate(idx, p.path)))'
       - Browser default prevented by existing e.preventDefault() in keyboard handler
+      - 'handleNavigate already handles: API fetch, sort application, cursor restoration'
       - Register actions in pane-management category
+      - 'Single pane refresh: handleNavigate(focusIndex, currentPane.path)'
       - Use void operator to handle async without blocking
     summary: Add pane.refresh and pane.refresh-all actions to keybinding system; handlers call handleNavigate with current path
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Pane Refresh Architecture

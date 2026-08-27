@@ -1,8 +1,8 @@
 IMPL-MESH_PLANNING:
   code_locations:
     files:
-      - path: src/lib/mesh/services/planning-service.ts
-        description: Dry-run planning and pagination
+      - description: Dry-run planning and pagination
+        path: src/lib/mesh/services/planning-service.ts
     functions: []
   cross_references:
     - ARCH-MESH_LAYERED
@@ -16,10 +16,10 @@ IMPL-MESH_PLANNING:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
   name: Mesh Planning Service
   related_decisions:
     depends_on:

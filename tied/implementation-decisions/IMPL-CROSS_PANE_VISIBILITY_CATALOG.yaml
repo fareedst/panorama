@@ -13,7 +13,7 @@ IMPL-CROSS_PANE_VISIBILITY_CATALOG:
   metadata:
     last_updated:
       author: AI Agent
-      date: "2026-05-29T00:00:00.000Z"
+      date: '2026-05-29T00:00:00.000Z'
       reason: IMPL essence_pseudocode retrofit 2026-05-29
   name: Cross-Pane Visibility Catalog
   related_decisions:

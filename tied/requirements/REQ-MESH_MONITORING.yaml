@@ -4,7 +4,7 @@ REQ-MESH_MONITORING:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
   name: Mesh Operational Monitoring
   priority: P2
   related_requirements:
@@ -27,7 +27,7 @@ REQ-MESH_MONITORING:
     tests:
       - src/lib/mesh/services/monitoring-service.test.ts
   validation_criteria:
-    - method: Vitest
-      coverage: src/lib/mesh/services/monitoring-service.test.ts
-    - method: Vitest
-      coverage: src/app/api/mesh/monitoring/route.ts
+    - coverage: src/app/api/mesh/monitoring/route.ts
+      method: Vitest
+    - coverage: src/lib/mesh/services/monitoring-service.test.ts
+      method: Vitest

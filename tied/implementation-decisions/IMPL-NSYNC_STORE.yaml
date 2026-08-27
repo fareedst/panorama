@@ -1,8 +1,8 @@
 IMPL-NSYNC_STORE:
   code_locations:
     files:
-      - path: src/lib/sync/store.ts
-        description: IMPL-NSYNC_STORE
+      - description: IMPL-NSYNC_STORE
+        path: src/lib/sync/store.ts
     functions: []
   cross_references:
     - ARCH-STORE_MONITORING
@@ -14,9 +14,9 @@ IMPL-NSYNC_STORE:
   metadata:
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: NSYNC pseudocode retrofit from production code and tests
-    registered: 2026-02-09T00:00:00.000Z
+    registered: {}
   name: Store Monitoring Implementation
   rationale:
     benefits: []

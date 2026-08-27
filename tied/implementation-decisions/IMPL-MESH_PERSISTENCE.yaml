@@ -1,10 +1,10 @@
 IMPL-MESH_PERSISTENCE:
   code_locations:
     files:
-      - path: src/lib/mesh/repositories/json-mesh-repository.ts
-        description: JSON file repository
-      - path: src/lib/mesh/repositories/create-mesh-repository.ts
-        description: Repository factory
+      - description: JSON file repository
+        path: src/lib/mesh/repositories/json-mesh-repository.ts
+      - description: Repository factory
+        path: src/lib/mesh/repositories/create-mesh-repository.ts
     functions: []
   cross_references:
     - ARCH-MESH_LAYERED
@@ -16,10 +16,10 @@ IMPL-MESH_PERSISTENCE:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
   name: Mesh JSON Persistence
   related_decisions:
     depends_on:

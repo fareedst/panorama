@@ -1,8 +1,8 @@
 ARCH-APP_ROUTER:
   alternatives_considered:
-    - name: Pages Router
-      cons:
+    - cons:
         - Older pattern
+      name: Pages Router
       pros:
         - More stable
       rejected_reason: App Router is the future of Next.js
@@ -18,13 +18,13 @@ ARCH-APP_ROUTER:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: LEAP index sync — HOME_PAGE/NAVIGATION/BRANDING scope
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Next.js App Router Pattern
@@ -55,15 +55,15 @@ ARCH-APP_ROUTER:
     tests: []
 ARCH-BATCH_OPERATIONS:
   alternatives_considered:
-    - name: Sequential operations
-      cons:
+    - cons:
         - Slower for large file sets
+      name: Sequential operations
       pros:
         - Simpler implementation
       rejected_reason: Parallel operations significantly faster
-    - name: Server-side job queue
-      cons:
+    - cons:
         - Complex job management infrastructure
+      name: Server-side job queue
       pros:
         - Survives page refresh
       rejected_reason: Over-engineered for current needs
@@ -72,22 +72,22 @@ ARCH-BATCH_OPERATIONS:
   detail_file: architecture-decisions/ARCH-BATCH_OPERATIONS.yaml
   implementation_approach:
     details:
+      - Check marks.size > 0, use marked files; else use cursor file
       - 'Error collection: continue on error, report at end'
       - 'POST /api/files with operation: bulk-copy/bulk-move/bulk-delete'
       - 'Progress dialog shows: percentage, file count, current file'
-      - Check marks.size > 0, use marked files; else use cursor file
       - Server streams progress updates via callbacks
     summary: Promise.all with progress callbacks, fallback to cursor file
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation - adapted from Goful ARCH-ASYNC_FILE_OPERATIONS
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Async Batch File Operations Architecture
@@ -132,13 +132,13 @@ ARCH-CLASS_OVERRIDES:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Tailwind Class Override System via Config
@@ -168,39 +168,39 @@ ARCH-CLASS_OVERRIDES:
     tests: []
 ARCH-COMPARISON_COLORING:
   alternatives_considered:
-    - name: Server-side comparison
-      cons:
-        - Network latency on every pane change
-      pros:
-        - Less client computation
-      rejected_reason: Client-side faster for typical file counts
-    - name: On-demand comparison (button click)
-      cons:
+    - cons:
         - Extra user action required
+      name: On-demand comparison (button click)
       pros:
         - No automatic overhead
       rejected_reason: Automatic comparison is core feature
+    - cons:
+        - Network latency on every pane change
+      name: Server-side comparison
+      pros:
+        - Less client computation
+      rejected_reason: Client-side faster for typical file counts
   cross_references:
     - REQ-FILE_COMPARISON_VISUAL
   detail_file: architecture-decisions/ARCH-COMPARISON_COLORING.yaml
   implementation_approach:
     details:
+      - Apply CSS classes to file rows based on comparison state
       - 'buildEnhancedComparisonIndex: For each filename in multiple panes, compute sizeClass and timeClass'
       - 'sizeClass: ''equal'' | ''smallest'' | ''largest'' | null'
       - 'Theme colors: comparison-equal, comparison-smallest, comparison-largest, etc.'
       - 'timeClass: ''equal'' | ''earliest'' | ''latest'' | null'
-      - Apply CSS classes to file rows based on comparison state
     summary: Extend ComparisonIndex with size/time analysis, apply CSS classes
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation - adapted from Goful ARCH-FILE_COMPARISON_ENGINE
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Enhanced Cross-Pane Comparison Coloring
@@ -233,10 +233,10 @@ ARCH-COMPARISON_COLORING:
     tests: []
 ARCH-COMPARISON_INDEX:
   alternatives_considered:
-    - name: On-demand comparison
-      cons:
+    - cons:
         - Repeated calculations
         - Slow for large directories
+      name: On-demand comparison
       pros:
         - No pre-computation
       rejected_reason: Performance issues with large file lists
@@ -245,21 +245,21 @@ ARCH-COMPARISON_INDEX:
   detail_file: architecture-decisions/ARCH-COMPARISON_INDEX.yaml
   implementation_approach:
     details:
-      - 'Color coding: yellow (same name), red/green (size/time diff)'
       - Build index when panes change (navigate, reload)
+      - 'Color coding: yellow (same name), red/green (size/time diff)'
       - CompareState tracks which panes have the file, sizes, mtimes
       - Pane components query index for each file
     summary: Build Map<filename, CompareState[]> index from all pane contents
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Cross-Pane File Comparison Index
@@ -305,13 +305,13 @@ ARCH-CONFIG_DRIVEN_APPEARANCE:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-29T00:00:00.000Z"
+      date: '2026-05-29T00:00:00.000Z'
       reason: LEAP index sync — file manager scope
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Config-Driven Appearance for File Manager
@@ -341,9 +341,9 @@ ARCH-CONFIG_DRIVEN_APPEARANCE:
       - src/lib/config.test.ts
 ARCH-CONFIG_DRIVEN_UI:
   alternatives_considered:
-    - name: Environment variables
-      cons:
+    - cons:
         - Limited structure
+      name: Environment variables
       pros:
         - Simple
       rejected_reason: YAML provides better structure and readability
@@ -360,13 +360,13 @@ ARCH-CONFIG_DRIVEN_UI:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: YAML Configuration-Driven UI Architecture
@@ -421,13 +421,13 @@ ARCH-CSS_VARIABLES:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: CSS Variables for Dark Mode Theming
@@ -470,13 +470,13 @@ ARCH-CSS_VARIABLES_FONTS:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: CSS Variables for Font Assignment
@@ -512,15 +512,15 @@ ARCH-DEMO_ASSET_PIPELINE:
   status: Active
 ARCH-DIRECTORY_HISTORY:
   alternatives_considered:
-    - name: Index-based history
-      cons:
+    - cons:
         - Breaks when files added/removed
+      name: Index-based history
       pros:
         - Simpler storage (just number)
       rejected_reason: Filename-based more robust
-    - name: localStorage persistence
-      cons:
+    - cons:
         - Complexity, stale data issues
+      name: localStorage persistence
       pros:
         - Survives page refresh
       rejected_reason: Session-only sufficient
@@ -529,21 +529,21 @@ ARCH-DIRECTORY_HISTORY:
   detail_file: architecture-decisions/ARCH-DIRECTORY_HISTORY.yaml
   implementation_approach:
     details:
-      - 'Parent navigation: search for previous dir name in parent list'
       - LRU cache for recent directories (last 20)
+      - 'Parent navigation: search for previous dir name in parent list'
       - Restore cursor position on revisit by filename match
       - Save cursor position before directory change
     summary: Map<pane_id, Map<path, {cursor, scrollTop}>> in React state
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation - adapted from Goful ARCH-DIRECTORY_HISTORY
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Per-Directory Cursor Position History
@@ -619,10 +619,10 @@ ARCH-FEEDBACK_STORAGE:
       - REQ-FEEDBACK_TO_TIED
 ARCH-FILE_MANAGER_HIERARCHY:
   alternatives_considered:
-    - name: Single-component approach
-      cons:
+    - cons:
         - Difficult state management
         - Poor testability
+      name: Single-component approach
       pros:
         - Simpler initial implementation
       rejected_reason: Doesn't scale to multi-pane complexity
@@ -640,13 +640,13 @@ ARCH-FILE_MANAGER_HIERARCHY:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: File Manager Component Hierarchy
@@ -683,10 +683,10 @@ ARCH-FILE_MANAGER_HIERARCHY:
     tests: []
 ARCH-FILE_OPERATIONS_API:
   alternatives_considered:
-    - name: Server actions
-      cons:
+    - cons:
         - Less flexible for programmatic calls
         - Tied to forms
+      name: Server actions
       pros:
         - Simpler than API routes
       rejected_reason: API routes more flexible for file operations
@@ -695,21 +695,21 @@ ARCH-FILE_OPERATIONS_API:
   detail_file: architecture-decisions/ARCH-FILE_OPERATIONS_API.yaml
   implementation_approach:
     details:
-      - 'Request body: { operation, src, dest }'
       - Call data layer functions
+      - 'Request body: { operation, src, dest }'
       - Return success/error responses
       - Switch on operation type
     summary: POST /api/files endpoint handles copy, move, delete, rename operations
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: File Operations API Routes
@@ -740,17 +740,17 @@ ARCH-FILE_OPERATIONS_API:
     tests: []
 ARCH-FILES_CONFIG_COMPLETE:
   alternatives_considered:
-    - name: Component-level configuration
-      cons:
+    - cons:
         - Complex to maintain
         - Scattered configuration
+      name: Component-level configuration
       pros:
         - More granular control
       rejected_reason: Centralized YAML config more maintainable
-    - name: Database-driven configuration
-      cons:
+    - cons:
         - More complex setup
         - Requires database infrastructure
+      name: Database-driven configuration
       pros:
         - Runtime updates possible
       rejected_reason: YAML file config simpler for template use case
@@ -769,13 +769,13 @@ ARCH-FILES_CONFIG_COMPLETE:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Phase 11 architecture complete
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass - 567 tests passing
       validator: AI Agent
   name: Complete File Manager Configuration Architecture
@@ -811,10 +811,10 @@ ARCH-FILES_CONFIG_COMPLETE:
     tests: []
 ARCH-FILESYSTEM_ABSTRACTION:
   alternatives_considered:
-    - name: Client-side File System Access API
-      cons:
+    - cons:
         - Limited to user's local files
         - Not server filesystem
+      name: Client-side File System Access API
       pros:
         - Native browser support
       rejected_reason: Requirement is server filesystem browsing
@@ -833,13 +833,13 @@ ARCH-FILESYSTEM_ABSTRACTION:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-06-02T00:00:00.000Z"
+      date: '2026-06-02T00:00:00.000Z'
       reason: 'LEAP: copyFile tests in traceability'
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Server-Side Filesystem Abstraction
@@ -885,13 +885,13 @@ ARCH-GOOGLE_FONTS:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Google Fonts Optimization with next/font
@@ -930,8 +930,8 @@ ARCH-HASH_VERIFICATION:
     details: []
     summary: Design for optional hash-based file verification using multiple algorithms
   metadata:
-    last_updated: 2026-02-09T00:00:00.000Z
-    registered: 2026-02-09T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Hash Verification Design
   rationale:
     benefits: []
@@ -966,7 +966,7 @@ ARCH-KEYBIND_SYSTEM:
   metadata:
     created:
       author: migration
-      date: "2026-02-07"
+      date: '2026-02-07'
   name: KEYBIND SYSTEM
   rationale:
     benefits: []
@@ -990,10 +990,10 @@ ARCH-KEYBIND_SYSTEM:
     tests: []
 ARCH-LAYOUT_ALGORITHMS:
   alternatives_considered:
-    - name: CSS Grid/Flexbox only
-      cons:
+    - cons:
         - Difficult dynamic layouts
         - Limited layout flexibility
+      name: CSS Grid/Flexbox only
       pros:
         - Native CSS solution
       rejected_reason: Cannot support all Goful layout types
@@ -1005,20 +1005,20 @@ ARCH-LAYOUT_ALGORITHMS:
       - 'Fullscreen: All panes overlap, only focused visible'
       - 'OneColumn: All panes equal height vertically'
       - 'OneRow: All panes equal width horizontally'
-      - 'Tile: First pane left 50%, others stacked vertically right 50%'
       - Return PaneBounds[] with x, y, width, height for each pane
+      - 'Tile: First pane left 50%, others stacked vertically right 50%'
       - WorkspaceView supplies containerWidth/containerHeight from measured workspace-area client box (not viewport heuristics)
     summary: Pure TypeScript functions calculate absolute pane bounds based on layout type
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Multi-Pane Layout Algorithms
@@ -1063,13 +1063,13 @@ ARCH-LAYOUT_PATTERN:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Root Layout Pattern
@@ -1099,65 +1099,65 @@ ARCH-LAYOUT_PATTERN:
     tests: []
 ARCH-LINKED_NAV:
   alternatives_considered:
-    - name: Server-side link state
-      cons:
+    - cons:
+        - Difficult to disable
+        - Unpredictable behavior
+      name: Automatic link detection
+      pros:
+        - No manual toggle needed
+      rejected_reason: Explicit user control provides predictability
+    - cons:
+        - Complex UI for group management
+        - Unclear use case for most users
+      name: Link groups with UI configuration
+      pros:
+        - Maximum flexibility for advanced workflows
+      rejected_reason: Defer to future enhancement; simple global toggle covers 90% of use cases
+    - cons:
         - Network latency on toggle
         - Requires session storage
+      name: Server-side link state
       pros:
         - Centralized state management
         - Persists across page refreshes
       rejected_reason: Client-side state sufficient; session persistence not required
-    - name: Link groups with UI configuration
-      cons:
-        - Complex UI for group management
-        - Unclear use case for most users
-      pros:
-        - Maximum flexibility for advanced workflows
-      rejected_reason: Defer to future enhancement; simple global toggle covers 90% of use cases
-    - name: Automatic link detection
-      cons:
-        - Difficult to disable
-        - Unpredictable behavior
-      pros:
-        - No manual toggle needed
-      rejected_reason: Explicit user control provides predictability
   cross_references:
     - REQ-LINKED_PANES
   detail_file: architecture-decisions/ARCH-LINKED_NAV.yaml
   implementation_approach:
     details:
-      - "Link indicator badge in each pane header (\U0001F517 shows when linked)"
-      - "Link indicator badge in footer: \U0001F517 L: Linked (shows only with 2+ panes)"
       - 'Add linkedMode: boolean state to WorkspaceView'
       - 'Add syncingRef: useRef<Set<number>> to track panes currently syncing'
-      - 'Relative path resolution: extract target directory name, append to each linked pane''s current path'
       - Auto-disable with warning message on navigation divergence
       - Existence check before navigating linked pane (graceful degradation on failure)
       - L key toggle action in keybinding registry
+      - Link indicator badge in each pane header (🔗 shows when linked)
+      - 'Link indicator badge in footer: 🔗 L: Linked (shows only with 2+ panes)'
       - Modify handleCursorMove to sync cursor by filename across all panes when linked
       - Modify handleNavigate to track success/failure counts and auto-disable on partial failure
       - Modify handleSortChange to apply sort settings to all panes when linked
       - Parent .. button in each pane header (visible when not at root, respects linked mode)
+      - 'Relative path resolution: extract target directory name, append to each linked pane''s current path'
       - Support subdirectory navigation, parent navigation (keyboard + mouse), cursor sync, sort sync
     summary: Boolean linkedMode state in WorkspaceView with L key toggle; handleNavigate propagates navigation, handleCursorMove syncs by filename, handleSortChange applies to all panes; auto-disable on divergence
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       reason: Added Parent .. button in pane header for mouse-based parent navigation with automatic linked mode support
     last_validated:
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Linked Pane Navigation Architecture
   rationale:
     benefits:
-      - "Clear visual indicators in footer and pane headers (\U0001F517 badge)"
       - Automatic propagation via handleNavigate, handleCursorMove, handleSortChange
       - Backward compatible (disabled by default)
+      - Clear visual indicators in footer and pane headers (🔗 badge)
       - Complete feature parity with Goful implementation
       - Graceful degradation on partial failures
       - Minimal state overhead (single boolean + sync ref)
@@ -1198,21 +1198,21 @@ ARCH-LINKED_NAV:
     tests: []
 ARCH-LOGGING_CONFIG:
   alternatives_considered:
-    - name: YAML config file
-      cons:
+    - cons:
+        - Not suitable for debugging
+        - Requires rebuild to change
+      name: Hard-coded with build-time flags
+      pros:
+        - No runtime overhead
+      rejected_reason: Too inflexible for debugging use case
+    - cons:
         - Cannot change without restart
         - Requires file deployment
+      name: YAML config file
       pros:
         - Consistent with project patterns
         - Structured configuration
       rejected_reason: Less flexible than environment variables
-    - name: Hard-coded with build-time flags
-      cons:
-        - Not suitable for debugging
-        - Requires rebuild to change
-      pros:
-        - No runtime overhead
-      rejected_reason: Too inflexible for debugging use case
   cross_references:
     - REQ-LOGGING_CONFIG
   detail_file: architecture-decisions/ARCH-LOGGING_CONFIG.yaml
@@ -1220,9 +1220,9 @@ ARCH-LOGGING_CONFIG:
     details:
       - 'CONSOLE_ERRORS: ''true'' | ''false'' (default: ''true'') - Mirror ERROR/FATAL to console'
       - 'ENABLE_LOGGING: ''true'' | ''false'' (default: ''true'')'
+      - Initialize once at module load
       - 'LOG_DIR: custom directory path (default: os.tmpdir())'
       - 'LOG_LEVEL: ''FATAL'' | ''ERROR'' | ''WARN'' | ''INFO'' | ''DEBUG'' | ''TRACE'' (default: ''INFO'')'
-      - Initialize once at module load
       - Mirror ERROR and FATAL logs to console.error() by default
       - Output log file path to console on initialization
       - Validate environment variables with fallbacks
@@ -1230,13 +1230,13 @@ ARCH-LOGGING_CONFIG:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Environment-Based Logging Configuration
@@ -1267,18 +1267,18 @@ ARCH-LOGGING_CONFIG:
     tests: []
 ARCH-LOGGING_SEMANTIC_TOKENS:
   alternatives_considered:
-    - name: Module name only (no tokens)
-      cons:
+    - cons:
         - Cannot track feature-level activity
         - No requirement traceability
+      name: Module name only (no tokens)
       pros:
         - Less verbose
         - Simpler API
       rejected_reason: Does not meet TIED traceability requirements
-    - name: Optional tokens
-      cons:
+    - cons:
         - Easy to forget
         - Inconsistent usage
+      name: Optional tokens
       pros:
         - Flexible
       rejected_reason: Tokens must be mandatory for TIED compliance
@@ -1287,22 +1287,22 @@ ARCH-LOGGING_SEMANTIC_TOKENS:
   detail_file: architecture-decisions/ARCH-LOGGING_SEMANTIC_TOKENS.yaml
   implementation_approach:
     details:
+      - Format tokens as space-separated in log output
       - 'Log format: [TIMESTAMP] [LEVEL] [TOKEN1] [TOKEN2] message'
       - 'tokens: string | string[] - required parameter'
-      - Format tokens as space-separated in log output
       - TypeScript types enforce token presence at compile time
       - Validate token format [REQ-*], [ARCH-*], [IMPL-*]
     summary: Logger API requires tokens parameter as string or array of strings
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Semantic Token Integration in Logging
@@ -1333,28 +1333,28 @@ ARCH-LOGGING_SEMANTIC_TOKENS:
     tests: []
 ARCH-LOGGING_SYSTEM:
   alternatives_considered:
-    - name: Console-only logging
-      cons:
+    - cons:
         - Cannot analyze historical data
         - Ephemeral, lost after session
+      name: Console-only logging
       pros:
         - No file management
         - Simple to implement
       rejected_reason: Does not meet requirement for debugging facilitation
-    - name: Database logging
-      cons:
+    - cons:
         - Overkill for simple debugging
         - Performance overhead
         - Requires database setup
+      name: Database logging
       pros:
         - Queryable logs
         - Structured data
       rejected_reason: Too complex for initial implementation
-    - name: External logging service
-      cons:
+    - cons:
         - Cost
         - External dependency
         - Privacy concerns
+      name: External logging service
       pros:
         - Advanced features
         - Professional solution
@@ -1364,23 +1364,23 @@ ARCH-LOGGING_SYSTEM:
   detail_file: architecture-decisions/ARCH-LOGGING_SYSTEM.yaml
   implementation_approach:
     details:
+      - Buffered writes for performance (non-fatal)
       - 'Filename format: nx1-log-YYYY-MM-DD-HH-mm-ss-SSS.log'
       - 'Format: [TIMESTAMP] [LEVEL] [TOKENS] message'
       - 'Log levels: FATAL (0), ERROR (1), WARN (2), INFO (3), DEBUG (4), TRACE (5)'
-      - Buffered writes for performance (non-fatal)
       - Synchronous writes for reliability (fatal errors)
       - Use Node.js os.tmpdir() for temporary directory
     summary: Write timestamped log files to OS temp directory with six log levels
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Session-Based File Logging Architecture
@@ -1411,40 +1411,40 @@ ARCH-LOGGING_SYSTEM:
     tests: []
 ARCH-MARKING_STATE:
   alternatives_considered:
-    - name: Server-side mark storage in session
-      cons:
-        - Complex session management
-        - Network latency on every mark toggle
-      pros:
-        - Persists across page refresh
-      rejected_reason: Latency unacceptable for interactive marking
-    - name: Index-based marking
-      cons:
+    - cons:
         - Breaks when files re-sorted
+      name: Index-based marking
       pros:
         - Simple integer storage
       rejected_reason: Name-based survives sort changes
+    - cons:
+        - Complex session management
+        - Network latency on every mark toggle
+      name: Server-side mark storage in session
+      pros:
+        - Persists across page refresh
+      rejected_reason: Latency unacceptable for interactive marking
   cross_references:
     - REQ-FILE_MARKING_WEB
   detail_file: architecture-decisions/ARCH-MARKING_STATE.yaml
   implementation_approach:
     details:
+      - Batch operations check marks.size > 0
       - 'Footer display: [marked/total] format'
       - 'Mark operations: toggle, markAll, invertMarks, clearMarks'
       - 'PaneState interface includes marks: Set<string> field'
       - 'Visual feedback: checkbox icon + background color from theme.yaml'
-      - Batch operations check marks.size > 0
     summary: React state with Set<string> per pane, name-based persistence
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation - translated from Goful for web
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Client-Side Mark State Management
@@ -1485,20 +1485,20 @@ ARCH-MESH_CRUD:
   status: Active
 ARCH-MESH_DOMAIN:
   alternatives_considered:
-    - name: Zod schemas only at API boundary
-      cons:
-        - Validation duplicated across API and persistence
-        - Weaker collision detection in IMPL pseudo-code
-      pros:
-        - Less domain code
-      rejected_reason: Domain invariants must be authoritative inside L1 before outer layers
-    - name: ORM entities as domain
-      cons:
+    - cons:
         - Couples domain to database shape
         - Harder pure unit tests
+      name: ORM entities as domain
       pros:
         - Faster persistence later
       rejected_reason: Violates layered architecture and phase-1 deployable:false
+    - cons:
+        - Validation duplicated across API and persistence
+        - Weaker collision detection in IMPL pseudo-code
+      name: Zod schemas only at API boundary
+      pros:
+        - Less domain code
+      rejected_reason: Domain invariants must be authoritative inside L1 before outer layers
   cross_references:
     - ARCH-MESH_LAYERED
     - REQ-MESH_DOMAIN_MODEL
@@ -1506,22 +1506,22 @@ ARCH-MESH_DOMAIN:
   detail_file: architecture-decisions/ARCH-MESH_DOMAIN.yaml
   implementation_approach:
     details:
-      - 'Entities: Mesh, Depot, SyncLink, Policy, Filter, CredentialReference, SyncSession, ChangeSet, SyncOperation, SyncEvent, Conflict'
-      - 'On-disk: src/lib/mesh/domain/types.ts, internal.ts, validators.ts, serialize.ts, index.ts; tests validators.test.ts, serialize.test.ts, domain.composition.test.ts'
-      - 'Serialization: JSON-safe DTOs; CredentialReference stores id/label only — never secret values'
-      - 'Validation at construction: reject invalid combinations with structured errors'
       - ChangeSet maintains ordered SyncOperation list
       - Conflict records type, participants (depot/path refs), status enum
       - Default Policy values non-destructive (safe defaults per sponsor phase 1)
+      - 'Entities: Mesh, Depot, SyncLink, Policy, Filter, CredentialReference, SyncSession, ChangeSet, SyncOperation, SyncEvent, Conflict'
+      - 'On-disk: src/lib/mesh/domain/types.ts, internal.ts, validators.ts, serialize.ts, index.ts; tests validators.test.ts, serialize.test.ts, domain.composition.test.ts'
+      - 'Serialization: JSON-safe DTOs; CredentialReference stores id/label only — never secret values'
       - SyncSession holds immutable MeshSnapshot (deep copy or frozen snapshot id) separate from live Mesh edits
+      - 'Validation at construction: reject invalid combinations with structured errors'
     summary: Typed domain model with factory/validator functions and explicit serialization DTOs
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-19T20:15:00.000Z"
+      date: '2026-05-19T20:15:00.000Z'
       reason: 'sync-tied-stack: index traceability.tests aligned with mesh domain Vitest suite'
   name: Mesh Pure Domain Module
   rationale:
@@ -1554,17 +1554,17 @@ ARCH-MESH_DOMAIN:
       - src/lib/mesh/domain/validators.test.ts
 ARCH-MESH_LAYERED:
   alternatives_considered:
-    - name: Extend src/lib/sync/ as mesh engine
-      cons:
+    - cons:
         - Couples configuration to visible panes
         - Pane-centric API; no mesh/depot/link model
+      name: Extend src/lib/sync/ as mesh engine
       pros:
         - Reuse hash/compare/operations
       rejected_reason: Mesh requires durable configuration graph and session snapshots distinct from WorkspaceView panes
-    - name: Single package with GUI-first delivery
-      cons:
+    - cons:
         - Hard to test planning/safety in isolation
         - Violates module validation and TDD order
+      name: Single package with GUI-first delivery
       pros:
         - Faster visible progress
       rejected_reason: Sponsor plan and REQ-MODULE_VALIDATION require domain-first TDD
@@ -1575,21 +1575,21 @@ ARCH-MESH_LAYERED:
   detail_file: architecture-decisions/ARCH-MESH_LAYERED.yaml
   implementation_approach:
     details:
+      - Existing src/lib/sync and src/app/files remain; optional future adapter may call shared hash/compare utilities without merging models
       - 'L1 Domain (src/lib/mesh/domain): types, validators, serialization contracts — no I/O'
       - 'L2 Services (src/lib/mesh/services): CRUD, topology, policy, planning, session, executor — pure logic + repository interfaces'
       - 'L3 Connectors (src/lib/mesh/connectors): filesystem contracts; fake implementations for tests'
       - 'L4 Persistence (src/lib/mesh/persistence): repository implementations — introduced after domain/services stable'
       - 'L5 API (src/app/api/mesh): HTTP mapping; no secrets in responses'
       - 'L6 GUI (src/app/mesh): Next.js routes and components; composition tests before E2E'
-      - Existing src/lib/sync and src/app/files remain; optional future adapter may call shared hash/compare utilities without merging models
     summary: Six logical layers with one-way dependencies toward the domain core
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
       reason: Initial mesh layered architecture (author-architecture)
   name: Mesh Subsystem Layered Architecture
   rationale:
@@ -1640,18 +1640,18 @@ ARCH-MODULE_VALIDATION:
       - REQ-MODULE_VALIDATION
 ARCH-MOUSE_SUPPORT:
   alternatives_considered:
-    - name: Third-party drag-drop library
-      cons:
-        - Extra dependency, bundle size
-      pros:
-        - Polished DX, handles edge cases
-      rejected_reason: HTML5 API sufficient
-    - name: Custom context menu library
-      cons:
+    - cons:
         - Dependency, configuration overhead
+      name: Custom context menu library
       pros:
         - Advanced features (submenus, icons)
       rejected_reason: Simple portal component meets requirements
+    - cons:
+        - Extra dependency, bundle size
+      name: Third-party drag-drop library
+      pros:
+        - Polished DX, handles edge cases
+      rejected_reason: HTML5 API sufficient
   cross_references:
     - REQ-MOUSE_INTERACTION
   detail_file: architecture-decisions/ARCH-MOUSE_SUPPORT.yaml
@@ -1666,13 +1666,13 @@ ARCH-MOUSE_SUPPORT:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-24T00:00:00.000Z"
+      date: '2026-05-24T00:00:00.000Z'
       reason: LEAP — file column clipboard context menu architecture
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass - 554 tests passing
       validator: AI Agent
   name: Mouse and Touch Interaction Architecture
@@ -1706,16 +1706,16 @@ ARCH-MOUSE_SUPPORT:
     tests: []
 ARCH-NEXTJS_FRAMEWORK:
   alternatives_considered:
-    - name: Create React App
-      cons:
+    - cons:
         - Limited optimization
         - No SSR support
+      name: Create React App
       pros:
         - Simple setup
       rejected_reason: Lacks server-side rendering and modern features
-    - name: Remix
-      cons:
+    - cons:
         - Smaller ecosystem
+      name: Remix
       pros:
         - Good SSR support
       rejected_reason: Next.js has larger ecosystem and better tooling
@@ -1733,13 +1733,13 @@ ARCH-NEXTJS_FRAMEWORK:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: LEAP index sync — HOME_PAGE/NAVIGATION/BRANDING scope
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Next.js 16.1 Framework Choice
@@ -1783,8 +1783,8 @@ ARCH-NSYNC_INTEGRATION:
     details: []
     summary: Architecture for integrating multi-destination sync engine into nx1 file manager
   metadata:
-    last_updated: 2026-02-09T00:00:00.000Z
-    registered: 2026-02-09T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Nsync Integration Architecture
   rationale:
     benefits: []
@@ -1809,19 +1809,19 @@ ARCH-PANE_COMMAND_EXEC:
   status: Active
 ARCH-PANE_LIFECYCLE:
   alternatives_considered:
-    - name: Client-side initialization only
-      cons:
+    - cons:
         - Duplicated directory reading logic
         - Requires multiple API calls to initialize each pane
         - Slower initial page load
+      name: Client-side initialization only
       pros:
         - All logic in one place
         - Simpler server code
       rejected_reason: Server-side initialization provides better performance and cleaner separation of concerns
-    - name: Fixed pane count without runtime management
-      cons:
+    - cons:
         - Configuration changes require page reload
         - Users cannot adjust layout to current task
+      name: Fixed pane count without runtime management
       pros:
         - No need for add/remove logic
         - Simpler state management
@@ -1833,26 +1833,26 @@ ARCH-PANE_LIFECYCLE:
   implementation_approach:
     details:
       - 'Add pane: clones focused pane state or creates new pane at home directory'
-      - 'Remove pane: removes pane from array, adjusts focusIndex if necessary'
-      - 'Startup mode ''configured'': each pane starts at paths.pane1, pane2, etc.'
-      - 'Startup mode ''home'': all panes start at user home directory'
-      - 'Startup mode ''last'': future enhancement using localStorage'
       - Client WorkspaceView receives initialPanes array instead of single path/files
       - Config validation prevents adding beyond maxPanes or removing last pane
       - Keyboard shortcuts (+ to add, - to remove) integrated with keybinding system
+      - 'Remove pane: removes pane from array, adjusts focusIndex if necessary'
       - Server initializes array of PaneState objects with appropriate directories
       - Server page reads layout.defaultPaneCount and startup.mode from config
+      - 'Startup mode ''configured'': each pane starts at paths.pane1, pane2, etc.'
+      - 'Startup mode ''home'': all panes start at user home directory'
+      - 'Startup mode ''last'': future enhancement using localStorage'
     summary: Server-side multi-pane initialization based on config, client-side pane management with keyboard shortcuts and config validation
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation with type synchronization fix
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass - build succeeds, 570 tests passing
       validator: AI Agent
   name: Multi-Pane Initialization and Management
@@ -1893,30 +1893,30 @@ ARCH-PANE_LIFECYCLE:
     tests: []
 ARCH-PANE_REFRESH:
   alternatives_considered:
-    - name: Dedicated refresh API endpoint
-      cons:
-        - Additional API endpoint to maintain
-        - Code duplication with navigation logic
-        - Would require separate state management
-      pros:
-        - Could implement optimized refresh logic
-        - Explicit refresh semantics
-      rejected_reason: handleNavigate already provides all needed functionality
-    - name: Auto-refresh with file system watchers
-      cons:
+    - cons:
         - Complex server-side implementation
         - Potential performance issues with large directories
         - Unpredictable UI updates
         - Websocket or polling overhead
+      name: Auto-refresh with file system watchers
       pros:
         - Automatic updates without user intervention
         - Real-time file system synchronization
       rejected_reason: Manual refresh is simpler and gives users control
-    - name: F5 key for refresh
-      cons:
+    - cons:
+        - Additional API endpoint to maintain
+        - Code duplication with navigation logic
+        - Would require separate state management
+      name: Dedicated refresh API endpoint
+      pros:
+        - Could implement optimized refresh logic
+        - Explicit refresh semantics
+      rejected_reason: handleNavigate already provides all needed functionality
+    - cons:
         - Conflicts with browser default (full page reload)
         - Harder to prevent default behavior reliably
         - Less familiar in terminal-like interfaces
+      name: F5 key for refresh
       pros:
         - Traditional browser refresh key
       rejected_reason: Ctrl+R is safer and more terminal-like
@@ -1927,24 +1927,24 @@ ARCH-PANE_REFRESH:
   detail_file: architecture-decisions/ARCH-PANE_REFRESH.yaml
   implementation_approach:
     details:
-      - 'All panes refresh: Promise.all(panes.map((p, idx) => handleNavigate(idx, p.path)))'
-      - 'handleNavigate already handles: API fetch, sort application, cursor restoration'
-      - 'Single pane refresh: handleNavigate(focusIndex, currentPane.path)'
       - Add two keybinding definitions to config/files.yaml (Ctrl+R, Ctrl+Shift+R)
+      - 'All panes refresh: Promise.all(panes.map((p, idx) => handleNavigate(idx, p.path)))'
       - Browser default prevented by existing e.preventDefault() in keyboard handler
+      - 'handleNavigate already handles: API fetch, sort application, cursor restoration'
       - Register actions in pane-management category
+      - 'Single pane refresh: handleNavigate(focusIndex, currentPane.path)'
       - Use void operator to handle async without blocking
     summary: Add pane.refresh and pane.refresh-all actions to keybinding system; handlers call handleNavigate with current path
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Pane Refresh Architecture
@@ -2010,15 +2010,15 @@ ARCH-PERFORMANCE_OPT:
     tests: []
 ARCH-PREVIEW_SYSTEM:
   alternatives_considered:
-    - name: Client-side preview
-      cons:
+    - cons:
         - Cannot access server filesystem
+      name: Client-side preview
       pros:
         - No server round-trip
       rejected_reason: Impossible in web environment
-    - name: Full file download
-      cons:
+    - cons:
         - Wasteful for large files
+      name: Full file download
       pros:
         - Simple implementation
       rejected_reason: Preview needs only subset of content
@@ -2029,21 +2029,21 @@ ARCH-PREVIEW_SYSTEM:
     details:
       - 'Archive preview: list entries without extracting'
       - 'File type detection: extension + magic bytes'
-      - 'Image preview: serve via Next.js Image optimization'
-      - 'Text preview: first 100KB with encoding detection'
       - GET /api/files/info?path=... for detailed metadata
       - GET /api/files/preview?path=...&type=text|image|archive
+      - 'Image preview: serve via Next.js Image optimization'
+      - 'Text preview: first 100KB with encoding detection'
     summary: API routes for preview/info with type detection and content sanitization
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation - web-specific architecture
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Server-Side File Preview Rendering
@@ -2088,13 +2088,13 @@ ARCH-REACT_VERSION:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: React 19.2 with Server Components
@@ -2129,20 +2129,20 @@ ARCH-RESPONSIVE_FIRST:
   detail_file: architecture-decisions/ARCH-RESPONSIVE_FIRST.yaml
   implementation_approach:
     details:
-      - 'Use sm:, md:, lg: for larger screens'
       - Default styles for mobile
       - Test at 320px, 768px, 1024px
+      - 'Use sm:, md:, lg: for larger screens'
     summary: Use Tailwind breakpoints with mobile-first approach
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Mobile-First Responsive Design
@@ -2181,7 +2181,7 @@ ARCH-SEARCH_ENGINE:
   metadata:
     created:
       author: migration
-      date: "2026-02-07"
+      date: '2026-02-07'
   name: SEARCH ENGINE
   rationale:
     benefits: []
@@ -2201,18 +2201,18 @@ ARCH-SEARCH_ENGINE:
     tests: []
 ARCH-SERVER_CLIENT_BOUNDARY:
   alternatives_considered:
-    - name: Mark files as server-only with 'server-only' package
-      cons:
+    - cons:
         - Extra dependency
         - Still need separate utility files
+      name: Mark files as server-only with 'server-only' package
       pros:
         - Build-time enforcement
         - Explicit marker
       rejected_reason: Adds dependency without solving the utility sharing problem
-    - name: Use dynamic imports in client code
-      cons:
+    - cons:
         - Adds runtime complexity
         - Doesn't work for server-only modules like fs
+      name: Use dynamic imports in client code
       pros:
         - Can import server code conditionally
       rejected_reason: Cannot dynamically import Node.js built-in modules in browser
@@ -2223,25 +2223,25 @@ ARCH-SERVER_CLIENT_BOUNDARY:
   implementation_approach:
     details:
       - 'API routes follow Next.js convention: src/app/api/files/route.ts creates /api/files endpoint (not /api/files/list)'
-      - 'files.data.ts: Server-only, imports fs/promises, path, os'
-      - 'files.types.ts: Shared types, no runtime code'
-      - 'files.utils.ts: Client-safe, pure TypeScript with no Node.js dependencies'
       - Client code must call exact API route URLs matching file structure
       - Client components import only from files.utils.ts
       - files.data.ts can re-export utilities from files.utils.ts for convenience
+      - 'files.data.ts: Server-only, imports fs/promises, path, os'
+      - 'files.types.ts: Shared types, no runtime code'
+      - 'files.utils.ts: Client-safe, pure TypeScript with no Node.js dependencies'
       - Import traces in build errors reveal exactly where server code leaks into client
       - Server components and API routes import from files.data.ts
     summary: Separate server-only code and client-safe utilities into different files; align API routes with Next.js App Router conventions
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Added API route URL alignment lesson; fixed 404 error from /api/files/list vs /api/files mismatch
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Server-Client Code Boundary Separation
@@ -2296,13 +2296,13 @@ ARCH-SERVER_COMPONENTS:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: LEAP index sync — HOME_PAGE/NAVIGATION/BRANDING scope
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Server Components as Default
@@ -2331,10 +2331,10 @@ ARCH-SERVER_COMPONENTS:
     tests: []
 ARCH-SORT_PIPELINE:
   alternatives_considered:
-    - option: Server-side sorting
-      cons:
+    - cons:
         - More complex state management
         - Network latency on every sort
+      option: Server-side sorting
       pros:
         - Handles very large directories
         - Reduces client bundle size
@@ -2361,10 +2361,10 @@ ARCH-SORT_PIPELINE:
   metadata:
     created:
       author: AI Agent
-      date: "2026-02-07"
+      date: '2026-02-07'
     last_updated:
       author: AI Agent
-      date: "2026-02-07"
+      date: '2026-02-07'
       reason: Initial creation for Phase 5
   name: Multi-Criteria Sort Pipeline Architecture
   status: Active
@@ -2384,8 +2384,8 @@ ARCH-STORE_MONITORING:
     details: []
     summary: Simplified store monitoring using error streak tracking instead of device IDs
   metadata:
-    last_updated: 2026-02-09T00:00:00.000Z
-    registered: 2026-02-09T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Store Monitoring Design
   rationale:
     benefits: []
@@ -2406,9 +2406,9 @@ ARCH-STORE_MONITORING:
     tests: []
 ARCH-TAILWIND_V4:
   alternatives_considered:
-    - name: CSS Modules
-      cons:
+    - cons:
         - More boilerplate
+      name: CSS Modules
       pros:
         - Component-scoped styles
       rejected_reason: Tailwind is more efficient for utility-first approach
@@ -2425,13 +2425,13 @@ ARCH-TAILWIND_V4:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Tailwind CSS v4 Styling System
@@ -2463,9 +2463,9 @@ ARCH-TAILWIND_V4:
     tests: []
 ARCH-TEST_FRAMEWORK:
   alternatives_considered:
-    - name: Jest
-      cons:
+    - cons:
         - Slower
+      name: Jest
       pros:
         - More mature
       rejected_reason: Vitest is faster and has better DX
@@ -2482,13 +2482,13 @@ ARCH-TEST_FRAMEWORK:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Vitest Testing Framework
@@ -2531,13 +2531,13 @@ ARCH-THEME_INJECTION:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: CSS Variable Injection from Theme Config
@@ -2587,9 +2587,9 @@ ARCH-TIED_STRUCTURE:
       - REQ-TIED_SETUP
 ARCH-TOOLBAR_ACTIONS:
   alternatives_considered:
-    - name: Separate button configuration
-      cons:
+    - cons:
         - Duplication
+      name: Separate button configuration
       pros:
         - Explicit control
       rejected_reason: Single source of truth critical
@@ -2605,13 +2605,13 @@ ARCH-TOOLBAR_ACTIONS:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       result: planned
       validator: AI Agent
   name: Action-to-Button Mapping Architecture
@@ -2641,10 +2641,10 @@ ARCH-TOOLBAR_ACTIONS:
     tests: []
 ARCH-TOOLBAR_LAYOUT:
   alternatives_considered:
-    - name: Single unified toolbar
-      cons:
+    - cons:
         - 36+ buttons overwhelming
         - No scope separation
+      name: Single unified toolbar
       pros:
         - Simpler implementation
       rejected_reason: Visual separation critical for usability
@@ -2654,25 +2654,25 @@ ARCH-TOOLBAR_LAYOUT:
   detail_file: architecture-decisions/ARCH-TOOLBAR_LAYOUT.yaml
   implementation_approach:
     details:
+      - Compact/expanded/named toolbar height changes trigger workspace-area remeasure (ResizeObserver + explicit deps) so pane bounds update
       - 'Configurable position: top, bottom, hidden, per-pane'
       - 'Optional toolbar compact mode: session starts compact (single merged top row, icon-only); user-toggle expands to three-tier layout with keystroke badges via toolbar-compact-toggle'
       - 'Optional toolbar named mode: third session display state — three-tier layout with icon plus visible Action labels from deriveToolbarButton; keystroke badges hidden'
       - 'PaneToolbar: actions on focused pane'
       - 'SystemToolbar: independent actions'
-      - 'WorkspaceToolbar: actions affecting all panes'
-      - Compact/expanded/named toolbar height changes trigger workspace-area remeasure (ResizeObserver + explicit deps) so pane bounds update
       - Toolbar display toggle cycles compact → expanded → named → compact on toolbar-compact-toggle
+      - 'WorkspaceToolbar: actions affecting all panes'
     summary: Three toolbar types (workspace, pane, system) with configurable position and button groups
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
       reason: LEAP — named toolbar display mode
     last_validated:
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       result: planned
       validator: AI Agent
   name: Toolbar Positioning and Layout Architecture
@@ -2710,9 +2710,9 @@ ARCH-TOUCH_MTIME:
   status: Active
 ARCH-TYPESCRIPT_LANG:
   alternatives_considered:
-    - name: JavaScript with JSDoc
-      cons:
+    - cons:
         - Weaker type checking
+      name: JavaScript with JSDoc
       pros:
         - No compilation step
       rejected_reason: TypeScript provides stronger guarantees
@@ -2728,13 +2728,13 @@ ARCH-TYPESCRIPT_LANG:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: TypeScript for Type Safety
@@ -2783,13 +2783,13 @@ ARCH-YAML_DATA_STORAGE:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: YAML Data Storage Pattern

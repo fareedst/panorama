@@ -1,17 +1,16 @@
-# REQ detail — REQ-LOGGING_SEMANTIC_TOKENS
 REQ-LOGGING_SEMANTIC_TOKENS:
   category: Functional
   description: Ensure all logs are traceable to requirements, architecture, and implementation
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Semantic Token Integration in Logs
@@ -46,9 +45,9 @@ REQ-LOGGING_SEMANTIC_TOKENS:
       - IMPL-LOGGER_TOKENS
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: Token formatting and inclusion
-    - method: Code review
-      coverage: All logger calls include tokens
-    - method: Log file inspection
-      coverage: Tokens present in actual log output
+    - coverage: All logger calls include tokens
+      method: Code review
+    - coverage: Tokens present in actual log output
+      method: Log file inspection
+    - coverage: Token formatting and inclusion
+      method: Unit tests

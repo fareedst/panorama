@@ -9,8 +9,8 @@ ARCH-HASH_VERIFICATION:
     details: []
     summary: Design for optional hash-based file verification using multiple algorithms
   metadata:
-    last_updated: 2026-02-09T00:00:00.000Z
-    registered: 2026-02-09T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Hash Verification Design
   rationale:
     benefits: []

@@ -4,13 +4,13 @@ REQ-FILE_COMPARISON_VISUAL:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: LEAP — README comparison screenshot E2E
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Visual Cross-Pane File Comparison
@@ -34,11 +34,11 @@ REQ-FILE_COMPARISON_VISUAL:
       - REQ-README_DEMO_AUTOMATION
     supersedes: []
   satisfaction_criteria:
-    - criterion: 'Size comparison: equal (green), smallest (blue), largest (red)'
-    - criterion: 'Time comparison: equal (green), earliest (blue), latest (red)'
     - criterion: Comparison colors configurable in theme.yaml
     - criterion: Comparison index rebuilds on pane content changes
     - criterion: Files with same name across panes are color-coded
+    - criterion: 'Size comparison: equal (green), smallest (blue), largest (red)'
+    - criterion: 'Time comparison: equal (green), earliest (blue), latest (red)'
     - criterion: Toggle comparison mode with backtick key
   status: Implemented
   traceability:
@@ -50,11 +50,11 @@ REQ-FILE_COMPARISON_VISUAL:
       - IMPL-COMPARISON_COLORS
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: Comparison index building with various file sets
-    - method: Integration tests
-      coverage: Color application and toggle behavior
-    - method: Visual tests
-      coverage: Color coding displays correctly
-    - method: Playwright
-      coverage: e2e/readme-screenshots.spec.ts 3-pane-comparison.png with comparison mode active
+    - coverage: Color application and toggle behavior
+      method: Integration tests
+    - coverage: e2e/readme-screenshots.spec.ts 3-pane-comparison.png with comparison mode active
+      method: Playwright
+    - coverage: Comparison index building with various file sets
+      method: Unit tests
+    - coverage: Color coding displays correctly
+      method: Visual tests

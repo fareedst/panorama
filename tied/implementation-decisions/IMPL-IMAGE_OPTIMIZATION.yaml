@@ -1,14 +1,14 @@
 IMPL-IMAGE_OPTIMIZATION:
   code_locations:
     files:
-      - path: src/lib/config.ts
-        description: DEFAULT_SITE_CONFIG.branding.logo
-      - path: src/lib/config.types.ts
-        description: LogoConfig.darkInvert
-      - path: src/lib/config.test.ts
-        description: Logo default field tests
-      - path: src/test/dark-mode.test.tsx
-        description: dark:invert pattern test
+      - description: dark:invert pattern test
+        path: src/test/dark-mode.test.tsx
+      - description: DEFAULT_SITE_CONFIG.branding.logo
+        path: src/lib/config.ts
+      - description: Logo default field tests
+        path: src/lib/config.test.ts
+      - description: LogoConfig.darkInvert
+        path: src/lib/config.types.ts
     functions: []
   cross_references:
     - ARCH-NEXTJS_FRAMEWORK
@@ -24,13 +24,13 @@ IMPL-IMAGE_OPTIMIZATION:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit — branding contract without home page Image
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Image Optimization Implementation

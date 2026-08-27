@@ -1,0 +1,6 @@
+# TIED scoped-analysis ignore patterns
+node_modules/
+.next/
+dist/
+coverage/
+.playwright/

@@ -1,18 +1,17 @@
-# ARCH detail — ARCH-LOGGING_SEMANTIC_TOKENS
 ARCH-LOGGING_SEMANTIC_TOKENS:
   alternatives_considered:
-    - name: Module name only (no tokens)
-      cons:
+    - cons:
         - Cannot track feature-level activity
         - No requirement traceability
+      name: Module name only (no tokens)
       pros:
         - Less verbose
         - Simpler API
       rejected_reason: Does not meet TIED traceability requirements
-    - name: Optional tokens
-      cons:
+    - cons:
         - Easy to forget
         - Inconsistent usage
+      name: Optional tokens
       pros:
         - Flexible
       rejected_reason: Tokens must be mandatory for TIED compliance
@@ -21,22 +20,22 @@ ARCH-LOGGING_SEMANTIC_TOKENS:
   decision: Logger API requires tokens parameter as string or array of strings
   implementation_approach:
     details:
+      - Format tokens as space-separated in log output
       - 'Log format: [TIMESTAMP] [LEVEL] [TOKEN1] [TOKEN2] message'
       - 'tokens: string | string[] - required parameter'
-      - Format tokens as space-separated in log output
       - TypeScript types enforce token presence at compile time
       - Validate token format [REQ-*], [ARCH-*], [IMPL-*]
     summary: Logger API requires tokens parameter as string or array of strings
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Semantic Token Integration in Logging

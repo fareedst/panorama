@@ -1,35 +1,35 @@
 IMPL-CURSOR_BOUNDS_CHECK:
   code_locations:
     files:
-      - path: src/app/files/WorkspaceView.tsx
-        description: handleNavigate function guard condition for saving cursor position
+      - description: handleNavigate function guard condition for saving cursor position
         lines:
           - 265
+        path: src/app/files/WorkspaceView.tsx
     functions:
-      - name: handleNavigate
-        description: Added cursor >= 0 check to guard condition before accessing pane.files[pane.cursor]
+      - description: Added cursor >= 0 check to guard condition before accessing pane.files[pane.cursor]
         file: src/app/files/WorkspaceView.tsx
+        name: handleNavigate
   cross_references:
     - IMPL-DIR_HISTORY
     - IMPL-WORKSPACE_VIEW
   decision: Add cursor >= 0 check to guard condition before accessing pane.files[pane.cursor]
   implementation_approach:
     details:
+      - Ensures cursor is in valid range [0, files.length-1] before array access
       - 'Root cause: Guard checked ''cursor < files.length'' but not ''cursor >= 0'''
       - 'Solution: Add ''cursor >= 0'' to guard condition'
       - 'When cursor = -1: -1 < 8 evaluates to true, guard passes but pane.files[-1] = undefined'
-      - Ensures cursor is in valid range [0, files.length-1] before array access
     summary: Add cursor >= 0 check to guard condition before accessing pane.files[pane.cursor]
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-29T00:00:00.000Z"
+      date: '2026-05-29T00:00:00.000Z'
       reason: IMPL essence_pseudocode retrofit 2026-05-29
     last_validated:
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       result: pass - CopyAll completes without crash, verified with runtime logs
       validator: AI Agent
   name: Cursor Bounds Validation Fix

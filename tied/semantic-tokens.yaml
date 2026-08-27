@@ -6,8 +6,8 @@ ARCH-APP_ROUTER:
   description: Next.js App Router Pattern
   detail_file: architecture-decisions/ARCH-APP_ROUTER.yaml
   metadata:
-    last_updated: "2026-05-30"
-    registered: "2025-11-08"
+    last_updated: '2026-05-30'
+    registered: '2025-11-08'
   name: Next.js App Router Pattern
   source_index: architecture-decisions.yaml
   status: Active
@@ -19,8 +19,8 @@ ARCH-BATCH_OPERATIONS:
   description: Async Batch File Operations Architecture
   detail_file: architecture-decisions/ARCH-BATCH_OPERATIONS.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Async Batch File Operations Architecture
   source_index: architecture-decisions.yaml
   status: Active
@@ -32,8 +32,8 @@ ARCH-CLASS_OVERRIDES:
   description: Tailwind Class Override System via Config
   detail_file: architecture-decisions/ARCH-CLASS_OVERRIDES.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Tailwind Class Override System via Config
   source_index: architecture-decisions.yaml
   status: Active
@@ -45,8 +45,8 @@ ARCH-COMPARISON_COLORING:
   description: Enhanced Cross-Pane Comparison Coloring
   detail_file: architecture-decisions/ARCH-COMPARISON_COLORING.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Enhanced Cross-Pane Comparison Coloring
   source_index: architecture-decisions.yaml
   status: Implemented
@@ -58,8 +58,8 @@ ARCH-COMPARISON_INDEX:
   description: Cross-Pane File Comparison Index
   detail_file: architecture-decisions/ARCH-COMPARISON_INDEX.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Cross-Pane File Comparison Index
   source_index: architecture-decisions.yaml
   status: Active
@@ -72,8 +72,8 @@ ARCH-CONFIG_DRIVEN_APPEARANCE:
   description: site.yaml, theme.yaml, files.yaml drive file-manager appearance (jobs retired)
   detail_file: architecture-decisions/ARCH-CONFIG_DRIVEN_APPEARANCE.yaml
   metadata:
-    last_updated: "2026-05-29"
-    registered: "2025-11-08"
+    last_updated: '2026-05-29'
+    registered: '2025-11-08'
   name: Config-Driven Appearance for File Manager
   source_index: architecture-decisions.yaml
   status: Active
@@ -86,8 +86,8 @@ ARCH-CONFIG_DRIVEN_UI:
   description: YAML Configuration-Driven UI Architecture
   detail_file: architecture-decisions/ARCH-CONFIG_DRIVEN_UI.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: YAML Configuration-Driven UI Architecture
   source_index: architecture-decisions.yaml
   status: Active
@@ -100,8 +100,8 @@ ARCH-CROSS_PANE_VISIBILITY:
     - REQ-CROSS_PANE_VISIBILITY
   detail_file: architecture-decisions/ARCH-CROSS_PANE_VISIBILITY.yaml
   metadata:
-    last_updated: "2026-05-23T00:00:00.000Z"
-    registered: "2026-05-23T00:00:00.000Z"
+    last_updated: '2026-05-23T00:00:00.000Z'
+    registered: '2026-05-23T00:00:00.000Z'
   name: Cross-Pane Visibility Architecture
   source_index: architecture-decisions.yaml
   status: Planned
@@ -114,8 +114,8 @@ ARCH-CSS_VARIABLES:
   description: CSS Variables for Dark Mode Theming
   detail_file: architecture-decisions/ARCH-CSS_VARIABLES.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: CSS Variables for Dark Mode Theming
   source_index: architecture-decisions.yaml
   status: Active
@@ -127,8 +127,8 @@ ARCH-CSS_VARIABLES_FONTS:
   description: CSS Variables for Font Assignment
   detail_file: architecture-decisions/ARCH-CSS_VARIABLES_FONTS.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: CSS Variables for Font Assignment
   source_index: architecture-decisions.yaml
   status: Active
@@ -139,8 +139,8 @@ ARCH-DEMO_ASSET_PIPELINE:
     - REQ-README_DEMO_AUTOMATION
   detail_file: architecture-decisions/ARCH-DEMO_ASSET_PIPELINE.yaml
   metadata:
-    last_updated: "2026-05-30T00:00:00.000Z"
-    registered: "2026-05-30T00:00:00.000Z"
+    last_updated: '2026-05-30T00:00:00.000Z'
+    registered: '2026-05-30T00:00:00.000Z'
   name: Demo Asset Pipeline
   source_index: architecture-decisions.yaml
   status: Active
@@ -152,8 +152,8 @@ ARCH-DIRECTORY_HISTORY:
   description: Per-Directory Cursor Position History
   detail_file: architecture-decisions/ARCH-DIRECTORY_HISTORY.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Per-Directory Cursor Position History
   source_index: architecture-decisions.yaml
   status: Implemented
@@ -168,8 +168,8 @@ ARCH-DIRECTORY_TREE:
   description: Pane FileTreeState with lazy expand and flattened visible rows
   detail_file: architecture-decisions/ARCH-DIRECTORY_TREE.yaml
   metadata:
-    last_updated: "2026-06-01"
-    registered: "2026-06-01"
+    last_updated: '2026-06-01'
+    registered: '2026-06-01'
   name: Directory Tree State Model
   source_index: architecture-decisions.yaml
   status: Active
@@ -181,8 +181,8 @@ ARCH-DISPLAY_FILTER_ENGINE:
     - REQ-PANE_DISPLAY_FILTER
   detail_file: architecture-decisions/ARCH-DISPLAY_FILTER_ENGINE.yaml
   metadata:
-    last_updated: "2026-05-22T00:00:00.000Z"
-    registered: "2026-05-22T00:00:00.000Z"
+    last_updated: '2026-05-22T00:00:00.000Z'
+    registered: '2026-05-22T00:00:00.000Z'
   name: Display Filter Rule Engine
   source_index: architecture-decisions.yaml
   status: Accepted
@@ -194,8 +194,8 @@ ARCH-DISPLAY_SPEC_STORE:
     - REQ-PANE_DISPLAY_FILTER
   detail_file: architecture-decisions/ARCH-DISPLAY_SPEC_STORE.yaml
   metadata:
-    last_updated: "2026-05-22T00:00:00.000Z"
-    registered: "2026-05-22T00:00:00.000Z"
+    last_updated: '2026-05-22T00:00:00.000Z'
+    registered: '2026-05-22T00:00:00.000Z'
   name: Display Spec Catalog Store
   source_index: architecture-decisions.yaml
   status: Accepted
@@ -207,8 +207,8 @@ ARCH-FEEDBACK_STORAGE:
   description: Index stub; see checklist when building feedback path
   detail_file: null
   metadata:
-    last_updated: 2026-04-21T00:00:00.000Z
-    registered: 2026-03-03T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Feedback Storage for TIED Reporting
   source_index: architecture-decisions.yaml
   status: Active
@@ -223,8 +223,8 @@ ARCH-FILE_MANAGER_HIERARCHY:
   description: File Manager Component Hierarchy
   detail_file: architecture-decisions/ARCH-FILE_MANAGER_HIERARCHY.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: File Manager Component Hierarchy
   source_index: architecture-decisions.yaml
   status: Active
@@ -236,8 +236,8 @@ ARCH-FILE_OPERATIONS_API:
   description: File Operations API Routes
   detail_file: architecture-decisions/ARCH-FILE_OPERATIONS_API.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: File Operations API Routes
   source_index: architecture-decisions.yaml
   status: Active
@@ -251,13 +251,13 @@ ARCH-FILES_CONFIG_COMPLETE:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Phase 11 architecture complete
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass - 567 tests passing
       validator: AI Agent
   name: Complete File Manager Configuration Architecture
@@ -272,8 +272,8 @@ ARCH-FILESYSTEM_ABSTRACTION:
   description: Server-Side Filesystem Abstraction
   detail_file: architecture-decisions/ARCH-FILESYSTEM_ABSTRACTION.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Server-Side Filesystem Abstraction
   source_index: architecture-decisions.yaml
   status: Active
@@ -285,8 +285,8 @@ ARCH-GOOGLE_FONTS:
   description: Google Fonts Optimization with next/font
   detail_file: architecture-decisions/ARCH-GOOGLE_FONTS.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Google Fonts Optimization with next/font
   source_index: architecture-decisions.yaml
   status: Active
@@ -299,8 +299,8 @@ ARCH-HASH_VERIFICATION:
   description: Design for optional hash-based file verification using multiple algorithms
   detail_file: architecture-decisions/ARCH-HASH_VERIFICATION.yaml
   metadata:
-    last_updated: 2026-02-09T00:00:00.000Z
-    registered: 2026-02-09T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Hash Verification Design
   source_index: architecture-decisions.yaml
   status: Active
@@ -314,7 +314,7 @@ ARCH-KEYBIND_SYSTEM:
   metadata:
     created:
       author: migration
-      date: "2026-02-07"
+      date: '2026-02-07'
   name: KEYBIND SYSTEM
   source_index: architecture-decisions.yaml
   status: Active
@@ -326,8 +326,8 @@ ARCH-LAYOUT_ALGORITHMS:
   description: Multi-Pane Layout Algorithms
   detail_file: architecture-decisions/ARCH-LAYOUT_ALGORITHMS.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Multi-Pane Layout Algorithms
   source_index: architecture-decisions.yaml
   status: Active
@@ -339,8 +339,8 @@ ARCH-LAYOUT_PATTERN:
   description: Root Layout Pattern
   detail_file: architecture-decisions/ARCH-LAYOUT_PATTERN.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Root Layout Pattern
   source_index: architecture-decisions.yaml
   status: Active
@@ -352,8 +352,8 @@ ARCH-LINKED_NAV:
   description: Linked Pane Navigation Architecture
   detail_file: architecture-decisions/ARCH-LINKED_NAV.yaml
   metadata:
-    last_updated: "2026-02-08"
-    registered: "2026-02-07"
+    last_updated: '2026-02-08'
+    registered: '2026-02-07'
   name: Linked Pane Navigation Architecture
   source_index: architecture-decisions.yaml
   status: Implemented
@@ -365,8 +365,8 @@ ARCH-LOGGING_CONFIG:
   description: Environment-Based Logging Configuration
   detail_file: architecture-decisions/ARCH-LOGGING_CONFIG.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Environment-Based Logging Configuration
   source_index: architecture-decisions.yaml
   status: Active
@@ -378,8 +378,8 @@ ARCH-LOGGING_SEMANTIC_TOKENS:
   description: Semantic Token Integration in Logging
   detail_file: architecture-decisions/ARCH-LOGGING_SEMANTIC_TOKENS.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Semantic Token Integration in Logging
   source_index: architecture-decisions.yaml
   status: Active
@@ -391,8 +391,8 @@ ARCH-LOGGING_SYSTEM:
   description: Session-Based File Logging Architecture
   detail_file: architecture-decisions/ARCH-LOGGING_SYSTEM.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Session-Based File Logging Architecture
   source_index: architecture-decisions.yaml
   status: Active
@@ -404,8 +404,8 @@ ARCH-MARKING_STATE:
   description: Client-Side Mark State Management
   detail_file: architecture-decisions/ARCH-MARKING_STATE.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Client-Side Mark State Management
   source_index: architecture-decisions.yaml
   status: Active
@@ -417,8 +417,8 @@ ARCH-MESH_CRUD:
   description: L2 CRUD over mesh repository
   detail_file: architecture-decisions/ARCH-MESH_CRUD.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh CRUD Service Layer
   source_index: architecture-decisions.yaml
   status: Active
@@ -430,8 +430,8 @@ ARCH-MESH_DOMAIN:
   description: Pure domain at src/lib/mesh/domain
   detail_file: architecture-decisions/ARCH-MESH_DOMAIN.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Pure Domain Module
   source_index: architecture-decisions.yaml
   status: Active
@@ -443,8 +443,8 @@ ARCH-MESH_LAYERED:
   description: L1-L6 mesh layers; separate from pane nsync
   detail_file: architecture-decisions/ARCH-MESH_LAYERED.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Subsystem Layered Architecture
   source_index: architecture-decisions.yaml
   status: Active
@@ -456,8 +456,8 @@ ARCH-MODULE_VALIDATION:
   description: Index stub; procedure in agent-req-implementation-checklist.yaml
   detail_file: null
   metadata:
-    last_updated: 2026-04-21T00:00:00.000Z
-    registered: 2025-12-18T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Module Validation Strategy
   source_index: architecture-decisions.yaml
   status: Active
@@ -470,13 +470,13 @@ ARCH-MOUSE_SUPPORT:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Phase 10 implementation complete
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass - 554 tests passing
       validator: AI Agent
   name: Mouse and Touch Interaction Architecture
@@ -493,8 +493,8 @@ ARCH-NEXTJS_FRAMEWORK:
   description: Next.js 16.1 Framework Choice
   detail_file: architecture-decisions/ARCH-NEXTJS_FRAMEWORK.yaml
   metadata:
-    last_updated: "2026-05-30"
-    registered: "2025-11-08"
+    last_updated: '2026-05-30'
+    registered: '2025-11-08'
   name: Next.js 16.1 Framework Choice
   source_index: architecture-decisions.yaml
   status: Active
@@ -506,8 +506,8 @@ ARCH-NSYNC_INTEGRATION:
   description: Architecture for integrating multi-destination sync engine into nx1 file manager
   detail_file: architecture-decisions/ARCH-NSYNC_INTEGRATION.yaml
   metadata:
-    last_updated: 2026-02-09T00:00:00.000Z
-    registered: 2026-02-09T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Nsync Integration Architecture
   source_index: architecture-decisions.yaml
   status: Active
@@ -526,8 +526,8 @@ ARCH-PANE_LIFECYCLE:
   description: Multi-Pane Initialization and Management
   detail_file: architecture-decisions/ARCH-PANE_LIFECYCLE.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Multi-Pane Initialization and Management
   source_index: architecture-decisions.yaml
   status: Active
@@ -542,8 +542,8 @@ ARCH-PANE_REFRESH:
   description: Pane Refresh Architecture
   detail_file: architecture-decisions/ARCH-PANE_REFRESH.yaml
   metadata:
-    last_updated: "2026-02-08"
-    registered: "2026-02-08"
+    last_updated: '2026-02-08'
+    registered: '2026-02-08'
   name: Pane Refresh Architecture
   source_index: architecture-decisions.yaml
   status: Active
@@ -564,8 +564,8 @@ ARCH-PREVIEW_SYSTEM:
   description: Server-Side File Preview Rendering
   detail_file: architecture-decisions/ARCH-PREVIEW_SYSTEM.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Server-Side File Preview Rendering
   source_index: architecture-decisions.yaml
   status: Active
@@ -577,8 +577,8 @@ ARCH-REACT_VERSION:
   description: React 19.2 with Server Components
   detail_file: architecture-decisions/ARCH-REACT_VERSION.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: React 19.2 with Server Components
   source_index: architecture-decisions.yaml
   status: Active
@@ -590,8 +590,8 @@ ARCH-RESPONSIVE_FIRST:
   description: Mobile-First Responsive Design
   detail_file: architecture-decisions/ARCH-RESPONSIVE_FIRST.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Mobile-First Responsive Design
   source_index: architecture-decisions.yaml
   status: Active
@@ -604,7 +604,7 @@ ARCH-SEARCH_ENGINE:
   metadata:
     created:
       author: migration
-      date: "2026-02-07"
+      date: '2026-02-07'
   name: SEARCH ENGINE
   source_index: architecture-decisions.yaml
   status: Active
@@ -621,8 +621,8 @@ ARCH-SERVER_CLIENT_BOUNDARY:
   description: Server-Client Code Boundary Separation
   detail_file: architecture-decisions/ARCH-SERVER_CLIENT_BOUNDARY.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Server-Client Code Boundary Separation
   source_index: architecture-decisions.yaml
   status: Active
@@ -634,8 +634,8 @@ ARCH-SERVER_COMPONENTS:
   description: Server Components as Default
   detail_file: architecture-decisions/ARCH-SERVER_COMPONENTS.yaml
   metadata:
-    last_updated: "2026-05-30"
-    registered: "2025-11-08"
+    last_updated: '2026-05-30'
+    registered: '2025-11-08'
   name: Server Components as Default
   source_index: architecture-decisions.yaml
   status: Active
@@ -647,8 +647,8 @@ ARCH-SORT_PIPELINE:
   description: Multi-Criteria Sort Pipeline Architecture
   detail_file: architecture-decisions/ARCH-SORT_PIPELINE.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Multi-Criteria Sort Pipeline Architecture
   source_index: architecture-decisions.yaml
   status: Active
@@ -660,8 +660,8 @@ ARCH-STORE_MONITORING:
   description: Simplified store monitoring using error streak tracking instead of device IDs
   detail_file: architecture-decisions/ARCH-STORE_MONITORING.yaml
   metadata:
-    last_updated: 2026-02-09T00:00:00.000Z
-    registered: 2026-02-09T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Store Monitoring Design
   source_index: architecture-decisions.yaml
   status: Active
@@ -674,13 +674,13 @@ ARCH-TAILWIND_V4:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Tailwind CSS v4 Styling System
@@ -695,8 +695,8 @@ ARCH-TEST_FRAMEWORK:
   description: Vitest Testing Framework
   detail_file: architecture-decisions/ARCH-TEST_FRAMEWORK.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Vitest Testing Framework
   source_index: architecture-decisions.yaml
   status: Active
@@ -708,8 +708,8 @@ ARCH-THEME_INJECTION:
   description: CSS Variable Injection from Theme Config
   detail_file: architecture-decisions/ARCH-THEME_INJECTION.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: CSS Variable Injection from Theme Config
   source_index: architecture-decisions.yaml
   status: Active
@@ -721,8 +721,8 @@ ARCH-TIED_STRUCTURE:
   description: Index stub; procedure in agent-req-implementation-checklist.yaml
   detail_file: null
   metadata:
-    last_updated: 2026-04-21T00:00:00.000Z
-    registered: 2025-12-18T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: TIED Project Structure
   source_index: architecture-decisions.yaml
   status: Active
@@ -735,8 +735,8 @@ ARCH-TOOLBAR_ACTIONS:
   description: Derive toolbar button metadata from keybinding registry for consistency
   detail_file: architecture-decisions/ARCH-TOOLBAR_ACTIONS.yaml
   metadata:
-    last_updated: 2026-02-08T00:00:00.000Z
-    registered: 2026-02-08T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Action-to-Button Mapping Architecture
   source_index: architecture-decisions.yaml
   status: Implemented
@@ -748,8 +748,8 @@ ARCH-TOOLBAR_LAYOUT:
   description: Three-tier toolbar system with configurable positioning and button grouping
   detail_file: architecture-decisions/ARCH-TOOLBAR_LAYOUT.yaml
   metadata:
-    last_updated: 2026-02-08T00:00:00.000Z
-    registered: 2026-02-08T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Toolbar Positioning and Layout Architecture
   source_index: architecture-decisions.yaml
   status: Implemented
@@ -764,8 +764,8 @@ ARCH-TYPESCRIPT_LANG:
   description: TypeScript for Type Safety
   detail_file: architecture-decisions/ARCH-TYPESCRIPT_LANG.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: TypeScript for Type Safety
   source_index: architecture-decisions.yaml
   status: Active
@@ -776,8 +776,8 @@ ARCH-WORKSPACE_MESH_BRIDGE:
     - REQ-WORKSPACE_MESH_BRIDGE
   detail_file: architecture-decisions/ARCH-WORKSPACE_MESH_BRIDGE.yaml
   metadata:
-    last_updated: "2026-05-21T00:00:00.000Z"
-    registered: "2026-05-21T00:00:00.000Z"
+    last_updated: '2026-05-21T00:00:00.000Z'
+    registered: '2026-05-21T00:00:00.000Z'
   name: Workspace Mesh Bridge Architecture
   source_index: architecture-decisions.yaml
   status: Accepted
@@ -789,13 +789,13 @@ ARCH-YAML_DATA_STORAGE:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: YAML Data Storage Pattern
@@ -809,8 +809,8 @@ IMPL-BUILD_SCRIPTS:
   description: Build Scripts Implementation
   detail_file: implementation-decisions/IMPL-BUILD_SCRIPTS.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Build Scripts Implementation
   source_index: implementation-decisions.yaml
   status: Active
@@ -822,8 +822,8 @@ IMPL-BULK_OPS:
   description: Parallel Bulk Operations with Progress
   detail_file: implementation-decisions/IMPL-BULK_OPS.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Parallel Bulk Operations with Progress
   source_index: implementation-decisions.yaml
   status: Active
@@ -835,8 +835,8 @@ IMPL-CLASS_OVERRIDES:
   description: Class Overrides Implementation
   detail_file: implementation-decisions/IMPL-CLASS_OVERRIDES.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Class Overrides Implementation
   source_index: implementation-decisions.yaml
   status: Active
@@ -848,8 +848,8 @@ IMPL-COMPARISON_COLORS:
   description: CSS Class-Based Comparison Coloring
   detail_file: implementation-decisions/IMPL-COMPARISON_COLORS.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: CSS Class-Based Comparison Coloring
   source_index: implementation-decisions.yaml
   status: Implemented
@@ -861,8 +861,8 @@ IMPL-COMPARISON_INDEX:
   description: Comparison Index Implementation
   detail_file: implementation-decisions/IMPL-COMPARISON_INDEX.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Comparison Index Implementation
   source_index: implementation-decisions.yaml
   status: Implemented
@@ -874,8 +874,8 @@ IMPL-CONFIG_DRIVEN_APPEARANCE:
   description: Config-Driven Appearance Implementation
   detail_file: implementation-decisions/IMPL-CONFIG_DRIVEN_APPEARANCE.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Config-Driven Appearance Implementation
   source_index: implementation-decisions.yaml
   status: Active
@@ -887,8 +887,8 @@ IMPL-CONFIG_LOADER:
   description: Configuration Loader Module
   detail_file: implementation-decisions/IMPL-CONFIG_LOADER.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Configuration Loader Module
   source_index: implementation-decisions.yaml
   status: Active
@@ -902,8 +902,8 @@ IMPL-COPY_ATTRS:
   description: Preserve mode and atime/mtime on destination after copy where possible (best-effort)
   detail_file: implementation-decisions/IMPL-COPY_ATTRS.yaml
   metadata:
-    last_updated: 2026-02-09T00:00:00.000Z
-    registered: 2026-02-09T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Copy Preserve File Attributes
   source_index: implementation-decisions.yaml
   status: Active
@@ -915,8 +915,8 @@ IMPL-CROSS_PANE_VISIBILITY_CATALOG:
     - REQ-CROSS_PANE_VISIBILITY
   detail_file: implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_CATALOG.yaml
   metadata:
-    last_updated: "2026-05-23T00:00:00.000Z"
-    registered: "2026-05-23T00:00:00.000Z"
+    last_updated: '2026-05-23T00:00:00.000Z'
+    registered: '2026-05-23T00:00:00.000Z'
   name: Cross-Pane Visibility Catalog
   source_index: implementation-decisions.yaml
   status: Planned
@@ -928,8 +928,8 @@ IMPL-CROSS_PANE_VISIBILITY_ENGINE:
     - REQ-CROSS_PANE_VISIBILITY
   detail_file: implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_ENGINE.yaml
   metadata:
-    last_updated: "2026-05-23T00:00:00.000Z"
-    registered: "2026-05-23T00:00:00.000Z"
+    last_updated: '2026-05-23T00:00:00.000Z'
+    registered: '2026-05-23T00:00:00.000Z'
   name: Cross-Pane Visibility Engine
   source_index: implementation-decisions.yaml
   status: Planned
@@ -943,8 +943,8 @@ IMPL-CROSS_PANE_VISIBILITY_UI:
     - REQ-TOOLBAR_SYSTEM
   detail_file: implementation-decisions/IMPL-CROSS_PANE_VISIBILITY_UI.yaml
   metadata:
-    last_updated: "2026-05-23T00:00:00.000Z"
-    registered: "2026-05-23T00:00:00.000Z"
+    last_updated: '2026-05-23T00:00:00.000Z'
+    registered: '2026-05-23T00:00:00.000Z'
   name: Cross-Pane Visibility UI
   source_index: implementation-decisions.yaml
   status: Planned
@@ -956,8 +956,8 @@ IMPL-CURSOR_BOUNDS_CHECK:
   description: Fix guard condition in handleNavigate to validate cursor is non-negative before array access
   detail_file: implementation-decisions/IMPL-CURSOR_BOUNDS_CHECK.yaml
   metadata:
-    last_updated: 2026-02-09T00:00:00.000Z
-    registered: 2026-02-09T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Cursor Bounds Validation Fix
   source_index: implementation-decisions.yaml
   status: Active
@@ -969,8 +969,8 @@ IMPL-DARK_MODE:
   description: Dark Mode Implementation
   detail_file: implementation-decisions/IMPL-DARK_MODE.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Dark Mode Implementation
   source_index: implementation-decisions.yaml
   status: Active
@@ -981,8 +981,8 @@ IMPL-DEMO_SCREENSHOT_PIPELINE:
     - REQ-README_DEMO_AUTOMATION
   detail_file: implementation-decisions/IMPL-DEMO_SCREENSHOT_PIPELINE.yaml
   metadata:
-    last_updated: "2026-05-30T00:00:00.000Z"
-    registered: "2026-05-30T00:00:00.000Z"
+    last_updated: '2026-05-30T00:00:00.000Z'
+    registered: '2026-05-30T00:00:00.000Z'
   name: Demo Screenshot Pipeline Implementation
   source_index: implementation-decisions.yaml
   status: Active
@@ -994,8 +994,8 @@ IMPL-DIR_HISTORY:
   description: Directory History with localStorage Bookmarks
   detail_file: implementation-decisions/IMPL-DIR_HISTORY.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Directory History with localStorage Bookmarks
   source_index: implementation-decisions.yaml
   status: Implemented
@@ -1009,8 +1009,8 @@ IMPL-DIRECTORY_TREE:
   description: Pure file-tree module and pane tree integration
   detail_file: implementation-decisions/IMPL-DIRECTORY_TREE.yaml
   metadata:
-    last_updated: "2026-06-01"
-    registered: "2026-06-01"
+    last_updated: '2026-06-01'
+    registered: '2026-06-01'
   name: Directory Tree Module
   source_index: implementation-decisions.yaml
   status: Planned
@@ -1023,8 +1023,8 @@ IMPL-DISPLAY_FILTER_API:
     - REQ-PANE_DISPLAY_FILTER
   detail_file: implementation-decisions/IMPL-DISPLAY_FILTER_API.yaml
   metadata:
-    last_updated: "2026-05-22T00:00:00.000Z"
-    registered: "2026-05-22T00:00:00.000Z"
+    last_updated: '2026-05-22T00:00:00.000Z'
+    registered: '2026-05-22T00:00:00.000Z'
   name: Display Filter API
   source_index: implementation-decisions.yaml
   status: Active
@@ -1035,8 +1035,8 @@ IMPL-DISPLAY_FILTER_ENGINE:
     - REQ-PANE_DISPLAY_FILTER
   detail_file: implementation-decisions/IMPL-DISPLAY_FILTER_ENGINE.yaml
   metadata:
-    last_updated: "2026-05-22T00:00:00.000Z"
-    registered: "2026-05-22T00:00:00.000Z"
+    last_updated: '2026-05-22T00:00:00.000Z'
+    registered: '2026-05-22T00:00:00.000Z'
   name: Display Filter Engine Implementation
   source_index: implementation-decisions.yaml
   status: Active
@@ -1047,8 +1047,8 @@ IMPL-DISPLAY_SPEC_STORE:
     - REQ-PANE_DISPLAY_FILTER
   detail_file: implementation-decisions/IMPL-DISPLAY_SPEC_STORE.yaml
   metadata:
-    last_updated: "2026-05-22T00:00:00.000Z"
-    registered: "2026-05-22T00:00:00.000Z"
+    last_updated: '2026-05-22T00:00:00.000Z'
+    registered: '2026-05-22T00:00:00.000Z'
   name: Display Spec Catalog Store
   source_index: implementation-decisions.yaml
   status: Active
@@ -1064,8 +1064,8 @@ IMPL-EXTERNAL_LINKS:
   description: External Links Implementation
   detail_file: implementation-decisions/IMPL-EXTERNAL_LINKS.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: External Links Implementation
   source_index: implementation-decisions.yaml
   status: Active
@@ -1081,8 +1081,8 @@ IMPL-FILE_COLUMN_CONFIG:
   description: Dynamic column configuration for file pane display with configurable order, visibility, and time formatting (YYYY-MM-DD HH:MM:SS)
   detail_file: implementation-decisions/IMPL-FILE_COLUMN_CONFIG.yaml
   metadata:
-    last_updated: "2026-02-08"
-    registered: "2026-02-08"
+    last_updated: '2026-02-08'
+    registered: '2026-02-08'
   name: Configurable File Column Display
   source_index: implementation-decisions.yaml
   status: Active
@@ -1094,8 +1094,8 @@ IMPL-FILE_MANAGER_PAGE:
   description: File Manager Page Implementation
   detail_file: implementation-decisions/IMPL-FILE_MANAGER_PAGE.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: File Manager Page Implementation
   source_index: implementation-decisions.yaml
   status: Implemented
@@ -1107,8 +1107,8 @@ IMPL-FILE_MARKING:
   description: React State Mark Management
   detail_file: implementation-decisions/IMPL-FILE_MARKING.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: React State Mark Management
   source_index: implementation-decisions.yaml
   status: Active
@@ -1121,8 +1121,8 @@ IMPL-FILE_PANE:
   description: File Pane Component
   detail_file: implementation-decisions/IMPL-FILE_PANE.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: File Pane Component
   source_index: implementation-decisions.yaml
   status: Implemented
@@ -1134,8 +1134,8 @@ IMPL-FILE_PREVIEW:
   description: Server-Side Preview API Routes
   detail_file: implementation-decisions/IMPL-FILE_PREVIEW.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Server-Side Preview API Routes
   source_index: implementation-decisions.yaml
   status: Implemented
@@ -1148,8 +1148,8 @@ IMPL-FILE_SEARCH:
   description: Dual-Mode Search Implementation with SSR Guards
   detail_file: implementation-decisions/IMPL-FILE_SEARCH.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Dual-Mode Search Implementation with SSR Guards
   source_index: implementation-decisions.yaml
   status: Implemented
@@ -1163,8 +1163,8 @@ IMPL-FILES_API:
   description: File Operations API Routes
   detail_file: implementation-decisions/IMPL-FILES_API.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: File Operations API Routes
   source_index: implementation-decisions.yaml
   status: Implemented
@@ -1176,8 +1176,8 @@ IMPL-FILES_CONFIG:
   description: Files Configuration Loader
   detail_file: implementation-decisions/IMPL-FILES_CONFIG.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Files Configuration Loader
   source_index: implementation-decisions.yaml
   status: Implemented
@@ -1190,8 +1190,8 @@ IMPL-FILES_CONFIG_COMPLETE:
   description: Complete File Manager Configuration Implementation
   detail_file: implementation-decisions/IMPL-FILES_CONFIG_COMPLETE.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Complete File Manager Configuration Implementation
   source_index: implementation-decisions.yaml
   status: Active
@@ -1204,8 +1204,8 @@ IMPL-FILES_DATA:
   description: Filesystem Data Layer
   detail_file: implementation-decisions/IMPL-FILES_DATA.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Filesystem Data Layer
   source_index: implementation-decisions.yaml
   status: Implemented
@@ -1217,8 +1217,8 @@ IMPL-FILES_UTILS:
   description: Client-Safe File Utilities
   detail_file: implementation-decisions/IMPL-FILES_UTILS.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Client-Safe File Utilities
   source_index: implementation-decisions.yaml
   status: Implemented
@@ -1230,8 +1230,8 @@ IMPL-FLEX_LAYOUT:
   description: Flexbox Layout Implementation
   detail_file: implementation-decisions/IMPL-FLEX_LAYOUT.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Flexbox Layout Implementation
   source_index: implementation-decisions.yaml
   status: Active
@@ -1244,8 +1244,8 @@ IMPL-FONT_LOADING:
   description: Font Loading Implementation
   detail_file: implementation-decisions/IMPL-FONT_LOADING.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Font Loading Implementation
   source_index: implementation-decisions.yaml
   status: Active
@@ -1257,8 +1257,8 @@ IMPL-GLOBAL_ERROR_BOUNDARY:
   description: Global Error Boundary Implementation
   detail_file: implementation-decisions/IMPL-GLOBAL_ERROR_BOUNDARY.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Global Error Boundary Implementation
   source_index: implementation-decisions.yaml
   status: Active
@@ -1270,8 +1270,8 @@ IMPL-HOME_PAGE:
   description: Home Page Implementation
   detail_file: implementation-decisions/IMPL-HOME_PAGE.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Home Page Implementation
   source_index: implementation-decisions.yaml
   status: Active
@@ -1283,8 +1283,8 @@ IMPL-IMAGE_OPTIMIZATION:
   description: Image Optimization Implementation
   detail_file: implementation-decisions/IMPL-IMAGE_OPTIMIZATION.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Image Optimization Implementation
   source_index: implementation-decisions.yaml
   status: Active
@@ -1297,8 +1297,8 @@ IMPL-KEYBINDS:
   description: Keybinding Registry and Dispatcher
   detail_file: implementation-decisions/IMPL-KEYBINDS.yaml
   metadata:
-    last_updated: "2026-02-08"
-    registered: "2026-02-07"
+    last_updated: '2026-02-08'
+    registered: '2026-02-07'
   name: Keybinding Registry and Dispatcher
   source_index: implementation-decisions.yaml
   status: Implemented
@@ -1312,8 +1312,8 @@ IMPL-LAYOUT_CALCULATOR:
   description: Pure layout algorithms plus workspace-area measurement feeding calculateLayout
   detail_file: implementation-decisions/IMPL-LAYOUT_CALCULATOR.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Layout Calculation Algorithms
   source_index: implementation-decisions.yaml
   status: Implemented
@@ -1327,14 +1327,14 @@ IMPL-LINKED_NAV:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       reason: Added Parent .. button in FilePane header with onNavigateParent callback; refactored parent navigation to navigateToParent(paneIndex) supporting any pane index
     last_validated:
       author: AI Agent
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       reason: Complete implementation with cursor sync, sort sync, auto-disable, and comprehensive test coverage
       result: pass - manual testing confirmed all panes navigate to parent when linked
       validator: AI Agent
@@ -1349,8 +1349,8 @@ IMPL-LOGGER_CONFIG:
   description: Logger Configuration Implementation
   detail_file: implementation-decisions/IMPL-LOGGER_CONFIG.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Logger Configuration Implementation
   source_index: implementation-decisions.yaml
   status: Implemented
@@ -1362,8 +1362,8 @@ IMPL-LOGGER_MODULE:
   description: Logger Module Implementation
   detail_file: implementation-decisions/IMPL-LOGGER_MODULE.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Logger Module Implementation
   source_index: implementation-decisions.yaml
   status: Implemented
@@ -1375,8 +1375,8 @@ IMPL-LOGGER_TOKENS:
   description: Semantic Token Integration Implementation
   detail_file: implementation-decisions/IMPL-LOGGER_TOKENS.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Semantic Token Integration Implementation
   source_index: implementation-decisions.yaml
   status: Implemented
@@ -1396,8 +1396,8 @@ IMPL-MCP_FEEDBACK_TOOLS:
   description: Index stub; TIED mcp-server tools when adopted
   detail_file: null
   metadata:
-    last_updated: 2026-04-21T00:00:00.000Z
-    registered: 2026-03-03T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: MCP Feedback Tools
   source_index: implementation-decisions.yaml
   status: Active
@@ -1408,8 +1408,8 @@ IMPL-MESH_API:
     - REQ-MESH_API
   detail_file: implementation-decisions/IMPL-MESH_API.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh API Route Handlers
   source_index: implementation-decisions.yaml
   status: Active
@@ -1419,8 +1419,8 @@ IMPL-MESH_AUTH:
     - REQ-MESH_AUTH
   detail_file: implementation-decisions/IMPL-MESH_AUTH.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Authorization Service
   source_index: implementation-decisions.yaml
   status: Active
@@ -1430,8 +1430,8 @@ IMPL-MESH_CONFLICT:
     - REQ-MESH_PLATFORM
   detail_file: implementation-decisions/IMPL-MESH_CONFLICT.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Conflict Management
   source_index: implementation-decisions.yaml
   status: Active
@@ -1442,8 +1442,8 @@ IMPL-MESH_CONNECTOR:
   description: Connector interface and fake/local implementations
   detail_file: implementation-decisions/IMPL-MESH_CONNECTOR.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Connector Contract
   source_index: implementation-decisions.yaml
   status: Active
@@ -1453,8 +1453,8 @@ IMPL-MESH_CREDENTIAL:
     - REQ-MESH_PLATFORM
   detail_file: implementation-decisions/IMPL-MESH_CREDENTIAL.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Credential References
   source_index: implementation-decisions.yaml
   status: Active
@@ -1465,8 +1465,8 @@ IMPL-MESH_CRUD:
     - REQ-MESH_CRUD
   detail_file: implementation-decisions/IMPL-MESH_CRUD.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh CRUD Service
   source_index: implementation-decisions.yaml
   status: Active
@@ -1478,8 +1478,8 @@ IMPL-MESH_DEPOT:
   description: Depot CRUD on mesh records
   detail_file: implementation-decisions/IMPL-MESH_DEPOT.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Depot Service
   source_index: implementation-decisions.yaml
   status: Active
@@ -1493,8 +1493,8 @@ IMPL-MESH_DOMAIN_TYPES:
   description: Pure domain validators and serialization at src/lib/mesh/domain
   detail_file: implementation-decisions/IMPL-MESH_DOMAIN_TYPES.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Domain Types and Validation
   source_index: implementation-decisions.yaml
   status: Active
@@ -1504,8 +1504,8 @@ IMPL-MESH_EVENTS:
     - REQ-MESH_PLATFORM
   detail_file: implementation-decisions/IMPL-MESH_EVENTS.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Event Log
   source_index: implementation-decisions.yaml
   status: Active
@@ -1515,8 +1515,8 @@ IMPL-MESH_EXECUTOR:
     - REQ-MESH_PLATFORM
   detail_file: implementation-decisions/IMPL-MESH_EXECUTOR.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Executor Service
   source_index: implementation-decisions.yaml
   status: Active
@@ -1526,8 +1526,8 @@ IMPL-MESH_GUI:
     - REQ-MESH_GUI
   detail_file: implementation-decisions/IMPL-MESH_GUI.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh React UI
   source_index: implementation-decisions.yaml
   status: Active
@@ -1537,8 +1537,8 @@ IMPL-MESH_HARDENING:
     - REQ-MESH_HARDENING
   detail_file: implementation-decisions/IMPL-MESH_HARDENING.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Hardening Service
   source_index: implementation-decisions.yaml
   status: Active
@@ -1548,8 +1548,8 @@ IMPL-MESH_IMPORT_EXPORT:
     - REQ-MESH_IMPORT_EXPORT
   detail_file: implementation-decisions/IMPL-MESH_IMPORT_EXPORT.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Import Export
   source_index: implementation-decisions.yaml
   status: Active
@@ -1559,8 +1559,8 @@ IMPL-MESH_INVENTORY:
     - REQ-MESH_PLATFORM
   detail_file: implementation-decisions/IMPL-MESH_INVENTORY.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Inventory Scan
   source_index: implementation-decisions.yaml
   status: Active
@@ -1570,8 +1570,8 @@ IMPL-MESH_MONITORING:
     - REQ-MESH_MONITORING
   detail_file: implementation-decisions/IMPL-MESH_MONITORING.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Monitoring Service
   source_index: implementation-decisions.yaml
   status: Active
@@ -1582,8 +1582,8 @@ IMPL-MESH_PERSISTENCE:
   description: JsonMeshRepository and createMeshRepository factory
   detail_file: implementation-decisions/IMPL-MESH_PERSISTENCE.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh JSON Persistence
   source_index: implementation-decisions.yaml
   status: Active
@@ -1593,8 +1593,8 @@ IMPL-MESH_PLANNING:
     - REQ-MESH_PLATFORM
   detail_file: implementation-decisions/IMPL-MESH_PLANNING.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Planning Service
   source_index: implementation-decisions.yaml
   status: Active
@@ -1604,8 +1604,8 @@ IMPL-MESH_POLICY:
     - REQ-MESH_PLATFORM
   detail_file: implementation-decisions/IMPL-MESH_POLICY.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Policy Filters
   source_index: implementation-decisions.yaml
   status: Active
@@ -1616,8 +1616,8 @@ IMPL-MESH_RUNTIME:
     - REQ-MESH_PLATFORM
   detail_file: implementation-decisions/IMPL-MESH_RUNTIME.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Runtime Composition
   source_index: implementation-decisions.yaml
   status: Active
@@ -1627,8 +1627,8 @@ IMPL-MESH_SAFETY:
     - REQ-MESH_SAFETY
   detail_file: implementation-decisions/IMPL-MESH_SAFETY.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Safety Service
   source_index: implementation-decisions.yaml
   status: Active
@@ -1638,8 +1638,8 @@ IMPL-MESH_SCHEDULE:
     - REQ-MESH_SCHEDULE
   detail_file: implementation-decisions/IMPL-MESH_SCHEDULE.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Schedule Service
   source_index: implementation-decisions.yaml
   status: Active
@@ -1649,8 +1649,8 @@ IMPL-MESH_SESSION:
     - REQ-MESH_PLATFORM
   detail_file: implementation-decisions/IMPL-MESH_SESSION.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Session Lifecycle
   source_index: implementation-decisions.yaml
   status: Active
@@ -1661,8 +1661,8 @@ IMPL-MESH_TOPOLOGY:
   description: Topology validation and graph projection
   detail_file: implementation-decisions/IMPL-MESH_TOPOLOGY.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Topology Service
   source_index: implementation-decisions.yaml
   status: Active
@@ -1674,8 +1674,8 @@ IMPL-METADATA:
   description: Metadata Implementation
   detail_file: implementation-decisions/IMPL-METADATA.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Metadata Implementation
   source_index: implementation-decisions.yaml
   status: Active
@@ -1687,8 +1687,8 @@ IMPL-MODULE_VALIDATION:
   description: Index stub; procedure in agent-req-implementation-checklist.yaml
   detail_file: null
   metadata:
-    last_updated: 2026-04-21T00:00:00.000Z
-    registered: 2025-12-18T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Module Validation Implementation
   source_index: implementation-decisions.yaml
   status: Active
@@ -1700,8 +1700,8 @@ IMPL-MOUSE_SUPPORT:
   description: Mouse and Touch Interaction Implementation
   detail_file: implementation-decisions/IMPL-MOUSE_SUPPORT.yaml
   metadata:
-    last_updated: "2026-02-08"
-    registered: "2026-02-07"
+    last_updated: '2026-02-08'
+    registered: '2026-02-07'
   name: Mouse and Touch Interaction Implementation
   source_index: implementation-decisions.yaml
   status: Active
@@ -1712,8 +1712,8 @@ IMPL-NSYNC_COMPARE:
   description: File comparison using size, mtime, hash methods to skip unchanged files
   detail_file: implementation-decisions/IMPL-NSYNC_COMPARE.yaml
   metadata:
-    last_updated: 2026-02-09T00:00:00.000Z
-    registered: 2026-02-09T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: File Comparison Implementation
   source_index: implementation-decisions.yaml
   status: Active
@@ -1726,8 +1726,8 @@ IMPL-NSYNC_ENGINE:
   description: Core sync engine orchestrating multi-destination file synchronization with observer pattern
   detail_file: implementation-decisions/IMPL-NSYNC_ENGINE.yaml
   metadata:
-    last_updated: 2026-02-09T00:00:00.000Z
-    registered: 2026-02-09T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Sync Engine Core Implementation
   source_index: implementation-decisions.yaml
   status: Active
@@ -1739,8 +1739,8 @@ IMPL-NSYNC_HASH:
   description: Hash computation with BLAKE3, SHA-256, XXH3 support and streaming for large files
   detail_file: implementation-decisions/IMPL-NSYNC_HASH.yaml
   metadata:
-    last_updated: 2026-02-09T00:00:00.000Z
-    registered: 2026-02-09T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Hash Computation Implementation
   source_index: implementation-decisions.yaml
   status: Active
@@ -1752,8 +1752,8 @@ IMPL-NSYNC_OPERATIONS:
   description: Copy, move, delete operation wrappers ensuring destination directories exist
   detail_file: implementation-decisions/IMPL-NSYNC_OPERATIONS.yaml
   metadata:
-    last_updated: 2026-02-09T00:00:00.000Z
-    registered: 2026-02-09T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: File Operations Wrappers
   source_index: implementation-decisions.yaml
   status: Active
@@ -1765,8 +1765,8 @@ IMPL-NSYNC_STORE:
   description: Simplified store failure detection using error streak tracking per destination
   detail_file: implementation-decisions/IMPL-NSYNC_STORE.yaml
   metadata:
-    last_updated: 2026-02-09T00:00:00.000Z
-    registered: 2026-02-09T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Store Monitoring Implementation
   source_index: implementation-decisions.yaml
   status: Active
@@ -1778,8 +1778,8 @@ IMPL-NSYNC_TYPE_SAFETY:
   description: Type guards and conversions to handle Node.js bigint file sizes and stream types
   detail_file: implementation-decisions/IMPL-NSYNC_TYPE_SAFETY.yaml
   metadata:
-    last_updated: 2026-02-09T00:00:00.000Z
-    registered: 2026-02-09T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: TypeScript Type Safety for Node.js Types
   source_index: implementation-decisions.yaml
   status: Active
@@ -1791,8 +1791,8 @@ IMPL-NSYNC_VERIFY:
   description: Destination file verification by recomputing hash and comparing to source
   detail_file: implementation-decisions/IMPL-NSYNC_VERIFY.yaml
   metadata:
-    last_updated: 2026-02-09T00:00:00.000Z
-    registered: 2026-02-09T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Destination Verification Implementation
   source_index: implementation-decisions.yaml
   status: Active
@@ -1807,13 +1807,13 @@ IMPL-OVERWRITE_PROMPT:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Overwrite Confirmation with File Comparison
@@ -1831,8 +1831,8 @@ IMPL-PANE_DISPLAY_FILTER_UI:
     - REQ-PANE_DISPLAY_FILTER
   detail_file: implementation-decisions/IMPL-PANE_DISPLAY_FILTER_UI.yaml
   metadata:
-    last_updated: "2026-05-22T00:00:00.000Z"
-    registered: "2026-05-22T00:00:00.000Z"
+    last_updated: '2026-05-22T00:00:00.000Z'
+    registered: '2026-05-22T00:00:00.000Z'
   name: Pane Display Filter UI
   source_index: implementation-decisions.yaml
   status: Active
@@ -1846,8 +1846,8 @@ IMPL-PANE_MANAGEMENT:
   description: Runtime Pane Management Controls
   detail_file: implementation-decisions/IMPL-PANE_MANAGEMENT.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Runtime Pane Management Controls
   source_index: implementation-decisions.yaml
   status: Active
@@ -1861,8 +1861,8 @@ IMPL-PANE_REFRESH:
   description: Manual Pane Refresh Implementation
   detail_file: implementation-decisions/IMPL-PANE_REFRESH.yaml
   metadata:
-    last_updated: "2026-02-08"
-    registered: "2026-02-08"
+    last_updated: '2026-02-08'
+    registered: '2026-02-08'
   name: Manual Pane Refresh Implementation
   source_index: implementation-decisions.yaml
   status: Active
@@ -1874,8 +1874,8 @@ IMPL-PERFORMANCE_OPT:
   description: IMPL PERFORMANCE_OPT
   detail_file: implementation-decisions/IMPL-PERFORMANCE_OPT.yaml
   metadata:
-    last_updated: 2026-02-08T00:00:00.000Z
-    registered: 2026-02-08T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: IMPL PERFORMANCE_OPT
   source_index: implementation-decisions.yaml
   status: Planned
@@ -1891,8 +1891,8 @@ IMPL-RENAME_DIALOG:
   description: Rename modal and wiring for R key and context menu Rename; implements file.rename action
   detail_file: implementation-decisions/IMPL-RENAME_DIALOG.yaml
   metadata:
-    last_updated: "2026-02-08"
-    registered: "2026-02-08"
+    last_updated: '2026-02-08'
+    registered: '2026-02-08'
   name: Rename File Dialog and R-Key Handler
   source_index: implementation-decisions.yaml
   status: Active
@@ -1912,8 +1912,8 @@ IMPL-RESPONSIVE_CLASSES:
   description: Responsive Classes Implementation
   detail_file: implementation-decisions/IMPL-RESPONSIVE_CLASSES.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Responsive Classes Implementation
   source_index: implementation-decisions.yaml
   status: Active
@@ -1925,8 +1925,8 @@ IMPL-ROOT_LAYOUT:
   description: Root Layout Implementation
   detail_file: implementation-decisions/IMPL-ROOT_LAYOUT.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Root Layout Implementation
   source_index: implementation-decisions.yaml
   status: Active
@@ -1937,8 +1937,8 @@ IMPL-SORT_FILTER:
   description: Client-Side Sort and Filter Functions
   detail_file: implementation-decisions/IMPL-SORT_FILTER.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Client-Side Sort and Filter Functions
   source_index: implementation-decisions.yaml
   status: Implemented
@@ -1950,8 +1950,8 @@ IMPL-TEST_CONFIG:
   description: Vitest Configuration
   detail_file: implementation-decisions/IMPL-TEST_CONFIG.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Vitest Configuration
   source_index: implementation-decisions.yaml
   status: Active
@@ -1963,8 +1963,8 @@ IMPL-TEST_SETUP:
   description: Test Setup Implementation
   detail_file: implementation-decisions/IMPL-TEST_SETUP.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Test Setup Implementation
   source_index: implementation-decisions.yaml
   status: Active
@@ -1976,8 +1976,8 @@ IMPL-THEME_INJECTION:
   description: Theme Injection Implementation
   detail_file: implementation-decisions/IMPL-THEME_INJECTION.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Theme Injection Implementation
   source_index: implementation-decisions.yaml
   status: Active
@@ -1989,8 +1989,8 @@ IMPL-TIED_FILES:
   description: Index stub; procedure in agent-req-implementation-checklist.yaml
   detail_file: null
   metadata:
-    last_updated: 2026-04-21T00:00:00.000Z
-    registered: 2025-12-18T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: TIED File Creation
   source_index: implementation-decisions.yaml
   status: Active
@@ -2003,8 +2003,8 @@ IMPL-TOOLBAR_COMPONENT:
   description: React components for toolbar system including base and specialized toolbars with compact icon-only button design
   detail_file: implementation-decisions/IMPL-TOOLBAR_COMPONENT.yaml
   metadata:
-    last_updated: 2026-02-08T00:00:00.000Z
-    registered: 2026-02-08T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Toolbar React Component Implementation
   source_index: implementation-decisions.yaml
   status: Implemented
@@ -2016,8 +2016,8 @@ IMPL-TOOLBAR_CONFIG:
   description: Configuration types and loading utilities for toolbar system
   detail_file: implementation-decisions/IMPL-TOOLBAR_CONFIG.yaml
   metadata:
-    last_updated: 2026-02-08T00:00:00.000Z
-    registered: 2026-02-08T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Toolbar Configuration Loading
   source_index: implementation-decisions.yaml
   status: Active
@@ -2036,8 +2036,8 @@ IMPL-WORKSPACE_MESH_BRIDGE:
     - REQ-WORKSPACE_MESH_BRIDGE
   detail_file: implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE.yaml
   metadata:
-    last_updated: "2026-05-21T00:00:00.000Z"
-    registered: "2026-05-21T00:00:00.000Z"
+    last_updated: '2026-05-21T00:00:00.000Z'
+    registered: '2026-05-21T00:00:00.000Z'
   name: Workspace Mesh Bridge Implementation
   source_index: implementation-decisions.yaml
   status: Implemented
@@ -2052,8 +2052,8 @@ IMPL-WORKSPACE_VIEW:
   description: Workspace View Client Component with Stable React Keys
   detail_file: implementation-decisions/IMPL-WORKSPACE_VIEW.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Workspace View Client Component with Stable React Keys
   source_index: implementation-decisions.yaml
   status: Implemented
@@ -2065,8 +2065,8 @@ IMPL-YAML_CONFIG:
   description: YAML Configuration Structure
   detail_file: implementation-decisions/IMPL-YAML_CONFIG.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: YAML Configuration Structure
   source_index: implementation-decisions.yaml
   status: Active
@@ -2077,8 +2077,8 @@ PROC-BUILD_PIPELINE_VALIDATION:
   description: Build/deploy validation tied to REQ-MODULE_VALIDATION
   detail_file: null
   metadata:
-    last_updated: 2026-02-08T00:00:00.000Z
-    registered: 2025-11-08T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Build Pipeline Validation Process
   source_index: processes.md
   status: Active
@@ -2089,8 +2089,8 @@ PROC-COMMIT_MESSAGES:
   description: Consistent commit message format (type/scope/subject, body, footer); optional TIED token references for traceability
   detail_file: null
   metadata:
-    last_updated: 2026-03-03T00:00:00.000Z
-    registered: 2026-03-03T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Commit message format and guidelines
   source_index: processes.md
   status: Active
@@ -2101,8 +2101,8 @@ PROC-IMPL_PSEUDOCODE_TOKENS:
   description: Every block in IMPL essence_pseudocode must have a comment naming REQ/ARCH/IMPL and how the block implements them; primary mechanism for implementation traceability
   detail_file: null
   metadata:
-    last_updated: 2026-03-05T00:00:00.000Z
-    registered: 2026-03-05T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: IMPL pseudo-code semantic token comments (most critical)
   source_index: processes.md
   status: Active
@@ -2114,8 +2114,8 @@ PROC-PROJECT_SURVEY_AND_SETUP:
   description: Survey and readiness process supporting REQ-TIED_SETUP and ARCH-TIED_STRUCTURE
   detail_file: null
   metadata:
-    last_updated: 2026-02-08T00:00:00.000Z
-    registered: 2025-11-08T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Project Survey and Setup Process
   source_index: processes.md
   status: Active
@@ -2126,8 +2126,8 @@ PROC-RELEASE:
   description: Version numbering (major/minor/patch/build) for releases
   detail_file: null
   metadata:
-    last_updated: 2026-03-03T00:00:00.000Z
-    registered: 2026-03-03T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Release and version numbering
   source_index: processes.md
   status: Active
@@ -2139,8 +2139,8 @@ PROC-TEST_STRATEGY:
   description: Minimize code not covered by tests; unit/integration cover IMPL/ARCH/REQ logic; E2E reserved for critical journeys
   detail_file: null
   metadata:
-    last_updated: 2026-03-01T00:00:00.000Z
-    registered: 2026-03-01T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Test Strategy and Coverage (minimize untested code)
   source_index: processes.md
   status: Active
@@ -2156,8 +2156,8 @@ PROC-TIED_DEV_CYCLE:
   description: 'Session workflow: plan from TIED, author pseudo-code and tokens, add/align tests, implement (TDD), minimal glue, validate, sync TIED to code'
   detail_file: null
   metadata:
-    last_updated: 2026-03-05T00:00:00.000Z
-    registered: 2026-03-01T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: TIED Development Cycle (session workflow)
   source_index: processes.md
   status: Active
@@ -2170,8 +2170,8 @@ PROC-TIED_METHODOLOGY_READONLY:
   description: Methodology YAML (tied/methodology/) is read-only in client; project YAML (tied/ root) holds client data only; refresh methodology via copy_files.sh
   detail_file: null
   metadata:
-    last_updated: 2026-03-16T00:00:00.000Z
-    registered: 2026-03-16T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: TIED-sourced YAML read-only in client
   source_index: processes.md
   status: Active
@@ -2181,8 +2181,8 @@ PROC-TOKEN_AUDIT:
   description: Mandatory checklist ensuring every requirement → architecture → implementation → code/test path is annotated and documented
   detail_file: null
   metadata:
-    last_updated: 2026-02-08T00:00:00.000Z
-    registered: 2025-11-08T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Token Audit Process
   source_index: processes.md
   status: Active
@@ -2192,8 +2192,8 @@ PROC-TOKEN_VALIDATION:
   description: Automated validation workflow that proves all referenced tokens exist in the registry
   detail_file: null
   metadata:
-    last_updated: 2026-02-08T00:00:00.000Z
-    registered: 2025-11-08T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Token Validation Process
   source_index: processes.md
   status: Active
@@ -2205,8 +2205,8 @@ PROC-YAML_DB_OPERATIONS:
   description: YAML database operations for reading, writing, querying, and validating YAML index files
   detail_file: null
   metadata:
-    last_updated: 2026-02-08T00:00:00.000Z
-    registered: 2025-11-08T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: YAML Database Operations Process
   source_index: processes.md
   status: Active
@@ -2219,8 +2219,8 @@ REQ-ACCESSIBILITY:
   description: Semantic HTML and Accessibility
   detail_file: requirements/REQ-ACCESSIBILITY.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Semantic HTML and Accessibility
   source_index: requirements.yaml
   status: Implemented
@@ -2233,8 +2233,8 @@ REQ-ADVANCED_NAV:
   description: Advanced Navigation Features
   detail_file: requirements/REQ-ADVANCED_NAV.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Advanced Navigation Features
   source_index: requirements.yaml
   status: Implemented
@@ -2249,8 +2249,8 @@ REQ-APP_STRUCTURE:
   description: Next.js App Router Application Structure
   detail_file: requirements/REQ-APP_STRUCTURE.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Next.js App Router Application Structure
   source_index: requirements.yaml
   status: Implemented
@@ -2264,8 +2264,8 @@ REQ-BRANDING:
   description: Site config branding.logo metadata and dark-mode invert contract
   detail_file: requirements/REQ-BRANDING.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Site Branding Configuration
   source_index: requirements.yaml
   status: Implemented
@@ -2280,8 +2280,8 @@ REQ-BUILD_SYSTEM:
   description: Next.js Build, Development, and Testing Scripts
   detail_file: requirements/REQ-BUILD_SYSTEM.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Next.js Build, Development, and Testing Scripts
   source_index: requirements.yaml
   status: Implemented
@@ -2294,8 +2294,8 @@ REQ-BULK_FILE_OPS:
   description: Bulk File Operations on Marked Files
   detail_file: requirements/REQ-BULK_FILE_OPS.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Bulk File Operations on Marked Files
   source_index: requirements.yaml
   status: Active
@@ -2307,8 +2307,8 @@ REQ-COMPARE_METHODS:
   description: Support multiple comparison methods (size, mtime, hash) to skip unchanged files during sync
   detail_file: requirements/REQ-COMPARE_METHODS.yaml
   metadata:
-    last_updated: 2026-02-09T00:00:00.000Z
-    registered: 2026-02-09T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: File Comparison Methods
   source_index: requirements.yaml
   status: Implemented
@@ -2323,8 +2323,8 @@ REQ-CONFIG_DRIVEN_APPEARANCE:
   description: File manager UI copy, layout, icons, and site metadata from YAML (jobs scope retired)
   detail_file: requirements/REQ-CONFIG_DRIVEN_APPEARANCE.yaml
   metadata:
-    last_updated: "2026-05-29"
-    registered: "2025-11-08"
+    last_updated: '2026-05-29'
+    registered: '2025-11-08'
   name: File Manager Appearance and Layout from Config
   source_index: requirements.yaml
   status: Implemented
@@ -2338,8 +2338,8 @@ REQ-CONFIG_DRIVEN_FILE_MANAGER:
   description: Configuration-Driven File Manager UI
   detail_file: requirements/REQ-CONFIG_DRIVEN_FILE_MANAGER.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Configuration-Driven File Manager UI
   source_index: requirements.yaml
   status: Implemented
@@ -2357,8 +2357,8 @@ REQ-CONFIG_DRIVEN_UI:
   description: Configuration-Driven UI
   detail_file: requirements/REQ-CONFIG_DRIVEN_UI.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Configuration-Driven UI
   source_index: requirements.yaml
   status: Implemented
@@ -2373,7 +2373,7 @@ REQ-COPY_OPERATIONS:
   metadata:
     created:
       author: migration
-      date: "2026-02-09"
+      date: '2026-02-09'
   name: Copy Operations Preserve File Attributes
   source_index: requirements.yaml
   status: Active
@@ -2387,8 +2387,8 @@ REQ-CROSS_PANE_COMPARISON:
   description: Cross-Pane File Comparison
   detail_file: requirements/REQ-CROSS_PANE_COMPARISON.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Cross-Pane File Comparison
   source_index: requirements.yaml
   status: Implemented
@@ -2401,8 +2401,8 @@ REQ-CROSS_PANE_VISIBILITY:
     - IMPL-CROSS_PANE_VISIBILITY_UI
   detail_file: requirements/REQ-CROSS_PANE_VISIBILITY.yaml
   metadata:
-    last_updated: "2026-05-23T00:00:00.000Z"
-    registered: "2026-05-23T00:00:00.000Z"
+    last_updated: '2026-05-23T00:00:00.000Z'
+    registered: '2026-05-23T00:00:00.000Z'
   name: Cross-Pane Visibility Filters
   source_index: requirements.yaml
   status: Planned
@@ -2415,8 +2415,8 @@ REQ-DARK_MODE:
   description: Dark Mode Theme Support
   detail_file: requirements/REQ-DARK_MODE.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Dark Mode Theme Support
   source_index: requirements.yaml
   status: Implemented
@@ -2431,8 +2431,8 @@ REQ-DIRECTORY_NAVIGATION:
   description: Server Filesystem Directory Navigation
   detail_file: requirements/REQ-DIRECTORY_NAVIGATION.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Server Filesystem Directory Navigation
   source_index: requirements.yaml
   status: Implemented
@@ -2449,8 +2449,8 @@ REQ-DIRECTORY_TREE:
   description: Lazy hierarchical tree listing under each pane base directory
   detail_file: requirements/REQ-DIRECTORY_TREE.yaml
   metadata:
-    last_updated: "2026-06-01"
-    registered: "2026-06-01"
+    last_updated: '2026-06-01'
+    registered: '2026-06-01'
   name: Directory Tree Listing
   source_index: requirements.yaml
   status: Planned
@@ -2463,8 +2463,8 @@ REQ-ERROR_HANDLING:
   description: Root-Level Error Boundary
   detail_file: requirements/REQ-ERROR_HANDLING.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Root-Level Error Boundary
   source_index: requirements.yaml
   status: Implemented
@@ -2477,8 +2477,8 @@ REQ-FEEDBACK_TO_TIED:
   description: Index stub; optional feedback tooling; see checklist when building
   detail_file: null
   metadata:
-    last_updated: 2026-04-21T00:00:00.000Z
-    registered: 2026-03-03T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Feedback to TIED (Feature Requests, Bug Reports, Methodology)
   source_index: requirements.yaml
   status: Active
@@ -2491,8 +2491,8 @@ REQ-FILE_COMPARISON_VISUAL:
   description: Visual Cross-Pane File Comparison
   detail_file: requirements/REQ-FILE_COMPARISON_VISUAL.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Visual Cross-Pane File Comparison
   source_index: requirements.yaml
   status: Implemented
@@ -2506,8 +2506,8 @@ REQ-FILE_LISTING:
   description: File Listing Display
   detail_file: requirements/REQ-FILE_LISTING.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: File Listing Display
   source_index: requirements.yaml
   status: Implemented
@@ -2520,8 +2520,8 @@ REQ-FILE_MANAGER_PAGE:
   description: Multi-Pane File Manager Page
   detail_file: requirements/REQ-FILE_MANAGER_PAGE.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Multi-Pane File Manager Page
   source_index: requirements.yaml
   status: Implemented
@@ -2534,8 +2534,8 @@ REQ-FILE_MARKING_WEB:
   description: Web-Based File Marking for Batch Operations
   detail_file: requirements/REQ-FILE_MARKING_WEB.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Web-Based File Marking for Batch Operations
   source_index: requirements.yaml
   status: Active
@@ -2550,8 +2550,8 @@ REQ-FILE_OPERATIONS:
   description: File Copy, Move, Rename, Delete Operations
   detail_file: requirements/REQ-FILE_OPERATIONS.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: File Copy, Move, Rename, Delete Operations
   source_index: requirements.yaml
   status: Implemented
@@ -2564,8 +2564,8 @@ REQ-FILE_PREVIEW:
   description: File Preview Panel
   detail_file: requirements/REQ-FILE_PREVIEW.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: File Preview Panel
   source_index: requirements.yaml
   status: Implemented
@@ -2578,8 +2578,8 @@ REQ-FILE_SEARCH:
   description: File Search and Filtering
   detail_file: requirements/REQ-FILE_SEARCH.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: File Search and Filtering
   source_index: requirements.yaml
   status: Implemented
@@ -2592,8 +2592,8 @@ REQ-FILE_SORTING_ADVANCED:
   description: Advanced Multi-Criteria File Sorting
   detail_file: requirements/REQ-FILE_SORTING_ADVANCED.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Advanced Multi-Criteria File Sorting
   source_index: requirements.yaml
   status: Implemented
@@ -2606,8 +2606,8 @@ REQ-FILES_CONFIG_COMPLETE:
   description: Complete File Manager Configuration
   detail_file: requirements/REQ-FILES_CONFIG_COMPLETE.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Complete File Manager Configuration
   source_index: requirements.yaml
   status: Implemented
@@ -2620,8 +2620,8 @@ REQ-FILES_PERFORMANCE:
   description: File Manager Performance Optimization
   detail_file: requirements/REQ-FILES_PERFORMANCE.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: File Manager Performance Optimization
   source_index: requirements.yaml
   status: Planned
@@ -2635,8 +2635,8 @@ REQ-FONT_SYSTEM:
   description: Custom Font Loading System
   detail_file: requirements/REQ-FONT_SYSTEM.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Custom Font Loading System
   source_index: requirements.yaml
   status: Implemented
@@ -2649,8 +2649,8 @@ REQ-GLOBAL_STYLES:
   description: Global CSS with Theme Variables
   detail_file: requirements/REQ-GLOBAL_STYLES.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Global CSS with Theme Variables
   source_index: requirements.yaml
   status: Implemented
@@ -2663,8 +2663,8 @@ REQ-HASH_COMPUTATION:
   description: Compute file hashes using BLAKE3, SHA-256, or XXH3 algorithms for comparison and verification
   detail_file: requirements/REQ-HASH_COMPUTATION.yaml
   metadata:
-    last_updated: 2026-02-09T00:00:00.000Z
-    registered: 2026-02-09T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Hash Computation for File Verification
   source_index: requirements.yaml
   status: Implemented
@@ -2677,8 +2677,8 @@ REQ-HOME_PAGE:
   description: Root URL redirects to /files; no welcome home page
   detail_file: requirements/REQ-HOME_PAGE.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Root Entry Redirect
   source_index: requirements.yaml
   status: Implemented
@@ -2692,8 +2692,8 @@ REQ-KEYBOARD_NAVIGATION:
   description: Keyboard-Driven Navigation
   detail_file: requirements/REQ-KEYBOARD_NAVIGATION.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Keyboard-Driven Navigation
   source_index: requirements.yaml
   status: Implemented
@@ -2706,8 +2706,8 @@ REQ-KEYBOARD_SHORTCUTS_COMPLETE:
   description: Comprehensive Keyboard Shortcut System
   detail_file: requirements/REQ-KEYBOARD_SHORTCUTS_COMPLETE.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Comprehensive Keyboard Shortcut System
   source_index: requirements.yaml
   status: Implemented
@@ -2720,8 +2720,8 @@ REQ-LINKED_PANES:
   description: Linked Pane Navigation
   detail_file: requirements/REQ-LINKED_PANES.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Linked Pane Navigation
   source_index: requirements.yaml
   status: Implemented
@@ -2734,8 +2734,8 @@ REQ-LOGGING_CONFIG:
   description: Configurable Logging Behavior
   detail_file: requirements/REQ-LOGGING_CONFIG.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Configurable Logging Behavior
   source_index: requirements.yaml
   status: Implemented
@@ -2748,8 +2748,8 @@ REQ-LOGGING_SEMANTIC_TOKENS:
   description: Semantic Token Integration in Logs
   detail_file: requirements/REQ-LOGGING_SEMANTIC_TOKENS.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Semantic Token Integration in Logs
   source_index: requirements.yaml
   status: Implemented
@@ -2762,8 +2762,8 @@ REQ-LOGGING_SYSTEM:
   description: Session-Based Logging System
   detail_file: requirements/REQ-LOGGING_SYSTEM.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Session-Based Logging System
   source_index: requirements.yaml
   status: Implemented
@@ -2774,8 +2774,8 @@ REQ-MESH_API:
     - REQ-MESH_PLATFORM
   detail_file: requirements/REQ-MESH_API.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Management API
   source_index: requirements.yaml
   status: Implemented
@@ -2786,8 +2786,8 @@ REQ-MESH_AUTH:
     - REQ-MESH_PLATFORM
   detail_file: requirements/REQ-MESH_AUTH.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Authorization
   source_index: requirements.yaml
   status: Implemented
@@ -2800,8 +2800,8 @@ REQ-MESH_CRUD:
   description: Mesh lifecycle CRUD service
   detail_file: requirements/REQ-MESH_CRUD.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh CRUD Unit Logic
   source_index: requirements.yaml
   status: Implemented
@@ -2815,8 +2815,8 @@ REQ-MESH_DOMAIN_MODEL:
   description: Phase 1 domain types, validation, serialization for mesh sync
   detail_file: requirements/REQ-MESH_DOMAIN_MODEL.yaml
   metadata:
-    last_updated: "2026-05-19T20:15:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T20:15:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Domain Language and Core Types
   source_index: requirements.yaml
   status: Implemented
@@ -2827,8 +2827,8 @@ REQ-MESH_E2E_RELEASE:
     - REQ-MESH_GUI
   detail_file: requirements/REQ-MESH_E2E_RELEASE.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh E2E Release Validation
   source_index: requirements.yaml
   status: Implemented
@@ -2839,8 +2839,8 @@ REQ-MESH_GUI:
     - REQ-MESH_API
   detail_file: requirements/REQ-MESH_GUI.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Web GUI
   source_index: requirements.yaml
   status: Implemented
@@ -2851,8 +2851,8 @@ REQ-MESH_HARDENING:
     - REQ-MESH_PLATFORM
   detail_file: requirements/REQ-MESH_HARDENING.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Executor Hardening
   source_index: requirements.yaml
   status: Implemented
@@ -2863,8 +2863,8 @@ REQ-MESH_IMPORT_EXPORT:
     - REQ-MESH_PLATFORM
   detail_file: requirements/REQ-MESH_IMPORT_EXPORT.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Import Export
   source_index: requirements.yaml
   status: Implemented
@@ -2875,8 +2875,8 @@ REQ-MESH_MONITORING:
     - REQ-MESH_PLATFORM
   detail_file: requirements/REQ-MESH_MONITORING.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Operational Monitoring
   source_index: requirements.yaml
   status: Implemented
@@ -2888,8 +2888,8 @@ REQ-MESH_PLATFORM:
   description: Umbrella REQ for mesh sync program (deploy mesh)
   detail_file: requirements/REQ-MESH_PLATFORM.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Sync Platform
   source_index: requirements.yaml
   status: Planned
@@ -2900,8 +2900,8 @@ REQ-MESH_REAL_CONNECTORS:
     - REQ-MESH_E2E_RELEASE
   detail_file: requirements/REQ-MESH_REAL_CONNECTORS.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Real Filesystem Connectors
   source_index: requirements.yaml
   status: Implemented
@@ -2912,8 +2912,8 @@ REQ-MESH_SAFETY:
     - REQ-MESH_PLATFORM
   detail_file: requirements/REQ-MESH_SAFETY.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Safety Guardrails
   source_index: requirements.yaml
   status: Implemented
@@ -2924,8 +2924,8 @@ REQ-MESH_SCHEDULE:
     - REQ-MESH_PLATFORM
   detail_file: requirements/REQ-MESH_SCHEDULE.yaml
   metadata:
-    last_updated: "2026-05-19T00:00:00.000Z"
-    registered: "2026-05-19T00:00:00.000Z"
+    last_updated: '2026-05-19T00:00:00.000Z'
+    registered: '2026-05-19T00:00:00.000Z'
   name: Mesh Sync Scheduling
   source_index: requirements.yaml
   status: Implemented
@@ -2938,8 +2938,8 @@ REQ-METADATA:
   description: Page Metadata Configuration
   detail_file: requirements/REQ-METADATA.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Page Metadata Configuration
   source_index: requirements.yaml
   status: Implemented
@@ -2952,8 +2952,8 @@ REQ-MODULE_VALIDATION:
   description: Index stub; procedure in agent-req-implementation-checklist.yaml
   detail_file: null
   metadata:
-    last_updated: 2026-04-21T00:00:00.000Z
-    registered: 2025-01-27T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Independent Module Validation Before Integration
   source_index: requirements.yaml
   status: Active
@@ -2966,8 +2966,8 @@ REQ-MOUSE_INTERACTION:
   description: Mouse and Touch Interaction
   detail_file: requirements/REQ-MOUSE_INTERACTION.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Mouse and Touch Interaction
   source_index: requirements.yaml
   status: Implemented
@@ -2979,8 +2979,8 @@ REQ-MOVE_SEMANTICS:
   description: Move files safely by deleting source only after ALL destinations succeed
   detail_file: requirements/REQ-MOVE_SEMANTICS.yaml
   metadata:
-    last_updated: 2026-02-09T00:00:00.000Z
-    registered: 2026-02-09T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Safe Move Semantics
   source_index: requirements.yaml
   status: Implemented
@@ -2994,8 +2994,8 @@ REQ-MULTI_PANE_LAYOUT:
   description: Multiple Pane Layout Algorithms
   detail_file: requirements/REQ-MULTI_PANE_LAYOUT.yaml
   metadata:
-    last_updated: "2026-02-07"
-    registered: "2026-02-07"
+    last_updated: '2026-02-07'
+    registered: '2026-02-07'
   name: Multiple Pane Layout Algorithms
   source_index: requirements.yaml
   status: Implemented
@@ -3009,8 +3009,8 @@ REQ-NAVIGATION_LINKS:
   description: NewTabLink target/rel/a11y; config navigation.security; cross-surface mesh routes
   detail_file: requirements/REQ-NAVIGATION_LINKS.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Secure New-Tab Navigation Links
   source_index: requirements.yaml
   status: Implemented
@@ -3023,8 +3023,8 @@ REQ-NSYNC_MULTI_TARGET:
   description: Sync files from source(s) to multiple destinations in parallel with progress tracking and error handling
   detail_file: requirements/REQ-NSYNC_MULTI_TARGET.yaml
   metadata:
-    last_updated: 2026-02-09T00:00:00.000Z
-    registered: 2026-02-09T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Multi-Destination File Synchronization
   source_index: requirements.yaml
   status: Implemented
@@ -3043,8 +3043,8 @@ REQ-PANE_DISPLAY_FILTER:
     - IMPL-PANE_DISPLAY_FILTER_UI
   detail_file: requirements/REQ-PANE_DISPLAY_FILTER.yaml
   metadata:
-    last_updated: "2026-05-22T00:00:00.000Z"
-    registered: "2026-05-22T00:00:00.000Z"
+    last_updated: '2026-05-22T00:00:00.000Z'
+    registered: '2026-05-22T00:00:00.000Z'
   name: Pane Display Filter Specs
   source_index: requirements.yaml
   status: Implemented
@@ -3057,8 +3057,8 @@ REQ-PANE_REFRESH:
   description: Manual Pane Refresh
   detail_file: requirements/REQ-PANE_REFRESH.yaml
   metadata:
-    last_updated: "2026-02-08"
-    registered: "2026-02-08"
+    last_updated: '2026-02-08'
+    registered: '2026-02-08'
   name: Manual Pane Refresh
   source_index: requirements.yaml
   status: Implemented
@@ -3071,13 +3071,13 @@ REQ-REACT_SSR_STABILITY:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Documented fixes for duplicate keys, SSR localStorage errors, and keybinding timing
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: React SSR Stability and Correctness
@@ -3091,8 +3091,8 @@ REQ-README_DEMO_AUTOMATION:
     - REQ-NSYNC_MULTI_TARGET
   detail_file: requirements/REQ-README_DEMO_AUTOMATION.yaml
   metadata:
-    last_updated: "2026-05-30T00:00:00.000Z"
-    registered: "2026-05-30T00:00:00.000Z"
+    last_updated: '2026-05-30T00:00:00.000Z'
+    registered: '2026-05-30T00:00:00.000Z'
   name: README Demo Screenshot Automation
   source_index: requirements.yaml
   status: Implemented
@@ -3105,8 +3105,8 @@ REQ-RESPONSIVE_DESIGN:
   description: Responsive Layout Design
   detail_file: requirements/REQ-RESPONSIVE_DESIGN.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Responsive Layout Design
   source_index: requirements.yaml
   status: Implemented
@@ -3119,8 +3119,8 @@ REQ-ROOT_LAYOUT:
   description: Root Layout with HTML Structure
   detail_file: requirements/REQ-ROOT_LAYOUT.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Root Layout with HTML Structure
   source_index: requirements.yaml
   status: Implemented
@@ -3132,8 +3132,8 @@ REQ-STORE_FAILURE_DETECT:
   description: Detect external drive or network share failures through error streak tracking
   detail_file: requirements/REQ-STORE_FAILURE_DETECT.yaml
   metadata:
-    last_updated: 2026-02-09T00:00:00.000Z
-    registered: 2026-02-09T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Store Failure Detection
   source_index: requirements.yaml
   status: Implemented
@@ -3146,8 +3146,8 @@ REQ-TAILWIND_STYLING:
   description: Tailwind CSS Styling System
   detail_file: requirements/REQ-TAILWIND_STYLING.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: Tailwind CSS Styling System
   source_index: requirements.yaml
   status: Implemented
@@ -3160,8 +3160,8 @@ REQ-TIED_SETUP:
   description: Index stub; procedure in agent-req-implementation-checklist.yaml
   detail_file: null
   metadata:
-    last_updated: 2026-04-21T00:00:00.000Z
-    registered: 2025-11-08T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: TIED Methodology Setup
   source_index: requirements.yaml
   status: Active
@@ -3175,8 +3175,8 @@ REQ-TOOLBAR_CONFIG:
   description: YAML-based configuration system for toolbar behavior, appearance, and content
   detail_file: requirements/REQ-TOOLBAR_CONFIG.yaml
   metadata:
-    last_updated: 2026-02-08T00:00:00.000Z
-    registered: 2026-02-08T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Configuration-Driven Toolbar Customization
   source_index: requirements.yaml
   status: Planned
@@ -3190,8 +3190,8 @@ REQ-TOOLBAR_SYSTEM:
   description: Visual toolbar system providing discoverable access to all file manager operations
   detail_file: requirements/REQ-TOOLBAR_SYSTEM.yaml
   metadata:
-    last_updated: 2026-02-08T00:00:00.000Z
-    registered: 2026-02-08T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: File Manager Toolbar System
   source_index: requirements.yaml
   status: Implemented
@@ -3207,8 +3207,8 @@ REQ-TYPESCRIPT:
   description: TypeScript Type Safety
   detail_file: requirements/REQ-TYPESCRIPT.yaml
   metadata:
-    last_updated: "2026-02-06"
-    registered: "2025-11-08"
+    last_updated: '2026-02-06'
+    registered: '2025-11-08'
   name: TypeScript Type Safety
   source_index: requirements.yaml
   status: Implemented
@@ -3221,8 +3221,8 @@ REQ-VERIFY_DEST:
   description: Optional verification of copied files by recomputing destination hash and comparing to source
   detail_file: requirements/REQ-VERIFY_DEST.yaml
   metadata:
-    last_updated: 2026-02-09T00:00:00.000Z
-    registered: 2026-02-09T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Destination Verification by Hash
   source_index: requirements.yaml
   status: Implemented
@@ -3235,8 +3235,8 @@ REQ-WORKSPACE_MESH_BRIDGE:
     - REQ-MULTI_PANE_LAYOUT
   detail_file: requirements/REQ-WORKSPACE_MESH_BRIDGE.yaml
   metadata:
-    last_updated: "2026-05-21T00:00:00.000Z"
-    registered: "2026-05-21T00:00:00.000Z"
+    last_updated: '2026-05-21T00:00:00.000Z'
+    registered: '2026-05-21T00:00:00.000Z'
   name: Workspace Mesh Bridge
   source_index: requirements.yaml
   status: Implemented

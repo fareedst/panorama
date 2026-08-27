@@ -1,45 +1,45 @@
 IMPL-SORT_FILTER:
   code_locations:
     files:
-      - path: src/lib/files.utils.ts
-        description: sortFiles, PaneSortSettings, paneSortSettingsEqual
+      - description: Share/Shared workspace sort actions
         lines: []
-      - path: src/app/files/components/SortDialog.tsx
-        description: Share/Shared workspace sort actions
+        path: src/app/files/components/SortDialog.tsx
+      - description: sharedSort state, handleSortChange singlePaneOnly
         lines: []
-      - path: src/app/files/WorkspaceView.tsx
-        description: sharedSort state, handleSortChange singlePaneOnly
+        path: src/app/files/WorkspaceView.tsx
+      - description: sortFiles, PaneSortSettings, paneSortSettingsEqual
         lines: []
+        path: src/lib/files.utils.ts
     functions:
-      - name: sortFiles
-        description: Main sort function with criteria dispatch
+      - description: Equality for Share/Shared button disable
         file: src/lib/files.utils.ts
-      - name: paneSortSettingsEqual
-        description: Equality for Share/Shared button disable
+        name: paneSortSettingsEqual
+      - description: Main sort function with criteria dispatch
         file: src/lib/files.utils.ts
+        name: sortFiles
   cross_references:
     - REQ-FILE_SORTING_ADVANCED
   decision: Sort functions in files.utils.ts with comparator dispatch
   implementation_approach:
     details:
       - 'Comparators: byName, bySize, byTime, byExtension'
-      - 'Directory priority: if (dirsFirst && a.isDir !== b.isDir)'
-      - 'SharedSortWorkspace: Share updates sharedSort; Shared applies to focused pane via singlePaneOnly'
       - Cursor preservation via filename match after sort
+      - 'Directory priority: if (dirsFirst && a.isDir !== b.isDir)'
       - New panes inherit sharedSort not focused pane sort
       - PaneSortSettings, DEFAULT_PANE_SORT, paneSortSettingsEqual for Shared/Share disable logic
+      - 'SharedSortWorkspace: Share updates sharedSort; Shared applies to focused pane via singlePaneOnly'
       - sortFiles(files, sortBy, ascending, dirsFirst)
     summary: Sort functions in files.utils.ts with comparator dispatch; workspace sharedSort Share/Shared in SortDialog
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit traceability for sort pseudo-code alignment
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Client-Side Sort and Filter Functions

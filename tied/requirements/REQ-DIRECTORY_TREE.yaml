@@ -42,9 +42,9 @@ REQ-DIRECTORY_TREE:
       - IMPL-FILE_PANE
       - IMPL-WORKSPACE_VIEW
   validation_criteria:
-    - method: Unit tests
-      coverage: file-tree.ts flatten, toggle, reconcile
-    - method: Component tests
-      coverage: FilePane expand/collapse UI
-    - method: Integration tests
-      coverage: WorkspaceView handleToggleExpand, bulk ops multi-dir sources
+    - coverage: FilePane expand/collapse UI
+      method: Component tests
+    - coverage: WorkspaceView handleToggleExpand, bulk ops multi-dir sources
+      method: Integration tests
+    - coverage: file-tree.ts flatten, toggle, reconcile
+      method: Unit tests

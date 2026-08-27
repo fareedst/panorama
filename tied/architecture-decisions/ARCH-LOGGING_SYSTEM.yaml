@@ -1,28 +1,27 @@
-# ARCH detail — ARCH-LOGGING_SYSTEM
 ARCH-LOGGING_SYSTEM:
   alternatives_considered:
-    - name: Console-only logging
-      cons:
+    - cons:
         - Cannot analyze historical data
         - Ephemeral, lost after session
+      name: Console-only logging
       pros:
         - No file management
         - Simple to implement
       rejected_reason: Does not meet requirement for debugging facilitation
-    - name: Database logging
-      cons:
+    - cons:
         - Overkill for simple debugging
         - Performance overhead
         - Requires database setup
+      name: Database logging
       pros:
         - Queryable logs
         - Structured data
       rejected_reason: Too complex for initial implementation
-    - name: External logging service
-      cons:
+    - cons:
         - Cost
         - External dependency
         - Privacy concerns
+      name: External logging service
       pros:
         - Advanced features
         - Professional solution
@@ -32,23 +31,23 @@ ARCH-LOGGING_SYSTEM:
   decision: Write timestamped log files to OS temp directory with six log levels
   implementation_approach:
     details:
+      - Buffered writes for performance (non-fatal)
       - 'Filename format: nx1-log-YYYY-MM-DD-HH-mm-ss-SSS.log'
       - 'Format: [TIMESTAMP] [LEVEL] [TOKENS] message'
       - 'Log levels: FATAL (0), ERROR (1), WARN (2), INFO (3), DEBUG (4), TRACE (5)'
-      - Buffered writes for performance (non-fatal)
       - Synchronous writes for reliability (fatal errors)
       - Use Node.js os.tmpdir() for temporary directory
     summary: Write timestamped log files to OS temp directory with six log levels
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Session-Based File Logging Architecture

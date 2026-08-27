@@ -4,7 +4,7 @@ REQ-MESH_REAL_CONNECTORS:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
   name: Mesh Real Filesystem Connectors
   priority: P1
   related_requirements:
@@ -31,11 +31,11 @@ REQ-MESH_REAL_CONNECTORS:
       - src/lib/mesh/connector/remote-connector.test.ts
       - src/lib/mesh/connector/virtual-connector.test.ts
   validation_criteria:
-    - method: Vitest
-      coverage: src/lib/mesh/connector/local-filesystem-connector.test.ts
-    - method: Vitest
-      coverage: src/lib/mesh/connector/remote-connector.test.ts
-    - method: Vitest
-      coverage: src/lib/mesh/connector/virtual-connector.test.ts
-    - method: Playwright
-      coverage: e2e/mesh-sync.spec.ts
+    - coverage: e2e/mesh-sync.spec.ts
+      method: Playwright
+    - coverage: src/lib/mesh/connector/local-filesystem-connector.test.ts
+      method: Vitest
+    - coverage: src/lib/mesh/connector/remote-connector.test.ts
+      method: Vitest
+    - coverage: src/lib/mesh/connector/virtual-connector.test.ts
+      method: Vitest

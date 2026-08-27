@@ -4,13 +4,13 @@ REQ-MOUSE_INTERACTION:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-06-01T00:00:00.000Z"
+      date: '2026-06-01T00:00:00.000Z'
       reason: LEAP — double-click toggles tree expand not re-root
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass - 554 tests passing, production build successful
       validator: AI Agent
   name: Mouse and Touch Interaction
@@ -85,13 +85,13 @@ REQ-MOUSE_INTERACTION:
       - src/lib/set-base-directory.test.ts
       - src/lib/touch-file.test.ts
   validation_criteria:
-    - method: Unit tests
-      coverage: file-column-clipboard.ts and set-base-directory.ts
-    - method: Component tests
-      coverage: ContextMenu, SetBaseDirectoryDialog with nine targets and SetBaseDirectoryTargetIcon, FileColumnContextMenu standalone
-    - method: Composition tests
-      coverage: FilePane unified menu; WorkspaceView set-base-directory including newPane and appendPaneAtPath
-    - method: Integration tests
-      coverage: Mouse event handling
-    - method: UI tests
-      coverage: Context menu display and actions
+    - coverage: ContextMenu, SetBaseDirectoryDialog with nine targets and SetBaseDirectoryTargetIcon, FileColumnContextMenu standalone
+      method: Component tests
+    - coverage: FilePane unified menu; WorkspaceView set-base-directory including newPane and appendPaneAtPath
+      method: Composition tests
+    - coverage: Mouse event handling
+      method: Integration tests
+    - coverage: Context menu display and actions
+      method: UI tests
+    - coverage: file-column-clipboard.ts and set-base-directory.ts
+      method: Unit tests

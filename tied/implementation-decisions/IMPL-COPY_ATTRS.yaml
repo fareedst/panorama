@@ -1,12 +1,12 @@
 IMPL-COPY_ATTRS:
   code_locations:
     files:
-      - path: src/lib/copyAttributes.ts
-        description: preserveCopyAttributes() helper
-      - path: src/lib/sync/operations.ts
-        description: Called after copy completes
-      - path: src/lib/files.data.ts
-        description: Called after copy completes
+      - description: Called after copy completes
+        path: src/lib/files.data.ts
+      - description: Called after copy completes
+        path: src/lib/sync/operations.ts
+      - description: preserveCopyAttributes() helper
+        path: src/lib/copyAttributes.ts
   cross_references:
     - IMPL-FILES_DATA
     - IMPL-NSYNC_OPERATIONS
@@ -18,10 +18,10 @@ IMPL-COPY_ATTRS:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-06-02T00:00:00.000Z"
+      date: '2026-06-02T00:00:00.000Z'
       reason: 'LEAP: files.data copy path attribute preservation tests'
   name: Copy Preserve File Attributes
   rationale:

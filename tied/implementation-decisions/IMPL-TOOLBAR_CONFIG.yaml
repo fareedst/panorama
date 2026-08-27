@@ -1,15 +1,15 @@
 IMPL-TOOLBAR_CONFIG:
   code_locations:
     files:
-      - path: config/files.yaml
-        description: THREE_TIER_TOOLBAR_LAYOUT and TOOLBAR_ACTIONS_META YAML
-      - path: src/lib/config.types.ts
-        description: TOOLBAR_CONFIG_TYPES interfaces
-      - path: src/lib/config.ts
-        description: LOAD_TOOLBARS_FROM_FILES_YAML via getFilesConfig
+      - description: LOAD_TOOLBARS_FROM_FILES_YAML via getFilesConfig
+        path: src/lib/config.ts
+      - description: THREE_TIER_TOOLBAR_LAYOUT and TOOLBAR_ACTIONS_META YAML
+        path: config/files.yaml
+      - description: TOOLBAR_CONFIG_TYPES interfaces
+        path: src/lib/config.types.ts
     functions:
-      - name: getFilesConfig
-        file: src/lib/config.ts
+      - file: src/lib/config.ts
+        name: getFilesConfig
   cross_references:
     - ARCH-TOOLBAR_LAYOUT
     - REQ-TOOLBAR_CONFIG
@@ -24,9 +24,9 @@ IMPL-TOOLBAR_CONFIG:
   metadata:
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit essence_pseudocode from production code
-    registered: 2026-02-08T00:00:00.000Z
+    registered: {}
   name: Toolbar Configuration Loading
   rationale:
     benefits: []

@@ -1,14 +1,14 @@
 IMPL-MESH_API:
   code_locations:
     files:
-      - path: src/lib/mesh/api/mesh-api-helpers.ts
-        description: requirePermission and handleServiceResult
-      - path: src/app/api/mesh/route.ts
-        description: List/create meshes
-      - path: src/app/api/mesh/credentials/route.ts
-        description: Credential reference POST
-      - path: src/app/api/mesh/[meshId]/sessions/route.ts
-        description: Session lifecycle API
+      - description: Credential reference POST
+        path: src/app/api/mesh/credentials/route.ts
+      - description: List/create meshes
+        path: src/app/api/mesh/route.ts
+      - description: requirePermission and handleServiceResult
+        path: src/lib/mesh/api/mesh-api-helpers.ts
+      - description: Session lifecycle API
+        path: src/app/api/mesh/[meshId]/sessions/route.ts
     functions: []
   cross_references:
     - REQ-MESH_API
@@ -19,10 +19,10 @@ IMPL-MESH_API:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit pseudocode and traceability from production/tests
   name: Mesh API Route Handlers
   rationale:

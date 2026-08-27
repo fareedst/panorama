@@ -13,7 +13,7 @@ IMPL-DISPLAY_FILTER_ENGINE:
   metadata:
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit pseudocode and comment alignment per prompts/2026-05-29
   name: Display Filter Engine Implementation
   related_decisions:

@@ -13,13 +13,13 @@ REQ-FILE_SORTING_ADVANCED:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-22T22:00:00.000Z"
+      date: '2026-05-22T22:00:00.000Z'
       reason: LEAP — shared sort Share/Shared and SortDialog tests
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Advanced Multi-Criteria File Sorting
@@ -65,11 +65,11 @@ REQ-FILE_SORTING_ADVANCED:
       - IMPL-SORT_FILTER
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: All sort criteria and directions
-    - method: Unit tests
-      coverage: Directory prioritization behavior
-    - method: Unit tests
-      coverage: SortDialog Share/Shared disable and callback behavior
-    - method: Integration tests
-      coverage: Cursor preservation after sort
+    - coverage: Cursor preservation after sort
+      method: Integration tests
+    - coverage: All sort criteria and directions
+      method: Unit tests
+    - coverage: Directory prioritization behavior
+      method: Unit tests
+    - coverage: SortDialog Share/Shared disable and callback behavior
+      method: Unit tests

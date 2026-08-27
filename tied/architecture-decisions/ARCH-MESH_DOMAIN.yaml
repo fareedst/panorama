@@ -1,8 +1,8 @@
 ARCH-MESH_DOMAIN:
   alternatives_considered:
-    - name: Validation only in tests
-      cons:
+    - cons:
         - No reusable invariants for services
+      name: Validation only in tests
       pros:
         - Minimal code
       rejected_reason: REQ satisfaction requires runtime rejection of invalid objects
@@ -14,18 +14,18 @@ ARCH-MESH_DOMAIN:
     details:
       - 'Depot: requires name, kind enum, root path; optional credentialReferenceId'
       - 'Mesh: requires non-empty name; depots array may be empty'
+      - No import from next, fs, or database clients in domain layer
       - 'On-disk: src/lib/mesh/domain/types.ts, internal.ts, validators.ts, serialize.ts, index.ts; tests validators.test.ts, serialize.test.ts, domain.composition.test.ts'
       - 'Policy: defaults for delete/conflict/retry/verification policies'
       - 'SyncLink: valid sourceDepotId and targetDepotId referencing mesh depots'
-      - No import from next, fs, or database clients in domain layer
     summary: Pure domain package with types, validate*, toDTO/fromDTO
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-19T20:15:00.000Z"
+      date: '2026-05-19T20:15:00.000Z'
       reason: 'sync-tied-stack: traceability.tests and on-disk path notes aligned with IMPL-MESH_DOMAIN_TYPES'
   name: Mesh Pure Domain Module
   rationale:

@@ -1,9 +1,9 @@
 ARCH-LAYOUT_ALGORITHMS:
   alternatives_considered:
-    - name: CSS Grid/Flexbox only
-      cons:
+    - cons:
         - Difficult dynamic layouts
         - Limited layout flexibility
+      name: CSS Grid/Flexbox only
       pros:
         - Native CSS solution
       rejected_reason: Cannot support all Goful layout types
@@ -15,20 +15,20 @@ ARCH-LAYOUT_ALGORITHMS:
       - 'Fullscreen: All panes overlap, only focused visible'
       - 'OneColumn: All panes equal height vertically'
       - 'OneRow: All panes equal width horizontally'
-      - 'Tile: First pane left 50%, others stacked vertically right 50%'
       - Return PaneBounds[] with x, y, width, height for each pane
+      - 'Tile: First pane left 50%, others stacked vertically right 50%'
       - WorkspaceView supplies containerWidth/containerHeight from measured workspace-area client box (not viewport heuristics)
     summary: Pure TypeScript functions calculate absolute pane bounds based on layout type
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-29T00:00:00.000Z"
+      date: '2026-05-29T00:00:00.000Z'
       reason: LEAP — vocabulary see_also back-link
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Multi-Pane Layout Algorithms

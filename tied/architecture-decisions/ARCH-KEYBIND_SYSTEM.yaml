@@ -18,7 +18,7 @@ ARCH-KEYBIND_SYSTEM:
   metadata:
     created:
       author: migration
-      date: "2026-02-07"
+      date: '2026-02-07'
   name: KEYBIND SYSTEM
   rationale:
     benefits: []

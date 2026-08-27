@@ -1,17 +1,16 @@
-# REQ detail — REQ-FILES_CONFIG_COMPLETE
 REQ-FILES_CONFIG_COMPLETE:
   category: Functional
   description: All UI elements must be configurable without code changes
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation - expansion of REQ-CONFIG_DRIVEN_FILE_MANAGER
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Complete File Manager Configuration
@@ -50,7 +49,7 @@ REQ-FILES_CONFIG_COMPLETE:
       - IMPL-FILES_CONFIG_COMPLETE
     tests: []
   validation_criteria:
-    - method: Config tests
-      coverage: Changing config changes UI without code changes
-    - method: Code inspection
-      coverage: No hard-coded user-facing text in components
+    - coverage: No hard-coded user-facing text in components
+      method: Code inspection
+    - coverage: Changing config changes UI without code changes
+      method: Config tests

@@ -1,9 +1,9 @@
 ARCH-FILESYSTEM_ABSTRACTION:
   alternatives_considered:
-    - name: Client-side File System Access API
-      cons:
+    - cons:
         - Limited to user's local files
         - Not server filesystem
+      name: Client-side File System Access API
       pros:
         - Native browser support
       rejected_reason: Requirement is server filesystem browsing
@@ -22,13 +22,13 @@ ARCH-FILESYSTEM_ABSTRACTION:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-06-02T00:00:00.000Z"
+      date: '2026-06-02T00:00:00.000Z'
       reason: 'LEAP: copyFile tests in traceability'
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Server-Side Filesystem Abstraction

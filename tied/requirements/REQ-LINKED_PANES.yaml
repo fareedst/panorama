@@ -4,13 +4,13 @@ REQ-LINKED_PANES:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-06-01T00:00:00.000Z"
+      date: '2026-06-01T00:00:00.000Z'
       reason: LEAP — linked sync on re-root not tree expand
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Linked Pane Navigation
@@ -56,7 +56,7 @@ REQ-LINKED_PANES:
       - src/app/files/components/FileColumnContextMenu.test.tsx
       - src/lib/file-column-clipboard.test.ts
   validation_criteria:
-    - method: Unit tests
-      coverage: Link state management and sync logic
-    - method: Integration tests
-      coverage: Synchronized navigation across panes
+    - coverage: Synchronized navigation across panes
+      method: Integration tests
+    - coverage: Link state management and sync logic
+      method: Unit tests

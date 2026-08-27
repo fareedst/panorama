@@ -1,17 +1,16 @@
-# REQ detail — REQ-STORE_FAILURE_DETECT
 REQ-STORE_FAILURE_DETECT:
   category: Non-Functional
   description: Detect when external drives or network shares become unavailable to avoid wasteful retries
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       result: implemented
       validator: AI Agent
   name: Store Failure Detection
@@ -45,5 +44,5 @@ REQ-STORE_FAILURE_DETECT:
       - IMPL-NSYNC_STORE
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: Error streak tracking, abort logic
+    - coverage: Error streak tracking, abort logic
+      method: Unit tests

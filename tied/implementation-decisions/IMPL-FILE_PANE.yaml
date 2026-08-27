@@ -1,23 +1,23 @@
 IMPL-FILE_PANE:
   code_locations:
     files:
-      - path: src/app/files/components/FilePane.tsx
-        description: File pane component; column context menu wiring
+      - description: File pane component; column context menu wiring
         lines:
           - 1
           - 670
-      - path: src/app/files/components/FilePane.test.tsx
-        description: File pane tests including column context menu
+        path: src/app/files/components/FilePane.tsx
+      - description: File pane tests including column context menu
         lines:
           - 1
           - 680
+        path: src/app/files/components/FilePane.test.tsx
     functions:
-      - name: handleColumnContextMenu
-        description: Column cell right-click handler
+      - description: Attaches onContextMenu to metadata cells
         file: src/app/files/components/FilePane.tsx
-      - name: renderColumn
-        description: Attaches onContextMenu to metadata cells
+        name: renderColumn
+      - description: Column cell right-click handler
         file: src/app/files/components/FilePane.tsx
+        name: handleColumnContextMenu
   cross_references:
     - ARCH-FILE_MANAGER_HIERARCHY
     - IMPL-MOUSE_SUPPORT
@@ -34,13 +34,13 @@ IMPL-FILE_PANE:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: LEAP — unified ContextMenu wiring and set-base
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: File Pane Component

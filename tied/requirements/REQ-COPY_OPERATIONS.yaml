@@ -5,10 +5,10 @@ REQ-COPY_OPERATIONS:
   metadata:
     created:
       author: migration
-      date: "2026-02-09"
+      date: '2026-02-09'
     last_updated:
       author: AI Agent
-      date: "2026-06-02T00:00:00.000Z"
+      date: '2026-06-02T00:00:00.000Z'
       reason: 'LEAP: files.data copy path attribute preservation coverage'
   name: Copy Operations Preserve File Attributes
   priority: P1
@@ -38,7 +38,7 @@ REQ-COPY_OPERATIONS:
       - src/lib/copy-file.data.test.ts
       - src/lib/sync/engine.test.ts
   validation_criteria:
-    - method: Unit tests
-      coverage: sync engine attribute preservation (src/lib/sync/engine.test.ts)
-    - method: Integration tests
-      coverage: copy-file.data.test.ts file copy mtime/atime/mode via files.data copyFile and preserveCopyAttributes
+    - coverage: copy-file.data.test.ts file copy mtime/atime/mode via files.data copyFile and preserveCopyAttributes
+      method: Integration tests
+    - coverage: sync engine attribute preservation (src/lib/sync/engine.test.ts)
+      method: Unit tests

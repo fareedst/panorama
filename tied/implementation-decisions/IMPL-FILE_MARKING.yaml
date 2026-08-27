@@ -1,19 +1,19 @@
 IMPL-FILE_MARKING:
   code_locations:
     files:
-      - path: src/app/files/WorkspaceView.tsx
-        description: Mark state and handlers
+      - description: Checkbox rendering
         lines: []
-      - path: src/app/files/components/FilePane.tsx
-        description: Checkbox rendering
+        path: src/app/files/components/FilePane.tsx
+      - description: Mark state and handlers
         lines: []
+        path: src/app/files/WorkspaceView.tsx
     functions:
-      - name: handleToggleMark
-        description: Toggle mark on specific file
+      - description: Mark all files in pane
         file: src/app/files/WorkspaceView.tsx
-      - name: handleMarkAll
-        description: Mark all files in pane
+        name: handleMarkAll
+      - description: Toggle mark on specific file
         file: src/app/files/WorkspaceView.tsx
+        name: handleToggleMark
   cross_references:
     - ARCH-MARKING_STATE
     - REQ-FILE_MARKING_WEB
@@ -32,13 +32,13 @@ IMPL-FILE_MARKING:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit pseudocode; visible-file mark scope
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: React State Mark Management

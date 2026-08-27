@@ -10,9 +10,9 @@ REQ-MESH_AUTH:
       - src/app/api/mesh/route.auth.test.ts
       - src/lib/mesh/services/authorization-service.test.ts
   validation_criteria:
-    - method: Vitest
-      coverage: src/lib/mesh/services/authorization-service.test.ts
-    - method: Vitest
-      coverage: src/app/api/mesh/route.auth.test.ts
-    - method: Vitest
-      coverage: src/app/api/mesh/credentials.route.test.ts
+    - coverage: src/app/api/mesh/credentials.route.test.ts
+      method: Vitest
+    - coverage: src/app/api/mesh/route.auth.test.ts
+      method: Vitest
+    - coverage: src/lib/mesh/services/authorization-service.test.ts
+      method: Vitest

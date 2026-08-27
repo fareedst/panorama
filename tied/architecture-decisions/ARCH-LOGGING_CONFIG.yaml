@@ -1,21 +1,20 @@
-# ARCH detail — ARCH-LOGGING_CONFIG
 ARCH-LOGGING_CONFIG:
   alternatives_considered:
-    - name: YAML config file
-      cons:
+    - cons:
+        - Not suitable for debugging
+        - Requires rebuild to change
+      name: Hard-coded with build-time flags
+      pros:
+        - No runtime overhead
+      rejected_reason: Too inflexible for debugging use case
+    - cons:
         - Cannot change without restart
         - Requires file deployment
+      name: YAML config file
       pros:
         - Consistent with project patterns
         - Structured configuration
       rejected_reason: Less flexible than environment variables
-    - name: Hard-coded with build-time flags
-      cons:
-        - Not suitable for debugging
-        - Requires rebuild to change
-      pros:
-        - No runtime overhead
-      rejected_reason: Too inflexible for debugging use case
   cross_references:
     - REQ-LOGGING_CONFIG
   decision: Read environment variables with sensible defaults at module initialization
@@ -23,9 +22,9 @@ ARCH-LOGGING_CONFIG:
     details:
       - 'CONSOLE_ERRORS: ''true'' | ''false'' (default: ''true'') - Mirror ERROR/FATAL to console'
       - 'ENABLE_LOGGING: ''true'' | ''false'' (default: ''true'')'
+      - Initialize once at module load
       - 'LOG_DIR: custom directory path (default: os.tmpdir())'
       - 'LOG_LEVEL: ''FATAL'' | ''ERROR'' | ''WARN'' | ''INFO'' | ''DEBUG'' | ''TRACE'' (default: ''INFO'')'
-      - Initialize once at module load
       - Mirror ERROR and FATAL logs to console.error() by default
       - Output log file path to console on initialization
       - Validate environment variables with fallbacks
@@ -33,13 +32,13 @@ ARCH-LOGGING_CONFIG:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Environment-Based Logging Configuration

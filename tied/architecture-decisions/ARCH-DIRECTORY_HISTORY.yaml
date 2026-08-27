@@ -1,15 +1,14 @@
-# ARCH detail — ARCH-DIRECTORY_HISTORY
 ARCH-DIRECTORY_HISTORY:
   alternatives_considered:
-    - name: Index-based history
-      cons:
+    - cons:
         - Breaks when files added/removed
+      name: Index-based history
       pros:
         - Simpler storage (just number)
       rejected_reason: Filename-based more robust
-    - name: localStorage persistence
-      cons:
+    - cons:
         - Complexity, stale data issues
+      name: localStorage persistence
       pros:
         - Survives page refresh
       rejected_reason: Session-only sufficient
@@ -18,21 +17,21 @@ ARCH-DIRECTORY_HISTORY:
   decision: Maintain user context when navigating directory trees using per-directory cursor position history with filename-based restoration that survives file changes.
   implementation_approach:
     details:
-      - 'Parent navigation: search for previous dir name in parent list'
       - LRU cache for recent directories (last 20)
+      - 'Parent navigation: search for previous dir name in parent list'
       - Restore cursor position on revisit by filename match
       - Save cursor position before directory change
     summary: Map<pane_id, Map<path, {cursor, scrollTop}>> in React state
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation - adapted from Goful ARCH-DIRECTORY_HISTORY
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Per-Directory Cursor Position History

@@ -1,5 +1,3 @@
-# CITDP change-analysis record — toolbar icon registry completeness
-# change_request_id: REQ-TOOLBAR_SYSTEM
 CITDP-TOOLBAR_ICON_REGISTRY:
   change_definition:
     current_behavior_prior: |
@@ -35,7 +33,7 @@ CITDP-TOOLBAR_ICON_REGISTRY:
     record_status: complete
   record_identity:
     change_request_id: REQ-TOOLBAR_SYSTEM
-    recorded_at: 2026-05-24
+    recorded_at: {}
     tied_context:
       architecture:
         - ARCH-TOOLBAR_ACTIONS
@@ -52,12 +50,12 @@ CITDP-TOOLBAR_ICON_REGISTRY:
     workspace_root: /Users/fareed/Documents/dev/node/panorama
   risk_analysis:
     risks:
-      - id: RISK-001
-        description: New toolbar action added without registry entry
-        mitigation: registry.test.ts via getReferencedToolbarIconNames()
-      - id: RISK-002
-        description: icon-unknown confused with Help in user testing
+      - description: icon-unknown confused with Help in user testing
+        id: RISK-002
         mitigation: help.show remains help-circle; document icon-unknown in vocabulary
+      - description: New toolbar action added without registry entry
+        id: RISK-001
+        mitigation: registry.test.ts via getReferencedToolbarIconNames()
   test_strategy:
     summary: |
       registry.test.ts; toolbar.utils.test.ts copy-all mapping; vitest toolbar component tests;

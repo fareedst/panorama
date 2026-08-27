@@ -11,10 +11,10 @@ IMPL-MESH_SCHEDULE:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Pseudocode retrofit from production code and tests
   name: Mesh Schedule Service
   related_decisions:

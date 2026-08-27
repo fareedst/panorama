@@ -4,13 +4,13 @@ REQ-TOOLBAR_SYSTEM:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
       reason: LEAP — named toolbar display mode (third session display state)
     last_validated:
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       result: planned
       validator: AI Agent
   name: File Manager Toolbar System
@@ -79,13 +79,13 @@ REQ-TOOLBAR_SYSTEM:
       - src/components/icons/registry.test.tsx
       - src/lib/toolbar.utils.test.ts
   validation_criteria:
-    - method: Component tests
-      coverage: Button rendering, group layout, keystroke display, showActionLabel named labels, ToolbarCompactToggle aria-pressed and three-mode cycle, showKeystroke=false badge hide with tooltip shortcut retention, mergeTopToolbarConfigs tier order
-    - method: Integration tests
-      coverage: WorkspaceView toolbar compact/expanded/named branch, toggle placement on first visible top tier, merged single-row compact toolbar, named mode visible labels, action dispatch and configuration changes, pane height remeasure on display mode change via workspace-area
-    - method: Accessibility tests
-      coverage: ARIA labels, keyboard navigation, focus management, toolbar-compact-toggle aria-pressed
-    - method: Manual testing
-      coverage: Visual inspection, compact vs expanded vs named layout, interaction testing, responsive testing
-    - method: Playwright
-      coverage: e2e/readme-screenshots.spec.ts and e2e/copyall-demo.spec.ts select toolbar-view.comparison and toolbar-file.copyAll
+    - coverage: ARIA labels, keyboard navigation, focus management, toolbar-compact-toggle aria-pressed
+      method: Accessibility tests
+    - coverage: Button rendering, group layout, keystroke display, showActionLabel named labels, ToolbarCompactToggle aria-pressed and three-mode cycle, showKeystroke=false badge hide with tooltip shortcut retention, mergeTopToolbarConfigs tier order
+      method: Component tests
+    - coverage: WorkspaceView toolbar compact/expanded/named branch, toggle placement on first visible top tier, merged single-row compact toolbar, named mode visible labels, action dispatch and configuration changes, pane height remeasure on display mode change via workspace-area
+      method: Integration tests
+    - coverage: Visual inspection, compact vs expanded vs named layout, interaction testing, responsive testing
+      method: Manual testing
+    - coverage: e2e/readme-screenshots.spec.ts and e2e/copyall-demo.spec.ts select toolbar-view.comparison and toolbar-file.copyAll
+      method: Playwright

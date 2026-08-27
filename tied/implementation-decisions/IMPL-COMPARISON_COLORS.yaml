@@ -1,16 +1,16 @@
 IMPL-COMPARISON_COLORS:
   code_locations:
     files:
-      - path: src/lib/files.comparison.ts
-        description: buildEnhancedComparisonIndex and size/time analyzers
-      - path: src/app/files/components/FilePane.tsx
-        description: getComparisonClass row styling
-      - path: config/theme.yaml
-        description: files.compareColors reference tokens
+      - description: buildEnhancedComparisonIndex and size/time analyzers
+        path: src/lib/files.comparison.ts
+      - description: files.compareColors reference tokens
+        path: config/theme.yaml
+      - description: getComparisonClass row styling
+        path: src/app/files/components/FilePane.tsx
     functions:
-      - name: buildEnhancedComparisonIndex
-        description: Build comparison with size/time analysis
+      - description: Build comparison with size/time analysis
         file: src/lib/files.comparison.ts
+        name: buildEnhancedComparisonIndex
   cross_references:
     - ARCH-COMPARISON_COLORING
     - REQ-FILE_COMPARISON_VISUAL
@@ -24,13 +24,13 @@ IMPL-COMPARISON_COLORS:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-29T00:00:00.000Z"
+      date: '2026-05-29T00:00:00.000Z'
       reason: Retrofit essence_pseudocode from files.comparison.test.ts and FilePane
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: CSS Class-Based Comparison Coloring

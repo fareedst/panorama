@@ -4,10 +4,10 @@ REQ-MESH_PLATFORM:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
       reason: Initial mesh program umbrella REQ (author-requirement)
   name: Mesh Sync Platform
   priority: P0
@@ -38,7 +38,7 @@ REQ-MESH_PLATFORM:
     implementation: []
     tests: []
   validation_criteria:
-    - method: tied_validate_consistency
-      coverage: Mesh REQ tokens and cross-references
-    - method: Checklist verification-gate
-      coverage: Per completed child slice
+    - coverage: Per completed child slice
+      method: Checklist verification-gate
+    - coverage: Mesh REQ tokens and cross-references
+      method: tied_validate_consistency

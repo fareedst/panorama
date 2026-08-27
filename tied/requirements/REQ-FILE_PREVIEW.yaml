@@ -1,17 +1,16 @@
-# REQ detail — REQ-FILE_PREVIEW
 REQ-FILE_PREVIEW:
   category: Functional
   description: Enable users to view file contents without opening external applications. Provide instant preview for text files, images, and archives directly within the file manager interface.
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation - new requirement for web file manager
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: File Preview Panel
@@ -50,9 +49,9 @@ REQ-FILE_PREVIEW:
       - IMPL-FILE_PREVIEW
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: File type detection and content loading
-    - method: Integration tests
-      coverage: Preview API and rendering
-    - method: Security tests
-      coverage: Malicious file handling
+    - coverage: Preview API and rendering
+      method: Integration tests
+    - coverage: Malicious file handling
+      method: Security tests
+    - coverage: File type detection and content loading
+      method: Unit tests

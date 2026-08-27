@@ -1,17 +1,16 @@
-# REQ detail — REQ-REACT_SSR_STABILITY
 REQ-REACT_SSR_STABILITY:
   category: Non-Functional
   description: Next.js server-side rendering requires stable components with unique keys and SSR-safe code
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Documented fixes for duplicate keys, SSR localStorage errors, and keybinding timing
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: React SSR Stability and Correctness
@@ -51,7 +50,7 @@ REQ-REACT_SSR_STABILITY:
       - IMPL-WORKSPACE_VIEW
     tests: []
   validation_criteria:
-    - method: Console inspection
-      coverage: No React warnings or errors during page load
-    - method: Production build
-      coverage: Build succeeds without errors
+    - coverage: No React warnings or errors during page load
+      method: Console inspection
+    - coverage: Build succeeds without errors
+      method: Production build

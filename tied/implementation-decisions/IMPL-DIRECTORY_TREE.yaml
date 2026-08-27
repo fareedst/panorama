@@ -1,18 +1,18 @@
 IMPL-DIRECTORY_TREE:
   code_locations:
     files:
-      - path: src/lib/file-tree.ts
-        description: Pure tree state module
-      - path: src/lib/file-tree.test.ts
-        description: Unit tests
-      - path: src/lib/pane-file-tree.ts
-        description: Pane tree integration and display filter per level
-      - path: src/lib/pane-file-tree.test.ts
-        description: Pane tree unit tests
-      - path: src/lib/cross-pane-path.ts
-        description: Relative dest mapping for bulk ops and sync
-      - path: src/app/files/WorkspaceView.tsx
-        description: handleToggleExpand, refreshPaneTree, mergePaneState
+      - description: handleToggleExpand, refreshPaneTree, mergePaneState
+        path: src/app/files/WorkspaceView.tsx
+      - description: Pane tree integration and display filter per level
+        path: src/lib/pane-file-tree.ts
+      - description: Pane tree unit tests
+        path: src/lib/pane-file-tree.test.ts
+      - description: Pure tree state module
+        path: src/lib/file-tree.ts
+      - description: Relative dest mapping for bulk ops and sync
+        path: src/lib/cross-pane-path.ts
+      - description: Unit tests
+        path: src/lib/file-tree.test.ts
   cross_references:
     - ARCH-DIRECTORY_TREE
     - REQ-DIRECTORY_TREE

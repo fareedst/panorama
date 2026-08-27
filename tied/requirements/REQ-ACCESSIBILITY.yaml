@@ -1,17 +1,16 @@
-# REQ detail — REQ-ACCESSIBILITY
 REQ-ACCESSIBILITY:
   category: Non-Functional
   description: Accessibility ensures the application is usable by everyone, including people with disabilities
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Semantic HTML and Accessibility
@@ -48,9 +47,9 @@ REQ-ACCESSIBILITY:
       - IMPL-IMAGE_OPTIMIZATION
     tests: []
   validation_criteria:
-    - method: Lighthouse audit
-      coverage: Accessibility audit passes with 90+ score
-    - method: Screen reader testing
-      coverage: Screen reader shows proper element identification
-    - method: Keyboard testing
-      coverage: Keyboard navigation works for all interactive elements
+    - coverage: Keyboard navigation works for all interactive elements
+      method: Keyboard testing
+    - coverage: Accessibility audit passes with 90+ score
+      method: Lighthouse audit
+    - coverage: Screen reader shows proper element identification
+      method: Screen reader testing

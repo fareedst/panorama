@@ -1,5 +1,3 @@
-# CITDP change-analysis record — tabular file columns + column-order dialog + snapshot v4
-# change_request_id: REQ-CONFIG_DRIVEN_FILE_MANAGER (file column table slice)
 CITDP-FILE_COLUMN_TABLE:
   change_definition:
     current_behavior_prior: |
@@ -40,7 +38,7 @@ CITDP-FILE_COLUMN_TABLE:
       - REQ-CONFIG_DRIVEN_FILE_MANAGER one_column criterion
   record_identity:
     change_request_id: REQ-CONFIG_DRIVEN_FILE_MANAGER
-    recorded_at: 2026-05-23
+    recorded_at: {}
     tied_context:
       architecture:
         - ARCH-CONFIG_DRIVEN_UI
@@ -61,12 +59,12 @@ CITDP-FILE_COLUMN_TABLE:
     workspace_root: /Users/fareed/Documents/dev/node/panorama
   risk_analysis:
     risks:
-      - id: RISK-001
-        description: Snapshot version bump may confuse legacy v3 meshes without fileColumns
-        mitigation: Parse v1-v3 without fileColumns; caller falls back to YAML defaults
-      - id: RISK-002
-        description: Narrow OneColumn panes may truncate name when shared Size/Time ch consume width
+      - description: Narrow OneColumn panes may truncate name when shared Size/Time ch consume width
+        id: RISK-002
         mitigation: truncate + tabular-nums; per-pane measure on non-OneColumn layouts
+      - description: Snapshot version bump may confuse legacy v3 meshes without fileColumns
+        id: RISK-001
+        mitigation: Parse v1-v3 without fileColumns; caller falls back to YAML defaults
   test_strategy:
     summary: |
       Unit tests file-columns.ts and workspace-mesh-bridge v4; FilePane grid tests;

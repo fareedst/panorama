@@ -1,8 +1,8 @@
 IMPL-MESH_TOPOLOGY:
   code_locations:
     files:
-      - path: src/lib/mesh/services/topology-service.ts
-        description: Topology graph and validation
+      - description: Topology graph and validation
+        path: src/lib/mesh/services/topology-service.ts
     functions: []
   cross_references:
     - ARCH-MESH_LAYERED
@@ -14,10 +14,10 @@ IMPL-MESH_TOPOLOGY:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Pseudocode retrofit from production code and tests
   name: Mesh Topology Service
   related_decisions:

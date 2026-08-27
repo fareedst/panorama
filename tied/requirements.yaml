@@ -5,13 +5,13 @@ REQ-ACCESSIBILITY:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Semantic HTML and Accessibility
@@ -48,12 +48,12 @@ REQ-ACCESSIBILITY:
       - IMPL-IMAGE_OPTIMIZATION
     tests: []
   validation_criteria:
-    - method: Lighthouse audit
-      coverage: Accessibility audit passes with 90+ score
-    - method: Screen reader testing
-      coverage: Screen reader shows proper element identification
-    - method: Keyboard testing
-      coverage: Keyboard navigation works for all interactive elements
+    - coverage: Keyboard navigation works for all interactive elements
+      method: Keyboard testing
+    - coverage: Accessibility audit passes with 90+ score
+      method: Lighthouse audit
+    - coverage: Screen reader shows proper element identification
+      method: Screen reader testing
 REQ-ADVANCED_NAV:
   category: Functional
   cross_references: []
@@ -61,13 +61,13 @@ REQ-ADVANCED_NAV:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation - adapted from Goful ARCH-DIRECTORY_HISTORY for web
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Advanced Navigation Features
@@ -108,12 +108,12 @@ REQ-ADVANCED_NAV:
       - IMPL-DIR_HISTORY
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: History save/restore, bookmark CRUD operations
-    - method: Integration tests
-      coverage: Parent navigation cursor positioning
-    - method: localStorage tests
-      coverage: Bookmark persistence across sessions
+    - coverage: Parent navigation cursor positioning
+      method: Integration tests
+    - coverage: Bookmark persistence across sessions
+      method: localStorage tests
+    - coverage: History save/restore, bookmark CRUD operations
+      method: Unit tests
 REQ-APP_STRUCTURE:
   category: Functional
   cross_references: []
@@ -121,13 +121,13 @@ REQ-APP_STRUCTURE:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Next.js App Router Application Structure
@@ -165,12 +165,12 @@ REQ-APP_STRUCTURE:
       - IMPL-ROOT_LAYOUT
     tests: []
   validation_criteria:
-    - method: Manual testing
-      coverage: Application starts without errors using npm run dev
-    - method: Build validation
-      coverage: Application builds successfully using npm run build
-    - method: Route testing
-      coverage: Routes defined in src/app/ are accessible
+    - coverage: Application builds successfully using npm run build
+      method: Build validation
+    - coverage: Application starts without errors using npm run dev
+      method: Manual testing
+    - coverage: Routes defined in src/app/ are accessible
+      method: Route testing
 REQ-BRANDING:
   category: Functional
   cross_references: []
@@ -178,13 +178,13 @@ REQ-BRANDING:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: LEAP — config-driven branding; retired home page next/image criteria
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Site Branding Configuration
@@ -223,12 +223,12 @@ REQ-BRANDING:
       - src/lib/config.test.ts
       - src/test/dark-mode.test.tsx
   validation_criteria:
-    - method: Config unit tests
-      coverage: config.test.ts asserts default branding.logo fields
-    - method: Dark mode pattern test
-      coverage: dark-mode.test.tsx asserts dark:invert class contract
-    - method: Accessibility review
-      coverage: alt text required in logo config shape
+    - coverage: alt text required in logo config shape
+      method: Accessibility review
+    - coverage: config.test.ts asserts default branding.logo fields
+      method: Config unit tests
+    - coverage: dark-mode.test.tsx asserts dark:invert class contract
+      method: Dark mode pattern test
 REQ-BUILD_SYSTEM:
   category: Non-Functional
   cross_references: []
@@ -236,13 +236,13 @@ REQ-BUILD_SYSTEM:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Next.js Build, Development, and Testing Scripts
@@ -283,10 +283,10 @@ REQ-BUILD_SYSTEM:
       - IMPL-TEST_CONFIG
     tests: []
   validation_criteria:
-    - method: Script testing
-      coverage: All npm scripts execute successfully
-    - method: Coverage testing
-      coverage: Test coverage meets 80% threshold
+    - coverage: Test coverage meets 80% threshold
+      method: Coverage testing
+    - coverage: All npm scripts execute successfully
+      method: Script testing
 REQ-BULK_FILE_OPS:
   category: Functional
   cross_references: []
@@ -294,13 +294,13 @@ REQ-BULK_FILE_OPS:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation - adapted from Goful REQ-FILE_OPERATIONS for web batch context
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Bulk File Operations on Marked Files
@@ -343,12 +343,12 @@ REQ-BULK_FILE_OPS:
       - IMPL-BULK_OPS
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: Bulk copy, move, delete on marked files
-    - method: Integration tests
-      coverage: Cross-pane operations and progress tracking
-    - method: Error tests
-      coverage: Permission errors, disk full, non-existent files
+    - coverage: Permission errors, disk full, non-existent files
+      method: Error tests
+    - coverage: Cross-pane operations and progress tracking
+      method: Integration tests
+    - coverage: Bulk copy, move, delete on marked files
+      method: Unit tests
 REQ-COMPARE_METHODS:
   category: Functional
   cross_references: []
@@ -356,13 +356,13 @@ REQ-COMPARE_METHODS:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       result: implemented
       validator: AI Agent
   name: File Comparison Methods
@@ -396,8 +396,8 @@ REQ-COMPARE_METHODS:
       - IMPL-NSYNC_COMPARE
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: All comparison methods, edge cases
+    - coverage: All comparison methods, edge cases
+      method: Unit tests
 REQ-CONFIG_DRIVEN_APPEARANCE:
   category: Functional
   cross_references: []
@@ -405,13 +405,13 @@ REQ-CONFIG_DRIVEN_APPEARANCE:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-29T00:00:00.000Z"
+      date: '2026-05-29T00:00:00.000Z'
       reason: LEAP index sync — file manager scope
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: File Manager Appearance and Layout from Config
@@ -432,11 +432,11 @@ REQ-CONFIG_DRIVEN_APPEARANCE:
     related_to: []
     supersedes: []
   satisfaction_criteria:
-    - criterion: 'Single source of truth: config/site.yaml, config/theme.yaml, config/files.yaml'
     - criterion: File manager (/files) receives copy and layout from getFilesConfig
     - criterion: File rows use getFileTypeConfig for icon and iconClass
     - criterion: No jobs routes or config/jobs.yaml in the repository
     - criterion: Root layout uses getSiteConfig for document title and description
+    - criterion: 'Single source of truth: config/site.yaml, config/theme.yaml, config/files.yaml'
   status: Implemented
   traceability:
     architecture:
@@ -452,10 +452,10 @@ REQ-CONFIG_DRIVEN_APPEARANCE:
       - src/app/layout.test.tsx
       - src/lib/config.test.ts
   validation_criteria:
-    - method: Config testing
-      coverage: Changing config changes appearance without code changes
-    - method: Code inspection
-      coverage: No hard-coded user-facing text or layout classes in TSX
+    - coverage: No hard-coded user-facing text or layout classes in TSX
+      method: Code inspection
+    - coverage: Changing config changes appearance without code changes
+      method: Config testing
 REQ-CONFIG_DRIVEN_FILE_MANAGER:
   category: Functional
   cross_references: []
@@ -463,13 +463,13 @@ REQ-CONFIG_DRIVEN_FILE_MANAGER:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Configuration-Driven File Manager UI
@@ -505,10 +505,10 @@ REQ-CONFIG_DRIVEN_FILE_MANAGER:
       - IMPL-FILES_CONFIG
     tests: []
   validation_criteria:
-    - method: Config testing
-      coverage: Config changes reflected in UI
-    - method: Code inspection
-      coverage: No hard-coded user-facing text in components
+    - coverage: No hard-coded user-facing text in components
+      method: Code inspection
+    - coverage: Config changes reflected in UI
+      method: Config testing
 REQ-CONFIG_DRIVEN_UI:
   category: Functional
   cross_references: []
@@ -516,13 +516,13 @@ REQ-CONFIG_DRIVEN_UI:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Configuration-Driven UI
@@ -564,20 +564,20 @@ REQ-CONFIG_DRIVEN_UI:
       - IMPL-YAML_CONFIG
     tests: []
   validation_criteria:
-    - method: Config loader testing
-      coverage: Config loader unit tests pass (31 tests)
-    - method: Integration testing
-      coverage: Changing config values changes rendered output
+    - coverage: Config loader unit tests pass (31 tests)
+      method: Config loader testing
+    - coverage: Changing config values changes rendered output
+      method: Integration testing
 REQ-COPY_OPERATIONS:
   category: Functional
   detail_file: requirements/REQ-COPY_OPERATIONS.yaml
   metadata:
     created:
       author: migration
-      date: "2026-02-09"
+      date: '2026-02-09'
     last_updated:
       author: AI Agent
-      date: "2026-06-02T00:00:00.000Z"
+      date: '2026-06-02T00:00:00.000Z'
       reason: 'LEAP: files.data copy path attribute preservation coverage'
   name: Copy Operations Preserve File Attributes
   priority: P1
@@ -607,10 +607,10 @@ REQ-COPY_OPERATIONS:
       - src/lib/copy-file.data.test.ts
       - src/lib/sync/engine.test.ts
   validation_criteria:
-    - method: Unit tests
-      coverage: sync engine attribute preservation (src/lib/sync/engine.test.ts)
-    - method: Integration tests
-      coverage: copy-file.data.test.ts file copy mtime/atime/mode via files.data copyFile and preserveCopyAttributes
+    - coverage: copy-file.data.test.ts file copy mtime/atime/mode via files.data copyFile and preserveCopyAttributes
+      method: Integration tests
+    - coverage: sync engine attribute preservation (src/lib/sync/engine.test.ts)
+      method: Unit tests
 REQ-CROSS_PANE_COMPARISON:
   category: Functional
   cross_references: []
@@ -618,13 +618,13 @@ REQ-CROSS_PANE_COMPARISON:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Cross-Pane File Comparison
@@ -662,10 +662,10 @@ REQ-CROSS_PANE_COMPARISON:
       - IMPL-FILE_PANE
     tests: []
   validation_criteria:
-    - method: Comparison testing
-      coverage: Comparison colors display correctly
-    - method: Index testing
-      coverage: Comparison index builds and updates correctly
+    - coverage: Comparison colors display correctly
+      method: Comparison testing
+    - coverage: Comparison index builds and updates correctly
+      method: Index testing
 REQ-CROSS_PANE_VISIBILITY:
   category: Functional
   detail_file: requirements/REQ-CROSS_PANE_VISIBILITY.yaml
@@ -679,13 +679,13 @@ REQ-DARK_MODE:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Dark Mode Theme Support
@@ -721,10 +721,10 @@ REQ-DARK_MODE:
       - IMPL-DARK_MODE
     tests: []
   validation_criteria:
-    - method: System preference testing
-      coverage: Application switches theme when system preference changes
-    - method: Contrast testing
-      coverage: All text has sufficient contrast in both modes (WCAG AA minimum)
+    - coverage: All text has sufficient contrast in both modes (WCAG AA minimum)
+      method: Contrast testing
+    - coverage: Application switches theme when system preference changes
+      method: System preference testing
 REQ-DIRECTORY_NAVIGATION:
   category: Functional
   cross_references: []
@@ -732,13 +732,13 @@ REQ-DIRECTORY_NAVIGATION:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Implementation complete, 34 data layer tests passing
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Server Filesystem Directory Navigation
@@ -776,10 +776,10 @@ REQ-DIRECTORY_NAVIGATION:
       - IMPL-FILES_UTILS
     tests: []
   validation_criteria:
-    - method: Navigation testing
-      coverage: Can navigate into and out of directories
-    - method: Path testing
-      coverage: Current path updates correctly
+    - coverage: Can navigate into and out of directories
+      method: Navigation testing
+    - coverage: Current path updates correctly
+      method: Path testing
 REQ-DIRECTORY_TREE:
   category: Functional
   detail_file: requirements/REQ-DIRECTORY_TREE.yaml
@@ -798,13 +798,13 @@ REQ-ERROR_HANDLING:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Root-Level Error Boundary
@@ -838,10 +838,10 @@ REQ-ERROR_HANDLING:
       - IMPL-GLOBAL_ERROR_BOUNDARY
     tests: []
   validation_criteria:
-    - method: Error testing
-      coverage: Error boundary catches and displays errors gracefully
-    - method: User experience testing
-      coverage: Users can recover from errors
+    - coverage: Error boundary catches and displays errors gracefully
+      method: Error testing
+    - coverage: Users can recover from errors
+      method: User experience testing
 REQ-FEEDBACK_TO_TIED:
   category: Functional
   detail_file: null
@@ -868,13 +868,13 @@ REQ-FILE_COMPARISON_VISUAL:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation - adapted from Goful REQ-FILE_COMPARISON_COLORS for web
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Visual Cross-Pane File Comparison
@@ -898,11 +898,11 @@ REQ-FILE_COMPARISON_VISUAL:
       - REQ-CONFIG_DRIVEN_FILE_MANAGER
     supersedes: []
   satisfaction_criteria:
-    - criterion: 'Size comparison: equal (green), smallest (blue), largest (red)'
-    - criterion: 'Time comparison: equal (green), earliest (blue), latest (red)'
     - criterion: Comparison colors configurable in theme.yaml
     - criterion: Comparison index rebuilds on pane content changes
     - criterion: Files with same name across panes are color-coded
+    - criterion: 'Size comparison: equal (green), smallest (blue), largest (red)'
+    - criterion: 'Time comparison: equal (green), earliest (blue), latest (red)'
     - criterion: Toggle comparison mode with backtick key
   status: Implemented
   traceability:
@@ -914,12 +914,12 @@ REQ-FILE_COMPARISON_VISUAL:
       - IMPL-COMPARISON_COLORS
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: Comparison index building with various file sets
-    - method: Integration tests
-      coverage: Color application and toggle behavior
-    - method: Visual tests
-      coverage: Color coding displays correctly
+    - coverage: Color application and toggle behavior
+      method: Integration tests
+    - coverage: Comparison index building with various file sets
+      method: Unit tests
+    - coverage: Color coding displays correctly
+      method: Visual tests
 REQ-FILE_LISTING:
   category: Functional
   cross_references: []
@@ -927,13 +927,13 @@ REQ-FILE_LISTING:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: File Listing Display
@@ -971,10 +971,10 @@ REQ-FILE_LISTING:
       - IMPL-FILES_DATA
     tests: []
   validation_criteria:
-    - method: Display testing
-      coverage: All file metadata renders correctly
-    - method: Sorting testing
-      coverage: All sort types work correctly
+    - coverage: All file metadata renders correctly
+      method: Display testing
+    - coverage: All sort types work correctly
+      method: Sorting testing
 REQ-FILE_MANAGER_PAGE:
   category: Functional
   cross_references: []
@@ -982,13 +982,13 @@ REQ-FILE_MANAGER_PAGE:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Implementation complete with 108 passing tests
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Multi-Pane File Manager Page
@@ -1027,12 +1027,12 @@ REQ-FILE_MANAGER_PAGE:
       - IMPL-FILE_MANAGER_PAGE
     tests: []
   validation_criteria:
-    - method: Page testing
-      coverage: Page renders without errors at /files
-    - method: Navigation testing
-      coverage: All keyboard shortcuts work correctly
-    - method: Layout testing
-      coverage: Multiple layout types render properly
+    - coverage: Multiple layout types render properly
+      method: Layout testing
+    - coverage: All keyboard shortcuts work correctly
+      method: Navigation testing
+    - coverage: Page renders without errors at /files
+      method: Page testing
 REQ-FILE_MARKING_WEB:
   category: Functional
   cross_references: []
@@ -1040,13 +1040,13 @@ REQ-FILE_MARKING_WEB:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation - imported from Goful REQ-FILE_MARKING, adapted for web
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Web-Based File Marking for Batch Operations
@@ -1070,11 +1070,11 @@ REQ-FILE_MARKING_WEB:
       - REQ-BULK_FILE_OPS
     supersedes: []
   satisfaction_criteria:
-    - criterion: 'Pane footer displays marked count: [marked/total]'
     - criterion: Batch operations (copy, move, delete) operate on marked files when marks exist
     - criterion: Mark persistence is name-based (survives file order changes)
     - criterion: Mark state persists when directory is re-sorted or refreshed
     - criterion: Marked files visually distinguished with checkbox icon and background color
+    - criterion: 'Pane footer displays marked count: [marked/total]'
     - criterion: Parent directory entry (..) cannot be marked
     - criterion: Users can clear all marks with Escape key
     - criterion: Users can mark all files (Shift+M) and invert marks (Ctrl+M)
@@ -1089,14 +1089,14 @@ REQ-FILE_MARKING_WEB:
       - IMPL-FILE_MARKING
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: Mark toggle, mark all, invert, clear operations
-    - method: Unit tests
-      coverage: Mark persistence across sort/filter/refresh
-    - method: Integration tests
-      coverage: Batch operations use marked files correctly
-    - method: UI tests
-      coverage: Visual distinction of marked files
+    - coverage: Batch operations use marked files correctly
+      method: Integration tests
+    - coverage: Visual distinction of marked files
+      method: UI tests
+    - coverage: Mark persistence across sort/filter/refresh
+      method: Unit tests
+    - coverage: Mark toggle, mark all, invert, clear operations
+      method: Unit tests
 REQ-FILE_OPERATIONS:
   category: Functional
   cross_references: []
@@ -1104,13 +1104,13 @@ REQ-FILE_OPERATIONS:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-06-02T00:00:00.000Z"
+      date: '2026-06-02T00:00:00.000Z'
       reason: 'LEAP: copyFile test coverage — preserveCopyAttributes, error path, integration tests'
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: File Copy, Move, Rename, Delete Operations
@@ -1158,12 +1158,12 @@ REQ-FILE_OPERATIONS:
       - src/lib/copy-file.data.test.ts
       - src/lib/files.data.test.ts
   validation_criteria:
-    - method: Operation testing
-      coverage: copy-file.data.test.ts recursive directory copy on real filesystem; all CRUD operations including recursive directory copy
-    - method: Error testing
-      coverage: files.data.test.ts copyFile rethrows on failure; errors handled gracefully (permissions, non-existent files)
-    - method: Unit tests
-      coverage: files.data.test.ts copyFile file and directory branches, preserveCopyAttributes invocation, error rethrow; vocabulary tied/vocab/file-marking.md
+    - coverage: files.data.test.ts copyFile rethrows on failure; errors handled gracefully (permissions, non-existent files)
+      method: Error testing
+    - coverage: copy-file.data.test.ts recursive directory copy on real filesystem; all CRUD operations including recursive directory copy
+      method: Operation testing
+    - coverage: files.data.test.ts copyFile file and directory branches, preserveCopyAttributes invocation, error rethrow; vocabulary tied/vocab/file-marking.md
+      method: Unit tests
 REQ-FILE_PREVIEW:
   category: Functional
   cross_references: []
@@ -1171,13 +1171,13 @@ REQ-FILE_PREVIEW:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation - new requirement for web file manager
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: File Preview Panel
@@ -1216,12 +1216,12 @@ REQ-FILE_PREVIEW:
       - IMPL-FILE_PREVIEW
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: File type detection and content loading
-    - method: Integration tests
-      coverage: Preview API and rendering
-    - method: Security tests
-      coverage: Malicious file handling
+    - coverage: Preview API and rendering
+      method: Integration tests
+    - coverage: Malicious file handling
+      method: Security tests
+    - coverage: File type detection and content loading
+      method: Unit tests
 REQ-FILE_SEARCH:
   category: Functional
   cross_references: []
@@ -1229,13 +1229,13 @@ REQ-FILE_SEARCH:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Phase 8 completed - all search components, API, and tests complete (124 total tests passing)
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass - 523 total tests passing, production build successful
       validator: AI Agent
   name: File Search and Filtering
@@ -1274,12 +1274,12 @@ REQ-FILE_SEARCH:
       - IMPL-FILE_SEARCH
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: Pattern matching (fuzzy, regex) - 30 tests passing
-    - method: Integration tests
-      coverage: Search API and result display - 27 API tests, 38 FinderDialog tests, 29 SearchDialog tests
-    - method: Performance tests
-      coverage: Large directory and file search performance validated
+    - coverage: Search API and result display - 27 API tests, 38 FinderDialog tests, 29 SearchDialog tests
+      method: Integration tests
+    - coverage: Large directory and file search performance validated
+      method: Performance tests
+    - coverage: Pattern matching (fuzzy, regex) - 30 tests passing
+      method: Unit tests
 REQ-FILE_SORTING_ADVANCED:
   category: Functional
   cross_references: []
@@ -1287,13 +1287,13 @@ REQ-FILE_SORTING_ADVANCED:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation - adapted from Goful REQ-FILE_SORTING for web
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Advanced Multi-Criteria File Sorting
@@ -1335,12 +1335,12 @@ REQ-FILE_SORTING_ADVANCED:
       - IMPL-SORT_FILTER
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: All sort criteria and directions
-    - method: Unit tests
-      coverage: Directory prioritization behavior
-    - method: Integration tests
-      coverage: Cursor preservation after sort
+    - coverage: Cursor preservation after sort
+      method: Integration tests
+    - coverage: All sort criteria and directions
+      method: Unit tests
+    - coverage: Directory prioritization behavior
+      method: Unit tests
 REQ-FILES_CONFIG_COMPLETE:
   category: Functional
   cross_references: []
@@ -1348,13 +1348,13 @@ REQ-FILES_CONFIG_COMPLETE:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation - expansion of REQ-CONFIG_DRIVEN_FILE_MANAGER
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Complete File Manager Configuration
@@ -1393,10 +1393,10 @@ REQ-FILES_CONFIG_COMPLETE:
       - IMPL-FILES_CONFIG_COMPLETE
     tests: []
   validation_criteria:
-    - method: Config tests
-      coverage: Changing config changes UI without code changes
-    - method: Code inspection
-      coverage: No hard-coded user-facing text in components
+    - coverage: No hard-coded user-facing text in components
+      method: Code inspection
+    - coverage: Changing config changes UI without code changes
+      method: Config tests
 REQ-FILES_PERFORMANCE:
   category: Non-Functional
   cross_references: []
@@ -1404,13 +1404,13 @@ REQ-FILES_PERFORMANCE:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation - web-specific performance requirement
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: File Manager Performance Optimization
@@ -1448,12 +1448,12 @@ REQ-FILES_PERFORMANCE:
       - IMPL-PERFORMANCE_OPT
     tests: []
   validation_criteria:
-    - method: Performance tests
-      coverage: 1000+ file directory rendering
-    - method: Performance tests
-      coverage: Scrolling performance with virtual scrolling
-    - method: Memory tests
-      coverage: Memory usage profiling
+    - coverage: Memory usage profiling
+      method: Memory tests
+    - coverage: 1000+ file directory rendering
+      method: Performance tests
+    - coverage: Scrolling performance with virtual scrolling
+      method: Performance tests
 REQ-FONT_SYSTEM:
   category: Non-Functional
   cross_references: []
@@ -1461,13 +1461,13 @@ REQ-FONT_SYSTEM:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Custom Font Loading System
@@ -1505,10 +1505,10 @@ REQ-FONT_SYSTEM:
       - IMPL-FONT_LOADING
     tests: []
   validation_criteria:
-    - method: Visual testing
-      coverage: Fonts are visible and correctly applied
-    - method: Performance testing
-      coverage: No Flash of Unstyled Text (FOUT), Lighthouse audit shows no layout shift
+    - coverage: No Flash of Unstyled Text (FOUT), Lighthouse audit shows no layout shift
+      method: Performance testing
+    - coverage: Fonts are visible and correctly applied
+      method: Visual testing
 REQ-GLOBAL_STYLES:
   category: Non-Functional
   cross_references: []
@@ -1516,13 +1516,13 @@ REQ-GLOBAL_STYLES:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Global CSS with Theme Variables
@@ -1558,10 +1558,10 @@ REQ-GLOBAL_STYLES:
       - IMPL-DARK_MODE
     tests: []
   validation_criteria:
-    - method: CSS inspection
-      coverage: CSS variables are defined in :root
-    - method: Dark mode testing
-      coverage: Variables change when dark mode is active
+    - coverage: CSS variables are defined in :root
+      method: CSS inspection
+    - coverage: Variables change when dark mode is active
+      method: Dark mode testing
 REQ-HASH_COMPUTATION:
   category: Functional
   cross_references: []
@@ -1569,13 +1569,13 @@ REQ-HASH_COMPUTATION:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       result: implemented
       validator: AI Agent
   name: Hash Computation for File Verification
@@ -1610,10 +1610,10 @@ REQ-HASH_COMPUTATION:
       - IMPL-NSYNC_HASH
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: Hash computation correctness
-    - method: Performance tests
-      coverage: Streaming vs buffer performance
+    - coverage: Streaming vs buffer performance
+      method: Performance tests
+    - coverage: Hash computation correctness
+      method: Unit tests
 REQ-HOME_PAGE:
   category: Functional
   cross_references: []
@@ -1621,10 +1621,10 @@ REQ-HOME_PAGE:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
-    last_updated: "2026-05-30"
+      date: {}
+    last_updated: '2026-05-30'
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Root Entry Redirect
@@ -1662,10 +1662,10 @@ REQ-HOME_PAGE:
       - e2e/root-redirect.spec.ts
       - src/test/integration/app.test.tsx
   validation_criteria:
-    - method: Static structure check
-      coverage: page.tsx exports Home and invokes redirect("/files")
-    - method: Integration test
-      coverage: app.test.tsx documents root redirect to file manager
+    - coverage: app.test.tsx documents root redirect to file manager
+      method: Integration test
+    - coverage: page.tsx exports Home and invokes redirect("/files")
+      method: Static structure check
 REQ-KEYBOARD_NAVIGATION:
   category: Functional
   cross_references: []
@@ -1673,13 +1673,13 @@ REQ-KEYBOARD_NAVIGATION:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Keyboard-Driven Navigation
@@ -1719,10 +1719,10 @@ REQ-KEYBOARD_NAVIGATION:
       - IMPL-WORKSPACE_VIEW
     tests: []
   validation_criteria:
-    - method: Keyboard testing
-      coverage: All keyboard shortcuts work correctly
-    - method: Focus testing
-      coverage: Focus indicator visible and updates correctly
+    - coverage: Focus indicator visible and updates correctly
+      method: Focus testing
+    - coverage: All keyboard shortcuts work correctly
+      method: Keyboard testing
 REQ-KEYBOARD_SHORTCUTS_COMPLETE:
   category: Functional
   cross_references: []
@@ -1730,13 +1730,13 @@ REQ-KEYBOARD_SHORTCUTS_COMPLETE:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Phase 7 completed - all features implemented and tested
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass - 425 tests passing
       validator: AI Agent
   name: Comprehensive Keyboard Shortcut System
@@ -1777,12 +1777,12 @@ REQ-KEYBOARD_SHORTCUTS_COMPLETE:
       - IMPL-KEYBINDS
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: Keybinding parsing and matching
-    - method: Integration tests
-      coverage: Action execution via keyboard
-    - method: UI tests
-      coverage: Help overlay display
+    - coverage: Action execution via keyboard
+      method: Integration tests
+    - coverage: Help overlay display
+      method: UI tests
+    - coverage: Keybinding parsing and matching
+      method: Unit tests
 REQ-LINKED_PANES:
   category: Functional
   cross_references: []
@@ -1790,13 +1790,13 @@ REQ-LINKED_PANES:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-24T00:00:00.000Z"
+      date: '2026-05-24T00:00:00.000Z'
       reason: LEAP — cross-pane path clipboard cursor filename match key
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Linked Pane Navigation
@@ -1838,10 +1838,10 @@ REQ-LINKED_PANES:
       - IMPL-LINKED_NAV
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: Link state management and sync logic
-    - method: Integration tests
-      coverage: Synchronized navigation across panes
+    - coverage: Synchronized navigation across panes
+      method: Integration tests
+    - coverage: Link state management and sync logic
+      method: Unit tests
 REQ-LOGGING_CONFIG:
   category: Functional
   cross_references: []
@@ -1849,13 +1849,13 @@ REQ-LOGGING_CONFIG:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Configurable Logging Behavior
@@ -1891,10 +1891,10 @@ REQ-LOGGING_CONFIG:
       - IMPL-LOGGER_CONFIG
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: Configuration parsing and defaults
-    - method: Integration tests
-      coverage: Environment variable overrides
+    - coverage: Environment variable overrides
+      method: Integration tests
+    - coverage: Configuration parsing and defaults
+      method: Unit tests
 REQ-LOGGING_SEMANTIC_TOKENS:
   category: Functional
   cross_references: []
@@ -1902,13 +1902,13 @@ REQ-LOGGING_SEMANTIC_TOKENS:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Semantic Token Integration in Logs
@@ -1943,12 +1943,12 @@ REQ-LOGGING_SEMANTIC_TOKENS:
       - IMPL-LOGGER_TOKENS
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: Token formatting and inclusion
-    - method: Code review
-      coverage: All logger calls include tokens
-    - method: Log file inspection
-      coverage: Tokens present in actual log output
+    - coverage: All logger calls include tokens
+      method: Code review
+    - coverage: Tokens present in actual log output
+      method: Log file inspection
+    - coverage: Token formatting and inclusion
+      method: Unit tests
 REQ-LOGGING_SYSTEM:
   category: Functional
   cross_references: []
@@ -1956,13 +1956,13 @@ REQ-LOGGING_SYSTEM:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Session-Based Logging System
@@ -1984,11 +1984,11 @@ REQ-LOGGING_SYSTEM:
     related_to: []
     supersedes: []
   satisfaction_criteria:
-    - criterion: 'Six log levels supported: FATAL, ERROR, WARN, INFO, DEBUG, TRACE'
     - criterion: All log entries include semantic tokens when applicable
     - criterion: Log files created per session with timestamp in filename
     - criterion: Logging enabled by default with launch-time configuration
     - criterion: Logs written to OS temporary directory
+    - criterion: 'Six log levels supported: FATAL, ERROR, WARN, INFO, DEBUG, TRACE'
   status: Implemented
   traceability:
     architecture:
@@ -1999,12 +1999,12 @@ REQ-LOGGING_SYSTEM:
       - IMPL-LOGGER_MODULE
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: All log levels, file creation, formatting
-    - method: Integration tests
-      coverage: Logging across multiple modules
-    - method: Manual testing
-      coverage: Log file creation and semantic token inclusion
+    - coverage: Logging across multiple modules
+      method: Integration tests
+    - coverage: Log file creation and semantic token inclusion
+      method: Manual testing
+    - coverage: All log levels, file creation, formatting
+      method: Unit tests
 REQ-MESH_API:
   category: Functional
   cross_references:
@@ -2039,10 +2039,10 @@ REQ-MESH_DOMAIN_MODEL:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-19T20:15:00.000Z"
+      date: '2026-05-19T20:15:00.000Z'
       reason: 'sync-tied-stack: index traceability.tests aligned with passing mesh domain Vitest suite'
   name: Mesh Domain Language and Core Types
   priority: P0
@@ -2086,10 +2086,10 @@ REQ-MESH_DOMAIN_MODEL:
       - src/lib/mesh/domain/serialize.test.ts
       - src/lib/mesh/domain/validators.test.ts
   validation_criteria:
-    - method: Unit tests (Vitest)
-      coverage: src/lib/mesh/domain/validators.test.ts, serialize.test.ts, domain.composition.test.ts — mesh_requires_name through invalid_core_objects_are_rejected
-    - method: tied_validate_consistency
-      coverage: REQ-MESH_DOMAIN_MODEL traceability after sync-tied-stack
+    - coverage: REQ-MESH_DOMAIN_MODEL traceability after sync-tied-stack
+      method: tied_validate_consistency
+    - coverage: src/lib/mesh/domain/validators.test.ts, serialize.test.ts, domain.composition.test.ts — mesh_requires_name through invalid_core_objects_are_rejected
+      method: Unit tests (Vitest)
 REQ-MESH_E2E_RELEASE:
   category: Functional
   cross_references:
@@ -2140,10 +2140,10 @@ REQ-MESH_PLATFORM:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
       reason: Initial mesh program umbrella REQ (author-requirement)
   name: Mesh Sync Platform
   priority: P0
@@ -2176,10 +2176,10 @@ REQ-MESH_PLATFORM:
     implementation: []
     tests: []
   validation_criteria:
-    - method: TIED consistency
-      coverage: REQ hierarchy and traceability
-    - method: Automated tests
-      coverage: Per-child REQ validation_criteria
+    - coverage: Per-child REQ validation_criteria
+      method: Automated tests
+    - coverage: REQ hierarchy and traceability
+      method: TIED consistency
 REQ-MESH_REAL_CONNECTORS:
   category: Functional
   cross_references:
@@ -2212,13 +2212,13 @@ REQ-METADATA:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Page Metadata Configuration
@@ -2252,10 +2252,10 @@ REQ-METADATA:
       - IMPL-METADATA
     tests: []
   validation_criteria:
-    - method: View source
-      coverage: <title> and <meta description> tags are present
-    - method: TypeScript validation
-      coverage: TypeScript compilation validates metadata structure
+    - coverage: TypeScript compilation validates metadata structure
+      method: TypeScript validation
+    - coverage: <title> and <meta description> tags are present
+      method: View source
 REQ-MODULE_VALIDATION:
   category: Functional
   detail_file: null
@@ -2282,13 +2282,13 @@ REQ-MOUSE_INTERACTION:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-24T00:00:00.000Z"
+      date: '2026-05-24T00:00:00.000Z'
       reason: LEAP — file column clipboard context menu
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass - 554 tests passing, production build successful
       validator: AI Agent
   name: Mouse and Touch Interaction
@@ -2336,12 +2336,12 @@ REQ-MOUSE_INTERACTION:
       - src/app/files/WorkspaceView.file-column-clipboard.test.tsx
       - src/lib/file-column-clipboard.test.ts
   validation_criteria:
-    - method: Integration tests
-      coverage: Mouse event handling
-    - method: UI tests
-      coverage: Context menu display and actions
-    - method: Touch tests
-      coverage: Touch gesture handling
+    - coverage: Mouse event handling
+      method: Integration tests
+    - coverage: Touch gesture handling
+      method: Touch tests
+    - coverage: Context menu display and actions
+      method: UI tests
 REQ-MOVE_SEMANTICS:
   category: Functional
   cross_references: []
@@ -2349,13 +2349,13 @@ REQ-MOVE_SEMANTICS:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       result: implemented
       validator: AI Agent
   name: Safe Move Semantics
@@ -2389,8 +2389,8 @@ REQ-MOVE_SEMANTICS:
       - IMPL-NSYNC_OPERATIONS
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: Move success, partial failure, full failure
+    - coverage: Move success, partial failure, full failure
+      method: Unit tests
 REQ-MULTI_PANE_LAYOUT:
   category: Functional
   cross_references: []
@@ -2398,13 +2398,13 @@ REQ-MULTI_PANE_LAYOUT:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Implementation complete, 62 layout tests passing
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Multiple Pane Layout Algorithms
@@ -2443,14 +2443,14 @@ REQ-MULTI_PANE_LAYOUT:
       - IMPL-WORKSPACE_VIEW
     tests: []
   validation_criteria:
-    - method: Visual testing
-      coverage: Each layout type renders correctly with 2, 3, 4 panes
-    - method: Geometric testing
-      coverage: Pane bounds calculated correctly, no overlaps (62 tests)
-    - method: Integration tests
-      coverage: useElementSize and WorkspaceView toolbar display mode cycle update pane geometry from measured workspace-area
-    - method: Playwright
-      coverage: e2e/readme-screenshots.spec.ts loads three panes via pane URL deep link
+    - coverage: Pane bounds calculated correctly, no overlaps (62 tests)
+      method: Geometric testing
+    - coverage: useElementSize and WorkspaceView toolbar display mode cycle update pane geometry from measured workspace-area
+      method: Integration tests
+    - coverage: e2e/readme-screenshots.spec.ts loads three panes via pane URL deep link
+      method: Playwright
+    - coverage: Each layout type renders correctly with 2, 3, 4 panes
+      method: Visual testing
 REQ-NAVIGATION_LINKS:
   category: Functional
   cross_references: []
@@ -2458,13 +2458,13 @@ REQ-NAVIGATION_LINKS:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: LEAP — NewTabLink + config security; retired home-page link criteria
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Secure New-Tab Navigation Links
@@ -2502,12 +2502,12 @@ REQ-NAVIGATION_LINKS:
       - src/components/NewTabLink.test.tsx
       - src/lib/config.test.ts
   validation_criteria:
-    - method: Component unit tests
-      coverage: NewTabLink.test.tsx asserts target, rel, and aria-label behavior
-    - method: Config unit tests
-      coverage: config.test.ts asserts navigation.security defaults
-    - method: Security validation
-      coverage: Rendered links include noopener noreferrer in DOM
+    - coverage: NewTabLink.test.tsx asserts target, rel, and aria-label behavior
+      method: Component unit tests
+    - coverage: config.test.ts asserts navigation.security defaults
+      method: Config unit tests
+    - coverage: Rendered links include noopener noreferrer in DOM
+      method: Security validation
 REQ-NSYNC_MULTI_TARGET:
   category: Functional
   cross_references: []
@@ -2515,13 +2515,13 @@ REQ-NSYNC_MULTI_TARGET:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       reason: Initial creation after nsync implementation
     last_validated:
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       result: implemented
       validator: AI Agent
   name: Multi-Destination File Synchronization
@@ -2544,8 +2544,8 @@ REQ-NSYNC_MULTI_TARGET:
       - REQ-MOVE_SEMANTICS
     supersedes: []
   satisfaction_criteria:
-    - criterion: 'Move semantics: delete source only after all destinations succeed'
     - criterion: Cancellation support via AbortSignal
+    - criterion: 'Move semantics: delete source only after all destinations succeed'
     - criterion: Observer pattern for progress callbacks
     - criterion: Sync files to 2+ destinations in parallel
   status: Implemented
@@ -2559,10 +2559,10 @@ REQ-NSYNC_MULTI_TARGET:
       - IMPL-NSYNC_OPERATIONS
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: Multi-destination sync, move semantics, observer callbacks
-    - method: Integration tests
-      coverage: CopyAll/MoveAll from React UI
+    - coverage: CopyAll/MoveAll from React UI
+      method: Integration tests
+    - coverage: Multi-destination sync, move semantics, observer callbacks
+      method: Unit tests
 REQ-PANE_COMMAND_EXEC:
   category: Functional
   detail_file: requirements/REQ-PANE_COMMAND_EXEC.yaml
@@ -2582,13 +2582,13 @@ REQ-PANE_REFRESH:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       reason: Initial implementation with Ctrl+R and Ctrl+Shift+R shortcuts
     last_validated:
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       result: pass - build succeeds with 36 keybindings loaded
       validator: AI Agent
   name: Manual Pane Refresh
@@ -2630,12 +2630,12 @@ REQ-PANE_REFRESH:
       - IMPL-PANE_REFRESH
     tests: []
   validation_criteria:
-    - method: Keystroke testing
-      coverage: Both refresh shortcuts trigger correctly
-    - method: State preservation testing
-      coverage: Cursor and sort settings maintained
-    - method: Integration testing
-      coverage: Refresh works with all layout types and pane counts
+    - coverage: Refresh works with all layout types and pane counts
+      method: Integration testing
+    - coverage: Both refresh shortcuts trigger correctly
+      method: Keystroke testing
+    - coverage: Cursor and sort settings maintained
+      method: State preservation testing
 REQ-REACT_SSR_STABILITY:
   category: Non-Functional
   cross_references: []
@@ -2643,13 +2643,13 @@ REQ-REACT_SSR_STABILITY:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Documented fixes for duplicate keys, SSR localStorage errors, and keybinding timing
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: React SSR Stability and Correctness
@@ -2689,10 +2689,10 @@ REQ-REACT_SSR_STABILITY:
       - IMPL-WORKSPACE_VIEW
     tests: []
   validation_criteria:
-    - method: Console inspection
-      coverage: No React warnings or errors during page load
-    - method: Production build
-      coverage: Build succeeds without errors
+    - coverage: No React warnings or errors during page load
+      method: Console inspection
+    - coverage: Build succeeds without errors
+      method: Production build
 REQ-README_DEMO_AUTOMATION:
   category: Documentation
   cross_references:
@@ -2711,13 +2711,13 @@ REQ-RESPONSIVE_DESIGN:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Responsive Layout Design
@@ -2751,10 +2751,10 @@ REQ-RESPONSIVE_DESIGN:
       - IMPL-RESPONSIVE_CLASSES
     tests: []
   validation_criteria:
-    - method: Visual inspection
-      coverage: Various viewport sizes (320px, 768px, 1024px, 1920px)
-    - method: Responsive testing
-      coverage: Content flows properly without overflow
+    - coverage: Content flows properly without overflow
+      method: Responsive testing
+    - coverage: Various viewport sizes (320px, 768px, 1024px, 1920px)
+      method: Visual inspection
 REQ-ROOT_LAYOUT:
   category: Functional
   cross_references: []
@@ -2762,13 +2762,13 @@ REQ-ROOT_LAYOUT:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Root Layout with HTML Structure
@@ -2807,12 +2807,12 @@ REQ-ROOT_LAYOUT:
       - IMPL-ROOT_LAYOUT
     tests: []
   validation_criteria:
-    - method: Component testing
-      coverage: Layout component renders without errors
-    - method: Integration testing
-      coverage: All pages are wrapped by the layout automatically
-    - method: TypeScript validation
-      coverage: TypeScript compilation passes without layout-related errors
+    - coverage: Layout component renders without errors
+      method: Component testing
+    - coverage: All pages are wrapped by the layout automatically
+      method: Integration testing
+    - coverage: TypeScript compilation passes without layout-related errors
+      method: TypeScript validation
 REQ-STORE_FAILURE_DETECT:
   category: Non-Functional
   cross_references: []
@@ -2820,13 +2820,13 @@ REQ-STORE_FAILURE_DETECT:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       result: implemented
       validator: AI Agent
   name: Store Failure Detection
@@ -2860,8 +2860,8 @@ REQ-STORE_FAILURE_DETECT:
       - IMPL-NSYNC_STORE
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: Error streak tracking, abort logic
+    - coverage: Error streak tracking, abort logic
+      method: Unit tests
 REQ-TAILWIND_STYLING:
   category: Non-Functional
   cross_references: []
@@ -2869,13 +2869,13 @@ REQ-TAILWIND_STYLING:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Tailwind CSS Styling System
@@ -2911,10 +2911,10 @@ REQ-TAILWIND_STYLING:
       - IMPL-FLEX_LAYOUT
     tests: []
   validation_criteria:
-    - method: Class testing
-      coverage: Tailwind classes apply correctly in browser
-    - method: Build testing
-      coverage: Production CSS bundle is optimized (unused styles removed)
+    - coverage: Production CSS bundle is optimized (unused styles removed)
+      method: Build testing
+    - coverage: Tailwind classes apply correctly in browser
+      method: Class testing
 REQ-TIED_SETUP:
   category: Functional
   detail_file: null
@@ -2940,13 +2940,13 @@ REQ-TOOLBAR_CONFIG:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       result: planned
       validator: AI Agent
   name: Configuration-Driven Toolbar Customization
@@ -2988,12 +2988,12 @@ REQ-TOOLBAR_CONFIG:
       - IMPL-TOOLBAR_CONFIG
     tests: []
   validation_criteria:
-    - method: Schema validation tests
-      coverage: Configuration structure validation
-    - method: Runtime validation tests
-      coverage: Invalid config handling, fallbacks
-    - method: Integration tests
-      coverage: Configuration application to UI
+    - coverage: Configuration application to UI
+      method: Integration tests
+    - coverage: Invalid config handling, fallbacks
+      method: Runtime validation tests
+    - coverage: Configuration structure validation
+      method: Schema validation tests
 REQ-TOOLBAR_SYSTEM:
   category: Functional
   cross_references: []
@@ -3002,13 +3002,13 @@ REQ-TOOLBAR_SYSTEM:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
       reason: LEAP — named toolbar display mode (third session display state)
     last_validated:
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       result: planned
       validator: AI Agent
   name: File Manager Toolbar System
@@ -3066,16 +3066,16 @@ REQ-TOOLBAR_SYSTEM:
       - IMPL-TOOLBAR_CONFIG
     tests: []
   validation_criteria:
-    - method: Component tests
-      coverage: Button rendering, group layout, keystroke display, showActionLabel named labels, ToolbarCompactToggle aria-pressed and three-mode cycle, showKeystroke=false badge hide with tooltip shortcut retention, mergeTopToolbarConfigs tier order
-    - method: Integration tests
-      coverage: WorkspaceView toolbar compact/expanded/named branch, toggle placement on first visible top tier, merged single-row compact toolbar, named mode visible labels, action dispatch and configuration changes, pane height remeasure on display mode change via workspace-area
-    - method: Accessibility tests
-      coverage: ARIA labels, keyboard navigation, focus management, toolbar-compact-toggle aria-pressed
-    - method: Manual testing
-      coverage: Visual inspection, compact vs expanded vs named layout, interaction testing, responsive testing
-    - method: Playwright
-      coverage: e2e/readme-screenshots.spec.ts and e2e/copyall-demo.spec.ts select toolbar-view.comparison and toolbar-file.copyAll
+    - coverage: ARIA labels, keyboard navigation, focus management, toolbar-compact-toggle aria-pressed
+      method: Accessibility tests
+    - coverage: Button rendering, group layout, keystroke display, showActionLabel named labels, ToolbarCompactToggle aria-pressed and three-mode cycle, showKeystroke=false badge hide with tooltip shortcut retention, mergeTopToolbarConfigs tier order
+      method: Component tests
+    - coverage: WorkspaceView toolbar compact/expanded/named branch, toggle placement on first visible top tier, merged single-row compact toolbar, named mode visible labels, action dispatch and configuration changes, pane height remeasure on display mode change via workspace-area
+      method: Integration tests
+    - coverage: Visual inspection, compact vs expanded vs named layout, interaction testing, responsive testing
+      method: Manual testing
+    - coverage: e2e/readme-screenshots.spec.ts and e2e/copyall-demo.spec.ts select toolbar-view.comparison and toolbar-file.copyAll
+      method: Playwright
 REQ-TOUCH_MTIME:
   category: Functional
   detail_file: requirements/REQ-TOUCH_MTIME.yaml
@@ -3089,13 +3089,13 @@ REQ-TYPESCRIPT:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: TypeScript Type Safety
@@ -3130,10 +3130,10 @@ REQ-TYPESCRIPT:
     implementation: []
     tests: []
   validation_criteria:
-    - method: Build testing
-      coverage: npm run build completes without TypeScript errors
-    - method: IDE testing
-      coverage: IDE shows proper type hints and autocomplete
+    - coverage: npm run build completes without TypeScript errors
+      method: Build testing
+    - coverage: IDE shows proper type hints and autocomplete
+      method: IDE testing
 REQ-VERIFY_DEST:
   category: Functional
   cross_references: []
@@ -3141,13 +3141,13 @@ REQ-VERIFY_DEST:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       result: implemented
       validator: AI Agent
   name: Destination Verification by Hash
@@ -3182,8 +3182,8 @@ REQ-VERIFY_DEST:
       - IMPL-NSYNC_VERIFY
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: Verification success and failure cases
+    - coverage: Verification success and failure cases
+      method: Unit tests
 REQ-WORKSPACE_MESH_BRIDGE:
   category: Functional
   cross_references:

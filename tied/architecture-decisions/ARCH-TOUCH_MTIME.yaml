@@ -7,17 +7,17 @@ ARCH-TOUCH_MTIME:
   implementation_approach:
     details:
       - 'bulk-touch entries: { path, mtime ISO }[]'
+      - Display-spec visibility gate on all paths
       - 'TouchFilePaneTarget: thisPane | allPanes'
       - 'TouchMtimeMode: now | specified | earliest | latest'
-      - Display-spec visibility gate on all paths
     summary: TouchFileDialog + touch-file.ts + bulk-touch API
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
       reason: Initial creation
   name: Touch Modification Time Architecture
   rationale:

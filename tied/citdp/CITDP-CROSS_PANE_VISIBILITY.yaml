@@ -1,5 +1,3 @@
-# CITDP change-analysis record — cross-pane visibility toolbar filters + snapshot v5
-# change_request_id: REQ-CROSS_PANE_VISIBILITY
 CITDP-CROSS_PANE_VISIBILITY:
   change_definition:
     current_behavior_prior: |
@@ -43,7 +41,7 @@ CITDP-CROSS_PANE_VISIBILITY:
     record_status: complete
   record_identity:
     change_request_id: REQ-CROSS_PANE_VISIBILITY
-    recorded_at: 2026-05-23
+    recorded_at: {}
     tied_context:
       architecture:
         - ARCH-COMPARISON_INDEX
@@ -68,14 +66,14 @@ CITDP-CROSS_PANE_VISIBILITY:
     workspace_root: /Users/fareed/Documents/dev/node/panorama
   risk_analysis:
     risks:
-      - id: RISK-001
-        description: Marks desync when visibility filters change
+      - description: Marks desync when visibility filters change
+        id: RISK-001
         mitigation: reconcilePaneSelection on focused pane after filter apply
-      - id: RISK-002
-        description: Stale comparison index when pane listings change
+      - description: Stale comparison index when pane listings change
+        id: RISK-002
         mitigation: Rebuild index in useMemo when panes.files change
-      - id: RISK-003
-        description: v5 snapshot incompatible with v4 readers
+      - description: v5 snapshot incompatible with v4 readers
+        id: RISK-003
         mitigation: Parse v1-v5; default empty toggles for legacy
   test_strategy:
     summary: |

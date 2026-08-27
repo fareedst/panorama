@@ -1,28 +1,28 @@
 IMPL-RENAME_DIALOG:
   code_locations:
     files:
-      - path: src/app/files/components/RenameDialog.tsx
-        description: Rename modal component
-        lines:
-          - 1
-          - 100
-      - path: src/app/files/WorkspaceView.tsx
-        description: renameDialog state, handleRenameConfirm, file.rename handler, RenameDialog render, onRename to FilePane
-        lines: []
-      - path: src/app/files/components/FilePane.tsx
-        description: 'onRename prop type (file: FileStat) => void'
+      - description: 'onRename prop type (file: FileStat) => void'
         lines:
           - 54
           - 55
-      - path: src/app/files/components/ContextMenu.tsx
-        description: onRename(file) call and type
+        path: src/app/files/components/FilePane.tsx
+      - description: onRename(file) call and type
         lines:
           - 161
           - 28
+        path: src/app/files/components/ContextMenu.tsx
+      - description: Rename modal component
+        lines:
+          - 1
+          - 100
+        path: src/app/files/components/RenameDialog.tsx
+      - description: renameDialog state, handleRenameConfirm, file.rename handler, RenameDialog render, onRename to FilePane
+        lines: []
+        path: src/app/files/WorkspaceView.tsx
     functions:
-      - name: handleRenameConfirm
-        description: POST /api/files rename then handleNavigate to refresh pane
+      - description: POST /api/files rename then handleNavigate to refresh pane
         file: src/app/files/WorkspaceView.tsx
+        name: handleRenameConfirm
   cross_references:
     - ARCH-KEYBIND_SYSTEM
     - IMPL-KEYBINDS
@@ -44,13 +44,13 @@ IMPL-RENAME_DIALOG:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit essence_pseudocode from production code and tests
     last_validated:
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       result: pass - R opens dialog, context menu Rename opens dialog, rename API and refresh work
       validator: AI Agent
   name: Rename File Dialog and R-Key Handler
@@ -60,9 +60,9 @@ IMPL-RENAME_DIALOG:
       - R key opens rename dialog for cursor file; context menu Rename opens dialog for right-clicked file
       - Single RenameDialog component; same API flow for both entry points
     problems_solved:
-      - 'No UI for single-file rename despite POST /api/files operation: rename already existing'
       - Context menu Rename had no wired handler from WorkspaceView
       - Keystroke 'r' to rename did nothing (handler was TODO/no-op)
+      - 'No UI for single-file rename despite POST /api/files operation: rename already existing'
     why: Implements the file.rename action so that keystroke R and context menu Rename open a modal and perform rename via existing API
   related_decisions:
     depends_on:

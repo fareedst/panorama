@@ -1,10 +1,10 @@
 IMPL-YAML_CONFIG:
   code_locations:
     files:
-      - path: config/site.yaml
-        description: Site configuration
-      - path: config/theme.yaml
-        description: Theme configuration
+      - description: Site configuration
+        path: config/site.yaml
+      - description: Theme configuration
+        path: config/theme.yaml
     functions: []
   cross_references:
     - ARCH-CONFIG_DRIVEN_UI
@@ -20,13 +20,13 @@ IMPL-YAML_CONFIG:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit essence_pseudocode from config loader tests
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: YAML Configuration Structure

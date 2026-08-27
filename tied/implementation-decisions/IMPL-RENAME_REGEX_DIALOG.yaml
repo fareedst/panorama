@@ -19,10 +19,10 @@ IMPL-RENAME_REGEX_DIALOG:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
       reason: Initial creation for Rename Regex context menu and dialog
   name: Rename Regex Dialog and Context Menu
   rationale:

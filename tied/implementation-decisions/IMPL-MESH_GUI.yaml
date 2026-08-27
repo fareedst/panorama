@@ -1,14 +1,14 @@
 IMPL-MESH_GUI:
   code_locations:
     files:
-      - path: src/app/mesh/page.tsx
-        description: Mesh list page
-      - path: src/app/mesh/components/MeshListClient.tsx
-        description: IMPL-MESH_GUI_list — note and save-time columns, sortable headers (mesh-list-sort-*), Files startup mesh preference column
-      - path: src/app/mesh/[meshId]/depots/page.tsx
-        description: IMPL-MESH_GUI_depots — per-mesh depots route
-      - path: src/app/mesh/components/MeshDepotsClient.tsx
-        description: IMPL-MESH_GUI_depots — depot CRUD and credential stub
+      - description: IMPL-MESH_GUI_depots — depot CRUD and credential stub
+        path: src/app/mesh/components/MeshDepotsClient.tsx
+      - description: IMPL-MESH_GUI_depots — per-mesh depots route
+        path: src/app/mesh/[meshId]/depots/page.tsx
+      - description: IMPL-MESH_GUI_list — note and save-time columns, sortable headers (mesh-list-sort-*), Files startup mesh preference column
+        path: src/app/mesh/components/MeshListClient.tsx
+      - description: Mesh list page
+        path: src/app/mesh/page.tsx
     functions: []
   cross_references:
     - REQ-MESH_GUI
@@ -18,10 +18,10 @@ IMPL-MESH_GUI:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: retrofit pseudocode; MeshListClient and MeshDepotsClient comment alignment
   name: Mesh React UI
   rationale:

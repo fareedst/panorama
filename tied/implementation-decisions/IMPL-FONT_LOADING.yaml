@@ -1,8 +1,8 @@
 IMPL-FONT_LOADING:
   code_locations:
     files:
-      - path: src/app/layout.tsx
-        description: Font loading and application
+      - description: Font loading and application
+        path: src/app/layout.tsx
     functions: []
   cross_references:
     - ARCH-CSS_VARIABLES_FONTS
@@ -19,13 +19,13 @@ IMPL-FONT_LOADING:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit essence_pseudocode from tests/code; align block-lead comments
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Font Loading Implementation

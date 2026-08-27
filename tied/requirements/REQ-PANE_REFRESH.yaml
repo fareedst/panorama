@@ -1,17 +1,16 @@
-# REQ detail — REQ-PANE_REFRESH
 REQ-PANE_REFRESH:
   category: Functional
   description: Users need to manually refresh directory listings when external changes occur outside the file manager (e.g., files added/modified by other processes)
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       reason: Initial implementation with Ctrl+R and Ctrl+Shift+R shortcuts
     last_validated:
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       result: pass - build succeeds with 36 keybindings loaded
       validator: AI Agent
   name: Manual Pane Refresh
@@ -53,9 +52,9 @@ REQ-PANE_REFRESH:
       - IMPL-PANE_REFRESH
     tests: []
   validation_criteria:
-    - method: Keystroke testing
-      coverage: Both refresh shortcuts trigger correctly
-    - method: State preservation testing
-      coverage: Cursor and sort settings maintained
-    - method: Integration testing
-      coverage: Refresh works with all layout types and pane counts
+    - coverage: Refresh works with all layout types and pane counts
+      method: Integration testing
+    - coverage: Both refresh shortcuts trigger correctly
+      method: Keystroke testing
+    - coverage: Cursor and sort settings maintained
+      method: State preservation testing

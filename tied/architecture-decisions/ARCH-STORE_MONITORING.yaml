@@ -8,8 +8,8 @@ ARCH-STORE_MONITORING:
     details: []
     summary: Simplified store monitoring using error streak tracking instead of device IDs
   metadata:
-    last_updated: 2026-02-09T00:00:00.000Z
-    registered: 2026-02-09T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Store Monitoring Design
   rationale:
     benefits: []

@@ -1,40 +1,40 @@
 IMPL-WORKSPACE_MESH_BRIDGE:
   code_locations:
     files:
-      - path: src/lib/workspace-mesh-bridge.ts
-        description: CAPTURE_SNAPSHOT, BUILD_MESH_PAYLOAD, APPEND_SNAPSHOT_LAYOUT_WARNINGS, BUILD_WORKSPACE_RESTORE_BUNDLE, LIST_DIRECTORY_VIA_FILES_API, PLAN_DEPOT_SYNC, DIFF_SAVED_VS_CURRENT, WORKSPACE_SNAPSHOT_SUMMARY, FORMAT_PANE_SORT_SETTINGS, FORMAT_DISPLAY_SPEC_LABEL
-      - path: src/lib/files.layout.ts
-        description: NORMALIZE_LAYOUT via normalizeLayoutType
-      - path: src/components/NewTabLink.tsx
-        description: Cross-surface new-tab links with security and a11y
-      - path: src/app/files/page.tsx
-        description: RESTORE_ON_FILES_PAGE, meshRestorePending, SHOW_LOADED_WORKSPACE_NAME server bootstrap
-      - path: src/app/files/WorkspaceView.tsx
-        description: RESTORE_LAYOUT_IN_WORKSPACE_VIEW client rehydrate, WORKSPACE_HEADER_STATUS, STORE_FROM_WORKSPACE_UI, DIFF_SAVED_VS_CURRENT
-      - path: src/app/files/components/SaveWorkspaceMeshDialog.tsx
-        description: STORE_FROM_WORKSPACE_UI update vs create modes
-      - path: src/app/files/components/WorkspaceDiffDialog.tsx
-        description: DIFF_SAVED_VS_CURRENT dialog presentation
-      - path: src/app/api/mesh/[meshId]/workspace/route.ts
-        description: UPDATE_EXISTING_WORKSPACE PUT handler
-      - path: src/app/mesh/components/MeshDetailClient.tsx
-        description: MESH_DETAIL_RESTORE_LINK, WORKSPACE_SNAPSHOT_SUMMARY wiring with display spec resolver
-      - path: src/app/mesh/components/WorkspaceSnapshotSummaryList.tsx
-        description: WORKSPACE_SNAPSHOT_SUMMARY_LIST — per-pane Compare filter labels on mesh detail
-      - path: src/lib/files-startup-mesh.ts
-        description: RESOLVE_FILES_STARTUP_MESH — localStorage get/set/clear for files startup mesh preference
-      - path: src/app/files/FilesStartupMeshGate.tsx
-        description: FILES_STARTUP_MESH_GATE — validate stored mesh id and redirect to /files?meshId= before WorkspaceView
+      - description: CAPTURE_SNAPSHOT, BUILD_MESH_PAYLOAD, APPEND_SNAPSHOT_LAYOUT_WARNINGS, BUILD_WORKSPACE_RESTORE_BUNDLE, LIST_DIRECTORY_VIA_FILES_API, PLAN_DEPOT_SYNC, DIFF_SAVED_VS_CURRENT, WORKSPACE_SNAPSHOT_SUMMARY, FORMAT_PANE_SORT_SETTINGS, FORMAT_DISPLAY_SPEC_LABEL
+        path: src/lib/workspace-mesh-bridge.ts
+      - description: Cross-surface new-tab links with security and a11y
+        path: src/components/NewTabLink.tsx
+      - description: DIFF_SAVED_VS_CURRENT dialog presentation
+        path: src/app/files/components/WorkspaceDiffDialog.tsx
+      - description: FILES_STARTUP_MESH_GATE — validate stored mesh id and redirect to /files?meshId= before WorkspaceView
+        path: src/app/files/FilesStartupMeshGate.tsx
+      - description: MESH_DETAIL_RESTORE_LINK, WORKSPACE_SNAPSHOT_SUMMARY wiring with display spec resolver
+        path: src/app/mesh/components/MeshDetailClient.tsx
+      - description: NORMALIZE_LAYOUT via normalizeLayoutType
+        path: src/lib/files.layout.ts
+      - description: RESOLVE_FILES_STARTUP_MESH — localStorage get/set/clear for files startup mesh preference
+        path: src/lib/files-startup-mesh.ts
+      - description: RESTORE_LAYOUT_IN_WORKSPACE_VIEW client rehydrate, WORKSPACE_HEADER_STATUS, STORE_FROM_WORKSPACE_UI, DIFF_SAVED_VS_CURRENT
+        path: src/app/files/WorkspaceView.tsx
+      - description: RESTORE_ON_FILES_PAGE, meshRestorePending, SHOW_LOADED_WORKSPACE_NAME server bootstrap
+        path: src/app/files/page.tsx
+      - description: STORE_FROM_WORKSPACE_UI update vs create modes
+        path: src/app/files/components/SaveWorkspaceMeshDialog.tsx
+      - description: UPDATE_EXISTING_WORKSPACE PUT handler
+        path: src/app/api/mesh/[meshId]/workspace/route.ts
+      - description: WORKSPACE_SNAPSHOT_SUMMARY_LIST — per-pane Compare filter labels on mesh detail
+        path: src/app/mesh/components/WorkspaceSnapshotSummaryList.tsx
     functions: []
   description: workspace-mesh-bridge.ts (capture v5 with cross-pane visibility, sharedSort, fileColumns, parse, diff, planDepotSync, patch payload, appendSnapshotLayoutWarnings, buildWorkspaceRestoreBundle, listDirectoryViaFilesApi, WORKSPACE_SNAPSHOT_SUMMARY, WORKSPACE_SNAPSHOT_SUMMARY_LIST, FORMAT_PANE_SORT_SETTINGS, FORMAT_DISPLAY_SPEC_LABEL), normalizeLayoutType in files.layout, SaveWorkspaceMeshDialog (update/create), WorkspaceDiffDialog, LayoutPickerPopover via WorkspaceView, NewTabLink, WorkspaceView store/restore/update/diff with meshRestorePending client full rehydrate, compact header banner with WORKSPACE_HEADER_STATUS, FilesPage meshId bootstrap, PUT /api/mesh/:meshId/workspace, MeshDetailClient summary wiring and open-workspace NewTabLink, WorkspaceSnapshotSummaryList per-pane Compare filter labels. E2E justified for full save/restore/update/diff UI path.
   essence_pseudocode_path: implementation-decisions/IMPL-WORKSPACE_MESH_BRIDGE-pseudocode.md
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-21T00:00:00.000Z"
+      date: '2026-05-21T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-29T00:00:00.000Z"
+      date: '2026-05-29T00:00:00.000Z'
       reason: LEAP — vocabulary see_also back-link
   name: Workspace Mesh Bridge Implementation
   related_decisions:

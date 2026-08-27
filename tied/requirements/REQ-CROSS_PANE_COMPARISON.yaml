@@ -4,13 +4,13 @@ REQ-CROSS_PANE_COMPARISON:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
       reason: LEAP — Touch aggregate mtime reuse via resolveAggregateMtime
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Cross-Pane File Comparison
@@ -57,9 +57,9 @@ REQ-CROSS_PANE_COMPARISON:
     tests:
       - e2e/readme-screenshots.spec.ts
   validation_criteria:
-    - method: Comparison testing
-      coverage: Comparison colors display correctly
-    - method: Index testing
-      coverage: Comparison index builds and updates correctly
-    - method: Playwright
-      coverage: e2e/readme-screenshots.spec.ts captures 3-pane-comparison.png with comparison mode active
+    - coverage: Comparison colors display correctly
+      method: Comparison testing
+    - coverage: Comparison index builds and updates correctly
+      method: Index testing
+    - coverage: e2e/readme-screenshots.spec.ts captures 3-pane-comparison.png with comparison mode active
+      method: Playwright

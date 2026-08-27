@@ -1,96 +1,30 @@
-# Architecture Decisions Index (YAML Database)
-#
-# This YAML file serves as the central index/registry for all architecture decisions in the project.
-# Each top-level key is a semantic token (e.g., ARCH-TIED_STRUCTURE).
-#
-# To append a new architecture decision:
-# 1. Copy the template block at the bottom of this file (ARCH-IDENTIFIER)
-# 2. Paste it at the end with a blank line before it
-# 3. Replace ARCH-IDENTIFIER with your new token
-# 4. Fill in all fields
-# 5. Set detail_file to your new .yaml under architecture-decisions/ or null; methodology: agent-req-implementation-checklist.yaml
-#
-# Field descriptions:
-#   name: Short descriptive name of the decision
-#   status: Active | Deprecated | Template | Superseded
-#   cross_references: List of REQ-* tokens this decision fulfills
-#   rationale: Structured explanation with why, problems_solved, benefits
-#   alternatives_considered: List of alternative items with pros, cons, rejected_reason
-#   implementation_approach: Structured approach with summary and details
-#   traceability: Structured links to requirements, implementation, tests, code_annotations
-#   related_decisions: Lists of depends_on, informs, see_also (YAML lists or [])
-#   detail_file: Path to the detailed .yaml in architecture-decisions/ or null for methodology index-only; procedure: tied/docs/agent-req-implementation-checklist.yaml
-#   metadata: Optional metadata
-# Methodology seed: token identity and traceability only; expand rationale in project detail files.
+ARCH-EVIDENCE_CHAIN_PROFILE:
+  cross_references:
+    - ARCH-QUALITY_ASSURANCE_PROFILES
+    - REQ-EVIDENCE_CHAIN_PROFILE
+  decision: Add a dedicated read-only evidence-chain-profile.v1 schema and depth-gated orchestrator that composes existing fidelity and quality adapters without calling runFirstSlice wholesale.
+  detail_file: architecture-decisions/ARCH-EVIDENCE_CHAIN_PROFILE.yaml
+  name: Evidence chain profile architecture
+  related_decisions:
+    depends_on:
+      - ARCH-QUALITY_ASSURANCE_PROFILES
+      - ARCH-TIED_FIDELITY_RESEARCH
+    informs:
+      - IMPL-EVIDENCE_CHAIN_PROFILE
+    see_also: []
+  status: Accepted
+  traceability:
+    implementation:
+      - IMPL-EVIDENCE_CHAIN_PROFILE
+    requirements:
+      - REQ-EVIDENCE_CHAIN_PROFILE
 ARCH-FEEDBACK_STORAGE:
   cross_references:
     - REQ-FEEDBACK_TO_TIED
-  detail_file: null
+  detail_file: architecture-decisions/ARCH-FEEDBACK_STORAGE.yaml
   metadata:
     last_updated:
       reason: 'Methodology seed; procedure: tied/docs/agent-req-implementation-checklist.yaml'
-      # ---
-      # Template Record - Copy this block to create new architecture decisions
-      # ---
-      #
-      # ARCH-IDENTIFIER:
-      #   name: Architecture Decision Title
-      #   status: Active
-      #   cross_references:
-      #     - REQ-RELATED_REQUIREMENT
-      #   rationale:
-      #     why: "Primary reason for this decision"
-      #     problems_solved:
-      #       - "Problem 1"
-      #       - "Problem 2"
-      #     benefits:
-      #       - "Benefit 1"
-      #       - "Benefit 2"
-      #   alternatives_considered:
-      #     - name: "Alternative 1"
-      #       pros:
-      #         - "Pro 1"
-      #       cons:
-      #         - "Con 1"
-      #       rejected_reason: "Why it was rejected"
-      #     - name: "Alternative 2"
-      #       pros:
-      #         - "Pro 1"
-      #       cons:
-      #         - "Con 1"
-      #       rejected_reason: "Why it was rejected"
-      #   implementation_approach:
-      #     summary: "High-level description of the approach"
-      #     details:
-      #       - "Key component 1"
-      #       - "Key component 2"
-      #       - "Integration point 1"
-      #   traceability:
-      #     requirements:
-      #       - REQ-IDENTIFIER
-      #     implementation:
-      #       - IMPL-IDENTIFIER
-      #     tests:
-      #       - testFeatureName_ARCH_IDENTIFIER
-      #     code_annotations:
-      #       - ARCH-IDENTIFIER
-      #   related_decisions:
-      #     depends_on: []
-      #     informs: []
-      #     see_also: []
-      #   detail_file: architecture-decisions/ARCH-IDENTIFIER.yaml
-      #   metadata:
-      #     created:
-      #       date: YYYY-MM-DD
-      #       author: "agent/contributor"
-      #     last_updated:
-      #       date: YYYY-MM-DD
-      #       author: "agent/contributor"
-      #       reason: "Initial creation"
-      #     last_validated:
-      #       date: YYYY-MM-DD
-      #       validator: "agent/contributor"
-      #       result: "pass"
   name: Feedback Storage for TIED Reporting
   related_decisions:
     depends_on:
@@ -107,7 +41,7 @@ ARCH-FEEDBACK_STORAGE:
 ARCH-MODULE_VALIDATION:
   cross_references:
     - REQ-MODULE_VALIDATION
-  detail_file: null
+  detail_file: architecture-decisions/ARCH-MODULE_VALIDATION.yaml
   metadata:
     last_updated:
       reason: 'Methodology seed; procedure: tied/docs/agent-req-implementation-checklist.yaml'
@@ -124,10 +58,102 @@ ARCH-MODULE_VALIDATION:
       - IMPL-MODULE_VALIDATION
     requirements:
       - REQ-MODULE_VALIDATION
+ARCH-QUALITY_ASSURANCE_PROFILES:
+  cross_references:
+    - REQ-QUALITY_ASSURANCE_EVIDENCE
+  detail_file: architecture-decisions/ARCH-QUALITY_ASSURANCE_PROFILES.yaml
+  name: Risk-triggered quality assurance profiles and evidence boundary
+  related_decisions:
+    depends_on:
+      - ARCH-MODULE_VALIDATION
+      - ARCH-TIED_STRUCTURE
+    informs:
+      - IMPL-QUALITY_ASSURANCE_PILOT_WEBHOOK
+      - IMPL-QUALITY_BINDING_INVENTORY
+      - IMPL-QUALITY_EVIDENCE_COLLECTION
+      - IMPL-QUALITY_EVIDENCE_COMMAND_RUNNER
+      - IMPL-QUALITY_EVIDENCE_MANIFEST
+      - IMPL-QUALITY_PSEUDOCODE_VALIDATOR
+      - IMPL-QUALITY_SECURITY_PROFILE_VALIDATION
+      - IMPL-QUALITY_TEST_ADEQUACY
+    see_also: []
+  status: Active
+  traceability:
+    code_annotations:
+      - ARCH-QUALITY_ASSURANCE_PROFILES
+    implementation:
+      - IMPL-QUALITY_ASSURANCE_PILOT_WEBHOOK
+      - IMPL-QUALITY_BINDING_INVENTORY
+      - IMPL-QUALITY_EVIDENCE_COLLECTION
+      - IMPL-QUALITY_EVIDENCE_COMMAND_RUNNER
+      - IMPL-QUALITY_EVIDENCE_MANIFEST
+      - IMPL-QUALITY_PSEUDOCODE_VALIDATOR
+      - IMPL-QUALITY_SECURITY_PROFILE_VALIDATION
+      - IMPL-QUALITY_TEST_ADEQUACY
+    requirements:
+      - REQ-QUALITY_ASSURANCE_EVIDENCE
+    tests:
+      - mcp-server/src/analysis/binding-inventory.test.ts
+      - mcp-server/src/analysis/pseudocode-validator.test.ts
+      - mcp-server/src/analysis/traceability-gap.test.ts
+      - mcp-server/src/quality-adequacy.test.ts
+      - mcp-server/src/quality-command-runner.test.ts
+      - mcp-server/src/quality-evidence-collection.test.ts
+      - mcp-server/src/quality-evidence.test.ts
+      - mcp-server/src/quality-security.test.ts
+      - mcp-server/src/tools/quality-validation-mcp.test.ts
+      - pilot/webhook-inbox/test/webhook-inbox.test.mjs
+ARCH-TIED_ADVERSARIAL_INQUIRY:
+  cross_references:
+    - REQ-TIED_ADVERSARIAL_INQUIRY
+  description: Separate canonical TIED intent from deterministic obligation projections, fidelity evidence, executable assurance, and review-gated status decisions.
+  detail_file: architecture-decisions/ARCH-TIED_ADVERSARIAL_INQUIRY.yaml
+  metadata:
+    last_updated:
+      reason: Methodology seed for bounded adversarial inquiry and fidelity evidence
+  name: Read-only obligation graph and evidence gate boundary
+  related_decisions:
+    depends_on:
+      - ARCH-MODULE_VALIDATION
+      - ARCH-QUALITY_ASSURANCE_PROFILES
+      - ARCH-TIED_FIDELITY_RESEARCH
+    informs:
+      - IMPL-TIED_ADVERSARIAL_INQUIRY
+      - IMPL-TIED_ADVERSARIAL_INQUIRY_CHECKLIST
+    see_also: []
+  status: Active
+  traceability:
+    implementation:
+      - IMPL-TIED_ADVERSARIAL_INQUIRY
+      - IMPL-TIED_ADVERSARIAL_INQUIRY_CHECKLIST
+    requirements:
+      - REQ-TIED_ADVERSARIAL_INQUIRY
+ARCH-TIED_FIDELITY_RESEARCH:
+  cross_references:
+    - REQ-TIED_FIDELITY_RESEARCH
+  detail_file: architecture-decisions/ARCH-TIED_FIDELITY_RESEARCH.yaml
+  metadata:
+    last_updated:
+      reason: 'Methodology seed for read-only fidelity research; procedure: tied/docs/tied-fidelity-research.md'
+  name: Read-Only Fidelity Research Boundary
+  related_decisions:
+    depends_on:
+      - ARCH-MODULE_VALIDATION
+      - ARCH-TIED_STRUCTURE
+    informs:
+      - IMPL-TIED_FIDELITY_RESEARCH
+    see_also:
+      - ARCH-QUALITY_ASSURANCE_PROFILES
+  status: Active
+  traceability:
+    implementation:
+      - IMPL-TIED_FIDELITY_RESEARCH
+    requirements:
+      - REQ-TIED_FIDELITY_RESEARCH
 ARCH-TIED_STRUCTURE:
   cross_references:
     - REQ-TIED_SETUP
-  detail_file: null
+  detail_file: architecture-decisions/ARCH-TIED_STRUCTURE.yaml
   metadata:
     last_updated:
       reason: 'Methodology seed; procedure: tied/docs/agent-req-implementation-checklist.yaml'

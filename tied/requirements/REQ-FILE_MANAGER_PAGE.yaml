@@ -4,13 +4,13 @@ REQ-FILE_MANAGER_PAGE:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-29T00:00:00.000Z"
+      date: '2026-05-29T00:00:00.000Z'
       reason: LEAP — vocabulary standards compliance; workspace-pane glossary criterion
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Multi-Pane File Manager Page
@@ -50,9 +50,9 @@ REQ-FILE_MANAGER_PAGE:
       - IMPL-FILE_MANAGER_PAGE
     tests: []
   validation_criteria:
-    - method: Page testing
-      coverage: Page renders without errors at /files
-    - method: Navigation testing
-      coverage: All keyboard shortcuts work correctly
-    - method: Layout testing
-      coverage: Multiple layout types render properly
+    - coverage: Multiple layout types render properly
+      method: Layout testing
+    - coverage: All keyboard shortcuts work correctly
+      method: Navigation testing
+    - coverage: Page renders without errors at /files
+      method: Page testing

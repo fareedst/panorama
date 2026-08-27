@@ -1,23 +1,23 @@
 IMPL-PANE_REFRESH:
   code_locations:
     files:
-      - path: config/files.yaml
-        description: Added pane.refresh and pane.refresh-all keybinding definitions
+      - description: Added pane.refresh and pane.refresh-all keybinding definitions
         lines:
           - 287
           - 300
-      - path: src/app/files/WorkspaceView.tsx
-        description: Added refresh action handlers in actionHandlers Map
+        path: config/files.yaml
+      - description: Added refresh action handlers in actionHandlers Map
         lines:
           - 1158
           - 1166
+        path: src/app/files/WorkspaceView.tsx
     functions:
-      - name: pane.refresh handler
-        description: Refreshes currently focused pane by calling handleNavigate with current path
+      - description: Refreshes all panes in parallel using Promise.all
         file: src/app/files/WorkspaceView.tsx
-      - name: pane.refresh-all handler
-        description: Refreshes all panes in parallel using Promise.all
+        name: pane.refresh-all handler
+      - description: Refreshes currently focused pane by calling handleNavigate with current path
         file: src/app/files/WorkspaceView.tsx
+        name: pane.refresh handler
   cross_references:
     - ARCH-KEYBIND_SYSTEM
     - ARCH-PANE_REFRESH
@@ -27,24 +27,24 @@ IMPL-PANE_REFRESH:
   essence_pseudocode_path: implementation-decisions/IMPL-PANE_REFRESH-pseudocode.md
   implementation_approach:
     details:
+      - Both actions in pane-management category for organization
       - 'config/files.yaml: Add pane.refresh (Ctrl+R) and pane.refresh-all (Ctrl+Shift+R) keybindings'
       - 'handleNavigate already provides: fetch from /api/files, sortFiles application, cursor restoration'
-      - 'WorkspaceView.tsx actionHandlers: pane.refresh calls handleNavigate(focusIndex, pane.path)'
-      - Both actions in pane-management category for organization
       - Marks cleared automatically (existing handleNavigate behavior)
       - No changes needed to useMemo dependencies (handleNavigate and panes already included)
       - pane.refresh-all uses Promise.all(panes.map((p, idx) => handleNavigate(idx, p.path)))
+      - 'WorkspaceView.tsx actionHandlers: pane.refresh calls handleNavigate(focusIndex, pane.path)'
     summary: Add Ctrl+R and Ctrl+Shift+R keybindings, handlers call handleNavigate with current path
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit essence_pseudocode from production code and tests
     last_validated:
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       result: pass - build succeeds, 36 keybindings loaded
       validator: AI Agent
   name: Manual Pane Refresh Implementation

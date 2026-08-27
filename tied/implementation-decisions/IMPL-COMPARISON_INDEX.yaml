@@ -1,20 +1,20 @@
 IMPL-COMPARISON_INDEX:
   code_locations:
     files:
-      - path: src/lib/files.data.ts
-        description: Comparison index implementation
-        lines:
-          - 228
-          - 279
-      - path: src/lib/files.types.ts
-        description: CompareState and ComparisonIndex types
+      - description: CompareState and ComparisonIndex types
         lines:
           - 30
           - 55
+        path: src/lib/files.types.ts
+      - description: Comparison index implementation
+        lines:
+          - 228
+          - 279
+        path: src/lib/files.data.ts
     functions:
-      - name: buildComparisonIndex
-        description: Build comparison index from pane arrays
+      - description: Build comparison index from pane arrays
         file: src/lib/files.data.ts
+        name: buildComparisonIndex
   cross_references:
     - ARCH-COMPARISON_INDEX
     - REQ-CROSS_PANE_COMPARISON
@@ -31,13 +31,13 @@ IMPL-COMPARISON_INDEX:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-29T00:00:00.000Z"
+      date: '2026-05-29T00:00:00.000Z'
       reason: Retrofit essence_pseudocode from buildComparisonIndex tests
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Comparison Index Implementation

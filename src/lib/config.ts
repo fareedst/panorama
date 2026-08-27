@@ -1,4 +1,4 @@
-// [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: Top-level Configuration Loader Module: Create config loader module with deep merge and caching
+// [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI] [REQ-TYPESCRIPT]: Top-level Configuration Loader Module: Create config loader module with deep merge and caching
 // Configuration loader module. Reads YAML files from config/ directory,
 // validates against TypeScript types, merges with defaults, and exports
 // typed configuration objects. Server-only – uses fs.readFileSync with

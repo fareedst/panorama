@@ -1,8 +1,8 @@
 ARCH-MESH_LAYERED:
   alternatives_considered:
-    - name: Extend src/lib/sync/ as mesh engine
-      cons:
+    - cons:
         - No mesh configuration model
+      name: Extend src/lib/sync/ as mesh engine
       pros:
         - Reuse existing sync code
       rejected_reason: Different product surface and data model
@@ -12,23 +12,23 @@ ARCH-MESH_LAYERED:
   decision: Mesh sync is a separate layered subsystem under src/lib/mesh/ and src/app/mesh/ (and src/app/api/mesh/), composed after unit-validated modules; it does not replace pane-level nsync (REQ-NSYNC_MULTI_TARGET).
   implementation_approach:
     details:
-      - 'Dependency rule: outer layers depend inward; domain has zero imports from API/GUI/persistence'
-      - 'Two-phase plan/sync: L5 GUI Plan page approves session only; Sync page starts execution with optional confirmedDestructive; sessionStorage handoff between pages'
       - Cross-cutting safety and auth span services+API+GUI (later phases)
+      - 'Dependency rule: outer layers depend inward; domain has zero imports from API/GUI/persistence'
       - First deployable slices (API/persistence/GUI) only after corresponding REQ slices and IMPL pseudo-code
       - L4 MeshRuntime exposes session progress counters and cancelSessionExecution; L5 GET /sessions returns progress for polling
       - L5 MeshListClient displays note and updatedAt columns and client-side sortable column headers (IMPL-MESH_GUI_list)
       - L5 per-mesh depots sub-route /mesh/:meshId/depots (MeshDepotsClient, IMPL-MESH_GUI_depots) for depot CRUD separate from overview sync-link editing
       - Multi-link runApprovedSession iterates all mesh links; remote depot kind registers RemoteConnector stub at L3
+      - 'Two-phase plan/sync: L5 GUI Plan page approves session only; Sync page starts execution with optional confirmedDestructive; sessionStorage handoff between pages'
       - Virtual depots and other unknown connector kinds resolve to VirtualConnector synthetic inventory at L3
     summary: Domain-centric layers L1–L6 with nsync coexistence
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-24T00:00:00.000Z"
+      date: '2026-05-24T00:00:00.000Z'
       reason: LEAP — L5 per-mesh depots sub-route (IMPL-MESH_GUI_depots)
   name: Mesh Subsystem Layered Architecture
   rationale:

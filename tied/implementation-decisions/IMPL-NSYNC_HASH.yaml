@@ -1,8 +1,8 @@
 IMPL-NSYNC_HASH:
   code_locations:
     files:
-      - path: src/lib/sync/hash.ts
-        description: IMPL-NSYNC_HASH
+      - description: IMPL-NSYNC_HASH
+        path: src/lib/sync/hash.ts
     functions: []
   cross_references:
     - ARCH-HASH_VERIFICATION
@@ -14,9 +14,9 @@ IMPL-NSYNC_HASH:
   metadata:
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: NSYNC pseudocode retrofit from production code and tests
-    registered: 2026-02-09T00:00:00.000Z
+    registered: {}
   name: Hash Computation Implementation
   rationale:
     benefits: []

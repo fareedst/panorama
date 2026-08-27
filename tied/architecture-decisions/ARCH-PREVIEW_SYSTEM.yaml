@@ -1,15 +1,14 @@
-# ARCH detail — ARCH-PREVIEW_SYSTEM
 ARCH-PREVIEW_SYSTEM:
   alternatives_considered:
-    - name: Client-side preview
-      cons:
+    - cons:
         - Cannot access server filesystem
+      name: Client-side preview
       pros:
         - No server round-trip
       rejected_reason: Impossible in web environment
-    - name: Full file download
-      cons:
+    - cons:
         - Wasteful for large files
+      name: Full file download
       pros:
         - Simple implementation
       rejected_reason: Preview needs only subset of content
@@ -20,21 +19,21 @@ ARCH-PREVIEW_SYSTEM:
     details:
       - 'Archive preview: list entries without extracting'
       - 'File type detection: extension + magic bytes'
-      - 'Image preview: serve via Next.js Image optimization'
-      - 'Text preview: first 100KB with encoding detection'
       - GET /api/files/info?path=... for detailed metadata
       - GET /api/files/preview?path=...&type=text|image|archive
+      - 'Image preview: serve via Next.js Image optimization'
+      - 'Text preview: first 100KB with encoding detection'
     summary: API routes for preview/info with type detection and content sanitization
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation - web-specific architecture
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Server-Side File Preview Rendering

@@ -1,37 +1,37 @@
 IMPL-FILE_MANAGER_PAGE:
   code_locations:
     files:
-      - path: src/app/files/page.tsx
-        description: File manager server page
+      - description: File manager server page
         lines:
           - 1
           - 21
+        path: src/app/files/page.tsx
     functions:
-      - name: FilesPage
-        description: Server component page function
+      - description: Server component page function
         file: src/app/files/page.tsx
+        name: FilesPage
   cross_references:
     - ARCH-FILE_MANAGER_HIERARCHY
     - REQ-FILE_MANAGER_PAGE
   decision: Server component loads directory data and config, renders WorkspaceView
   implementation_approach:
     details:
-      - 'SinglePaneWorkspaceUrl: when panes=1 and pane0 query params without meshId, bootstrap one initial pane at pane0 path'
       - Created src/app/files/page.tsx as server component
       - Loads initial directory (user home)
       - Passes data to WorkspaceView client component
+      - 'SinglePaneWorkspaceUrl: when panes=1 and pane0 query params without meshId, bootstrap one initial pane at pane0 path'
       - Sorts files server-side before passing to client
     summary: Server component loads directory data and config, renders WorkspaceView
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: LEAP — SinglePaneWorkspaceUrl bootstrap
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: File Manager Page Implementation

@@ -4,13 +4,13 @@ REQ-DIRECTORY_NAVIGATION:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-06-01T00:00:00.000Z"
+      date: '2026-06-01T00:00:00.000Z'
       reason: LEAP — Enter toggles tree expand; parent re-roots base
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Server Filesystem Directory Navigation
@@ -72,7 +72,7 @@ REQ-DIRECTORY_NAVIGATION:
       - src/lib/pane-cross-pane-visibility.test.ts
       - src/lib/set-base-directory.test.ts
   validation_criteria:
-    - method: Navigation testing
-      coverage: Can navigate into and out of directories
-    - method: Path testing
-      coverage: Current path updates correctly
+    - coverage: Can navigate into and out of directories
+      method: Navigation testing
+    - coverage: Current path updates correctly
+      method: Path testing

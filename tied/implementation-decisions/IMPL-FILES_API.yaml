@@ -1,18 +1,18 @@
 IMPL-FILES_API:
   code_locations:
     files:
-      - path: src/app/api/files/route.ts
-        description: File operations API route with logging and operation-specific validation
+      - description: File operations API route with logging and operation-specific validation
         lines:
           - 1
           - 240
+        path: src/app/api/files/route.ts
     functions:
-      - name: GET
-        description: Handle directory listing requests with logging
+      - description: Handle directory listing requests with logging
         file: src/app/api/files/route.ts
-      - name: POST
-        description: Handle file operations with operation-specific validation and comprehensive logging
+        name: GET
+      - description: Handle file operations with operation-specific validation and comprehensive logging
         file: src/app/api/files/route.ts
+        name: POST
   cross_references:
     - ARCH-FILE_OPERATIONS_API
     - ARCH-PANE_COMMAND_EXEC
@@ -24,29 +24,29 @@ IMPL-FILES_API:
   decision: GET /api/files for directory listing, POST /api/files for operations (copy, move, delete, rename, bulk-*, sync-all), operation-specific validation, integrated with session logger
   implementation_approach:
     details:
-      - 'execute-command: validate entries; delegate executeCommandBatch; return successCount and errorCount'
-      - 'GET handler at /api/files (not /api/files/list): accepts path query param, returns sorted directory listing'
-      - 'Operation-specific validation: only copy, move, delete, rename require src; sync-all and bulk-delete use sources array (no src)'
-      - 'POST handler: extract operation, src, dest from body'
       - All log entries include semantic tokens for traceability
       - Call files.data or SyncEngine (sync-all); return JSON success/error responses
       - Created src/app/api/files/route.ts
       - Dynamic import of operation functions to optimize bundle
       - Error responses logged with full context (paths, operations, error messages)
+      - 'execute-command: validate entries; delegate executeCommandBatch; return successCount and errorCount'
+      - 'GET handler at /api/files (not /api/files/list): accepts path query param, returns sorted directory listing'
       - Integrated logger module for debug, info, warn, error logging
+      - 'Operation-specific validation: only copy, move, delete, rename require src; sync-all and bulk-delete use sources array (no src)'
       - Path validation (..) only when src/dest present
+      - 'POST handler: extract operation, src, dest from body'
       - Switch on operation type (copy, move, delete, rename, bulk-copy, bulk-move, bulk-delete, sync-all, execute-command)
     summary: GET /api/files for directory listing, POST /api/files for operations (copy, move, delete, rename, bulk-*, sync-all, execute-command), operation-specific validation, integrated with session logger
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
       reason: LEAP — execute-command POST case in route.ts
     last_validated:
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       result: pass - 6/6 route tests, sync-all accepts request without src
       validator: AI Agent
   name: File Operations API Routes

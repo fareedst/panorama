@@ -10,10 +10,10 @@ IMPL-MESH_EXECUTOR:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: retrofit pseudocode from tests/code; three-way comment alignment
   name: Mesh Executor Service
   related_decisions:

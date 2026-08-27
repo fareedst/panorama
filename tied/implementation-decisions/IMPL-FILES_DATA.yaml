@@ -1,21 +1,21 @@
 IMPL-FILES_DATA:
   code_locations:
     functions:
-      - name: listDirectory
-        description: List directory contents with error handling
+      - description: Build cross-pane comparison index
         file: src/lib/files.data.ts
-      - name: copyFile
-        description: Copy file or directory; mkdir dest parent; fs.cp recursive for directories
+        name: buildComparisonIndex
+      - description: Copy file or directory; mkdir dest parent; fs.cp recursive for directories
         file: src/lib/files.data.ts
-      - name: sortFiles
-        description: Sort files by various criteria with directory priority
-        file: src/lib/files.data.ts
-      - name: buildComparisonIndex
-        description: Build cross-pane comparison index
-        file: src/lib/files.data.ts
-      - name: formatSize
-        description: Format bytes for display (client-safe)
+        name: copyFile
+      - description: Format bytes for display (client-safe)
         file: src/lib/files.utils.ts
+        name: formatSize
+      - description: List directory contents with error handling
+        file: src/lib/files.data.ts
+        name: listDirectory
+      - description: Sort files by various criteria with directory priority
+        file: src/lib/files.data.ts
+        name: sortFiles
   cross_references:
     - ARCH-FILESYSTEM_ABSTRACTION
     - REQ-DIRECTORY_NAVIGATION
@@ -24,8 +24,8 @@ IMPL-FILES_DATA:
   implementation_approach:
     details:
       - 'copyFile: mkdir dest parent recursively; fs.cp for directories, fs.copyFile for files; then preserveCopyAttributes'
-      - 'Critical fix: Moved formatSize to files.utils.ts (client-safe)'
       - Created src/lib/files.data.ts (server-only)
+      - 'Critical fix: Moved formatSize to files.utils.ts (client-safe)'
       - Error handling for permissions, non-existent paths
       - Export FileStat interface (name, path, isDirectory, size, mtime, extension)
       - Implemented copyFile, moveFile, deleteFile, renameFile
@@ -37,13 +37,13 @@ IMPL-FILES_DATA:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-06-02T00:00:00.000Z"
+      date: '2026-06-02T00:00:00.000Z'
       reason: 'LEAP: copy-file.data.test.ts integration coverage'
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Filesystem Data Layer

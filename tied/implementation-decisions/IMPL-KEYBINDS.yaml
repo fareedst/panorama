@@ -1,25 +1,25 @@
 IMPL-KEYBINDS:
   code_locations:
     files:
-      - path: src/lib/files.keybinds.ts
-        description: Keybinding registry, matcher, formatters, validation (320 lines)
+      - description: Command palette component (220 lines)
         lines: []
-      - path: src/app/files/components/HelpOverlay.tsx
-        description: Help overlay component (130 lines)
+        path: src/app/files/components/CommandPalette.tsx
+      - description: Help overlay component (130 lines)
         lines: []
-      - path: src/app/files/components/CommandPalette.tsx
-        description: Command palette component (220 lines)
+        path: src/app/files/components/HelpOverlay.tsx
+      - description: Keybinding registry, matcher, formatters, validation (320 lines)
         lines: []
-      - path: src/app/files/WorkspaceView.tsx
-        description: useMemo initialization of registry (fixed from useEffect)
-        lines:
-          - 66
-          - 68
-      - path: config/files.yaml
-        description: Keybindings configuration (31 keybindings with valid categories)
+        path: src/lib/files.keybinds.ts
+      - description: Keybindings configuration (31 keybindings with valid categories)
         lines:
           - 194
           - 202
+        path: config/files.yaml
+      - description: useMemo initialization of registry (fixed from useEffect)
+        lines:
+          - 66
+          - 68
+        path: src/app/files/WorkspaceView.tsx
   cross_references:
     - ARCH-KEYBIND_SYSTEM
     - REQ-KEYBOARD_SHORTCUTS_COMPLETE
@@ -40,13 +40,13 @@ IMPL-KEYBINDS:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit essence_pseudocode and test traceability
     last_validated:
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       result: pass - help triggered by both 'h' and '?', closes on first Escape press, no interference with modal keyboard events
       validator: AI Agent
   name: Keybinding Registry and Dispatcher

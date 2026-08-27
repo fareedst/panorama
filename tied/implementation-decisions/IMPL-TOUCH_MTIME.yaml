@@ -1,14 +1,14 @@
 IMPL-TOUCH_MTIME:
   code_locations:
     files:
-      - path: src/lib/touch-file.ts
-        description: Path and mtime resolution
-      - path: src/lib/files.comparison.ts
-        description: resolveAggregateMtime export
-      - path: src/lib/files.data.ts
-        description: setFileMtime bulkTouch
-      - path: src/app/api/files/route.ts
-        description: bulk-touch operation
+      - description: bulk-touch operation
+        path: src/app/api/files/route.ts
+      - description: Path and mtime resolution
+        path: src/lib/touch-file.ts
+      - description: resolveAggregateMtime export
+        path: src/lib/files.comparison.ts
+      - description: setFileMtime bulkTouch
+        path: src/lib/files.data.ts
   cross_references:
     - ARCH-FILE_OPERATIONS_API
     - ARCH-TOUCH_MTIME
@@ -21,10 +21,10 @@ IMPL-TOUCH_MTIME:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
       reason: Initial creation
   name: Touch Modification Time Implementation
   rationale:

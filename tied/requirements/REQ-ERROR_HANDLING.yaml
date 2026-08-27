@@ -1,17 +1,16 @@
-# REQ detail — REQ-ERROR_HANDLING
 REQ-ERROR_HANDLING:
   category: Non-Functional
   description: Root-level error boundaries provide graceful error recovery and prevent full application crashes
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Root-Level Error Boundary
@@ -45,7 +44,7 @@ REQ-ERROR_HANDLING:
       - IMPL-GLOBAL_ERROR_BOUNDARY
     tests: []
   validation_criteria:
-    - method: Error testing
-      coverage: Error boundary catches and displays errors gracefully
-    - method: User experience testing
-      coverage: Users can recover from errors
+    - coverage: Error boundary catches and displays errors gracefully
+      method: Error testing
+    - coverage: Users can recover from errors
+      method: User experience testing

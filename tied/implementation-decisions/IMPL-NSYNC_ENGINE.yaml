@@ -1,25 +1,25 @@
 IMPL-NSYNC_ENGINE:
   code_locations:
     files:
-      - path: src/lib/sync/engine.ts
-        description: SyncEngine class with sync(), syncItem(), syncToDestination() methods
+      - description: API route handler for sync-all operation
         lines: []
-      - path: src/app/api/files/route.ts
-        description: API route handler for sync-all operation
+        path: src/app/api/files/route.ts
+      - description: handleCopyAll(), handleMoveAll() React handlers
         lines: []
-      - path: src/app/files/WorkspaceView.tsx
-        description: handleCopyAll(), handleMoveAll() React handlers
+        path: src/app/files/WorkspaceView.tsx
+      - description: SyncEngine class with sync(), syncItem(), syncToDestination() methods
         lines: []
+        path: src/lib/sync/engine.ts
     functions:
-      - name: sync
-        description: Main entry point for multi-destination sync
+      - description: Main entry point for multi-destination sync
         file: src/lib/sync/engine.ts
-      - name: syncItem
-        description: Sync single source to all destinations in parallel
+        name: sync
+      - description: Sync single source to all destinations in parallel
         file: src/lib/sync/engine.ts
-      - name: syncToDestination
-        description: Sync source to single destination with compare/verify
+        name: syncItem
+      - description: Sync source to single destination with compare/verify
         file: src/lib/sync/engine.ts
+        name: syncToDestination
   cross_references:
     - ARCH-NSYNC_INTEGRATION
     - REQ-MOVE_SEMANTICS
@@ -30,21 +30,21 @@ IMPL-NSYNC_ENGINE:
       - 'For each source: syncItem() syncs to all destinations via Promise.all'
       - 'Move semantics: track sourcesToDelete, delete only after ALL destinations succeed'
       - 'Observer callbacks: onStart, onItemStart, onItemProgress, onItemComplete, onProgress, onFinish'
-      - 'sync() method: validate inputs, build plan, iterate sources'
       - StoreMonitor tracks error streaks, marks stores unavailable
+      - 'sync() method: validate inputs, build plan, iterate sources'
       - SyncEngine constructor accepts optional SyncObserver
       - syncToDestination() handles single source->dest copy with compare, hash, verify
     summary: SyncEngine class orchestrates sync loop iterating over sources, syncing each to all destinations in parallel, tracking results, and handling move deletion
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: NSYNC pseudocode retrofit from production code and tests
     last_validated:
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       result: pass - 4/4 engine tests, 6/6 route tests, Copy to All Panes verified
       validator: AI Agent
   name: Sync Engine Core Implementation

@@ -1,25 +1,25 @@
 IMPL-OVERWRITE_PROMPT:
   code_locations:
     files:
-      - path: src/app/files/WorkspaceView.tsx
-        description: Conflict detection in handleBulkCopy and handleBulkMove
+      - description: Conflict detection in handleBulkCopy and handleBulkMove
         lines: []
-      - path: src/app/files/components/ConfirmDialog.tsx
-        description: FileConflict interface and rendering
+        path: src/app/files/WorkspaceView.tsx
+      - description: describeFileComparison utility
         lines: []
-      - path: src/lib/files.utils.ts
-        description: describeFileComparison utility
+        path: src/lib/files.utils.ts
+      - description: FileConflict interface and rendering
         lines: []
+        path: src/app/files/components/ConfirmDialog.tsx
     functions:
-      - name: describeFileComparison
-        description: Compare two files and describe size/time differences
+      - description: Compare two files and describe size/time differences
         file: src/lib/files.utils.ts
-      - name: handleBulkCopy
-        description: Copy with conflict detection
+        name: describeFileComparison
+      - description: Copy with conflict detection
         file: src/app/files/WorkspaceView.tsx
-      - name: handleBulkMove
-        description: Move with conflict detection
+        name: handleBulkCopy
+      - description: Move with conflict detection
         file: src/app/files/WorkspaceView.tsx
+        name: handleBulkMove
   cross_references:
     - ARCH-BATCH_OPERATIONS
     - IMPL-BULK_OPS
@@ -37,13 +37,13 @@ IMPL-OVERWRITE_PROMPT:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit essence_pseudocode from production code and tests
     last_validated:
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Overwrite Confirmation with File Comparison

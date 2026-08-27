@@ -1,16 +1,16 @@
 IMPL-DIR_HISTORY:
   code_locations:
     files:
-      - path: src/lib/files.history.ts
-        description: History management
+      - description: Bookmark management
         lines: []
-      - path: src/lib/files.bookmarks.ts
-        description: Bookmark management
+        path: src/lib/files.bookmarks.ts
+      - description: History management
         lines: []
+        path: src/lib/files.history.ts
     functions:
-      - name: saveCursorPosition
-        description: Save cursor state before navigation
+      - description: Save cursor state before navigation
         file: src/lib/files.history.ts
+        name: saveCursorPosition
   cross_references:
     - ARCH-DIRECTORY_HISTORY
     - REQ-ADVANCED_NAV
@@ -26,13 +26,13 @@ IMPL-DIR_HISTORY:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit essence_pseudocode from production/tests per prompts/2026-05-29
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       notes: 36 tests passing, localStorage errors resolved, 0 lint errors
       result: pass
       validator: AI Agent

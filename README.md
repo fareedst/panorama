@@ -118,20 +118,28 @@ Panorama ships committed **README demo assets** under `docs/screenshots/`, regen
 
 The **Workspace** is the multi-pane client shell: a **workspace header banner** (status row, loaded mesh name, diff control), **cross-surface nav** to Mesh, **workspace area** with **pane** listings in **tabular file row** layout, and three **toolbar** tiers (workspace, pane, system). Toggle **toolbar compact mode** → **toolbar expanded mode** (keystroke badges) → **toolbar named mode** (visible Action labels) via the compact toggle.
 
+**Workspace shell** — Full-page 3-pane default layout with header, workspace area, and three toolbar tiers.
+
 ![Workspace shell — 3-pane default](docs/screenshots/workspace-shell.png)
 
-| Surface | Caption |
-|---------|---------|
-| Cross-surface nav | **Open Mesh** and File Manager links open the other surface in a new tab. |
-| Pane listing | Tabular **file row** grid with name, size, and mtime columns. |
-| Toolbar compact | Default merged icon row for maximum density. |
-| Toolbar expanded | Three tiers with keystroke badges on each action. |
-| Toolbar named | Three tiers with visible Action labels (no keystroke badges). |
+**Cross-surface nav** — **Open Mesh** and File Manager links open the other surface in a new tab.
 
 ![Cross-surface nav](docs/screenshots/workspace-cross-surface-nav.png)
+
+**Pane listing** — Tabular **file row** grid with name, size, and mtime columns.
+
 ![Pane listing](docs/screenshots/workspace-pane-listing.png)
+
+**Toolbar compact** — Default merged icon row for maximum density.
+
 ![Toolbar compact](docs/screenshots/workspace-toolbar-compact.png)
+
+**Toolbar expanded** — Three tiers with keystroke badges on each action.
+
 ![Toolbar expanded](docs/screenshots/workspace-toolbar-expanded.png)
+
+**Toolbar named** — Three tiers with visible Action labels (no keystroke badges).
+
 ![Toolbar named](docs/screenshots/workspace-toolbar-named.png)
 
 ##### Per-pane filter controls
@@ -147,9 +155,13 @@ flowchart LR
   rawListing --> displaySpec --> crossPane --> mirror
 ```
 
-![Per-pane filter controls — three panes with distinct active filters](docs/screenshots/workspace-pane-filter-controls.png)
+**Per-pane filter controls** — Three panes with distinct active display specs and cross-pane visibility presets.
 
-![Focused pane header — display spec and cross-pane visibility selectors](docs/screenshots/workspace-pane-filter-header.png)
+![Per-pane filter controls](docs/screenshots/workspace-pane-filter-controls.png)
+
+**Focused pane filter header** — Display spec and cross-pane visibility selectors with Filter/Compare indicators.
+
+![Focused pane filter header](docs/screenshots/workspace-pane-filter-header.png)
 
 **Layer 1 — Display spec** (glob filter; see [pane-display-filter vocabulary](tied/vocab/pane-display-filter.md)):
 
@@ -167,7 +179,12 @@ flowchart LR
 | Toolbar tri-state buttons | `view.compareFilter.*` | Edit the **visibility draft** on the focused pane (**tri-state toggle** per criterion) |
 | Compare filter thresholds | `view.compareFilter.thresholds` (or threshold criteria without a set value) | Opens compare filter **thresholds** dialog for size/time inputs |
 
-![Cross-pane visibility manager — catalog overview](docs/screenshots/dialog-cross-pane-visibility-manager.png)
+**Cross-pane visibility manager** — **Manage compare filters…** — **visibility catalog** overview.
+
+![Cross-pane visibility manager](docs/screenshots/dialog-cross-pane-visibility-manager.png)
+
+**Compare filter thresholds** — Size/time threshold inputs for compare filters.
+
 ![Compare filter thresholds](docs/screenshots/dialog-compare-filter-threshold.png)
 
 ###### Constructing the two pane filters
@@ -192,9 +209,13 @@ flowchart TD
 4. **Save** — the spec is stored in the **spec catalog** (`panorama.displaySpecs.v1`).
 5. On **each pane** independently, choose that spec in the **spec selector** or **No filter**.
 
-![Display spec manager — catalog overview](docs/screenshots/dialog-display-spec-manager.png)
+**Display spec manager** — **Manage display specs…** — **spec catalog** overview (list of saved specs).
 
-![Display spec manager — constructing rules](docs/screenshots/dialog-display-spec-construct.png)
+![Display spec manager](docs/screenshots/dialog-display-spec-manager.png)
+
+**Display spec construct** — **DisplaySpecManagerDialog** with **filter rules** editor (constructing a spec).
+
+![Display spec construct](docs/screenshots/dialog-display-spec-construct.png)
 
 **Filter 2 — Build a cross-pane visibility preset** (**visibility catalog**):
 
@@ -217,103 +238,169 @@ flowchart TD
 4. Open **Manage compare filters…** — click **+ New from focused draft** to snapshot the draft into a named preset, or select an existing preset and edit name/description, then **Save**. The helper text explains that save copies tri-state toggles and thresholds from the focused pane toolbar.
 5. On **each pane**, pick the preset in the **preset selector** or **No compare filter**.
 
-![Compare filter preset manager — catalog overview](docs/screenshots/dialog-cross-pane-visibility-manager.png)
+**Compare filter preset manager** — **Manage compare filters…** — **visibility catalog** overview.
 
-![Compare filter preset manager — new from focused draft](docs/screenshots/dialog-cross-pane-visibility-construct.png)
+![Compare filter preset manager](docs/screenshots/dialog-cross-pane-visibility-manager.png)
+
+**Compare filter preset construct** — **CrossPaneVisibilityManagerDialog** **+ New from focused draft** (saving toolbar draft to catalog).
+
+![Compare filter preset construct](docs/screenshots/dialog-cross-pane-visibility-construct.png)
 
 The amber indicator under each pane header shows `Filter: {name}` when a **display spec** is active (optional `Hidden: N` count) and `Compare: {name}` or **Draft** when **cross-pane visibility** is active. The motion GIF [`cross-pane-visibility-demo.gif`](docs/screenshots/cross-pane-visibility-demo.gif) demonstrates toolbar **tri-state toggle** editing of the **visibility draft**; it complements — but does not replace — pane-header preset selection.
 
 **Motion workflows** (GIFs where movement clarifies behavior):
 
-| Workflow | Asset | What it shows |
-|----------|-------|----------------|
-| Multi-target sync | `copyall-demo.gif` | Mark files → Copy to all panes → confirm → files appear in every destination. |
-| Linked mode | `linked-mode-demo.gif` | Linked directory navigation keeps equivalent paths aligned across panes. |
-| Comparison cycle | `comparison-cycle-demo.gif` | Comparison mode cycles off → name → size → time coloring. |
-| Cross-pane visibility | `cross-pane-visibility-demo.gif` | Toolbar **tri-state toggle** buttons edit the **visibility draft** on the focused pane (complements pane-header preset selectors). |
-| Pane management | `pane-management-demo.gif` | Layout picker, add/swap panes, and pane order dialog. |
+**Multi-target sync** — Mark files → Copy to all panes → confirm → files appear in every destination.
 
-![Copy to All Panes](docs/screenshots/copyall-demo.gif)
+![Multi-target sync](docs/screenshots/copyall-demo.gif)
+
+**Linked mode** — Linked directory navigation keeps equivalent paths aligned across panes.
+
 ![Linked mode](docs/screenshots/linked-mode-demo.gif)
+
+**Comparison cycle** — Comparison mode cycles off → name → size → time coloring.
+
 ![Comparison cycle](docs/screenshots/comparison-cycle-demo.gif)
-![Cross-pane visibility filters](docs/screenshots/cross-pane-visibility-demo.gif)
+
+**Cross-pane visibility** — Toolbar **tri-state toggle** buttons edit the **visibility draft** on the focused pane (complements pane-header preset selectors).
+
+![Cross-pane visibility](docs/screenshots/cross-pane-visibility-demo.gif)
+
+**Pane management** — Layout picker, add/swap panes, and pane order dialog.
+
 ![Pane management](docs/screenshots/pane-management-demo.gif)
 
-Still comparison coloring (static):
+**3-pane comparison** — Comparison mode coloring (static snapshot across three panes).
 
 ![3-pane comparison](docs/screenshots/3-pane-comparison.png)
 
 #### Dialogs, pop-overs, and menus
 
-| Dialog / menu | Caption |
-|---------------|---------|
-| File context menu | Unified right-click menu: copy/move/delete, **Touch…**, **Execute…**, **Make directory…**, **Rename Regex…**, **Set as Base directory**, column clipboard. |
-| Set base directory | Choose which pane(s) receive a new base path. |
-| Touch file | Adjust mtime (now, specified, earliest, latest). |
-| Execute file | Run a shell command against marked files. |
-| Make directory | Create a folder in this pane or all panes. |
-| Rename Regex | Bulk rename with match/replacement patterns. |
-| Pane order | Reorder panes in the workspace layout. |
-| Column order | Show/hide and reorder file columns. |
-| Layout picker | Tile, One Row, One Column, or Fullscreen layout. |
-| Display spec manager | **Manage display specs…** — **spec catalog** overview (list of saved specs). |
-| Display spec construct | **DisplaySpecManagerDialog** with **filter rules** editor (constructing a spec). |
-| Cross-pane visibility manager | **Manage compare filters…** — **visibility catalog** overview. |
-| Cross-pane visibility construct | **CrossPaneVisibilityManagerDialog** **+ New from focused draft** (saving toolbar draft to catalog). |
-| Compare filter thresholds | Size/time threshold inputs for compare filters. |
-| Save workspace as mesh (create) | Save pane paths and layout as a new mesh workspace snapshot. |
-| Save workspace as mesh (update) | Update an loaded mesh after layout or path changes. |
-| Workspace diff | Drift table when restored workspace differs from mesh snapshot. |
+##### File actions
 
-![Context menu](docs/screenshots/menu-file-context.png)
+**File context menu** — Unified right-click menu: copy/move/delete, **Touch…**, **Execute…**, **Make directory…**, **Rename Regex…**, **Set as Base directory**, column clipboard.
+
+![File context menu](docs/screenshots/menu-file-context.png)
+
+**Set base directory** — Choose which pane(s) receive a new base path.
+
 ![Set base directory](docs/screenshots/dialog-set-base-directory.png)
+
+**Touch file** — Adjust mtime (now, specified, earliest, latest).
+
 ![Touch file](docs/screenshots/dialog-touch-file.png)
+
+**Execute file** — Run a shell command against marked files.
+
 ![Execute file](docs/screenshots/dialog-execute-file.png)
+
+**Make directory** — Create a folder in this pane or all panes.
+
 ![Make directory](docs/screenshots/dialog-make-directory.png)
+
+**Rename Regex** — Bulk rename with match/replacement patterns.
+
 ![Rename Regex](docs/screenshots/dialog-rename-regex.png)
+
+##### Layout and columns
+
+**Pane order** — Reorder panes in the workspace layout.
+
 ![Pane order](docs/screenshots/dialog-pane-order.png)
+
+**Column order** — Show/hide and reorder file columns.
+
 ![Column order](docs/screenshots/dialog-column-order.png)
+
+**Layout picker** — Tile, One Row, One Column, or Fullscreen layout.
+
 ![Layout picker](docs/screenshots/popover-layout-picker.png)
+
+##### Display and compare filters
+
+**Display spec manager** — **Manage display specs…** — **spec catalog** overview (list of saved specs).
+
 ![Display spec manager](docs/screenshots/dialog-display-spec-manager.png)
+
+**Display spec construct** — **DisplaySpecManagerDialog** with **filter rules** editor (constructing a spec).
+
 ![Display spec construct](docs/screenshots/dialog-display-spec-construct.png)
+
+**Cross-pane visibility manager** — **Manage compare filters…** — **visibility catalog** overview.
+
 ![Cross-pane visibility manager](docs/screenshots/dialog-cross-pane-visibility-manager.png)
+
+**Cross-pane visibility construct** — **CrossPaneVisibilityManagerDialog** **+ New from focused draft** (saving toolbar draft to catalog).
+
 ![Cross-pane visibility construct](docs/screenshots/dialog-cross-pane-visibility-construct.png)
+
+**Compare filter thresholds** — Size/time threshold inputs for compare filters.
+
 ![Compare filter thresholds](docs/screenshots/dialog-compare-filter-threshold.png)
+
+##### Mesh save and diff
+
+**Save workspace as mesh (create)** — Save pane paths and layout as a new mesh workspace snapshot.
+
 ![Save workspace as mesh (create)](docs/screenshots/dialog-save-workspace-mesh-create.png)
+
+**Save workspace as mesh (update)** — Update an loaded mesh after layout or path changes.
+
 ![Save workspace as mesh (update)](docs/screenshots/dialog-save-workspace-mesh-update.png)
+
+**Workspace diff** — Drift table when restored workspace differs from mesh snapshot.
+
 ![Workspace diff](docs/screenshots/dialog-workspace-diff.png)
 
 #### Mesh GUI (`/mesh`, `/mesh/:meshId/**`)
 
 The **Mesh hub** lists sortable meshes; **mesh detail** routes cover topology, **plan approval**, **Sync Now**, per-mesh **depots**, export, schedule, and archive. When a **workspace snapshot** is present, the overview shows a **workspace snapshot summary**.
 
-| Route / surface | Caption |
-|-----------------|---------|
-| Mesh list | Sortable columns (name, status, depots, note, updated). |
-| Mesh detail overview | Depots, links, and workspace snapshot summary after save. |
-| Topology | Fan-out graph of depots and sync links. |
-| Plan approval | Generated change set with approve/discard controls. |
-| Sync session | Active session view with Start Sync. |
-| Per-mesh depots | Depot CRUD for one mesh. |
-| Export | Per-mesh export bundle. |
-| Schedule | Interval enable/disable for scheduled sync. |
-| Archive settings | Archive mesh controls. |
-| Open workspace from mesh | Cross-surface restore link back to `/files`. |
+**Mesh list** (`/mesh`) — Sortable columns (name, status, depots, note, updated).
 
 ![Mesh list](docs/screenshots/mesh-list.png)
+
+**Mesh detail overview** — Depots, links, and workspace snapshot summary after save.
+
 ![Mesh detail overview](docs/screenshots/mesh-detail-overview.png)
+
+**Topology** — Fan-out graph of depots and sync links.
+
 ![Topology](docs/screenshots/mesh-topology.png)
+
+**Plan approval** — Generated change set with approve/discard controls.
+
 ![Plan approval](docs/screenshots/mesh-plan-approval.png)
+
+**Sync session** — Active session view with Start Sync.
+
 ![Sync session](docs/screenshots/mesh-sync-session.png)
+
+**Per-mesh depots** — Depot CRUD for one mesh.
+
 ![Per-mesh depots](docs/screenshots/mesh-depots.png)
+
+**Export** — Per-mesh export bundle.
+
 ![Export](docs/screenshots/mesh-export.png)
+
+**Schedule** — Interval enable/disable for scheduled sync.
+
 ![Schedule](docs/screenshots/mesh-schedule.png)
+
+**Archive settings** — Archive mesh controls.
+
 ![Archive settings](docs/screenshots/mesh-archive-settings.png)
+
+**Open workspace from mesh** — Cross-surface restore link back to `/files`.
+
 ![Open workspace from mesh](docs/screenshots/mesh-open-workspace.png)
 
 #### Workspace ↔ Mesh bridge
 
 Save a **workspace snapshot** from `/files` (Ctrl+Shift+M) to capture pane paths and layout on a mesh. Restore via **Open workspace from mesh** or `?meshId=` — the **workspace header status row** shows the loaded mesh name. After local changes, the **workspace diff** dialog lists drift; save again in **update** mode to reconcile.
+
+**Workspace header with loaded mesh** — Status row showing loaded mesh name after restore from Mesh.
 
 ![Workspace header with loaded mesh](docs/screenshots/workspace-header-status.png)
 

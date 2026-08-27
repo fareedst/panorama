@@ -1,12 +1,12 @@
 IMPL-MESH_CRUD:
   code_locations:
     files:
-      - path: src/lib/mesh/services/mesh-service.ts
-        description: MeshService
-      - path: src/lib/mesh/repositories/mesh-repository.ts
-        description: Repository interface
-      - path: src/lib/mesh/repositories/memory-mesh-repository.ts
-        description: In-memory store
+      - description: In-memory store
+        path: src/lib/mesh/repositories/memory-mesh-repository.ts
+      - description: MeshService
+        path: src/lib/mesh/services/mesh-service.ts
+      - description: Repository interface
+        path: src/lib/mesh/repositories/mesh-repository.ts
     functions: []
   cross_references:
     - ARCH-MESH_CRUD
@@ -20,10 +20,10 @@ IMPL-MESH_CRUD:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit pseudocode — optimistic configurationVersion lock
   name: Mesh CRUD Service Implementation
   rationale:

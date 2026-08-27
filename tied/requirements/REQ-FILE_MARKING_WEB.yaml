@@ -7,13 +7,13 @@ REQ-FILE_MARKING_WEB:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-06-01T00:00:00.000Z"
+      date: '2026-06-01T00:00:00.000Z'
       reason: LEAP — path-keyed marks for tree listing
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Web-Based File Marking for Batch Operations
@@ -38,11 +38,11 @@ REQ-FILE_MARKING_WEB:
       - REQ-DIRECTORY_TREE
     supersedes: []
   satisfaction_criteria:
-    - criterion: 'Pane footer displays marked count: [marked/total]'
     - criterion: Batch operations operate on marked files when marks exist
     - criterion: Mark persistence is path-based when tree spans multiple directories (absolute file.path)
     - criterion: Mark state persists when tree is refreshed or re-sorted within visible rows
     - criterion: Marked files visually distinguished with checkbox icon and background color
+    - criterion: 'Pane footer displays marked count: [marked/total]'
     - criterion: Parent directory entry (..) cannot be marked
     - criterion: Terminology aligns with tied/vocab/file-marking.md
     - criterion: Users can clear all marks with Escape key
@@ -59,11 +59,11 @@ REQ-FILE_MARKING_WEB:
     tests:
       - TEST-FILE_MARKING
   validation_criteria:
-    - method: Unit tests
-      coverage: Mark toggle, mark all, invert, clear operations
-    - method: Unit tests
-      coverage: Mark persistence across sort/filter/refresh
-    - method: Integration tests
-      coverage: Batch operations use marked files correctly
-    - method: UI tests
-      coverage: Visual distinction of marked files
+    - coverage: Batch operations use marked files correctly
+      method: Integration tests
+    - coverage: Visual distinction of marked files
+      method: UI tests
+    - coverage: Mark persistence across sort/filter/refresh
+      method: Unit tests
+    - coverage: Mark toggle, mark all, invert, clear operations
+      method: Unit tests

@@ -1,26 +1,26 @@
 IMPL-BULK_OPS:
   code_locations:
     files:
-      - path: src/app/files/WorkspaceView.tsx
-        description: getOperationFiles and handleBulkCopy/Move/Delete
-      - path: src/app/files/components/ConfirmDialog.tsx
-        description: Escape/Enter confirm UX
-      - path: src/app/files/components/ProgressDialog.tsx
-        description: Progress bar and completion summary
-      - path: src/app/api/files/route.ts
-        description: bulk-copy, bulk-move, bulk-delete POST handlers
-      - path: src/lib/files.data.ts
-        description: bulkCopy, bulkMove, bulkDelete with Promise.allSettled
+      - description: bulk-copy, bulk-move, bulk-delete POST handlers
+        path: src/app/api/files/route.ts
+      - description: bulkCopy, bulkMove, bulkDelete with Promise.allSettled
+        path: src/lib/files.data.ts
+      - description: Escape/Enter confirm UX
+        path: src/app/files/components/ConfirmDialog.tsx
+      - description: getOperationFiles and handleBulkCopy/Move/Delete
+        path: src/app/files/WorkspaceView.tsx
+      - description: Progress bar and completion summary
+        path: src/app/files/components/ProgressDialog.tsx
     functions:
-      - name: bulkCopy
-        description: Copy multiple files with progress
+      - description: Copy multiple files with progress
         file: src/lib/files.data.ts
-      - name: bulkMove
-        description: Move multiple files with progress
+        name: bulkCopy
+      - description: Delete multiple files with progress
         file: src/lib/files.data.ts
-      - name: bulkDelete
-        description: Delete multiple files with progress
+        name: bulkDelete
+      - description: Move multiple files with progress
         file: src/lib/files.data.ts
+        name: bulkMove
   cross_references:
     - ARCH-BATCH_OPERATIONS
     - REQ-BULK_FILE_OPS
@@ -36,13 +36,13 @@ IMPL-BULK_OPS:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-29T00:00:00.000Z"
+      date: '2026-05-29T00:00:00.000Z'
       reason: Retrofit essence_pseudocode from bulk ops code and BulkOperations.test.tsx
     last_validated:
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Parallel Bulk Operations with Progress

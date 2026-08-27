@@ -1,12 +1,12 @@
 IMPL-CLASS_OVERRIDES:
   code_locations:
     files:
-      - path: config/theme.yaml
-        description: overrides section schema
-      - path: src/lib/config.types.ts
-        description: ClassOverrides interface
-      - path: src/lib/config.ts
-        description: getOverride resolver
+      - description: ClassOverrides interface
+        path: src/lib/config.types.ts
+      - description: getOverride resolver
+        path: src/lib/config.ts
+      - description: overrides section schema
+        path: config/theme.yaml
   cross_references:
     - ARCH-CLASS_OVERRIDES
     - REQ-CONFIG_DRIVEN_UI
@@ -21,13 +21,13 @@ IMPL-CLASS_OVERRIDES:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-29T00:00:00.000Z"
+      date: '2026-05-29T00:00:00.000Z'
       reason: Retrofit essence_pseudocode from getOverride tests and config types
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Class Overrides Implementation

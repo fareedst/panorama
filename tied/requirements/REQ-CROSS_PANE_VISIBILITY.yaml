@@ -4,7 +4,7 @@ REQ-CROSS_PANE_VISIBILITY:
   metadata:
     last_updated:
       author: AI Agent
-      date: "2026-05-29T00:00:00.000Z"
+      date: '2026-05-29T00:00:00.000Z'
       reason: LEAP — vocabulary standards; cross-pane-visibility glossary criterion
   name: Cross-Pane Visibility Filters
   priority: P1

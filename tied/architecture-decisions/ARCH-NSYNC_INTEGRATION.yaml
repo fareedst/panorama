@@ -8,8 +8,8 @@ ARCH-NSYNC_INTEGRATION:
     details: []
     summary: Architecture for integrating multi-destination sync engine into nx1 file manager
   metadata:
-    last_updated: 2026-02-09T00:00:00.000Z
-    registered: 2026-02-09T00:00:00.000Z
+    last_updated: {}
+    registered: {}
   name: Nsync Integration Architecture
   rationale:
     benefits: []

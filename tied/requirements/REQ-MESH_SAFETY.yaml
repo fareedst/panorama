@@ -4,7 +4,7 @@ REQ-MESH_SAFETY:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
   name: Mesh Safety Guardrails
   priority: P0
   related_requirements:
@@ -22,5 +22,5 @@ REQ-MESH_SAFETY:
     tests:
       - src/lib/mesh/services/safety-service.test.ts
   validation_criteria:
-    - method: Vitest
-      coverage: src/lib/mesh/services/safety-service.test.ts
+    - coverage: src/lib/mesh/services/safety-service.test.ts
+      method: Vitest

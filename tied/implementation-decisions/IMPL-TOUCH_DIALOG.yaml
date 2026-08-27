@@ -1,14 +1,14 @@
 IMPL-TOUCH_DIALOG:
   code_locations:
     files:
-      - path: src/app/files/components/TouchFileDialog.tsx
-        description: Two-group touch dialog
-      - path: src/app/files/components/ContextMenu.tsx
-        description: Touch menu item
-      - path: src/app/files/components/FilePane.tsx
-        description: onTouch wiring
-      - path: src/app/files/WorkspaceView.tsx
-        description: Dialog state and handleApplyTouch
+      - description: Dialog state and handleApplyTouch
+        path: src/app/files/WorkspaceView.tsx
+      - description: onTouch wiring
+        path: src/app/files/components/FilePane.tsx
+      - description: Touch menu item
+        path: src/app/files/components/ContextMenu.tsx
+      - description: Two-group touch dialog
+        path: src/app/files/components/TouchFileDialog.tsx
   cross_references:
     - ARCH-MOUSE_SUPPORT
     - ARCH-TOUCH_MTIME
@@ -21,10 +21,10 @@ IMPL-TOUCH_DIALOG:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
       reason: Initial creation
   name: Touch File Dialog Implementation
   rationale:

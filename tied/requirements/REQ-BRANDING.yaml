@@ -4,13 +4,13 @@ REQ-BRANDING:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: LEAP — config-driven branding; retired home page next/image criteria
     last_validated:
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       result: pass
       validator: AI Agent
   name: Site Branding Configuration
@@ -49,9 +49,9 @@ REQ-BRANDING:
       - src/lib/config.test.ts
       - src/test/dark-mode.test.tsx
   validation_criteria:
-    - method: Config unit tests
-      coverage: config.test.ts asserts default branding.logo fields
-    - method: Dark mode pattern test
-      coverage: dark-mode.test.tsx asserts dark:invert class contract
-    - method: Accessibility review
-      coverage: alt text required in logo config shape
+    - coverage: alt text required in logo config shape
+      method: Accessibility review
+    - coverage: config.test.ts asserts default branding.logo fields
+      method: Config unit tests
+    - coverage: dark-mode.test.tsx asserts dark:invert class contract
+      method: Dark mode pattern test

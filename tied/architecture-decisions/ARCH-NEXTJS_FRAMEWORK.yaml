@@ -1,15 +1,15 @@
 ARCH-NEXTJS_FRAMEWORK:
   alternatives_considered:
-    - name: Create React App
-      cons:
+    - cons:
         - Limited optimization
         - No SSR support
+      name: Create React App
       pros:
         - Simple setup
       rejected_reason: Lacks server-side rendering and modern features
-    - name: Remix
-      cons:
+    - cons:
         - Smaller ecosystem
+      name: Remix
       pros:
         - Good SSR support
       rejected_reason: Next.js has larger ecosystem and better tooling
@@ -29,13 +29,13 @@ ARCH-NEXTJS_FRAMEWORK:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: LEAP — config-driven branding; retired home page Image criteria
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Next.js 16.1 Framework Choice

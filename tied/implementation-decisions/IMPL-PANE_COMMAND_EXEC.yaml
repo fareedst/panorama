@@ -1,12 +1,12 @@
 IMPL-PANE_COMMAND_EXEC:
   code_locations:
     files:
-      - path: src/lib/execute-command.ts
-        description: Target resolution and placeholder expansion
-      - path: src/lib/execute-command.data.ts
-        description: Server shell spawn helper
-      - path: src/app/api/files/route.ts
-        description: execute-command operation case
+      - description: execute-command operation case
+        path: src/app/api/files/route.ts
+      - description: Server shell spawn helper
+        path: src/lib/execute-command.data.ts
+      - description: Target resolution and placeholder expansion
+        path: src/lib/execute-command.ts
   cross_references:
     - ARCH-FILE_OPERATIONS_API
     - ARCH-PANE_COMMAND_EXEC

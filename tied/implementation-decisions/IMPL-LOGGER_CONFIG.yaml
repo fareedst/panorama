@@ -1,40 +1,40 @@
 IMPL-LOGGER_CONFIG:
   code_locations:
     files:
-      - path: src/lib/logger.ts
-        description: Configuration parsing in module initialization
-      - path: src/lib/logger.types.ts
-        description: LogConfig type definition
+      - description: Configuration parsing in module initialization
+        path: src/lib/logger.ts
+      - description: LogConfig type definition
+        path: src/lib/logger.types.ts
     functions:
-      - name: getLogConfig
-        description: Returns current log configuration
+      - description: Returns current log configuration
         file: src/lib/logger.ts
+        name: getLogConfig
   cross_references:
     - ARCH-LOGGING_CONFIG
     - REQ-LOGGING_CONFIG
   decision: Read environment variables at module initialization with defaults and console output
   implementation_approach:
     details:
-      - 'Read CONSOLE_ERRORS (default: ''true'')'
-      - 'Read ENABLE_LOGGING (default: ''true'')'
-      - 'Read LOG_DIR (default: os.tmpdir())'
-      - 'Read LOG_LEVEL (default: ''INFO'')'
       - Export getLogConfig() for inspection
       - Mirror ERROR and FATAL logs to console.error() if CONSOLE_ERRORS='true'
       - No-op logging if ENABLE_LOGGING='false'
       - Output log file path to console on first write
       - Parse and validate at module load
+      - 'Read CONSOLE_ERRORS (default: ''true'')'
+      - 'Read ENABLE_LOGGING (default: ''true'')'
+      - 'Read LOG_DIR (default: os.tmpdir())'
+      - 'Read LOG_LEVEL (default: ''INFO'')'
     summary: Read environment variables at module initialization with defaults and console output
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit traceability from logger.test.ts
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Logger Configuration Implementation

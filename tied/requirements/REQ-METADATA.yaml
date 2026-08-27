@@ -1,17 +1,16 @@
-# REQ detail — REQ-METADATA
 REQ-METADATA:
   category: Non-Functional
   description: Proper metadata improves SEO and enables social media sharing with appropriate previews
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       reason: Migration to v1.5.0
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Page Metadata Configuration
@@ -45,7 +44,7 @@ REQ-METADATA:
       - IMPL-METADATA
     tests: []
   validation_criteria:
-    - method: View source
-      coverage: <title> and <meta description> tags are present
-    - method: TypeScript validation
-      coverage: TypeScript compilation validates metadata structure
+    - coverage: TypeScript compilation validates metadata structure
+      method: TypeScript validation
+    - coverage: <title> and <meta description> tags are present
+      method: View source

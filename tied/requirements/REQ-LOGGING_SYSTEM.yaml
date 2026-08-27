@@ -1,17 +1,16 @@
-# REQ detail — REQ-LOGGING_SYSTEM
 REQ-LOGGING_SYSTEM:
   category: Functional
   description: Provide comprehensive debugging and traceability through structured logging
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Session-Based Logging System
@@ -33,11 +32,11 @@ REQ-LOGGING_SYSTEM:
     related_to: []
     supersedes: []
   satisfaction_criteria:
-    - criterion: 'Six log levels supported: FATAL, ERROR, WARN, INFO, DEBUG, TRACE'
     - criterion: All log entries include semantic tokens when applicable
     - criterion: Log files created per session with timestamp in filename
     - criterion: Logging enabled by default with launch-time configuration
     - criterion: Logs written to OS temporary directory
+    - criterion: 'Six log levels supported: FATAL, ERROR, WARN, INFO, DEBUG, TRACE'
   status: Implemented
   traceability:
     architecture:
@@ -48,9 +47,9 @@ REQ-LOGGING_SYSTEM:
       - IMPL-LOGGER_MODULE
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: All log levels, file creation, formatting
-    - method: Integration tests
-      coverage: Logging across multiple modules
-    - method: Manual testing
-      coverage: Log file creation and semantic token inclusion
+    - coverage: Logging across multiple modules
+      method: Integration tests
+    - coverage: Log file creation and semantic token inclusion
+      method: Manual testing
+    - coverage: All log levels, file creation, formatting
+      method: Unit tests

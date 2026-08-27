@@ -1,12 +1,12 @@
 IMPL-GLOBAL_ERROR_BOUNDARY:
   code_locations:
     files:
-      - path: src/app/global-error.tsx
-        description: Global error boundary
+      - description: Global error boundary
+        path: src/app/global-error.tsx
     functions:
-      - name: GlobalError
-        description: Global error boundary component
+      - description: Global error boundary component
         file: src/app/global-error.tsx
+        name: GlobalError
   cross_references:
     - ARCH-NEXTJS_FRAMEWORK
     - REQ-ERROR_HANDLING
@@ -21,13 +21,13 @@ IMPL-GLOBAL_ERROR_BOUNDARY:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit essence_pseudocode from production global-error.tsx
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Global Error Boundary Implementation

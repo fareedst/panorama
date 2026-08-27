@@ -4,13 +4,13 @@ REQ-CONFIG_DRIVEN_APPEARANCE:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-29T00:00:00.000Z"
+      date: '2026-05-29T00:00:00.000Z'
       reason: LEAP align with IMPL/ARCH — file manager scope; jobs criteria removed
     last_validated:
-      date: "2026-05-29T00:00:00.000Z"
+      date: '2026-05-29T00:00:00.000Z'
       result: pass — satisfaction criteria match production and config tests
       validator: AI Agent
   name: File Manager Appearance and Layout from Config
@@ -31,11 +31,11 @@ REQ-CONFIG_DRIVEN_APPEARANCE:
     related_to: []
     supersedes: []
   satisfaction_criteria:
-    - criterion: 'Single source of truth: config/site.yaml, config/theme.yaml, config/files.yaml'
     - criterion: File manager (/files) receives copy and layout from getFilesConfig without hard-coded user-facing strings for those fields
     - criterion: File rows use getFileTypeConfig (theme.files.fileTypes) for icon and iconClass
     - criterion: No jobs routes or config/jobs.yaml in the repository
     - criterion: Root layout uses getSiteConfig for document title and description
+    - criterion: 'Single source of truth: config/site.yaml, config/theme.yaml, config/files.yaml'
   status: Implemented
   traceability:
     architecture:
@@ -51,7 +51,7 @@ REQ-CONFIG_DRIVEN_APPEARANCE:
       - src/app/layout.test.tsx
       - src/lib/config.test.ts
   validation_criteria:
-    - method: Unit tests
-      coverage: src/lib/config.test.ts asserts merged files config, theme file types, and site metadata from YAML
-    - method: Code inspection
-      coverage: WorkspaceView and file UI consume config props; no hard-coded file-manager copy for configured fields
+    - coverage: WorkspaceView and file UI consume config props; no hard-coded file-manager copy for configured fields
+      method: Code inspection
+    - coverage: src/lib/config.test.ts asserts merged files config, theme file types, and site metadata from YAML
+      method: Unit tests

@@ -4,7 +4,7 @@ REQ-MESH_HARDENING:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
   name: Mesh Executor Hardening
   priority: P2
   related_requirements:
@@ -35,13 +35,13 @@ REQ-MESH_HARDENING:
       - src/lib/mesh/services/mesh-service.test.ts
       - src/lib/mesh/services/planning-service.test.ts
   validation_criteria:
-    - method: Vitest
-      coverage: src/lib/mesh/services/hardening-service.test.ts
-    - method: Vitest
-      coverage: src/lib/mesh/services/mesh-service.test.ts
-    - method: Vitest
-      coverage: src/lib/mesh/repositories/json-mesh-repository.test.ts
-    - method: Vitest
-      coverage: src/lib/mesh/services/planning-service.test.ts
-    - method: Vitest
-      coverage: src/app/api/mesh/plan-conflicts.route.test.ts
+    - coverage: src/app/api/mesh/plan-conflicts.route.test.ts
+      method: Vitest
+    - coverage: src/lib/mesh/repositories/json-mesh-repository.test.ts
+      method: Vitest
+    - coverage: src/lib/mesh/services/hardening-service.test.ts
+      method: Vitest
+    - coverage: src/lib/mesh/services/mesh-service.test.ts
+      method: Vitest
+    - coverage: src/lib/mesh/services/planning-service.test.ts
+      method: Vitest

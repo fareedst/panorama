@@ -1,8 +1,8 @@
 IMPL-TEST_CONFIG:
   code_locations:
     files:
-      - path: vitest.config.ts
-        description: Vitest configuration
+      - description: Vitest configuration
+        path: vitest.config.ts
     functions: []
   cross_references:
     - ARCH-TEST_FRAMEWORK
@@ -18,13 +18,13 @@ IMPL-TEST_CONFIG:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit vitest.config pseudo-code alignment
     last_validated:
-      date: 2026-02-06T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Vitest Configuration

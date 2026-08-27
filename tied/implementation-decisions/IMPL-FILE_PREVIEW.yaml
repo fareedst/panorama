@@ -1,16 +1,16 @@
 IMPL-FILE_PREVIEW:
   code_locations:
     files:
-      - path: src/app/api/files/preview/route.ts
-        description: Preview content endpoint
+      - description: File metadata endpoint
         lines: []
-      - path: src/app/api/files/info/route.ts
-        description: File metadata endpoint
+        path: src/app/api/files/info/route.ts
+      - description: Preview content endpoint
         lines: []
+        path: src/app/api/files/preview/route.ts
     functions:
-      - name: GET handler
-        description: Return preview content
+      - description: Return preview content
         file: src/app/api/files/preview/route.ts
+        name: GET handler
   cross_references:
     - ARCH-PREVIEW_SYSTEM
     - REQ-FILE_PREVIEW
@@ -19,21 +19,21 @@ IMPL-FILE_PREVIEW:
     details:
       - 'Archive: list entries (jszip library)'
       - 'File type: extension + magic bytes'
-      - 'Image: Next.js Image optimization'
-      - 'Text: first 100KB, encoding detection'
       - GET /api/files/info?path=... for metadata
       - GET /api/files/preview?path=...&type=text|image|archive
+      - 'Image: Next.js Image optimization'
+      - 'Text: first 100KB, encoding detection'
     summary: API routes for preview and info with type detection
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit pseudocode from API routes and tests
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Server-Side Preview API Routes

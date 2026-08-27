@@ -1,12 +1,12 @@
 IMPL-MESH_CONNECTOR:
   code_locations:
     files:
-      - path: src/lib/mesh/connector/types.ts
-        description: Connector interface
-      - path: src/lib/mesh/connector/fake-connector.ts
-        description: In-memory fake connector
-      - path: src/lib/mesh/connector/virtual-connector.ts
-        description: Synthetic virtual depot connector for virtual-kind depots
+      - description: Connector interface
+        path: src/lib/mesh/connector/types.ts
+      - description: In-memory fake connector
+        path: src/lib/mesh/connector/fake-connector.ts
+      - description: Synthetic virtual depot connector for virtual-kind depots
+        path: src/lib/mesh/connector/virtual-connector.ts
     functions: []
   cross_references:
     - IMPL-MESH_DOMAIN_TYPES
@@ -18,10 +18,10 @@ IMPL-MESH_CONNECTOR:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit pseudocode and traceability from production/tests
   name: Mesh Connector Contract
   related_decisions:

@@ -40,18 +40,18 @@ CITDP-SET_BASE_DIRECTORY:
     tied_stack_updates_required: []
   record_identity:
     change_request_id: SET_BASE_DIRECTORY
-    recorded_at: "2026-05-31"
+    recorded_at: '2026-05-31'
     title: Directory row context menu — Set as Base directory with multi-pane target dialog
   risk_analysis:
     risks:
-      - id: RISK-001
-        description: Linked mode fan-out when setting base on multiple panes
+      - description: Linked mode fan-out when setting base on multiple panes
+        id: RISK-001
         mitigation: syncingRef marks target pane before handleNavigate for multi-target absolute assignment
-      - id: RISK-002
-        description: Single-pane URL ignored when defaultPaneCount is 3
+      - description: Single-pane URL ignored when defaultPaneCount is 3
+        id: RISK-002
         mitigation: Server reads panes=1 query param before default bootstrap
-      - id: RISK-003
-        description: Swap or newPane when allowPaneManagement false or at maxPanes
+      - description: Swap or newPane when allowPaneManagement false or at maxPanes
+        id: RISK-003
         mitigation: Disable dialog buttons via isSetBaseDirectoryTargetRequiresPaneManagement and atMaxPanes; appendPaneAtPath guards
   tdd_sequence:
     summary: set-base-directory lib (newPane) → SetBaseDirectoryTargetIcon → SetBaseDirectoryDialog → appendPaneAtPath → WorkspaceView handler

@@ -1,38 +1,38 @@
 ARCH-COMPARISON_COLORING:
   alternatives_considered:
-    - name: Server-side comparison
-      cons:
-        - Network latency on every pane change
-      pros:
-        - Less client computation
-      rejected_reason: Client-side faster for typical file counts
-    - name: On-demand comparison (button click)
-      cons:
+    - cons:
         - Extra user action required
+      name: On-demand comparison (button click)
       pros:
         - No automatic overhead
       rejected_reason: Automatic comparison is core feature
+    - cons:
+        - Network latency on every pane change
+      name: Server-side comparison
+      pros:
+        - Less client computation
+      rejected_reason: Client-side faster for typical file counts
   cross_references:
     - REQ-FILE_COMPARISON_VISUAL
   decision: Enhance the existing comparison index with size and time comparison logic, applying theme-configurable CSS classes for visual differentiation of files across panes.
   implementation_approach:
     details:
+      - Apply CSS classes to file rows based on comparison state
       - 'buildEnhancedComparisonIndex: For each filename in multiple panes, compute sizeClass and timeClass'
       - 'sizeClass: ''equal'' | ''smallest'' | ''largest'' | null'
       - 'Theme colors: comparison-equal, comparison-smallest, comparison-largest, etc.'
       - 'timeClass: ''equal'' | ''earliest'' | ''latest'' | null'
-      - Apply CSS classes to file rows based on comparison state
     summary: Extend ComparisonIndex with size/time analysis, apply CSS classes
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-29T00:00:00.000Z"
+      date: '2026-05-29T00:00:00.000Z'
       reason: LEAP — vocabulary see_also back-link
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Enhanced Cross-Pane Comparison Coloring

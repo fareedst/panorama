@@ -1,38 +1,38 @@
 IMPL-FILES_CONFIG_COMPLETE:
   code_locations:
     files:
-      - path: config/files.yaml
-        description: Extended with marking, help, commandPalette copy; added layout and startup sections
-        lines:
-          - 40
-          - 90
-      - path: config/theme.yaml
-        description: Added fileTypes configuration with 9 file types and patterns
-        lines:
-          - 100
-          - 175
-      - path: src/lib/config.types.ts
-        description: Added FileTypeConfig, FilesLayoutConfig, FilesStartupConfig interfaces; extended FilesCopyConfig, FilesThemeConfig, FilesConfig
-        lines:
-          - 311
-          - 450
-      - path: src/lib/config.ts
-        description: Extended DEFAULT_FILES_CONFIG; added getFileTypeConfig() helper
-        lines:
-          - 390
-          - 510
-      - path: src/lib/config.test.ts
-        description: Added 16 new tests for files configuration and file type matching
+      - description: Added 16 new tests for files configuration and file type matching
         lines:
           - 393
           - 503
+        path: src/lib/config.test.ts
+      - description: Added FileTypeConfig, FilesLayoutConfig, FilesStartupConfig interfaces; extended FilesCopyConfig, FilesThemeConfig, FilesConfig
+        lines:
+          - 311
+          - 450
+        path: src/lib/config.types.ts
+      - description: Added fileTypes configuration with 9 file types and patterns
+        lines:
+          - 100
+          - 175
+        path: config/theme.yaml
+      - description: Extended DEFAULT_FILES_CONFIG; added getFileTypeConfig() helper
+        lines:
+          - 390
+          - 510
+        path: src/lib/config.ts
+      - description: Extended with marking, help, commandPalette copy; added layout and startup sections
+        lines:
+          - 40
+          - 90
+        path: config/files.yaml
     functions:
-      - name: getFileTypeConfig
-        description: Matches filename against configured file type patterns and returns icon/color config
+      - description: Loads and merges files configuration with defaults
         file: src/lib/config.ts
-      - name: getFilesConfig
-        description: Loads and merges files configuration with defaults
+        name: getFilesConfig
+      - description: Matches filename against configured file type patterns and returns icon/color config
         file: src/lib/config.ts
+        name: getFileTypeConfig
   cross_references:
     - ARCH-CONFIG_DRIVEN_UI
     - REQ-CONFIG_DRIVEN_FILE_MANAGER
@@ -49,13 +49,13 @@ IMPL-FILES_CONFIG_COMPLETE:
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit essence_pseudocode from tests/code; align block-lead comments
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass - 570 tests passing (55 config tests)
       validator: AI Agent
   name: Complete File Manager Configuration Implementation

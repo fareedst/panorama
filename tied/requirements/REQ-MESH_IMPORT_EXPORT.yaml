@@ -4,7 +4,7 @@ REQ-MESH_IMPORT_EXPORT:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
   name: Mesh Configuration Import and Export
   priority: P2
   related_requirements:
@@ -29,7 +29,7 @@ REQ-MESH_IMPORT_EXPORT:
       - src/app/api/mesh/import-export.route.test.ts
       - src/lib/mesh/services/import-export-service.test.ts
   validation_criteria:
-    - method: Vitest
-      coverage: src/lib/mesh/services/import-export-service.test.ts
-    - method: Vitest
-      coverage: src/app/api/mesh/import-export.route.test.ts
+    - coverage: src/app/api/mesh/import-export.route.test.ts
+      method: Vitest
+    - coverage: src/lib/mesh/services/import-export-service.test.ts
+      method: Vitest

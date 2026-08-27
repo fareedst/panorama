@@ -1,38 +1,38 @@
 IMPL-LAYOUT_CALCULATOR:
   code_locations:
     files:
-      - path: src/lib/files.layout.ts
-        description: Layout calculation algorithms
+      - description: Consumer — workspaceAreaRef, useElementSize, calculateLayout
+        path: src/app/files/WorkspaceView.tsx
+      - description: Layout calculation algorithms
         lines:
           - 1
           - 237
-      - path: src/lib/files.layout.test.ts
-        description: Layout tests (62 tests)
+        path: src/lib/files.layout.ts
+      - description: Layout tests (62 tests)
         lines:
           - 1
           - 365
-      - path: src/lib/useElementSize.ts
-        description: Workspace-area measurement hook (ResizeObserver)
-      - path: src/lib/useElementSize.test.ts
-        description: useElementSize unit tests
-      - path: src/app/files/WorkspaceView.tsx
-        description: Consumer — workspaceAreaRef, useElementSize, calculateLayout
+        path: src/lib/files.layout.test.ts
+      - description: useElementSize unit tests
+        path: src/lib/useElementSize.test.ts
+      - description: Workspace-area measurement hook (ResizeObserver)
+        path: src/lib/useElementSize.ts
     functions:
-      - name: useElementSize
-        description: Track element client width/height for pane layout
+      - description: Calculate pane bounds for layout type
+        file: src/lib/files.layout.ts
+        name: calculateLayout
+      - description: One column layout algorithm
+        file: src/lib/files.layout.ts
+        name: calculateOneColumnLayout
+      - description: One row layout algorithm
+        file: src/lib/files.layout.ts
+        name: calculateOneRowLayout
+      - description: Tile layout algorithm
+        file: src/lib/files.layout.ts
+        name: calculateTileLayout
+      - description: Track element client width/height for pane layout
         file: src/lib/useElementSize.ts
-      - name: calculateLayout
-        description: Calculate pane bounds for layout type
-        file: src/lib/files.layout.ts
-      - name: calculateTileLayout
-        description: Tile layout algorithm
-        file: src/lib/files.layout.ts
-      - name: calculateOneRowLayout
-        description: One row layout algorithm
-        file: src/lib/files.layout.ts
-      - name: calculateOneColumnLayout
-        description: One column layout algorithm
-        file: src/lib/files.layout.ts
+        name: useElementSize
   cross_references:
     - ARCH-LAYOUT_ALGORITHMS
     - IMPL-TOOLBAR_COMPONENT
@@ -41,27 +41,27 @@ IMPL-LAYOUT_CALCULATOR:
   decision: Pure TypeScript functions calculate PaneBounds[] from container dimensions and layout type
   implementation_approach:
     details:
-      - 'Fullscreen: all panes at (0,0) with full dimensions'
-      - 'Helper functions: getTotalArea, doOverlap for validation'
-      - 'OneColumn: equal height vertically'
-      - 'OneRow: equal width horizontally'
-      - 'Tile: first pane left 50%, others stacked vertically right 50%'
       - Created src/lib/files.layout.ts
       - Exported LayoutType = 'Tile' | 'OneRow' | 'OneColumn' | 'Fullscreen'
       - Exported PaneBounds interface (x, y, width, height)
+      - 'Fullscreen: all panes at (0,0) with full dimensions'
+      - 'Helper functions: getTotalArea, doOverlap for validation'
       - Implemented calculateLayout(containerWidth, containerHeight, numPanes, layoutType)
+      - 'OneColumn: equal height vertically'
+      - 'OneRow: equal width horizontally'
+      - 'Tile: first pane left 50%, others stacked vertically right 50%'
       - WorkspaceView measures flex workspace-area via useElementSize; container dimensions feed calculateLayout (toolbar-aware, not viewport heuristics)
     summary: Pure TypeScript functions calculate PaneBounds[] from container dimensions and layout type
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
       reason: Retrofit essence_pseudocode from files.layout and useElementSize
     last_validated:
-      date: 2026-02-07T00:00:00.000Z
+      date: {}
       result: pass
       validator: AI Agent
   name: Layout Calculation Algorithms

@@ -4,10 +4,10 @@ REQ-MESH_DOMAIN_MODEL:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-19T20:15:00.000Z"
+      date: '2026-05-19T20:15:00.000Z'
       reason: 'sync-tied-stack: tied_verify after 50/50 mesh domain Vitest pass'
   name: Mesh Domain Language and Core Types
   priority: P0
@@ -55,7 +55,7 @@ REQ-MESH_DOMAIN_MODEL:
       - src/lib/mesh/domain/serialize.test.ts
       - src/lib/mesh/domain/validators.test.ts
   validation_criteria:
-    - method: Unit tests (Vitest)
-      coverage: src/lib/mesh/domain/validators.test.ts, serialize.test.ts, domain.composition.test.ts — mesh_requires_name through invalid_core_objects_are_rejected
-    - method: tied_validate_consistency
-      coverage: REQ-MESH_DOMAIN_MODEL traceability after sync-tied-stack
+    - coverage: REQ-MESH_DOMAIN_MODEL traceability after sync-tied-stack
+      method: tied_validate_consistency
+    - coverage: src/lib/mesh/domain/validators.test.ts, serialize.test.ts, domain.composition.test.ts — mesh_requires_name through invalid_core_objects_are_rejected
+      method: Unit tests (Vitest)

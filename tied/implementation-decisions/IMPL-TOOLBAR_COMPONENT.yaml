@@ -1,47 +1,47 @@
 IMPL-TOOLBAR_COMPONENT:
   code_locations:
     files:
-      - path: src/app/files/components/ToolbarCompactToggle.tsx
-        description: TOOLBAR_COMPACT_TOGGLE leading control
-      - path: src/app/files/components/Toolbar.tsx
-        description: Base toolbar with leadingContent, showKeystroke, showActionLabel, singleRow
-      - path: src/app/files/components/ToolbarButton.tsx
-        description: TOOLBAR_NAMED_LABELS; keystroke badge toggle; tooltip retains shortcut
-      - path: src/app/files/components/TriStateToolbarButton.tsx
-        description: TOOLBAR_NAMED_LABELS for compare filter tri-state buttons
-      - path: src/app/files/components/WorkspaceToolbar.tsx
-        description: Workspace tier wrapper
-      - path: src/app/files/components/PaneToolbar.tsx
-        description: Pane tier wrapper
-      - path: src/app/files/components/SystemToolbar.tsx
-        description: System tier wrapper
-      - path: src/lib/toolbar.utils.ts
-        description: TOOLBAR_DISPLAY_PROPS toolbarDisplayProps cycleToolbarDisplayMode; MERGE_TOP_TOOLBARS mergeTopToolbarConfigs; ACTION_ICON_MAP; getReferencedToolbarIconNames
-      - path: src/components/icons/registry.ts
-        description: ICON_REGISTRY merged SVG definitions; isIconRegistered
-      - path: src/components/icons/panorama-icons.tsx
-        description: Panorama-specific toolbar glyphs
-      - path: src/components/icons/lucide-icons.tsx
-        description: Generic Lucide-style toolbar glyphs
-      - path: src/components/Icon.tsx
-        description: Toolbar Icon wrapper; warns on missing registry names
-      - path: src/components/icons/registry.test.tsx
-        description: Registry completeness vs referenced toolbar icon names
-      - path: src/lib/useElementSize.ts
-        description: Workspace-area ResizeObserver measurement for pane layout
-      - path: src/lib/useElementSize.test.ts
-        description: useElementSize unit tests
-      - path: src/app/files/WorkspaceView.tsx
-        description: WORKSPACE_TOOLBAR_DISPLAY_MODE compact expanded named branch; workspaceAreaRef and useElementSize
+      - description: Base toolbar with leadingContent, showKeystroke, showActionLabel, singleRow
+        path: src/app/files/components/Toolbar.tsx
+      - description: Generic Lucide-style toolbar glyphs
+        path: src/components/icons/lucide-icons.tsx
+      - description: ICON_REGISTRY merged SVG definitions; isIconRegistered
+        path: src/components/icons/registry.ts
+      - description: Pane tier wrapper
+        path: src/app/files/components/PaneToolbar.tsx
+      - description: Panorama-specific toolbar glyphs
+        path: src/components/icons/panorama-icons.tsx
+      - description: Registry completeness vs referenced toolbar icon names
+        path: src/components/icons/registry.test.tsx
+      - description: System tier wrapper
+        path: src/app/files/components/SystemToolbar.tsx
+      - description: Toolbar Icon wrapper; warns on missing registry names
+        path: src/components/Icon.tsx
+      - description: TOOLBAR_COMPACT_TOGGLE leading control
+        path: src/app/files/components/ToolbarCompactToggle.tsx
+      - description: TOOLBAR_DISPLAY_PROPS toolbarDisplayProps cycleToolbarDisplayMode; MERGE_TOP_TOOLBARS mergeTopToolbarConfigs; ACTION_ICON_MAP; getReferencedToolbarIconNames
+        path: src/lib/toolbar.utils.ts
+      - description: TOOLBAR_NAMED_LABELS for compare filter tri-state buttons
+        path: src/app/files/components/TriStateToolbarButton.tsx
+      - description: TOOLBAR_NAMED_LABELS; keystroke badge toggle; tooltip retains shortcut
+        path: src/app/files/components/ToolbarButton.tsx
+      - description: useElementSize unit tests
+        path: src/lib/useElementSize.test.ts
+      - description: Workspace tier wrapper
+        path: src/app/files/components/WorkspaceToolbar.tsx
+      - description: Workspace-area ResizeObserver measurement for pane layout
+        path: src/lib/useElementSize.ts
+      - description: WORKSPACE_TOOLBAR_DISPLAY_MODE compact expanded named branch; workspaceAreaRef and useElementSize
+        path: src/app/files/WorkspaceView.tsx
     functions:
-      - name: mergeTopToolbarConfigs
-        file: src/lib/toolbar.utils.ts
-      - name: toolbarDisplayProps
-        file: src/lib/toolbar.utils.ts
-      - name: cycleToolbarDisplayMode
-        file: src/lib/toolbar.utils.ts
-      - name: ToolbarCompactToggle
-        file: src/app/files/components/ToolbarCompactToggle.tsx
+      - file: src/lib/toolbar.utils.ts
+        name: cycleToolbarDisplayMode
+      - file: src/lib/toolbar.utils.ts
+        name: mergeTopToolbarConfigs
+      - file: src/app/files/components/ToolbarCompactToggle.tsx
+        name: ToolbarCompactToggle
+      - file: src/lib/toolbar.utils.ts
+        name: toolbarDisplayProps
   cross_references:
     - ARCH-TOOLBAR_ACTIONS
     - ARCH-TOOLBAR_LAYOUT
@@ -62,9 +62,9 @@ IMPL-TOOLBAR_COMPONENT:
   metadata:
     last_updated:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
       reason: LEAP — named toolbar display mode
-    registered: 2026-02-08T00:00:00.000Z
+    registered: {}
   name: Toolbar React Component Implementation
   rationale:
     benefits: []

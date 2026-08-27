@@ -1,17 +1,16 @@
-# REQ detail — REQ-COMPARE_METHODS
 REQ-COMPARE_METHODS:
   category: Functional
   description: Skip unchanged files during sync to save time and bandwidth
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-09T00:00:00.000Z
+      date: {}
       result: implemented
       validator: AI Agent
   name: File Comparison Methods
@@ -45,5 +44,5 @@ REQ-COMPARE_METHODS:
       - IMPL-NSYNC_COMPARE
     tests: []
   validation_criteria:
-    - method: Unit tests
-      coverage: All comparison methods, edge cases
+    - coverage: All comparison methods, edge cases
+      method: Unit tests

@@ -1,8 +1,8 @@
 IMPL-MESH_IMPORT_EXPORT:
   code_locations:
     files:
-      - path: src/lib/mesh/services/import-export-service.ts
-        description: Import/export service
+      - description: Import/export service
+        path: src/lib/mesh/services/import-export-service.ts
     functions: []
   cross_references:
     - ARCH-MESH_LAYERED
@@ -16,10 +16,10 @@ IMPL-MESH_IMPORT_EXPORT:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-19T00:00:00.000Z"
+      date: '2026-05-19T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-30T00:00:00.000Z"
+      date: '2026-05-30T00:00:00.000Z'
   name: Mesh Import Export
   related_decisions:
     depends_on:

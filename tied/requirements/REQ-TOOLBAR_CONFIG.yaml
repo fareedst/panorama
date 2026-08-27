@@ -1,17 +1,16 @@
-# REQ detail — REQ-TOOLBAR_CONFIG
 REQ-TOOLBAR_CONFIG:
   category: Functional
   description: To maintain consistency with configuration-driven UI architecture and enable toolbar customization without code changes
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       reason: Initial creation
     last_validated:
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       result: planned
       validator: AI Agent
   name: Configuration-Driven Toolbar Customization
@@ -53,9 +52,9 @@ REQ-TOOLBAR_CONFIG:
       - IMPL-TOOLBAR_CONFIG
     tests: []
   validation_criteria:
-    - method: Schema validation tests
-      coverage: Configuration structure validation
-    - method: Runtime validation tests
-      coverage: Invalid config handling, fallbacks
-    - method: Integration tests
-      coverage: Configuration application to UI
+    - coverage: Configuration application to UI
+      method: Integration tests
+    - coverage: Invalid config handling, fallbacks
+      method: Runtime validation tests
+    - coverage: Configuration structure validation
+      method: Schema validation tests

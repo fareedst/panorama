@@ -1,21 +1,21 @@
 IMPL-CONFIG_DRIVEN_APPEARANCE:
   code_locations:
     files:
-      - path: src/lib/file-type-config.ts
-        description: DEFAULT_FILE_TYPES and client-safe resolveFileTypeConfig
-      - path: src/app/files/components/FileTypeIcon.tsx
-        description: Theme-driven file row icon component
-      - path: src/app/files/components/FilePane.tsx
-        description: FileTypeIcon per file row
-      - path: src/app/files/components/FinderDialog.tsx
-        description: FileTypeIcon per finder result
+      - description: DEFAULT_FILE_TYPES and client-safe resolveFileTypeConfig
+        path: src/lib/file-type-config.ts
+      - description: FileTypeIcon per file row
+        path: src/app/files/components/FilePane.tsx
+      - description: FileTypeIcon per finder result
+        path: src/app/files/components/FinderDialog.tsx
+      - description: Theme-driven file row icon component
+        path: src/app/files/components/FileTypeIcon.tsx
     functions:
-      - name: resolveFileTypeConfig
-        description: Client-safe pattern-based icon lookup
+      - description: Client-safe pattern-based icon lookup
         file: src/lib/file-type-config.ts
-      - name: getFileTypeConfig
-        description: Server wrapper delegating to resolveFileTypeConfig
+        name: resolveFileTypeConfig
+      - description: Server wrapper delegating to resolveFileTypeConfig
         file: src/lib/config.ts
+        name: getFileTypeConfig
   cross_references:
     - ARCH-CONFIG_DRIVEN_APPEARANCE
     - REQ-CONFIG_DRIVEN_APPEARANCE
@@ -30,13 +30,13 @@ IMPL-CONFIG_DRIVEN_APPEARANCE:
   metadata:
     created:
       author: AI Agent
-      date: 2025-11-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-29T00:00:00.000Z"
+      date: '2026-05-29T00:00:00.000Z'
       reason: LEAP jobs retired; pseudocode matches file-manager config
     last_validated:
-      date: "2026-05-29T00:00:00.000Z"
+      date: '2026-05-29T00:00:00.000Z'
       result: pass — LEAP stack aligned with REQ and ARCH
       validator: AI Agent
   name: Config-Driven Appearance Implementation

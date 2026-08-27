@@ -1,9 +1,9 @@
 ARCH-TOOLBAR_LAYOUT:
   alternatives_considered:
-    - name: Single unified toolbar
-      cons:
+    - cons:
         - 36+ buttons overwhelming
         - No scope separation
+      name: Single unified toolbar
       pros:
         - Simpler implementation
       rejected_reason: Visual separation critical for usability
@@ -13,25 +13,25 @@ ARCH-TOOLBAR_LAYOUT:
   decision: Implement a three-tier toolbar system with configurable positioning, using a horizontal button group layout with category-based grouping and visual separators.
   implementation_approach:
     details:
+      - Compact/expanded/named toolbar height changes trigger workspace-area remeasure (ResizeObserver + explicit deps) so pane bounds update
       - 'Configurable position: top, bottom, hidden, per-pane'
       - 'Optional toolbar compact mode: session starts compact (single merged top row, icon-only); user-toggle expands to three-tier layout with keystroke badges via toolbar-compact-toggle'
       - 'Optional toolbar named mode: third session display state — three-tier layout with icon plus visible Action labels from deriveToolbarButton; keystroke badges hidden'
       - 'PaneToolbar: actions on focused pane'
       - 'SystemToolbar: independent actions'
-      - 'WorkspaceToolbar: actions affecting all panes'
-      - Compact/expanded/named toolbar height changes trigger workspace-area remeasure (ResizeObserver + explicit deps) so pane bounds update
       - Toolbar display toggle cycles compact → expanded → named → compact on toolbar-compact-toggle
+      - 'WorkspaceToolbar: actions affecting all panes'
     summary: Three toolbar types (workspace, pane, system) with configurable position and button groups
   metadata:
     created:
       author: AI Agent
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
     last_updated:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
       reason: LEAP — named toolbar display mode
     last_validated:
-      date: 2026-02-08T00:00:00.000Z
+      date: {}
       result: planned
       validator: AI Agent
   name: Toolbar Positioning and Layout Architecture

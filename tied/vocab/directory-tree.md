@@ -52,3 +52,15 @@
 | Mark/cursor reconcile | `RECONCILE_TREE_SELECTION` | IMPL-DIRECTORY_TREE |
 | Refresh expanded nodes | `REFRESH_PANE_TREE` | IMPL-DIRECTORY_TREE |
 | Re-root reset | `HANDLE_NAVIGATE_TREE_RESET` | IMPL-DIRECTORY_TREE |
+
+## Alphabetical index
+
+| Term | Section |
+| --- | --- |
+| base directory | Preferred term vs synonyms |
+| expanded path | Preferred term vs synonyms |
+| file tree state | Preferred term vs synonyms |
+| lazy child load | Preferred term vs synonyms |
+| tree node | Preferred term vs synonyms |
+| tree expand toggle | Preferred term vs synonyms |
+| visible row | Preferred term vs synonyms |

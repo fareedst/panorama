@@ -12,10 +12,10 @@ IMPL-RENAME_REGEX:
   metadata:
     created:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
     last_updated:
       author: AI Agent
-      date: "2026-05-31T00:00:00.000Z"
+      date: '2026-05-31T00:00:00.000Z'
       reason: Split essence pseudocode sidecar; expand traceability tests
   name: Rename Regex Path Resolution and Basename Transform
   rationale:
