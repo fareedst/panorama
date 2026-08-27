@@ -1,0 +1,315 @@
+# Binding inventory — TIED-3.0-ALIGNMENT-SYNC (P1 tranche 1)
+# Validator: binding_inventory_validate (rows[] contract per tied/docs/composition-coverage.md)
+schema_version: binding-inventory.v1
+request_token: TIED-3.0-ALIGNMENT-SYNC
+last_updated: '2026-08-27'
+notes: |
+  Maps composition-testable trigger→callee seams to existing Vitest route/composition tests.
+  UI-only workspace chrome bindings marked e2e_only with named Playwright/browser constraints.
+
+bindings:
+  # --- Mesh domain (in-process composition) ---
+  - id: mesh.domain.validate_mesh_sync_link
+    trigger: validateMesh(attrs) with link target not in depots
+    callee: validateSyncLink / link validation layer
+    arguments: mesh.links[].targetDepotId must reference validated depot id
+    effect: DomainValidationError link_target_unknown_depot
+    ordering: VALIDATE_MESH depots before VALIDATE_SYNC_LINK
+    failure_behavior: invalid link rejected; no partial mesh returned
+    composition_test: src/lib/mesh/domain/domain.composition.test.ts — rejects link whose target depot id was never validated
+
+  - id: mesh.domain.validate_mesh_default_policy
+    trigger: validateMesh(attrs) without policy field
+    callee: default policy binder
+    arguments: omitted policy on mesh attrs
+    effect: policy defaults deletePolicy never, conflictPolicy prefer_authoritative, retryMaxAttempts 3
+    ordering: policy default applied during VALIDATE_MESH
+    failure_behavior: invalid attrs still fail before policy merge
+    composition_test: src/lib/mesh/domain/domain.composition.test.ts — applies default policy when mesh attrs omit policy
+
+  - id: mesh.domain.dto_round_trip
+    trigger: toDtoMesh(mesh) then fromDtoMesh(dto)
+    callee: validateMesh via fromDtoMesh
+    arguments: validated mesh with depots and links
+    effect: round-tripped mesh equals source name, depots, links
+    ordering: validate before serialize; validate on deserialize
+    failure_behavior: invalid DTO rejected on fromDtoMesh
+    composition_test: src/lib/mesh/domain/domain.composition.test.ts — round-trips mesh through toDtoMesh and fromDtoMesh
+
+  - id: mesh.domain.validate_change_set_operation
+    trigger: validateChangeSet with invalid sync operation
+    callee: validateSyncOperation
+    arguments: change set operations array
+    effect: validation error for unknown operation kind
+    ordering: change set validation delegates per operation
+    failure_behavior: first invalid operation fails validation
+    composition_test: src/lib/mesh/domain/domain.composition.test.ts — VALIDATE_CHANGE_SET → VALIDATE_SYNC_OPERATION
+
+  - id: mesh.domain.create_mesh_snapshot
+    trigger: createMeshSnapshot(mesh)
+    callee: snapshot builder
+    arguments: validated mesh instance
+    effect: isolated snapshot copy without live mutation coupling
+    ordering: mesh validated before snapshot
+    failure_behavior: invalid mesh cannot snapshot
+    composition_test: src/lib/mesh/domain/domain.composition.test.ts — CREATE_MESH_SNAPSHOT isolation
+
+  - id: mesh.domain.snapshot_to_session
+    trigger: validateSyncSession from snapshot
+    callee: session validator
+    arguments: mesh snapshot payload
+    effect: valid sync session derived from snapshot
+    ordering: snapshot validated before session
+    failure_behavior: invalid snapshot rejected
+    composition_test: src/lib/mesh/domain/domain.composition.test.ts — snapshot → session
+
+  # --- Mesh HTTP API ---
+  - id: mesh.api.post_create_mesh
+    trigger: POST /api/mesh JSON body
+    callee: mesh runtime create + domain validateMesh
+    arguments: name string in JSON body
+    effect: HTTP 201 with mesh id and name
+    ordering: auth check before create when enabled
+    failure_behavior: empty name → 400 validation error
+    composition_test: src/app/api/mesh/route.test.ts — post_mesh_creates_mesh
+
+  - id: mesh.api.get_mesh_by_id
+    trigger: GET /api/mesh/[meshId]
+    callee: mesh runtime load
+    arguments: meshId route param
+    effect: HTTP 200 with mesh payload
+    ordering: create before get in test flow
+    failure_behavior: unknown id → 404
+    composition_test: src/app/api/mesh/route.test.ts — get_mesh_returns_mesh
+
+  - id: mesh.api.auth_reject_create
+    trigger: POST /api/mesh without authorized role
+    callee: IMPL-MESH_AUTH permission gate
+    arguments: missing or viewer role headers
+    effect: HTTP 401/403
+    ordering: auth before handler body
+    failure_behavior: unauthorized never creates mesh
+    composition_test: src/app/api/mesh/route.auth.test.ts — api_rejects_unauthorized_mesh_create
+
+  - id: mesh.api.credentials_rbac
+    trigger: POST /api/mesh/credentials
+    callee: manage_credentials permission check
+    arguments: x-mesh-role header, label in body
+    effect: viewer 403; admin 201 with credential id
+    ordering: RBAC before persistence
+    failure_behavior: forbidden role returns 403 without side effects
+    composition_test: src/app/api/mesh/credentials.route.test.ts — post_credentials_forbidden_for_viewer
+
+  - id: mesh.api.depot_add
+    trigger: POST /api/mesh/[meshId]/depots
+    callee: mesh CRUD depot append
+    arguments: meshId, depot attrs JSON
+    effect: depot listed on mesh
+    ordering: mesh must exist
+    failure_behavior: invalid depot payload rejected
+    composition_test: src/app/api/mesh/depots-links.route.test.ts — post_depot_adds_depot_to_mesh
+
+  - id: mesh.api.link_add
+    trigger: POST /api/mesh/[meshId]/links
+    callee: mesh CRUD link append
+    arguments: meshId, link attrs JSON
+    effect: link listed on mesh
+    ordering: depots exist before link
+    failure_behavior: unknown depot ids rejected by domain validation
+    composition_test: src/app/api/mesh/depots-links.route.test.ts — post_link_adds_relationship_to_mesh
+
+  - id: mesh.api.plan_change_set
+    trigger: POST /api/mesh/[meshId]/plan
+    callee: planning engine change set builder
+    arguments: meshId, operation slice options
+    effect: change set returned with operations
+    ordering: mesh loaded before plan
+    failure_behavior: invalid slice → error response
+    composition_test: src/app/api/mesh/plan-conflicts.route.test.ts — post_plan_returns_change_set
+
+  - id: mesh.api.conflicts_list
+    trigger: GET /api/mesh/[meshId]/conflicts
+    callee: conflict detector
+    arguments: meshId
+    effect: conflicts array in JSON response
+    ordering: after mesh and plan material exist
+    failure_behavior: unknown mesh → 404
+    composition_test: src/app/api/mesh/plan-conflicts.route.test.ts — get_conflicts_returns_list
+
+  - id: mesh.api.session_lifecycle
+    trigger: POST /api/mesh/sessions create; GET progress; POST start; POST cancel
+    callee: mesh executor session runtime
+    arguments: meshId, approved plan id, session id
+    effect: session created, progress observable, cancel invokes cancelSessionExecution
+    ordering: plan approved before start
+    failure_behavior: invalid session id → error
+    composition_test: src/app/api/mesh/sessions.route.test.ts — post_session_create_returns_session
+
+  - id: mesh.api.import_export
+    trigger: POST /api/mesh/import; GET /api/mesh/export
+    callee: import/export service
+    arguments: mesh document JSON; meshId for export
+    effect: import creates mesh; export omits secret values
+    ordering: validate document before import
+    failure_behavior: malformed document rejected
+    composition_test: src/app/api/mesh/import-export.route.test.ts — export_never_includes_secret_values
+
+  - id: mesh.api.workspace_snapshot_create
+    trigger: POST /api/mesh with workspace snapshot payload
+    callee: buildMeshCreatePayload + parseWorkspaceSnapshotFromMesh
+    arguments: WORKSPACE_SNAPSHOT_TAG, v5 snapshot fields
+    effect: mesh tags contain snapshot; GET round-trips pane state
+    ordering: snapshot captured before POST
+    failure_behavior: invalid snapshot rejected on parse
+    composition_test: src/app/api/mesh/workspace-bridge.route.test.ts — BUILD_MESH_PAYLOAD_post_mesh_with_workspace_snapshot_round_trips
+
+  - id: mesh.api.workspace_update
+    trigger: PUT /api/mesh/[meshId]/workspace
+    callee: workspace snapshot merge on mesh
+    arguments: meshId, snapshot JSON with depots and displaySpecId
+    effect: updated mesh round-trips snapshot fields
+    ordering: mesh must exist
+    failure_behavior: unknown meshId → 404
+    composition_test: src/app/api/mesh/[meshId]/workspace/workspace.route.test.ts — UPDATE_EXISTING_WORKSPACE_round_trips_snapshot_and_depots
+
+  # --- Files HTTP API ---
+  - id: files.api.sync_all
+    trigger: POST /api/files operation sync-all
+    callee: SyncEngine.sync
+    arguments: sources[], destinations[], compareMethod options
+    effect: sync invoked; itemsCompleted reflected in response
+    ordering: validate sources and destinations non-empty before sync
+    failure_behavior: missing sources or destinations → 400
+    composition_test: src/app/api/files/route.test.ts — accepts sync-all without src when sources and destinations provided
+
+  - id: files.api.bulk_touch
+    trigger: POST /api/files operation bulk-touch
+    callee: bulkTouch in files.data
+    arguments: paths[], mtime options
+    effect: bulkTouch called; success counts returned
+    ordering: path validation before bulk op
+    failure_behavior: invalid paths → 400
+    composition_test: src/app/api/files/route.test.ts — bulk-touch operation describe
+
+  - id: files.api.bulk_copy
+    trigger: POST /api/files operation bulk-copy
+    callee: bulkCopy in files.data
+    arguments: src, dest paths
+    effect: bulkCopy invoked with paths
+    ordering: validate src/dest before copy
+    failure_behavior: traversal in path → 400
+    composition_test: src/app/api/files/route.test.ts — bulk-copy operation describe
+
+  - id: files.api.execute_command
+    trigger: POST /api/files operation execute-command
+    callee: executeCommandBatch
+    arguments: pane paths, command id, batch scope
+    effect: executeCommandBatch called
+    ordering: operation validation before delegate
+    failure_behavior: unknown operation → 400
+    composition_test: src/app/api/files/route.test.ts — execute-command operation describe
+
+  - id: files.api.display_filter_listing
+    trigger: GET /api/files?displaySpecId=
+    callee: server-side filterFileStats / listing filter
+    arguments: path, displaySpecId query param
+    effect: filtered listing with hiddenCount
+    ordering: spec resolved before listDirectory filter
+    failure_behavior: invalid spec id → unfiltered or error per API contract
+    composition_test: src/app/api/files/display-filter.route.test.ts — SERVER_FILTER_LISTING returns filtered listing with hiddenCount
+
+  - id: files.api.display_specs_crud
+    trigger: POST/PUT/DELETE /api/display-specs
+    callee: serverCreateDisplaySpec / catalog merge
+    arguments: spec rules JSON, stable ids on PUT
+    effect: specs created, merged, deleted
+    ordering: PUT merges client catalog before GET list
+    failure_behavior: invalid rule → validation error
+    composition_test: src/app/api/display-specs/route.test.ts — creates and lists specs
+
+  - id: files.api.search
+    trigger: GET /api/files/search
+    callee: file search executor
+    arguments: pattern, basePath, regex flags, maxResults
+    effect: matching files array returned
+    ordering: validate basePath absolute and exists before search
+    failure_behavior: traversal or invalid regex → 400
+    composition_test: src/app/api/files/search/route.test.ts — should search files successfully
+
+  - id: files.api.preview
+    trigger: GET /api/files/preview
+    callee: preview reader by mime/type
+    arguments: path query param
+    effect: text preview or image metadata JSON
+    ordering: path validation before read
+    failure_behavior: traversal → 400; directory → error
+    composition_test: src/app/api/files/preview/route.test.ts — returns text preview for small text file
+
+  - id: files.api.info
+    trigger: GET /api/files/info
+    callee: fs stat via files layer
+    arguments: path query param
+    effect: file metadata JSON
+    ordering: validate path before stat
+    failure_behavior: missing path → 400; not found → 404
+    composition_test: src/app/api/files/info/route.test.ts — returns file info for valid path
+
+  # --- NSYNC engine (in-process; also reached via sync-all API) ---
+  - id: nsync.engine.multi_dest_sync
+    trigger: SyncEngine.sync(sources, destinations, options)
+    callee: syncItem → syncToDestination per dest
+    arguments: source files, dest dirs, compareMethod
+    effect: files copied to all destinations; itemsCompleted incremented
+    ordering: plan bytes from getFileStat before item loop
+    failure_behavior: dest failure increments itemsFailed
+    composition_test: src/lib/sync/engine.test.ts — should sync a file to multiple destinations
+
+  - id: nsync.engine.verify_destination
+    trigger: SyncEngine.sync with verifyDestination true
+    callee: verifyDestination + computeFileHash
+    arguments: sourceHash, destPath, hashAlgorithm
+    effect: verified copy succeeds; itemsCompleted 1
+    ordering: copy before verify when enabled
+    failure_behavior: hash mismatch → dest error
+    composition_test: src/lib/sync/engine.test.ts — should verify destination when verifyDestination enabled
+
+  - id: workspace.ui.pane_refresh
+    trigger: Ctrl+R keydown dispatches pane.refresh action in WorkspaceView
+    callee: refreshPaneTree(focusIndex)
+    arguments: focused pane index; current pane.path
+    effect: /api/files listing refetched for pane base directory
+    ordering: initializeKeybindingRegistry before window keydown handler
+    failure_behavior: fetch failure logged; pane listing unchanged on error
+    composition_test: src/app/files/WorkspaceView.pane-refresh.test.tsx — pane_refresh_ctrl_r_refetches_focused_pane_listing [IMPL-PANE_REFRESH]
+
+  - id: workspace.ui.pane_refresh_all
+    trigger: Ctrl+Shift+R keydown dispatches pane.refresh-all action
+    callee: handleNavigate per pane index with current path
+    arguments: all pane indices and paths
+    effect: each pane listing refetched via fetchDirectoryListing
+    ordering: workspaceActionHandlers registered before keydown dispatch
+    failure_behavior: per-pane fetch errors logged independently
+    composition_test: src/app/files/WorkspaceView.pane-refresh.test.tsx — pane_refresh_all_ctrl_shift_r_refetches_all_pane_listings [IMPL-PANE_REFRESH]
+
+  # --- UI / workspace entry (E2E-only seams) ---
+  - id: workspace.ui.toolbar_display_cycle
+    trigger: User clicks toolbar-compact-toggle in browser
+    callee: WorkspaceView setToolbarDisplayMode cycle
+    arguments: compact → expanded → named → compact
+    effect: toolbar tiers render per mode
+    ordering: toolbars.enabled must be true
+    failure_behavior: N/A — UI state only
+    e2e_only: true
+    e2e_only_reason: Browser DOM layout and toolbar tier visibility require Playwright; jsdom cannot assert visual toolbar compaction
+    e2e_test: e2e/workspace-a11y-evidence.spec.ts — toolbar display mode cycle + keyboard focus [REQ-ACCESSIBILITY] [workspace.ui.toolbar_display_cycle]
+
+  - id: workspace.ui.linked_navigation
+    trigger: User presses linked-mode keybind in browser workspace
+    callee: linked navigation sync across panes
+    arguments: L key or toolbar linked toggle
+    effect: pane cursors stay synchronized on directory change
+    ordering: linked mode enabled before nav event
+    failure_behavior: unlinked panes navigate independently
+    e2e_only: true
+    e2e_only_reason: Playwright browser required for multi-pane keyboard navigation; native browser keyboard focus events across FilePane DOM lists cannot be fired in Vitest jsdom
+    e2e_test: e2e/workspace-a11y-evidence.spec.ts — keyboard Backspace parent sync + L key toggle [REQ-ACCESSIBILITY] [workspace.ui.linked_navigation]

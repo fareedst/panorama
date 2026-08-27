@@ -1,0 +1,12 @@
+{
+  "allowed": true,
+  "ok": true,
+  "blocking": false,
+  "depth": "minimal",
+  "phase": "pre_implementation",
+  "diagnostics": [],
+  "gate_receipt": {
+    "path": "working/TIED-3.0-ALIGNMENT-SYNC/pre_implementation-2026-08-27T17-42-31-072Z.json",
+    "hash": "sha256:a2e88b9b20cddd64cddb1f7cd95decc05c008d7db923285379aa196db897cd55"
+  }
+}

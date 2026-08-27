@@ -1,21 +1,16 @@
-# [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
-# File Manager Configuration
 columns:
-  - id: mtime
-    format: age # Default: show age instead of absolute timestamp
-    visible: true
-  - id: size
+  - format: age
+    id: mtime
     visible: true
   - id: name
     visible: true
-# [IMPL-TOOLBAR_CONFIG] [ARCH-TOOLBAR_LAYOUT] [ARCH-CONFIG_DRIVEN_UI] [REQ-TOOLBAR_CONFIG]: how: YAML defines workspace, pane, and system tiers each with enabled, position, and named action groups; WorkspaceView renders tiers per IMPL-TOOLBAR_COMPONENT display mode
-# [IMPL-TOOLBAR_CONFIG] [ARCH-TOOLBAR_ACTIONS] [REQ-TOOLBAR_CONFIG] [REQ-TOOLBAR_SYSTEM]: how: toolbars.actions supplies description/icon/label for toolbar-only actions consumed by deriveToolbarButton via actionsMeta prop
+  - id: size
+    visible: true
 copy:
   backToHome: Back to Home
   columns:
     apply: Apply
     cancel: Cancel
-  # File operations
     columnOrderTitle: Column order
     moveDown: Down
     moveUp: Up
@@ -24,21 +19,17 @@ copy:
     sizeLabel: Size
   commandPalette:
     executeButton: Execute
-  # [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] Pane management
     noResults: No matching commands
     placeholder: Type to search commands...
     title: Command Palette
   confirmation:
     cancelButton: Cancel
-  # [REQ-FILE_SEARCH] Search dialog copy
     deleteButton: Delete
     deleteMessage: Delete {count} file(s)?
   displayFilter:
     filterEmpty: No visible items — the active filter may be hiding files in this folder.
     managerTitle: Display filter specs
-  # [REQ-FILES_CONFIG_COMPLETE] Help dialog
   emptyDirectory: Empty directory
-  # Keyboard shortcuts
   executeFile:
     cancel: Cancel
     commandLabel: Command
@@ -48,7 +39,6 @@ copy:
     executeTitle: Execute
   help:
     close: Close
-  # [REQ-FILES_CONFIG_COMPLETE] Command palette
     title: Keyboard Shortcuts
   layoutLabel: 'Layout:'
   layouts:
@@ -58,7 +48,6 @@ copy:
     tile: Tile
   makeDirectory:
     cancel: Cancel
-  # [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE]
     directoryNameLabel: Directory name
     makeDirectoryApply: Create
     makeDirectoryMenu: Make directory…
@@ -66,7 +55,6 @@ copy:
   marking:
     clearMarks: Clear marks
     invertMarks: Invert marks
-  # [REQ-PANE_DISPLAY_FILTER] [IMPL-PANE_DISPLAY_FILTER_UI]
     markAll: Mark all
     markedCount: '{count} marked'
   operations:
@@ -74,7 +62,6 @@ copy:
     delete: Delete
     move: Move
     rename: Rename
-  # Confirmation messages
   paneManagement:
     addPane: Add Pane
     apply: Apply
@@ -101,12 +88,10 @@ copy:
     setBaseInPriorPaneSwap: In the prior pane and swap pane position
     setBaseInThisPane: In this pane
     setBaseNewWorkspace: In new workspace, as the only pane
-  # [IMPL-TOUCH_DIALOG] [REQ-TOUCH_MTIME] Touch file dialog copy
     swapPanes: Swap panes
     swapPrev: Swap with previous
   renameRegex:
     cancel: Cancel
-  # [IMPL-MAKE_DIRECTORY_DIALOG] [REQ-DIRECTORY_NAVIGATION] Make directory dialog copy
     matchPatternLabel: Match pattern
     renameRegexApply: Apply
     renameRegexMenu: Rename Regex…
@@ -121,7 +106,6 @@ copy:
     searchCaseSensitive: Case Sensitive
     searchFilePattern: File Pattern (glob)
     searchInProgress: Searching...
-  # [REQ-FILES_CONFIG_COMPLETE] Marking operations
     searchNoResults: No matches found
     searchOptions: Options
     searchPlaceholder: Search pattern...
@@ -132,19 +116,16 @@ copy:
   shortcuts:
     mark: 'M: Mark'
     markDown: 'Space: Mark+Down'
-  # Layout types
     navigate: '↑↓: Navigate'
     nextPane: 'Tab: Next Pane'
     open: 'Enter: Open'
     parent: 'Backspace: Parent'
   sort:
     shareButton: Share
-  # [IMPL-FILE_COLUMN_CONFIG] [REQ-CONFIG_DRIVEN_FILE_MANAGER]
     sharedButton: Shared
   title: File Manager
   touchFile:
     cancel: Cancel
-  # [IMPL-EXECUTE_DIALOG] [REQ-PANE_COMMAND_EXEC] Execute file dialog copy
     touchApply: Apply
     touchMenu: Touch…
     touchMtimeEarliest: Earliest time in all panes
@@ -161,8 +142,6 @@ copy:
     diffDialogTitle: Workspace changes
     diffNoChanges: No differences from saved workspace.
     filesStartupAria: Set as Files page startup workspace
-# [REQ-KEYBOARD_SHORTCUTS_COMPLETE] [ARCH-KEYBIND_SYSTEM] [IMPL-KEYBINDS]
-# Keyboard shortcut definitions
     filesStartupClear: Use config defaults
     filesStartupColumn: Files startup
     filesStartupSummary: 'Files startup: {name}'
@@ -174,272 +153,241 @@ copy:
     updateModeLabel: Update current workspace
     updateSubmitLabel: Update workspace
 keybindings:
-  # System
-  - key: '?'
-    action: help.show
-    category: system
-    description: Show keyboard shortcuts
-    modifiers:
-      shift: true
-  - key: p
-    action: command.palette
-    category: system
-    description: Open command palette
-    modifiers:
-      ctrl: true
-  - key: m
-    action: mesh.saveWorkspace
-    category: system
-  # Navigation
-    description: Save workspace as mesh
-    modifiers:
-      ctrl: true
-      shift: true
-  - key: ArrowUp
-    action: navigate.up
-    category: navigation
-    description: Move cursor up
-  - key: ArrowDown
-    action: navigate.down
-    category: navigation
-    description: Move cursor down
-  - key: Enter
-    action: navigate.enter
-    category: navigation
-    description: Enter directory or open file
-  - key: Backspace
-    action: navigate.parent
-    category: navigation
-    description: Go to parent directory
-  - key: Tab
-    action: navigate.tab
-    category: navigation
-    description: Switch pane focus
-  - key: Home
-    action: navigate.first
-    category: navigation
-    description: Jump to first file
-  - key: End
-    action: navigate.last
-    category: navigation
-  # File Operations
-    description: Jump to last file
-  - key: c
-    action: file.copy
-    category: file-operations
-    description: Copy marked files (or current file)
-  - key: v
-    action: file.move
-    category: file-operations
-  # [IMPL-NSYNC_ENGINE] [REQ-NSYNC_MULTI_TARGET] Multi-destination operations
-    description: Move marked files (or current file)
-  - key: C
-    action: file.copyAll
-    category: file-operations
-    description: Copy marked files to ALL other panes
-    shift: true
-  - key: V
-    action: file.moveAll
-    category: file-operations
-    description: Move marked files to ALL other panes
-    shift: true
-  - key: d
-    action: file.delete
-    category: file-operations
-    description: Delete marked files (or current file)
-  - key: r
-    action: file.rename
-    category: file-operations
-  # Marking
-    description: Rename file
-  - key: ' '
-    action: mark.toggle
-    category: marking
-    description: Toggle mark on current file and move down
-  - key: m
-    action: mark.toggle-cursor
-    category: marking
-    description: Toggle mark on current file (no move)
-  - key: m
-    action: mark.all
-    category: marking
-    description: Mark all files
-    modifiers:
-      shift: true
-  - key: m
-    action: mark.invert
-    category: marking
-    description: Invert marks
-    modifiers:
-      ctrl: true
-  - key: Escape
-    action: mark.clear
-    category: marking
-  # View & Sort
-    description: Clear all marks
-  - key: l
-    action: view.layout
-    category: view-sort
-    description: Choose workspace layout
-    modifiers:
-      ctrl: true
-      shift: true
-  - key: s
-    action: view.sort
-    category: view-sort
-    description: Open sort menu
-  - key: '`'
-    action: view.comparison
-    category: view-sort
-  # [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Linked pane navigation
-    description: Toggle comparison mode (name/size/time)
-  - key: l
-    action: link.toggle
-    category: view-sort
-    description: Toggle linked pane navigation
-  - key: .
-    action: view.hidden
-    category: view-sort
-  # Preview
-    description: Toggle hidden files
-  - key: i
-    action: preview.info
-    category: preview
-    description: Show file info panel
-  - key: q
-    action: preview.content
-    category: preview
-  # Search [REQ-FILE_SEARCH]
-    description: Show file preview
-  - key: f
-    action: search.finder
-    category: system
-    description: Find files (incremental search)
-    modifiers:
-      ctrl: true
-  - key: f
-    action: search.content
-    category: system
-  # Advanced
-    description: Search file contents
-    modifiers:
-      ctrl: true
-      shift: true
-  - key: g
-    action: bookmark.goto
-    category: advanced
-    description: Goto directory (path entry)
-  - key: b
-    action: bookmark.add
+  - action: bookmark.add
     category: advanced
     description: Add bookmark for current directory
-  - key: b
-    action: bookmark.list
+    key: b
+  - action: bookmark.goto
+    category: advanced
+    description: Goto directory (path entry)
+    key: g
+  - action: bookmark.list
     category: advanced
     description: List bookmarks
+    key: b
     modifiers:
       ctrl: true
-  - key: "~"
-    action: navigate.home
-    category: advanced
-    description: Go to home directory
-  - key: ArrowLeft
-    action: history.back
+  - action: command.palette
+    category: system
+    description: Open command palette
+    key: p
+    modifiers:
+      ctrl: true
+  - action: file.copy
+    category: file-operations
+    description: Copy marked files (or current file)
+    key: c
+  - action: file.copyAll
+    category: file-operations
+    description: Copy marked files to ALL other panes
+    key: C
+    shift: true
+  - action: file.delete
+    category: file-operations
+    description: Delete marked files (or current file)
+    key: d
+  - action: file.move
+    category: file-operations
+    description: Move marked files (or current file)
+    key: v
+  - action: file.moveAll
+    category: file-operations
+    description: Move marked files to ALL other panes
+    key: V
+    shift: true
+  - action: file.rename
+    category: file-operations
+    description: Rename file
+    key: r
+  - action: help.show
+    category: system
+    description: Show keyboard shortcuts
+    key: '?'
+    modifiers:
+      shift: true
+  - action: history.back
     category: advanced
     description: Navigate back in history
+    key: ArrowLeft
     modifiers:
       alt: true
-  - key: ArrowRight
-    action: history.forward
+  - action: history.forward
     category: advanced
-  # [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] Pane management
     description: Navigate forward in history
+    key: ArrowRight
     modifiers:
       alt: true
-  - key: =
-    action: pane.add
+  - action: link.toggle
+    category: view-sort
+    description: Toggle linked pane navigation
+    key: l
+  - action: mark.all
+    category: marking
+    description: Mark all files
+    key: m
+    modifiers:
+      shift: true
+  - action: mark.clear
+    category: marking
+    description: Clear all marks
+    key: Escape
+  - action: mark.invert
+    category: marking
+    description: Invert marks
+    key: m
+    modifiers:
+      ctrl: true
+  - action: mark.toggle
+    category: marking
+    description: Toggle mark on current file and move down
+    key: ' '
+  - action: mark.toggle-cursor
+    category: marking
+    description: Toggle mark on current file (no move)
+    key: m
+  - action: mesh.saveWorkspace
+    category: system
+    description: Save workspace as mesh
+    key: m
+    modifiers:
+      ctrl: true
+      shift: true
+  - action: navigate.down
+    category: navigation
+    description: Move cursor down
+    key: ArrowDown
+  - action: navigate.enter
+    category: navigation
+    description: Enter directory or open file
+    key: Enter
+  - action: navigate.first
+    category: navigation
+    description: Jump to first file
+    key: Home
+  - action: navigate.home
+    category: advanced
+    description: Go to home directory
+    key: '~'
+  - action: navigate.last
+    category: navigation
+    description: Jump to last file
+    key: End
+  - action: navigate.parent
+    category: navigation
+    description: Go to parent directory
+    key: Backspace
+  - action: navigate.tab
+    category: navigation
+    description: Switch pane focus
+    key: Tab
+  - action: navigate.up
+    category: navigation
+    description: Move cursor up
+    key: ArrowUp
+  - action: pane.add
     category: pane-management
     description: Add new pane
-  - key: '-'
-    action: pane.remove
+    key: '='
+  - action: pane.cycle
     category: pane-management
-    description: Remove focused pane
-  - key: s
-    action: pane.swap
-    category: pane-management
-    description: Swap panes (or swap focused with next neighbor)
+    description: Cycle panes forward
+    key: ']'
     modifiers:
       ctrl: true
       shift: true
-  - key: s
-    action: pane.swapPrev
+  - action: pane.cyclePrev
+    category: pane-management
+    description: Cycle panes backward
+    key: '['
+    modifiers:
+      ctrl: true
+      shift: true
+  - action: pane.refresh
+    category: pane-management
+    description: Refresh current pane
+    key: r
+    modifiers:
+      ctrl: true
+  - action: pane.refresh-all
+    category: pane-management
+    description: Refresh all panes
+    key: r
+    modifiers:
+      ctrl: true
+      shift: true
+  - action: pane.remove
+    category: pane-management
+    description: Remove focused pane
+    key: '-'
+  - action: pane.swap
+    category: pane-management
+    description: Swap panes (or swap focused with next neighbor)
+    key: s
+    modifiers:
+      ctrl: true
+      shift: true
+  - action: pane.swapPrev
     category: pane-management
     description: Swap focused pane with previous neighbor
+    key: s
     modifiers:
       alt: true
       ctrl: true
       shift: true
-  - key: ']'
-    action: pane.cycle
-    category: pane-management
-    description: Cycle panes forward
+  - action: preview.content
+    category: preview
+    description: Show file preview
+    key: q
+  - action: preview.info
+    category: preview
+    description: Show file info panel
+    key: i
+  - action: search.content
+    category: system
+    description: Search file contents
+    key: f
     modifiers:
       ctrl: true
       shift: true
-  - key: '['
-    action: pane.cyclePrev
-    category: pane-management
-    description: Cycle panes backward
+  - action: search.finder
+    category: system
+    description: Find files (incremental search)
+    key: f
+    modifiers:
+      ctrl: true
+  - action: view.comparison
+    category: view-sort
+    description: Toggle comparison mode (name/size/time)
+    key: '`'
+  - action: view.hidden
+    category: view-sort
+    description: Toggle hidden files
+    key: .
+  - action: view.layout
+    category: view-sort
+    description: Choose workspace layout
+    key: l
     modifiers:
       ctrl: true
       shift: true
-  - key: r
-    action: pane.refresh
-    category: pane-management
-    description: Refresh current pane
-    modifiers:
-      ctrl: true
-  - key: r
-    # [IMPL-PANE_REFRESH] [ARCH-PANE_REFRESH] [ARCH-KEYBIND_SYSTEM] [REQ-PANE_REFRESH] [REQ-KEYBOARD_SHORTCUTS_COMPLETE]: how: config/files.yaml registers pane.refresh (Ctrl+R) and pane.refresh-all (Ctrl+Shift+R) in pane-management category
-
-    action: pane.refresh-all
-    category: pane-management
-# [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE] Layout preferences
-    description: Refresh all panes
-    modifiers:
-      ctrl: true
-      shift: true
+  - action: view.sort
+    category: view-sort
+    description: Open sort menu
+    key: s
 layout:
-  # Default layout type on startup
   allowPaneManagement: true
-  # Maximum number of panes (0 = no upper limit)
-  default: oneColumn # tile | oneRow | oneColumn | fullscreen
-  # Default number of panes (minimum 3 recommended for typical use)
+  default: oneColumn
   defaultLinkedMode: true
-# [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE] Startup directory configuration
   defaultPaneCount: 1
-  # Allow users to add/remove panes
   maxPanes: 0
-  # [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Enable linked navigation mode by default
 startup:
-  # Startup mode: configured | last | home
-  # - configured: Use paths defined below
-  # - last: Remember last visited paths (requires localStorage)
-  # - home: Always start at home directory
   mode: home
-  # Configured startup paths per pane (when mode = "configured")
-  # Supports: absolute paths, ~ for home, environment variables
   paths:
-    pane1: "~"
+    pane1: '~'
     pane2: ~/Documents
     pane3: ~/Downloads
-  # Remember last locations across sessions (requires localStorage)
   rememberLastLocations: false
-# [IMPL-FILE_COLUMN_CONFIG] [IMPL-FILE_AGE_DISPLAY] Column display configuration
-# Order determines display order; set visible: false to hide
-# format: "age" displays relative time (e.g., "4 day 23 hr"), "absolute" shows YYYY-MM-DD HH:MM:SS
 toolbars:
-  # Global enable/disable
   actions:
     mesh.diffWorkspace:
       description: Diff workspace vs saved
@@ -450,7 +398,6 @@ toolbars:
     pane.order:
       description: Pane order
       icon: bookmark-list
-  # Workspace toolbar - actions affecting all panes
     pane.swap:
       description: Swap panes
       icon: move
@@ -506,55 +453,44 @@ toolbars:
       description: Manage display filter specs
       icon: filter
   enabled: true
-  # [REQ-TOOLBAR_SYSTEM] Toolbar-only actions (no keybinding row required)
   pane:
     enabled: true
     groups:
-      - name: File Operations
-        actions:
+      - actions:
           - file.copy
           - file.copyAll
           - file.delete
           - file.move
           - file.moveAll
           - file.rename
-      - name: Navigation
-        actions:
-          - history.back
-          - history.forward
-          - navigate.home
-          - navigate.parent
-      - name: Marking
-        actions:
+        name: File Operations
+      - actions:
           - mark.all
           - mark.clear
           - mark.invert
           - mark.toggle
-  # System toolbar - independent actions
-    position: top # top | bottom | hidden | per-pane
+        name: Marking
+      - actions:
+          - history.back
+          - history.forward
+          - navigate.home
+          - navigate.parent
+        name: Navigation
+    position: top
   system:
     enabled: true
     groups:
-      - name: System
-        actions:
+      - actions:
           - command.palette
           - help.show
           - search.content
           - search.finder
+        name: System
     position: top
   workspace:
     enabled: true
     groups:
-      - name: Layout
-        actions:
-          - link.toggle
-          - view.columns
-          - view.comparison
-          - view.displaySpec
-          - view.layout
-          - view.sort
-      - name: Compare filters
-        actions:
+      - actions:
           - view.compareFilter.missingSome
           - view.compareFilter.sharedAll
           - view.compareFilter.sizeGtThreshold
@@ -570,17 +506,25 @@ toolbars:
           - view.compareFilter.timeLatestAll
           - view.compareFilter.timeLatestSome
           - view.compareFilter.timeLtThreshold
-      - name: Pane Management
-        actions:
+        name: Compare filters
+      - actions:
+          - link.toggle
+          - view.columns
+          - view.comparison
+          - view.displaySpec
+          - view.layout
+          - view.sort
+        name: Layout
+      - actions:
+          - mesh.diffWorkspace
+          - mesh.saveWorkspace
+        name: Mesh
+      - actions:
           - pane.add
           - pane.cycle
           - pane.order
           - pane.refresh-all
           - pane.remove
           - pane.swap
-      - name: Mesh
-        actions:
-          - mesh.diffWorkspace
-          - mesh.saveWorkspace
-  # Pane toolbar - actions on focused pane
-    position: top # top | bottom | hidden
+        name: Pane Management
+    position: top

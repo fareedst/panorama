@@ -346,12 +346,13 @@ describe("Default configs [IMPL-YAML_CONFIG]", () => {
 });
 
 // ---------------------------------------------------------------------------
-// Files Configuration Tests [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE]
+// Files Configuration Tests [REQ-CONFIG_DRIVEN_FILE_MANAGER] [IMPL-FILES_CONFIG] [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE]
 // ---------------------------------------------------------------------------
 
+// [IMPL-FILES_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: getFilesConfig loads config/files.yaml merged with DEFAULT_FILES_CONFIG and caches per process
 // [IMPL-FILES_CONFIG_COMPLETE] [ARCH-CONFIG_DRIVEN_UI] [REQ-FILES_CONFIG_COMPLETE] [REQ-CONFIG_DRIVEN_FILE_MANAGER]: how: config/files.yaml adds marking, help, commandPalette, layout, startup, columns, keybindings beyond base copy section
 
-describe("getFilesConfig [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE]", () => {
+describe("getFilesConfig [REQ-CONFIG_DRIVEN_FILE_MANAGER] [IMPL-FILES_CONFIG] [REQ-FILES_CONFIG_COMPLETE] [IMPL-FILES_CONFIG_COMPLETE]", () => {
   it("returns complete FilesConfig object", () => {
     const config = getFilesConfig();
     expect(config).toBeDefined();

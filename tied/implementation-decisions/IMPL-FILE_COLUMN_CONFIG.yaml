@@ -61,8 +61,8 @@ IMPL-FILE_COLUMN_CONFIG:
       date: {}
     last_updated:
       author: AI Agent
-      date: '2026-05-30T00:00:00.000Z'
-      reason: Retrofit essence_pseudocode from tests and production code
+      date: '2026-08-27'
+      reason: 'E1 tranche 4: migrate legacy CONTRACT/PROCEDURE blocks to fenced Layer-B format'
     last_validated:
       date: '2026-05-23T00:00:00.000Z'
       result: pending vitest gate

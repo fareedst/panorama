@@ -6,26 +6,36 @@
 
 // [IMPL-HOME_PAGE] [ARCH-SERVER_COMPONENTS] [REQ-HOME_PAGE]: how: / no longer renders welcome/marketing content; immediate navigation to primary application surface
 
-CONTRACT Summary
+```
+IMPL-HOME_PAGE_Summary():
   INPUT: HTTP GET /
   OUTPUT: redirect response to /files
   DATA: next/navigation redirect helper
   CONTROL: server component (no client state)
+  PRE: root page route invoked
+  POST: client navigates to /files without rendering legacy home UI
+  EFFECTS: Control
+  TERMINATION: total
+```
 
 ## RootRedirectToFileManager
 
 // [IMPL-HOME_PAGE] [ARCH-SERVER_COMPONENTS] [REQ-HOME_PAGE]: how: Home() calls redirect("/files") so App Router never paints legacy home UI
 
-CONTRACT RootRedirectToFileManager
+```
+IMPL-HOME_PAGE_RootRedirectToFileManager():
   INPUT: none
   OUTPUT: Next.js redirect to /files (not renderable tree in unit tests)
   DATA: redirect from next/navigation
-
-PROCEDURE IMPL-HOME_PAGE_RootRedirectToFileManager()
+  PRE: Home server component entry point active
+  POST: redirect("/files") invoked; no legacy home content rendered
+  EFFECTS: Control
+  TERMINATION: total
   IMPORT redirect from next/navigation
   EXPORT default async or sync function Home
   INVOKE redirect WITH path "/files"
   ASSERT no config load, logo, or links in page.tsx (see IMPL-CONFIG_LOADER for site branding elsewhere)
+```
 
 ## CodeLocations
 
@@ -38,9 +48,17 @@ PROCEDURE IMPL-HOME_PAGE_RootRedirectToFileManager()
 
 // [IMPL-HOME_PAGE] [ARCH-SERVER_COMPONENTS] [REQ-HOME_PAGE]: how: invalid redirect target would fail at build; runtime errors propagate to framework error boundaries
 
-PROCEDURE IMPL-HOME_PAGE_on_error(context, error)
+```
+IMPL-HOME_PAGE_on_error(context, error):
+  INPUT: redirect or framework error
+  OUTPUT: propagated to Next error handling
+  PRE: redirect or page render failure
+  POST: error handled by framework; no workspace state involved
+  EFFECTS: Control
+  TERMINATION: total
   IF redirect throws THEN propagate to Next error handling
   ELSE no pane or workspace state involved
+```
 
 ## E2eOnlyBoundary
 

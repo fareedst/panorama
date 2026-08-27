@@ -20,8 +20,8 @@ IMPL-METADATA:
       date: {}
     last_updated:
       author: AI Agent
-      date: '2026-05-30T00:00:00.000Z'
-      reason: Pseudocode retrofit from production code and tests
+      date: '2026-08-27'
+      reason: 'E1 tranche 3: migrate legacy CONTRACT blocks to fenced Layer-B format'
     last_validated:
       date: {}
       result: pass

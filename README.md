@@ -1,4 +1,9 @@
 # Panorama - Multi-Target File Manager with Visual Sync
+# Indescript — macOS compile and distribution (interactive)
+```bash @on-load @hide
+cd "$INDESCRIPT_DOC_DIR"
+source ~/.bash_profile
+```
 
 **Version**: 0.5.1  
 **Last Updated**: 2026-05-31
@@ -91,13 +96,13 @@ Browse and manage server files with keyboard-driven navigation, **1 pane or more
 ### Installation
 
 1. **Clone the repository**:
-   ```bash
+   ```bash @eval
    git clone <repository-url>
    cd panorama
    ```
 
 2. **Install dependencies**:
-   ```bash
+   ```bash @eval
    npm install
    ```
 
@@ -425,14 +430,23 @@ This command:
 `npm run demo:record` is an alias for the same command.
 
 **Individual commands:**
-
-```bash
-npm run demo:setup-readme   # Comparison fixture only
-npm run demo:setup          # CopyAll fixture only
-npm run test:e2e            # All E2E tests (headless)
-npm run demo:convert        # Convert recorded webms to GIFs
-npm run demo:verify         # Check docs/screenshots manifest
-npm run test:e2e:headed     # Visible browser (debugging)
+```bash @eval
+echo_exec npm run demo:setup-readme   # Comparison fixture only
+```
+```bash @eval
+echo_exec npm run demo:setup          # CopyAll fixture only
+```
+```bash @eval
+echo_exec npm run test:e2e            # All E2E tests (headless)
+```
+```bash @eval
+echo_exec npm run demo:convert        # Convert recorded webms to GIFs
+```
+```bash @eval
+echo_exec npm run demo:verify         # Check docs/screenshots manifest
+```
+```bash @eval
+echo_exec npm run test:e2e:headed     # Visible browser (debugging)
 ```
 
 See [`docs/screenshots/README.md`](docs/screenshots/README.md) for the full asset catalog.
@@ -446,7 +460,7 @@ http://localhost:3000/files?pane0=/path1&pane1=/path2&pane2=/path3
 ```
 
 **Example**:
-```bash
+```bash @eval
 npm run dev
 open "http://localhost:3000/files?pane0=/tmp/test-dirs/alpha&pane1=/tmp/test-dirs/beta&pane2=/tmp/test-dirs/gamma"
 ```
@@ -564,7 +578,7 @@ files:
 - **npm**: v9.x or later (comes with Node.js)
 
 Check your versions:
-```bash
+```bash @eval
 node --version  # Should be v18.17+
 npm --version   # Should be v9.x+
 ```
@@ -574,17 +588,17 @@ npm --version   # Should be v9.x+
 ### Testing
 
 **Run all tests**:
-```bash
+```bash @eval
 npm test
 ```
 
 **Run tests in watch mode** (recommended during development):
-```bash
+```bash @eval
 npm run test:watch
 ```
 
 **Generate coverage report**:
-```bash
+```bash @eval
 npm run test:coverage
 ```
 
@@ -593,19 +607,19 @@ npm run test:coverage
 ### Linting
 
 Run ESLint to check code quality:
-```bash
+```bash @eval
 npm run lint
 ```
 
 Fix auto-fixable issues:
-```bash
+```bash @eval
 npm run lint -- --fix
 ```
 
 ### Building for Production
 
 Create an optimized production build:
-```bash
+```bash @eval
 npm run build
 ```
 
@@ -713,7 +727,7 @@ nx1/
 ### Docker
 
 Build and run:
-```bash
+```bash @eval
 docker build -t file-manager .
 docker run -p 3000:3000 file-manager
 ```
@@ -822,14 +836,14 @@ Modern browsers only:
 ## Troubleshooting
 
 **Port 3000 already in use**:
-```bash
+```bash @eval
 npx kill-port 3000
 # Or use a different port
 npm run dev -- -p 3001
 ```
 
 **Build fails**:
-```bash
+```bash @eval
 npm run clean
 npm run build
 ```

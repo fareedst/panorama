@@ -24,8 +24,8 @@ IMPL-GLOBAL_ERROR_BOUNDARY:
       date: {}
     last_updated:
       author: AI Agent
-      date: '2026-05-30T00:00:00.000Z'
-      reason: Retrofit essence_pseudocode from production global-error.tsx
+      date: '2026-08-27'
+      reason: 'E1 tranche 2: migrate legacy CONTRACT blocks to fenced Layer-B format'
     last_validated:
       date: {}
       result: pass
@@ -48,7 +48,9 @@ IMPL-GLOBAL_ERROR_BOUNDARY:
     architecture:
       - ARCH-NEXTJS_FRAMEWORK
     code_annotations:
+      - IMPL-GLOBAL_ERROR_BOUNDARY
       - REQ-ERROR_HANDLING
     requirements:
       - REQ-ERROR_HANDLING
-    tests: []
+    tests:
+      - src/test/integration/app.test.tsx

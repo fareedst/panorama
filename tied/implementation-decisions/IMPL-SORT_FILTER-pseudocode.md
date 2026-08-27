@@ -6,12 +6,15 @@
 
 // [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED]: sortFiles copies input, applies dirsFirst directory layer then criterion comparator with asc/desc flip without mutating source array
 
-CONTRACT SortFilesComparatorPipeline
+```
+IMPL-SORT_FILTER_SortFilesComparatorPipeline(files, sortBy, direction, dirsFirst):
   INPUT: files FileStat[], sortBy SortCriterion, direction SortDirection, dirsFirst boolean
   OUTPUT: new sorted FileStat[] (input unchanged)
   DATA: compareName, compareSize, compareMtime, compareExtension
-
-PROCEDURE IMPL-SORT_FILTER_SortFilesComparatorPipeline(files, sortBy, direction, dirsFirst)
+  PRE: files array defined; sortBy and direction valid
+  POST: returned array sorted per criterion; source files array unchanged
+  EFFECTS: pure
+  TERMINATION: total
   sorted := COPY files
   ascending := (direction = "asc")
   FOR EACH pair (a, b) IN sorted.sort comparator
@@ -24,29 +27,37 @@ PROCEDURE IMPL-SORT_FILTER_SortFilesComparatorPipeline(files, sortBy, direction,
       CASE "extension" result := compareExtension(a, b)  // empty ext first; tiebreak by name
     RETURN ascending ? result : -result
   RETURN sorted
+```
 
 ## PaneSortSettingsEquality
 
 // [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED]: paneSortSettingsEqual returns true when sortBy sortDirection sortDirsFirst all match for Share/Shared disable logic
 
-CONTRACT PaneSortSettingsEquality
+```
+IMPL-SORT_FILTER_PaneSortSettingsEquality(a, b):
   INPUT: a PaneSortSettings, b PaneSortSettings
   OUTPUT: boolean equal
   DATA: DEFAULT_PANE_SORT constant for workspace default triple
-
-PROCEDURE IMPL-SORT_FILTER_PaneSortSettingsEquality(a, b)
+  PRE: both settings objects defined
+  POST: true iff sortBy, sortDirection, sortDirsFirst all match
+  EFFECTS: pure
+  TERMINATION: total
   RETURN (a.sortBy = b.sortBy) AND (a.sortDirection = b.sortDirection) AND (a.sortDirsFirst = b.sortDirsFirst)
+```
 
 ## LinkedSortApply
 
 // [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED] [REQ-LINKED_PANES]: handleSortChange updates one or all panes, re-sorts listing, preserves cursor by matching filename after sort
 
-CONTRACT LinkedSortApply
+```
+IMPL-SORT_FILTER_LinkedSortApply(context):
   INPUT: criterion, direction, dirsFirst, options.singlePaneOnly, linkedMode, panes[], focusIndex
   OUTPUT: updated panes with files reordered and cursor on same filename when found
   DATA: sortFiles, pane.files, pane.cursor
-
-PROCEDURE IMPL-SORT_FILTER_LinkedSortApply(context)
+  PRE: panes state and focusIndex valid
+  POST: target panes re-sorted; cursor on same filename when present else 0
+  EFFECTS: State
+  TERMINATION: total
   IF options.singlePaneOnly OR NOT (linkedMode AND panes.length > 1)
     THEN panesToUpdate := [focusIndex]
     ELSE panesToUpdate := ALL pane indices
@@ -56,17 +67,21 @@ PROCEDURE IMPL-SORT_FILTER_LinkedSortApply(context)
     newCursor := INDEX OF file WHERE name = currentFilename IN sortedFiles ELSE 0
     IF newCursor < 0 THEN newCursor := 0
     UPDATE pane sortBy sortDirection sortDirsFirst files cursor
+```
 
 ## SharedSortWorkspace
 
 // [IMPL-SORT_FILTER] [ARCH-SORT_PIPELINE] [REQ-FILE_SORTING_ADVANCED] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-LINKED_PANES]: workspace sharedSort; SortDialog Share copies draft; Shared applies sharedSort to focused pane only; new panes inherit sharedSort
 
-CONTRACT SharedSortWorkspace
+```
+IMPL-SORT_FILTER_SharedSortWorkspace(context):
   INPUT: paneSort, sharedSort, dialog draft criterion/direction/dirsFirst, linkedMode, focusIndex
   OUTPUT: updated sharedSort and/or pane listing order; dialog buttons enabled/disabled
   DATA: paneSortSettingsEqual, DEFAULT_PANE_SORT, mesh snapshot v3 sharedSort restore
-
-PROCEDURE IMPL-SORT_FILTER_SharedSortWorkspace(context)
+  PRE: SortDialog open with draft settings; workspace panes available
+  POST: Share/Shared/Apply actions update sharedSort or pane sorts per button semantics
+  EFFECTS: State
+  TERMINATION: total
   paneMatchesShared := paneSortSettingsEqual(paneSort, sharedSort)
   IF paneMatchesShared THEN disable Share and Shared buttons ELSE enable both
   IF Share clicked THEN onShareToWorkspace({ sortBy: draft, sortDirection, sortDirsFirst })  // no immediate resort
@@ -74,19 +89,24 @@ PROCEDURE IMPL-SORT_FILTER_SharedSortWorkspace(context)
   IF Apply clicked THEN handleSortChange(draft fields); close dialog  // linked-all unless singlePaneOnly path above
   WHEN addPane THEN newPane.sort := sharedSort (not focused pane sort)
   WHEN restoreUi.sharedSort present THEN initialize sharedSort from snapshot
+```
 
 ## SortDisplayHelpers
 
 // [IMPL-SORT_FILTER] [REQ-FILE_SORTING_ADVANCED]: getSortLabel and getSortDirectionSymbol map criterion and direction to footer/menu display strings
 
-CONTRACT SortDisplayHelpers
+```
+IMPL-SORT_FILTER_SortDisplayHelpers(context):
   INPUT: sortBy SortCriterion OR direction SortDirection
   OUTPUT: display label or arrow symbol
   DATA: name→Name, size→Size, mtime→Time, extension→Extension; asc→↑ desc→↓
-
-PROCEDURE IMPL-SORT_FILTER_SortDisplayHelpers(context)
+  PRE: sortBy or direction defined
+  POST: mapped label or direction symbol returned
+  EFFECTS: pure
+  TERMINATION: total
   SWITCH sortBy RETURN mapped label
   RETURN "↑" IF direction = "asc" ELSE "↓"
+```
 
 ## CodeLocations
 

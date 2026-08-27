@@ -37,4 +37,4 @@ IMPL-NSYNC_OPERATIONS:
       - REQ-MOVE_SEMANTICS
       - REQ-NSYNC_MULTI_TARGET
     tests:
-      - src/lib/sync/engine.test.ts — multi-target sync, move semantics, attribute preservation
+      - src/lib/sync/engine.test.ts — multi-target sync and move semantics [IMPL-NSYNC_OPERATIONS]

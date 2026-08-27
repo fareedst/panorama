@@ -6,7 +6,11 @@ import fs from "fs/promises";
 import path from "path";
 import os from "os";
 import { SyncEngine } from "./engine";
+import { StoreMonitor } from "./store";
+import * as operations from "./operations";
+import { ErrorClass } from "../sync.types";
 import type { SyncObserver } from "../sync.types";
+import { vi } from "vitest";
 
 describe("SyncEngine", () => {
   let tempDir: string;
@@ -31,8 +35,8 @@ describe("SyncEngine", () => {
     await fs.rm(tempDir, { recursive: true, force: true });
   });
 
-  // [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: how: sync() builds plan, iterates sources, syncItem to all destinations in parallel, deletes sources only after all dests succeed when move=true
-  it("should sync a file to multiple destinations [REQ-NSYNC_MULTI_TARGET]", async () => {
+  // [IMPL-NSYNC_ENGINE] [IMPL-NSYNC_OPERATIONS] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: how: sync() builds plan, iterates sources, syncItem to all destinations in parallel, deletes sources only after all dests succeed when move=true
+  it("should sync a file to multiple destinations [REQ-NSYNC_MULTI_TARGET] [IMPL-NSYNC_OPERATIONS]", async () => {
     // Create source file
     const sourceFile = path.join(sourceDir, "test.txt");
     await fs.writeFile(sourceFile, "test content");
@@ -163,8 +167,8 @@ describe("SyncEngine", () => {
     expect(calls).toContain("finish");
   });
 
-  // [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: how: after source loop, delete each source in sourcesToDelete when move AND NOT cancelled AND NOT storeFailureAbort
-  it("should handle move semantics [REQ-MOVE_SEMANTICS]", async () => {
+  // [IMPL-NSYNC_ENGINE] [IMPL-NSYNC_OPERATIONS] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: how: after source loop, delete each source in sourcesToDelete when move AND NOT cancelled AND NOT storeFailureAbort
+  it("should handle move semantics [REQ-MOVE_SEMANTICS] [IMPL-NSYNC_OPERATIONS]", async () => {
     // Create source file
     const sourceFile = path.join(sourceDir, "test.txt");
     await fs.writeFile(sourceFile, "test content");
@@ -193,5 +197,59 @@ describe("SyncEngine", () => {
 
     // Verify source was deleted
     await expect(fs.access(sourceFile)).rejects.toThrow();
+  });
+
+  // [IMPL-NSYNC_VERIFY] [IMPL-NSYNC_HASH] [ARCH-HASH_VERIFICATION] [REQ-VERIFY_DEST]: how: sync with verifyDestination and hash compare verifies copied file
+  it("should verify destination when verifyDestination enabled [IMPL-NSYNC_VERIFY] [IMPL-NSYNC_HASH]", async () => {
+    const sourceFile = path.join(sourceDir, "verify.txt");
+    await fs.writeFile(sourceFile, "verify destination content");
+
+    const engine = new SyncEngine();
+    const result = await engine.sync([sourceFile], [dest1Dir], {
+      compareMethod: "hash",
+      verifyDestination: true,
+      hashAlgorithm: "blake3",
+    });
+
+    expect(result.itemsCompleted).toBe(1);
+    expect(result.itemsFailed).toBe(0);
+
+    const destFile = path.join(dest1Dir, "verify.txt");
+    const destContent = await fs.readFile(destFile, "utf-8");
+    expect(destContent).toBe("verify destination content");
+  });
+
+  // [IMPL-NSYNC_TYPE_SAFETY]: how: normalize bigint stat.size when building sync plan and item sizes
+  it("should sync when stat.size is bigint [IMPL-NSYNC_TYPE_SAFETY]", async () => {
+    const sourceFile = path.join(sourceDir, "bigint.txt");
+    await fs.writeFile(sourceFile, "bigint size content");
+
+    const statSpy = vi.spyOn(operations, "getFileStat").mockImplementation(async (filePath) => {
+      const stat = await fs.stat(filePath);
+      return Object.assign(stat, { size: BigInt(stat.size) });
+    });
+
+    try {
+      const engine = new SyncEngine();
+      const result = await engine.sync([sourceFile], [dest1Dir], {
+        compareMethod: "size-mtime",
+      });
+
+      expect(result.itemsCompleted).toBe(1);
+      expect(result.itemsFailed).toBe(0);
+    } finally {
+      statSpy.mockRestore();
+    }
+  });
+
+  // [IMPL-NSYNC_STORE] [ARCH-STORE_MONITORING] [REQ-STORE_FAILURE_DETECT]: how: StoreUnavailable streak at threshold marks store unavailable
+  it("should mark store unavailable after threshold errors [IMPL-NSYNC_STORE]", () => {
+    const monitor = new StoreMonitor(3);
+    const destPath = path.join(dest1Dir, "file.txt");
+
+    expect(monitor.recordError(destPath, ErrorClass.StoreUnavailable)).toBe(false);
+    expect(monitor.recordError(destPath, ErrorClass.StoreUnavailable)).toBe(false);
+    expect(monitor.recordError(destPath, ErrorClass.StoreUnavailable)).toBe(true);
+    expect(monitor.hasUnavailableStore()).toBe(true);
   });
 });

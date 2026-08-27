@@ -13,8 +13,8 @@ IMPL-PERFORMANCE_OPT:
   metadata:
     last_updated:
       author: AI Agent
-      date: '2026-05-30T00:00:00.000Z'
-      reason: Retrofit planned-scope essence_pseudocode from REQ/ARCH (no production loci yet)
+      date: '2026-08-27'
+      reason: 'E1 tranche 3: migrate legacy CONTRACT blocks to fenced Layer-B format'
     registered: {}
   name: IMPL PERFORMANCE_OPT
   rationale:

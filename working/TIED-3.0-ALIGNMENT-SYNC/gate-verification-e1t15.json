@@ -1,0 +1,12 @@
+{
+  "allowed": true,
+  "ok": true,
+  "blocking": false,
+  "depth": "minimal",
+  "phase": "verification",
+  "diagnostics": [],
+  "gate_receipt": {
+    "path": "working/TIED-3.0-ALIGNMENT-SYNC/verification-2026-08-27T17-47-03-672Z.json",
+    "hash": "sha256:0dd41c2a100055b5a293ee60fa5e0c0bd1cd3add75826f7d0b5af2f5113427aa"
+  }
+}

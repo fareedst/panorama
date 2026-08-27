@@ -7,12 +7,14 @@
 // [IMPL-CLASS_OVERRIDES] [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI]: how: ClassOverrides type and config/theme.yaml overrides keys define optional per-element class strings
 
 ```
-CONTRACT DEFINE_OVERRIDES_SCHEMA
+IMPL-CLASS_OVERRIDES_DefineOverridesSchema():
   INPUT: config/theme.yaml overrides block
   OUTPUT: ClassOverrides map loaded into ThemeConfig.overrides
   DATA: keys outerContainer, main, heading, paragraph, contentSection, buttonGroup, primaryButton, secondaryButton, inlineLink
-
-PROCEDURE IMPL-CLASS_OVERRIDES_DefineOverridesSchema()
+  PRE: theme.yaml parseable
+  POST: ClassOverrides typed map with optional keys
+  EFFECTS: pure
+  TERMINATION: total
   PARSE theme.yaml overrides section into ClassOverrides
   ALL keys optional; empty string means use component defaults only
   tailwind-merge listed as dependency for intelligent utility conflict resolution at apply sites
@@ -23,12 +25,14 @@ PROCEDURE IMPL-CLASS_OVERRIDES_DefineOverridesSchema()
 // [IMPL-CLASS_OVERRIDES] [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI]: how: lookup override key, trim whitespace, return empty string when undefined or blank
 
 ```
-CONTRACT GET_OVERRIDE
+IMPL-CLASS_OVERRIDES_GetOverride(overrides, key):
   INPUT: overrides ClassOverrides, key keyof ClassOverrides
   OUTPUT: trimmed override class string or empty string
   DATA: overrides[key] optional string
-
-PROCEDURE IMPL-CLASS_OVERRIDES_GetOverride(overrides, key)
+  PRE: overrides map and key defined
+  POST: trimmed string OR empty when undefined/blank
+  EFFECTS: pure
+  TERMINATION: total
   raw := overrides[key] ?? ""
   trimmed := TRIM raw
   RETURN trimmed
@@ -40,12 +44,14 @@ PROCEDURE IMPL-CLASS_OVERRIDES_GetOverride(overrides, key)
 // [IMPL-CLASS_OVERRIDES] [ARCH-CLASS_OVERRIDES] [REQ-CONFIG_DRIVEN_UI]: how: components combine default Tailwind classes with getOverride output via twMerge when override non-empty
 
 ```
-CONTRACT MERGE_AT_COMPONENT
+IMPL-CLASS_OVERRIDES_MergeAtComponent(defaultClasses, overrides, key):
   INPUT: defaultClassString, overrides, overrideKey
   OUTPUT: final className string with conflicting utilities resolved
   DATA: twMerge from tailwind-merge package
-
-PROCEDURE IMPL-CLASS_OVERRIDES_MergeAtComponent(defaultClasses, overrides, key)
+  PRE: default classes and overrides map available
+  POST: merged className with override utilities winning conflicts
+  EFFECTS: pure
+  TERMINATION: total
   override := GetOverride(overrides, key)
   IF override is empty THEN RETURN defaultClasses
   RETURN twMerge(defaultClasses, override)

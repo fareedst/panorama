@@ -1,0 +1,103 @@
+# Handoff note — TIED methodology repository (main)
+# Consumer: TIED MCP / evidence-chain profile maintainers
+# Reporter: panorama client — TIED-3.0-ALIGNMENT-SYNC follow-on P2.1 investigation
+# Blocks: panorama P2.2 E4 re-profile (external tranche 5)
+
+tied_repo_fix_note:
+  id: FIX-TIED_CYCLES_OK_FIELD
+  title: "tied_cycles MCP tool must emit ok aligned with has_cycles"
+  priority: medium
+  owner: TIED methodology repo
+  reported_at: "2026-08-27"
+  reporter:
+    client_repo: panorama
+    change_request: TIED-3.0-ALIGNMENT-SYNC
+    investigation: working/TIED-3.0-ALIGNMENT-SYNC/tied-cycles-investigation.md
+
+  problem:
+    summary: >
+      The tied_cycles MCP tool returns has_cycles and cycles but omits ok.
+      evidence_chain_profile_generate maps structural validators using ok;
+      when ok is absent the profile records ok:false even for a zero-cycle graph.
+    symptom: >
+      E4 structural comparison shows tied_cycles ok true→false while cycles remain 0.
+    not_a_product_defect: >
+      Panorama project YAML has no circular REQ dependencies; graph partition
+      correctly reports cycles:0.
+
+  observed_behavior:
+    mcp_tool: tied_cycles
+    live_response_shape:
+      cycles: []
+      has_cycles: false
+      # ok: omitted
+    profile_adapter_result:
+      validator: tied_cycles
+      ok: false
+      graph_partition:
+        nodes: 1
+        edges: 0
+        cycles: 0
+
+  expected_behavior:
+    mcp_tool_response:
+      cycles: []
+      has_cycles: false
+      ok: true
+    ok_derivation_rule: "ok === !has_cycles (equivalently: ok === (cycles.length === 0))"
+    profile_adapter_fallback: >
+      If ok is omitted for backward compatibility, derive ok from has_cycles
+      (or empty cycles array) before writing structural partition rows.
+
+  fix_options:
+    recommended:
+      location: mcp-server — tied_cycles tool handler
+      change: >
+        Add boolean ok to tool JSON output: ok = !has_cycles.
+        Keep cycles and has_cycles unchanged for existing callers.
+    alternative:
+      location: evidence_chain_profile_generate — structural validator adapter
+      change: >
+        When normalizing tied_cycles results, set ok = !has_cycles when ok is
+        undefined/null and cycles is an array.
+    do_not: >
+      Do not change cycle-detection logic; graph output is already correct.
+
+  acceptance_criteria:
+    - tied_cycles MCP JSON includes ok:true when cycles is empty
+    - tied_cycles MCP JSON includes ok:false when has_cycles is true
+    - evidence_chain_profile_generate structural partition records ok:true for zero-cycle panorama project at integrated depth
+    - Existing callers that read has_cycles/cycles only remain unaffected
+    - Unit or contract test covers ok field presence and derivation
+
+  verification_commands:
+    mcp:
+      - tool: tied_cycles
+        expect: "ok true when cycles empty"
+    profile:
+      - tool: evidence_chain_profile_generate
+        args_hint:
+          profile_depth: integrated
+          invoke_structural_validators: true
+        expect: "structural partition tied_cycles ok true for panorama tied/ tree"
+
+  downstream_unblock:
+    client: panorama
+    tranche: P2.2
+    actions_after_fix_shipped:
+      - Re-run evidence_chain_profile_generate at fixed TIED version
+      - Regenerate working/TIED-3.0-ALIGNMENT-SYNC/e4-structural-comparison.v1.json
+      - Confirm tied_cycles residual delta cleared in structural_validator_delta
+      - Remove or shorten CITDP validator_hygiene.tied_cycles waiver if parity restored
+    client_artifacts:
+      - working/TIED-3.0-ALIGNMENT-SYNC/e4-structural-comparison.v1.json
+      - working/TIED-3.0-ALIGNMENT-SYNC/evidence-chain-profile-e4-post.v1.json
+      - working/TIED-3.0-ALIGNMENT-SYNC/e0-pilot-baseline-reference.v1.json
+      - tied/citdp/CITDP-TIED-3.0-ALIGNMENT-SYNC.yaml
+
+  references:
+    panorama_investigation: working/TIED-3.0-ALIGNMENT-SYNC/tied-cycles-investigation.md
+    e4_comparison: working/TIED-3.0-ALIGNMENT-SYNC/e4-structural-comparison.v1.json
+    citdp_waiver: tied/citdp/CITDP-TIED-3.0-ALIGNMENT-SYNC.yaml
+    waiver_path: evidence.validator_hygiene.tied_cycles
+    waiver_expiry: "2026-11-27"

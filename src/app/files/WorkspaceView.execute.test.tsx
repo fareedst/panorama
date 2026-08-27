@@ -1,4 +1,4 @@
-// [TEST-PANE_COMMAND_EXEC] [IMPL-WORKSPACE_VIEW] [IMPL-EXECUTE_DIALOG] [REQ-PANE_COMMAND_EXEC]
+// [TEST-PANE_COMMAND_EXEC] [IMPL-CURSOR_BOUNDS_CHECK] [IMPL-WORKSPACE_VIEW] [IMPL-EXECUTE_DIALOG] [REQ-PANE_COMMAND_EXEC] [REQ-KEYBOARD_NAVIGATION]
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";

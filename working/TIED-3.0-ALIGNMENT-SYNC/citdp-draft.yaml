@@ -1,0 +1,582 @@
+CITDP-TIED-3.0-ALIGNMENT-SYNC:
+  change_definition:
+    current_behavior: 'TIED 3.0 alignment sync complete for panorama: P0 contract
+      precision (85/85 sidecars); P1 binding inventory (31 rows) and QA matrix; E3
+      manifest with observed command_results; E4 re-profile vs E0 baseline documented.
+      CITDP persisted at close-out.'
+    desired_behavior: Maintained — alignment evidence chain closed; sponsor DRI assignment
+      remains open.
+    non_goals:
+    - No human_research profile depth unless sponsor expands scope
+    - No methodology YAML mutation under tied/methodology/
+    - No new product features beyond alignment evidence
+    success_criteria:
+    - binding_inventory_validate passes with composition or e2e_only justification
+      per row
+    - Strict pseudocode_validate passes on in-scope Active blocks
+    - tied_checklist_gate_validate allowed at verification and close_out phases
+    - traceability_gap_report passes or documented approved exceptions exist
+    - Verification manifest attached to integrated evidence-chain profile
+    unchanged_behavior: No alteration to Mesh API contracts, workspace navigation
+      semantics, or persistence models unless a tranche explicitly fixes a documented
+      defect.
+  completion_criteria:
+    checklist_gate:
+      dispositions:
+      - completed
+      - not_applicable
+      - pending
+      - waived
+      fail_closed: true
+      phases:
+      - close_out
+      - pre_implementation
+      - verification
+    module_validation_notes: '[REQ-MODULE_VALIDATION]: Modules validated independently
+      per tranche — P0 sidecars via strict pseudocode_validate + three-way alignment;
+      P1 bindings via binding_inventory_validate + existing composition tests; E3/E4
+      via manifest/profile structural validators. No runtime module integration changes.'
+    verification_gate_notes: All E1–E4 tranches passed verification gates; close_out
+      allowed true at minimal depth (2026-08-27).
+    close_out_gate:
+      activation: not supplied — minimal depth
+      allowed: true
+      depth_tier: minimal
+      diagnostics: []
+      ok: true
+      phase: close_out
+      receipt: working/TIED-3.0-ALIGNMENT-SYNC/gate-close_out.json
+  evidence:
+    commands:
+    - command: binding_inventory_validate
+      exit_code: 0
+      result: ok true, 31 rows, 0 diagnostics (E2/P1 tranche 1)
+    - command: binding_inventory_validate via validate-binding-inventory.py
+      exit_code: 0
+      result: ok true, 31 rows (E3 tranche 1 manifest)
+    - command: bun run test
+      exit_code: 0
+      result: 1271 passed, 3 skipped (E3 tranche 1 manifest id vitest-full)
+    - command: bun run test
+      exit_code: 0
+      result: 142 files, 1268 passed, 3 skipped (E1 tranche 1)
+    - command: bun run test
+      exit_code: 0
+      result: 142 files, 1268 passed, 3 skipped (E1 tranche 10)
+    - command: bun run test
+      exit_code: 0
+      result: 142 files, 1268 passed, 3 skipped (E1 tranche 11)
+    - command: bun run test
+      exit_code: 0
+      result: 142 files, 1268 passed, 3 skipped (E1 tranche 12)
+    - command: bun run test
+      exit_code: 0
+      result: 142 files, 1268 passed, 3 skipped (E1 tranche 13)
+    - command: bun run test
+      exit_code: 0
+      result: 142 files, 1268 passed, 3 skipped (E1 tranche 5)
+    - command: bun run test
+      exit_code: 0
+      result: 142 files, 1268 passed, 3 skipped (E1 tranche 6)
+    - command: bun run test
+      exit_code: 0
+      result: 142 files, 1268 passed, 3 skipped (E1 tranche 7)
+    - command: bun run test
+      exit_code: 0
+      result: 142 files, 1268 passed, 3 skipped (E1 tranche 8)
+    - command: bun run test
+      exit_code: 0
+      result: 142 files, 1268 passed, 3 skipped (E1 tranche 9)
+    - command: bun run test
+      exit_code: 0
+      result: 142 files, 1271 passed, 3 skipped (E1 tranche 14)
+    - command: bun run test
+      exit_code: 0
+      result: 142 files, 1271 passed, 3 skipped (E1 tranche 15)
+    - command: bun run test
+      exit_code: 0
+      result: 142 files, 1271 passed, 3 skipped (E2/P1 tranche 1)
+    - command: bun run validate:vocabulary
+      exit_code: 0
+      result: 10 client glossaries passed (close-out)
+    - command: bun run validate:vocabulary
+      exit_code: 0
+      result: pass (E3 tranche 1 manifest id vocabulary-validate)
+    - command: bunx tsc -b
+      exit_code: 0
+      result: pass (E1 tranche 1)
+    - command: bunx tsc -b
+      exit_code: 0
+      result: pass (E1 tranche 10)
+    - command: bunx tsc -b
+      exit_code: 0
+      result: pass (E1 tranche 11)
+    - command: bunx tsc -b
+      exit_code: 0
+      result: pass (E1 tranche 12)
+    - command: bunx tsc -b
+      exit_code: 0
+      result: pass (E1 tranche 13)
+    - command: bunx tsc -b
+      exit_code: 0
+      result: pass (E1 tranche 14)
+    - command: bunx tsc -b
+      exit_code: 0
+      result: pass (E1 tranche 15)
+    - command: bunx tsc -b
+      exit_code: 0
+      result: pass (E1 tranche 5)
+    - command: bunx tsc -b
+      exit_code: 0
+      result: pass (E1 tranche 6)
+    - command: bunx tsc -b
+      exit_code: 0
+      result: pass (E1 tranche 7)
+    - command: bunx tsc -b
+      exit_code: 0
+      result: pass (E1 tranche 8)
+    - command: bunx tsc -b
+      exit_code: 0
+      result: pass (E1 tranche 9)
+    - command: bunx tsc -b
+      exit_code: 0
+      result: pass (E2/P1 tranche 1)
+    - command: bunx tsc -b
+      exit_code: 0
+      result: pass (E3 tranche 1 manifest id tsc-build)
+    - command: citdp_record_write CITDP-TIED-3.0-ALIGNMENT-SYNC.yaml
+      exit_code: 0
+      result: persisted at close-out
+    - command: e4 structural comparison vs E0 pilot
+      exit_code: 0
+      result: e4-structural-comparison.v1.json — traceability_gap_report improved;
+        tied_cycles ok delta documented
+    - command: evidence_chain_profile_generate profile_depth integrated
+      exit_code: 0
+      result: quality.command_results observed; structural validators observed; manifest
+        attached (E3 tranche 1)
+    - command: evidence_chain_profile_generate profile_depth integrated (E4 post)
+      exit_code: 0
+      result: evidence-chain-profile-e4-post.v1.json at commit 29224e94…; run_id e4t1-20260827
+    - command: pseudocode_validate IMPL-CONFIG_DRIVEN_APPEARANCE IMPL-CLASS_OVERRIDES
+        IMPL-COMPARISON_INDEX IMPL-COMPARISON_COLORS IMPL-COPY_ATTRS IMPL-YAML_CONFIG
+        require_contracts true
+      exit_code: 0
+      result: ok true each (E1 tranche 12)
+    - command: pseudocode_validate IMPL-CONFIG_LOADER require_contracts true
+      exit_code: 0
+      result: ok true (E1 tranche 1)
+    - command: pseudocode_validate IMPL-CROSS_PANE_VISIBILITY_ENGINE IMPL-CROSS_PANE_VISIBILITY_UI
+        IMPL-FILES_API IMPL-FILES_DATA IMPL-FILES_UTILS IMPL-FILES_CONFIG_COMPLETE
+        require_contracts true
+      exit_code: 0
+      result: ok true each (E1 tranche 11)
+    - command: pseudocode_validate IMPL-CURSOR_BOUNDS_CHECK require_contracts true
+      exit_code: 0
+      result: ok true (E1 tranche 1)
+    - command: pseudocode_validate IMPL-DIRECTORY_TREE IMPL-FILE_PANE IMPL-FILE_MARKING
+        IMPL-FILE_COLUMN_CONFIG IMPL-MAKE_DIRECTORY IMPL-FILE_SEARCH require_contracts
+        true
+      exit_code: 0
+      result: ok true each (E1 tranche 4)
+    - command: pseudocode_validate IMPL-FONT_LOADING IMPL-NSYNC_COMPARE IMPL-NSYNC_ENGINE
+        IMPL-NSYNC_HASH IMPL-NSYNC_OPERATIONS IMPL-NSYNC_STORE require_contracts true
+      exit_code: 0
+      result: ok true each (E1 tranche 13)
+    - command: pseudocode_validate IMPL-LOGGER_TOKENS IMPL-TEST_SETUP IMPL-BUILD_SCRIPTS
+        IMPL-IMAGE_OPTIMIZATION IMPL-DEMO_SCREENSHOT_PIPELINE require_contracts true
+      exit_code: 0
+      result: ok true each (E1 tranche 15); zero legacy CONTRACT sidecars remain
+    - command: pseudocode_validate IMPL-MESH_AUTH IMPL-MESH_CONFLICT IMPL-MESH_CREDENTIAL
+        IMPL-MESH_EVENTS IMPL-MESH_EXECUTOR IMPL-MESH_IMPORT_EXPORT require_contracts
+        true
+      exit_code: 0
+      result: ok true each (E1 tranche 6)
+    - command: pseudocode_validate IMPL-MESH_CRUD IMPL-MESH_DEPOT IMPL-MESH_SESSION
+        IMPL-MESH_TOPOLOGY IMPL-MESH_RUNTIME IMPL-MESH_DOMAIN_TYPES require_contracts
+        true
+      exit_code: 0
+      result: ok true each (E1 tranche 8)
+    - command: pseudocode_validate IMPL-MESH_MONITORING IMPL-MESH_PLANNING IMPL-MESH_POLICY
+        IMPL-MESH_SCHEDULE IMPL-MESH_HARDENING IMPL-MESH_SAFETY require_contracts
+        true
+      exit_code: 0
+      result: ok true each (E1 tranche 7)
+    - command: pseudocode_validate IMPL-MOUSE_SUPPORT IMPL-SORT_FILTER IMPL-BULK_OPS
+        IMPL-OVERWRITE_PROMPT IMPL-RENAME_DIALOG IMPL-CROSS_PANE_VISIBILITY_CATALOG
+        require_contracts true
+      exit_code: 0
+      result: ok true each (E1 tranche 10)
+    - command: pseudocode_validate IMPL-NSYNC_TYPE_SAFETY IMPL-NSYNC_VERIFY IMPL-TOOLBAR_CONFIG
+        IMPL-TOOLBAR_COMPONENT IMPL-LOGGER_CONFIG IMPL-LOGGER_MODULE require_contracts
+        true
+      exit_code: 0
+      result: ok true each (E1 tranche 14)
+    - command: pseudocode_validate IMPL-PANE_COMMAND_EXEC IMPL-FILE_PREVIEW IMPL-MESH_API
+        IMPL-MESH_CONNECTOR IMPL-MESH_PERSISTENCE IMPL-MESH_INVENTORY require_contracts
+        true
+      exit_code: 0
+      result: ok true each (E1 tranche 5)
+    - command: pseudocode_validate IMPL-PANE_REFRESH IMPL-TEST_CONFIG IMPL-FLEX_LAYOUT
+        IMPL-RESPONSIVE_CLASSES IMPL-FILES_CONFIG IMPL-GLOBAL_ERROR_BOUNDARY require_contracts
+        true
+      exit_code: 0
+      result: ok true each (E1 tranche 2)
+    - command: pseudocode_validate IMPL-WORKSPACE_VIEW IMPL-PANE_MANAGEMENT IMPL-LINKED_NAV
+        IMPL-KEYBINDS IMPL-LAYOUT_CALCULATOR IMPL-PANE_DISPLAY_FILTER_UI require_contracts
+        true
+      exit_code: 0
+      result: ok true each (E1 tranche 9)
+    - command: quality_evidence_collect_manifest
+      exit_code: 0
+      result: 6/6 commands passed; manifest verification-evidence-manifest.v1.json
+        (E3 tranche 1)
+    - command: tied_scoped_analysis_run traceability_gap_report
+      exit_code: 0
+      result: impl_without_test 13; req_without_test 3 methodology; suggested_exit_code
+        0 (E1 tranche 10)
+    - command: tied_scoped_analysis_run traceability_gap_report
+      exit_code: 0
+      result: impl_without_test 13; req_without_test 3 methodology; suggested_exit_code
+        0 (E1 tranche 11)
+    - command: tied_scoped_analysis_run traceability_gap_report
+      exit_code: 0
+      result: impl_without_test 13; req_without_test 3 methodology; suggested_exit_code
+        0 (E1 tranche 12)
+    - command: tied_scoped_analysis_run traceability_gap_report
+      exit_code: 0
+      result: impl_without_test 13; req_without_test 3 methodology; suggested_exit_code
+        0 (E1 tranche 13)
+    - command: tied_scoped_analysis_run traceability_gap_report
+      exit_code: 0
+      result: impl_without_test 13; req_without_test 3 methodology; suggested_exit_code
+        0 (E1 tranche 4)
+    - command: tied_scoped_analysis_run traceability_gap_report
+      exit_code: 0
+      result: impl_without_test 13; req_without_test 3 methodology; suggested_exit_code
+        0 (E1 tranche 5)
+    - command: tied_scoped_analysis_run traceability_gap_report
+      exit_code: 0
+      result: impl_without_test 13; req_without_test 3 methodology; suggested_exit_code
+        0 (E1 tranche 6)
+    - command: tied_scoped_analysis_run traceability_gap_report
+      exit_code: 0
+      result: impl_without_test 13; req_without_test 3 methodology; suggested_exit_code
+        0 (E1 tranche 7)
+    - command: tied_scoped_analysis_run traceability_gap_report
+      exit_code: 0
+      result: impl_without_test 13; req_without_test 3 methodology; suggested_exit_code
+        0 (E1 tranche 8)
+    - command: tied_scoped_analysis_run traceability_gap_report
+      exit_code: 0
+      result: impl_without_test 13; req_without_test 3 methodology; suggested_exit_code
+        0 (E1 tranche 9)
+    - command: tied_scoped_analysis_run traceability_gap_report
+      exit_code: 0
+      result: impl_without_test 8; req_without_test 3 methodology; suggested_exit_code
+        0 (E1 tranche 14)
+    - command: tied_scoped_analysis_run traceability_gap_report
+      exit_code: 0
+      result: impl_without_test 8; req_without_test 3 methodology; suggested_exit_code
+        0 (E1 tranche 15)
+    - command: tied_scoped_analysis_run traceability_gap_report
+      exit_code: 0
+      result: impl_without_test 8; req_without_test 3 methodology; suggested_exit_code
+        0 (E3 tranche 1 manifest)
+    - command: tied_validate_consistency include_pseudocode true
+      exit_code: 0
+      result: ok true (close-out)
+    - command: tied_validate_consistency include_pseudocode true
+      exit_code: 0
+      result: ok true (E1 tranche 10)
+    - command: tied_validate_consistency include_pseudocode true
+      exit_code: 0
+      result: ok true (E1 tranche 11)
+    - command: tied_validate_consistency include_pseudocode true
+      exit_code: 0
+      result: ok true (E1 tranche 12)
+    - command: tied_validate_consistency include_pseudocode true
+      exit_code: 0
+      result: ok true (E1 tranche 13)
+    - command: tied_validate_consistency include_pseudocode true
+      exit_code: 0
+      result: ok true (E1 tranche 14)
+    - command: tied_validate_consistency include_pseudocode true
+      exit_code: 0
+      result: ok true (E1 tranche 15)
+    - command: tied_validate_consistency include_pseudocode true
+      exit_code: 0
+      result: ok true (E1 tranche 2)
+    - command: tied_validate_consistency include_pseudocode true
+      exit_code: 0
+      result: ok true (E1 tranche 5)
+    - command: tied_validate_consistency include_pseudocode true
+      exit_code: 0
+      result: ok true (E1 tranche 6)
+    - command: tied_validate_consistency include_pseudocode true
+      exit_code: 0
+      result: ok true (E1 tranche 7)
+    - command: tied_validate_consistency include_pseudocode true
+      exit_code: 0
+      result: ok true (E1 tranche 8)
+    - command: tied_validate_consistency include_pseudocode true
+      exit_code: 0
+      result: ok true (E1 tranche 9)
+    - command: tied_validate_consistency include_pseudocode true
+      exit_code: 0
+      result: ok true (E2/P1 tranche 1)
+    - command: tied_validate_consistency include_pseudocode true
+      exit_code: 0
+      result: ok true (E3 tranche 1 manifest)
+    - command: tied_checklist_gate_validate phase close_out
+      exit_code: 0
+      result: allowed true; ok true; minimal depth (close-out)
+    e0_baseline_reference: working/TIED-3.0-ALIGNMENT-SYNC/e0-pilot-baseline-reference.v1.json
+    e4_comparison_reference: working/TIED-3.0-ALIGNMENT-SYNC/e4-structural-comparison.v1.json
+    final_artifacts:
+    - tied/citdp/CITDP-TIED-3.0-ALIGNMENT-SYNC.yaml
+    - working/TIED-3.0-ALIGNMENT-SYNC/binding-inventory.yaml
+    - working/TIED-3.0-ALIGNMENT-SYNC/close-out-log.md
+    - working/TIED-3.0-ALIGNMENT-SYNC/e4-structural-comparison.v1.json
+    - working/TIED-3.0-ALIGNMENT-SYNC/evidence-chain-profile-e4-post.v1.json
+    - working/TIED-3.0-ALIGNMENT-SYNC/verification-evidence-manifest.v1.json
+    manifest_reference: working/TIED-3.0-ALIGNMENT-SYNC/verification-evidence-manifest.v1.json
+    profile_reference: working/TIED-3.0-ALIGNMENT-SYNC/evidence-chain-profile-e4-post.v1.json
+    proof_boundaries:
+    - executable_behavior
+    - human_decision
+    - pseudo_code_structure
+    - traceability_structure
+    traceability_exceptions:
+      impl_without_test:
+      - expiry: '2026-09-27'
+        owner: TBD — sponsor assign
+        rationale: Handler wiring exists; no scoped composition test yet — deferred
+          to P1 inventory tranche
+        token: IMPL-PANE_REFRESH
+      - expiry: '2026-09-27'
+        owner: TBD — sponsor assign
+        rationale: Methodology bootstrap; copy_files.sh artifact
+        token: IMPL-TIED_FILES
+      - expiry: '2026-09-27'
+        owner: TBD — sponsor assign
+        rationale: Methodology MCP tooling; not implemented in panorama product tree
+        token: IMPL-MCP_FEEDBACK_TOOLS
+      - expiry: '2026-09-27'
+        owner: TBD — sponsor assign
+        rationale: No UI-free layout test locus; Tailwind layout in WorkspaceView
+          shell only
+        token: IMPL-FLEX_LAYOUT
+      - expiry: '2026-09-27'
+        owner: TBD — sponsor assign
+        rationale: Planned status — no production module
+        token: IMPL-PERFORMANCE_OPT
+      - expiry: '2026-09-27'
+        owner: TBD — sponsor assign
+        rationale: Process token; validation is procedural checklist evidence
+        token: IMPL-MODULE_VALIDATION
+      - expiry: '2026-09-27'
+        owner: TBD — sponsor assign
+        rationale: Responsive classes in components only; defer until component test
+          with IMPL token
+        token: IMPL-RESPONSIVE_CLASSES
+      - expiry: '2026-09-27'
+        owner: TBD — sponsor assign
+        rationale: vitest.config.ts infrastructure; satisfied by test suite execution
+          evidence
+        token: IMPL-TEST_CONFIG
+      req_without_test:
+      - expiry: '2026-09-27'
+        owner: TBD — sponsor assign
+        rationale: Feedback loop to TIED repo; no panorama runtime test locus
+        token: REQ-FEEDBACK_TO_TIED
+      - expiry: '2026-09-27'
+        owner: TBD — sponsor assign
+        rationale: Meta-setup; satisfied by structural validators and bootstrap scripts
+        token: REQ-TIED_SETUP
+      - expiry: '2026-09-27'
+        owner: TBD — sponsor assign
+        rationale: Process requirement; satisfied by checklist evidence
+        token: REQ-MODULE_VALIDATION
+  impact_analysis:
+    impl_inventory_notes: Project TIED YAML and sidecars; Vitest unit and composition
+      tests; client vocabulary; working/TIED-3.0-ALIGNMENT-SYNC artifacts. Methodology
+      YAML read-only.
+    modules_or_boundaries: tied/ project indexes and detail files; IMPL sidecars;
+      src/ tests; tied/vocab/
+    tied_tokens_affected:
+    - PROC-IMPL_PSEUDOCODE_TOKENS
+    - PROC-PSEUDOCODE_VALIDATION
+    - PROC-TOKEN_VALIDATION
+    - PROC-VOCABULARY_INDEX
+    - REQ-MODULE_VALIDATION
+    - REQ-QUALITY_ASSURANCE_EVIDENCE
+    - REQ-TIED_SETUP
+    tied_tokens_new: []
+  leap_feedback:
+    divergences_from_analysis: none at close-out
+    record_status: persisted
+    tied_stack_updates_required:
+    - LEAP any tranche where tests/code diverge from updated IMPL sidecars
+    - Persist final CITDP at close-out with verification command evidence
+  record_identity:
+    change_request_id: TIED-3.0-ALIGNMENT-SYNC
+    recorded_at: '2026-08-27'
+    title: TIED 3.0 alignment sync — panorama
+  risk_analysis:
+    abuse_cases: []
+    adversarial_inquiry:
+      assurance_profile: baseline-functional
+      close_out_inquiry_waiver: null
+      counterexamples:
+      - A binding inventory row names a composition test that does not fire the trigger
+        programmatically.
+      - A REQ row gains test metadata pointing at a non-existent test file.
+      - A sidecar block lacks PRE/POST/EFFECTS after a contract-precision tranche
+        claims completion.
+      depth_change_waiver: null
+      depth_tier: minimal
+      disconfirming_observations:
+      - binding_inventory_validate rejecting incomplete rows
+      - evidence-chain profile reporting not_measured for command_results after E3
+        tranche claims completion
+      - traceability_gap_report failing without approved exceptions
+      eligibility_triggers_matched: []
+      evidence_references:
+      - docs/tied-3.0-alignment-sync-plan.md
+      - working/TIED-3.0-ALIGNMENT-SYNC/test-strategy-outline.md
+      - working/TIED-3.0-ALIGNMENT-SYNC/TIED_3_0_ALIGNMENT_SYNC_20260827.yaml
+      falsification_questions:
+      - Can traceability_gap_report detect REQ rows with fictional test paths?
+      - Does strict pseudocode_validate fail when PRE/POST/EFFECTS are missing on
+        touched Active blocks?
+      gate_policy: advisory
+      integrated_waiver: null
+      prior_depth_tier: null
+      rationale: Documentation and traceability alignment retrofit; P0/P1 complete;
+        E3/E4 remain; depth_tier minimal; gate_policy advisory; profile_depth integrated
+        at E3 for evidence chain only.
+      research_profile: integrated-agent
+      strict_eligibility_prerequisites: []
+    quality_evidence_matrix:
+    - applicability: applicable
+      attribute: baseline-functional
+      command_or_test: bun run test; bunx tsc -b; bun run validate:vocabulary; pseudocode_validate;
+        tied_validate_consistency; binding_inventory_validate; lint_yaml
+      evidence_method: Project test suite, TypeScript build, vocabulary validation,
+        strict pseudo-code validation, TIED consistency, binding inventory gate, YAML
+        lint.
+      limitation: Structural and executable checks do not prove unrelated security,
+        performance, privacy, or usability properties.
+      owner: TBD — sponsor assign
+      rationale: Every alignment tranche must preserve executable regression and TIED
+        integrity.
+      result: observed
+      risk: medium
+      threshold: All required commands exit 0; structural validators pass or document
+        approved exceptions.
+      waiver:
+        expiry: null
+        owner: null
+        reason: null
+        required: false
+    - applicability: applicable
+      attribute: data-integrity-migration
+      command_or_test: src/lib/mesh/domain/domain.composition.test.ts; workspace-bridge.route.test.ts;
+        workspace.route.test.ts
+      evidence_method: Domain validation composition tests and workspace snapshot
+        round-trip API tests.
+      limitation: Does not prove live filesystem mesh depot sync or concurrent mutation
+        safety.
+      owner: TBD — sponsor assign
+      rationale: Mesh snapshot save/restore and workspace bridge bindings affect persisted
+        workspace state.
+      result: observed
+      risk: medium
+      threshold: Snapshot round-trip and domain validation composition tests pass.
+      waiver:
+        expiry: null
+        owner: null
+        reason: null
+        required: false
+    - applicability: applicable
+      attribute: external-input-security
+      command_or_test: src/app/api/mesh/*.route.test.ts; src/app/api/files/route.test.ts
+        malformed-input cases; mesh import-export.route.test.ts
+      evidence_method: Route-level composition tests fire HTTP triggers with invalid
+        payloads and RBAC headers without UI.
+      limitation: Does not prove full abuse-case coverage or production deployment
+        hardening.
+      owner: TBD — sponsor assign
+      rationale: Mesh API and files API accept external JSON/path input; inventory
+        rows mesh.api.* and files.api.* map to route composition tests.
+      result: observed
+      risk: medium
+      threshold: Malformed input and auth rejection tests pass in Vitest route composition
+        suite.
+      waiver:
+        expiry: null
+        owner: null
+        reason: null
+        required: false
+    - applicability: applicable
+      attribute: user-facing-accessibility
+      command_or_test: WorkspaceView.*.test.tsx; Toolbar*.test.tsx; useElementSize.test.ts;
+        e2e_only rows workspace.ui.* in binding-inventory.yaml
+      evidence_method: UI-free component/contract tests for toolbar and layout; Playwright
+        E2E justified for browser-only seams.
+      limitation: Vitest jsdom does not prove visual accessibility or real browser
+        focus order.
+      owner: TBD — sponsor assign
+      rationale: Workspace panes, toolbar, and linked navigation are user-facing;
+        composition tests cover programmatic seams; browser keyboard nav marked e2e_only.
+      result: partial
+      risk: low
+      threshold: Component tests pass; e2e_only_reason names browser/Playwright constraint
+        for UI-only bindings.
+      waiver:
+        expiry: null
+        owner: null
+        reason: null
+        required: false
+    quality_profiles:
+    - baseline-functional
+    - data-integrity-migration
+    - external-input-security
+    - user-facing-accessibility
+    residual_risk:
+      expiry: '2026-09-27'
+      owner: TBD — sponsor assign
+      summary: Sponsor DRI and exception owner/expiry fields remain TBD; tied_cycles
+        ok false vs E0 documented; user-facing-accessibility QA profile partial; optional
+        IMPL-PANE_REFRESH follow-on.
+    risks:
+    - description: Mass sidecar retrofit desynchronizes block leads from tests and
+        code.
+      likelihood: medium
+      mitigation: Three-way alignment; literal copy rule; LEAP on divergence.
+      quality_attribute: maintainability
+      severity: medium
+      tied_token_references:
+      - PROC-IMPL_PSEUDOCODE_TOKENS
+      - REQ-TIED_SETUP
+    - description: Traceability metadata backfill without honest test loci.
+      likelihood: medium
+      mitigation: traceability_gap_report; waivers with owner and expiry in CITDP.
+      quality_attribute: maintainability
+      severity: medium
+      tied_token_references:
+      - PROC-TOKEN_VALIDATION
+      - REQ-TIED_SETUP
+    scenarios:
+    - A REQ row references a test file that does not import or assert the REQ behavior.
+    - An inventory row marks e2e_only without a named platform constraint.
+  tdd_sequence:
+    summary: Per tranche — IMPL pseudo-code and token comments first; gate-pseudocode-validation;
+      unit-test-red/green when behavior touched; composition-integration for new inventory
+      rows; verification-gate with manifest collection at E3.
+  test_strategy:
+    matrix_notes: See working/TIED-3.0-ALIGNMENT-SYNC/test-strategy-outline.md for
+      tranche matrix, commands bundle, and proof boundaries.
+    summary: P0 strict contract + traceability metadata; P1 binding inventory and
+      risk-triggered QA; P2 verification manifest with integrated profile attach-provenance.

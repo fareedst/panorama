@@ -1,0 +1,1050 @@
+
+ RUN  v2.1.9 /Users/fareed/Documents/dev/node/panorama
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > getKeybindingRegistry > should load keybindings from config
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > getKeybindingRegistry > should build byAction map
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > getKeybindingRegistry > should build byCategory map
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > getKeybindingRegistry > should return singleton (same instance on multiple calls)
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > matchKeybinding > should match single character key (case insensitive)
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > matchKeybinding > should match single character key with uppercase
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > matchKeybinding > should match special key (case sensitive)
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > matchKeybinding > should match key with Ctrl modifier
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > matchKeybinding > should match key with Shift modifier
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > matchKeybinding > should NOT match when required modifier is missing
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > matchKeybinding > should NOT match when extra modifier is present
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > matchKeybinding > should return null for unmatched key
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > getKeybindingByAction > should return keybinding for valid action
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > getKeybindingByAction > should return undefined for invalid action
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > getKeybindingsByCategory > should return all keybindings for system category
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > getKeybindingsByCategory > should return all keybindings for navigation category
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > getKeybindingsByCategory > should return empty array for unused category
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > getAllKeybindings > should return all keybindings
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > getAllCategories > should return all unique categories
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > formatKeyCombo > should format simple key
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > formatKeyCombo > should format key with Ctrl modifier
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > formatKeyCombo > should format key with multiple modifiers
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > formatKeyCombo > should format Space key
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > formatKeyCombo > should format arrow keys with Unicode
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > formatKeyCombo > should format Enter key with Unicode
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > formatKeyCombo > should format Escape key
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > formatKeyCombo > should format Backspace key with Unicode
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > formatKeyCombo > should format Tab key with Unicode
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > getCategoryLabel > should return label for navigation
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > getCategoryLabel > should return label for file-operations
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > getCategoryLabel > should return label for marking
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > getCategoryLabel > should return label for view-sort
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > getCategoryLabel > should return label for preview
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > getCategoryLabel > should return label for advanced
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > getCategoryLabel > should return label for system
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > modifier key combinations > should NOT match Alt+ArrowLeft without configured keybinding
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > modifier key combinations > should NOT match Meta+k without configured keybinding
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > modifier key combinations > should NOT match Ctrl+Shift+f without configured keybinding
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > error handling > should handle keybindings without modifiers field (c key has no modifiers)
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > files.keybinds > error handling > should handle unmapped keys gracefully
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > REQ_KEYBOARD_SHORTCUTS_COMPLETE > should support all defined categories
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > REQ_KEYBOARD_SHORTCUTS_COMPLETE > should provide human-readable labels for all categories
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+stdout | src/lib/files.keybinds.test.ts > REQ_KEYBOARD_SHORTCUTS_COMPLETE > should format keybindings with proper modifier order
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 4 categories
+
+ ✓ src/lib/files.keybinds.test.ts (43 tests) 9ms
+ ✓ src/lib/files.layout.test.ts (66 tests) 11ms
+ ✓ src/lib/files.utils.test.ts (49 tests) 16ms
+ ✓ src/lib/mesh/domain/validators.test.ts (33 tests) 7ms
+ ✓ src/lib/workspace-mesh-bridge.test.ts (32 tests) 7ms
+stdout | src/lib/files.data.test.ts > listDirectory [REQ_DIRECTORY_NAVIGATION] > should list directory contents
+[LOGGER] Log file created: /var/folders/yh/87t3kcg50_l108hdt9tgc8pr0000gp/T/nx1-log-2026-08-27-19-26-25-001.log
+
+ ✓ src/lib/files.data.test.ts (35 tests) 17ms
+stdout | src/lib/logger.test.ts > [TEST-LOGGER_MODULE] Logger Module > Log Levels [REQ-LOGGING_SYSTEM] > should log FATAL messages
+[LOGGER] Log file created: /tmp/nx1-log-2026-08-27-19-26-25-018.log
+
+stdout | src/lib/logger.test.ts > [TEST-LOGGER_MODULE] Logger Module > Log Levels [REQ-LOGGING_SYSTEM] > should log ERROR messages
+[LOGGER] Log file created: /tmp/nx1-log-2026-08-27-19-26-25-021.log
+
+ ✓ src/lib/config.test.ts (47 tests) 22ms
+stdout | src/lib/logger.test.ts > [TEST-LOGGER_MODULE] Logger Module > Log Levels [REQ-LOGGING_SYSTEM] > should log WARN messages
+[LOGGER] Log file created: /tmp/nx1-log-2026-08-27-19-26-25-025.log
+
+stdout | src/lib/logger.test.ts > [TEST-LOGGER_MODULE] Logger Module > Log Levels [REQ-LOGGING_SYSTEM] > should log INFO messages
+[LOGGER] Log file created: /tmp/nx1-log-2026-08-27-19-26-25-030.log
+
+stdout | src/lib/logger.test.ts > [TEST-LOGGER_MODULE] Logger Module > Log Levels [REQ-LOGGING_SYSTEM] > should log DEBUG messages
+[LOGGER] Log file created: /tmp/nx1-log-2026-08-27-19-26-25-035.log
+
+stdout | src/lib/logger.test.ts > [TEST-LOGGER_MODULE] Logger Module > Log Levels [REQ-LOGGING_SYSTEM] > should log TRACE messages
+[LOGGER] Log file created: /tmp/nx1-log-2026-08-27-19-26-25-040.log
+
+ ✓ src/app/api/files/search/route.test.ts (21 tests) 26ms
+stdout | src/lib/logger.test.ts > [TEST-LOGGER_MODULE] Logger Module > Log Level Filtering [REQ-LOGGING_CONFIG] > should log at configured level
+[LOGGER] Log file created: /tmp/nx1-log-2026-08-27-19-26-25-048.log
+
+stdout | src/lib/logger.test.ts > [TEST-LOGGER_MODULE] Logger Module > Log Level Filtering [REQ-LOGGING_CONFIG] > should log above configured level
+[LOGGER] Log file created: /tmp/nx1-log-2026-08-27-19-26-25-051.log
+
+stdout | src/lib/logger.test.ts > [TEST-LOGGER_MODULE] Logger Module > Semantic Tokens [IMPL-LOGGER_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS] > should accept single token as string
+[LOGGER] Log file created: /tmp/nx1-log-2026-08-27-19-26-25-056.log
+
+stdout | src/lib/logger.test.ts > [TEST-LOGGER_MODULE] Logger Module > Semantic Tokens [IMPL-LOGGER_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS] > should accept multiple tokens as array
+[LOGGER] Log file created: /tmp/nx1-log-2026-08-27-19-26-25-060.log
+
+stdout | src/lib/logger.test.ts > [TEST-LOGGER_MODULE] Logger Module > Semantic Tokens [IMPL-LOGGER_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS] > should format tokens with brackets if missing
+[LOGGER] Log file created: /tmp/nx1-log-2026-08-27-19-26-25-063.log
+
+stdout | src/lib/logger.test.ts > [TEST-LOGGER_MODULE] Logger Module > Semantic Tokens [IMPL-LOGGER_TOKENS] [REQ-LOGGING_SEMANTIC_TOKENS] > should preserve tokens with brackets
+[LOGGER] Log file created: /tmp/nx1-log-2026-08-27-19-26-25-067.log
+
+stdout | src/lib/logger.test.ts > [TEST-LOGGER_MODULE] Logger Module > Metadata [REQ-LOGGING_SYSTEM] > should include metadata as JSON
+[LOGGER] Log file created: /tmp/nx1-log-2026-08-27-19-26-25-070.log
+
+stdout | src/lib/logger.test.ts > [TEST-LOGGER_MODULE] Logger Module > Metadata [REQ-LOGGING_SYSTEM] > should work without metadata
+[LOGGER] Log file created: /tmp/nx1-log-2026-08-27-19-26-25-076.log
+
+stdout | src/lib/logger.test.ts > [TEST-LOGGER_MODULE] Logger Module > File Creation [ARCH-LOGGING_SYSTEM] > should create log file on first write
+[LOGGER] Log file created: /tmp/nx1-log-2026-08-27-19-26-25-093.log
+
+ ✓ src/app/api/files/route.test.ts (35 tests) 62ms
+stdout | src/lib/logger.test.ts > [TEST-LOGGER_MODULE] Logger Module > File Creation [ARCH-LOGGING_SYSTEM] > should include timestamp in filename
+[LOGGER] Log file created: /tmp/nx1-log-2026-08-27-19-26-25-110.log
+
+stdout | src/lib/logger.test.ts > [TEST-LOGGER_MODULE] Logger Module > File Creation [ARCH-LOGGING_SYSTEM] > should return log file path
+[LOGGER] Log file created: /tmp/nx1-log-2026-08-27-19-26-25-115.log
+
+stdout | src/lib/logger.test.ts > [TEST-LOGGER_MODULE] Logger Module > Synchronous vs Asynchronous Writing [ARCH-LOGGING_SYSTEM] > should use synchronous write for FATAL
+[LOGGER] Log file created: /tmp/nx1-log-2026-08-27-19-26-25-123.log
+
+stdout | src/lib/logger.test.ts > [TEST-LOGGER_MODULE] Logger Module > Synchronous vs Asynchronous Writing [ARCH-LOGGING_SYSTEM] > should use asynchronous write for non-FATAL
+[LOGGER] Log file created: /tmp/nx1-log-2026-08-27-19-26-25-126.log
+
+ ✓ src/lib/logger.test.ts (33 tests) 211ms
+ ✓ src/app/files/components/ContextMenu.test.tsx (39 tests) 76ms
+ ✓ src/app/files/components/FilePane.test.tsx (30 tests) 183ms
+ ✓ src/app/files/components/SearchDialog.test.tsx (23 tests) 256ms
+ ✓ src/lib/files.history.test.ts (23 tests) 4ms
+ ✓ src/lib/files.search.test.ts (30 tests) 5ms
+ ✓ src/lib/files.comparison.test.ts (13 tests) 3ms
+stdout | src/lib/sync/engine.test.ts > SyncEngine > should sync a file to multiple destinations [REQ-NSYNC_MULTI_TARGET] [IMPL-NSYNC_OPERATIONS]
+[LOGGER] Log file created: /var/folders/yh/87t3kcg50_l108hdt9tgc8pr0000gp/T/nx1-log-2026-08-27-19-26-25-528.log
+
+stdout | src/app/files/BulkOperations.test.tsx > WorkspaceView Bulk Operations [REQ-BULK_FILE_OPS] > should show copy confirmation dialog when C key pressed with marked files [REQ-BULK_FILE_OPS]
+[IMPL-KEYBINDS] Loading 6 keybindings
+[IMPL-KEYBINDS] Loaded 6 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB] > Mark Toggle - Individual Files [IMPL-FILE_MARKING] > should mark file when 'm' key pressed [REQ-FILE_MARKING_WEB]
+[IMPL-KEYBINDS] Loading 8 keybindings
+[IMPL-KEYBINDS] Loaded 8 keybindings across 2 categories
+
+ ✓ src/app/files/components/FinderDialog.test.tsx (25 tests) 415ms
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > RESTORE_FROM_MESH_applies_OneRow_layout_geometry
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 2 categories
+
+stdout | src/app/files/BulkOperations.test.tsx > WorkspaceView Bulk Operations [REQ-BULK_FILE_OPS] > should show delete confirmation dialog when D key pressed [REQ-BULK_FILE_OPS]
+[IMPL-KEYBINDS] Loading 6 keybindings
+[IMPL-KEYBINDS] Loaded 6 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB] > Mark Toggle - Individual Files [IMPL-FILE_MARKING] > should unmark file when 'm' key pressed twice [REQ-FILE_MARKING_WEB]
+[IMPL-KEYBINDS] Loading 8 keybindings
+[IMPL-KEYBINDS] Loaded 8 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > RESTORE_FROM_MESH_without_restoreUi_uses_Tile_geometry_for_three_panes
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB] > Mark Toggle - Individual Files [IMPL-FILE_MARKING] > should mark multiple files sequentially [REQ-FILE_MARKING_WEB]
+[IMPL-KEYBINDS] Loading 8 keybindings
+[IMPL-KEYBINDS] Loaded 8 keybindings across 2 categories
+
+stdout | src/app/files/BulkOperations.test.tsx > WorkspaceView Bulk Operations [REQ-BULK_FILE_OPS] > should cancel delete operation when user clicks Cancel [REQ-BULK_FILE_OPS]
+[IMPL-KEYBINDS] Loading 6 keybindings
+[IMPL-KEYBINDS] Loaded 6 keybindings across 3 categories
+
+ ✓ src/lib/sync/engine.test.ts (9 tests) 69ms
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > RESTORE_FROM_MESH_round_trip_OneRow_layout_reaches_WorkspaceView
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB] > Mark with Space Key [IMPL-FILE_MARKING] > should mark file and move cursor down when Space pressed [REQ-FILE_MARKING_WEB]
+[IMPL-KEYBINDS] Loading 8 keybindings
+[IMPL-KEYBINDS] Loaded 8 keybindings across 2 categories
+
+stdout | src/app/files/BulkOperations.test.tsx > WorkspaceView Bulk Operations [REQ-BULK_FILE_OPS] > should execute bulk delete after confirmation [REQ-BULK_FILE_OPS]
+[IMPL-KEYBINDS] Loading 6 keybindings
+[IMPL-KEYBINDS] Loaded 6 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > RESTORE_FROM_MESH_applies_mesh_stored_layout_via_restoreLayout_without_restoreUi ('Fullscreen')
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.execute.test.tsx > WorkspaceView execute command [PANE_COMMAND_EXEC] > opens Execute dialog from file row context menu and posts execute-command
+[IMPL-KEYBINDS] Loading 2 keybindings
+[IMPL-KEYBINDS] Loaded 2 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > RESTORE_FROM_MESH_applies_mesh_stored_layout_via_restoreLayout_without_restoreUi ('OneRow')
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB] > Mark with Space Key [IMPL-FILE_MARKING] > should not move cursor down when Space pressed on last file [REQ-FILE_MARKING_WEB]
+[IMPL-KEYBINDS] Loading 8 keybindings
+[IMPL-KEYBINDS] Loaded 8 keybindings across 2 categories
+
+stdout | src/app/files/BulkOperations.test.tsx > WorkspaceView Bulk Operations [REQ-BULK_FILE_OPS] > should operate on cursor file when no marks [REQ-BULK_FILE_OPS]
+[IMPL-KEYBINDS] Loading 6 keybindings
+[IMPL-KEYBINDS] Loaded 6 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.set-base-directory.test.tsx > WorkspaceView set base directory [SET_BASE_DIRECTORY] > shows Set as Base directory on directory row only
+[IMPL-KEYBINDS] Loading 2 keybindings
+[IMPL-KEYBINDS] Loaded 2 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB] > Mark All Files [IMPL-FILE_MARKING] > should mark all files when Shift+M pressed [REQ-FILE_MARKING_WEB]
+[IMPL-KEYBINDS] Loading 8 keybindings
+[IMPL-KEYBINDS] Loaded 8 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.execute.test.tsx > WorkspaceView execute command [PANE_COMMAND_EXEC] > refreshes affected pane listings after execute-command succeeds
+[IMPL-KEYBINDS] Loading 2 keybindings
+[IMPL-KEYBINDS] Loaded 2 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.pane-reorder.test.tsx > WorkspaceView pane reorder [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYOUT] > swaps two panes via pane.swap keeping focus on same content
+[IMPL-KEYBINDS] Loading 4 keybindings
+[IMPL-KEYBINDS] Loaded 4 keybindings across 1 categories
+
+stdout | src/app/files/BulkOperations.test.tsx > WorkspaceView Bulk Operations [REQ-BULK_FILE_OPS] > should display errors in progress dialog [REQ-BULK_FILE_OPS]
+[IMPL-KEYBINDS] Loading 6 keybindings
+[IMPL-KEYBINDS] Loaded 6 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > RESTORE_FROM_MESH_applies_mesh_stored_layout_via_restoreLayout_without_restoreUi ('OneColumn')
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.rename-regex.test.tsx > WorkspaceView rename regex [RENAME_REGEX] > opens Rename Regex dialog from file row context menu and posts bulk-rename
+[IMPL-KEYBINDS] Loading 1 keybindings
+[IMPL-KEYBINDS] Loaded 1 keybindings across 1 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB] > Mark All Files [IMPL-FILE_MARKING] > should mark all files even when some already marked [REQ-FILE_MARKING_WEB]
+[IMPL-KEYBINDS] Loading 8 keybindings
+[IMPL-KEYBINDS] Loaded 8 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.set-base-directory.test.tsx > WorkspaceView set base directory [SET_BASE_DIRECTORY] > opens dialog with directory path and applies In this pane
+[IMPL-KEYBINDS] Loading 2 keybindings
+[IMPL-KEYBINDS] Loaded 2 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.pane-reorder.test.tsx > WorkspaceView pane reorder [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYOUT] > cycles three panes forward via pane.cycle
+[IMPL-KEYBINDS] Loading 4 keybindings
+[IMPL-KEYBINDS] Loaded 4 keybindings across 1 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB] > Invert Marks [IMPL-FILE_MARKING] > should invert marks when Ctrl+M pressed [REQ-FILE_MARKING_WEB]
+[IMPL-KEYBINDS] Loading 8 keybindings
+[IMPL-KEYBINDS] Loaded 8 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.pane-reorder.test.tsx > WorkspaceView pane reorder [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYOUT] > swaps focused pane with previous neighbor via pane.swapPrev on three panes
+[IMPL-KEYBINDS] Loading 4 keybindings
+[IMPL-KEYBINDS] Loaded 4 keybindings across 1 categories
+
+stdout | src/app/files/WorkspaceView.execute.test.tsx > WorkspaceView execute command [PANE_COMMAND_EXEC] > posts execute-command for marked files in this pane
+[IMPL-KEYBINDS] Loading 2 keybindings
+[IMPL-KEYBINDS] Loaded 2 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.set-base-directory.test.tsx > WorkspaceView set base directory [SET_BASE_DIRECTORY] > applies In all panes and navigates both panes to directory
+[IMPL-KEYBINDS] Loading 2 keybindings
+[IMPL-KEYBINDS] Loaded 2 keybindings across 2 categories
+
+stdout | src/app/files/BulkOperations.test.tsx > WorkspaceView Bulk Operations [REQ-BULK_FILE_OPS] > should close progress dialog when clicking Close button [REQ-BULK_FILE_OPS]
+[IMPL-KEYBINDS] Loading 6 keybindings
+[IMPL-KEYBINDS] Loaded 6 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > RESTORE_FROM_MESH_rehydrates_layout_from_api_when_restoreLayout_prop_missing
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 2 categories
+DEBUG: mesh rehydrate applying layout only OneRow mesh-rehydrate-1
+
+stdout | src/app/files/WorkspaceView.rename-regex.test.tsx > WorkspaceView rename regex [RENAME_REGEX] > posts bulk-rename for marked files in this pane
+[IMPL-KEYBINDS] Loading 1 keybindings
+[IMPL-KEYBINDS] Loaded 1 keybindings across 1 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB] > Invert Marks [IMPL-FILE_MARKING] > should mark all files when inverting with no marks [REQ-FILE_MARKING_WEB]
+[IMPL-KEYBINDS] Loading 8 keybindings
+[IMPL-KEYBINDS] Loaded 8 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.pane-reorder.test.tsx > WorkspaceView pane reorder [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYOUT] > cycles three panes backward via pane.cyclePrev
+[IMPL-KEYBINDS] Loading 4 keybindings
+[IMPL-KEYBINDS] Loaded 4 keybindings across 1 categories
+
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > RESTORE_FROM_MESH_rehydrates_layout_via_meshId_when_server_restore_did_not_run
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 2 categories
+DEBUG: mesh rehydrate applying layout only OneRow mesh-rehydrate-no-server
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB] > Invert Marks [IMPL-FILE_MARKING] > should clear all marks when inverting with all marked [REQ-FILE_MARKING_WEB]
+[IMPL-KEYBINDS] Loading 8 keybindings
+[IMPL-KEYBINDS] Loaded 8 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > RESTORE_FROM_MESH_applies_fileColumns_from_loaded_snapshot
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.pane-reorder.test.tsx > WorkspaceView pane reorder [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYOUT] > reorders panes via pane order dialog
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 1 categories
+
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > RESTORE_FROM_MESH_applies_focusIndex
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.set-base-directory.test.tsx > WorkspaceView set base directory [SET_BASE_DIRECTORY] > applies In all other panes from initiating pane only
+[IMPL-KEYBINDS] Loading 2 keybindings
+[IMPL-KEYBINDS] Loaded 2 keybindings across 2 categories
+
+ ✓ src/app/files/WorkspaceView.execute.test.tsx (3 tests) 221ms
+stdout | src/app/files/BulkOperations.test.tsx > WorkspaceView Bulk Operations [REQ-BULK_FILE_OPS] > should clear marks after successful operation [REQ-BULK_FILE_OPS]
+[IMPL-KEYBINDS] Loading 6 keybindings
+[IMPL-KEYBINDS] Loaded 6 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB] > Clear Marks [IMPL-FILE_MARKING] > should clear all marks when Escape pressed [REQ-FILE_MARKING_WEB]
+[IMPL-KEYBINDS] Loading 8 keybindings
+[IMPL-KEYBINDS] Loaded 8 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > RESTORE_FROM_MESH_applies_linkedMode_off_over_config_default
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.pane-reorder.test.tsx > WorkspaceView pane reorder [IMPL-PANE_MANAGEMENT] [REQ-MULTI_PANE_LAYOUT] > does not reorder panes when allowPaneManagement is false
+[IMPL-KEYBINDS] Loading 4 keybindings
+[IMPL-KEYBINDS] Loaded 4 keybindings across 1 categories
+
+ ✓ src/app/files/WorkspaceView.pane-reorder.test.tsx (6 tests) 205ms
+stdout | src/app/files/WorkspaceView.rename-regex.test.tsx > WorkspaceView rename regex [RENAME_REGEX] > posts bulk-rename for this pane only
+[IMPL-KEYBINDS] Loading 1 keybindings
+[IMPL-KEYBINDS] Loaded 1 keybindings across 1 categories
+
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > RESTORE_FROM_MESH_applies_comparisonMode
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.set-base-directory.test.tsx > WorkspaceView set base directory [SET_BASE_DIRECTORY] > applies next pane swap and swaps pane positions
+[IMPL-KEYBINDS] Loading 2 keybindings
+[IMPL-KEYBINDS] Loaded 2 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > PARTIAL_MESH_REHYDRATE_applies_comparisonMode_when_server_already_restored_layout
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 2 categories
+DEBUG: mesh rehydrate skipped layout apply (server restoreLayout prop) Tile mesh-partial
+
+ ✓ src/app/files/WorkspaceView.rename-regex.test.tsx (3 tests) 208ms
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB] > Clear Marks [IMPL-FILE_MARKING] > should not error when clearing empty marks [REQ-FILE_MARKING_WEB]
+[IMPL-KEYBINDS] Loading 8 keybindings
+[IMPL-KEYBINDS] Loaded 8 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB] > Mark Persistence [IMPL-FILE_MARKING] [ARCH-MARKING_STATE] > should persist marks by filename (name-based persistence) [REQ-FILE_MARKING_WEB]
+[IMPL-KEYBINDS] Loading 8 keybindings
+[IMPL-KEYBINDS] Loaded 8 keybindings across 2 categories
+
+stdout | src/app/files/BulkOperations.test.tsx > ConfirmDialog [IMPL-BULK_OPS] > should close on Escape key [REQ-BULK_FILE_OPS]
+[IMPL-KEYBINDS] Loading 6 keybindings
+[IMPL-KEYBINDS] Loaded 6 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > RESTORE_FROM_MESH_applies_crossPaneVisibility_via_restorePaneMeta
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.set-base-directory.test.tsx > WorkspaceView set base directory [SET_BASE_DIRECTORY] > opens new workspace tab with single-pane URL
+[IMPL-KEYBINDS] Loading 2 keybindings
+[IMPL-KEYBINDS] Loaded 2 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > RESTORE_FROM_MESH_applies_cursor_via_restorePaneMeta
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 2 categories
+
+stdout | src/app/files/BulkOperations.test.tsx > ConfirmDialog [IMPL-BULK_OPS] > should confirm on Enter key [REQ-BULK_FILE_OPS]
+[IMPL-KEYBINDS] Loading 6 keybindings
+[IMPL-KEYBINDS] Loaded 6 keybindings across 3 categories
+
+ ✓ src/app/mesh/components/MeshListClient.test.tsx (7 tests) 243ms
+ ✓ src/lib/files.bookmarks.test.ts (17 tests) 4ms
+stdout | src/app/files/WorkspaceView.set-base-directory.test.tsx > WorkspaceView set base directory [SET_BASE_DIRECTORY] > applies In a new pane and appends focused pane at directory path
+[IMPL-KEYBINDS] Loading 2 keybindings
+[IMPL-KEYBINDS] Loaded 2 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB] > Mark Visual Feedback [IMPL-FILE_MARKING] > should display checkboxes for all files [REQ-FILE_MARKING_WEB]
+[IMPL-KEYBINDS] Loading 8 keybindings
+[IMPL-KEYBINDS] Loaded 8 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB] > Mark Visual Feedback [IMPL-FILE_MARKING] > should check checkbox when file is marked [REQ-FILE_MARKING_WEB]
+[IMPL-KEYBINDS] Loading 8 keybindings
+[IMPL-KEYBINDS] Loaded 8 keybindings across 2 categories
+
+stdout | src/app/files/BulkOperations.test.tsx > Overwrite Prompt [TEST-BULK_FILE_OPS] [IMPL-OVERWRITE_PROMPT] > should show conflict details when copying to existing file [REQ-BULK_FILE_OPS]
+[IMPL-KEYBINDS] Loading 6 keybindings
+[IMPL-KEYBINDS] Loaded 6 keybindings across 3 categories
+
+ ✓ src/lib/mesh/services/services.integration.test.ts (6 tests) 5ms
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB] > Mark Visual Feedback [IMPL-FILE_MARKING] > should allow marking via checkbox click [REQ-FILE_MARKING_WEB]
+[IMPL-KEYBINDS] Loading 8 keybindings
+[IMPL-KEYBINDS] Loaded 8 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.set-base-directory.test.tsx > WorkspaceView set base directory [SET_BASE_DIRECTORY] > adds pane at focused path via pane.add keybind
+[IMPL-KEYBINDS] Loading 2 keybindings
+[IMPL-KEYBINDS] Loaded 2 keybindings across 2 categories
+
+stdout | src/app/files/BulkOperations.test.tsx > Overwrite Prompt [TEST-BULK_FILE_OPS] [IMPL-OVERWRITE_PROMPT] > should show conflict details when moving to existing file [REQ-BULK_FILE_OPS]
+[IMPL-KEYBINDS] Loading 6 keybindings
+[IMPL-KEYBINDS] Loaded 6 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.set-base-directory.test.tsx > WorkspaceView set base directory [SET_BASE_DIRECTORY] > disables In a new pane when workspace is at maxPanes
+[IMPL-KEYBINDS] Loading 2 keybindings
+[IMPL-KEYBINDS] Loaded 2 keybindings across 2 categories
+
+ ✓ src/app/mesh/components/MeshDetailClient.test.tsx (4 tests) 180ms
+stdout | src/app/files/BulkOperations.test.tsx > Overwrite Prompt [TEST-BULK_FILE_OPS] [IMPL-OVERWRITE_PROMPT] > should not show conflicts when no files exist in target [REQ-BULK_FILE_OPS]
+[IMPL-KEYBINDS] Loading 6 keybindings
+[IMPL-KEYBINDS] Loaded 6 keybindings across 3 categories
+
+ ✓ src/app/files/WorkspaceView.set-base-directory.test.tsx (9 tests) 379ms
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > WORKSPACE_HEADER_MESH_LINK_points_to_mesh_hub_without_meshId
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > DIFF_SAVED_VS_CURRENT_hides_header_diff_without_savedSnapshot
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 2 categories
+DEBUG: mesh rehydrate missing mesh in response mesh-no-baseline
+
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > DIFF_SAVED_VS_CURRENT_shows_header_diff_when_savedSnapshot_loaded
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 2 categories
+DEBUG: mesh rehydrate missing mesh in response mesh-with-baseline
+
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > SHOW_LOADED_WORKSPACE_NAME_displays_mesh_name_in_header
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 2 categories
+DEBUG: mesh rehydrate missing mesh in response mesh-name-1
+
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > WORKSPACE_HEADER_STATUS_shows_restore_warning_when_restoredFromMesh
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 2 categories
+DEBUG: mesh rehydrate missing mesh in response mesh-warn-1
+
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > WORKSPACE_HEADER_STATUS_shows_restore_error_when_not_restoredFromMesh
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 2 categories
+DEBUG: mesh rehydrate missing mesh in response mesh-missing-1
+
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > WORKSPACE_HEADER_STATUS_shows_fallback_when_no_loaded_name
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 2 categories
+DEBUG: mesh rehydrate missing mesh in response mesh-fallback-1
+
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > WORKSPACE_HEADER_MESH_LINK_points_to_mesh_detail_when_meshId_set
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 2 categories
+DEBUG: mesh rehydrate missing mesh in response mesh-restore-nav-1
+
+ ✓ src/app/api/mesh/[meshId]/workspace/workspace.route.test.ts (4 tests) 15ms
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > UPDATE_WORKSPACE_MESH_clears_diff_badge_after_save
+[IMPL-KEYBINDS] Loading 6 keybindings
+[IMPL-KEYBINDS] Loaded 6 keybindings across 3 categories
+DEBUG: mesh rehydrate no snapshot in mesh mesh-diff-clear-1
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB] > Empty Directory Edge Cases [IMPL-FILE_MARKING] > should not show marked count for empty directory [REQ-FILE_MARKING_WEB]
+[IMPL-KEYBINDS] Loading 8 keybindings
+[IMPL-KEYBINDS] Loaded 8 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB] > Multi-Mark Workflow [IMPL-FILE_MARKING] > should support marking workflow: mark some, invert, clear [REQ-FILE_MARKING_WEB]
+[IMPL-KEYBINDS] Loading 8 keybindings
+[IMPL-KEYBINDS] Loaded 8 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.cross-pane-visibility.test.tsx > [REQ-CROSS_PANE_VISIBILITY] WorkspaceView cross-pane visibility > include sharedAll shows only shared rows in both panes
+[IMPL-KEYBINDS] Loading 0 keybindings
+[IMPL-KEYBINDS] Loaded 0 keybindings across 0 categories
+
+stdout | src/app/files/WorkspaceView.cross-pane-visibility.test.tsx > [REQ-CROSS_PANE_VISIBILITY] WorkspaceView cross-pane visibility > toolbar tri-states follow focused pane draft when focus changes
+[IMPL-KEYBINDS] Loading 0 keybindings
+[IMPL-KEYBINDS] Loaded 0 keybindings across 0 categories
+
+stdout | src/app/files/WorkspaceView.cross-pane-visibility.test.tsx > [REQ-CROSS_PANE_VISIBILITY] WorkspaceView cross-pane visibility > exclude sharedAll hides shared rows in focused pane
+[IMPL-KEYBINDS] Loading 0 keybindings
+[IMPL-KEYBINDS] Loaded 0 keybindings across 0 categories
+
+stdout | src/app/files/WorkspaceView.cross-pane-visibility.test.tsx > [REQ-CROSS_PANE_VISIBILITY] WorkspaceView cross-pane visibility > RECONCILE_AFTER_VISIBILITY drops marks on hidden files
+[IMPL-KEYBINDS] Loading 0 keybindings
+[IMPL-KEYBINDS] Loaded 0 keybindings across 0 categories
+
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > RESTORE_FROM_MESH_client_full_rehydrate_when_meshRestorePending
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 2 categories
+DEBUG: mesh rehydrate applying full workspace snapshot mesh-client-full-restore
+
+stdout | src/app/files/WorkspaceView.cross-pane-visibility.test.tsx > [REQ-CROSS_PANE_VISIBILITY] WorkspaceView cross-pane visibility > navigate.enter toggles tree expand without re-rooting pane header path
+[IMPL-KEYBINDS] Loading 1 keybindings
+[IMPL-KEYBINDS] Loaded 1 keybindings across 1 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB] > Multi-Mark Workflow [IMPL-FILE_MARKING] > should support marking workflow: mark all, unmark some [REQ-FILE_MARKING_WEB]
+[IMPL-KEYBINDS] Loading 8 keybindings
+[IMPL-KEYBINDS] Loaded 8 keybindings across 2 categories
+
+ ✓ src/app/files/WorkspaceView.cross-pane-visibility.test.tsx (5 tests) 210ms
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > WORKSPACE_HEADER_STATUS_shows_restore_pending_during_client_rehydrate
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 2 categories
+DEBUG: mesh rehydrate applying full workspace snapshot mesh-pending-banner
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB] > Mark with Navigation [IMPL-FILE_MARKING] > should preserve mark state while navigating cursor [REQ-FILE_MARKING_WEB]
+[IMPL-KEYBINDS] Loading 8 keybindings
+[IMPL-KEYBINDS] Loaded 8 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.mesh-restore.test.tsx > REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE] > WORKSPACE_HEADER_STATUS_shows_restore_error_when_client_rehydrate_fails
+[IMPL-KEYBINDS] Loading 5 keybindings
+[IMPL-KEYBINDS] Loaded 5 keybindings across 2 categories
+DEBUG: mesh rehydrate fetch failed 500 mesh-rehydrate-fail
+DEBUG: mesh rehydrate error mesh-rehydrate-fail Error: Failed to list home directory
+    at bootstrapDefaultPanesFromApi (/Users/fareed/Documents/dev/node/panorama/src/app/files/WorkspaceView.tsx:856:15)
+    at /Users/fareed/Documents/dev/node/panorama/src/app/files/WorkspaceView.tsx:730:13
+DEBUG: mesh rehydrate default bootstrap failed Error: Failed to list home directory
+    at bootstrapDefaultPanesFromApi (/Users/fareed/Documents/dev/node/panorama/src/app/files/WorkspaceView.tsx:856:15)
+    at /Users/fareed/Documents/dev/node/panorama/src/app/files/WorkspaceView.tsx:842:13
+
+stdout | src/app/files/WorkspaceView.touch.test.tsx > WorkspaceView touch mtime [TOUCH_MTIME] > opens Touch dialog from file row context menu and posts bulk-touch
+[IMPL-KEYBINDS] Loading 2 keybindings
+[IMPL-KEYBINDS] Loaded 2 keybindings across 2 categories
+
+ ✓ src/app/files/WorkspaceView.mesh-restore.test.tsx (28 tests) 632ms
+ ✓ src/app/files/components/SetBaseDirectoryDialog.test.tsx (10 tests) 63ms
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB] > Space Key Behavior [IMPL-FILE_MARKING] > should mark and advance with Space key [REQ-FILE_MARKING_WEB]
+[IMPL-KEYBINDS] Loading 8 keybindings
+[IMPL-KEYBINDS] Loaded 8 keybindings across 2 categories
+
+stdout | src/app/files/BulkOperations.test.tsx > Overwrite Prompt [TEST-BULK_FILE_OPS] [IMPL-OVERWRITE_PROMPT] > should show multiple conflicts when copying multiple existing files [REQ-BULK_FILE_OPS]
+[IMPL-KEYBINDS] Loading 6 keybindings
+[IMPL-KEYBINDS] Loaded 6 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.toolbar-compact.test.tsx > [REQ-TOOLBAR_SYSTEM] IMPL-TOOLBAR_COMPONENT_WorkspaceToolbarDisplayMode > renders one merged compact toolbar by default
+[IMPL-KEYBINDS] Loading 3 keybindings
+[IMPL-KEYBINDS] Loaded 3 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.toolbar-compact.test.tsx > [REQ-TOOLBAR_SYSTEM] IMPL-TOOLBAR_COMPONENT_WorkspaceToolbarDisplayMode > expands to three top toolbars with keystroke badges when toggled once
+[IMPL-KEYBINDS] Loading 3 keybindings
+[IMPL-KEYBINDS] Loaded 3 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.toolbar-compact.test.tsx > [REQ-TOOLBAR_SYSTEM] IMPL-TOOLBAR_COMPONENT_WorkspaceToolbarDisplayMode > shows named mode with visible Action labels after two toggles
+[IMPL-KEYBINDS] Loading 3 keybindings
+[IMPL-KEYBINDS] Loaded 3 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.toolbar-compact.test.tsx > [REQ-TOOLBAR_SYSTEM] IMPL-TOOLBAR_COMPONENT_WorkspaceToolbarDisplayMode > collapses to one merged toolbar without keystroke badges after three toggles
+[IMPL-KEYBINDS] Loading 3 keybindings
+[IMPL-KEYBINDS] Loaded 3 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.toolbar-compact.test.tsx > [REQ-TOOLBAR_SYSTEM] IMPL-TOOLBAR_COMPONENT_WorkspaceToolbarDisplayMode > resizes pane height when toolbar compact toggle changes workspace area size
+[IMPL-KEYBINDS] Loading 3 keybindings
+[IMPL-KEYBINDS] Loaded 3 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.touch.test.tsx > WorkspaceView touch mtime [TOUCH_MTIME] > posts bulk-touch for marked files in this pane with now mode
+[IMPL-KEYBINDS] Loading 2 keybindings
+[IMPL-KEYBINDS] Loaded 2 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.toolbar-compact.test.tsx > [REQ-TOOLBAR_SYSTEM] IMPL-TOOLBAR_COMPONENT_WorkspaceToolbarDisplayMode > places toggle on pane toolbar when workspace tier is not top
+[IMPL-KEYBINDS] Loading 3 keybindings
+[IMPL-KEYBINDS] Loaded 3 keybindings across 3 categories
+
+ ✓ src/app/files/WorkspaceView.toolbar-compact.test.tsx (6 tests) 218ms
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB] > Marked Count Display [IMPL-FILE_MARKING] > should not display marked count when zero marks [REQ-FILE_MARKING_WEB]
+[IMPL-KEYBINDS] Loading 8 keybindings
+[IMPL-KEYBINDS] Loaded 8 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB] > Marked Count Display [IMPL-FILE_MARKING] > should display marked count in footer [REQ-FILE_MARKING_WEB]
+[IMPL-KEYBINDS] Loading 8 keybindings
+[IMPL-KEYBINDS] Loaded 8 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - File Marking [TEST-FILE_MARKING] [REQ-FILE_MARKING_WEB] > Mark Operations Independence Per Pane [IMPL-FILE_MARKING] > should maintain separate mark sets per pane [REQ-FILE_MARKING_WEB]
+[IMPL-KEYBINDS] Loading 8 keybindings
+[IMPL-KEYBINDS] Loaded 8 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANES] > Link Toggle [IMPL-LINKED_NAV] > should toggle linked mode with L key [REQ-LINKED_PANES]
+[IMPL-KEYBINDS] Loading 11 keybindings
+[IMPL-KEYBINDS] Loaded 11 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.directory-tree.test.tsx > [REQ-DIRECTORY_TREE] WorkspaceView directory tree > first paint shows root children only with first-level dirs collapsed
+[IMPL-KEYBINDS] Loading 2 keybindings
+[IMPL-KEYBINDS] Loaded 2 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.directory-tree.test.tsx > [REQ-DIRECTORY_TREE] WorkspaceView directory tree > path-keyed marks disambiguate same basename in expanded subtrees
+[IMPL-KEYBINDS] Loading 2 keybindings
+[IMPL-KEYBINDS] Loaded 2 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANES] > Cursor Synchronization [IMPL-LINKED_NAV] > should sync cursor to same filename when linked mode ON [REQ-LINKED_PANES]
+[IMPL-KEYBINDS] Loading 11 keybindings
+[IMPL-KEYBINDS] Loaded 11 keybindings across 3 categories
+
+ ✓ src/app/files/WorkspaceView.touch.test.tsx (2 tests) 187ms
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANES] > Cursor Synchronization [IMPL-LINKED_NAV] > should NOT sync cursor when linked mode OFF [REQ-LINKED_PANES]
+[IMPL-KEYBINDS] Loading 11 keybindings
+[IMPL-KEYBINDS] Loaded 11 keybindings across 3 categories
+
+ ✓ src/app/files/BulkOperations.test.tsx (18 tests | 3 skipped) 793ms
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANES] > Cursor Synchronization [IMPL-LINKED_NAV] > should handle graceful degradation when filename not found [IMPL-LINKED_NAV]
+[IMPL-KEYBINDS] Loading 11 keybindings
+[IMPL-KEYBINDS] Loaded 11 keybindings across 3 categories
+
+ ✓ src/lib/mesh/domain/domain.composition.test.ts (8 tests) 4ms
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANES] > Cursor Synchronization [IMPL-LINKED_NAV] > should clear cursor (set to -1) when file doesn't exist in linked pane [REQ-LINKED_PANES]
+[IMPL-KEYBINDS] Loading 11 keybindings
+[IMPL-KEYBINDS] Loaded 11 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANES] > Cursor Synchronization [IMPL-LINKED_NAV] > should trigger scroll in linked panes when cursor syncs [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
+[IMPL-KEYBINDS] Loading 11 keybindings
+[IMPL-KEYBINDS] Loaded 11 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.directory-tree.test.tsx > [REQ-DIRECTORY_TREE] WorkspaceView directory tree > handleNavigate re-root resets tree and collapses expanded paths
+[IMPL-KEYBINDS] Loading 2 keybindings
+[IMPL-KEYBINDS] Loaded 2 keybindings across 2 categories
+
+ ✓ src/lib/toolbar.utils.test.ts (15 tests) 5ms
+ ✓ src/app/files/WorkspaceView.directory-tree.test.tsx (3 tests) 153ms
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANES] > Sort Synchronization [IMPL-LINKED_NAV] > should sync sort settings to all panes when linked [REQ-LINKED_PANES]
+[IMPL-KEYBINDS] Loading 12 keybindings
+[IMPL-KEYBINDS] Loaded 12 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANES] > Auto-Disable on Divergence [IMPL-LINKED_NAV] > should auto-disable linked mode when navigation diverges [REQ-LINKED_PANES]
+[IMPL-KEYBINDS] Loading 11 keybindings
+[IMPL-KEYBINDS] Loaded 11 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANES] > Visual Indicator [IMPL-LINKED_NAV] > should show link indicator only with 2+ panes and linked ON [REQ-LINKED_PANES]
+[IMPL-KEYBINDS] Loading 11 keybindings
+[IMPL-KEYBINDS] Loaded 11 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANES] > Visual Indicator [IMPL-LINKED_NAV] > should show link indicator only with 2+ panes and linked ON [REQ-LINKED_PANES]
+[IMPL-KEYBINDS] Loading 11 keybindings
+[IMPL-KEYBINDS] Loaded 11 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANES] > Parent Navigation Sync [IMPL-LINKED_NAV] > should navigate all panes to parent when linked [REQ-LINKED_PANES]
+[IMPL-KEYBINDS] Loading 11 keybindings
+[IMPL-KEYBINDS] Loaded 11 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANES] > Parent Navigation Sync [IMPL-LINKED_NAV] > should sync all panes to root when Backspace from one level below root [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
+[IMPL-KEYBINDS] Loading 11 keybindings
+[IMPL-KEYBINDS] Loaded 11 keybindings across 3 categories
+
+ ✓ src/app/api/mesh/sessions.route.test.ts (4 tests) 13ms
+ ✓ src/lib/mesh/services/depot-service.test.ts (14 tests) 4ms
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANES] > Parent Navigation Sync [IMPL-LINKED_NAV] > should expand directory on Enter without linked pane re-root [REQ-DIRECTORY_TREE] [REQ-LINKED_PANES]
+[IMPL-KEYBINDS] Loading 11 keybindings
+[IMPL-KEYBINDS] Loaded 11 keybindings across 3 categories
+
+ ✓ src/lib/mesh/domain/serialize.test.ts (9 tests) 7ms
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANES] > Parent Navigation Sync [IMPL-LINKED_NAV] > should show Parent button when not at root [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
+[IMPL-KEYBINDS] Loading 11 keybindings
+[IMPL-KEYBINDS] Loaded 11 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANES] > Parent Navigation Sync [IMPL-LINKED_NAV] > should hide Parent button when at root [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
+[IMPL-KEYBINDS] Loading 11 keybindings
+[IMPL-KEYBINDS] Loaded 11 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANES] > Parent Navigation Sync [IMPL-LINKED_NAV] > should navigate to parent when Parent button is clicked [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
+[IMPL-KEYBINDS] Loading 11 keybindings
+[IMPL-KEYBINDS] Loaded 11 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANES] > Parent Navigation Sync [IMPL-LINKED_NAV] > should navigate all panes to parent when Parent button is clicked with linked mode [REQ-LINKED_PANES] [IMPL-LINKED_NAV]
+[IMPL-KEYBINDS] Loading 11 keybindings
+[IMPL-KEYBINDS] Loaded 11 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANES] > Single Pane Mode [IMPL-LINKED_NAV] > should not show linked indicator with single pane [REQ-LINKED_PANES]
+[IMPL-KEYBINDS] Loading 11 keybindings
+[IMPL-KEYBINDS] Loaded 11 keybindings across 3 categories
+
+ ✓ src/lib/mesh/services/mesh-service.test.ts (10 tests) 4ms
+ ✓ src/test/dark-mode.test.tsx (11 tests) 2ms
+ ✓ src/lib/execute-command.data.test.ts (7 tests) 5ms
+ ✓ src/test/integration/app.test.tsx (13 tests) 18ms
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANES] > Config-Driven Linked Mode [IMPL-LINKED_NAV] > should initialize linked mode from config as true [REQ-LINKED_PANES]
+[IMPL-KEYBINDS] Loading 11 keybindings
+[IMPL-KEYBINDS] Loaded 11 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANES] > Config-Driven Linked Mode [IMPL-LINKED_NAV] > should initialize linked mode from config as false [REQ-LINKED_PANES]
+[IMPL-KEYBINDS] Loading 11 keybindings
+[IMPL-KEYBINDS] Loaded 11 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANES] > Config-Driven Linked Mode [IMPL-LINKED_NAV] > should default to true when config not specified [REQ-LINKED_PANES]
+[IMPL-KEYBINDS] Loading 11 keybindings
+[IMPL-KEYBINDS] Loaded 11 keybindings across 3 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANES] > Mouse Click Focus [IMPL-MOUSE_SUPPORT] > should switch focus when clicking a non-focused pane [REQ-MOUSE_INTERACTION]
+[IMPL-KEYBINDS] Loading 8 keybindings
+[IMPL-KEYBINDS] Loaded 8 keybindings across 2 categories
+
+stdout | src/app/files/WorkspaceView.test.tsx > WorkspaceView - Linked Navigation [TEST-LINKED_PANES] [REQ-LINKED_PANES] > Mouse Click Focus [IMPL-MOUSE_SUPPORT] > should switch focus when clicking a file in a non-focused pane [REQ-MOUSE_INTERACTION]
+[IMPL-KEYBINDS] Loading 8 keybindings
+[IMPL-KEYBINDS] Loaded 8 keybindings across 2 categories
+
+ ✓ src/lib/mesh/services/session-service.test.ts (9 tests) 8ms
+ ✓ src/app/files/WorkspaceView.test.tsx (46 tests) 1112ms
+ ✓ src/lib/mesh/services/topology-service.test.ts (9 tests) 4ms
+ ✓ src/lib/mesh/repositories/json-mesh-repository.test.ts (4 tests) 8ms
+ ✓ src/lib/file-columns.test.ts (12 tests) 3ms
+ ✓ src/app/api/files/preview/route.test.ts (7 tests) 24ms
+stdout | src/app/files/WorkspaceView.file-columns.test.tsx > WorkspaceView file columns [IMPL-WORKSPACE_VIEW] [IMPL-FILE_COLUMN_CONFIG] > view.columns opens dialog and apply reorders file column cells
+[IMPL-KEYBINDS] Loading 1 keybindings
+[IMPL-KEYBINDS] Loaded 1 keybindings across 1 categories
+
+ ✓ src/lib/mesh/services/planning-service.test.ts (7 tests) 3ms
+ ✓ src/lib/touch-file.test.ts (12 tests) 3ms
+stdout | src/app/files/WorkspaceView.file-columns.test.tsx > WorkspaceView file columns [IMPL-WORKSPACE_VIEW] [IMPL-FILE_COLUMN_CONFIG] > OneColumn layout shares metadata column widths across panes
+[IMPL-KEYBINDS] Loading 1 keybindings
+[IMPL-KEYBINDS] Loaded 1 keybindings across 1 categories
+
+ ✓ src/app/files/WorkspaceView.file-columns.test.tsx (2 tests) 79ms
+ ✓ src/lib/file-tree.test.ts (7 tests) 9ms
+ ✓ src/app/api/mesh/plan-conflicts.route.test.ts (3 tests) 12ms
+stdout | src/lib/display-spec-store.test.ts > DisplaySpecStore [IMPL-DISPLAY_SPEC_STORE] > creates and lists specs
+TRACE: [IMPL-DISPLAY_SPEC_STORE] Created spec 2dc0b00b-5e04-4f59-8cdb-c46d8c2d2100 Test Spec
+
+stdout | src/lib/display-spec-store.test.ts > DisplaySpecStore [IMPL-DISPLAY_SPEC_STORE] > rejects duplicate names
+TRACE: [IMPL-DISPLAY_SPEC_STORE] Created spec e8ac1f1f-fc15-4607-8e03-7a86e3f2c288 Dup
+
+stdout | src/lib/display-spec-store.test.ts > DisplaySpecStore [IMPL-DISPLAY_SPEC_STORE] > increments version on update
+TRACE: [IMPL-DISPLAY_SPEC_STORE] Created spec 5d131c8d-ca35-45dd-89ac-ae6efff10a06 V
+TRACE: [IMPL-DISPLAY_SPEC_STORE] Updated spec 5d131c8d-ca35-45dd-89ac-ae6efff10a06 version 2
+
+stdout | src/lib/display-spec-store.test.ts > DisplaySpecStore [IMPL-DISPLAY_SPEC_STORE] > DUPLICATE_SPEC creates a new catalog entry
+TRACE: [IMPL-DISPLAY_SPEC_STORE] Created spec e51b29c2-86e3-430c-8e62-e510d8f7d008 Original
+TRACE: [IMPL-DISPLAY_SPEC_STORE] Created spec 4ca4fa01-59e7-4e63-9882-054ddaed4b8b Copy of Original
+
+stdout | src/lib/display-spec-store.test.ts > DisplaySpecStore [IMPL-DISPLAY_SPEC_STORE] > UPDATE_SPEC renames spec when name changes
+TRACE: [IMPL-DISPLAY_SPEC_STORE] Created spec 5369bf61-e5db-458b-960b-8805bfb48dc9 Before
+TRACE: [IMPL-DISPLAY_SPEC_STORE] Updated spec 5369bf61-e5db-458b-960b-8805bfb48dc9 version 2
+
+stdout | src/lib/display-spec-store.test.ts > DisplaySpecStore [IMPL-DISPLAY_SPEC_STORE] > notifies subscribers on update
+TRACE: [IMPL-DISPLAY_SPEC_STORE] Created spec fad0e557-3333-4c9f-8a47-85a902d8e8ce Sub
+TRACE: [IMPL-DISPLAY_SPEC_STORE] Deleted spec fad0e557-3333-4c9f-8a47-85a902d8e8ce
+
+ ✓ src/lib/display-spec-store.test.ts (7 tests) 11ms
+ ✓ src/lib/pane-file-tree.test.ts (4 tests) 8ms
+stdout | src/app/files/WorkspaceView.shared-sort.test.tsx > WorkspaceView shared sort [REQ-FILE_SORTING_ADVANCED] > Shared applies shared sort to focused pane only when linked [REQ-LINKED_PANES]
+[IMPL-KEYBINDS] Loading 3 keybindings
+[IMPL-KEYBINDS] Loaded 3 keybindings across 3 categories
+
+stdout | src/app/api/files/display-filter.route.test.ts > GET /api/files with displaySpecId [IMPL-DISPLAY_FILTER_API] > SERVER_FILTER_LISTING returns filtered listing with hiddenCount
+[LOGGER] Log file created: /var/folders/yh/87t3kcg50_l108hdt9tgc8pr0000gp/T/nx1-log-2026-08-27-19-26-27-085.log
+
+stdout | src/app/files/WorkspaceView.shared-sort.test.tsx > WorkspaceView shared sort [REQ-FILE_SORTING_ADVANCED] > new pane inherits workspace sharedSort after Share [REQ-MULTI_PANE_LAYOUT]
+[IMPL-KEYBINDS] Loading 3 keybindings
+[IMPL-KEYBINDS] Loaded 3 keybindings across 3 categories
+
+ ✓ src/app/api/files/display-filter.route.test.ts (3 tests) 46ms
+stdout | src/app/files/components/Toolbar.test.tsx > [REQ-TOOLBAR_SYSTEM] Toolbar > renders leadingContent before action buttons
+[IMPL-KEYBINDS] Loading 2 keybindings
+[IMPL-KEYBINDS] Loaded 2 keybindings across 2 categories
+
+stdout | src/app/files/components/Toolbar.test.tsx > [REQ-TOOLBAR_SYSTEM] Toolbar > passes showKeystroke=false to hide keystroke badges
+[IMPL-KEYBINDS] Loading 2 keybindings
+[IMPL-KEYBINDS] Loaded 2 keybindings across 2 categories
+
+stdout | src/app/files/components/Toolbar.test.tsx > [REQ-TOOLBAR_SYSTEM] Toolbar > passes showActionLabel to render visible Action labels
+[IMPL-KEYBINDS] Loading 2 keybindings
+[IMPL-KEYBINDS] Loaded 2 keybindings across 2 categories
+
+stdout | src/app/files/components/Toolbar.test.tsx > [REQ-TOOLBAR_SYSTEM] Toolbar > renders toolbar-only action from actionsMeta without keybinding
+[IMPL-KEYBINDS] Loading 2 keybindings
+[IMPL-KEYBINDS] Loaded 2 keybindings across 2 categories
+
+stdout | src/app/files/components/Toolbar.test.tsx > [REQ-TOOLBAR_SYSTEM] Toolbar > applies singleRow flex-nowrap layout when singleRow is true
+[IMPL-KEYBINDS] Loading 2 keybindings
+[IMPL-KEYBINDS] Loaded 2 keybindings across 2 categories
+
+ ✓ src/app/files/components/Toolbar.test.tsx (5 tests) 50ms
+ ✓ src/app/files/WorkspaceView.shared-sort.test.tsx (2 tests) 152ms
+ ✓ src/app/layout.test.tsx (8 tests) 31ms
+stdout | src/app/files/WorkspaceView.pane-refresh.test.tsx > WorkspaceView pane refresh [IMPL-PANE_REFRESH] [REQ-PANE_REFRESH] > pane_refresh_ctrl_r_refetches_focused_pane_listing [IMPL-PANE_REFRESH]
+[IMPL-KEYBINDS] Loading 2 keybindings
+[IMPL-KEYBINDS] Loaded 2 keybindings across 1 categories
+
+stdout | src/app/files/WorkspaceView.pane-refresh.test.tsx > WorkspaceView pane refresh [IMPL-PANE_REFRESH] [REQ-PANE_REFRESH] > pane_refresh_all_ctrl_shift_r_refetches_all_pane_listings [IMPL-PANE_REFRESH]
+[IMPL-KEYBINDS] Loading 2 keybindings
+[IMPL-KEYBINDS] Loaded 2 keybindings across 1 categories
+
+ ✓ src/app/files/WorkspaceView.pane-refresh.test.tsx (2 tests) 54ms
+ ✓ src/app/files/components/SortDialog.test.tsx (5 tests) 48ms
+ ✓ src/lib/useElementSize.test.ts (4 tests) 14ms
+ ✓ src/lib/set-base-directory.test.ts (17 tests) 3ms
+ ✓ src/lib/rename-regex.test.ts (12 tests) 3ms
+stdout | src/app/files/WorkspaceView.make-directory.test.tsx > WorkspaceView make directory [REQ-DIRECTORY_NAVIGATION] > opens Make directory dialog from file row context menu and posts bulk-mkdir
+[IMPL-KEYBINDS] Loading 1 keybindings
+[IMPL-KEYBINDS] Loaded 1 keybindings across 1 categories
+
+ ✓ src/app/mesh/components/PlanViewClient.test.tsx (5 tests) 198ms
+ ✓ src/lib/mesh/services/executor-service.test.ts (6 tests) 3ms
+ ✓ src/lib/cross-pane-visibility.test.ts (5 tests) 2ms
+ ✓ src/app/mesh/components/MeshDepotsClient.test.tsx (4 tests) 200ms
+ ✓ src/app/files/WorkspaceView.make-directory.test.tsx (1 test) 68ms
+ ✓ src/app/files/components/TouchFileDialog.test.tsx (7 tests) 64ms
+ ✓ src/app/files/page.mesh-restore.test.tsx (2 tests) 12ms
+stdout | src/lib/pane-display-filter.test.ts > pane-display-filter [IMPL-PANE_DISPLAY_FILTER_UI] > BUILD_PANE_FROM_RAW_LISTING filters hidden files when spec active [IMPL-PANE_DISPLAY_FILTER_UI] [IMPL-DISPLAY_FILTER_ENGINE] [REQ-PANE_DISPLAY_FILTER]: how: client-side filter when server did not pre-filter; sort visible files; reconcile or clear marks per preserveMarks flag
+TRACE: [IMPL-DISPLAY_SPEC_STORE] Created spec ad2222a3-4f44-40d5-9fc6-72ae16d1654f No logs
+
+stdout | src/lib/pane-display-filter.test.ts > pane-display-filter [IMPL-PANE_DISPLAY_FILTER_UI] > BUILD_PANE_FROM_RAW_LISTING visible set is mark-all source (REQ visible-only marks)
+TRACE: [IMPL-DISPLAY_SPEC_STORE] Created spec 9c2b385f-257b-4846-bbcc-896872c23915 No tmp
+
+stdout | src/lib/pane-display-filter.test.ts > pane-display-filter [IMPL-PANE_DISPLAY_FILTER_UI] > REFRESH_PANES_USING_SPEC store update bumps version for shared spec id
+TRACE: [IMPL-DISPLAY_SPEC_STORE] Created spec 9f427d2c-1cc7-43ed-af86-593d27d963ef V1
+TRACE: [IMPL-DISPLAY_SPEC_STORE] Updated spec 9f427d2c-1cc7-43ed-af86-593d27d963ef version 2
+
+ ✓ src/lib/pane-display-filter.test.ts (3 tests) 4ms
+ ✓ src/lib/execute-command.test.ts (7 tests) 4ms
+stdout | src/app/files/FilesStartupMeshGate.test.tsx > FILES_STARTUP_MESH_GATE [IMPL-WORKSPACE_MESH_BRIDGE] > redirects_when_valid_startup_pref
+DEBUG: files startup mesh redirect mesh-valid
+
+stdout | src/app/files/WorkspaceView.file-column-clipboard.test.tsx > WorkspaceView file column clipboard [PANE_FILES_LIST_TO_FILEPANE] > copies cross-pane paths using workspace paneFilesList binding
+[IMPL-KEYBINDS] Loading 1 keybindings
+[IMPL-KEYBINDS] Loaded 1 keybindings across 1 categories
+
+ ✓ src/app/files/WorkspaceView.file-column-clipboard.test.tsx (1 test) 48ms
+ ✓ src/app/files/components/ToolbarButton.test.tsx (8 tests) 27ms
+stdout | src/app/files/FilesStartupMeshGate.test.tsx > FILES_STARTUP_MESH_GATE [IMPL-WORKSPACE_MESH_BRIDGE] > clears_invalid_pref_and_renders_children
+DEBUG: files startup mesh invalid; clearing preference mesh-missing
+
+ ✓ src/app/files/FilesStartupMeshGate.test.tsx (4 tests) 80ms
+ ✓ src/lib/display-filter-engine.test.ts (7 tests) 3ms
+stdout | src/lib/pane-cross-pane-visibility.test.ts > pane-cross-pane-visibility [IMPL-CROSS_PANE_VISIBILITY_CATALOG] > marks draft dirty when toggles diverge from preset
+TRACE: [IMPL-CROSS_PANE_VISIBILITY_CATALOG] Created preset ef9332f9-a6d6-4a26-993d-8a739aa5416d Base
+
+ ✓ src/lib/pane-cross-pane-visibility.test.ts (3 tests) 8ms
+ ✓ src/app/api/files/info/route.test.ts (5 tests) 10ms
+ ✓ src/lib/mesh/services/event-service.test.ts (9 tests) 4ms
+ ✓ src/lib/pane-order.test.ts (13 tests) 2ms
+stdout | src/lib/touch-mtime.data.test.ts > [TEST-TOUCH_MTIME] setFileMtime [IMPL-TOUCH_MTIME] > sets mtime while preserving atime on a file
+[LOGGER] Log file created: /var/folders/yh/87t3kcg50_l108hdt9tgc8pr0000gp/T/nx1-log-2026-08-27-19-26-27-952.log
+
+ ✓ src/lib/touch-mtime.data.test.ts (4 tests) 15ms
+ ✓ src/app/api/display-specs/route.test.ts (3 tests) 16ms
+ ✓ src/app/files/components/FileColumnContextMenu.test.tsx (5 tests) 190ms
+ ✓ src/app/files/components/LayoutPickerPopover.test.tsx (4 tests) 24ms
+ ✓ src/app/files/page.single-pane-url.test.tsx (3 tests) 7ms
+ ✓ src/lib/file-column-clipboard.test.ts (7 tests) 2ms
+ ✓ src/app/mesh/components/WorkspaceSnapshotSummaryList.test.tsx (3 tests) 26ms
+ ✓ src/app/api/mesh/depots-links.route.test.ts (2 tests) 6ms
+stdout | src/app/files/components/CrossPaneVisibilityManagerDialog.test.tsx > CrossPaneVisibilityManagerDialog [IMPL-CROSS_PANE_VISIBILITY_UI] > MANAGER_DIALOG SAVE_DRAFT_TO_CATALOG creates preset from focused draft
+TRACE: [IMPL-CROSS_PANE_VISIBILITY_CATALOG] Created preset 623a7a09-7c36-446f-8cf4-4052a922aaa7 My filter
+
+stdout | src/app/files/components/CrossPaneVisibilityManagerDialog.test.tsx > CrossPaneVisibilityManagerDialog [IMPL-CROSS_PANE_VISIBILITY_UI] > MANAGER_DIALOG deletes preset after confirm
+TRACE: [IMPL-CROSS_PANE_VISIBILITY_CATALOG] Created preset d01fd1a9-b467-46b9-83a8-8b964ed1827e Del me
+TRACE: [IMPL-CROSS_PANE_VISIBILITY_CATALOG] Deleted preset d01fd1a9-b467-46b9-83a8-8b964ed1827e
+
+ ✓ src/app/files/components/CrossPaneVisibilityManagerDialog.test.tsx (2 tests) 59ms
+ ✓ src/lib/mesh/connector/fake-connector.test.ts (8 tests) 3ms
+ ✓ src/lib/mesh/services/inventory-service.test.ts (5 tests) 3ms
+ ✓ src/app/files/components/RenameRegexDialog.test.tsx (4 tests) 35ms
+ ✓ src/lib/mesh/services/conflict-service.test.ts (5 tests) 2ms
+stdout | src/lib/copy-file.data.test.ts > [TEST-COPY_FILE] copyFile integration [IMPL-FILES_DATA] > copyFile copies nested directory tree to new parent path
+[LOGGER] Log file created: /var/folders/yh/87t3kcg50_l108hdt9tgc8pr0000gp/T/nx1-log-2026-08-27-19-26-28-470.log
+
+ ✓ src/app/files/components/ToolbarCompactToggle.test.tsx (4 tests) 22ms
+stdout | src/lib/make-directory.data.test.ts > [TEST-MAKE_DIRECTORY] makeDirectory [IMPL-MAKE_DIRECTORY] > creates a single directory under parent path
+[LOGGER] Log file created: /var/folders/yh/87t3kcg50_l108hdt9tgc8pr0000gp/T/nx1-log-2026-08-27-19-26-28-496.log
+
+ ✓ src/lib/make-directory.data.test.ts (3 tests) 14ms
+ ✓ src/lib/copy-file.data.test.ts (2 tests) 39ms
+ ✓ src/app/files/components/SaveWorkspaceMeshDialog.test.tsx (4 tests) 56ms
+ ✓ src/app/files/components/MakeDirectoryDialog.test.tsx (5 tests) 48ms
+ ✓ src/lib/mesh/services/safety-service.test.ts (4 tests) 1ms
+ ✓ src/lib/mesh/services/policy-service.test.ts (7 tests) 2ms
+stdout | src/lib/cross-pane-visibility-store.test.ts > CrossPaneVisibilityStore [IMPL-CROSS_PANE_VISIBILITY_CATALOG] > creates and lists presets
+TRACE: [IMPL-CROSS_PANE_VISIBILITY_CATALOG] Created preset 034e2f86-1b77-4761-8f25-b3558ed81cd0 Shared only
+
+stdout | src/lib/cross-pane-visibility-store.test.ts > CrossPaneVisibilityStore [IMPL-CROSS_PANE_VISIBILITY_CATALOG] > rejects duplicate names
+TRACE: [IMPL-CROSS_PANE_VISIBILITY_CATALOG] Created preset 80ebcbb2-6a18-454b-95a2-a1bba3a7d433 Dup
+
+stdout | src/lib/cross-pane-visibility-store.test.ts > CrossPaneVisibilityStore [IMPL-CROSS_PANE_VISIBILITY_CATALOG] > increments version on update
+TRACE: [IMPL-CROSS_PANE_VISIBILITY_CATALOG] Created preset 11657dd9-9f65-4e04-8ae7-a13784f44c14 V
+TRACE: [IMPL-CROSS_PANE_VISIBILITY_CATALOG] Updated preset 11657dd9-9f65-4e04-8ae7-a13784f44c14 version 2
+
+stdout | src/lib/cross-pane-visibility-store.test.ts > CrossPaneVisibilityStore [IMPL-CROSS_PANE_VISIBILITY_CATALOG] > notifies subscribers on delete
+TRACE: [IMPL-CROSS_PANE_VISIBILITY_CATALOG] Created preset 43e7ac88-482c-4932-87bc-418f4bdeabdb Del
+TRACE: [IMPL-CROSS_PANE_VISIBILITY_CATALOG] Deleted preset 43e7ac88-482c-4932-87bc-418f4bdeabdb
+
+ ✓ src/lib/cross-pane-visibility-store.test.ts (4 tests) 3ms
+ ✓ src/app/files/components/ColumnOrderDialog.test.tsx (3 tests) 40ms
+stdout | src/lib/rename-regex.data.test.ts > [TEST-RENAME_REGEX] bulkRename [IMPL-RENAME_REGEX] > bulkRename reports success count
+[LOGGER] Log file created: /var/folders/yh/87t3kcg50_l108hdt9tgc8pr0000gp/T/nx1-log-2026-08-27-19-26-28-634.log
+
+ ✓ src/lib/rename-regex.data.test.ts (2 tests) 11ms
+ ✓ src/lib/mesh/services/monitoring-service.test.ts (2 tests) 3ms
+stdout | src/app/files/WorkspaceView.flex-layout.test.tsx > WorkspaceView flex layout [IMPL-FLEX_LAYOUT] [REQ-ROOT_LAYOUT] > workspace_shell_uses_flex_col_and_flex_1_workspace_area [IMPL-FLEX_LAYOUT]
+[IMPL-KEYBINDS] Loading 0 keybindings
+[IMPL-KEYBINDS] Loaded 0 keybindings across 0 categories
+
+stdout | src/app/files/WorkspaceView.flex-layout.test.tsx > WorkspaceView flex layout [IMPL-FLEX_LAYOUT] [REQ-ROOT_LAYOUT] > workspace_header_uses_flex_row_alignment [IMPL-FLEX_LAYOUT]
+[IMPL-KEYBINDS] Loading 0 keybindings
+[IMPL-KEYBINDS] Loaded 0 keybindings across 0 categories
+
+ ✓ src/app/files/WorkspaceView.flex-layout.test.tsx (2 tests) 103ms
+ ✓ src/app/api/mesh/route.test.ts (4 tests) 7ms
+ ✓ src/app/files/components/ExecuteFileDialog.test.tsx (4 tests) 31ms
+ ✓ src/app/api/mesh/workspace-bridge.route.test.ts (1 test) 6ms
+ ✓ src/lib/cross-pane-path.test.ts (7 tests) 2ms
+ ✓ src/app/api/mesh/import-export.route.test.ts (2 tests) 6ms
+ ✓ src/lib/file-type-config.test.ts (7 tests) 6ms
+ ✓ src/lib/files-startup-mesh.test.ts (4 tests) 2ms
+ ✓ src/lib/mesh/connector/local-filesystem-connector.test.ts (3 tests) 4ms
+ ✓ src/lib/make-directory.test.ts (5 tests) 2ms
+ ✓ src/lib/mesh/services/hardening-service.test.ts (4 tests) 46ms
+ ✓ src/app/files/components/CrossPaneVisibilitySelector.test.tsx (2 tests) 18ms
+ ✓ src/components/NewTabLink.test.tsx (2 tests) 25ms
+ ✓ src/app/api/mesh/credentials.route.test.ts (2 tests) 6ms
+ ✓ src/app/files/components/DisplaySpecSelector.test.tsx (2 tests) 18ms
+ ✓ src/lib/regex-validation.test.ts (4 tests) 2ms
+ ✓ src/lib/mesh/repositories/create-mesh-repository.test.ts (2 tests) 2ms
+ ✓ src/app/files/components/PaneOrderDialog.test.tsx (3 tests) 29ms
+ ✓ src/app/files/components/FileTypeIcon.test.tsx (3 tests) 15ms
+ ✓ src/lib/mesh/services/import-export-service.test.ts (2 tests) 2ms
+ ✓ src/lib/mesh/connector/virtual-connector.test.ts (2 tests) 2ms
+ ✓ src/lib/mesh/services/authorization-service.test.ts (6 tests) 2ms
+ ✓ src/lib/mesh/services/schedule-service.test.ts (3 tests) 2ms
+ ✓ src/lib/mesh/services/credential-service.test.ts (2 tests) 1ms
+ ✓ src/app/files/components/TriStateToolbarButton.test.tsx (2 tests) 27ms
+ ✓ src/app/files/components/WorkspaceDiffDialog.test.tsx (3 tests) 37ms
+ ✓ src/components/icons/registry.test.tsx (3 tests) 15ms
+ ✓ src/app/mesh/components/MeshScheduleClient.test.tsx (2 tests) 85ms
+ ✓ src/app/files/components/SetBaseDirectoryTargetIcon.test.tsx (2 tests) 22ms
+stdout | src/app/files/components/HelpOverlay.test.tsx > HelpOverlay responsive layout [IMPL-RESPONSIVE_CLASSES] [REQ-RESPONSIVE_DESIGN] > help_overlay_category_grid_uses_responsive_columns [IMPL-RESPONSIVE_CLASSES]
+[IMPL-KEYBINDS] Loading 2 keybindings
+[IMPL-KEYBINDS] Loaded 2 keybindings across 2 categories
+
+ ✓ src/app/files/components/HelpOverlay.test.tsx (1 test) 19ms
+ ✓ src/app/mesh/components/MeshExportClient.test.tsx (1 test) 72ms
+ ✓ src/app/files/components/CompareFilterThresholdDialog.test.tsx (1 test) 38ms
+ ✓ src/app/mesh/components/SyncSessionClient.test.tsx (1 test) 89ms
+ ✓ src/app/mesh/components/ConflictsClient.test.tsx (1 test) 27ms
+ ✓ src/app/mesh/components/MeshArchiveClient.test.tsx (1 test) 58ms
+ ✓ src/app/api/mesh/route.auth.test.ts (1 test) 3ms
+ ✓ src/lib/mesh/connector/remote-connector.test.ts (2 tests) 1ms
+ ✓ src/lib/glob-match.test.ts (1 test) 1ms
+ ✓ src/app/mesh/components/TopologyGraphClient.test.tsx (1 test) 19ms
+
+ Test Files  145 passed (145)
+      Tests  1278 passed | 3 skipped (1281)
+   Start at  12:26:24
+   Duration  5.83s (transform 2.47s, setup 6.76s, collect 12.72s, tests 9.08s, environment 37.69s, prepare 5.55s)
+

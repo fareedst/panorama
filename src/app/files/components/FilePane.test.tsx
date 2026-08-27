@@ -766,4 +766,30 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
     expect(icons[1]).toHaveTextContent("📝");
     expect(icons[2]).toHaveTextContent("📝");
   });
+
+  // [IMPL-RESPONSIVE_CLASSES]: pane shell stacks header list and footer in flex column with scrollable list region
+  it("file_pane_uses_flex_col_layout_with_scrollable_list [IMPL-RESPONSIVE_CLASSES]", () => {
+    const { container } = render(
+      <FilePane
+        path="/home/user"
+        files={mockFiles}
+        cursor={0}
+        marks={new Set()}
+        bounds={mockBounds}
+        focused={true}
+        onNavigate={mockOnNavigate}
+        onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
+        fileTypes={mockFileTypes}
+        data-testid="file-pane-responsive"
+      />,
+    );
+
+    const pane = screen.getByTestId("file-pane-responsive");
+    expect(pane.className).toMatch(/flex flex-col/);
+
+    const fileListRegion = container.querySelector(".flex-1.overflow-y-auto");
+    expect(fileListRegion).not.toBeNull();
+    expect(screen.getByTestId("file-list-table").parentElement).toBe(fileListRegion);
+  });
 });

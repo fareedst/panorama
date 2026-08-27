@@ -120,7 +120,7 @@ describe('Configuration Integration [REQ-CONFIG_DRIVEN_UI]', () => {
 // Traceability anchors for cross-cutting REQs referenced in production but lacking dedicated feature tests.
 describe('Cross-cutting traceability [REQ-ERROR_HANDLING] [REQ-FILES_PERFORMANCE] [REQ-FILE_MANAGER_PAGE] [REQ-HASH_COMPUTATION] [REQ-PANE_REFRESH] [REQ-RESPONSIVE_DESIGN] [REQ-STORE_FAILURE_DETECT] [REQ-TAILWIND_STYLING] [REQ-TOOLBAR_CONFIG] [REQ-VERIFY_DEST]', () => {
   it('documents test-side REQ token presence for traceability gap closure', () => {
-    // [REQ-ERROR_HANDLING] global-error boundary and error recovery paths
+    // [IMPL-GLOBAL_ERROR_BOUNDARY] [REQ-ERROR_HANDLING] global-error boundary and error recovery paths
     // [REQ-FILES_PERFORMANCE] files pane performance constraints
     // [REQ-FILE_MANAGER_PAGE] file manager page shell
     // [REQ-HASH_COMPUTATION] hash/compare operations

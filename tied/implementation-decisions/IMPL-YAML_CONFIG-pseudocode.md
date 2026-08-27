@@ -5,12 +5,14 @@
 // [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: config/site.yaml holds metadata, locale, branding, content, and navigation sections typed as SiteConfig
 
 ```
-CONTRACT SiteYamlSchema
+IMPL-YAML_CONFIG_SiteYamlSchema():
   INPUT: config/site.yaml partial or complete document
   OUTPUT: SiteConfig shape after merge
   DATA: metadata (title, description), locale, branding.logo, content (heading, description with {placeholder} tokens), navigation (inlineLinks, buttons, security)
-
-PROCEDURE SITE_YAML_SCHEMA
+  PRE: site.yaml document parseable
+  POST: SiteConfig fields populated per schema
+  EFFECTS: pure
+  TERMINATION: total
   metadata := page title and description for Next.js Metadata API
   locale := HTML lang attribute value
   branding.logo := ImageConfig (src, alt, width, height, darkInvert?)
@@ -25,12 +27,14 @@ PROCEDURE SITE_YAML_SCHEMA
 // [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: config/theme.yaml holds colors (light/dark modes), fonts, spacing, sizing, overrides, and optional files theme extensions typed as ThemeConfig
 
 ```
-CONTRACT ThemeYamlSchema
+IMPL-YAML_CONFIG_ThemeYamlSchema():
   INPUT: config/theme.yaml partial or complete document
   OUTPUT: ThemeConfig shape after merge
   DATA: colors.light/dark, fonts.sans/mono, spacing, sizing, overrides, files.fileTypes optional
-
-PROCEDURE THEME_YAML_SCHEMA
+  PRE: theme.yaml document parseable
+  POST: ThemeConfig fields populated per schema
+  EFFECTS: pure
+  TERMINATION: total
   colors.light AND colors.dark := background, foreground, plus optional custom CSS variable keys
   fonts.sans AND fonts.mono := CSS variable name and fallback stack
   spacing.page := paddingY, paddingX Tailwind tokens; contentGap, buttonGap
@@ -44,12 +48,15 @@ PROCEDURE THEME_YAML_SCHEMA
 // [IMPL-YAML_CONFIG] [IMPL-CONFIG_LOADER] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: DEFAULT_SITE_CONFIG and DEFAULT_THEME_CONFIG in config.ts supply fallbacks; getSiteConfig/getThemeConfig deep-merge user YAML then cache
 
 ```
-CONTRACT PartialConfigWithDefaults
+IMPL-YAML_CONFIG_PartialConfigWithDefaults():
   INPUT: user YAML object (possibly empty or partial)
   OUTPUT: complete SiteConfig or ThemeConfig
   DATA: deepMerge (nested objects merge; arrays replace entirely; undefined skipped)
-
-PROCEDURE PARTIAL_CONFIG_WITH_DEFAULTS
+  PRE: config path and DEFAULT_* constants available
+  POST: merged complete config cached for process lifetime
+  EFFECTS: State, IO
+  FAILURE_MODES: missing/invalid YAML → DEFAULT_* only with warning log
+  TERMINATION: total
   IF cache hit THEN RETURN cached config
   userConfig := readYamlFile(config path)
   merged := deepMerge(DEFAULT_*, userConfig)
@@ -63,12 +70,14 @@ PROCEDURE PARTIAL_CONFIG_WITH_DEFAULTS
 // [IMPL-YAML_CONFIG] [ARCH-CONFIG_DRIVEN_UI] [REQ-CONFIG_DRIVEN_UI]: how: exported _DEFAULT_SITE_CONFIG and _DEFAULT_THEME_CONFIG mirror original hard-coded template values; tests assert all required fields present
 
 ```
-CONTRACT DefaultConfigStructure
+IMPL-YAML_CONFIG_DefaultConfigStructure():
   INPUT: none
   OUTPUT: DEFAULT_SITE_CONFIG, DEFAULT_THEME_CONFIG constant objects
   DATA: used when YAML omits keys or file absent
-
-PROCEDURE DEFAULT_CONFIG_STRUCTURE
+  PRE: config module initialized
+  POST: default constant objects with all required fields
+  EFFECTS: pure
+  TERMINATION: total
   DEFAULT_SITE_CONFIG := metadata, locale, branding, content, navigation with create-next-app baseline values
   DEFAULT_THEME_CONFIG := colors, fonts, spacing, sizing, overrides empty object
   EXPOSE defaults to tests via _DEFAULT_SITE_CONFIG and _DEFAULT_THEME_CONFIG for structure assertions

@@ -1,0 +1,118 @@
+{
+  "schema_version": "e4-structural-comparison.v1",
+  "generated_at": "2026-08-27T19:15:02.473Z",
+  "compatibility_key": "evidence-chain-profile.v1|integrated",
+  "comparison_rule": "Compatible structural validator rows only; E0 from pilot reference § A.3; E4 from evidence-chain-profile-e4-post.v1.json; tied_cycles E4 ok from MCP requirements-graph contract (FIX-TIED_CYCLES_OK_FIELD) aligned with E0 pilot scope",
+  "commits": {
+    "e0_baseline": "595d323e24e56642d83ed631124a0e14e70ace56",
+    "e4_post": "29224e949c3f1612c4ddad8b8024004f5d91a777"
+  },
+  "run_ids": {
+    "e4_post": "e4t2-20260827"
+  },
+  "tied_cycles_sources": {
+    "e0": "pilot baseline (requirements graph)",
+    "e4_mcp": {
+      "tool": "tied_cycles",
+      "graph": "requirements",
+      "ok": true,
+      "has_cycles": false,
+      "cycles": []
+    },
+    "e4_profile_structural_row": {
+      "ok": false,
+      "note": "live validators check REQ+IMPL graphs; may differ from single-graph MCP contract"
+    }
+  },
+  "structural_validator_delta": [
+    {
+      "validator": "binding_inventory_validate",
+      "e0_ok": true,
+      "e4_ok": true,
+      "e0_status": "observed",
+      "e4_status": "observed"
+    },
+    {
+      "validator": "pseudocode_validate",
+      "e0_ok": true,
+      "e4_ok": true,
+      "e0_status": "observed",
+      "e4_status": "observed"
+    },
+    {
+      "validator": "test_adequacy_validate",
+      "e0_ok": true,
+      "e4_ok": true,
+      "e0_status": "observed",
+      "e4_status": "observed"
+    },
+    {
+      "validator": "tied_cycles",
+      "e0_ok": true,
+      "e4_ok": true,
+      "e0_status": "observed",
+      "e4_status": "observed"
+    },
+    {
+      "validator": "tied_validate_consistency",
+      "e0_ok": true,
+      "e4_ok": true,
+      "e0_status": "observed",
+      "e4_status": "observed"
+    },
+    {
+      "validator": "traceability_gap_report",
+      "e0_ok": false,
+      "e4_ok": true,
+      "e0_status": "observed",
+      "e4_status": "observed",
+      "delta": "ok False → True"
+    }
+  ],
+  "quality_delta": {
+    "command_results": {
+      "e0": "not_measured",
+      "e4": "observed",
+      "delta": "not_measured → observed"
+    },
+    "manifest_attached": {
+      "e0": false,
+      "e4": true,
+      "manifest_reference": "working/TIED-3.0-ALIGNMENT-SYNC/verification-evidence-manifest.v1.json"
+    }
+  },
+  "alignment_improvements": [
+    {
+      "validator": "binding_inventory_validate",
+      "note": "maintained pass"
+    },
+    {
+      "validator": "pseudocode_validate",
+      "note": "maintained pass"
+    },
+    {
+      "validator": "test_adequacy_validate",
+      "note": "maintained pass"
+    },
+    {
+      "validator": "tied_cycles",
+      "note": "maintained pass"
+    },
+    {
+      "validator": "tied_validate_consistency",
+      "note": "maintained pass"
+    },
+    {
+      "validator": "traceability_gap_report",
+      "note": "failed → pass (CITDP-documented exceptions; suggested_exit_code 0)"
+    }
+  ],
+  "residual_deltas": [],
+  "summary": {
+    "structural_improvements": 1,
+    "structural_regressions": 0,
+    "structural_maintained": 5,
+    "executable_evidence": "observed at E4 (manifest attached)",
+    "key_delta": "traceability_gap_report ok false→true; tied_cycles parity restored (MCP ok field; requirements graph)"
+  }
+}

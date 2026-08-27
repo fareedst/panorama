@@ -59,8 +59,8 @@ IMPL-FILE_SEARCH:
       date: {}
     last_updated:
       author: AI Agent
-      date: '2026-05-30T00:00:00.000Z'
-      reason: Retrofit pseudocode; expand test traceability
+      date: '2026-08-27'
+      reason: 'E1 tranche 4: migrate legacy CONTRACT/PROCEDURE blocks to fenced Layer-B format'
     last_validated:
       date: {}
       result: pass - 523 total tests passing, no SSR errors, production build successful

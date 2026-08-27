@@ -64,4 +64,5 @@ IMPL-NSYNC_TYPE_SAFETY:
       - IMPL-NSYNC_TYPE_SAFETY
     requirements: []
     tests:
-      - npm run build — zero TypeScript errors with strict mode
+      - bunx tsc -b — strict TypeScript build gate
+      - src/lib/sync/engine.test.ts — should sync when stat.size is bigint [IMPL-NSYNC_TYPE_SAFETY]

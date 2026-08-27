@@ -1,0 +1,12 @@
+{
+  "allowed": true,
+  "ok": true,
+  "blocking": false,
+  "depth": "minimal",
+  "phase": "close_out",
+  "diagnostics": [],
+  "gate_receipt": {
+    "path": "working/TIED-3.0-ALIGNMENT-SYNC/close_out-2026-08-27T18-06-40-612Z.json",
+    "hash": "sha256:1bd31e534c55fc66d4e00e2d1b455c55f2dc153a52d2b19fa349420d6066d2f5"
+  }
+}

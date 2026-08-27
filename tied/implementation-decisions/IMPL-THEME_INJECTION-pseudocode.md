@@ -6,30 +6,38 @@
 
 // [IMPL-THEME_INJECTION] [ARCH-THEME_INJECTION] [REQ-CONFIG_DRIVEN_UI]: generateThemeCss maps light and dark color entries to :root variables and prefers-color-scheme dark block
 
-CONTRACT GenerateThemeCssFromConfig
+```
+IMPL-THEME_INJECTION_GenerateThemeCssFromConfig(theme):
   INPUT: theme ThemeConfig with colors.light and colors.dark record maps
   OUTPUT: CSS string containing :root light vars and @media (prefers-color-scheme: dark) :root dark vars
   DATA: key→--{key}: {value}; lines joined per mode
-
-PROCEDURE IMPL-THEME_INJECTION_GenerateThemeCssFromConfig(theme)
+  PRE: theme.colors.light and theme.colors.dark are record maps
+  POST: returned CSS includes :root light variables and dark-mode media query block
+  EFFECTS: pure
+  TERMINATION: total
   lightVars := FOR EACH (key, value) IN theme.colors.light EMIT "    --{key}: {value};"
   darkVars := FOR EACH (key, value) IN theme.colors.dark EMIT "    --{key}: {value};"
   RETURN ":root {\n" + lightVars + "\n  }\n  @media (prefers-color-scheme: dark) {\n    :root {\n" + darkVars + "\n    }\n  }"
+```
 
 ## InjectThemeStyleInHead
 
 // [IMPL-THEME_INJECTION] [ARCH-THEME_INJECTION] [REQ-CONFIG_DRIVEN_UI]: RootLayout loads theme config and renders generated CSS in head style tag (replaces hard-coded globals.css :root colors)
 
-CONTRACT InjectThemeStyleInHead
+```
+IMPL-THEME_INJECTION_InjectThemeStyleInHead():
   INPUT: children ReactNode (layout slot)
   OUTPUT: document head contains inline style with theme CSS variables
   DATA: getThemeConfig(), generateThemeCss()
-
-PROCEDURE IMPL-THEME_INJECTION_InjectThemeStyleInHead()
+  PRE: RootLayout render path active
+  POST: head contains style element with generated theme CSS; body renders children
+  EFFECTS: pure
+  TERMINATION: total
   themeConfig := getThemeConfig()
   themeCss := generateThemeCss(themeConfig)
   RENDER head child style element with __html = themeCss
   RENDER body with font variables and children unchanged
+```
 
 ## CodeLocations
 

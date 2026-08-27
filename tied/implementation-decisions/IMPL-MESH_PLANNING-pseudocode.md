@@ -2,16 +2,35 @@
 
 // [IMPL-MESH_PLANNING] [ARCH-MESH_LAYERED] [IMPL-MESH_POLICY] [REQ-MESH_PLATFORM] [REQ-MESH_HARDENING]: Dry-run change set from inventory diff with policy filters, path mapping, and optional operation pagination.
 
-## generateDryRunPlan
+## Summary contract
+
+// [IMPL-MESH_PLANNING] [ARCH-MESH_LAYERED] [IMPL-MESH_POLICY] [REQ-MESH_PLATFORM]: bound dry-run planning and pagination inputs
+
+```
+IMPL-MESH_PLANNING_Summary():
+  INPUT: mesh; source and target inventory snapshots; filters; pathMappings; pagination offsets
+  OUTPUT: ChangeSet with operations; paginated change-set slice with metadata
+  DATA: uses pathMatchesFilter, applyPathMapping, allowsDelete from IMPL-MESH_POLICY
+  PRE: inventory snapshots and mesh policy available
+  POST: dry-run plan generated or empty plan on validation failure; pagination preserves changeSet id
+  EFFECTS: pure
+  FAILURE_MODES: DOMAIN_VALIDATION
+  TERMINATION: total
+```
+
+## GenerateDryRunPlan
 
 // [IMPL-MESH_PLANNING] [ARCH-MESH_LAYERED] [IMPL-MESH_POLICY] [REQ-MESH_PLATFORM]: how — diff source vs target inventory snapshots into copy/update/delete operations respecting mesh policy and optional filters/mappings.
 
-CONTRACT GenerateDryRunPlan
+```
+IMPL-MESH_PLANNING_generateDryRunPlan(input):
   INPUT: { mesh, sourceInventory, targetInventory, filters?, pathMappings? }
   OUTPUT: ChangeSet { id, operations[] }
-  DATA: uses pathMatchesFilter, applyPathMapping, allowsDelete from IMPL-MESH_POLICY
-
-PROCEDURE IMPL-MESH_PLANNING_generateDryRunPlan(input)
+  PRE: source and target inventory snapshots available
+  POST: validated change set with copy/update/delete operations or empty plan on validation error
+  EFFECTS: pure
+  FAILURE_MODES: DOMAIN_VALIDATION
+  TERMINATION: total
   BUILD sourceMap and targetMap keyed by entry.path
   ASSIGN filters = input.filters OR empty
   ASSIGN mappings = input.pathMappings OR empty
@@ -32,16 +51,20 @@ PROCEDURE IMPL-MESH_PLANNING_generateDryRunPlan(input)
   DATA changeSet = CALL validateChangeSet({ operations })
   IF domain validation error THEN RETURN { id: "plan-empty", operations: [] }
   RETURN { ...changeSet, id: "plan-" + now timestamp }
+```
 
-## paginateChangeSetOperations
+## PaginateChangeSetOperations
 
 // [IMPL-MESH_PLANNING] [ARCH-MESH_LAYERED] [REQ-MESH_HARDENING]: how — slice change-set operations for oversized API responses; preserve changeSet id and return pagination metadata.
 
-CONTRACT PaginateChangeSetOperations
+```
+IMPL-MESH_PLANNING_paginateChangeSetOperations(changeSet, operationOffset?, operationLimit?):
   INPUT: changeSet, operationOffset?, operationLimit?
   OUTPUT: { changeSet, totalOperations, offset, requestedLimit?, returnedOperations }
-
-PROCEDURE IMPL-MESH_PLANNING_paginateChangeSetOperations(changeSet, operationOffset?, operationLimit?)
+  PRE: changeSet with operations array available
+  POST: sliced operations returned with pagination metadata; unchanged when offset and limit absent
+  EFFECTS: pure
+  TERMINATION: total
   DATA totalOperations = changeSet.operations.length
   IF operationOffset absent AND operationLimit absent THEN
     RETURN { changeSet unchanged, totalOperations, offset: 0, returnedOperations: totalOperations }
@@ -55,3 +78,4 @@ PROCEDURE IMPL-MESH_PLANNING_paginateChangeSetOperations(changeSet, operationOff
     requestedLimit: operationLimit OR undefined,
     returnedOperations: slice.length
   }
+```

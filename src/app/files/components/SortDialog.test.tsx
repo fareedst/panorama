@@ -96,4 +96,25 @@ describe("SortDialog [REQ-FILE_SORTING_ADVANCED]", () => {
       sortDirsFirst: false,
     });
   });
+
+  // [IMPL-RESPONSIVE_CLASSES]: dialog panel caps width with max-w-[90vw] for narrow viewports
+  it("sort_dialog_panel_uses_viewport_max_width_guard [IMPL-RESPONSIVE_CLASSES]", () => {
+    render(
+      <SortDialog
+        isOpen
+        currentCriterion="name"
+        currentDirection="asc"
+        currentDirsFirst
+        paneSort={DEFAULT_PANE_SORT}
+        sharedSort={DEFAULT_PANE_SORT}
+        onApply={vi.fn()}
+        onApplyShared={vi.fn()}
+        onShareToWorkspace={vi.fn()}
+        onClose={vi.fn()}
+      />,
+    );
+    const panel = screen.getByTestId("sort-dialog");
+    expect(panel.className).toMatch(/w-96/);
+    expect(panel.className).toMatch(/max-w-\[90vw\]/);
+  });
 });

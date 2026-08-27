@@ -15,6 +15,11 @@ IMPL-MAKE_DIRECTORY:
   decision: make-directory.ts resolves pane-target paths; makeDirectory and bulkMakeDirectory in files.data.ts; bulk-mkdir API route case
   implementation_approach:
     summary: make-directory.ts + files.data makeDirectory/bulkMakeDirectory + API bulk-mkdir
+  metadata:
+    last_updated:
+      author: AI Agent
+      date: '2026-08-27'
+      reason: 'E1 tranche 4: migrate legacy CONTRACT/PROCEDURE blocks to fenced Layer-B format'
   name: Make Directory Path Resolution and Data Layer
   rationale:
     why: Pure client resolution keeps server thin; mkdir under pane.path matches directory navigation model

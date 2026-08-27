@@ -6,63 +6,84 @@
 
 // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: how: linkedMode boolean plus syncingRef prevent re-entrant sync; only initiating navigation propagates to other panes
 
-CONTRACT Summary
+```
+IMPL-LINKED_NAV_Summary():
   INPUT: pane operations (navigate, cursor, sort, parent) on WorkspaceView state
   OUTPUT: synchronized panes OR linkedMode cleared on divergence
   DATA: linkedMode from layout.defaultLinkedMode default true; syncingRef Set of pane indexes
+  PRE: multi-pane workspace state available
+  POST: linked panes synchronized OR linkedMode cleared on partial failure
+  EFFECTS: State, IO
   CONTROL: linking requires panes.length >= 2 for UI and toggle; single pane suppresses badges
+  TERMINATION: total
+```
 
 ## TreeExpandNoLinkedSync
 
 // [IMPL-LINKED_NAV] [IMPL-DIRECTORY_TREE] [REQ-LINKED_PANES] [REQ-DIRECTORY_TREE]: how — handleToggleExpand does not propagate; linked downward/upward sync applies only to handleNavigate re-root
 
-CONTRACT TreeExpandNoLinkedSync
+```
+IMPL-LINKED_NAV_TreeExpandNoLinkedSync():
   INPUT: handleToggleExpand on directory row or navigate.enter
   OUTPUT: expandedPaths updated on initiating pane only
   DATA: no syncingRef entries for tree expand
-
-PROCEDURE IMPL-LINKED_NAV_TreeExpandNoLinkedSync()
+  PRE: tree expand triggered on initiating pane
+  POST: expandedPaths updated on initiating pane only; no linked propagation
+  EFFECTS: State
+  TERMINATION: total
   handleToggleExpand MUST NOT call linked DownwardNavigation or UpwardNavigation
   navigate.enter on directory calls handleToggleExpand NOT handleNavigate
   Parent button and navigate.parent still call handleNavigate with linked sync
+```
 
 ## LinkedModeStateAndSyncGuard
 
 // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: linkedMode boolean and syncingRef Set prevent recursive sync during handleNavigate
 
-CONTRACT LinkedModeStateAndSyncGuard
+```
+IMPL-LINKED_NAV_LinkedModeStateAndSyncGuard(paneIndex):
   INPUT: paneIndex initiating call
   OUTPUT: isInitiatingNavigation flag
   DATA: syncingRef Set
-
-PROCEDURE IMPL-LINKED_NAV_LinkedModeStateAndSyncGuard(paneIndex)
+  PRE: paneIndex on navigate call
+  POST: isInitiating flag computed from syncingRef membership
+  EFFECTS: pure
+  TERMINATION: total
   INIT linkedMode FROM restoreUi OR layoutConfig.defaultLinkedMode OR true
   isInitiating := NOT syncingRef.has(paneIndex)
   WHEN syncing pane receives navigate skip initiating linked branch
+```
 
 ## LinkToggle
 
 // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: toggle linkedMode on link.toggle keybinding and L key
 
-CONTRACT LinkToggle
+```
+IMPL-LINKED_NAV_LinkToggle():
   INPUT: link.toggle action OR L key via registry
   OUTPUT: flipped linkedMode when at least two panes
   DATA: actionHandlers link.toggle entry
-
-PROCEDURE IMPL-LINKED_NAV_LinkToggle()
+  PRE: at least two panes for toggle
+  POST: linkedMode flipped OR no-op when single pane
+  EFFECTS: State
+  TERMINATION: total
   IF panes.length < 2 THEN RETURN without toggle
   setLinkedMode NOT previous value
+```
 
 ## DownwardNavigationSync
 
 // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: append relative subdirectory path to each linked pane on initiating navigate
 
-CONTRACT DownwardNavigationSync
+```
+IMPL-LINKED_NAV_DownwardNavigationSync(paneIndex, oldPath, newPath):
   INPUT: source paneIndex, oldPath, newPath
   OUTPUT: other panes navigated to linkedTargetPath OR failure counted
   DATA: normalizedOld normalizedNew; relativePath slice rules for root
-
-PROCEDURE IMPL-LINKED_NAV_DownwardNavigationSync(paneIndex, oldPath, newPath)
+  PRE: initiating navigation with linkedMode and >= 2 panes
+  POST: other panes navigated on downward move OR failures counted; linkedMode cleared on partial failure
+  EFFECTS: State, IO
+  TERMINATION: total
   IF NOT isInitiating OR NOT linkedMode OR panes < 2 THEN RETURN
   COMPUTE isDownward from prefix rules AND root edge cases
   IF NOT isDownward THEN skip downward branch
@@ -76,119 +97,152 @@ PROCEDURE IMPL-LINKED_NAV_DownwardNavigationSync(paneIndex, oldPath, newPath)
     ELSE failureCount++ LOG warn
     REMOVE i from syncingRef
   IF successCount > 0 AND failureCount > 0 THEN setLinkedMode false LOG diverged warning
+```
 
 ## UpwardNavigationSync
 
 // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: move all linked panes up same number of directory levels
 
-CONTRACT UpwardNavigationSync
+```
+IMPL-LINKED_NAV_UpwardNavigationSync(oldPath, newPath):
   INPUT: source oldPath newPath
   OUTPUT: other panes parent paths updated via handleNavigate
   DATA: stepsUp segment count difference; root normalization for isUpward
-
-PROCEDURE IMPL-LINKED_NAV_UpwardNavigationSync(oldPath, newPath)
+  PRE: upward navigation detected from path prefix rules
+  POST: linked panes moved up same number of directory levels
+  EFFECTS: State, IO
+  TERMINATION: total
   IF NOT isUpward per normalizedNew and oldPath prefix rules THEN RETURN
   stepsUp := segment count old minus new
   FOR each other pane POP stepsUp path segments toward root
   IF fetch parent ok THEN handleNavigate linked pane to linkedTargetPath
+```
 
 ## CursorSynchronization
 
 // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: sync cursor to same filename in all panes when linkedMode ON
 
-CONTRACT CursorSynchronization
+```
+IMPL-LINKED_NAV_CursorSynchronization(paneIndex, newCursor):
   INPUT: paneIndex, newCursor
   OUTPUT: matching cursors and scrollTriggers map
   DATA: crossPaneVisibilityResult.displayFilesByPane for visible rows
-
-PROCEDURE IMPL-LINKED_NAV_CursorSynchronization(paneIndex, newCursor)
+  PRE: linkedMode ON with >= 2 panes
+  POST: cursors aligned by filename across panes; scrollTriggers queued
+  EFFECTS: State
+  TERMINATION: total
   CLAMP cursor to visible file list bounds for source pane
   IF linkedMode AND panes >= 2 AND cursor in range
   READ cursorFilename from visible file at cursor
   FOR other panes FIND matchIndex by file.name equals cursorFilename in linked visible list
   IF matchIndex >= 0 SET cursor matchIndex AND queue scrollTrigger
   ELSE SET cursor -1 for that pane (no throw)
+```
 
 ## ScrollSynchronization
 
 // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: trigger scrollIntoView center smooth on linked panes after cursor sync
 
-CONTRACT ScrollSynchronization
+```
+IMPL-LINKED_NAV_ScrollSynchronization():
   INPUT: scrollTriggers Map paneIndex to row index
   OUTPUT: FilePane scrollIntoView block center smooth
   DATA: scrollTrigger prop per FilePane
-
-PROCEDURE IMPL-LINKED_NAV_ScrollSynchronization()
+  PRE: scrollTriggers populated from cursor sync
+  POST: linked panes scrolled to cursor row center smooth
+  EFFECTS: IO
+  TERMINATION: total
   AFTER setPanes APPLY setScrollTriggers from cursor sync
   FilePane ON scrollTrigger effect CALL element scrollIntoView smooth center
+```
 
 ## SortSynchronization
 
 // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: apply sort criterion direction dirsFirst to all panes when linked
 
-CONTRACT SortSynchronization
+```
+IMPL-LINKED_NAV_SortSynchronization(criterion, direction, dirsFirst, options):
   INPUT: criterion, direction, dirsFirst, optional singlePaneOnly
   OUTPUT: all panes sorted with preserved filename cursor when linked
   DATA: sortFiles helper
-
-PROCEDURE IMPL-LINKED_NAV_SortSynchronization(criterion, direction, dirsFirst, options)
+  PRE: sort change on focused or all panes per linkedMode
+  POST: sort applied; filename cursor preserved when linked
+  EFFECTS: State
+  TERMINATION: total
   panesToUpdate := IF singlePaneOnly OR NOT linked OR panes<2 THEN [focusIndex] ELSE all indexes
   FOR each paneIdx SORT files APPLY settings FIND cursor on same filename after sort
+```
 
 ## ParentNavigationSync
 
 // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: navigateToParent calls handleNavigate so Backspace and Parent button sync linked panes
 
-CONTRACT ParentNavigationSync
+```
+IMPL-LINKED_NAV_ParentNavigationSync(paneIndex):
   INPUT: paneIndex
   OUTPUT: parent directory navigation with linked upward sync
   DATA: globalDirectoryHistory saveCursorPosition on subdir name
-
-PROCEDURE IMPL-LINKED_NAV_ParentNavigationSync(paneIndex)
+  PRE: pane not already at root
+  POST: parent navigation via handleNavigate with linked upward branch
+  EFFECTS: State, IO
+  TERMINATION: total
   COMPUTE parentPath pop last segment OR root
   IF already at root THEN RETURN
   SAVE cursor hint subdir name on parent path in directory history
   AWAIT handleNavigate(paneIndex, parentPath) to run upward linked branch
   FilePane shows Parent button when not root via onNavigateParent callback
+```
 
 ## VisualIndicators
 
 // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: show link badge in footer and pane headers when linkedMode and two or more panes
 
-CONTRACT VisualIndicators
+```
+IMPL-LINKED_NAV_VisualIndicators():
   INPUT: linkedMode, panes.length
   OUTPUT: footer and header link badge visible or hidden
   DATA: copy label Linked with link emoji
-
-PROCEDURE IMPL-LINKED_NAV_VisualIndicators()
+  PRE: render with linkedMode and pane count
+  POST: badges shown when linkedMode and >= 2 panes else hidden
+  EFFECTS: pure
+  TERMINATION: total
   IF panes.length < 2 THEN hide badges even if linkedMode true
   ELSE WHEN linkedMode show footer and per-pane header indicators
+```
 
 ## ConfigDrivenLinkedMode
 
 // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: initialize linkedMode from layout.defaultLinkedMode defaulting true
 
-CONTRACT ConfigDrivenLinkedMode
+```
+IMPL-LINKED_NAV_ConfigDrivenLinkedMode():
   INPUT: layoutConfig.defaultLinkedMode, restoreUi.linkedMode
   OUTPUT: initial linkedMode state
   DATA: config defaultLinkedMode true in config.ts
-
-PROCEDURE IMPL-LINKED_NAV_ConfigDrivenLinkedMode()
+  PRE: layout config and optional mesh restore UI state
+  POST: linkedMode initialized from restore or config default true
+  EFFECTS: State
+  TERMINATION: total
   USE restoreUi.linkedMode WHEN mesh restore present
   ELSE USE layoutConfig.defaultLinkedMode
   WHEN omitted default linked ON
+```
 
 ## SinglePaneMode
 
 // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: suppress linked UI when only one pane even if linkedMode true
 
-CONTRACT SinglePaneMode
+```
+IMPL-LINKED_NAV_SinglePaneMode():
   INPUT: panes.length
   OUTPUT: no link UI; toggle no-op
   DATA: same as VisualIndicators guard
-
-PROCEDURE IMPL-LINKED_NAV_SinglePaneMode()
+  PRE: pane count available
+  POST: linked UI suppressed when single pane
+  EFFECTS: pure
+  TERMINATION: total
   REQUIRE panes.length >= 2 for toggle and badges
+```
 
 ## CodeLocations
 
@@ -203,7 +257,15 @@ PROCEDURE IMPL-LINKED_NAV_SinglePaneMode()
 
 // [IMPL-LINKED_NAV] [ARCH-FILE_MANAGER_HIERARCHY] [ARCH-KEYBIND_SYSTEM] [ARCH-LINKED_NAV] [ARCH-SORT_PIPELINE] [REQ-DIRECTORY_NAVIGATION] [REQ-LINKED_PANES] [REQ-MULTI_PANE_LAYOUT]: how: missing target logs warn; partial downward failure disables link; missing filename sets cursor -1 without disabling
 
-PROCEDURE IMPL-LINKED_NAV_on_error(context, error)
+```
+IMPL-LINKED_NAV_on_error(context, error):
+  INPUT: context, error
+  OUTPUT: logged diagnostic; linkedMode may be cleared on partial failure
+  PRE: linked sync error or missing target
+  POST: failure counted; cursor -1 on missing filename; linkedMode cleared on partial downward failure
+  EFFECTS: State
+  TERMINATION: total
   ON fetch failure for linked target INCREMENT failureCount continue
   ON partial downward success AND failure setLinkedMode false
   ON missing filename in pane SET cursor -1 LOG optional warn only
+```

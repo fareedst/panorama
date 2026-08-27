@@ -36,4 +36,4 @@ IMPL-NSYNC_HASH:
     requirements:
       - REQ-HASH_COMPUTATION
     tests:
-      - src/lib/sync/engine.test.ts — integration via compareMethod hash and verify
+      - src/lib/sync/engine.test.ts — should verify destination when verifyDestination enabled [IMPL-NSYNC_VERIFY] [IMPL-NSYNC_HASH]

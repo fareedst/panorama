@@ -1,0 +1,21 @@
+{
+  "profile_depth": "integrated",
+  "project_root": "/Users/fareed/Documents/dev/node/panorama",
+  "tied_base_path": "/Users/fareed/Documents/dev/node/panorama/tied",
+  "manifest_reference": "working/TIED-3.0-ALIGNMENT-SYNC/verification-evidence-manifest.v1.json",
+  "invoke_structural_validators": true,
+  "output_mode": "file",
+  "output_path": "working/TIED-3.0-ALIGNMENT-SYNC/evidence-chain-profile.v1.json",
+  "run_metadata": {
+    "run_id": "e3t1-20260827",
+    "commit": "29224e949c3f1612c4ddad8b8024004f5d91a777",
+    "environment": {
+      "platform": "darwin",
+      "tied_base_path": "/Users/fareed/Documents/dev/node/panorama/tied"
+    }
+  },
+  "change_context": {
+    "change_id": "TIED-3.0-ALIGNMENT-SYNC",
+    "citdp_token": "CITDP-TIED-3.0-ALIGNMENT-SYNC"
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "run_id": "e3t1-20260827",
+  "commit": "29224e949c3f1612c4ddad8b8024004f5d91a777",
+  "environment": {
+    "node": "bun",
+    "platform": "darwin",
+    "tied_base_path": "/Users/fareed/Documents/dev/node/panorama/tied"
+  },
+  "default_timeout_ms": 600000,
+  "default_max_output_bytes": 1048576,
+  "commands": [
+    {
+      "id": "tsc-build",
+      "argv": ["bunx", "tsc", "-b"],
+      "cwd": "/Users/fareed/Documents/dev/node/panorama",
+      "artifact_dir": "working/TIED-3.0-ALIGNMENT-SYNC/e3t1-artifacts/tsc-build",
+      "threshold": "exit_code == 0"
+    },
+    {
+      "id": "vitest-full",
+      "argv": ["bun", "run", "test"],
+      "cwd": "/Users/fareed/Documents/dev/node/panorama",
+      "artifact_dir": "working/TIED-3.0-ALIGNMENT-SYNC/e3t1-artifacts/vitest-full",
+      "threshold": "exit_code == 0"
+    },
+    {
+      "id": "vocabulary-validate",
+      "argv": ["bun", "run", "validate:vocabulary"],
+      "cwd": "/Users/fareed/Documents/dev/node/panorama",
+      "artifact_dir": "working/TIED-3.0-ALIGNMENT-SYNC/e3t1-artifacts/vocabulary-validate",
+      "threshold": "exit_code == 0"
+    },
+    {
+      "id": "tied-validate-consistency",
+      "argv": [
+        "/Users/fareed/Documents/dev/node/panorama/.cursor/skills/tied-yaml/scripts/tied-cli.sh",
+        "tied_validate_consistency",
+        "{\"include_pseudocode\":true}"
+      ],
+      "cwd": "/Users/fareed/Documents/dev/node/panorama",
+      "artifact_dir": "working/TIED-3.0-ALIGNMENT-SYNC/e3t1-artifacts/tied-validate-consistency",
+      "threshold": "exit_code == 0 and ok true"
+    },
+    {
+      "id": "binding-inventory-validate",
+      "argv": [
+        "python3",
+        "working/TIED-3.0-ALIGNMENT-SYNC/validate-binding-inventory.py"
+      ],
+      "cwd": "/Users/fareed/Documents/dev/node/panorama",
+      "artifact_dir": "working/TIED-3.0-ALIGNMENT-SYNC/e3t1-artifacts/binding-inventory-validate",
+      "threshold": "exit_code == 0 and ok true"
+    },
+    {
+      "id": "traceability-gap-report",
+      "argv": [
+        "/Users/fareed/Documents/dev/node/panorama/.cursor/skills/tied-yaml/scripts/tied-cli.sh",
+        "tied_scoped_analysis_run",
+        "{\"mode\":\"traceability_gap_report\"}"
+      ],
+      "cwd": "/Users/fareed/Documents/dev/node/panorama",
+      "artifact_dir": "working/TIED-3.0-ALIGNMENT-SYNC/e3t1-artifacts/traceability-gap-report",
+      "threshold": "exit_code == 0"
+    }
+  ],
+  "quality_rows": [
+    {
+      "id": "baseline-functional",
+      "attribute": "baseline-functional",
+      "applicability": "applicable",
+      "rationale": "Every alignment tranche must preserve executable regression and TIED integrity.",
+      "risk": "medium",
+      "evidence_method": "Manifest command bundle: tsc, vitest, vocabulary, tied_validate_consistency, binding_inventory_validate, traceability_gap_report",
+      "command_or_test": "see command_results",
+      "threshold": "All required commands exit 0; structural validators pass or document approved exceptions.",
+      "result": "pending",
+      "owner": "TBD — sponsor assign",
+      "limitation": "Structural and executable checks do not prove unrelated security, performance, privacy, or usability properties.",
+      "waiver": { "required": false }
+    },
+    {
+      "id": "external-input-security",
+      "attribute": "external-input-security",
+      "applicability": "applicable",
+      "rationale": "Mesh API and files API accept external JSON/path input; covered by vitest-full suite.",
+      "risk": "medium",
+      "evidence_method": "Route-level composition tests in Vitest suite (vitest-full manifest command)",
+      "command_or_test": "vitest-full",
+      "threshold": "Malformed input and auth rejection tests pass in Vitest route composition suite.",
+      "result": "pending",
+      "owner": "TBD — sponsor assign",
+      "limitation": "Does not prove full abuse-case coverage or production deployment hardening.",
+      "waiver": { "required": false }
+    },
+    {
+      "id": "user-facing-accessibility",
+      "attribute": "user-facing-accessibility",
+      "applicability": "applicable",
+      "rationale": "Workspace panes, toolbar, and linked navigation are user-facing; partial via component tests and e2e_only inventory rows.",
+      "risk": "low",
+      "evidence_method": "Component/contract tests in vitest-full; browser seams e2e_only in binding inventory",
+      "command_or_test": "vitest-full",
+      "threshold": "Component tests pass; e2e_only_reason names browser/Playwright constraint for UI-only bindings.",
+      "result": "pending",
+      "owner": "TBD — sponsor assign",
+      "limitation": "Vitest jsdom does not prove visual accessibility or real browser focus order.",
+      "waiver": { "required": false }
+    },
+    {
+      "id": "data-integrity-migration",
+      "attribute": "data-integrity-migration",
+      "applicability": "applicable",
+      "rationale": "Mesh snapshot save/restore and workspace bridge bindings affect persisted workspace state.",
+      "risk": "medium",
+      "evidence_method": "Domain validation and workspace snapshot tests in vitest-full",
+      "command_or_test": "vitest-full",
+      "threshold": "Snapshot round-trip and domain validation composition tests pass.",
+      "result": "pending",
+      "owner": "TBD — sponsor assign",
+      "limitation": "Does not prove live filesystem mesh depot sync or concurrent mutation safety.",
+      "waiver": { "required": false }
+    }
+  ],
+  "covered_tokens": [
+    "REQ-TIED_SETUP",
+    "REQ-MODULE_VALIDATION",
+    "REQ-QUALITY_ASSURANCE_EVIDENCE",
+    "PROC-TOKEN_VALIDATION",
+    "PROC-PSEUDOCODE_VALIDATION"
+  ],
+  "proof_boundaries": [
+    "executable_behavior",
+    "pseudo_code_structure",
+    "traceability_structure"
+  ],
+  "decision_references": [
+    "docs/tied-3.0-alignment-sync-plan.md",
+    "working/TIED-3.0-ALIGNMENT-SYNC/citdp-draft.yaml"
+  ]
+}

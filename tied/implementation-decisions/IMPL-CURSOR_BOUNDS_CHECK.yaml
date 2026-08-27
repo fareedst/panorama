@@ -59,4 +59,5 @@ IMPL-CURSOR_BOUNDS_CHECK:
     requirements:
       - REQ-KEYBOARD_NAVIGATION
       - REQ-MULTI_PANE_LAYOUT
-    tests: []
+    tests:
+      - src/app/files/WorkspaceView.execute.test.tsx

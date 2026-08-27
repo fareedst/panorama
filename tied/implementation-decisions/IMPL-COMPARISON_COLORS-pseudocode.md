@@ -7,12 +7,14 @@
 // [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: how: scan panes for shared filenames; attach sizeComparison and timeComparison arrays per pane entry
 
 ```
-CONTRACT BUILD_ENHANCED_INDEX
+IMPL-COMPARISON_COLORS_BuildEnhancedIndex(panes):
   INPUT: panes FileStat[][]
   OUTPUT: Map filename -> Map paneIndex -> EnhancedCompareState
   DATA: skips filenames present in fewer than two panes
-
-PROCEDURE IMPL-COMPARISON_COLORS_BuildEnhancedIndex(panes)
+  PRE: multi-pane file listings available
+  POST: enhanced comparison index with size/time classifications per pane
+  EFFECTS: pure
+  TERMINATION: total
   basicIndex := accumulate CompareState per filename across panes
   FOR EACH filename, state IN basicIndex
     IF state.panes.length < 2 THEN CONTINUE
@@ -29,11 +31,13 @@ PROCEDURE IMPL-COMPARISON_COLORS_BuildEnhancedIndex(panes)
 // [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: how: equal when min=max; else smallest/largest/null for middle values in 3+ panes
 
 ```
-CONTRACT ANALYZE_SIZES
+IMPL-COMPARISON_COLORS_AnalyzeSizes(sizes):
   INPUT: sizes number[] parallel to shared panes
   OUTPUT: SizeComparison[] values equal | smallest | largest | null
-
-PROCEDURE IMPL-COMPARISON_COLORS_AnalyzeSizes(sizes)
+  PRE: sizes array with at least two entries for comparison
+  POST: parallel SizeComparison classification array
+  EFFECTS: pure
+  TERMINATION: total
   IF sizes.length < 2 THEN RETURN array of null
   minSize := MIN(sizes); maxSize := MAX(sizes)
   IF minSize = maxSize THEN RETURN all equal
@@ -48,11 +52,13 @@ PROCEDURE IMPL-COMPARISON_COLORS_AnalyzeSizes(sizes)
 // [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: how: parse string or Date mtimes; equal within 1 second; else earliest/latest/null for middle
 
 ```
-CONTRACT ANALYZE_TIMES
+IMPL-COMPARISON_COLORS_AnalyzeTimes(mtimes):
   INPUT: mtimes (Date|string)[]
   OUTPUT: TimeComparison[] values equal | earliest | latest | null
-
-PROCEDURE IMPL-COMPARISON_COLORS_AnalyzeTimes(mtimes)
+  PRE: mtimes array with at least two entries
+  POST: parallel TimeComparison classification array
+  EFFECTS: pure
+  TERMINATION: total
   IF mtimes.length < 2 THEN RETURN array of null
   timestamps := CONVERT each mtime to epoch ms (parse ISO strings)
   minTime := MIN(timestamps); maxTime := MAX(timestamps)
@@ -68,12 +74,14 @@ PROCEDURE IMPL-COMPARISON_COLORS_AnalyzeTimes(mtimes)
 // [IMPL-COMPARISON_COLORS] [ARCH-COMPARISON_COLORING] [REQ-FILE_COMPARISON_VISUAL]: how: FilePane getComparisonClass maps comparisonMode and classifications to row background classes
 
 ```
-CONTRACT APPLY_CSS_CLASSES
+IMPL-COMPARISON_COLORS_ApplyCssClasses(comparisonMode, comparisonIndex, paneIndex, filename):
   INPUT: comparisonMode off|name|size|time, comparisonIndex Map, paneIndex, filename
   OUTPUT: Tailwind class string for file row (empty when not applicable)
   DATA: theme compareColors documented in config/theme.yaml; FilePane uses inline defaults matching those tokens
-
-PROCEDURE IMPL-COMPARISON_COLORS_ApplyCssClasses(comparisonMode, comparisonIndex, paneIndex, filename)
+  PRE: comparisonMode and index available for row
+  POST: CSS class string OR empty when not applicable
+  EFFECTS: pure
+  TERMINATION: total
   IF comparisonMode = off OR comparisonIndex missing THEN RETURN ""
   fileMap := comparisonIndex.get(filename)
   IF fileMap missing THEN RETURN ""

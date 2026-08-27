@@ -1,0 +1,50 @@
+{
+  "schema_version": "e0-pilot-baseline-reference.v1",
+  "commit": "595d323e24e56642d83ed631124a0e14e70ace56",
+  "source": "docs/tied-3.0-alignment-sync-plan.md \u00a7 A.3",
+  "profile_depth_note": "E0 pilot predates integrated manifest attach; structural rows from pilot tooling run, not evidence-chain-profile.v1",
+  "structural_validators": {
+    "binding_inventory_validate": {
+      "ok": true,
+      "status": "observed",
+      "note": "tool reported success; inventory incomplete at E0"
+    },
+    "pseudocode_validate": {
+      "ok": true,
+      "status": "observed",
+      "note": "99 sidecars; Layer-B gaps on Active blocks remained"
+    },
+    "test_adequacy_validate": {
+      "ok": true,
+      "status": "observed"
+    },
+    "tied_cycles": {
+      "ok": true,
+      "status": "observed"
+    },
+    "tied_validate_consistency": {
+      "ok": true,
+      "status": "observed"
+    },
+    "traceability_gap_report": {
+      "ok": false,
+      "status": "observed",
+      "note": "failed req_without_test, impl_without_test dimensions (strict false)"
+    }
+  },
+  "quality": {
+    "command_results": {
+      "status": "not_measured",
+      "note": "no verification manifest attached"
+    },
+    "vocabulary_drift": {
+      "status": "not_measured"
+    }
+  },
+  "supplemental_observed": {
+    "vitest_passed": 1268,
+    "sidecar_count": 99,
+    "binding_inventory_rows": 0,
+    "legacy_contract_sidecars": "many"
+  }
+}

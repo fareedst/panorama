@@ -28,6 +28,11 @@ IMPL-DIRECTORY_TREE:
       - SET_CHILDREN
       - TOGGLE_EXPANDED
     summary: file-tree.ts pure functions; WorkspaceView wires fetch and pane.files update
+  metadata:
+    last_updated:
+      author: AI Agent
+      date: '2026-08-27'
+      reason: 'E1 tranche 4: migrate legacy CONTRACT/PROCEDURE blocks to fenced Layer-B format'
   name: Directory Tree Module
   rationale:
     benefits:
@@ -51,3 +56,7 @@ IMPL-DIRECTORY_TREE:
       - IMPL-DIRECTORY_TREE
     requirements:
       - REQ-DIRECTORY_TREE
+    tests:
+      - src/app/files/WorkspaceView.directory-tree.test.tsx
+      - src/lib/file-tree.test.ts
+      - src/lib/pane-file-tree.test.ts

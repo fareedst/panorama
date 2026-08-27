@@ -1,18 +1,13 @@
-# [REQ-CONFIG_DRIVEN_UI] Site Configuration
-# Minimal site configuration for file manager application
 branding:
   logo:
     alt: File Manager
     darkInvert: true
-# Navigation structure (minimal - no longer used by home page)
     height: 20
     src: /next.svg
     width: 100
 locale: en
-# Branding assets (kept for potential future use in layout)
 metadata:
   description: Server-side file manager with multi-pane workspace
-# HTML lang attribute (BCP 47 language tag)
   title: File Manager
 navigation:
   buttons: []

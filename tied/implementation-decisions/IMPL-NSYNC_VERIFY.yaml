@@ -36,4 +36,4 @@ IMPL-NSYNC_VERIFY:
     requirements:
       - REQ-VERIFY_DEST
     tests:
-      - src/lib/sync/engine.test.ts — integration when verifyDestination enabled
+      - src/lib/sync/engine.test.ts — should verify destination when verifyDestination enabled [IMPL-NSYNC_VERIFY] [IMPL-NSYNC_HASH]

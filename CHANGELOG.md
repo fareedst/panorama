@@ -9,7 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **TIED 3.0 alignment sync — follow-on evidence** (`[REQ-TIED_SETUP]`, `[REQ-QUALITY_ASSURANCE_EVIDENCE]`, `[REQ-ACCESSIBILITY]`, `[PROC-IMPL_PSEUDOCODE_TOKENS]`, `CITDP-TIED-3.0-ALIGNMENT-SYNC`): composition tests for pane refresh, flex layout, and responsive classes; Playwright a11y E2E (`e2e/workspace-a11y-evidence.spec.ts`, 4 tests); 33-row binding inventory with `e2e_test` paths on UI-only seams; persisted CITDP and working evidence chain under `working/TIED-3.0-ALIGNMENT-SYNC/`. Plan: [`docs/tied-3.0-alignment-sync-plan.md`](docs/tied-3.0-alignment-sync-plan.md).
+
 ### Changed
+
+- **TIED 3.0 alignment sync — close-out** (`[REQ-TIED_SETUP]`, `[PROC-TOKEN_VALIDATION]`, `[PROC-VOCABULARY_INDEX]`, `CITDP-TIED-3.0-ALIGNMENT-SYNC`): completed E0–E4 alignment (85/85 sidecars, strict `pseudocode_validate`, integrated verification manifest, E4 re-profile vs E0 baseline); sponsor-approved traceability exceptions renewed to 2026-11-27; QA matrix **observed** for all four profiles including accessibility; P2.2 cleared `tied_cycles` structural delta after methodology MCP fix; maintenance manifest/profile refresh (`maint1`, 1278 Vitest tests). `tied_validate_consistency` ok; `close_out` gate allowed at minimal depth.
 
 - **Batch LEAP close-out** (`[REQ-TIED_SETUP]`, `[PROC-IMPL_PSEUDOCODE_TOKENS]`, `[REQ-PROMPT_TYPE_GLOBAL_SKILLS]`): synchronized the staged TIED traceability retrofit, methodology and QA documentation, analysis tooling configuration, agent bootstrap guidance, and project vocabulary indexes. Added the batch CITDP evidence record and restored the `bun run validate:vocabulary` validation entry point.
 

@@ -41,8 +41,8 @@ IMPL-PANE_REFRESH:
       date: {}
     last_updated:
       author: AI Agent
-      date: '2026-05-30T00:00:00.000Z'
-      reason: Retrofit essence_pseudocode from production code and tests
+      date: '2026-08-27'
+      reason: 'E1 tranche 2: migrate legacy CONTRACT blocks to fenced Layer-B format'
     last_validated:
       date: {}
       result: pass - build succeeds, 36 keybindings loaded
@@ -82,4 +82,5 @@ IMPL-PANE_REFRESH:
     requirements:
       - REQ-KEYBOARD_SHORTCUTS_COMPLETE
       - REQ-PANE_REFRESH
-    tests: []
+    tests:
+      - src/app/files/WorkspaceView.pane-refresh.test.tsx
