@@ -1,0 +1,437 @@
+{
+  "passed_requirement_tokens": [
+    "REQ-NSYNC_HYBRID_MOVE"
+  ],
+  "passed_impl_tokens": [
+    "IMPL-NSYNC_MOVE_PLAN",
+    "IMPL-NSYNC_ENGINE",
+    "IMPL-NSYNC_OPERATIONS",
+    "IMPL-FILES_DATA"
+  ],
+  "checklist_gate": {
+    "phase": "verification",
+    "tracker": {
+      "tracker_version": "checklist-tracker.v1",
+      "request_token": "REQ-NSYNC_HYBRID_MOVE",
+      "process_token": "PROC-AGENT_REQ_CHECKLIST",
+      "source_document": "tied/docs/agent-req-implementation-checklist.yaml",
+      "execution_evidence": {
+        "request": "REQ-NSYNC_HYBRID_MOVE",
+        "completed": [
+          "tranche-1-move-plan-module-20260901",
+          "tranche-2-engine-integration-20260901",
+          "tranche-3-shared-executor-exdev-20260901"
+        ],
+        "close_out_evidence": {
+          "date": null,
+          "deferred": [
+            "Tranche 2b parallel cross-volume (optional)",
+            "Tranche 4 verify optimization"
+          ],
+          "gates": {
+            "pre_implementation": "working/REQ-NSYNC_HYBRID_MOVE/gate-pre_implementation-tranche3.json",
+            "verification": "working/REQ-NSYNC_HYBRID_MOVE/gate-verification-tranche3.json"
+          },
+          "master_checklist": "working/REQ-NSYNC_HYBRID_MOVE/checklist-tracker-NSYNC_HYBRID_MOVE.yaml"
+        }
+      },
+      "steps": [
+        {
+          "slug": "session-bootstrap",
+          "tracking": {
+            "status": "completed"
+          }
+        },
+        {
+          "slug": "translate-sponsor-intent",
+          "tracking": {
+            "status": "completed"
+          }
+        },
+        {
+          "slug": "change-definition",
+          "tracking": {
+            "status": "completed"
+          }
+        },
+        {
+          "slug": "impact-discovery",
+          "tracking": {
+            "status": "completed"
+          }
+        },
+        {
+          "slug": "risk-assessment",
+          "tracking": {
+            "status": "completed"
+          }
+        },
+        {
+          "slug": "author-requirement",
+          "tracking": {
+            "status": "completed"
+          }
+        },
+        {
+          "slug": "author-architecture",
+          "tracking": {
+            "status": "completed"
+          }
+        },
+        {
+          "slug": "catalog-pseudocode-contracts",
+          "tracking": {
+            "status": "completed"
+          }
+        },
+        {
+          "slug": "flag-contradictory-specs",
+          "tracking": {
+            "status": "completed"
+          }
+        },
+        {
+          "slug": "flag-insufficient-specs",
+          "tracking": {
+            "status": "completed"
+          }
+        },
+        {
+          "slug": "resolve-pseudocode",
+          "tracking": {
+            "status": "completed"
+          }
+        },
+        {
+          "slug": "gate-pseudocode-validation",
+          "tracking": {
+            "status": "completed"
+          }
+        },
+        {
+          "slug": "persist-implementation-records",
+          "tracking": {
+            "status": "completed"
+          }
+        },
+        {
+          "slug": "test-strategy",
+          "tracking": {
+            "status": "completed"
+          }
+        },
+        {
+          "slug": "unit-test-red",
+          "tracking": {
+            "status": "completed"
+          }
+        },
+        {
+          "slug": "unit-test-green",
+          "tracking": {
+            "status": "completed"
+          }
+        },
+        {
+          "slug": "three-way-alignment-unit",
+          "tracking": {
+            "status": "completed"
+          }
+        },
+        {
+          "slug": "composition-integration",
+          "tracking": {
+            "status": "not_applicable",
+            "policy": "Tranche 3 changes shared primitive only; route.test.ts unchanged",
+            "rationale": "No API wiring change in Tranche 3"
+          }
+        },
+        {
+          "slug": "unit-refactor",
+          "tracking": {
+            "status": "not_applicable"
+          }
+        },
+        {
+          "slug": "end-to-end-ui",
+          "tracking": {
+            "status": "not_applicable",
+            "policy": "composition tests cover sync-all API wiring",
+            "rationale": "Move plan logic unit/composition testable; no Playwright required"
+          }
+        },
+        {
+          "slug": "sub-adversarial-inquiry-pass",
+          "tracking": {
+            "status": "not_applicable",
+            "policy": "minimal depth; no integrated eligibility triggers matched",
+            "rationale": "Local filesystem optimization; Tranche 3 does not add external-input surfaces"
+          }
+        },
+        {
+          "slug": "apply-token-comments",
+          "tracking": {
+            "status": "completed"
+          }
+        },
+        {
+          "slug": "verification-gate",
+          "tracking": {
+            "status": "completed"
+          }
+        },
+        {
+          "slug": "sync-tied-stack",
+          "tracking": {
+            "status": "completed"
+          }
+        },
+        {
+          "slug": "user-facing-release-notes",
+          "tracking": {
+            "status": "not_applicable"
+          }
+        },
+        {
+          "slug": "persist-citdp-record",
+          "tracking": {
+            "status": "pending"
+          }
+        },
+        {
+          "slug": "traceable-commit",
+          "tracking": {
+            "status": "pending"
+          }
+        }
+      ],
+      "sub_procedures": [
+        {
+          "slug": "sub-adversarial-inquiry-pass",
+          "tracking": {
+            "status": "not_applicable",
+            "policy": "minimal depth"
+          }
+        },
+        {
+          "slug": "sub-client-yaml-styling",
+          "tracking": {
+            "status": "not_applicable",
+            "policy": "client formatter not configured"
+          }
+        },
+        {
+          "slug": "sub-yaml-edit-loop",
+          "tracking": {
+            "status": "completed"
+          }
+        },
+        {
+          "slug": "sub-pseudocode-validation-pass",
+          "tracking": {
+            "status": "completed"
+          }
+        },
+        {
+          "slug": "sub-vocabulary-sync",
+          "tracking": {
+            "status": "completed"
+          }
+        },
+        {
+          "slug": "sub-leap-micro-cycle",
+          "tracking": {
+            "status": "completed"
+          }
+        },
+        {
+          "slug": "sub-evidence-chain-profile",
+          "tracking": {
+            "status": "not_applicable",
+            "policy": "minimal depth"
+          }
+        }
+      ]
+    },
+    "citdp": {
+      "change_definition": {
+        "current_behavior": "Move to All builds per-item MovePlan; executeMovePlan runs cross-volume copies and same-volume rename sequentially; omitDeferredDelete when final leg is rename. sync/operations.renameFile uses fs.rename only (no EXDEV fallback). Post-rename verify not optimized.",
+        "desired_behavior": "Per-item MovePlan classifies volume affinity; executes cross-volume copies first, same-volume copies for extra same-volume targets, single same-volume rename last (rename target = lexicographically smallest same-volume destPath); omits deferred delete when final leg is rename; optional verify skip after atomic rename.",
+        "non_goals": [
+          "Changing Copy to All (move:false)",
+          "Directory MovePlan unless NSYNC gains directory support",
+          "Hard-link optimization for duplicate same-volume dests",
+          "Mesh subsystem moves",
+          "Progress UI for long cross-volume copies"
+        ],
+        "success_criteria": [
+          "buildMovePlan unit tests cover destination mix matrix and single-rename invariant",
+          "engine.test.ts mixed A+A+B uses one cross-volume copy, one rename, no deferred delete",
+          "pseudocode_validate and tied_validate_consistency pass after all TIED writes",
+          "REQ-MOVE_SEMANTICS preserved on partial failure",
+          "Tranche 3: shared EXDEV executor; renameFile EXDEV fallback; files.data tests unchanged",
+          "Tranche 4: verify skipped after atomic same-volume rename only",
+          "Vocabulary RECORD in tied/vocab/nsync-multi-target.md"
+        ],
+        "unchanged_behavior": "Copy to All; bulk-move single destination; observer/cancel/store monitor; compare skip per destination"
+      },
+      "completion_criteria": {
+        "verification_gate_notes": "Tranche 2 complete (2026-09-01). Tranche 3 pre_implementation refined. Remaining: shared executor + EXDEV (T3), verify skip (T4)."
+      },
+      "evidence": {
+        "commands": [
+          {
+            "command": "bun run validate:vocabulary",
+            "exit_code": 0,
+            "result": "10 client glossaries passed"
+          },
+          {
+            "command": "bun run vitest run src/app/api/files/route.test.ts",
+            "exit_code": 0,
+            "result": "35 tests passed"
+          },
+          {
+            "command": "bun run vitest run src/lib/sync/move-plan.test.ts src/lib/sync/engine.test.ts",
+            "exit_code": 0,
+            "result": "20 tests passed"
+          },
+          {
+            "command": "bunx tsc -b",
+            "exit_code": 0,
+            "result": "passed"
+          },
+          {
+            "command": "pseudocode_validate IMPL-NSYNC_ENGINE IMPL-NSYNC_MOVE_PLAN require_contracts true",
+            "exit_code": 0,
+            "result": "ok true"
+          },
+          {
+            "command": "tied_validate_consistency include_pseudocode true",
+            "exit_code": 0,
+            "result": "ok true"
+          }
+        ],
+        "module_validation": "buildMovePlan validated in move-plan.test.ts; SyncEngine hybrid move path validated in engine.test.ts with mocked dev + operation spies; API contract unchanged per route.test.ts",
+        "proof_boundaries": [
+          "executable_behavior",
+          "pseudo_code_structure",
+          "traceability_structure"
+        ]
+      },
+      "impact_analysis": {
+        "impl_inventory_notes": "Shipped: move-plan.ts, engine.ts (executeMovePlan), operations.renameFile. Pending: shared move-executor.ts (or delegate to files.data.moveFile), EXDEV in renameFile, verify skip in engine.",
+        "modules_or_boundaries": "src/lib/sync/; tied/vocab/nsync-multi-target.md; project TIED YAML",
+        "tied_tokens_affected": [
+          "ARCH-FILESYSTEM_ABSTRACTION",
+          "ARCH-NSYNC_INTEGRATION",
+          "IMPL-FILES_DATA",
+          "IMPL-NSYNC_ENGINE",
+          "IMPL-NSYNC_OPERATIONS",
+          "REQ-COMPARE_METHODS",
+          "REQ-MOVE_SEMANTICS",
+          "REQ-NSYNC_MULTI_TARGET",
+          "REQ-VERIFY_DEST"
+        ],
+        "tied_tokens_new": [
+          "ARCH-NSYNC_MOVE_PLAN",
+          "IMPL-NSYNC_MOVE_PLAN",
+          "REQ-NSYNC_HYBRID_MOVE"
+        ]
+      },
+      "leap_feedback": {
+        "divergences_from_analysis": [],
+        "record_status": "draft",
+        "tied_stack_updates_required": [
+          "LEAP IMPL-NSYNC_ENGINE for verify skip (Tranche 4)",
+          "LEAP IMPL-NSYNC_OPERATIONS for shared executor + EXDEV (Tranche 3)",
+          "Supersedes CITDP-CROSS_VOLUME_MOVE_EXDEV non-goal for NSYNC"
+        ]
+      },
+      "record_identity": {
+        "change_request_id": "NSYNC_HYBRID_MOVE",
+        "recorded_at": "2026-09-01",
+        "title": "NSYNC hybrid move plan \u2014 rename where possible"
+      },
+      "risk_analysis": {
+        "abuse_cases": [],
+        "adversarial_inquiry": {
+          "assurance_profile": "baseline-functional",
+          "close_out_inquiry_waiver": null,
+          "counterexamples": [
+            "Plan emits two rename legs for two same-volume destinations",
+            "Rename scheduled before all required copy legs complete",
+            "Verify skipped after a copy leg misclassified as rename"
+          ],
+          "depth_change_waiver": null,
+          "depth_tier": "minimal",
+          "disconfirming_observations": [
+            "move-plan.test.ts shows count(rename) > 1 for K>=2 same-volume dests",
+            "Tranche 3: rename leg throws EXDEV with no fallback leaves source at wrong path",
+            "Tranche 4: verify skipped after a copy leg misclassified as rename"
+          ],
+          "eligibility_triggers_matched": [],
+          "evidence_references": [
+            "docs/nsync-hybrid-move-optimization-plan.md",
+            "src/lib/sync/engine.ts",
+            "tied/citdp/CITDP-CROSS_VOLUME_MOVE_EXDEV.yaml",
+            "working/REQ-NSYNC_HYBRID_MOVE/checklist-tracker-NSYNC_HYBRID_MOVE.yaml",
+            "working/REQ-NSYNC_HYBRID_MOVE/test-strategy-outline.md"
+          ],
+          "falsification_questions": [
+            "After cross-volume copy succeeds but rename fails, is source still present?",
+            "Can two rename legs be emitted when source volume matches multiple targets?",
+            "Does rename ever run before all required copies finish?"
+          ],
+          "gate_policy": "advisory",
+          "integrated_waiver": null,
+          "prior_depth_tier": null,
+          "rationale": "Local filesystem I/O optimization; REQ-MOVE_SEMANTICS safety constraint; no integrated eligibility triggers.",
+          "research_profile": "integrated-agent",
+          "strict_eligibility_prerequisites": []
+        },
+        "quality_profiles": [
+          "baseline-functional",
+          "data-integrity-migration"
+        ],
+        "risks": [
+          {
+            "description": "dev match but EXDEV on rename (bind mounts)",
+            "id": "RISK-002",
+            "mitigation": "Catch EXDEV; fallback to copy+delete for that leg per IMPL-FILES_DATA"
+          },
+          {
+            "description": "Plan emits two rename legs when source drive has 2+ same-volume targets",
+            "id": "RISK-007",
+            "mitigation": "Single-rename invariant in builder; unit test count(rename) === 1"
+          },
+          {
+            "description": "Rename-before-copies breaks REQ-MOVE_SEMANTICS",
+            "id": "RISK-001",
+            "mitigation": "Rename last among legs; cross-volume and same-volume copies first"
+          },
+          {
+            "description": "Verify skipped incorrectly after rename",
+            "id": "RISK-004",
+            "mitigation": "Gate skip on same-volume rename only; Tranche 4 test coverage"
+          }
+        ]
+      },
+      "tdd_sequence": {
+        "summary": "Tranche 1-2 complete. Tranche 3 next: extract shared move-executor, EXDEV fallback on sync/operations.renameFile, RED tests before code. Tranche 4: verify skip on rename leg."
+      },
+      "test_strategy": {
+        "e2e_only_reason": "N/A \u2014 sync-all API covered by route composition test; move plan logic unit testable",
+        "matrix_notes": "See working/REQ-NSYNC_HYBRID_MOVE/test-strategy-outline.md",
+        "summary": "Unit tests move-plan.test.ts and engine.test.ts primary; files.data and copy-file.data for EXDEV parity"
+      }
+    }
+  },
+  "receipt_persistence": {
+    "request_token": "REQ-NSYNC_HYBRID_MOVE",
+    "gates_dir": "working/REQ-NSYNC_HYBRID_MOVE",
+    "ledger_path": "working/REQ-NSYNC_HYBRID_MOVE/gate-ledger.jsonl",
+    "run_id": "tranche3-verify-status-20260901",
+    "gate_receipt_ref": "working/REQ-NSYNC_HYBRID_MOVE/verification-2026-09-01T18-26-39-746Z.json",
+    "gate_receipt_hash": "sha256:ca057588ee2afe78b2a8019339cf4fa1b0abc7e68ca16701934b13fa8a244aec"
+  }
+}

@@ -1,10 +1,11 @@
 // [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: SyncEngine orchestrates multi-source multi-destination sync with observer callbacks, compare skip, verify, store monitoring, and deferred move deletion
 
 import path from "path";
-import { computeFileHash } from "./hash";
-import { verifyDestination } from "./verify";
+import * as hashOps from "./hash";
+import * as verifyOps from "./verify";
 import { compareFiles } from "./compare";
-import { copyFile, moveFile, deleteFile, getFileStat } from "./operations";
+import { copyFile, moveFile, deleteFile, renameFile, getFileStat } from "./operations";
+import { buildMovePlan, type MovePlan } from "./move-plan";
 import { StoreMonitor } from "./store";
 import { ErrorClass, NoopObserver } from "../sync.types";
 import type {
@@ -161,7 +162,8 @@ export class SyncEngine {
           result.itemsCompleted++;
           
           // For move, mark source for deletion only if ALL destinations succeeded
-          if (move) {
+          // and hybrid plan did not end in rename (omitDeferredDelete) [REQ-NSYNC_HYBRID_MOVE]
+          if (move && !itemResult.omitDeferredDelete) {
             sourcesToDelete.add(source);
           }
           
@@ -275,22 +277,45 @@ export class SyncEngine {
     let sourceHash: string | undefined;
     if (verify || compareMethod === "hash") {
       try {
-        sourceHash = await computeFileHash(source, hashAlgorithm);
+        sourceHash = await hashOps.computeFileHash(source, hashAlgorithm);
         logger.debug(["IMPL-NSYNC_ENGINE"], `Source hash: ${sourceHash}`);
       } catch (error) {
         logger.error(["IMPL-NSYNC_ENGINE"], `Failed to compute source hash`, { error: String(error) });
       }
     }
     
-    // Sync to each destination
-    const destResults: DestResult[] = await Promise.all(
-      destinations.map((dest) =>
-        this.syncToDestination(source, dest, item, sourceHash, options, signal)
-      )
-    );
-    
+    // Sync to each destination — hybrid move plan when move=true [REQ-NSYNC_HYBRID_MOVE]
+    let destResults: DestResult[];
+    let omitDeferredDelete = false;
+
+    if (options.move) {
+      const destPaths = destinations.map((dest) =>
+        options.sourceBase
+          ? resolveCrossPaneDestPath(source, options.sourceBase, dest)
+          : path.join(dest, path.basename(source))
+      );
+      const plan = await buildMovePlan(source, destPaths);
+      const planResult = await this.executeMovePlan(
+        plan,
+        destPaths,
+        item,
+        sourceHash,
+        options,
+        signal
+      );
+      destResults = planResult.destResults;
+      omitDeferredDelete = planResult.omitDeferredDelete;
+    } else {
+      destResults = await Promise.all(
+        destinations.map((dest) =>
+          this.syncToDestination(source, dest, item, sourceHash, options, signal)
+        )
+      );
+    }
+
     const itemResult: ItemResult = {
       destResults,
+      omitDeferredDelete: options.move ? omitDeferredDelete : undefined,
     };
     
     // Check if any destination failed
@@ -303,6 +328,106 @@ export class SyncEngine {
     this.observer.onItemComplete(item, itemResult);
     
     return itemResult;
+  }
+
+  // [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_MOVE_PLAN] [REQ-NSYNC_HYBRID_MOVE] [REQ-MOVE_SEMANTICS]: how: execute plan legs sequentially; copy or rename per leg; stop on first failure
+  /**
+   * Execute a hybrid move plan sequentially
+   * [IMPL-NSYNC_ENGINE] [REQ-NSYNC_HYBRID_MOVE]
+   */
+  private async executeMovePlan(
+    plan: MovePlan,
+    destPaths: string[],
+    item: ItemInfo,
+    sourceHash: string | undefined,
+    options: {
+      compareMethod: NonNullable<SyncOptions["compareMethod"]>;
+      hashAlgorithm: NonNullable<SyncOptions["hashAlgorithm"]>;
+      verify: boolean;
+      move: boolean;
+      sourceBase?: string;
+    },
+    signal?: AbortSignal
+  ): Promise<{ destResults: DestResult[]; omitDeferredDelete: boolean }> {
+    const { compareMethod, hashAlgorithm, verify } = options;
+    const resultsByPath = new Map<string, DestResult>();
+    for (const destPath of destPaths) {
+      resultsByPath.set(destPath, { destPath });
+    }
+
+    let allLegsSucceeded = true;
+
+    for (const leg of plan.legs) {
+      const result = resultsByPath.get(leg.to)!;
+
+      if (signal?.aborted) {
+        result.error = new Error("Cancelled");
+        allLegsSucceeded = false;
+        break;
+      }
+
+      try {
+        const filesEquivalent = await compareFiles(
+          leg.from,
+          leg.to,
+          compareMethod,
+          hashAlgorithm
+        );
+
+        if (filesEquivalent) {
+          logger.debug(["IMPL-NSYNC_ENGINE", "REQ-NSYNC_HYBRID_MOVE"],
+            `Skipping leg (files equivalent): ${leg.to}`);
+          result.skipped = true;
+          this.storeMonitor.recordSuccess(leg.to);
+          continue;
+        }
+
+        if (leg.op === "copy") {
+          await copyFile(leg.from, leg.to);
+        } else {
+          logger.debug(["IMPL-NSYNC_ENGINE", "REQ-NSYNC_HYBRID_MOVE"],
+            `DIAGNOSTIC: executing rename leg ${leg.from} -> ${leg.to}`);
+          await renameFile(leg.from, leg.to);
+        }
+
+        if (verify && sourceHash) {
+          if (leg.op === "rename") {
+            logger.debug(
+              ["IMPL-NSYNC_ENGINE", "REQ-VERIFY_DEST", "REQ-NSYNC_HYBRID_MOVE"],
+              "DIAGNOSTIC: skip verify after atomic rename"
+            );
+          } else {
+            const verified = await verifyOps.verifyDestination(sourceHash, leg.to, hashAlgorithm);
+            if (!verified) {
+              result.error = new Error("Verification failed: hash mismatch");
+              this.storeMonitor.recordError(leg.to, ErrorClass.VerifyFailed);
+              allLegsSucceeded = false;
+              break;
+            }
+            logger.debug(["IMPL-NSYNC_ENGINE", "REQ-VERIFY_DEST"],
+              `Destination verified: ${leg.to}`);
+          }
+        }
+
+        this.storeMonitor.recordSuccess(leg.to);
+        logger.debug(["IMPL-NSYNC_ENGINE", "REQ-NSYNC_HYBRID_MOVE"],
+          `Move leg succeeded: ${leg.op} ${leg.to}`);
+        this.observer.onItemProgress(item, item.size);
+      } catch (error) {
+        result.error = error as Error;
+        const errorClass = StoreMonitor.classifyError(error as Error);
+        this.storeMonitor.recordError(leg.to, errorClass);
+        logger.error(["IMPL-NSYNC_ENGINE", "REQ-NSYNC_HYBRID_MOVE"],
+          `Move leg failed: ${leg.op} ${leg.to}`, { error: String(error) });
+        allLegsSucceeded = false;
+        break;
+      }
+    }
+
+    return {
+      destResults: destPaths.map((p) => resultsByPath.get(p)!),
+      omitDeferredDelete: allLegsSucceeded && plan.omitDeferredDelete,
+    };
   }
   
   // [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: how: compareFiles skip, copy or moveFile, optional verifyDestination, recordSuccess or classifyError
@@ -361,7 +486,7 @@ export class SyncEngine {
       
       // Verify destination if requested
       if (verify && sourceHash) {
-        const verified = await verifyDestination(sourceHash, destPath, hashAlgorithm);
+        const verified = await verifyOps.verifyDestination(sourceHash, destPath, hashAlgorithm);
         if (!verified) {
           result.error = new Error("Verification failed: hash mismatch");
           this.storeMonitor.recordError(destPath, ErrorClass.VerifyFailed);

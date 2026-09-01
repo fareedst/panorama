@@ -9,6 +9,7 @@ import { formatSize } from "./files.utils";
 import { logger } from "./logger";
 import { preserveCopyAttributes } from "./copyAttributes";
 import { resolveCrossPaneDestPath } from "./cross-pane-path";
+import { renameOrMove } from "./move-executor";
 
 // Re-export formatSize for backward compatibility
 export { formatSize };
@@ -149,15 +150,8 @@ export async function copyFile(src: string, dest: string): Promise<void> {
   }
 }
 
-// [IMPL-FILES_DATA] [REQ-FILE_OPERATIONS]: how — detect Node ErrnoException code EXDEV for cross-device rename
-function isExdevError(error: unknown): boolean {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "code" in error &&
-    (error as NodeJS.ErrnoException).code === "EXDEV"
-  );
-}
+// [IMPL-FILES_DATA] [REQ-FILE_OPERATIONS]: how — detect Node ErrnoException code EXDEV for cross-device rename (re-export from shared move-executor)
+export { isExdevError } from "./move-executor";
 
 /**
  * Move/rename file from source to destination
@@ -168,38 +162,13 @@ function isExdevError(error: unknown): boolean {
  */
 export async function moveFile(src: string, dest: string): Promise<void> {
   logger.info(["IMPL-FILES_DATA", "REQ-FILE_OPERATIONS"], `Moving file: ${src} -> ${dest}`);
-  try {
-    await fs.rename(src, dest);
-    logger.info(["IMPL-FILES_DATA", "REQ-FILE_OPERATIONS"], `Successfully moved file: ${src} -> ${dest}`);
-  } catch (error) {
-    if (!isExdevError(error)) {
-      logger.error(["IMPL-FILES_DATA", "REQ-FILE_OPERATIONS"], `Failed to move file: ${src} -> ${dest}`, {
-        error: String(error),
-      });
-      throw error;
-    }
-
-    logger.debug(
-      ["IMPL-FILES_DATA", "REQ-FILE_OPERATIONS"],
-      `Cross-volume move fallback (EXDEV): ${src} -> ${dest}`,
-    );
-
-    try {
-      await copyFile(src, dest);
-      await deleteFile(src);
-      logger.info(
-        ["IMPL-FILES_DATA", "REQ-FILE_OPERATIONS"],
-        `Successfully moved file via copy+delete: ${src} -> ${dest}`,
-      );
-    } catch (fallbackError) {
-      logger.error(
-        ["IMPL-FILES_DATA", "REQ-FILE_OPERATIONS"],
-        `Failed cross-volume move: ${src} -> ${dest}`,
-        { error: String(fallbackError) },
-      );
-      throw fallbackError;
-    }
-  }
+  await renameOrMove(
+    src,
+    dest,
+    { copyFile, deleteFile },
+    ["IMPL-FILES_DATA", "REQ-FILE_OPERATIONS"]
+  );
+  logger.info(["IMPL-FILES_DATA", "REQ-FILE_OPERATIONS"], `Successfully moved file: ${src} -> ${dest}`);
 }
 
 /**

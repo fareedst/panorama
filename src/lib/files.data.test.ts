@@ -261,7 +261,7 @@ describe("File Operations [REQ_FILE_OPERATIONS]", () => {
       await moveFile("/src/file.txt", "/dest/file.txt");
 
       expect(mockedFs.rename).toHaveBeenCalledWith("/src/file.txt", "/dest/file.txt");
-      expect(mockedFs.mkdir).not.toHaveBeenCalled();
+      expect(mockedFs.mkdir).toHaveBeenCalledWith("/dest", { recursive: true });
       expect(mockedFs.copyFile).not.toHaveBeenCalled();
       expect(mockedFs.unlink).not.toHaveBeenCalled();
     });

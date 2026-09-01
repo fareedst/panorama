@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **NSYNC hybrid move plan** (`[REQ-NSYNC_HYBRID_MOVE]`, `[ARCH-NSYNC_MOVE_PLAN]`, `[IMPL-NSYNC_MOVE_PLAN]`, `[IMPL-NSYNC_ENGINE]`, `[IMPL-NSYNC_OPERATIONS]`, `[IMPL-NSYNC_VERIFY]`, `[IMPL-FILES_DATA]`, `CITDP-NSYNC_HYBRID_MOVE`): Move to All builds a per-item `MovePlan` that classifies volume affinity, runs cross-volume copies first, same-volume copies for extra same-volume targets, and a single same-volume `fs.rename` last; shared `renameOrMove` EXDEV fallback; verify skipped after atomic rename only. Modules: [`move-plan.ts`](src/lib/sync/move-plan.ts), [`engine.ts`](src/lib/sync/engine.ts), [`move-executor.ts`](src/lib/move-executor.ts). Tests: 69/69 passed across move-plan, engine, move-executor, files.data, copy-file.data suites. Plan: [`docs/nsync-hybrid-move-optimization-plan.md`](docs/nsync-hybrid-move-optimization-plan.md). Vocabulary: [`tied/vocab/nsync-multi-target.md`](tied/vocab/nsync-multi-target.md). Optional Tranche 2b (parallel cross-volume copies) deferred.
+
+### Added
+
 - **TIED 3.0 alignment sync — follow-on evidence** (`[REQ-TIED_SETUP]`, `[REQ-QUALITY_ASSURANCE_EVIDENCE]`, `[REQ-ACCESSIBILITY]`, `[PROC-IMPL_PSEUDOCODE_TOKENS]`, `CITDP-TIED-3.0-ALIGNMENT-SYNC`): composition tests for pane refresh, flex layout, and responsive classes; Playwright a11y E2E (`e2e/workspace-a11y-evidence.spec.ts`, 4 tests); 33-row binding inventory with `e2e_test` paths on UI-only seams; persisted CITDP and working evidence chain under `working/TIED-3.0-ALIGNMENT-SYNC/`. Plan: [`docs/tied-3.0-alignment-sync-plan.md`](docs/tied-3.0-alignment-sync-plan.md).
 
 ### Changed

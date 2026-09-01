@@ -4,6 +4,7 @@ import fs from "fs/promises";
 import path from "path";
 import { logger } from "../logger";
 import { preserveCopyAttributes } from "../copyAttributes";
+import { renameOrMove } from "../move-executor";
 
 // [IMPL-NSYNC_OPERATIONS] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS] [REQ-COPY_OPERATIONS]: how: ensure dest directory exists recursively, copy bytes, then preserve mtime/mode via preserveCopyAttributes
 /**
@@ -33,6 +34,23 @@ export async function copyFile(sourcePath: string, destPath: string): Promise<vo
       { error: String(error) });
     throw error;
   }
+}
+
+// [IMPL-NSYNC_OPERATIONS] [ARCH-FILESYSTEM_ABSTRACTION] [IMPL-FILES_DATA] [REQ-NSYNC_HYBRID_MOVE]: how: delegate to shared renameOrMove with EXDEV copy+delete fallback
+/**
+ * Rename a file from source to destination (same-volume move)
+ * [IMPL-NSYNC_OPERATIONS] [REQ-NSYNC_HYBRID_MOVE]
+ *
+ * @param sourcePath - Source file path
+ * @param destPath - Destination file path
+ */
+export async function renameFile(sourcePath: string, destPath: string): Promise<void> {
+  await renameOrMove(
+    sourcePath,
+    destPath,
+    { copyFile, deleteFile },
+    ["IMPL-NSYNC_OPERATIONS", "REQ-NSYNC_HYBRID_MOVE"]
+  );
 }
 
 // [IMPL-NSYNC_OPERATIONS] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: how: move is copy only — SyncEngine deletes source after all destinations succeed

@@ -118,7 +118,7 @@ IMPL-FILES_DATA_copyFile(src, dest):
   AWAIT preserveCopyAttributes(src, dest)
 
 IMPL-FILES_DATA_isExdevError(error):
-  // [IMPL-FILES_DATA] [REQ-FILE_OPERATIONS]: how — detect Node ErrnoException code EXDEV for cross-device rename
+  // [ARCH-FILESYSTEM_ABSTRACTION] [IMPL-FILES_DATA] [REQ-FILE_OPERATIONS]: how — detect Node ErrnoException code EXDEV; implemented in src/lib/move-executor.ts renameOrMove
   INPUT: error from fs.rename
   OUTPUT: boolean
   PRE: error captured from rename attempt
@@ -128,7 +128,7 @@ IMPL-FILES_DATA_isExdevError(error):
   RETURN error is object AND error.code == "EXDEV"
 
 IMPL-FILES_DATA_moveFile(src, dest):
-  // [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_OPERATIONS]: how — try fs.rename for same-volume atomic move; on EXDEV copy then delete for cross-volume
+  // [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_OPERATIONS] [REQ-NSYNC_HYBRID_MOVE]: how — delegate to shared renameOrMove(src, dest, { copyFile, deleteFile })
   INPUT: src, dest absolute paths
   OUTPUT: void OR thrown error after log
   PRE: src exists
@@ -136,13 +136,7 @@ IMPL-FILES_DATA_moveFile(src, dest):
   EFFECTS: IO
   FAILURE_MODES: non-EXDEV rename errors → throw; copy failure → throw src preserved; delete failure after copy → throw both may exist
   TERMINATION: total
-  TRY
-    AWAIT fs.rename(src, dest)
-  ON error
-    IF NOT isExdevError(error) THEN throw
-    LOG debug cross-volume fallback
-    AWAIT copyFile(src, dest)
-    AWAIT deleteFile(src)
+  AWAIT renameOrMove(src, dest, { copyFile, deleteFile })
 
 IMPL-FILES_DATA_deleteFile(filePath):
   INPUT: filePath
@@ -219,8 +213,10 @@ IMPL-FILES_DATA_sortFiles(files, sortType, priorityDir):
 // [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-DIRECTORY_NAVIGATION] [REQ-FILE_OPERATIONS]: map implementing and verifying source files for this IMPL
 
 // FILE: src/lib/files.data.ts — server filesystem functions
+// FILE: src/lib/move-executor.ts — shared renameOrMove, isExdevError [ARCH-FILESYSTEM_ABSTRACTION]
 // FILE: src/lib/files.types.ts — FileStat, SortType, OperationResult interfaces
 // FILE: src/lib/files.data.test.ts — listDirectory, path helpers, operations, sortFiles, buildComparisonIndex, formatSize re-export tests
+// FILE: src/lib/move-executor.test.ts — EXDEV rename fallback unit tests
 // FILE: src/lib/copy-file.data.test.ts — copyFile and moveFile integration tests on real filesystem (recursive directory copy, attribute preservation, EXDEV fallback)
 
 ## ErrorHandling

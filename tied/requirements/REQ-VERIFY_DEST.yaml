@@ -32,9 +32,10 @@ REQ-VERIFY_DEST:
       - REQ-NSYNC_MULTI_TARGET
     supersedes: []
   satisfaction_criteria:
-    - criterion: Compare destination hash to source hash
-    - criterion: Recompute hash on destination after copy
-    - criterion: Report verification failure with clear error
+    - Compare destination hash to source hash
+    - Recompute hash on destination after copy
+    - Report verification failure with clear error
+    - Skip post-copy verify on atomic same-volume rename legs in hybrid move plans (inode-preserving; compare phase already decided update)
   status: Implemented
   traceability:
     architecture:

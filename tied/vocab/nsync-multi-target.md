@@ -8,10 +8,10 @@
 
 | Kind | Tokens / artifacts |
 | --- | --- |
-| REQ | [REQ-NSYNC_MULTI_TARGET](../tied/requirements/REQ-NSYNC_MULTI_TARGET.yaml), [REQ-README_DEMO_AUTOMATION](../tied/requirements/REQ-README_DEMO_AUTOMATION.yaml), [REQ-MOVE_SEMANTICS](../tied/requirements/REQ-MOVE_SEMANTICS.yaml), [REQ-COMPARE_METHODS](../tied/requirements/REQ-COMPARE_METHODS.yaml), [REQ-HASH_COMPUTATION](../tied/requirements/REQ-HASH_COMPUTATION.yaml), [REQ-VERIFY_DEST](../tied/requirements/REQ-VERIFY_DEST.yaml), [REQ-STORE_FAILURE_DETECT](../tied/requirements/REQ-STORE_FAILURE_DETECT.yaml) |
-| ARCH | [ARCH-NSYNC_INTEGRATION](../tied/architecture-decisions/ARCH-NSYNC_INTEGRATION.yaml) |
-| IMPL | [IMPL-NSYNC_ENGINE](../tied/implementation-decisions/IMPL-NSYNC_ENGINE.yaml), [IMPL-NSYNC_OPERATIONS](../tied/implementation-decisions/IMPL-NSYNC_OPERATIONS.yaml), [IMPL-NSYNC_COMPARE](../tied/implementation-decisions/IMPL-NSYNC_COMPARE.yaml), [IMPL-NSYNC_HASH](../tied/implementation-decisions/IMPL-NSYNC_HASH.yaml), [IMPL-NSYNC_VERIFY](../tied/implementation-decisions/IMPL-NSYNC_VERIFY.yaml), [IMPL-NSYNC_STORE](../tied/implementation-decisions/IMPL-NSYNC_STORE.yaml) |
-| Pseudo-code | [IMPL-NSYNC_ENGINE-pseudocode.md](../tied/implementation-decisions/IMPL-NSYNC_ENGINE-pseudocode.md) |
+| REQ | [REQ-NSYNC_MULTI_TARGET](../tied/requirements/REQ-NSYNC_MULTI_TARGET.yaml), [REQ-NSYNC_HYBRID_MOVE](../tied/requirements/REQ-NSYNC_HYBRID_MOVE.yaml), [REQ-README_DEMO_AUTOMATION](../tied/requirements/REQ-README_DEMO_AUTOMATION.yaml), [REQ-MOVE_SEMANTICS](../tied/requirements/REQ-MOVE_SEMANTICS.yaml), [REQ-COMPARE_METHODS](../tied/requirements/REQ-COMPARE_METHODS.yaml), [REQ-HASH_COMPUTATION](../tied/requirements/REQ-HASH_COMPUTATION.yaml), [REQ-VERIFY_DEST](../tied/requirements/REQ-VERIFY_DEST.yaml), [REQ-STORE_FAILURE_DETECT](../tied/requirements/REQ-STORE_FAILURE_DETECT.yaml) |
+| ARCH | [ARCH-NSYNC_INTEGRATION](../tied/architecture-decisions/ARCH-NSYNC_INTEGRATION.yaml), [ARCH-NSYNC_MOVE_PLAN](../tied/architecture-decisions/ARCH-NSYNC_MOVE_PLAN.yaml) |
+| IMPL | [IMPL-NSYNC_ENGINE](../tied/implementation-decisions/IMPL-NSYNC_ENGINE.yaml), [IMPL-NSYNC_MOVE_PLAN](../tied/implementation-decisions/IMPL-NSYNC_MOVE_PLAN.yaml), [IMPL-NSYNC_OPERATIONS](../tied/implementation-decisions/IMPL-NSYNC_OPERATIONS.yaml), [IMPL-NSYNC_COMPARE](../tied/implementation-decisions/IMPL-NSYNC_COMPARE.yaml), [IMPL-NSYNC_HASH](../tied/implementation-decisions/IMPL-NSYNC_HASH.yaml), [IMPL-NSYNC_VERIFY](../tied/implementation-decisions/IMPL-NSYNC_VERIFY.yaml), [IMPL-NSYNC_STORE](../tied/implementation-decisions/IMPL-NSYNC_STORE.yaml) |
+| Pseudo-code | [IMPL-NSYNC_ENGINE-pseudocode.md](../tied/implementation-decisions/IMPL-NSYNC_ENGINE-pseudocode.md), [IMPL-NSYNC_MOVE_PLAN-pseudocode.md](../tied/implementation-decisions/IMPL-NSYNC_MOVE_PLAN-pseudocode.md) |
 
 ## See also
 
@@ -32,6 +32,13 @@
 | **Compare method** | “skip policy”, `compareMethod` — how to detect unchanged files before copy |
 | **Skip unchanged** | “smart skip”, `destResult.skipped` |
 | **Move semantics** | “safe move” — delete source only after **all** destinations succeed for that item |
+| **Hybrid move plan** | Ordered per-item legs mixing `fs.rename` and copy by volume affinity ([REQ-NSYNC_HYBRID_MOVE](../tied/requirements/REQ-NSYNC_HYBRID_MOVE.yaml)) |
+| **Shared move executor** | `src/lib/move-executor.ts` — `renameOrMove` with EXDEV copy+delete fallback; used by `files.data.moveFile` and `sync/operations.renameFile` |
+| **Verify skip (rename leg)** | When `verifyDestination` is enabled, hybrid move plans skip post-rename hash verify on atomic same-volume rename legs |
+| **Volume affinity** | same-volume vs cross-volume classification from `Stats.dev` |
+| **Rename target** | The one same-volume destination receiving `fs.rename` (lexicographically smallest same-volume `destPath`) |
+| **Single-rename invariant** | At most one rename leg per source item when multiple same-volume destinations exist |
+| **Move leg** | One copy or rename step in a hybrid move plan |
 | **Store monitor** | “store failure detection”, `StoreMonitor`, `storeFailureAbort` |
 | **Sync observer** | “progress callbacks”, `SyncObserver` (`onStart`, `onItemComplete`, `onFinish`, …) |
 | **Sync plan** | `SyncPlan` — `totalItems`, `totalBytes`, `totalDestinations` at start |
@@ -60,7 +67,7 @@
 
 ## Named concepts
 
-- **SyncEngine** — Orchestrates per-source iteration, parallel per-destination copies, observer callbacks, and deferred source deletes for move (`src/lib/sync/engine.ts`).
+- **SyncEngine** — Orchestrates per-source iteration, hybrid move plan execution when `move: true`, parallel per-destination copies when `move: false`, observer callbacks, and deferred source deletes for copy-only move plans (`src/lib/sync/engine.ts`).
 - **Item** — One source path synced to every destination; yields `ItemResult` with `destResults[]`.
 - **Destination result** — Per-destination outcome: `destPath`, optional `error`, `skipped` flag.
 - **Sync result** — Aggregate `SyncResult`: counts, `errors[]`, `cancelled`, `storeFailureAbort`.
@@ -84,9 +91,12 @@ Toolbar labels **Copy to All** / **Move to All** use pane toolbar group copy fro
 | One source → all destinations | `SyncItem` → `IMPL-NSYNC_ENGINE_SyncItem` | IMPL-NSYNC_ENGINE |
 | Compare / skip unchanged | `SkipUnchanged` → `IMPL-NSYNC_ENGINE_SkipUnchanged` | IMPL-NSYNC_ENGINE |
 | Safe move delete phase | `MoveSemantics` → `IMPL-NSYNC_ENGINE_MoveSemantics` | IMPL-NSYNC_ENGINE |
+| Hybrid move plan execution | `EXECUTE_MOVE_PLAN` → `IMPL-NSYNC_ENGINE_EXECUTE_MOVE_PLAN` | IMPL-NSYNC_ENGINE |
 | Progress callbacks | `ObserverCallbacks` → `IMPL-NSYNC_ENGINE_ObserverCallbacks` | IMPL-NSYNC_ENGINE |
 | Store failure abort | `StoreMonitor` → `IMPL-NSYNC_ENGINE_StoreMonitor` | IMPL-NSYNC_ENGINE |
 | Copy/move/delete primitives | `CopyFile`, `MoveFile`, `DeleteFile` | IMPL-NSYNC_OPERATIONS |
+| Hybrid move plan builder | `BUILD_MOVE_PLAN` → `IMPL-NSYNC_MOVE_PLAN_BUILD_MOVE_PLAN` | IMPL-NSYNC_MOVE_PLAN |
+| Volume affinity classify | `CLASSIFY_VOLUME_AFFINITY` → `IMPL-NSYNC_MOVE_PLAN_CLASSIFY_VOLUME_AFFINITY` | IMPL-NSYNC_MOVE_PLAN |
 | Relative destination mapping | `MAP_SOURCE_TO_DEST` | IMPL-BULK_OPS, IMPL-NSYNC_ENGINE |
 | CopyAll demo capture | `CAPTURE_COPYALL_WORKFLOW` | IMPL-DEMO_SCREENSHOT_PIPELINE |
 | CopyAll GIF convert | `CONVERT_COPYALL_GIF` | IMPL-DEMO_SCREENSHOT_PIPELINE |
@@ -96,11 +106,16 @@ Toolbar labels **Copy to All** / **Move to All** use pane toolbar group copy fro
 - **CopyAll demo asset** — README PNG/GIF from Playwright CopyAll spec
 - **Compare method** — `none`, `size`, `mtime`, `size-mtime`, `hash`
 - **Destination** — target directory path
+- **Hybrid move plan** — ordered rename/copy legs per source item
+- **Shared move executor** — renameOrMove EXDEV fallback module
+- **Move leg** — one copy or rename step in a hybrid move plan
 - **Move semantics** — deferred delete after all destinations succeed
 - **Multi-target sync** — sync-all to all other panes
 - **Skip unchanged** — skip copy when compare says equal
+- **Rename target** — lex-smallest same-volume dest receiving rename
+- **Single-rename invariant** — at most one rename leg per item
 - **Relative destination mapping** — preserve path under destination base via `sourceBase`
-- **Source base** — `sourceBase` API field from source pane path
+- **Volume affinity** — same-volume vs cross-volume from Stats.dev
 - **Store monitor** — abort after repeated store errors
 - **Sync observer** — progress callback surface
 - **Sync plan** — upfront totals for UI

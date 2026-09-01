@@ -842,6 +842,24 @@ REQ-ERROR_HANDLING:
       method: Error testing
     - coverage: Users can recover from errors
       method: User experience testing
+REQ-EVIDENCE_CHAIN_PROFILE:
+  category: Functional
+  description: Produce a versioned read-only evidence-chain-profile.v1 artifact that reports completeness, provenance, denominators, and proof boundaries.
+  detail_file: requirements/REQ-EVIDENCE_CHAIN_PROFILE.yaml
+  name: Evidence chain profile
+  priority: P1
+  related_requirements:
+    depends_on:
+      - REQ-QUALITY_ASSURANCE_EVIDENCE
+      - REQ-TIED_FIDELITY_RESEARCH
+    related_to: []
+    supersedes: []
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-EVIDENCE_CHAIN_PROFILE
+    implementation:
+      - IMPL-EVIDENCE_CHAIN_PROFILE
 REQ-FEEDBACK_TO_TIED:
   category: Functional
   detail_file: null
@@ -2508,6 +2526,43 @@ REQ-NAVIGATION_LINKS:
       method: Config unit tests
     - coverage: Rendered links include noopener noreferrer in DOM
       method: Security validation
+REQ-NSYNC_HYBRID_MOVE:
+  category: Functional
+  description: Move to All uses a hybrid per-item plan mixing fs.rename and copy based on volume affinity while preserving safe move semantics.
+  detail_file: requirements/REQ-NSYNC_HYBRID_MOVE.yaml
+  name: NSYNC Hybrid Move Plan
+  priority: P1
+  rationale:
+    benefits:
+      - Cross-volume destinations still receive byte-accurate copies
+      - REQ-MOVE_SEMANTICS preserved via rename-last ordering
+      - Same-volume rename instead of full copy where OS allows
+    problems_solved:
+      - Move to All always copies even when rename would suffice
+      - Redundant read/write on same-volume multi-target moves
+    why: Reduce redundant I/O when same-volume destinations exist during multi-target move
+  related_requirements:
+    depends_on:
+      - REQ-MOVE_SEMANTICS
+      - REQ-NSYNC_MULTI_TARGET
+    related_to:
+      - REQ-COMPARE_METHODS
+      - REQ-VERIFY_DEST
+    supersedes: []
+  satisfaction_criteria:
+    - criterion: At most one rename leg per source item when multiple same-volume destinations exist
+    - criterion: Cross-volume copies execute before same-volume rename
+    - criterion: Deferred source delete omitted when final leg is rename
+    - criterion: Rename target is lexicographically smallest same-volume destPath
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-NSYNC_MOVE_PLAN
+    implementation:
+      - IMPL-NSYNC_ENGINE
+      - IMPL-NSYNC_MOVE_PLAN
+    tests:
+      - src/lib/sync/move-plan.test.ts
 REQ-NSYNC_MULTI_TARGET:
   category: Functional
   cross_references: []
@@ -2636,6 +2691,27 @@ REQ-PANE_REFRESH:
       method: Keystroke testing
     - coverage: Cursor and sort settings maintained
       method: State preservation testing
+REQ-QUALITY_ASSURANCE_EVIDENCE:
+  category: Non-Functional
+  cross_references:
+    - ARCH-QUALITY_ASSURANCE_PROFILES
+    - IMPL-QUALITY_EVIDENCE_MANIFEST
+  description: Every behavior-changing change selects applicable quality attributes from a bounded risk profile and records reproducible evidence, limitations, and accepted residual risk without imposing irrelevant checks.
+  detail_file: requirements/REQ-QUALITY_ASSURANCE_EVIDENCE.yaml
+  name: Risk-triggered quality assurance evidence
+  priority: P0
+  related_requirements:
+    depends_on:
+      - REQ-MODULE_VALIDATION
+      - REQ-TIED_SETUP
+    related_to: []
+    supersedes: []
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-QUALITY_ASSURANCE_PROFILES
+    implementation:
+      - IMPL-QUALITY_EVIDENCE_MANIFEST
 REQ-REACT_SSR_STABILITY:
   category: Non-Functional
   cross_references: []
@@ -2915,6 +2991,55 @@ REQ-TAILWIND_STYLING:
       method: Build testing
     - coverage: Tailwind classes apply correctly in browser
       method: Class testing
+REQ-TIED_ADVERSARIAL_INQUIRY:
+  category: Functional
+  cross_references:
+    - ARCH-TIED_ADVERSARIAL_INQUIRY
+    - IMPL-TIED_ADVERSARIAL_INQUIRY
+    - IMPL-TIED_ADVERSARIAL_INQUIRY_CHECKLIST
+  description: Provide bounded, read-only obligation mapping and bidirectional fidelity evidence without treating structural presence as semantic or runtime proof.
+  detail_file: requirements/REQ-TIED_ADVERSARIAL_INQUIRY.yaml
+  metadata:
+    last_updated:
+      reason: Methodology seed for bounded adversarial inquiry and fidelity evidence
+  name: Adversarial inquiry for obligation and fidelity evidence
+  priority: P0
+  related_requirements:
+    depends_on:
+      - REQ-MODULE_VALIDATION
+      - REQ-QUALITY_ASSURANCE_EVIDENCE
+      - REQ-TIED_FIDELITY_RESEARCH
+    related_to:
+      - REQ-TIED_SETUP
+    supersedes: []
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-TIED_ADVERSARIAL_INQUIRY
+    implementation:
+      - IMPL-TIED_ADVERSARIAL_INQUIRY
+      - IMPL-TIED_ADVERSARIAL_INQUIRY_CHECKLIST
+REQ-TIED_FIDELITY_RESEARCH:
+  category: Functional
+  detail_file: requirements/REQ-TIED_FIDELITY_RESEARCH.yaml
+  metadata:
+    last_updated:
+      reason: 'Methodology seed for read-only fidelity and defect-origin research; procedure: tied/docs/tied-fidelity-research.md'
+  name: TIED Fidelity Research
+  priority: P1
+  related_requirements:
+    depends_on:
+      - REQ-MODULE_VALIDATION
+      - REQ-TIED_SETUP
+    related_to:
+      - REQ-QUALITY_ASSURANCE_EVIDENCE
+    supersedes: []
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-TIED_FIDELITY_RESEARCH
+    implementation:
+      - IMPL-TIED_FIDELITY_RESEARCH
 REQ-TIED_SETUP:
   category: Functional
   detail_file: null

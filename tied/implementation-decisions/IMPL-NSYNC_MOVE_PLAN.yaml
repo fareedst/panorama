@@ -1,0 +1,40 @@
+IMPL-NSYNC_MOVE_PLAN:
+  code_locations:
+    files:
+      - description: buildMovePlan and MoveLeg types
+        path: src/lib/sync/move-plan.ts
+    functions:
+      - buildMovePlan
+      - classifyVolumeAffinity
+  cross_references:
+    - ARCH-NSYNC_MOVE_PLAN
+    - REQ-NSYNC_HYBRID_MOVE
+  decision: Pure buildMovePlan(source, destPaths, getDev?) returns ordered MoveLeg array with at most one rename leg.
+  implementation_approach:
+    details: []
+    summary: Injectable getDev for tests; compares source and dest directory device ids; unknown dev treated as cross-volume.
+  name: NSYNC Move Plan Builder
+  rationale:
+    benefits:
+      - Single-rename invariant enforced in builder
+      - Testable without engine wiring
+    problems_solved:
+      - Plan complexity mixed into SyncItem
+    why: Isolate plan logic from SyncEngine for independent module validation
+  related_decisions:
+    depends_on:
+      - IMPL-NSYNC_ENGINE
+    see_also:
+      - IMPL-NSYNC_OPERATIONS
+    supersedes: []
+  status: Active
+  traceability:
+    architecture:
+      - ARCH-NSYNC_MOVE_PLAN
+    code_annotations:
+      - IMPL-NSYNC_MOVE_PLAN
+    requirements:
+      - REQ-MOVE_SEMANTICS
+      - REQ-NSYNC_HYBRID_MOVE
+    tests:
+      - src/lib/sync/move-plan.test.ts — plan matrix and single-rename invariant [IMPL-NSYNC_MOVE_PLAN]

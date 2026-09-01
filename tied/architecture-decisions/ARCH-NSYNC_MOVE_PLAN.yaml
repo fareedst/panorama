@@ -1,0 +1,39 @@
+ARCH-NSYNC_MOVE_PLAN:
+  alternatives_considered:
+    - option: Always copy then deferred delete
+      rejected_because: Redundant I/O on same-volume destinations
+  cross_references:
+    - ARCH-NSYNC_INTEGRATION
+    - REQ-MOVE_SEMANTICS
+    - REQ-NSYNC_HYBRID_MOVE
+  decision: Per-item MovePlan classifies volume affinity via Stats.dev comparison, orders cross-volume copies first then same-volume copies then a single rename to the lexicographically smallest same-volume destination.
+  name: NSYNC Hybrid Move Plan Architecture
+  rationale:
+    benefits:
+      - Deterministic rename target selection
+      - Safe ordering preserves source until all copies succeed
+    problems_solved:
+      - Impossible double-rename on same volume
+      - Premature source removal on partial failure
+    why: Filesystem allows at most one fs.rename from a source path; multi-dest move must mix rename and copy safely
+  related_decisions:
+    depends_on:
+      - ARCH-FILESYSTEM_ABSTRACTION
+      - ARCH-NSYNC_INTEGRATION
+    informs:
+      - IMPL-NSYNC_ENGINE
+      - IMPL-NSYNC_MOVE_PLAN
+    see_also: []
+  status: Active
+  traceability:
+    code_annotations:
+      - ARCH-NSYNC_MOVE_PLAN
+    implementation:
+      - IMPL-NSYNC_ENGINE
+      - IMPL-NSYNC_MOVE_PLAN
+    requirements:
+      - REQ-MOVE_SEMANTICS
+      - REQ-NSYNC_HYBRID_MOVE
+      - REQ-NSYNC_MULTI_TARGET
+    tests:
+      - src/lib/sync/move-plan.test.ts

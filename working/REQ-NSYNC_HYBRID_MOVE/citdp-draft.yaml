@@ -1,0 +1,12 @@
+# CITDP draft — NSYNC Hybrid Move (refined post–Tranche 2)
+
+**Persisted:** `tied/citdp/CITDP-NSYNC_HYBRID_MOVE.yaml`  
+**Refined:** 2026-09-01 for Tranche 3 kickoff
+
+## Change definition (summary)
+
+- **Current (post–T2):** Hybrid MovePlan + sequential executeMovePlan shipped; renameFile has no EXDEV; verify not optimized
+- **Desired (full):** + shared EXDEV executor + post-rename verify skip
+- **Next tranche:** 3 — shared move-executor, EXDEV fallback on NSYNC rename legs
+
+See control plan § I and `pending-work.md` for session-ready actions.

@@ -1,0 +1,36 @@
+REQ-NSYNC_HYBRID_MOVE:
+  category: Functional
+  description: Move to All uses a hybrid per-item plan mixing fs.rename and copy based on volume affinity while preserving safe move semantics.
+  name: NSYNC Hybrid Move Plan
+  priority: P1
+  rationale:
+    benefits:
+      - Cross-volume destinations still receive byte-accurate copies
+      - REQ-MOVE_SEMANTICS preserved via rename-last ordering
+      - Same-volume rename instead of full copy where OS allows
+    problems_solved:
+      - Move to All always copies even when rename would suffice
+      - Redundant read/write on same-volume multi-target moves
+    why: Reduce redundant I/O when same-volume destinations exist during multi-target move
+  related_requirements:
+    depends_on:
+      - REQ-MOVE_SEMANTICS
+      - REQ-NSYNC_MULTI_TARGET
+    related_to:
+      - REQ-COMPARE_METHODS
+      - REQ-VERIFY_DEST
+    supersedes: []
+  satisfaction_criteria:
+    - criterion: At most one rename leg per source item when multiple same-volume destinations exist
+    - criterion: Cross-volume copies execute before same-volume rename
+    - criterion: Deferred source delete omitted when final leg is rename
+    - criterion: Rename target is lexicographically smallest same-volume destPath
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-NSYNC_MOVE_PLAN
+    implementation:
+      - IMPL-NSYNC_ENGINE
+      - IMPL-NSYNC_MOVE_PLAN
+    tests:
+      - src/lib/sync/move-plan.test.ts

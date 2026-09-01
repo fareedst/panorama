@@ -53,6 +53,8 @@ export interface ItemResult {
   error?: Error;
   /** Per-destination results */
   destResults: DestResult[];
+  /** When true, hybrid move plan ended in rename — omit deferred source delete [REQ-NSYNC_HYBRID_MOVE] */
+  omitDeferredDelete?: boolean;
 }
 
 /**

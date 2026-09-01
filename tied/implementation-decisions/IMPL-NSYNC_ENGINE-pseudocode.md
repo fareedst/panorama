@@ -4,13 +4,13 @@
 
 ## Summary contract
 
-// [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: how: sync() builds plan, iterates sources, syncItem to all destinations in parallel, deletes sources only after all dests succeed when move=true
+// [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS] [REQ-NSYNC_HYBRID_MOVE]: how: sync() builds plan, iterates sources, hybrid move plan when move=true else parallel syncToDestination, deletes sources only when move succeeded and not omitDeferredDelete
 
 ```
 IMPL-NSYNC_ENGINE_Summary():
   INPUT: sources[], destinations[], SyncOptions { move, compareMethod, hashAlgorithm, verifyDestination, observer, signal, sourceBase? }
   OUTPUT: SyncResult { cancelled, storeFailureAbort, itemsCompleted, itemsFailed, itemsSkipped, bytesCopied, durationMs, errors[] }
-  DATA: StoreMonitor, SyncObserver, sourcesToDelete Set, delegates to IMPL-NSYNC_COMPARE, IMPL-NSYNC_HASH, IMPL-NSYNC_VERIFY, IMPL-NSYNC_OPERATIONS, IMPL-NSYNC_STORE; sourceBase maps nested sources via resolveCrossPaneDestPath
+  DATA: StoreMonitor, SyncObserver, sourcesToDelete Set, buildMovePlan when move=true, delegates to IMPL-NSYNC_COMPARE, IMPL-NSYNC_HASH, IMPL-NSYNC_VERIFY, IMPL-NSYNC_OPERATIONS, IMPL-NSYNC_STORE, IMPL-NSYNC_MOVE_PLAN; sourceBase maps nested sources via resolveCrossPaneDestPath
   PRE: sources and destinations arrays provided
   POST: SyncResult with counters and errors populated
   EFFECTS: IO, State
@@ -64,7 +64,7 @@ IMPL-NSYNC_ENGINE_ForEachSource():
       IF allSkipped THEN INCREMENT itemsSkipped
       ELSE IF allSucceeded THEN
         INCREMENT itemsCompleted
-        IF move THEN sourcesToDelete.add(source)
+        IF move AND NOT itemResult.omitDeferredDelete THEN sourcesToDelete.add(source)
         ADD bytesCopied from source size × non-skipped dest count
       ELSE INCREMENT itemsFailed
     CALL observer.onProgress(current stats)
@@ -72,14 +72,14 @@ IMPL-NSYNC_ENGINE_ForEachSource():
 
 ## SyncItem
 
-// [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: how: resolve source stat; compute sourceHash when verify OR compareMethod hash; Promise.all syncToDestination per dest
+// [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS] [REQ-NSYNC_HYBRID_MOVE]: how: when move=true build MovePlan and execute sequentially; when move=false Promise.all syncToDestination per dest
 
 ```
 IMPL-NSYNC_ENGINE_SyncItem(source, destinations, options, signal):
   INPUT: source, destinations[], itemOptions, signal
-  OUTPUT: ItemResult { destResults[], error? }
+  OUTPUT: ItemResult { destResults[], error?, omitDeferredDelete? }
   PRE: source path provided
-  POST: ItemResult with per-dest outcomes
+  POST: ItemResult with per-dest outcomes; omitDeferredDelete set when hybrid plan ended in rename
   EFFECTS: IO
   FAILURE_MODES: source not found → error ItemResult; hash compute failure logged, sourceHash may remain undefined
   TERMINATION: total
@@ -93,10 +93,44 @@ IMPL-NSYNC_ENGINE_SyncItem(source, destinations, options, signal):
   IF verify OR compareMethod === hash THEN
     TRY sourceHash := AWAIT computeFileHash(source, hashAlgorithm)
     CATCH LOG error — sourceHash may remain undefined
-  destResults := AWAIT Promise.all(destinations.map syncToDestination)
+  IF move THEN
+    destPaths := destinations.map dest → MapSourceToDest(source, sourceBase, dest)
+    plan := AWAIT buildMovePlan(source, destPaths)
+    itemResult := AWAIT ExecuteMovePlan(source, plan, destPaths, item, sourceHash, options, signal)
+  ELSE
+    destResults := AWAIT Promise.all(destinations.map syncToDestination)
+    itemResult := { destResults }
   IF any destResult.error THEN itemResult.error := one or more destinations failed
   CALL observer.onItemComplete(item, itemResult)
   RETURN itemResult
+```
+
+## EXECUTE_MOVE_PLAN
+
+// [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_MOVE_PLAN] [REQ-NSYNC_HYBRID_MOVE] [REQ-MOVE_SEMANTICS]: how: execute plan legs sequentially; copy or rename per leg; stop on first failure; set omitDeferredDelete from plan
+
+```
+IMPL-NSYNC_ENGINE_EXECUTE_MOVE_PLAN(source, plan, destPaths, item, sourceHash, options, signal):
+  INPUT: source, MovePlan, destPaths[], item, sourceHash?, options, signal
+  OUTPUT: ItemResult { destResults[], omitDeferredDelete }
+  PRE: plan.legs ordered per IMPL-NSYNC_MOVE_PLAN; count(rename) <= 1
+  POST: one DestResult per destPath; omitDeferredDelete := plan.omitDeferredDelete when all legs succeed
+  EFFECTS: IO
+  FAILURE_MODES: leg failure → remaining legs not executed; source preserved per REQ-MOVE_SEMANTICS when rename not yet run
+  TERMINATION: total when legs exhausted or first failure
+  destResults := empty map destPath → DestResult
+  FOR EACH leg IN plan.legs
+    IF signal.aborted THEN SET error Cancelled on remaining dests AND BREAK
+    IF AWAIT compareFiles(leg.from, leg.to, compareMethod, hashAlgorithm) THEN
+      SET destResults[leg.to].skipped := true; recordSuccess(leg.to); CONTINUE
+    IF leg.op === copy THEN AWAIT copyFile(leg.from, leg.to)
+    ELSE IF leg.op === rename THEN AWAIT renameFile(leg.from, leg.to)
+    IF verify AND sourceHash THEN
+      IF leg.op === rename THEN LOG DIAGNOSTIC skip verify after atomic rename
+      ELSE AWAIT verifyDestination(sourceHash, leg.to, hashAlgorithm)
+    recordSuccess(leg.to); CALL observer.onItemProgress(item, item.size)
+    ON catch: SET destResults[leg.to].error; recordError; BREAK
+  RETURN { destResults: destPaths.map p → destResults[p], omitDeferredDelete: plan.omitDeferredDelete IF all succeeded ELSE false }
 ```
 
 ## MAP_SOURCE_TO_DEST
@@ -143,17 +177,18 @@ IMPL-NSYNC_ENGINE_SyncToDestination(source, destDir, item, sourceHash, options, 
 
 ## MoveSemantics
 
-// [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: how: after source loop, delete each source in sourcesToDelete when move AND NOT cancelled AND NOT storeFailureAbort
+// [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_INTEGRATION] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS] [REQ-NSYNC_HYBRID_MOVE]: how: add source to sourcesToDelete only when move succeeded AND NOT omitDeferredDelete; delete phase unchanged for copy-only plans
 
 ```
 IMPL-NSYNC_ENGINE_MoveSemantics():
-  INPUT: sourcesToDelete Set, result flags, move option
+  INPUT: sourcesToDelete Set, result flags, move option, per-item omitDeferredDelete
   OUTPUT: sources removed; delete failures appended to result.errors
   PRE: source loop complete
-  POST: deferred sources deleted when move succeeded; delete errors collected
+  POST: deferred sources deleted when move succeeded and plan did not end in rename; delete errors collected
   EFFECTS: IO
   FAILURE_MODES: delete failure → appended to result.errors without failing whole sync
   TERMINATION: total
+  ON item success IF move AND NOT itemResult.omitDeferredDelete THEN sourcesToDelete.add(source)
   IF move AND NOT result.cancelled AND NOT result.storeFailureAbort THEN
     FOR EACH source IN sourcesToDelete
       TRY AWAIT deleteFile(source)

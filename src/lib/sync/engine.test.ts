@@ -8,6 +8,9 @@ import os from "os";
 import { SyncEngine } from "./engine";
 import { StoreMonitor } from "./store";
 import * as operations from "./operations";
+import * as moveExecutor from "../move-executor";
+import * as verify from "./verify";
+import * as hash from "./hash";
 import { ErrorClass } from "../sync.types";
 import type { SyncObserver } from "../sync.types";
 import { vi } from "vitest";
@@ -251,5 +254,305 @@ describe("SyncEngine", () => {
     expect(monitor.recordError(destPath, ErrorClass.StoreUnavailable)).toBe(false);
     expect(monitor.recordError(destPath, ErrorClass.StoreUnavailable)).toBe(true);
     expect(monitor.hasUnavailableStore()).toBe(true);
+  });
+});
+
+describe("Hybrid move plan [REQ-NSYNC_HYBRID_MOVE] [IMPL-NSYNC_ENGINE]", () => {
+  let tempDir: string;
+  let sourceDir: string;
+  let destSameDir: string;
+  let destCrossDir: string;
+
+  beforeEach(async () => {
+    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "hybrid-move-"));
+    sourceDir = path.join(tempDir, "volA", "source");
+    destSameDir = path.join(tempDir, "volA", "destSame");
+    destCrossDir = path.join(tempDir, "volB", "destCross");
+    await fs.mkdir(sourceDir, { recursive: true });
+    await fs.mkdir(destSameDir, { recursive: true });
+    await fs.mkdir(destCrossDir, { recursive: true });
+  });
+
+  afterEach(async () => {
+    vi.restoreAllMocks();
+    await fs.rm(tempDir, { recursive: true, force: true });
+  });
+
+  // [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_MOVE_PLAN] [REQ-NSYNC_HYBRID_MOVE]: A+A+B — one cross-volume copy, one rename, no deferred delete
+  it("mixed same-volume + cross-volume uses one copy, one rename, no deferred delete", async () => {
+    const sourceFile = path.join(sourceDir, "file.txt");
+    await fs.writeFile(sourceFile, "hybrid content");
+
+    const destSameFile = path.join(destSameDir, "file.txt");
+    const destCrossFile = path.join(destCrossDir, "file.txt");
+
+    const statSpy = vi.spyOn(fs, "stat").mockImplementation(async (p) => {
+      const realStat = await (await import("fs/promises")).stat(String(p));
+      const fp = String(p);
+      if (fp === sourceFile || fp === sourceDir || fp === path.dirname(sourceFile)) {
+        return Object.assign(realStat, { dev: 1 });
+      }
+      if (fp.startsWith(destSameDir) || fp === destSameDir) {
+        return Object.assign(realStat, { dev: 1 });
+      }
+      if (fp.startsWith(destCrossDir) || fp === destCrossDir) {
+        return Object.assign(realStat, { dev: 2 });
+      }
+      return Object.assign(realStat, { dev: 1 });
+    });
+
+    const copySpy = vi.spyOn(operations, "copyFile");
+    const renameSpy = vi.spyOn(operations, "renameFile");
+    const deleteSpy = vi.spyOn(operations, "deleteFile");
+
+    try {
+      const engine = new SyncEngine();
+      const result = await engine.sync(
+        [sourceFile],
+        [destSameDir, destCrossDir],
+        { move: true, compareMethod: "none" }
+      );
+
+      expect(result.itemsCompleted).toBe(1);
+      expect(copySpy).toHaveBeenCalledTimes(1);
+      expect(copySpy.mock.calls[0]![1]).toBe(destCrossFile);
+      expect(renameSpy).toHaveBeenCalledTimes(1);
+      expect(renameSpy.mock.calls[0]![1]).toBe(destSameFile);
+      expect(deleteSpy).not.toHaveBeenCalled();
+
+      expect(await fs.readFile(destCrossFile, "utf-8")).toBe("hybrid content");
+      expect(await fs.readFile(destSameFile, "utf-8")).toBe("hybrid content");
+      await expect(fs.access(sourceFile)).rejects.toThrow();
+    } finally {
+      statSpy.mockRestore();
+      copySpy.mockRestore();
+      renameSpy.mockRestore();
+      deleteSpy.mockRestore();
+    }
+  });
+
+  // [IMPL-NSYNC_ENGINE] [REQ-NSYNC_HYBRID_MOVE] [REQ-MOVE_SEMANTICS]: partial failure before rename preserves source
+  it("partial failure before rename preserves source path", async () => {
+    const sourceFile = path.join(sourceDir, "file.txt");
+    await fs.writeFile(sourceFile, "preserve me");
+
+    const statSpy = vi.spyOn(fs, "stat").mockImplementation(async (p) => {
+      const realStat = await (await import("fs/promises")).stat(String(p));
+      const fp = String(p);
+      if (fp.startsWith(destCrossDir) || fp === destCrossDir) {
+        return Object.assign(realStat, { dev: 2 });
+      }
+      return Object.assign(realStat, { dev: 1 });
+    });
+
+    const copySpy = vi.spyOn(operations, "copyFile").mockRejectedValueOnce(
+      new Error("cross-volume copy failed")
+    );
+    const renameSpy = vi.spyOn(operations, "renameFile");
+
+    try {
+      const engine = new SyncEngine();
+      const result = await engine.sync(
+        [sourceFile],
+        [destSameDir, destCrossDir],
+        { move: true, compareMethod: "none" }
+      );
+
+      expect(result.itemsFailed).toBe(1);
+      expect(renameSpy).not.toHaveBeenCalled();
+      expect(await fs.readFile(sourceFile, "utf-8")).toBe("preserve me");
+    } finally {
+      statSpy.mockRestore();
+      copySpy.mockRestore();
+      renameSpy.mockRestore();
+    }
+  });
+
+  // [IMPL-NSYNC_OPERATIONS] [IMPL-MOVE_EXECUTOR] [REQ-NSYNC_HYBRID_MOVE] [REQ-MOVE_SEMANTICS]: EXDEV on rename leg despite dev match falls back to copy+delete
+  it("rename leg falls back to copy+delete when renameOrMove simulates EXDEV fallback", async () => {
+    const sourceFile = path.join(sourceDir, "file.txt");
+    await fs.writeFile(sourceFile, "exdev fallback");
+
+    const destSameFile = path.join(destSameDir, "file.txt");
+    const destCrossFile = path.join(destCrossDir, "file.txt");
+
+    const statSpy = vi.spyOn(fs, "stat").mockImplementation(async (p) => {
+      const realStat = await (await import("fs/promises")).stat(String(p));
+      const fp = String(p);
+      if (fp === sourceFile || fp.startsWith(sourceDir) || fp.startsWith(destSameDir)) {
+        return Object.assign(realStat, { dev: 1 });
+      }
+      if (fp.startsWith(destCrossDir) || fp === destCrossDir) {
+        return Object.assign(realStat, { dev: 2 });
+      }
+      return Object.assign(realStat, { dev: 1 });
+    });
+
+    const renameOrMoveSpy = vi
+      .spyOn(moveExecutor, "renameOrMove")
+      .mockImplementation(async (src, dest, deps) => {
+        await deps.copyFile(src, dest);
+        await deps.deleteFile(src);
+      });
+
+    const copySpy = vi.spyOn(operations, "copyFile");
+
+    try {
+      const engine = new SyncEngine();
+      const result = await engine.sync(
+        [sourceFile],
+        [destSameDir, destCrossDir],
+        { move: true, compareMethod: "none" }
+      );
+
+      expect(result.itemsCompleted).toBe(1);
+      expect(renameOrMoveSpy).toHaveBeenCalledTimes(1);
+      expect(renameOrMoveSpy.mock.calls[0]![1]).toBe(destSameFile);
+      // copyFile spy sees cross-volume leg only; EXDEV fallback uses module-internal copyFile ref
+      expect(copySpy).toHaveBeenCalledTimes(1);
+      expect(copySpy.mock.calls[0]![1]).toBe(destCrossFile);
+
+      expect(await fs.readFile(destCrossFile, "utf-8")).toBe("exdev fallback");
+      expect(await fs.readFile(destSameFile, "utf-8")).toBe("exdev fallback");
+      await expect(fs.access(sourceFile)).rejects.toThrow();
+    } finally {
+      statSpy.mockRestore();
+      renameOrMoveSpy.mockRestore();
+      copySpy.mockRestore();
+    }
+  });
+
+  // [IMPL-NSYNC_ENGINE] [REQ-VERIFY_DEST] [REQ-NSYNC_HYBRID_MOVE]: skip post-rename verify on atomic same-volume rename leg
+  it("skips verifyDestination after successful rename leg when verify enabled", async () => {
+    const sourceFile = path.join(sourceDir, "file.txt");
+    await fs.writeFile(sourceFile, "verify skip rename");
+
+    const destSameFile = path.join(destSameDir, "file.txt");
+    const destCrossFile = path.join(destCrossDir, "file.txt");
+
+    const statSpy = vi.spyOn(fs, "stat").mockImplementation(async (p) => {
+      const realStat = await (await import("fs/promises")).stat(String(p));
+      const fp = String(p);
+      if (fp === sourceFile || fp.startsWith(sourceDir) || fp.startsWith(destSameDir)) {
+        return Object.assign(realStat, { dev: 1 });
+      }
+      if (fp.startsWith(destCrossDir) || fp === destCrossDir) {
+        return Object.assign(realStat, { dev: 2 });
+      }
+      return Object.assign(realStat, { dev: 1 });
+    });
+
+    const hashSpy = vi.spyOn(hash, "computeFileHash").mockResolvedValue("abc123hash");
+    const verifySpy = vi.spyOn(verify, "verifyDestination").mockResolvedValue(true);
+
+    try {
+      const engine = new SyncEngine();
+      const result = await engine.sync(
+        [sourceFile],
+        [destSameDir, destCrossDir],
+        { move: true, compareMethod: "none", verifyDestination: true }
+      );
+
+      expect(result.itemsCompleted).toBe(1);
+      expect(verifySpy).toHaveBeenCalledTimes(1);
+      expect(verifySpy.mock.calls[0]![1]).toBe(destCrossFile);
+      expect(await fs.readFile(destSameFile, "utf-8")).toBe("verify skip rename");
+    } finally {
+      statSpy.mockRestore();
+      hashSpy.mockRestore();
+      verifySpy.mockRestore();
+    }
+  });
+
+  // [IMPL-NSYNC_ENGINE] [REQ-VERIFY_DEST] [REQ-NSYNC_HYBRID_MOVE]: cross-volume copy legs still verify when enabled
+  it("still verifies cross-volume copy legs when verify enabled", async () => {
+    const sourceFile = path.join(sourceDir, "file.txt");
+    await fs.writeFile(sourceFile, "verify copy legs");
+
+    const destCross2Dir = path.join(tempDir, "volC", "destCross2");
+    await fs.mkdir(destCross2Dir, { recursive: true });
+
+    const statSpy = vi.spyOn(fs, "stat").mockImplementation(async (p) => {
+      const realStat = await (await import("fs/promises")).stat(String(p));
+      const fp = String(p);
+      if (fp === sourceFile || fp.startsWith(sourceDir)) {
+        return Object.assign(realStat, { dev: 1 });
+      }
+      if (fp.startsWith(destCrossDir) || fp === destCrossDir) {
+        return Object.assign(realStat, { dev: 2 });
+      }
+      if (fp.startsWith(destCross2Dir) || fp === destCross2Dir) {
+        return Object.assign(realStat, { dev: 3 });
+      }
+      return Object.assign(realStat, { dev: 1 });
+    });
+
+    const hashSpy = vi.spyOn(hash, "computeFileHash").mockResolvedValue("abc123hash");
+    const verifySpy = vi.spyOn(verify, "verifyDestination").mockResolvedValue(true);
+
+    try {
+      const engine = new SyncEngine();
+      const result = await engine.sync(
+        [sourceFile],
+        [destCrossDir, destCross2Dir],
+        { move: true, compareMethod: "none", verifyDestination: true }
+      );
+
+      expect(result.itemsCompleted).toBe(1);
+      expect(verifySpy).toHaveBeenCalledTimes(2);
+    } finally {
+      statSpy.mockRestore();
+      hashSpy.mockRestore();
+      verifySpy.mockRestore();
+    }
+  });
+
+  // [IMPL-NSYNC_ENGINE] [REQ-NSYNC_HYBRID_MOVE]: all cross-volume — deferred delete still runs
+  it("all cross-volume destinations still use deferred delete", async () => {
+    const sourceFile = path.join(sourceDir, "file.txt");
+    await fs.writeFile(sourceFile, "cross only");
+
+    const destCross2Dir = path.join(tempDir, "volC", "destCross2");
+    await fs.mkdir(destCross2Dir, { recursive: true });
+
+    const statSpy = vi.spyOn(fs, "stat").mockImplementation(async (p) => {
+      const realStat = await (await import("fs/promises")).stat(String(p));
+      const fp = String(p);
+      if (fp === sourceFile || fp.startsWith(sourceDir)) {
+        return Object.assign(realStat, { dev: 1 });
+      }
+      if (fp.startsWith(destCrossDir) || fp === destCrossDir) {
+        return Object.assign(realStat, { dev: 2 });
+      }
+      if (fp.startsWith(destCross2Dir) || fp === destCross2Dir) {
+        return Object.assign(realStat, { dev: 3 });
+      }
+      return Object.assign(realStat, { dev: 1 });
+    });
+
+    const copySpy = vi.spyOn(operations, "copyFile");
+    const renameSpy = vi.spyOn(operations, "renameFile");
+    const deleteSpy = vi.spyOn(operations, "deleteFile");
+
+    try {
+      const engine = new SyncEngine();
+      const result = await engine.sync(
+        [sourceFile],
+        [destCrossDir, destCross2Dir],
+        { move: true, compareMethod: "none" }
+      );
+
+      expect(result.itemsCompleted).toBe(1);
+      expect(copySpy).toHaveBeenCalledTimes(2);
+      expect(renameSpy).not.toHaveBeenCalled();
+      expect(deleteSpy).toHaveBeenCalledTimes(1);
+      expect(deleteSpy.mock.calls[0]![0]).toBe(sourceFile);
+      await expect(fs.access(sourceFile)).rejects.toThrow();
+    } finally {
+      statSpy.mockRestore();
+      copySpy.mockRestore();
+      renameSpy.mockRestore();
+      deleteSpy.mockRestore();
+    }
   });
 });

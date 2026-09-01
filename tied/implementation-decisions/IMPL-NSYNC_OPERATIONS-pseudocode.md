@@ -53,6 +53,22 @@ IMPL-NSYNC_OPERATIONS_MoveFile(sourcePath, destPath):
   AWAIT copyFile(sourcePath, destPath)
 ```
 
+## RenameFile
+
+// [IMPL-NSYNC_OPERATIONS] [ARCH-FILESYSTEM_ABSTRACTION] [IMPL-FILES_DATA] [REQ-NSYNC_HYBRID_MOVE]: how: delegate to shared renameOrMove with EXDEV copy+delete fallback for bind-mount false positives
+
+```
+IMPL-NSYNC_OPERATIONS_RenameFile(sourcePath, destPath):
+  INPUT: sourcePath, destPath
+  OUTPUT: void; file at dest, source removed (rename or EXDEV fallback)
+  PRE: sourcePath readable
+  POST: dest contains file content; source absent after success
+  EFFECTS: IO
+  FAILURE_MODES: non-EXDEV rename errors → throw; EXDEV → copy+delete via injected deps
+  TERMINATION: total
+  AWAIT renameOrMove(sourcePath, destPath, { copyFile, deleteFile })
+```
+
 ## DeleteFile
 
 // [IMPL-NSYNC_OPERATIONS] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: how: unlink source after successful move to all destinations
@@ -106,8 +122,10 @@ IMPL-NSYNC_OPERATIONS_GetFileStat(filePath):
 
 // [IMPL-NSYNC_OPERATIONS] [REQ-NSYNC_MULTI_TARGET] [REQ-MOVE_SEMANTICS]: map implementing and verifying source files for this IMPL
 
-// FILE: src/lib/sync/operations.ts — copyFile, moveFile, deleteFile, fileExists, getFileStat
-// TEST: src/lib/sync/engine.test.ts — multi-dest sync, move semantics, attribute preservation [IMPL-COPY_ATTRS]
+// FILE: src/lib/sync/operations.ts — copyFile, moveFile, renameFile, deleteFile, fileExists, getFileStat
+// FILE: src/lib/move-executor.ts — shared renameOrMove, isExdevError [ARCH-FILESYSTEM_ABSTRACTION] [IMPL-FILES_DATA]
+// TEST: src/lib/sync/engine.test.ts — multi-dest sync, move semantics, hybrid EXDEV fallback
+// TEST: src/lib/move-executor.test.ts — EXDEV rename fallback unit tests
 
 ## ErrorHandling
 

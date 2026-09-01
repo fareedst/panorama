@@ -5,7 +5,9 @@ export { SyncEngine } from "./engine";
 export { computeFileHash, verifyHash, computeBufferHash } from "./hash";
 export { verifyDestination, verifyMultipleDestinations } from "./verify";
 export { compareFiles } from "./compare";
-export { copyFile, moveFile, deleteFile, fileExists, getFileStat } from "./operations";
+export { copyFile, moveFile, deleteFile, renameFile, fileExists, getFileStat } from "./operations";
+export { buildMovePlan, classifyVolumeAffinity } from "./move-plan";
+export type { MovePlan, MoveLeg, GetDevFn, VolumeClass } from "./move-plan";
 export { StoreMonitor } from "./store";
 
 // Re-export types

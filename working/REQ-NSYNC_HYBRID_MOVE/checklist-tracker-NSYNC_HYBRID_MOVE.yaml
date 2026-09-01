@@ -1,0 +1,101 @@
+tracker_version: checklist-tracker.v1
+request_token: REQ-NSYNC_HYBRID_MOVE
+process_token: PROC-AGENT_REQ_CHECKLIST
+source_document: tied/docs/agent-req-implementation-checklist.yaml
+execution_evidence:
+  request: REQ-NSYNC_HYBRID_MOVE
+  completed:
+    - tranche-1-move-plan-module-20260901
+    - tranche-2-engine-integration-20260901
+    - tranche-3-shared-executor-exdev-20260901
+    - tranche-4-verify-optimization-20260901
+  close_out_evidence:
+    date: '2026-09-01'
+    deferred:
+      - Tranche 2b parallel cross-volume (optional)
+    gates:
+      pre_implementation: working/REQ-NSYNC_HYBRID_MOVE/gate-pre_implementation-tranche4.json
+      verification: working/REQ-NSYNC_HYBRID_MOVE/gate-verification-tranche4.json
+      close_out: working/REQ-NSYNC_HYBRID_MOVE/close_out-2026-09-01T18-34-07-806Z.json
+    master_checklist: working/REQ-NSYNC_HYBRID_MOVE/checklist-tracker-NSYNC_HYBRID_MOVE.yaml
+steps:
+  - slug: session-bootstrap
+    tracking: { status: completed }
+  - slug: translate-sponsor-intent
+    tracking: { status: completed }
+  - slug: change-definition
+    tracking: { status: completed }
+  - slug: impact-discovery
+    tracking: { status: completed }
+  - slug: risk-assessment
+    tracking: { status: completed }
+  - slug: author-requirement
+    tracking: { status: completed }
+  - slug: author-architecture
+    tracking: { status: completed }
+  - slug: catalog-pseudocode-contracts
+    tracking: { status: completed }
+  - slug: flag-contradictory-specs
+    tracking: { status: completed }
+  - slug: flag-insufficient-specs
+    tracking: { status: completed }
+  - slug: resolve-pseudocode
+    tracking: { status: completed }
+  - slug: gate-pseudocode-validation
+    tracking: { status: completed }
+  - slug: persist-implementation-records
+    tracking: { status: completed }
+  - slug: test-strategy
+    tracking: { status: completed }
+  - slug: unit-test-red
+    tracking: { status: completed }
+  - slug: unit-test-green
+    tracking: { status: completed }
+  - slug: three-way-alignment-unit
+    tracking: { status: completed }
+  - slug: composition-integration
+    tracking:
+      status: not_applicable
+      policy: Tranche 4 changes executeMovePlan verify gate only
+      rationale: No API wiring change
+  - slug: unit-refactor
+    tracking: { status: not_applicable }
+  - slug: end-to-end-ui
+    tracking:
+      status: not_applicable
+      policy: composition tests cover sync-all API wiring
+  - slug: sub-adversarial-inquiry-pass
+    tracking:
+      status: not_applicable
+      policy: minimal depth; no integrated eligibility triggers matched
+      rationale: Tranche 4 verify skip is local engine optimization only
+  - slug: apply-token-comments
+    tracking: { status: completed }
+  - slug: verification-gate
+    tracking: { status: completed }
+  - slug: sync-tied-stack
+    tracking: { status: completed }
+  - slug: user-facing-release-notes
+    tracking: { status: not_applicable }
+  - slug: persist-citdp-record
+    tracking: { status: completed }
+  - slug: traceable-commit
+    tracking: { status: pending }
+sub_procedures:
+  - slug: sub-adversarial-inquiry-pass
+    tracking:
+      status: not_applicable
+      policy: minimal depth; no integrated eligibility triggers matched
+      rationale: Tranche 4 verify skip is local engine optimization only
+  - slug: sub-client-yaml-styling
+    tracking: { status: not_applicable, policy: client formatter not configured }
+  - slug: sub-yaml-edit-loop
+    tracking: { status: completed }
+  - slug: sub-pseudocode-validation-pass
+    tracking: { status: completed }
+  - slug: sub-vocabulary-sync
+    tracking: { status: completed }
+  - slug: sub-leap-micro-cycle
+    tracking: { status: completed }
+  - slug: sub-evidence-chain-profile
+    tracking: { status: not_applicable, policy: minimal depth }
