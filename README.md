@@ -1,9 +1,4 @@
 # Panorama - Multi-Target File Manager with Visual Sync
-# Indescript — macOS compile and distribution (interactive)
-```bash @on-load @hide
-cd "$INDESCRIPT_DOC_DIR"
-source ~/.bash_profile
-```
 
 **Version**: 0.5.1  
 **Last Updated**: 2026-05-31
