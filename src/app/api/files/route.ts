@@ -3,11 +3,19 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import path from "path";
-import { listDirectory, getUserHomeDirectory, sortFiles } from "@/lib/files.data";
+import { getUserHomeDirectory, sortFiles } from "@/lib/files.data";
 import { filterFileStats } from "@/lib/display-filter-engine";
 import { validateOperationSourcesForDisplaySpec } from "@/lib/display-filter-api-validate";
 import { serverGetDisplaySpec } from "@/lib/display-spec-store-server";
 import { getVolumeStats } from "@/lib/volume-stats";
+import {
+  archiveErrorHttpStatus,
+  isArchiveError,
+  listDirectoryForRequestPath,
+  virtualMutationRejectIfPresent,
+  volumeStatsSourcePath,
+} from "@/lib/directory-listing";
+import { extractArchiveEntry, isVirtualArchivePath } from "@/lib/archive";
 import { logger } from "@/lib/logger";
 
 // [IMPL-FILES_API] [IMPL-PANE_VOLUME_CAPACITY] [ARCH-SERVER_CLIENT_BOUNDARY] [REQ-PANE_VOLUME_CAPACITY] [REQ-DIRECTORY_NAVIGATION]: how: GET reads path, lists directory, attaches volumeStats; always returns enriched object (never bare array in v1)
@@ -22,8 +30,8 @@ export async function GET(request: NextRequest) {
     
     logger.debug(["IMPL-FILES_API", "REQ-DIRECTORY_NAVIGATION"], `API request to list directory: ${dirPath}`);
     
-    // Validate path (prevent directory traversal)
-    if (dirPath.includes("..")) {
+    // Validate path (prevent directory traversal) — virtual locators use encoded host paths
+    if (!isVirtualArchivePath(dirPath) && dirPath.includes("..")) {
       logger.warn(["IMPL-FILES_API", "REQ-DIRECTORY_NAVIGATION"], `Invalid path detected: ${dirPath}`);
       return NextResponse.json(
         { error: "Invalid path" },
@@ -31,7 +39,8 @@ export async function GET(request: NextRequest) {
       );
     }
     
-    const rawFiles = await listDirectory(dirPath);
+    // [IMPL-FILES_API] [IMPL-ARCHIVE_DIRECTORY_PANES] [GET_LIST_DIRECTORY_ARCHIVE_BRANCH] [REQ-ARCHIVE_DIRECTORY_PANES]: how — branch virtual locator to archive projection before ordinary listDirectory
+    const rawFiles = await listDirectoryForRequestPath(dirPath);
     const spec = displaySpecId ? await serverGetDisplaySpec(displaySpecId) : null;
     // [IMPL-DISPLAY_FILTER_API] [IMPL-DISPLAY_FILTER_ENGINE] [ARCH-DISPLAY_FILTER_ENGINE] [REQ-PANE_DISPLAY_FILTER]
     // how: GET /api/files lists directory then filterFileStats when displaySpecId resolves on server store; legacy array when omitted.
@@ -43,9 +52,10 @@ export async function GET(request: NextRequest) {
     }
     const { files: filtered, hiddenCount } = filterFileStats(rawFiles, spec);
     const sortedFiles = sortFiles(filtered, "Name", true);
+    const volumePath = volumeStatsSourcePath(dirPath);
     let volumeStats;
     try {
-      volumeStats = await getVolumeStats(dirPath);
+      volumeStats = await getVolumeStats(volumePath);
     } catch (error) {
       // [IMPL-FILES_API] [IMPL-PANE_VOLUME_CAPACITY] [ARCH-SERVER_CLIENT_BOUNDARY] [REQ-PANE_VOLUME_CAPACITY] [REQ-FILE_LISTING]: how — capacity collection is informational and cannot turn a successful listing into an API failure
       console.error("DIAGNOSTIC: [IMPL-PANE_VOLUME_CAPACITY] capacity enrichment failed", error);
@@ -54,7 +64,7 @@ export async function GET(request: NextRequest) {
         availableBytes: 0,
         freePercent: 0,
         deviceId: null,
-        sourcePath: dirPath,
+        sourcePath: volumePath,
         status: "unavailable" as const,
         errorCode: "STAT_FAILED" as const,
       };
@@ -76,6 +86,17 @@ export async function GET(request: NextRequest) {
       volumeStats,
     });
   } catch (error) {
+    if (isArchiveError(error)) {
+      logger.warn(
+        ["IMPL-FILES_API", "IMPL-ARCHIVE_DIRECTORY_PANES", "REQ-ARCHIVE_DIRECTORY_PANES"],
+        `Archive listing failed`,
+        { errorCode: error.code },
+      );
+      return NextResponse.json(
+        { error: "Archive listing failed", errorCode: error.code },
+        { status: archiveErrorHttpStatus(error.code) },
+      );
+    }
     logger.error(["IMPL-FILES_API", "REQ-DIRECTORY_NAVIGATION"], `Failed to list directory`, { error: String(error) });
     console.error("Error listing directory:", error);
     return NextResponse.json(
@@ -124,14 +145,29 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // Validate paths (prevent directory traversal) when present
-    if ((src && src.includes("..")) || (dest && dest.includes(".."))) {
+    // Validate paths (prevent directory traversal) when present — skip virtual locators (encoded host paths)
+    if (
+      (src && !isVirtualArchivePath(src) && src.includes("..")) ||
+      (dest && !isVirtualArchivePath(dest) && dest.includes(".."))
+    ) {
       logger.warn(["IMPL-FILES_API", "REQ-FILE_OPERATIONS"], `Invalid path detected`, { src, dest });
       return NextResponse.json(
         { error: "Invalid path" },
         { status: 400 }
       );
     }
+
+    const rejectVirtualMutation = (paths: (string | undefined)[]) => {
+      const rejection = virtualMutationRejectIfPresent(paths);
+      if (rejection) {
+        logger.warn(
+          ["IMPL-FILES_API", "IMPL-ARCHIVE_DIRECTORY_PANES", "REQ-ARCHIVE_DIRECTORY_PANES"],
+          `Rejected mutation on virtual archive path`,
+        );
+        return NextResponse.json(rejection, { status: 400 });
+      }
+      return null;
+    };
     
     // Import operations dynamically to avoid loading on GET
     const { copyFile, moveFile, deleteFile, renameFile, bulkCopy, bulkMove, bulkDelete, bulkTouch, bulkRename } = await import("@/lib/files.data");
@@ -147,7 +183,32 @@ export async function POST(request: NextRequest) {
     };
     
     switch (operation) {
+      case "extract-archive-entry": {
+        // [IMPL-FILES_API] [IMPL-ARCHIVE_DIRECTORY_PANES] [POST_EXTRACT_ARCHIVE_ENTRY] [REQ-COPY_OPERATIONS] [REQ-ARCHIVE_DIRECTORY_PANES]: how — dedicated extract op; archivePath/dest ordinary; entryPath safe file
+        const archivePath = body.archivePath as string | undefined;
+        const entryPath = body.entryPath as string | undefined;
+        const extractDest = body.dest as string | undefined;
+        if (!archivePath || !entryPath || !extractDest) {
+          logger.warn(["IMPL-FILES_API", "REQ-ARCHIVE_DIRECTORY_PANES"], `Extract missing parameters`);
+          return NextResponse.json({ error: "Missing required parameters" }, { status: 400 });
+        }
+        const extractVirtualReject = rejectVirtualMutation([archivePath, extractDest]);
+        if (extractVirtualReject) return extractVirtualReject;
+        if (archivePath.includes("..") || extractDest.includes("..")) {
+          return NextResponse.json({ error: "Invalid path" }, { status: 400 });
+        }
+        await extractArchiveEntry(archivePath, entryPath, extractDest);
+        logger.info(
+          ["IMPL-FILES_API", "IMPL-ARCHIVE_DIRECTORY_PANES", "REQ-ARCHIVE_DIRECTORY_PANES"],
+          `Extracted archive entry`,
+          { archivePath, entryPath, dest: extractDest },
+        );
+        return NextResponse.json({ success: true });
+      }
+
       case "copy": {
+        const virtualReject = rejectVirtualMutation([src, dest]);
+        if (virtualReject) return virtualReject;
         const blocked = await assertSourcesVisible([src!]);
         if (blocked) return blocked;
         if (!dest) {
@@ -160,6 +221,8 @@ export async function POST(request: NextRequest) {
       }
       
       case "move": {
+        const virtualReject = rejectVirtualMutation([src, dest]);
+        if (virtualReject) return virtualReject;
         const blocked = await assertSourcesVisible([src!]);
         if (blocked) return blocked;
         if (!dest) {
@@ -172,6 +235,8 @@ export async function POST(request: NextRequest) {
       }
       
       case "delete": {
+        const virtualReject = rejectVirtualMutation([src]);
+        if (virtualReject) return virtualReject;
         const blocked = await assertSourcesVisible([src!]);
         if (blocked) return blocked;
         await deleteFile(src!);
@@ -180,6 +245,8 @@ export async function POST(request: NextRequest) {
       }
       
       case "rename": {
+        const virtualReject = rejectVirtualMutation([src, dest]);
+        if (virtualReject) return virtualReject;
         const blocked = await assertSourcesVisible([src!]);
         if (blocked) return blocked;
         if (!dest) {
@@ -202,6 +269,8 @@ export async function POST(request: NextRequest) {
           logger.warn(["IMPL-BULK_OPS", "REQ-BULK_FILE_OPS"], `Bulk copy missing destination`);
           return NextResponse.json({ error: "Destination directory required" }, { status: 400 });
         }
+        const bulkCopyVirtualReject = rejectVirtualMutation([dest, ...sources]);
+        if (bulkCopyVirtualReject) return bulkCopyVirtualReject;
         const blocked = await assertSourcesVisible(sources);
         if (blocked) return blocked;
         
@@ -225,6 +294,8 @@ export async function POST(request: NextRequest) {
           logger.warn(["IMPL-BULK_OPS", "REQ-BULK_FILE_OPS"], `Bulk move missing destination`);
           return NextResponse.json({ error: "Destination directory required" }, { status: 400 });
         }
+        const bulkMoveVirtualReject = rejectVirtualMutation([dest, ...sources]);
+        if (bulkMoveVirtualReject) return bulkMoveVirtualReject;
         const blockedMove = await assertSourcesVisible(sources);
         if (blockedMove) return blockedMove;
         
@@ -244,6 +315,8 @@ export async function POST(request: NextRequest) {
           logger.warn(["IMPL-BULK_OPS", "REQ-BULK_FILE_OPS"], `Bulk delete missing sources`);
           return NextResponse.json({ error: "Sources array required" }, { status: 400 });
         }
+        const bulkDeleteVirtualReject = rejectVirtualMutation(sources);
+        if (bulkDeleteVirtualReject) return bulkDeleteVirtualReject;
         const blockedDel = await assertSourcesVisible(sources);
         if (blockedDel) return blockedDel;
         
@@ -269,7 +342,9 @@ export async function POST(request: NextRequest) {
           if (!entry.path || typeof entry.path !== "string") {
             return NextResponse.json({ error: "Each entry requires path" }, { status: 400 });
           }
-          if (entry.path.includes("..")) {
+          const touchVirtualReject = rejectVirtualMutation([entry.path]);
+          if (touchVirtualReject) return touchVirtualReject;
+          if (!isVirtualArchivePath(entry.path) && entry.path.includes("..")) {
             return NextResponse.json({ error: "Invalid path" }, { status: 400 });
           }
           if (!entry.mtime || typeof entry.mtime !== "string") {
@@ -309,7 +384,12 @@ export async function POST(request: NextRequest) {
           if (!entry.dest || typeof entry.dest !== "string") {
             return NextResponse.json({ error: "Each entry requires dest" }, { status: 400 });
           }
-          if (entry.src.includes("..") || entry.dest.includes("..")) {
+          const renameVirtualReject = rejectVirtualMutation([entry.src, entry.dest]);
+          if (renameVirtualReject) return renameVirtualReject;
+          if (
+            (!isVirtualArchivePath(entry.src) && entry.src.includes("..")) ||
+            (!isVirtualArchivePath(entry.dest) && entry.dest.includes(".."))
+          ) {
             return NextResponse.json({ error: "Invalid path" }, { status: 400 });
           }
           if (path.dirname(entry.src) !== path.dirname(entry.dest)) {
@@ -346,7 +426,9 @@ export async function POST(request: NextRequest) {
           if (!entry.path || typeof entry.path !== "string") {
             return NextResponse.json({ error: "Each entry requires path" }, { status: 400 });
           }
-          if (entry.path.includes("..")) {
+          const mkdirVirtualReject = rejectVirtualMutation([entry.path]);
+          if (mkdirVirtualReject) return mkdirVirtualReject;
+          if (!isVirtualArchivePath(entry.path) && entry.path.includes("..")) {
             return NextResponse.json({ error: "Invalid path" }, { status: 400 });
           }
           const dirBasename = path.basename(entry.path);
@@ -386,7 +468,13 @@ export async function POST(request: NextRequest) {
           if (!entry.cwd || typeof entry.cwd !== "string") {
             return NextResponse.json({ error: "Each entry requires cwd" }, { status: 400 });
           }
-          if (entry.cwd.includes("..")) {
+          const execVirtualReject = rejectVirtualMutation([
+            entry.cwd,
+            typeof entry.filePath === "string" ? entry.filePath : undefined,
+            ...(Array.isArray(entry.markedPaths) ? entry.markedPaths : []),
+          ]);
+          if (execVirtualReject) return execVirtualReject;
+          if (!isVirtualArchivePath(entry.cwd) && entry.cwd.includes("..")) {
             return NextResponse.json({ error: "Invalid cwd" }, { status: 400 });
           }
           if (!entry.command || typeof entry.command !== "string" || !entry.command.trim()) {
@@ -429,6 +517,8 @@ export async function POST(request: NextRequest) {
           logger.warn(["IMPL-NSYNC_ENGINE", "REQ-NSYNC_MULTI_TARGET"], `Sync-all missing destinations`);
           return NextResponse.json({ error: "Destinations array required" }, { status: 400 });
         }
+        const syncVirtualReject = rejectVirtualMutation([...sources, ...destinations]);
+        if (syncVirtualReject) return syncVirtualReject;
         const blockedSync = await assertSourcesVisible(sources);
         if (blockedSync) return blockedSync;
         
@@ -467,6 +557,17 @@ export async function POST(request: NextRequest) {
     
     return NextResponse.json({ success: true });
   } catch (error) {
+    if (isArchiveError(error)) {
+      logger.warn(
+        ["IMPL-FILES_API", "IMPL-ARCHIVE_DIRECTORY_PANES", "REQ-ARCHIVE_DIRECTORY_PANES"],
+        `Archive operation failed`,
+        { operation, errorCode: error.code },
+      );
+      return NextResponse.json(
+        { error: "Archive operation failed", errorCode: error.code },
+        { status: archiveErrorHttpStatus(error.code) },
+      );
+    }
     logger.error(["IMPL-FILES_API", "REQ-FILE_OPERATIONS"], `File operation failed`, { operation, src, dest, error: String(error) });
     console.error("Error performing file operation:", error);
     return NextResponse.json(

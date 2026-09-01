@@ -110,6 +110,47 @@ describe("pane-display-filter [IMPL-PANE_DISPLAY_FILTER_UI]", () => {
     );
   });
 
+  // [IMPL-PANE_VOLUME_CAPACITY] [IMPL-ARCHIVE_DIRECTORY_PANES] [REQ-ARCHIVE_DIRECTORY_PANES]: how — fetch preserves archiveSource metadata from enriched GET listing
+  it("NORMALIZE_LISTING_RESPONSE preserves archiveSource on archive rows [REQ-ARCHIVE_DIRECTORY_PANES]", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        files: [
+          {
+            name: "readme.txt",
+            path: "@archive/v1/abc",
+            isDirectory: false,
+            size: 12,
+            mtime: new Date().toISOString(),
+            extension: "txt",
+            archiveSource: {
+              archivePath: "/tmp/sample.zip",
+              entryPath: "readme.txt",
+              isArchiveRoot: true,
+              isVirtual: true,
+              format: "zip",
+              readOnly: true,
+            },
+          },
+        ],
+        volumeStats: {
+          totalBytes: 1000,
+          availableBytes: 250,
+          freePercent: 25,
+          deviceId: 1,
+          sourcePath: "/tmp/sample.zip",
+          status: "available",
+        },
+        hiddenCount: 0,
+        totalCount: 1,
+      }),
+    }));
+
+    const response = await fetchDirectoryListing("@archive/v1/abc", null);
+    expect(response.files[0]?.archiveSource?.readOnly).toBe(true);
+    expect(response.files[0]?.archiveSource?.format).toBe("zip");
+  });
+
   // [IMPL-PANE_VOLUME_CAPACITY] [ARCH-SERVER_CLIENT_BOUNDARY] [REQ-PANE_VOLUME_CAPACITY] [REQ-FILE_LISTING]: how — client fetch normalizes enriched listing responses and gives malformed capacity an explicit unavailable status
   it("NORMALIZE_LISTING_RESPONSE preserves enriched volume stats [REQ-PANE_VOLUME_CAPACITY]", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({

@@ -19,6 +19,7 @@ Excludes NSYNC sync algorithms ([nsync-multi-target.md](nsync-multi-target.md)),
 
 - [FILE_MANAGER_SOLE_PURPOSE.md](FILE_MANAGER_SOLE_PURPOSE.md) — sole-purpose product boundary
 - [panorama-domain-references.md](panorama-domain-references.md)
+- [archive-pane.md](archive-pane.md) — **Archive-backed pane**, **Virtual archive path**, **Extraction** (read-only archive listing)
 - [mesh-platform.md](mesh-platform.md) — **Workspace snapshot** v1–v5, save/diff/update, cross-surface links (canonical)
 - [linked-navigation.md](linked-navigation.md)
 - [file-marking.md](file-marking.md)

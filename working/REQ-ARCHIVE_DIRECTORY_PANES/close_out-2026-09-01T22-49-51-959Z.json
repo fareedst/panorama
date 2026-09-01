@@ -1,0 +1,28 @@
+{
+  "schema_version": "checklist-gate-receipt.v1",
+  "phase": "close_out",
+  "timestamp": "2026-09-01T22:49:51.960Z",
+  "allowed": false,
+  "diagnostics": [
+    "receipt_identity_mismatch:phase",
+    "pending_required_step:traceable-commit",
+    "evidence_stale"
+  ],
+  "depth": "integrated",
+  "input_hashes": {
+    "tracker_hash": "sha256:a7d3e5d9fabdef37c2e48553d573015b8292d1fb2fa52ff8d0a5662ffae5c2d1",
+    "citdp_hash": "sha256:be39279430a137b352b40dcab2db4c277feed93840b173c5ec443758b7d28163"
+  },
+  "gate_result": {
+    "allowed": false,
+    "ok": false,
+    "blocking": true,
+    "depth": "integrated",
+    "phase": "close_out",
+    "diagnostics": [
+      "receipt_identity_mismatch:phase",
+      "pending_required_step:traceable-commit",
+      "evidence_stale"
+    ]
+  }
+}

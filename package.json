@@ -30,7 +30,9 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "tailwind-merge": "^3.4.0",
-    "xxhash-wasm": "^1.1.0"
+    "tar-stream": "^3.2.1",
+    "xxhash-wasm": "^1.1.0",
+    "yauzl": "^3.4.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
@@ -43,6 +45,8 @@
     "@types/path-browserify": "^1.0.3",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/tar-stream": "^3.1.4",
+    "@types/yauzl": "^3.4.0",
     "@vitejs/plugin-react": "^4.7.0",
     "@vitest/coverage-v8": "^2.1.9",
     "babel-plugin-react-compiler": "1.0.0",

@@ -4,6 +4,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import fs from "fs/promises";
 import path from "path";
+import { detectArchiveFormat, projectArchiveDirectory } from "@/lib/archive";
+import {
+  archiveErrorHttpStatus,
+  isArchiveError,
+} from "@/lib/directory-listing";
 import { logger } from "@/lib/logger";
 
 // [IMPL-FILE_PREVIEW] [ARCH-PREVIEW_SYSTEM] [REQ-FILE_PREVIEW]: how: detectFileType maps extension to text, image, archive, or binary
@@ -123,21 +128,52 @@ export async function GET(request: NextRequest) {
       }
       
       case "archive": {
-        // For Phase 6, just return basic info (no actual archive parsing)
-        // Full archive extraction would require additional libraries (jszip, tar-stream)
+        // [PREVIEW_ARCHIVE_MANIFEST] [IMPL-FILE_PREVIEW] [IMPL-ARCHIVE_DIRECTORY_PANES] [REQ-FILE_PREVIEW] [REQ-ARCHIVE_DIRECTORY_PANES]: how — shared manifest reader at archive root
         const name = path.basename(filePath);
         const extension = path.extname(filePath);
-        
-        logger.info(["IMPL-FILE_PREVIEW", "REQ-FILE_PREVIEW"], `Archive preview (stub) for ${filePath}`);
-        return NextResponse.json({
-          type: "archive",
-          name,
-          path: filePath,
-          size: stats.size,
-          extension,
-          // Placeholder - would need jszip or tar-stream to list contents
-          message: "Archive preview not yet implemented. Download to view contents."
-        });
+
+        try {
+          const format = detectArchiveFormat(filePath);
+          const fileStats = await projectArchiveDirectory(filePath, "");
+          const entries = fileStats.map((entry) => ({
+            name: entry.name,
+            path: entry.path,
+            isDirectory: entry.isDirectory,
+            size: entry.size,
+            mtime:
+              entry.mtime instanceof Date
+                ? entry.mtime.toISOString()
+                : String(entry.mtime),
+            extension: entry.extension,
+          }));
+
+          logger.info(
+            ["IMPL-FILE_PREVIEW", "IMPL-ARCHIVE_DIRECTORY_PANES", "REQ-FILE_PREVIEW", "REQ-ARCHIVE_DIRECTORY_PANES"],
+            `Archive preview returned ${entries.length} top-level entries for ${filePath}`,
+          );
+          return NextResponse.json({
+            type: "archive",
+            name,
+            path: filePath,
+            size: stats.size,
+            extension,
+            format: format.formatKey,
+            entries,
+          });
+        } catch (error) {
+          if (isArchiveError(error)) {
+            logger.warn(
+              ["IMPL-FILE_PREVIEW", "IMPL-ARCHIVE_DIRECTORY_PANES", "REQ-FILE_PREVIEW", "REQ-ARCHIVE_DIRECTORY_PANES"],
+              `Archive preview failed`,
+              { errorCode: error.code },
+            );
+            return NextResponse.json(
+              { error: "Archive preview failed", errorCode: error.code },
+              { status: archiveErrorHttpStatus(error.code) },
+            );
+          }
+          throw error;
+        }
       }
       
       default:

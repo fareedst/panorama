@@ -1,0 +1,44 @@
+{
+  "schema_version": "checklist-gate-receipt.v1",
+  "phase": "verification",
+  "timestamp": "2026-09-01T22:47:52.469Z",
+  "allowed": false,
+  "diagnostics": [
+    "missing_completion_activation",
+    "missing_expected_identity",
+    "missing_activation_artifact:obligation-report.json",
+    "missing_activation_artifact:finding-ledger.jsonl",
+    "missing_activation_artifact:gate-result.json",
+    "missing_activation_artifact:evidence-provenance.json",
+    "artifact_hash_mismatch:obligation-report.json",
+    "artifact_hash_mismatch:finding-ledger.jsonl",
+    "artifact_hash_mismatch:gate-result.json",
+    "artifact_hash_mismatch:evidence-provenance.json",
+    "evidence_stale"
+  ],
+  "depth": "integrated",
+  "input_hashes": {
+    "tracker_hash": "sha256:928342af3ad644918ecd163615b2db5642906ddf5c9e89f29e7269e236bbebf7",
+    "citdp_hash": "sha256:e29e40df322c27c8d0d35948492528fa564798931c603f311ac246737003fed3"
+  },
+  "gate_result": {
+    "allowed": false,
+    "ok": false,
+    "blocking": true,
+    "depth": "integrated",
+    "phase": "verification",
+    "diagnostics": [
+      "missing_completion_activation",
+      "missing_expected_identity",
+      "missing_activation_artifact:obligation-report.json",
+      "missing_activation_artifact:finding-ledger.jsonl",
+      "missing_activation_artifact:gate-result.json",
+      "missing_activation_artifact:evidence-provenance.json",
+      "artifact_hash_mismatch:obligation-report.json",
+      "artifact_hash_mismatch:finding-ledger.jsonl",
+      "artifact_hash_mismatch:gate-result.json",
+      "artifact_hash_mismatch:evidence-provenance.json",
+      "evidence_stale"
+    ]
+  }
+}

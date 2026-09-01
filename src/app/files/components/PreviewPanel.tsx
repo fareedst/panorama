@@ -36,8 +36,21 @@ export interface ImagePreview {
 }
 
 /**
+ * Top-level archive entry in preview response
+ * [IMPL-FILE_PREVIEW] [IMPL-ARCHIVE_DIRECTORY_PANES] [REQ-FILE_PREVIEW] [REQ-ARCHIVE_DIRECTORY_PANES]
+ */
+export interface ArchivePreviewEntry {
+  name: string;
+  path: string;
+  isDirectory: boolean;
+  size: number;
+  mtime: string;
+  extension: string;
+}
+
+/**
  * Archive preview response
- * [IMPL-FILE_PREVIEW] [REQ-FILE_PREVIEW]
+ * [IMPL-FILE_PREVIEW] [IMPL-ARCHIVE_DIRECTORY_PANES] [REQ-FILE_PREVIEW] [REQ-ARCHIVE_DIRECTORY_PANES]
  */
 export interface ArchivePreview {
   type: "archive";
@@ -45,7 +58,8 @@ export interface ArchivePreview {
   path: string;
   size: number;
   extension: string;
-  message: string;
+  format: string;
+  entries: ArchivePreviewEntry[];
 }
 
 /**
@@ -70,7 +84,7 @@ export interface PreviewPanelProps {
  * Fetches and displays file preview for:
  * - Text files (up to 100KB)
  * - Image files (thumbnail)
- * - Archive files (stub - contents listing not yet implemented)
+ * - Archive files (top-level manifest entries via shared reader)
  */
 export function PreviewPanel({ filePath, onClose }: PreviewPanelProps) {
   const [preview, setPreview] = useState<PreviewResponse | null>(null);
@@ -200,13 +214,34 @@ export function PreviewPanel({ filePath, onClose }: PreviewPanelProps) {
                     <strong>Size:</strong> {(preview.size / 1024).toFixed(1)} KB
                   </p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    <strong>Type:</strong> Archive {preview.extension}
+                    <strong>Format:</strong> {preview.format}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <strong>Entries:</strong> {preview.entries.length}
                   </p>
                 </div>
-                
-                <div className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 p-3 rounded">
-                  <p className="text-sm">{preview.message}</p>
-                </div>
+
+                {preview.entries.length === 0 ? (
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Archive is empty.</p>
+                ) : (
+                  <ul className="divide-y divide-gray-200 dark:divide-gray-700 border border-gray-200 dark:border-gray-700 rounded">
+                    {preview.entries.map((entry) => (
+                      <li
+                        key={entry.path}
+                        className="px-3 py-2 text-sm text-gray-700 dark:text-gray-300 flex items-center justify-between gap-2"
+                      >
+                        <span>
+                          {entry.isDirectory ? "📁" : "📄"} {entry.name}
+                        </span>
+                        {!entry.isDirectory && (
+                          <span className="text-xs text-gray-500 dark:text-gray-500 shrink-0">
+                            {(entry.size / 1024).toFixed(1)} KB
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             )}
           </>

@@ -1,0 +1,16 @@
+{
+  "blocking": false,
+  "diagnostics": [],
+  "policy": "advisory",
+  "proofBoundary": "human_decision",
+  "schemaVersion": "adversarial-inquiry-gate.v1",
+  "scope": [
+    "IMPL-ARCHIVE_DIRECTORY_PANES#DECODE_VIRTUAL_ARCHIVE_PATH#block",
+    "IMPL-ARCHIVE_DIRECTORY_PANES#EXTRACT_ARCHIVE_ENTRY#block",
+    "IMPL-ARCHIVE_DIRECTORY_PANES#PROJECT_ARCHIVE_DIRECTORY#block",
+    "IMPL-FILE_PREVIEW#PREVIEW_ARCHIVE_MANIFEST#block",
+    "IMPL-WORKSPACE_MESH_BRIDGE#MESH_RESTORE_ARCHIVE_PATH#block"
+  ],
+  "status": "warn",
+  "verdict": "UNRELIABLE"
+}

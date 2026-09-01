@@ -1,0 +1,173 @@
+CITDP-ARCHIVE_DIRECTORY_PANES:
+  change_definition:
+    current_behavior: 'Feature complete through Tranche 7: server archive module, GET virtual listing, POST extract-archive-entry, WorkspaceView open/descend/parent with read-only flags, mesh restore degrade, FilePane/ContextMenu Extract affordances, shared manifest reader in preview route.'
+    desired_behavior: Supported archives open as read-only virtual directories in panes; entries navigate, compare, and extract to ordinary destinations; shared manifest reader replaces preview stub; archive file never mutated.
+    non_goals:
+      - Archive creation or repacking
+      - Archive-to-archive operations
+      - Client-side parsing
+      - Directory or bulk tree extraction
+      - Nested archive navigation
+      - NSYNC from/to archive locators
+      - TAR.BZ2/7z/RAR adapters in v1
+    success_criteria:
+      - Open, browse, compare, and extract supported archives without mutating source archive
+      - Ordinary listing and file operations regression-covered
+      - REQ/ARCH/IMPL traceability with validated pseudo-code and integrated inquiry artifacts
+      - Safety limits and stable error codes for malicious/oversized/malformed archives
+      - Virtual locator round-trips API, pane state, mesh restore, and URL deep links
+    unchanged_behavior: Ordinary directory listing and mutations; mesh snapshot schema version; comparison algorithms; volume stats contract for ordinary panes; display filters and cross-pane visibility
+  completion_criteria:
+    activation:
+      phase: verification
+      run_id: archive-close-out-verification-20260901
+    verification_gate_notes: 195 scoped Vitest tests passed; bunx tsc -b passed; validate:vocabulary passed; pseudocode_validate passed; tied_validate_consistency passed; verification inquiry run archive-close-out-verification-20260901.
+  evidence:
+    commands:
+      - command: bun run validate:vocabulary
+        exit_code: 0
+        result: passed
+      - command: bun run vitest run src/lib/archive/ src/app/api/files/ src/app/files/WorkspaceView.archive.test.tsx src/app/files/components/FilePane.test.tsx src/app/files/components/ContextMenu.test.tsx src/app/files/page.archive-bootstrap.test.tsx src/app/api/files/preview/
+        exit_code: 0
+        result: 195 tests passed across 13 files
+      - command: bunx tsc -b
+        exit_code: 0
+        result: passed
+    module_validation: archive domain; GET/POST API; WorkspaceView composition; FilePane/ContextMenu presentation; preview shared reader
+    proof_boundaries:
+      - executable_behavior
+      - pseudo_code_structure
+      - traceability_structure
+  impact_analysis:
+    modules_or_boundaries: src/lib/archive/**; src/lib/archive-path-client.ts; src/lib/files.types.ts; src/lib/directory-listing.ts; src/app/api/files/route.ts; src/app/api/files/preview/route.ts; src/lib/pane-display-filter.ts; src/app/files/page.tsx; src/lib/workspace-mesh-bridge.ts; WorkspaceView.tsx; FilePane.tsx; ContextMenu.tsx; PreviewPanel.tsx; tied/vocab/archive-pane.md
+    tied_tokens_affected:
+      - ARCH-COMPARISON_INDEX
+      - ARCH-FILE_OPERATIONS_API
+      - ARCH-FILESYSTEM_ABSTRACTION
+      - ARCH-PREVIEW_SYSTEM
+      - ARCH-SERVER_CLIENT_BOUNDARY
+      - IMPL-COMPARISON_INDEX
+      - IMPL-FILE_PANE
+      - IMPL-FILE_PREVIEW
+      - IMPL-FILES_API
+      - IMPL-FILES_DATA
+      - IMPL-PANE_VOLUME_CAPACITY
+      - IMPL-WORKSPACE_MESH_BRIDGE
+      - IMPL-WORKSPACE_VIEW
+      - REQ-BULK_FILE_OPS
+      - REQ-COPY_OPERATIONS
+      - REQ-CROSS_PANE_COMPARISON
+      - REQ-DIRECTORY_NAVIGATION
+      - REQ-FILE_LISTING
+      - REQ-FILE_OPERATIONS
+      - REQ-FILE_PREVIEW
+      - REQ-PANE_VOLUME_CAPACITY
+      - REQ-WORKSPACE_MESH_BRIDGE
+    tied_tokens_new:
+      - ARCH-ARCHIVE_DIRECTORY_PANES
+      - IMPL-ARCHIVE_DIRECTORY_PANES
+      - REQ-ARCHIVE_DIRECTORY_PANES
+  implementation_status:
+    completed:
+      - Archive domain module (locator, registry, manifest, projection, extraction)
+      - archive-path-client.ts client-safe codec
+      - directory-listing.ts bridge (GET + mutation guards)
+      - FilePane / ContextMenu presentation
+      - FileStat.archiveSource type extension
+      - GET /api/files virtual listing branch
+      - POST extract-archive-entry + VIRTUAL_PATH_MUTATION_REJECTED
+      - Preview route shared manifest reader
+      - SSR bootstrap + client fetch archiveSource passthrough
+      - TIED REQ/ARCH/IMPL + pseudo-code + vocabulary
+      - workspace-mesh-bridge restore degrade
+      - WorkspaceView archive open/descend/parent + read-only derivation
+    in_progress: []
+    remaining: []
+  record_identity:
+    change_request_id: ARCHIVE_DIRECTORY_PANES
+    recorded_at: '2026-09-01'
+    title: Read-only archive-backed panes with virtual directory navigation and extraction
+  risk_analysis:
+    abuse_cases:
+      - Path traversal via malicious entry names
+      - Symlink-based escape on extract
+      - Virtual locator injection attempting to bypass path validation
+      - Zip bomb / decompression bomb via oversized entry
+    adversarial_inquiry:
+      assurance_profile: baseline-functional
+      close_out_inquiry_waiver:
+        approval: plan-close-out-20260901
+        expiry: '2026-12-01'
+        owner: feature-sponsor
+        rationale: Verification-phase inquiry findings unchanged at close-out; no new abuse surface introduced after Tranche 7 preview share.
+        referenced_verification_run_id: archive-close-out-verification-20260901
+      counterexamples:
+        - Extract writes outside requested destination via symlink or traversal entry
+        - Listing or extract mutates archive file bytes or metadata
+        - Malformed archive crashes server or leaks raw parser paths to client
+      depth_change_waiver: null
+      depth_tier: integrated
+      disconfirming_observations:
+        - 195 scoped Vitest tests passed at close-out; bunx tsc -b and validate:vocabulary passed
+        - Structural and verification inquiry artifacts under working/REQ-ARCHIVE_DIRECTORY_PANES/adversarial-inquiry/
+        - Virtual locator codec round-trips; GET/POST/preview routes map stable errorCode values
+      eligibility_triggers_matched:
+        - external-input
+      evidence_references:
+        - docs/archive-directory-panes-plan.md
+        - src/app/api/files/archive-extract-post.route.test.ts
+        - src/app/api/files/archive-listing.route.test.ts
+        - src/app/api/files/preview/archive-preview.route.test.ts
+        - src/app/files/WorkspaceView.archive.test.tsx
+        - src/lib/archive/archive.test.ts
+        - working/REQ-ARCHIVE_DIRECTORY_PANES/adversarial-inquiry/phase-pre_implementation/
+        - working/REQ-ARCHIVE_DIRECTORY_PANES/adversarial-inquiry/phase-verification/
+        - working/REQ-ARCHIVE_DIRECTORY_PANES/test-strategy-outline.md
+      falsification_questions:
+        - Can a malicious archive entry path cause writes outside dest?
+        - Do unsupported formats throw uncaught exceptions to the client?
+        - Does any successful or failed extract change archive file mtime/size?
+      gate_policy: advisory
+      integrated_waiver: null
+      prior_depth_tier: minimal
+      rationale: Archive bytes are external input with filesystem writes; integrated depth with structural pre_implementation and verification passes; close-out 2026-09-01.
+      research_profile: integrated-agent
+      strict_eligibility_prerequisites: []
+    assurance_profiles:
+      - baseline-functional
+      - external-input-security
+    quality_profiles:
+      - baseline-functional
+      - external-input-security
+    risks:
+      - description: Mesh restore with missing archive
+        id: RISK-006
+        mitigation: workspace-restore-warning and empty/degraded listing
+      - description: Partial extract leaves dirty destination
+        id: RISK-010
+        mitigation: Temp write + rename or cleanup on failure per existing copy patterns
+      - description: Path traversal in archive entry names
+        id: RISK-002
+        mitigation: Normalize and reject .., absolute paths, drive prefixes, NUL
+      - description: Preview/pane parser drift
+        id: RISK-009
+        mitigation: Single shared manifest module
+      - description: Symlink escape on extract
+        id: RISK-003
+        mitigation: Reject symlink entries for extraction; list-only with flag
+      - description: Virtual path injection confusing ordinary paths
+        id: RISK-005
+        mitigation: Strict @archive/v1 prefix and JSON schema validation on decode
+      - description: Zip bomb / decompression bomb
+        id: RISK-001
+        mitigation: Streaming byte counters; max entry and manifest limits; abort over threshold
+  tdd_sequence:
+    summary: Tranches 0-7 complete; close-out verification gate passed
+  test_strategy:
+    commands:
+      - bun run validate:vocabulary
+      - bun run vitest run src/lib/archive/ src/app/api/files/ src/app/files/WorkspaceView.archive.test.tsx src/app/files/components/FilePane.test.tsx src/app/files/components/ContextMenu.test.tsx src/app/files/page.archive-bootstrap.test.tsx src/app/api/files/preview/
+      - bunx tsc -b
+    e2e_only_reason: N/A
+    matrix_notes: See working/REQ-ARCHIVE_DIRECTORY_PANES/test-strategy-outline.md
+    summary: Module tranches A-G complete; 195 scoped Vitest tests; integrated adversarial inquiry at pre_implementation and verification; E2E not_applicable

@@ -1,0 +1,61 @@
+{
+  "canonicalMutation": false,
+  "findings": [
+    {
+      "direction": "B",
+      "id": "34f8c3df5f714bf2",
+      "kind": "completeness",
+      "message": "Specification statement has no corresponding evidence.",
+      "proofBoundary": "semantic_fidelity",
+      "statementId": "s1"
+    },
+    {
+      "direction": "A",
+      "id": "8ca1d764c707a6df",
+      "kind": "completeness",
+      "message": "Specification statement has no corresponding evidence.",
+      "proofBoundary": "semantic_fidelity",
+      "statementId": "s1"
+    }
+  ],
+  "graph": {
+    "edges": [
+      {
+        "from": "REQ-ARCHIVE_DIRECTORY_PANES#safe-extract",
+        "kind": "criterion_constraint",
+        "to": "constraint:RISK-001"
+      },
+      {
+        "from": "constraint:RISK-001",
+        "kind": "constraint_block",
+        "to": "IMPL-ARCHIVE_DIRECTORY_PANES#EXTRACT_ARCHIVE_ENTRY#block"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "constraint:RISK-001",
+        "kind": "constraint"
+      },
+      {
+        "id": "IMPL-ARCHIVE_DIRECTORY_PANES#EXTRACT_ARCHIVE_ENTRY#block",
+        "kind": "block",
+        "revision": "rev1"
+      },
+      {
+        "id": "REQ-ARCHIVE_DIRECTORY_PANES#safe-extract",
+        "kind": "criterion",
+        "revision": "tranche2"
+      }
+    ],
+    "projectId": "panorama"
+  },
+  "projectId": "panorama",
+  "proofBoundaries": [
+    "semantic_fidelity"
+  ],
+  "readOnly": true,
+  "schemaVersion": "adversarial-inquiry-report.v1",
+  "scope": [
+    "IMPL-ARCHIVE_DIRECTORY_PANES#EXTRACT_ARCHIVE_ENTRY#block"
+  ]
+}

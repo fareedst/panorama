@@ -178,6 +178,12 @@ import {
   parseWorkspaceSnapshotFromMesh,
   type WorkspaceSnapshot,
 } from "@/lib/workspace-mesh-bridge";
+import {
+  decodeVirtualArchivePath,
+  encodeVirtualArchivePath,
+  isOpenableHostArchiveFile,
+  isVirtualArchivePath,
+} from "@/lib/archive-path-client";
 
 type PaneState = PaneWithCrossPaneVisibility & { treeState: FileTreeState };
 
@@ -806,7 +812,16 @@ export default function WorkspaceView({
           setSharedSort(bundle.restoreUi.sharedSort);
           setFileColumns(normalizeFileColumns(bundle.snapshot.fileColumns, columns));
           setSavedSnapshot(bundle.snapshot);
-          setEffectiveRestoreWarning(clientRestoreWarning);
+          const archiveWarnings = bundle.restoreWarnings?.length
+            ? bundle.restoreWarnings.join(" ")
+            : null;
+          setEffectiveRestoreWarning(
+            archiveWarnings
+              ? clientRestoreWarning
+                ? `${clientRestoreWarning} ${archiveWarnings}`
+                : archiveWarnings
+              : clientRestoreWarning,
+          );
           setClientRestoredFromMesh(true);
         } else {
           setSavedSnapshot(limited);
@@ -1249,6 +1264,13 @@ export default function WorkspaceView({
       // Synchronize linked panes (only on initiating navigation)
       if (isInitiatingNavigation && linkedMode && panes.length > 1) {
         const oldPath = pane.path;
+
+        // [IMPL-LINKED_NAV] [IMPL-ARCHIVE_DIRECTORY_PANES] Skip linked sync when virtual archive paths involved
+        if (isVirtualArchivePath(oldPath) || isVirtualArchivePath(newPath)) {
+          console.debug(
+            "DEBUG: [IMPL-LINKED_NAV] Skipping linked sync for virtual archive path",
+          );
+        } else {
         
         // Determine if this is a downward or upward navigation
         // [IMPL-LINKED_NAV] When at root, oldPath+'/' is "//" so newPath.startsWith("//") is false for e.g. /Users; treat from-root-to-subdir as downward
@@ -1346,6 +1368,7 @@ export default function WorkspaceView({
               syncingRef.current.delete(i); // Clear syncing flag
             }
           }
+        }
         }
       }
     } catch (error) {
@@ -1451,6 +1474,32 @@ export default function WorkspaceView({
       });
     },
     [panes, displaySpecStore],
+  );
+
+  // [OPEN_ARCHIVE_IN_PANE] [ARCHIVE_PARENT_NAVIGATION] [IMPL-WORKSPACE_VIEW] [IMPL-ARCHIVE_DIRECTORY_PANES] [REQ-ARCHIVE_DIRECTORY_PANES]: how — archive panes descend via handleNavigate; ordinary panes open host archives or expand tree
+  const handleActivateFile = useCallback(
+    async (paneIndex: number, file: FileStat) => {
+      const pane = panes[paneIndex];
+      if (!pane) return;
+
+      if (isVirtualArchivePath(pane.path)) {
+        if (file.isDirectory) {
+          await handleNavigate(paneIndex, file.path);
+        }
+        return;
+      }
+
+      if (file.isDirectory) {
+        await handleToggleExpand(paneIndex, file.path);
+        return;
+      }
+
+      if (isOpenableHostArchiveFile(file)) {
+        const locator = encodeVirtualArchivePath(file.path, "");
+        await handleNavigate(paneIndex, locator);
+      }
+    },
+    [panes, handleNavigate, handleToggleExpand],
   );
 
   
@@ -1957,6 +2006,88 @@ export default function WorkspaceView({
     const file = visibleFiles[pane.cursor];
     return file ? [file.path] : [];
   }, [panes, crossPaneVisibilityResult]);
+
+  const resolveArchiveExtractDestination = useCallback(
+    (sourcePaneIndex: number): { destPaneIndex: number; destDir: string } | null => {
+      if (panes.length < 2) {
+        return null;
+      }
+      const destPaneIndex = sourcePaneIndex === 0 ? 1 : 0;
+      const destDir = panes[destPaneIndex]?.path;
+      if (!destDir || isVirtualArchivePath(destDir)) {
+        return null;
+      }
+      return { destPaneIndex, destDir };
+    },
+    [panes],
+  );
+
+  const getExtractableArchiveFiles = useCallback(
+    (paneIndex: number): FileStat[] => {
+      const pane = panes[paneIndex];
+      if (!pane) return [];
+      const visibleFiles =
+        crossPaneVisibilityResult.displayFilesByPane[paneIndex] ?? pane.files;
+      const sourcePaths = getOperationFiles(paneIndex);
+      const extractable: FileStat[] = [];
+      for (const sourcePath of sourcePaths) {
+        const file = visibleFiles.find((f) => f.path === sourcePath);
+        if (file?.archiveSource && !file.isDirectory) {
+          extractable.push(file);
+        }
+      }
+      return extractable;
+    },
+    [panes, crossPaneVisibilityResult, getOperationFiles],
+  );
+
+  // [EXTRACT_ARCHIVE_ENTRY] [RENDER_ARCHIVE_READ_ONLY] [IMPL-ARCHIVE_DIRECTORY_PANES] [REQ-COPY_OPERATIONS] [REQ-ARCHIVE_DIRECTORY_PANES]: how — POST extract-archive-entry per file entry to ordinary dest pane
+  const runArchiveExtractEntries = useCallback(
+    async (sourcePaneIndex: number, files: FileStat[]): Promise<OperationResult> => {
+      const destination = resolveArchiveExtractDestination(sourcePaneIndex);
+      if (!destination) {
+        throw new Error("Extract destination must be an ordinary directory pane");
+      }
+      const { destPaneIndex, destDir } = destination;
+      const errors: OperationResult["errors"] = [];
+      let successCount = 0;
+
+      for (const file of files) {
+        const { archivePath, entryPath } = file.archiveSource!;
+        const destPath = path.join(destDir, file.name);
+        try {
+          const response = await fetch("/api/files", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              operation: "extract-archive-entry",
+              archivePath,
+              entryPath,
+              dest: destPath,
+            }),
+          });
+          if (!response.ok) {
+            const body = (await response.json().catch(() => ({}))) as {
+              error?: string;
+              errorCode?: string;
+            };
+            throw new Error(body.error ?? body.errorCode ?? "Extract failed");
+          }
+          successCount++;
+        } catch (error) {
+          errors.push({ file: file.name, error: String(error) });
+        }
+      }
+
+      await handleNavigate(destPaneIndex, destDir);
+      return {
+        successCount,
+        errorCount: errors.length,
+        errors,
+      };
+    },
+    [resolveArchiveExtractDestination, handleNavigate],
+  );
   
   /**
    * [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS] [REQ-DIRECTORY_TREE]: how — BULK_COPY with sourceBase relative mapping; refreshPaneTree on source pane after success
@@ -1964,6 +2095,55 @@ export default function WorkspaceView({
    */
   const handleBulkCopy = useCallback(async (sourcePaneIndex?: number) => {
     const paneIndex = sourcePaneIndex ?? focusIndex;
+    if (isVirtualArchivePath(panes[paneIndex]?.path ?? "")) {
+      const extractFiles = getExtractableArchiveFiles(paneIndex);
+      if (extractFiles.length === 0) {
+        alert("Select file entries to extract (directories cannot be copied from archives)");
+        return;
+      }
+      const destination = resolveArchiveExtractDestination(paneIndex);
+      if (!destination) {
+        alert("Extract requires an ordinary directory pane as the destination");
+        return;
+      }
+      const { destDir } = destination;
+      setConfirmDialog({
+        isOpen: true,
+        title: "Extract Files",
+        message: `Extract ${extractFiles.length} file(s) from archive to:\n${destDir}`,
+        onConfirm: async () => {
+          setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
+          setProgressDialog({
+            isOpen: true,
+            title: "Extracting Files",
+            total: extractFiles.length,
+            completed: 0,
+            currentFile: "",
+            errors: [],
+            isComplete: false,
+          });
+          try {
+            const result = await runArchiveExtractEntries(paneIndex, extractFiles);
+            setProgressDialog({
+              isOpen: true,
+              title: result.errorCount > 0 ? "Extract Complete (with errors)" : "Extract Complete",
+              total: extractFiles.length,
+              completed: result.successCount,
+              currentFile: "",
+              errors: result.errors,
+              isComplete: true,
+              result,
+            });
+            handleClearMarks(paneIndex);
+          } catch (error) {
+            console.error("DEBUG: [RENDER_ARCHIVE_READ_ONLY] archive extract failed", error);
+            alert(`Extract failed: ${String(error)}`);
+            setProgressDialog((prev) => ({ ...prev, isOpen: false }));
+          }
+        },
+      });
+      return;
+    }
     // Need at least 2 panes for cross-pane copy
     if (panes.length < 2) {
       alert("Copy requires at least 2 panes");
@@ -2042,7 +2222,10 @@ export default function WorkspaceView({
             }),
           });
           
-          const result: OperationResult = await response.json();
+          const result = (await response.json()) as OperationResult & { error?: string };
+          if (!response.ok) {
+            throw new Error(result.error ?? "Copy failed");
+          }
           
           // Update progress dialog with result
           setProgressDialog({
@@ -2069,7 +2252,36 @@ export default function WorkspaceView({
         }
       },
     });
-  }, [panes, focusIndex, getOperationFiles, confirmDialog, progressDialog, handleNavigate, handleClearMarks, displaySpecPayload, refreshPaneTree]);
+  }, [panes, focusIndex, getOperationFiles, getExtractableArchiveFiles, resolveArchiveExtractDestination, runArchiveExtractEntries, confirmDialog, progressDialog, handleNavigate, handleClearMarks, displaySpecPayload, refreshPaneTree]);
+
+  // [RENDER_ARCHIVE_READ_ONLY] [IMPL-ARCHIVE_DIRECTORY_PANES] [REQ-COPY_OPERATIONS] [REQ-ARCHIVE_DIRECTORY_PANES]: how — Extract POST to ordinary dest pane; archive file unchanged
+  const handleArchiveExtract = useCallback(
+    async (sourcePaneIndex: number, file: FileStat) => {
+      if (!file.archiveSource || file.isDirectory) return;
+      const destination = resolveArchiveExtractDestination(sourcePaneIndex);
+      if (!destination) {
+        alert("Extract requires an ordinary directory pane as the destination");
+        return;
+      }
+      const { destDir } = destination;
+
+      setConfirmDialog({
+        isOpen: true,
+        title: "Extract File",
+        message: `Extract ${file.name} from archive to:\n${destDir}`,
+        onConfirm: async () => {
+          setConfirmDialog((prev) => ({ ...prev, isOpen: false }));
+          try {
+            await runArchiveExtractEntries(sourcePaneIndex, [file]);
+          } catch (error) {
+            console.error("DEBUG: [RENDER_ARCHIVE_READ_ONLY] extract failed", error);
+            alert(`Extract failed: ${String(error)}`);
+          }
+        },
+      });
+    },
+    [resolveArchiveExtractDestination, runArchiveExtractEntries],
+  );
   
   /**
    * [IMPL-BULK_OPS] [ARCH-BATCH_OPERATIONS] [REQ-BULK_FILE_OPS]: how: same client flow as BulkCopy with operation bulk-move and file.move keybinding (V)
@@ -2077,6 +2289,10 @@ export default function WorkspaceView({
    */
   const handleBulkMove = useCallback(async (sourcePaneIndex?: number) => {
     const paneIndex = sourcePaneIndex ?? focusIndex;
+    if (isVirtualArchivePath(panes[paneIndex]?.path ?? "")) {
+      console.debug("DEBUG: [RENDER_ARCHIVE_READ_ONLY] Move blocked for archive-backed pane");
+      return;
+    }
     // Need at least 2 panes for cross-pane move
     if (panes.length < 2) {
       alert("Move requires at least 2 panes");
@@ -2189,6 +2405,10 @@ export default function WorkspaceView({
    */
   const handleBulkDelete = useCallback(async (sourcePaneIndex?: number) => {
     const paneIndex = sourcePaneIndex ?? focusIndex;
+    if (isVirtualArchivePath(panes[paneIndex]?.path ?? "")) {
+      console.debug("DEBUG: [RENDER_ARCHIVE_READ_ONLY] Delete blocked for archive-backed pane");
+      return;
+    }
     const sources = getOperationFiles(paneIndex);
     if (sources.length === 0) {
       return;
@@ -2250,7 +2470,7 @@ export default function WorkspaceView({
         }
       },
     });
-  }, [focusIndex, getOperationFiles, confirmDialog, progressDialog, handleClearMarks, displaySpecPayload, refreshPaneTree]);
+  }, [panes, focusIndex, getOperationFiles, confirmDialog, progressDialog, handleClearMarks, displaySpecPayload, refreshPaneTree]);
   
   // [IMPL-NSYNC_ENGINE] [REQ-NSYNC_MULTI_TARGET] Helper to get other visible pane directories
   /**
@@ -2745,6 +2965,38 @@ export default function WorkspaceView({
   const navigateToParent = useCallback(async (paneIndex: number) => {
     const pane = panes[paneIndex];
     if (!pane) return;
+
+    // [ARCHIVE_PARENT_NAVIGATION] [IMPL-ARCHIVE_DIRECTORY_PANES] [REQ-ARCHIVE_DIRECTORY_PANES]: virtual locator parent navigation
+    if (isVirtualArchivePath(pane.path)) {
+      try {
+        const decoded = decodeVirtualArchivePath(pane.path);
+        if (decoded.entryPath) {
+          const parentEntry = path.posix.dirname(decoded.entryPath);
+          const parentEntryNormalized = parentEntry === "." ? "" : parentEntry;
+          const parentLocator = encodeVirtualArchivePath(
+            decoded.archivePath,
+            parentEntryNormalized,
+          );
+          const subdirName = decoded.entryPath.split("/").filter(Boolean).pop() ?? "";
+          if (subdirName) {
+            globalDirectoryHistory.saveCursorPosition(
+              paneIndex,
+              parentLocator,
+              subdirName,
+              0,
+              0,
+            );
+          }
+          await handleNavigate(paneIndex, parentLocator);
+        } else {
+          const parentDir = path.dirname(decoded.archivePath);
+          await handleNavigate(paneIndex, parentDir);
+        }
+      } catch (error) {
+        console.warn("DEBUG: [ARCHIVE_PARENT_NAVIGATION] invalid locator", error);
+      }
+      return;
+    }
     
     const currentPath = pane.path;
     const parentPath = currentPath.split("/").slice(0, -1).join("/") || "/";
@@ -2908,8 +3160,8 @@ export default function WorkspaceView({
     
     handlers.set("navigate.enter", () => {
       const file = visibleFiles[pane.cursor];
-      if (file && file.isDirectory) {
-        void handleToggleExpand(focusIndex, file.path);
+      if (file) {
+        void handleActivateFile(focusIndex, file);
       }
     });
     
@@ -3161,7 +3413,7 @@ export default function WorkspaceView({
     });
     
     return handlers;
-  }, [panes, focusIndex, crossPaneVisibilityResult, navigateToParent, handleNavigate, handleBulkCopy, handleBulkMove, handleBulkDelete, handleAddPane, handleRemovePane, handleSwapFocusedNext, handleSwapFocusedPrev, handleCyclePanes, handleClearMarks, handleCursorMove, handleToggleMark, handleMarkAll, handleInvertMarks, handleCopyAll, handleMoveAll, handleSetActiveDisplaySpec, handleToggleExpand, refreshPaneTree]);
+  }, [panes, focusIndex, crossPaneVisibilityResult, navigateToParent, handleNavigate, handleActivateFile, handleBulkCopy, handleBulkMove, handleBulkDelete, handleAddPane, handleRemovePane, handleSwapFocusedNext, handleSwapFocusedPrev, handleCyclePanes, handleClearMarks, handleCursorMove, handleToggleMark, handleMarkAll, handleInvertMarks, handleCopyAll, handleMoveAll, handleSetActiveDisplaySpec, refreshPaneTree]);
 
   const actionHandlers = useMemo(() => {
     const merged = new Map(workspaceActionHandlers);
@@ -3572,7 +3824,10 @@ export default function WorkspaceView({
             volumeStats={pane.volumeStats}
             bounds={bounds[index] || { x: 0, y: 0, width: 0, height: 0 }}
             focused={index === focusIndex}
+            isArchiveReadOnly={isVirtualArchivePath(pane.path)}
             onNavigate={(newPath) => handleNavigate(index, newPath)}
+            onFileActivate={(file) => void handleActivateFile(index, file)}
+            onExtract={(file) => void handleArchiveExtract(index, file)}
             onCursorMove={(newCursor) => handleCursorMove(index, newCursor)}
             onToggleMark={(filePath) => handleToggleMark(index, filePath)}
             onToggleExpand={(dirPath) => void handleToggleExpand(index, dirPath)}

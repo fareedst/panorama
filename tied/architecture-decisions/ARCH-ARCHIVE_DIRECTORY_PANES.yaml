@@ -1,0 +1,71 @@
+ARCH-ARCHIVE_DIRECTORY_PANES:
+  alternatives_considered:
+    - cons:
+        - Cannot access server filesystem for extract
+        - Exposes parser to browser bundle
+      name: Client-side archive parsing
+      pros:
+        - No server CPU for manifest read
+      rejected_reason: Violates ARCH-SERVER_CLIENT_BOUNDARY and security model for untrusted archives
+    - cons:
+        - Ambiguous with real filesystem paths
+        - Hard to round-trip entry depth
+      name: Ordinary path prefix without encoding
+      pros:
+        - Simpler strings
+      rejected_reason: Requires explicit virtual locator contract per plan
+  cross_references:
+    - ARCH-FILE_OPERATIONS_API
+    - ARCH-FILESYSTEM_ABSTRACTION
+    - ARCH-PREVIEW_SYSTEM
+    - ARCH-SERVER_CLIENT_BOUNDARY
+    - REQ-ARCHIVE_DIRECTORY_PANES
+  decision: Server-only archive adapter in src/lib/archive/ parses supported formats, projects manifest entries into FileStat rows with ArchiveSourceMeta, and exposes bounded single-file extraction. Virtual archive locators use @archive/v1/ prefix with base64url JSON payload. Client receives enriched listings and read-only flags; mutating POST operations reject virtual locators and archive sources except extract-archive-entry.
+  implementation_approach:
+    details:
+      - 'Deferred: tar.bz2, 7z, rar return FORMAT_UNSUPPORTED'
+      - FileStat.archiveSource on virtual rows; ordinary rows omit field
+      - Mesh snapshot persists virtual locator in pane.path only
+      - Prefix @archive/v1/ with base64url JSON { a, e }
+      - 'v1 formats: zip (yauzl), tar/tar.gz (tar-stream + zlib)'
+      - volumeStats uses archive host path for virtual locator requests
+    summary: Archive adapter module + virtual locator codec + GET/POST API branches + read-only pane orchestration + shared preview reader
+  name: Archive-Backed Pane Architecture
+  rationale:
+    benefits:
+      - Format registry documents v1 capabilities and deferred formats
+      - Safety limits bound manifest read and extraction size
+      - Strict locator prefix prevents path injection
+    problems_solved:
+      - Archive mutations must be impossible at API boundary
+      - No virtual path contract for archive navigation
+      - Preview and pane listing would diverge without shared reader
+    why: Filesystem access is server-only; virtual paths must not overload ordinary absolute paths; parser isolation prevents client bundle bloat and keeps untrusted archive bytes on the server.
+  related_decisions:
+    depends_on:
+      - ARCH-FILE_OPERATIONS_API
+      - ARCH-FILESYSTEM_ABSTRACTION
+      - ARCH-SERVER_CLIENT_BOUNDARY
+    informs:
+      - IMPL-ARCHIVE_DIRECTORY_PANES
+      - IMPL-FILE_PANE
+      - IMPL-FILE_PREVIEW
+      - IMPL-FILES_API
+      - IMPL-WORKSPACE_VIEW
+  status: Active
+  traceability:
+    code_annotations:
+      - ARCH-ARCHIVE_DIRECTORY_PANES
+    implementation:
+      - IMPL-ARCHIVE_DIRECTORY_PANES
+      - IMPL-FILE_PANE
+      - IMPL-FILE_PREVIEW
+      - IMPL-FILES_API
+      - IMPL-WORKSPACE_MESH_BRIDGE
+      - IMPL-WORKSPACE_VIEW
+    requirements:
+      - REQ-ARCHIVE_DIRECTORY_PANES
+      - REQ-COPY_OPERATIONS
+      - REQ-DIRECTORY_NAVIGATION
+      - REQ-FILE_LISTING
+      - REQ-FILE_PREVIEW

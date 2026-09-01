@@ -57,6 +57,12 @@ interface ContextMenuProps {
   makeDirectoryMenuLabel?: string;
   /** Label for Rename Regex menu item */
   renameRegexMenuLabel?: string;
+  /** [RENDER_ARCHIVE_READ_ONLY] [REQ-ARCHIVE_DIRECTORY_PANES] Archive-backed read-only pane */
+  isArchiveReadOnly?: boolean;
+  /** [RENDER_ARCHIVE_READ_ONLY] [REQ-ARCHIVE_DIRECTORY_PANES] Extract archive file entry to ordinary destination */
+  onExtract?: () => void;
+  /** Label for Extract menu item in archive panes */
+  extractMenuLabel?: string;
 }
 
 /**
@@ -85,6 +91,9 @@ export default function ContextMenu({
   executeMenuLabel = "Execute…",
   makeDirectoryMenuLabel = "Make directory…",
   renameRegexMenuLabel = "Rename Regex…",
+  isArchiveReadOnly = false,
+  onExtract,
+  extractMenuLabel = "Extract…",
 }: ContextMenuProps) {
   const menuElementRef = useRef<HTMLDivElement>(null);
   
@@ -172,7 +181,9 @@ export default function ContextMenu({
   const crossPaneText = formatCrossPanePathsForClipboard(crossPaneEntries);
   const hasFileOps = !!(onCopy || onMove || (onRename && file) || onDelete);
   const showSetBaseDirectory =
-    file.isDirectory && onSetBaseDirectory !== undefined;
+    !isArchiveReadOnly && file.isDirectory && onSetBaseDirectory !== undefined;
+  const showArchiveExtract =
+    isArchiveReadOnly && !file.isDirectory && onExtract !== undefined;
 
   // Render menu via portal to escape pane overflow
   return createPortal(
@@ -181,13 +192,30 @@ export default function ContextMenu({
       className="fixed z-50 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg min-w-48 py-1"
       style={{ left: `${x}px`, top: `${y}px` }}
       role="menu"
-      aria-label="File operations menu"
+      aria-label={isArchiveReadOnly ? "Archive entry menu" : "File operations menu"}
     >
       {/* Menu Header */}
       <div className="px-4 py-2 text-xs text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">
         {targetLabel}
       </div>
 
+      {/* [RENDER_ARCHIVE_READ_ONLY] [REQ-ARCHIVE_DIRECTORY_PANES] Extract archive file entry */}
+      {showArchiveExtract && (
+        <button
+          type="button"
+          className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+          onClick={() => handleAction(onExtract!)}
+          role="menuitem"
+          data-testid="archive-extract-menu-item"
+          aria-label="Extract archive entry to destination pane"
+        >
+          <span className="text-sm">📤</span>
+          <span>{extractMenuLabel}</span>
+        </button>
+      )}
+
+      {!isArchiveReadOnly && (
+        <>
       {/* Copy */}
       {onCopy && (
         <button
@@ -298,6 +326,9 @@ export default function ContextMenu({
             <span>Delete {targetCount > 1 ? `(${targetCount})` : ""}</span>
             <span className="ml-auto text-xs text-gray-500">D</span>
           </button>
+        </>
+      )}
+
         </>
       )}
 

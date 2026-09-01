@@ -12,6 +12,16 @@ ARCH-APP_ROUTER:
   source_index: architecture-decisions.yaml
   status: Active
   type: ARCH
+ARCH-ARCHIVE_DIRECTORY_PANES:
+  cross_references:
+    - ARCH-ARCHIVE_DIRECTORY_PANES
+    - IMPL-ARCHIVE_DIRECTORY_PANES
+    - REQ-ARCHIVE_DIRECTORY_PANES
+  description: Server-only archive adapter, virtual locators, read-only enforcement
+  metadata:
+    last_updated: '2026-09-01'
+    registered: '2026-09-01'
+  name: Archive-Backed Pane Architecture
 ARCH-BATCH_OPERATIONS:
   cross_references:
     - IMPL-BULK_OPS
@@ -869,6 +879,16 @@ ARCH-YAML_DATA_STORAGE:
   source_index: architecture-decisions.yaml
   status: Active
   type: ARCH
+IMPL-ARCHIVE_DIRECTORY_PANES:
+  cross_references:
+    - ARCH-ARCHIVE_DIRECTORY_PANES
+    - IMPL-ARCHIVE_DIRECTORY_PANES
+    - REQ-ARCHIVE_DIRECTORY_PANES
+  description: src/lib/archive module, API branches, pane read-only UX
+  metadata:
+    last_updated: '2026-09-01'
+    registered: '2026-09-01'
+  name: Archive Directory Panes Implementation
 IMPL-BUILD_SCRIPTS:
   cross_references:
     - ARCH-NEXTJS_FRAMEWORK
@@ -2567,6 +2587,17 @@ REQ-APP_STRUCTURE:
   source_index: requirements.yaml
   status: Implemented
   type: REQ
+REQ-ARCHIVE_DIRECTORY_PANES:
+  category: Functional
+  cross_references:
+    - ARCH-ARCHIVE_DIRECTORY_PANES
+    - IMPL-ARCHIVE_DIRECTORY_PANES
+    - REQ-ARCHIVE_DIRECTORY_PANES
+  description: Read-only archive-backed panes with virtual directory navigation and extraction
+  metadata:
+    last_updated: '2026-09-01'
+    registered: '2026-09-01'
+  name: Open Archives as Read-Only Panes
 REQ-BRANDING:
   category: Functional
   cross_references:

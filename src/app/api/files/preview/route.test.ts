@@ -1,15 +1,13 @@
 // [TEST-FILE_PREVIEW] [IMPL-FILE_PREVIEW] [REQ-FILE_PREVIEW]
-// Tests for file preview API route
+// Tests for file preview API route (text, image, validation)
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { GET } from "@/app/api/files/preview/route";
 import { NextRequest } from "next/server";
 import fs from "fs/promises";
 
-// Mock fs/promises
 vi.mock("fs/promises");
 
-// Mock logger
 vi.mock("@/lib/logger", () => ({
   logger: {
     debug: vi.fn(),
@@ -29,7 +27,6 @@ describe("File Preview API Route", () => {
   });
 
   it("returns text preview for small text file", async () => {
-    // [TEST-FILE_PREVIEW] [REQ-FILE_PREVIEW] Test: Text file preview
     const mockStats = {
       isFile: () => true,
       size: 100,
@@ -54,10 +51,9 @@ describe("File Preview API Route", () => {
   });
 
   it("returns truncated text for large text file", async () => {
-    // [TEST-FILE_PREVIEW] [REQ-FILE_PREVIEW] Test: Truncate large text files
     const mockStats = {
       isFile: () => true,
-      size: 200 * 1024, // 200KB (> 100KB limit)
+      size: 200 * 1024,
     };
 
     const mockFile = {
@@ -84,7 +80,6 @@ describe("File Preview API Route", () => {
   });
 
   it("returns image metadata for image file", async () => {
-    // [TEST-FILE_PREVIEW] [REQ-FILE_PREVIEW] Test: Image preview metadata
     const mockStats = {
       isFile: () => true,
       size: 5000,
@@ -107,31 +102,7 @@ describe("File Preview API Route", () => {
     expect(data.url).toContain("/api/files/raw");
   });
 
-  it("returns archive stub for archive file", async () => {
-    // [TEST-FILE_PREVIEW] [REQ-FILE_PREVIEW] Test: Archive preview (stub)
-    const mockStats = {
-      isFile: () => true,
-      size: 10000,
-    };
-
-    vi.mocked(fs.stat).mockResolvedValue(mockStats as never);
-
-    const request = new NextRequest(
-      new URL("http://localhost/api/files/preview?path=/test/archive.zip&type=archive")
-    );
-
-    const response = await GET(request);
-    const data = await response.json();
-
-    expect(response.status).toBe(200);
-    expect(data.type).toBe("archive");
-    expect(data.name).toBe("archive.zip");
-    expect(data.extension).toBe(".zip");
-    expect(data.message).toContain("not yet implemented");
-  });
-
   it("rejects paths with directory traversal", async () => {
-    // [TEST-FILE_PREVIEW] [REQ-FILE_PREVIEW] Test: Security - directory traversal
     const request = new NextRequest(
       new URL("http://localhost/api/files/preview?path=../../etc/passwd")
     );
@@ -144,7 +115,6 @@ describe("File Preview API Route", () => {
   });
 
   it("returns error for missing path parameter", async () => {
-    // [TEST-FILE_PREVIEW] [REQ-FILE_PREVIEW] Test: Missing required parameter
     const request = new NextRequest(
       new URL("http://localhost/api/files/preview")
     );
@@ -157,7 +127,6 @@ describe("File Preview API Route", () => {
   });
 
   it("rejects preview of directory", async () => {
-    // [TEST-FILE_PREVIEW] [REQ-FILE_PREVIEW] Test: Cannot preview directory
     const mockStats = {
       isFile: () => false,
     };

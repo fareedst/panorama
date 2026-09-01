@@ -1,0 +1,65 @@
+IMPL-ARCHIVE_DIRECTORY_PANES:
+  code_locations:
+    files:
+      - description: ArchiveSourceMeta and extended FileStat
+        path: src/lib/files.types.ts
+      - description: Format registry, manifest reader, projection, extraction
+        path: src/lib/archive/
+      - description: GET virtual locator branch and POST extract-archive-entry
+        path: src/app/api/files/route.ts
+      - description: Open archive, descend, parent, read-only flags
+        path: src/app/files/WorkspaceView.tsx
+      - description: Read-only chrome and action gating
+        path: src/app/files/components/FilePane.tsx
+    functions: []
+  cross_references:
+    - ARCH-ARCHIVE_DIRECTORY_PANES
+    - IMPL-FILE_PANE
+    - IMPL-FILES_API
+    - IMPL-WORKSPACE_VIEW
+    - REQ-ARCHIVE_DIRECTORY_PANES
+  decision: src/lib/archive/ provides locator codec, format registry, manifest reader, directory projection, and single-entry extraction. IMPL-FILES_API branches GET and POST for virtual locators. WorkspaceView opens archives, handles parent navigation from archive root, and sets read-only flags. FilePane renders archive chrome and gates context menu actions.
+  implementation_approach:
+    details:
+      - 'Tranche 1: src/lib/archive/** + locator encode/decode unit tests'
+      - 'Tranche 2: extract with immutability and cleanup tests'
+      - 'Tranche 3-4: GET/POST route branches'
+      - 'Tranche 5-6: WorkspaceView + FilePane composition'
+      - 'Tranche 7: preview route shared reader'
+    summary: 'Module tranches A-G: archive domain, extraction, listing API, extract POST, pane state, presentation, preview share'
+  metadata:
+    last_updated:
+      author: AI Agent
+      date: '2026-09-01'
+      reason: Initial pseudo-code catalog for archive directory panes
+  name: Archive Directory Panes Implementation
+  rationale:
+    benefits:
+      - Domain tests isolate safety limits and format registry
+      - Extraction immutability verified before route wiring
+    problems_solved:
+      - FileStat.path always ordinary absolute path
+      - No archive parser module
+      - No extract-archive-entry operation
+    why: Independent module validation before API and UI integration per REQ-MODULE_VALIDATION; shared reader prevents preview/pane drift.
+  related_decisions:
+    depends_on:
+      - IMPL-FILES_API
+      - IMPL-FILES_DATA
+    see_also:
+      - IMPL-FILE_PREVIEW
+      - IMPL-PANE_VOLUME_CAPACITY
+      - IMPL-WORKSPACE_MESH_BRIDGE
+  status: Planned
+  traceability:
+    architecture:
+      - ARCH-ARCHIVE_DIRECTORY_PANES
+      - ARCH-FILESYSTEM_ABSTRACTION
+      - ARCH-SERVER_CLIENT_BOUNDARY
+    code_annotations:
+      - IMPL-ARCHIVE_DIRECTORY_PANES
+      - REQ-ARCHIVE_DIRECTORY_PANES
+    requirements:
+      - REQ-ARCHIVE_DIRECTORY_PANES
+    tests:
+      - src/lib/archive/**/*.test.ts

@@ -1,0 +1,55 @@
+REQ-ARCHIVE_DIRECTORY_PANES:
+  category: Functional
+  description: Supported archives open as read-only virtual directories in file manager panes. Users browse archive entries, participate in cross-pane comparison, and extract individual file entries to ordinary filesystem destinations. The source archive file is never mutated.
+  name: Open Archives as Read-Only Panes
+  priority: P1
+  rationale:
+    benefits:
+      - Layered read-only enforcement in UI and API
+      - Shared manifest reader aligns preview and pane listing
+      - Virtual locator round-trips API, pane state, mesh restore, and URL deep links
+    problems_solved:
+      - Archives are opaque files with no in-pane navigation
+      - No safe extraction path from archive entries
+      - Preview archive type returns stub only
+    why: Archives are common in cross-volume workflows; treating them as navigable read-only directories enables comparison and selective extraction without repacking or client-side parsing.
+  related_requirements:
+    depends_on:
+      - REQ-COPY_OPERATIONS
+      - REQ-CROSS_PANE_COMPARISON
+      - REQ-DIRECTORY_NAVIGATION
+      - REQ-FILE_LISTING
+      - REQ-FILE_OPERATIONS
+      - REQ-FILE_PREVIEW
+      - REQ-PANE_VOLUME_CAPACITY
+      - REQ-WORKSPACE_MESH_BRIDGE
+    related_to:
+      - REQ-BULK_FILE_OPS
+      - REQ-FILE_PREVIEW
+  satisfaction_criteria:
+    - criterion: Archive entries participate in cross-pane comparison on basename, size, and mtime
+    - criterion: Archive pane is visibly and enforceably read-only — no API or UI path mutates the archive file
+    - criterion: Missing archive on mesh restore shows warning and recoverable degraded pane
+    - criterion: Operator can open supported archives and browse root and subdirectories in a pane
+    - criterion: Preview archive type shows top-level entries via shared manifest reader
+    - criterion: Selected archive file entry extracts to an ordinary folder with best-effort mode and mtime; archive bytes unchanged
+    - criterion: Unsupported, malformed, unsafe, or oversized archives fail with stable error codes without raw parser errors
+  status: Planned
+  traceability:
+    architecture:
+      - ARCH-ARCHIVE_DIRECTORY_PANES
+      - ARCH-FILE_OPERATIONS_API
+      - ARCH-FILESYSTEM_ABSTRACTION
+      - ARCH-SERVER_CLIENT_BOUNDARY
+    implementation:
+      - IMPL-ARCHIVE_DIRECTORY_PANES
+      - IMPL-FILE_PANE
+      - IMPL-FILE_PREVIEW
+      - IMPL-FILES_API
+      - IMPL-WORKSPACE_MESH_BRIDGE
+      - IMPL-WORKSPACE_VIEW
+    tests:
+      - src/app/api/files/route.test.ts
+      - src/app/files/components/FilePane.test.tsx
+      - src/app/files/WorkspaceView.archive.test.tsx
+      - src/lib/archive/**/*.test.ts

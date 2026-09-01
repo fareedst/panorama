@@ -1,0 +1,2 @@
+{"schemaVersion":"adversarial-inquiry-finding.v1","kind":"finding","finding":{"blockRevision":"report","dimension":"semantic_fidelity","evidenceRefs":[],"id":"d86d401a4c1b9bba","lifecycle":"observed","message":"Specification statement has no corresponding evidence.","obligationId":"IMPL-ARCHIVE_DIRECTORY_PANES#EXTRACT_ARCHIVE_ENTRY#block","proofBoundary":"semantic_fidelity","statementId":"s1"}}
+{"schemaVersion":"adversarial-inquiry-finding.v1","kind":"duplicate_link","link":["d86d401a4c1b9bba","d86d401a4c1b9bba"]}

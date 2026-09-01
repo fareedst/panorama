@@ -26,6 +26,7 @@ Use [`../methodology/vocab/routing.md`](../methodology/vocab/routing.md) for TIE
 | 2 | [pane-display-filter.md](pane-display-filter.md) | Display filter, hidden rows, filter specification |
 | 2 | [cross-pane-visibility.md](cross-pane-visibility.md) | Cross-pane visibility, hidden counts, visibility presets |
 | 2 | [cross-pane-comparison.md](cross-pane-comparison.md) | Comparison, diff coloring, comparison index |
+| 2 | [archive-pane.md](archive-pane.md) | Archive-backed pane, virtual archive path, extraction, read-only archive source |
 | 2 | [mesh-platform.md](mesh-platform.md) | Mesh, workspace snapshot, save, restore, diff |
 | 2 | [nsync-multi-target.md](nsync-multi-target.md) | NSYNC, multi-target synchronization, copy and conflict |
 

@@ -1,0 +1,209 @@
+tracker_version: checklist-tracker.v1
+request_token: REQ-ARCHIVE_DIRECTORY_PANES
+process_token: PROC-AGENT_REQ_CHECKLIST
+source_document: tied/docs/agent-req-implementation-checklist.yaml
+execution_evidence:
+  request: REQ-ARCHIVE_DIRECTORY_PANES
+  completed:
+  - refine-plan-20260901
+  - build-plan-tranche0-20260901
+  - build-plan-tranche2-20260901
+  - refine-plan-sync-tranche2-20260901
+  - build-plan-tranche3-20260901
+  - build-plan-tranche4-20260901
+  - refine-plan-sync-tranche4-20260901
+  - build-plan-tranche5-20260901
+  - build-plan-tranche6-20260901
+  - build-plan-tranche7-20260901
+  - plan-close-out-20260901
+  close_out_evidence:
+    date: '2026-09-01'
+    deferred: []
+    gates: {}
+    master_checklist: working/REQ-ARCHIVE_DIRECTORY_PANES/checklist-tracker-ARCHIVE_DIRECTORY_PANES.yaml
+steps:
+- slug: session-bootstrap
+  tracking:
+    status: completed
+    evidence_refs:
+    - tied/docs/ai-principles.md
+    - tied/vocab/routing.md
+    - tied/vocab/workspace-pane.md
+- slug: translate-sponsor-intent
+  tracking:
+    status: completed
+    evidence_refs:
+    - docs/archive-directory-panes-plan.md
+- slug: change-definition
+  tracking:
+    status: completed
+    evidence_refs:
+    - working/REQ-ARCHIVE_DIRECTORY_PANES/citdp-draft.yaml
+    - docs/archive-directory-panes-plan.md
+- slug: impact-discovery
+  tracking:
+    status: completed
+    evidence_refs:
+    - working/REQ-ARCHIVE_DIRECTORY_PANES/citdp-draft.yaml
+    - docs/archive-directory-panes-plan.md
+- slug: risk-assessment
+  tracking:
+    status: completed
+    evidence_refs:
+    - working/REQ-ARCHIVE_DIRECTORY_PANES/citdp-draft.yaml
+- slug: author-requirement
+  tracking:
+    status: completed
+    evidence_refs:
+    - tied/requirements/REQ-ARCHIVE_DIRECTORY_PANES.yaml
+- slug: author-architecture
+  tracking:
+    status: completed
+    evidence_refs:
+    - tied/architecture-decisions/ARCH-ARCHIVE_DIRECTORY_PANES.yaml
+- slug: catalog-pseudocode-contracts
+  tracking:
+    status: completed
+    evidence_refs:
+    - tied/implementation-decisions/IMPL-ARCHIVE_DIRECTORY_PANES-pseudocode.md
+- slug: flag-contradictory-specs
+  tracking:
+    status: completed
+    evidence_refs:
+    - docs/archive-directory-panes-plan.md
+- slug: flag-insufficient-specs
+  tracking:
+    status: completed
+    evidence_refs:
+    - docs/archive-directory-panes-plan.md
+- slug: resolve-pseudocode
+  tracking:
+    status: completed
+    evidence_refs:
+    - tied/implementation-decisions/IMPL-ARCHIVE_DIRECTORY_PANES-pseudocode.md
+- slug: gate-pseudocode-validation
+  tracking:
+    status: completed
+    evidence_refs:
+    - tied/implementation-decisions/IMPL-ARCHIVE_DIRECTORY_PANES-pseudocode.md
+- slug: persist-implementation-records
+  tracking:
+    status: completed
+    evidence_refs:
+    - tied/implementation-decisions/IMPL-ARCHIVE_DIRECTORY_PANES.yaml
+- slug: test-strategy
+  tracking:
+    status: completed
+    evidence_refs:
+    - working/REQ-ARCHIVE_DIRECTORY_PANES/test-strategy-outline.md
+- slug: unit-test-red
+  tracking:
+    status: completed
+    evidence_refs:
+    - src/lib/archive/archive.test.ts
+- slug: unit-test-green
+  tracking:
+    status: completed
+    evidence_refs:
+    - src/lib/archive/archive.test.ts
+- slug: three-way-alignment-unit
+  tracking:
+    status: completed
+    evidence_refs:
+    - src/lib/archive/archive.test.ts
+    - src/lib/archive/extract.ts
+    - tied/implementation-decisions/IMPL-ARCHIVE_DIRECTORY_PANES-pseudocode.md
+- slug: composition-integration
+  tracking:
+    status: completed
+    evidence_refs:
+    - src/app/files/WorkspaceView.archive.test.tsx
+    - src/lib/archive-path-client.ts
+    - src/app/files/components/FilePane.test.tsx
+    - src/app/files/components/ContextMenu.test.tsx
+    - src/app/api/files/preview/archive-preview.route.test.ts
+- slug: unit-refactor
+  tracking:
+    status: not_applicable
+    policy: no refactor tranche required; modules validated independently per test strategy
+    rationale: See test-strategy-outline.md module validation table
+- slug: end-to-end-ui
+  tracking:
+    status: not_applicable
+    policy: component and composition tests cover archive navigation and extract affordances
+    rationale: See test-strategy-outline.md E2E policy
+- slug: sub-adversarial-inquiry-pass
+  tracking:
+    status: completed
+    evidence_refs:
+    - working/REQ-ARCHIVE_DIRECTORY_PANES/adversarial-inquiry/phase-pre_implementation/
+    - working/REQ-ARCHIVE_DIRECTORY_PANES/inquiry-payload-tranche2.json
+- slug: apply-token-comments
+  tracking:
+    status: completed
+    evidence_refs:
+    - tied/implementation-decisions/IMPL-ARCHIVE_DIRECTORY_PANES-pseudocode.md
+- slug: verification-gate
+  tracking:
+    status: completed
+    evidence_refs:
+    - working/REQ-ARCHIVE_DIRECTORY_PANES/verification-2026-09-01T22-49-14-317Z.json
+    - working/REQ-ARCHIVE_DIRECTORY_PANES/adversarial-inquiry/phase-verification/
+    - docs/archive-directory-panes-plan.md
+- slug: sync-tied-stack
+  tracking:
+    status: completed
+    evidence_refs:
+    - tied/requirements/REQ-ARCHIVE_DIRECTORY_PANES.yaml
+    - tied/architecture-decisions/ARCH-ARCHIVE_DIRECTORY_PANES.yaml
+    - tied/implementation-decisions/IMPL-ARCHIVE_DIRECTORY_PANES.yaml
+- slug: user-facing-release-notes
+  tracking:
+    status: completed
+    evidence_refs:
+    - CHANGELOG.md
+- slug: persist-citdp-record
+  tracking:
+    status: completed
+    evidence_refs:
+    - tied/citdp/CITDP-ARCHIVE_DIRECTORY_PANES.yaml
+- slug: traceable-commit
+  tracking:
+    status: pending
+sub_procedures:
+- slug: sub-adversarial-inquiry-pass
+  tracking:
+    status: completed
+    evidence_refs:
+    - working/REQ-ARCHIVE_DIRECTORY_PANES/adversarial-inquiry/phase-pre_implementation/
+- slug: sub-client-yaml-styling
+  tracking:
+    status: not_applicable
+    policy: client formatter not configured
+- slug: sub-yaml-edit-loop
+  tracking:
+    status: completed
+    evidence_refs:
+    - tied/requirements/REQ-ARCHIVE_DIRECTORY_PANES.yaml
+- slug: sub-pseudocode-validation-pass
+  tracking:
+    status: completed
+    evidence_refs:
+    - tied/implementation-decisions/IMPL-ARCHIVE_DIRECTORY_PANES-pseudocode.md
+- slug: sub-vocabulary-sync
+  tracking:
+    status: completed
+    evidence_refs:
+    - tied/vocab/archive-pane.md
+    - tied/vocab/workspace-pane.md
+- slug: sub-leap-micro-cycle
+  tracking:
+    status: completed
+    evidence_refs:
+    - docs/archive-directory-panes-plan.md
+    - tied/implementation-decisions/IMPL-ARCHIVE_DIRECTORY_PANES-pseudocode.md
+- slug: sub-evidence-chain-profile
+  tracking:
+    status: not_applicable
+    policy: no evidence-chain profile required for this feature slice
+    rationale: Integrated inquiry artifacts satisfy external-input assurance at advisory gate policy

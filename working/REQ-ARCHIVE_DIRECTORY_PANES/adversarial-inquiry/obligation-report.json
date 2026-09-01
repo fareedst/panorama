@@ -1,0 +1,377 @@
+{
+  "canonicalMutation": false,
+  "findings": [
+    {
+      "direction": "B",
+      "id": "0758d872b127a6ff",
+      "kind": "completeness",
+      "message": "Specification statement has no corresponding evidence.",
+      "proofBoundary": "semantic_fidelity",
+      "statementId": "stmt-immutability"
+    },
+    {
+      "direction": "B",
+      "evidenceRefs": [
+        "prod-closeout"
+      ],
+      "id": "0bcb7f99cb82abcf",
+      "kind": "reliability",
+      "message": "Evidence order differs from the specified order.",
+      "proofBoundary": "semantic_fidelity",
+      "source": {},
+      "statementId": "stmt-preview-share"
+    },
+    {
+      "direction": "A",
+      "evidenceRefs": [
+        "test-closeout"
+      ],
+      "id": "0e2f5ef1f8be0475",
+      "kind": "reliability",
+      "message": "Evidence belongs to a different block revision.",
+      "proofBoundary": "semantic_fidelity",
+      "source": {},
+      "statementId": "stmt-immutability"
+    },
+    {
+      "direction": "B",
+      "evidenceRefs": [
+        "prod-mesh"
+      ],
+      "id": "1c17b37c0877bdb6",
+      "kind": "reliability",
+      "message": "Evidence order differs from the specified order.",
+      "proofBoundary": "semantic_fidelity",
+      "source": {},
+      "statementId": "stmt-virtual-locator"
+    },
+    {
+      "direction": "B",
+      "evidenceRefs": [
+        "prod-mesh"
+      ],
+      "id": "1dffb967f5ad1a9c",
+      "kind": "reliability",
+      "message": "Evidence is marked unreliable.",
+      "proofBoundary": "semantic_fidelity",
+      "source": {},
+      "statementId": "stmt-virtual-locator"
+    },
+    {
+      "direction": "B",
+      "evidenceRefs": [
+        "prod-extract"
+      ],
+      "id": "3d152bf5f635c82b",
+      "kind": "reliability",
+      "message": "Evidence belongs to a different block revision.",
+      "proofBoundary": "semantic_fidelity",
+      "source": {},
+      "statementId": "stmt-safe-extract"
+    },
+    {
+      "direction": "A",
+      "evidenceRefs": [
+        "test-preview"
+      ],
+      "id": "43cc8c2b42c35658",
+      "kind": "reliability",
+      "message": "Evidence is marked unreliable.",
+      "proofBoundary": "semantic_fidelity",
+      "source": {},
+      "statementId": "stmt-preview-share"
+    },
+    {
+      "direction": "A",
+      "evidenceRefs": [
+        "test-listing"
+      ],
+      "id": "48b1d763017e74c9",
+      "kind": "reliability",
+      "message": "Evidence is marked unreliable.",
+      "proofBoundary": "semantic_fidelity",
+      "source": {},
+      "statementId": "stmt-virtual-locator"
+    },
+    {
+      "direction": "B",
+      "evidenceRefs": [
+        "prod-closeout"
+      ],
+      "id": "52b3dd495587b038",
+      "kind": "reliability",
+      "message": "Evidence is marked unreliable.",
+      "proofBoundary": "semantic_fidelity",
+      "source": {},
+      "statementId": "stmt-preview-share"
+    },
+    {
+      "direction": "B",
+      "evidenceRefs": [
+        "prod-closeout"
+      ],
+      "id": "5b7749386d8a9e8e",
+      "kind": "reliability",
+      "message": "Evidence belongs to a different block revision.",
+      "proofBoundary": "semantic_fidelity",
+      "source": {},
+      "statementId": "stmt-preview-share"
+    },
+    {
+      "direction": "B",
+      "evidenceRefs": [
+        "prod-extract"
+      ],
+      "id": "5dc4b035bb507ba8",
+      "kind": "reliability",
+      "message": "Evidence is marked unreliable.",
+      "proofBoundary": "semantic_fidelity",
+      "source": {},
+      "statementId": "stmt-safe-extract"
+    },
+    {
+      "direction": "A",
+      "evidenceRefs": [
+        "test-preview"
+      ],
+      "id": "87c6a209539f1a60",
+      "kind": "reliability",
+      "message": "Evidence order differs from the specified order.",
+      "proofBoundary": "semantic_fidelity",
+      "source": {},
+      "statementId": "stmt-preview-share"
+    },
+    {
+      "direction": "A",
+      "evidenceRefs": [
+        "test-closeout"
+      ],
+      "id": "af6b248ab37721b4",
+      "kind": "reliability",
+      "message": "Evidence is marked unreliable.",
+      "proofBoundary": "semantic_fidelity",
+      "source": {},
+      "statementId": "stmt-immutability"
+    },
+    {
+      "direction": "A",
+      "evidenceRefs": [
+        "test-listing"
+      ],
+      "id": "b5e7648a8d91b23d",
+      "kind": "reliability",
+      "message": "Evidence order differs from the specified order.",
+      "proofBoundary": "semantic_fidelity",
+      "source": {},
+      "statementId": "stmt-virtual-locator"
+    },
+    {
+      "direction": "A",
+      "id": "b77aedf66124f706",
+      "kind": "completeness",
+      "message": "Specification statement has no corresponding evidence.",
+      "proofBoundary": "semantic_fidelity",
+      "statementId": "stmt-reject-symlink"
+    },
+    {
+      "direction": "A",
+      "id": "c8e05dba41775002",
+      "kind": "completeness",
+      "message": "Specification statement has no corresponding evidence.",
+      "proofBoundary": "semantic_fidelity",
+      "statementId": "stmt-safe-extract"
+    },
+    {
+      "direction": "A",
+      "evidenceRefs": [
+        "test-preview"
+      ],
+      "id": "cd11b83d1a88bdf5",
+      "kind": "reliability",
+      "message": "Evidence belongs to a different block revision.",
+      "proofBoundary": "semantic_fidelity",
+      "source": {},
+      "statementId": "stmt-preview-share"
+    },
+    {
+      "direction": "B",
+      "id": "ea714c9072a12227",
+      "kind": "completeness",
+      "message": "Specification statement has no corresponding evidence.",
+      "proofBoundary": "semantic_fidelity",
+      "statementId": "stmt-reject-symlink"
+    },
+    {
+      "direction": "A",
+      "evidenceRefs": [
+        "test-listing"
+      ],
+      "id": "ed7be453bc5675b5",
+      "kind": "reliability",
+      "message": "Evidence belongs to a different block revision.",
+      "proofBoundary": "semantic_fidelity",
+      "source": {},
+      "statementId": "stmt-virtual-locator"
+    },
+    {
+      "direction": "B",
+      "evidenceRefs": [
+        "prod-mesh"
+      ],
+      "id": "f64270536c6bfbcd",
+      "kind": "reliability",
+      "message": "Evidence belongs to a different block revision.",
+      "proofBoundary": "semantic_fidelity",
+      "source": {},
+      "statementId": "stmt-virtual-locator"
+    }
+  ],
+  "graph": {
+    "edges": [
+      {
+        "from": "REQ-ARCHIVE_DIRECTORY_PANES#close-out",
+        "kind": "criterion_constraint",
+        "to": "constraint:RISK-001"
+      },
+      {
+        "from": "REQ-ARCHIVE_DIRECTORY_PANES#close-out",
+        "kind": "criterion_constraint",
+        "to": "constraint:RISK-002"
+      },
+      {
+        "from": "REQ-ARCHIVE_DIRECTORY_PANES#close-out",
+        "kind": "criterion_constraint",
+        "to": "constraint:RISK-003"
+      },
+      {
+        "from": "REQ-ARCHIVE_DIRECTORY_PANES#close-out",
+        "kind": "criterion_constraint",
+        "to": "constraint:RISK-005"
+      },
+      {
+        "from": "REQ-ARCHIVE_DIRECTORY_PANES#close-out",
+        "kind": "criterion_constraint",
+        "to": "constraint:RISK-006"
+      },
+      {
+        "from": "REQ-ARCHIVE_DIRECTORY_PANES#close-out",
+        "kind": "criterion_constraint",
+        "to": "constraint:RISK-009"
+      },
+      {
+        "from": "REQ-ARCHIVE_DIRECTORY_PANES#close-out",
+        "kind": "criterion_constraint",
+        "to": "constraint:RISK-010"
+      },
+      {
+        "from": "constraint:RISK-001",
+        "kind": "constraint_block",
+        "to": "IMPL-ARCHIVE_DIRECTORY_PANES#EXTRACT_ARCHIVE_ENTRY#block"
+      },
+      {
+        "from": "constraint:RISK-002",
+        "kind": "constraint_block",
+        "to": "IMPL-ARCHIVE_DIRECTORY_PANES#PROJECT_ARCHIVE_DIRECTORY#block"
+      },
+      {
+        "from": "constraint:RISK-003",
+        "kind": "constraint_block",
+        "to": "IMPL-ARCHIVE_DIRECTORY_PANES#EXTRACT_ARCHIVE_ENTRY#block"
+      },
+      {
+        "from": "constraint:RISK-005",
+        "kind": "constraint_block",
+        "to": "IMPL-ARCHIVE_DIRECTORY_PANES#DECODE_VIRTUAL_ARCHIVE_PATH#block"
+      },
+      {
+        "from": "constraint:RISK-006",
+        "kind": "constraint_block",
+        "to": "IMPL-WORKSPACE_MESH_BRIDGE#MESH_RESTORE_ARCHIVE_PATH#block"
+      },
+      {
+        "from": "constraint:RISK-009",
+        "kind": "constraint_block",
+        "to": "IMPL-FILE_PREVIEW#PREVIEW_ARCHIVE_MANIFEST#block"
+      },
+      {
+        "from": "constraint:RISK-010",
+        "kind": "constraint_block",
+        "to": "IMPL-ARCHIVE_DIRECTORY_PANES#EXTRACT_ARCHIVE_ENTRY#block"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "constraint:RISK-001",
+        "kind": "constraint"
+      },
+      {
+        "id": "constraint:RISK-002",
+        "kind": "constraint"
+      },
+      {
+        "id": "constraint:RISK-003",
+        "kind": "constraint"
+      },
+      {
+        "id": "constraint:RISK-005",
+        "kind": "constraint"
+      },
+      {
+        "id": "constraint:RISK-006",
+        "kind": "constraint"
+      },
+      {
+        "id": "constraint:RISK-009",
+        "kind": "constraint"
+      },
+      {
+        "id": "constraint:RISK-010",
+        "kind": "constraint"
+      },
+      {
+        "id": "IMPL-ARCHIVE_DIRECTORY_PANES#DECODE_VIRTUAL_ARCHIVE_PATH#block",
+        "kind": "block",
+        "revision": "close-out-verification-20260901"
+      },
+      {
+        "id": "IMPL-ARCHIVE_DIRECTORY_PANES#EXTRACT_ARCHIVE_ENTRY#block",
+        "kind": "block",
+        "revision": "close-out-verification-20260901"
+      },
+      {
+        "id": "IMPL-ARCHIVE_DIRECTORY_PANES#PROJECT_ARCHIVE_DIRECTORY#block",
+        "kind": "block",
+        "revision": "close-out-verification-20260901"
+      },
+      {
+        "id": "IMPL-FILE_PREVIEW#PREVIEW_ARCHIVE_MANIFEST#block",
+        "kind": "block",
+        "revision": "close-out-verification-20260901"
+      },
+      {
+        "id": "IMPL-WORKSPACE_MESH_BRIDGE#MESH_RESTORE_ARCHIVE_PATH#block",
+        "kind": "block",
+        "revision": "close-out-verification-20260901"
+      },
+      {
+        "id": "REQ-ARCHIVE_DIRECTORY_PANES#close-out",
+        "kind": "criterion",
+        "revision": "close-out-verification-20260901"
+      }
+    ],
+    "projectId": "panorama"
+  },
+  "projectId": "panorama",
+  "proofBoundaries": [
+    "semantic_fidelity"
+  ],
+  "readOnly": true,
+  "schemaVersion": "adversarial-inquiry-report.v1",
+  "scope": [
+    "IMPL-ARCHIVE_DIRECTORY_PANES#DECODE_VIRTUAL_ARCHIVE_PATH#block",
+    "IMPL-ARCHIVE_DIRECTORY_PANES#EXTRACT_ARCHIVE_ENTRY#block",
+    "IMPL-ARCHIVE_DIRECTORY_PANES#PROJECT_ARCHIVE_DIRECTORY#block",
+    "IMPL-FILE_PREVIEW#PREVIEW_ARCHIVE_MANIFEST#block",
+    "IMPL-WORKSPACE_MESH_BRIDGE#MESH_RESTORE_ARCHIVE_PATH#block"
+  ]
+}

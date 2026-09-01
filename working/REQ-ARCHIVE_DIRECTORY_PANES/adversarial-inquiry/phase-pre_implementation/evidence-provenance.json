@@ -1,0 +1,11 @@
+{
+  "provenance": {
+    "proofBoundaries": [
+      "semantic_fidelity"
+    ],
+    "scope": [
+      "IMPL-ARCHIVE_DIRECTORY_PANES#EXTRACT_ARCHIVE_ENTRY#block"
+    ]
+  },
+  "schemaVersion": "adversarial-inquiry-provenance.v1"
+}

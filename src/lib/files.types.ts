@@ -12,6 +12,15 @@ export interface FileStat {
   size: number;
   mtime: Date | string;
   extension: string;
+  /** Present when row is archive-backed virtual entry [REQ-ARCHIVE_DIRECTORY_PANES] */
+  archiveSource?: {
+    archivePath: string;
+    entryPath: string;
+    isArchiveRoot: boolean;
+    isVirtual: true;
+    format: string;
+    readOnly: true;
+  };
 }
 
 // [IMPL-PANE_VOLUME_CAPACITY] [ARCH-PANE_VOLUME_CAPACITY] [REQ-PANE_VOLUME_CAPACITY]: how — shared client-safe contract carries explicit volume capacity status without exposing filesystem errors

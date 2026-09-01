@@ -855,4 +855,127 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
       "Storage: unavailable",
     );
   });
+
+  // [RENDER_ARCHIVE_READ_ONLY] [REQ-ARCHIVE_DIRECTORY_PANES] [IMPL-FILE_PANE] [IMPL-ARCHIVE_DIRECTORY_PANES]
+  describe("archive read-only presentation [REQ-ARCHIVE_DIRECTORY_PANES]", () => {
+    const archiveLocator =
+      "@archive/v1/eyJhIjoiL2Rvd25sb2Fkcy9zYW1wbGUuemlwIiwiZSI6IiJ9";
+    const archiveEntry: FileStat = {
+      name: "readme.txt",
+      path: `${archiveLocator}-entry`,
+      isDirectory: false,
+      size: 12,
+      mtime: new Date("2024-01-01"),
+      extension: "txt",
+      archiveSource: {
+        archivePath: "/downloads/sample.zip",
+        entryPath: "readme.txt",
+        isArchiveRoot: false,
+        isVirtual: true,
+        format: "zip",
+        readOnly: true,
+      },
+    };
+
+    it("shows Archive header label and pane-archive-readonly badge", () => {
+      render(
+        <FilePane
+          path={archiveLocator}
+          files={[archiveEntry]}
+          cursor={0}
+          marks={new Set()}
+          bounds={mockBounds}
+          focused={true}
+          isArchiveReadOnly
+          onNavigate={mockOnNavigate}
+          onCursorMove={mockOnCursorMove}
+          columns={mockColumns}
+          fileTypes={mockFileTypes}
+        />,
+      );
+
+      expect(screen.getByTestId("pane-archive-readonly")).toHaveTextContent("Archive");
+      expect(screen.getByText(/Archive: sample\.zip/)).toBeInTheDocument();
+    });
+
+    it("shows Extract in context menu and hides Delete for archive file rows", () => {
+      render(
+        <FilePane
+          path={archiveLocator}
+          files={[archiveEntry]}
+          cursor={0}
+          marks={new Set()}
+          bounds={mockBounds}
+          focused={true}
+          isArchiveReadOnly
+          onNavigate={mockOnNavigate}
+          onCursorMove={mockOnCursorMove}
+          onCopy={vi.fn()}
+          onMove={vi.fn()}
+          onDelete={vi.fn()}
+          onRename={vi.fn()}
+          onExtract={vi.fn()}
+          columns={mockColumns}
+          fileTypes={mockFileTypes}
+        />,
+      );
+
+      fireEvent.contextMenu(screen.getByText("readme.txt"));
+
+      expect(screen.getByTestId("archive-extract-menu-item")).toBeInTheDocument();
+      expect(screen.queryByText(/^Delete/)).not.toBeInTheDocument();
+      expect(screen.queryByText(/^Move/)).not.toBeInTheDocument();
+      expect(screen.queryByText(/^Copy \(/)).not.toBeInTheDocument();
+    });
+
+    it("disables row drag when isArchiveReadOnly", () => {
+      const { container } = render(
+        <FilePane
+          path={archiveLocator}
+          files={[archiveEntry]}
+          cursor={0}
+          marks={new Set()}
+          bounds={mockBounds}
+          focused={true}
+          isArchiveReadOnly
+          onNavigate={mockOnNavigate}
+          onCursorMove={mockOnCursorMove}
+          columns={mockColumns}
+          fileTypes={mockFileTypes}
+        />,
+      );
+
+      const row = container.querySelector('[data-testid="file-row-grid"]');
+      expect(row?.getAttribute("draggable")).toBe("false");
+    });
+
+    it("shows empty archive directory message with read-only chrome", () => {
+      render(
+        <FilePane
+          path={archiveLocator}
+          files={[]}
+          cursor={0}
+          marks={new Set()}
+          bounds={mockBounds}
+          focused={true}
+          isArchiveReadOnly
+          onNavigate={mockOnNavigate}
+          onCursorMove={mockOnCursorMove}
+          columns={mockColumns}
+          fileTypes={mockFileTypes}
+          volumeStats={{
+            totalBytes: 1000,
+            availableBytes: 500,
+            freePercent: 50,
+            deviceId: 1,
+            sourcePath: "/downloads/sample.zip",
+            status: "available",
+          }}
+        />,
+      );
+
+      expect(screen.getByText("Empty archive directory")).toBeInTheDocument();
+      expect(screen.getByTestId("pane-archive-readonly")).toBeInTheDocument();
+    });
+  });
 });

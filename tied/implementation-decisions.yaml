@@ -1,3 +1,7 @@
+IMPL-ARCHIVE_DIRECTORY_PANES:
+  detail_file: implementation-decisions/IMPL-ARCHIVE_DIRECTORY_PANES.yaml
+  name: Archive Directory Panes Implementation
+  status: Active
 IMPL-BUILD_SCRIPTS:
   code_locations:
     files:
@@ -1156,7 +1160,7 @@ IMPL-FILE_PREVIEW:
     see_also:
       - IMPL-FILES_API
     supersedes: []
-  status: Implemented
+  status: Active
   traceability:
     architecture:
       - ARCH-PREVIEW_SYSTEM
@@ -1347,7 +1351,7 @@ IMPL-FILES_API:
       - IMPL-FILES_DATA
       - IMPL-WORKSPACE_VIEW
     supersedes: []
-  status: Implemented
+  status: Active
   traceability:
     architecture:
       - ARCH-FILE_OPERATIONS_API

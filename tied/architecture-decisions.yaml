@@ -53,6 +53,10 @@ ARCH-APP_ROUTER:
     requirements:
       - REQ-APP_STRUCTURE
     tests: []
+ARCH-ARCHIVE_DIRECTORY_PANES:
+  detail_file: architecture-decisions/ARCH-ARCHIVE_DIRECTORY_PANES.yaml
+  name: Archive-Backed Pane Architecture
+  status: Active
 ARCH-BATCH_OPERATIONS:
   alternatives_considered:
     - cons:

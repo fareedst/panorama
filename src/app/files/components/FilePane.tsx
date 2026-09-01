@@ -32,6 +32,7 @@ import { CrossPaneVisibilitySelector } from "./CrossPaneVisibilitySelector";
 import type { CrossPaneVisibilityPreset } from "@/lib/cross-pane-visibility.types";
 import type { FileTypesMap } from "@/lib/file-type-config";
 import { FileTypeIcon } from "./FileTypeIcon";
+import { decodeVirtualArchivePath } from "@/lib/archive-path-client";
 
 interface FilePaneProps {
   /** Current directory path */
@@ -48,8 +49,16 @@ interface FilePaneProps {
   bounds: PaneBounds;
   /** Whether this pane has focus */
   focused: boolean;
+  /** [IMPL-ARCHIVE_DIRECTORY_PANES] [REQ-ARCHIVE_DIRECTORY_PANES] Read-only archive-backed pane */
+  isArchiveReadOnly?: boolean;
   /** Handler for directory navigation (re-root base) */
   onNavigate: (newPath: string) => void;
+  /** [OPEN_ARCHIVE_IN_PANE] [IMPL-WORKSPACE_VIEW] Activate file row (open archive or descend) */
+  onFileActivate?: (file: FileStat) => void;
+  /** [RENDER_ARCHIVE_READ_ONLY] [REQ-ARCHIVE_DIRECTORY_PANES] Extract archive entry to destination pane */
+  onExtract?: (file: FileStat) => void;
+  /** [RENDER_ARCHIVE_READ_ONLY] Warning when virtual archive locator or listing is invalid */
+  archiveLocatorWarning?: string | null;
   /** [IMPL-DIRECTORY_TREE] [REQ-DIRECTORY_TREE] Toggle tree expand/collapse for directory */
   onToggleExpand?: (dirPath: string) => void;
   /** Handler for cursor movement */
@@ -150,6 +159,10 @@ export default function FilePane({
   volumeStats = null,
   bounds,
   focused,
+  isArchiveReadOnly = false,
+  onFileActivate,
+  onExtract,
+  archiveLocatorWarning = null,
   onToggleExpand,
   onCursorMove,
   onToggleMark,
@@ -240,6 +253,10 @@ export default function FilePane({
   };
   
   const handleFileDoubleClick = (file: FileStat) => {
+    if (onFileActivate) {
+      onFileActivate(file);
+      return;
+    }
     if (file.isDirectory && onToggleExpand) {
       onToggleExpand(file.path);
     }
@@ -270,6 +287,10 @@ export default function FilePane({
   // [IMPL-MOUSE_SUPPORT] [ARCH-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION]
   // HTML5 Drag-and-Drop
   const handleDragStart = (e: React.DragEvent, file: FileStat, index: number) => {
+    if (isArchiveReadOnly) {
+      e.preventDefault();
+      return;
+    }
     // Move cursor to dragged file
     if (index !== cursor) {
       onCursorMove(index);
@@ -309,6 +330,7 @@ export default function FilePane({
   };
 
   const handleDragOver = (e: React.DragEvent) => {
+    if (isArchiveReadOnly) return;
     e.preventDefault();
     e.dataTransfer.dropEffect = e.ctrlKey ? "copy" : "move";
     setDragOver(true);
@@ -319,6 +341,7 @@ export default function FilePane({
   };
 
   const handleDragDrop = (e: React.DragEvent) => {
+    if (isArchiveReadOnly) return;
     e.preventDefault();
     setDragOver(false);
 
@@ -475,6 +498,18 @@ export default function FilePane({
     }
   };
   
+  const archiveHostBasename = useMemo(() => {
+    if (!isArchiveReadOnly) return null;
+    try {
+      const decoded = decodeVirtualArchivePath(path);
+      return (
+        decoded.archivePath.split("/").filter(Boolean).pop() ?? decoded.archivePath
+      );
+    } catch {
+      return null;
+    }
+  }, [isArchiveReadOnly, path]);
+
   // [IMPL-RESPONSIVE_CLASSES] [ARCH-RESPONSIVE_FIRST] [REQ-RESPONSIVE_DESIGN]: FilePane uses flex flex-col so header path bar file grid and footer stack vertically within pane bounds
   return (
     <div
@@ -508,7 +543,27 @@ export default function FilePane({
         ${focused ? "text-blue-600 dark:text-blue-400" : "text-zinc-600 dark:text-zinc-400"}
       `}>
         <div className="flex items-center truncate w-full">
-        <span className="flex-1 truncate">{path}</span>
+        <span className="flex-1 truncate" title={path}>
+          {archiveHostBasename ? `Archive: ${archiveHostBasename}` : path}
+        </span>
+        {isArchiveReadOnly && (
+          <span
+            data-testid="pane-archive-readonly"
+            className="ml-2 px-2 py-0.5 text-xs bg-orange-100 dark:bg-orange-900/40 text-orange-800 dark:text-orange-200 rounded font-medium flex-shrink-0"
+            aria-label={`Read-only archive pane${archiveHostBasename ? `: ${archiveHostBasename}` : ""}`}
+          >
+            Archive
+          </span>
+        )}
+        {archiveLocatorWarning && (
+          <span
+            data-testid="archive-locator-invalid-warning"
+            className="ml-2 px-2 py-0.5 text-xs bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200 rounded font-medium flex-shrink-0"
+            role="status"
+          >
+            {archiveLocatorWarning}
+          </span>
+        )}
         {/* [REQ-LINKED_PANES] [IMPL-LINKED_NAV] Link indicator */}
         {linked && (
           <span className="ml-2 px-2 py-0.5 text-xs bg-blue-500 dark:bg-blue-400 text-white dark:text-zinc-900 rounded-full font-medium flex-shrink-0">
@@ -582,7 +637,11 @@ export default function FilePane({
       <div ref={fileListRef} className="flex-1 overflow-y-auto">
         {files.length === 0 ? (
           <div className="p-4 text-center text-zinc-500 dark:text-zinc-400">
-            {rawFileCount > 0 ? filterEmptyMessage : "Empty directory"}
+            {rawFileCount > 0
+              ? filterEmptyMessage
+              : isArchiveReadOnly
+                ? "Empty archive directory"
+                : "Empty directory"}
           </div>
         ) : (
           <div className="font-mono text-sm" data-testid="file-list-table">
@@ -594,7 +653,7 @@ export default function FilePane({
               return (
                 <div
                   key={file.path}
-                  draggable={true}
+                  draggable={!isArchiveReadOnly}
                   onDragStart={(e) => handleDragStart(e, file, index)}
                   className={`
                     px-3 py-1 grid items-center cursor-pointer
@@ -698,31 +757,44 @@ export default function FilePane({
           file={contextMenu.file}
           marks={marks}
           onClose={() => setContextMenu(null)}
-          onCopy={onCopy}
-          onMove={onMove}
-          onDelete={onDelete}
-          onRename={onRename}
+          isArchiveReadOnly={isArchiveReadOnly}
+          onExtract={
+            isArchiveReadOnly &&
+            onExtract &&
+            !contextMenu.file.isDirectory &&
+            contextMenu.file.archiveSource
+              ? () => onExtract(contextMenu.file)
+              : undefined
+          }
+          onCopy={isArchiveReadOnly ? undefined : onCopy}
+          onMove={isArchiveReadOnly ? undefined : onMove}
+          onDelete={isArchiveReadOnly ? undefined : onDelete}
+          onRename={isArchiveReadOnly ? undefined : onRename}
           onSetBaseDirectory={
-            contextMenu.file.isDirectory && onSetBaseDirectory
+            !isArchiveReadOnly &&
+            contextMenu.file.isDirectory &&
+            onSetBaseDirectory
               ? () => onSetBaseDirectory(contextMenu.file.path)
               : undefined
           }
           onRenameRegex={
-            onRenameRegex
+            !isArchiveReadOnly && onRenameRegex
               ? () => onRenameRegex(contextMenu.file, new Set(marks))
               : undefined
           }
           onTouch={
-            onTouch
+            !isArchiveReadOnly && onTouch
               ? () => onTouch(contextMenu.file, new Set(marks))
               : undefined
           }
           onExecute={
-            onExecute
+            !isArchiveReadOnly && onExecute
               ? () => onExecute(contextMenu.file, new Set(marks))
               : undefined
           }
-          onMakeDirectory={onMakeDirectory ? () => onMakeDirectory() : undefined}
+          onMakeDirectory={
+            !isArchiveReadOnly && onMakeDirectory ? () => onMakeDirectory() : undefined
+          }
           setBaseDirectoryMenuLabel={setBaseDirectoryMenuLabel}
           touchMenuLabel={touchMenuLabel}
           executeMenuLabel={executeMenuLabel}

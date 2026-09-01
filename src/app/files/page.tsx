@@ -2,7 +2,11 @@
 // [IMPL-PANE_MANAGEMENT] [ARCH-PANE_LIFECYCLE] [REQ-MULTI_PANE_LAYOUT]
 // [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE]: Restore workspace from ?meshId=
 
-import { listDirectory, getUserHomeDirectory, sortFiles as sortFilesData } from "@/lib/files.data";
+import { getUserHomeDirectory, sortFiles as sortFilesData } from "@/lib/files.data";
+import {
+  listDirectoryForRequestPath,
+  volumeStatsSourcePath,
+} from "@/lib/directory-listing";
 import { getVolumeStats } from "@/lib/volume-stats";
 import { getFilesConfig, getThemeConfig, DEFAULT_FILE_TYPES } from "@/lib/config";
 import WorkspaceView, {
@@ -100,8 +104,14 @@ export default async function FilesPage({
           record.mesh.description ?? "",
           restoreWarning,
         );
-        const bundle = await buildWorkspaceRestoreBundle(limited, listDirectory);
+        const bundle = await buildWorkspaceRestoreBundle(limited, listDirectoryForRequestPath);
         initialPanes.push(...bundle.initialPanes);
+        if (bundle.restoreWarnings?.length) {
+          const archiveWarn = bundle.restoreWarnings.join(" ");
+          restoreWarning = restoreWarning
+            ? `${restoreWarning} ${archiveWarn}`
+            : archiveWarn;
+        }
         restoreLayout = bundle.restoreLayout;
         restoreUi = bundle.restoreUi;
         restorePaneMeta = bundle.restorePaneMeta;
@@ -126,9 +136,9 @@ export default async function FilesPage({
   if (initialPanes.length === 0 && !meshRestorePending) {
     if (!meshId && panesQuery === "1" && pane0Query) {
       const panePath = pane0Query;
-      const files = await listDirectory(panePath);
+      const files = await listDirectoryForRequestPath(panePath);
       const sortedFiles = sortFilesData(files, "Name", true);
-      const volumeStats = await getVolumeStats(panePath);
+      const volumeStats = await getVolumeStats(volumeStatsSourcePath(panePath));
       initialPanes.push({
         path: panePath,
         files: sortedFiles,
@@ -136,9 +146,9 @@ export default async function FilesPage({
       });
     } else if (!meshId && paneDeepLinkPaths.length > 0) {
       for (const panePath of paneDeepLinkPaths) {
-        const files = await listDirectory(panePath);
+        const files = await listDirectoryForRequestPath(panePath);
         const sortedFiles = sortFilesData(files, "Name", true);
-        const volumeStats = await getVolumeStats(panePath);
+        const volumeStats = await getVolumeStats(volumeStatsSourcePath(panePath));
         initialPanes.push({
           path: panePath,
           files: sortedFiles,
@@ -161,13 +171,13 @@ export default async function FilesPage({
           }
         }
 
-        const files = await listDirectory(panePath);
+        const files = await listDirectoryForRequestPath(panePath);
         const sortedFiles = sortFilesData(files, "Name", true);
 
         initialPanes.push({
           path: panePath,
           files: sortedFiles,
-          volumeStats: await getVolumeStats(panePath),
+          volumeStats: await getVolumeStats(volumeStatsSourcePath(panePath)),
         });
       }
     }
@@ -177,7 +187,7 @@ export default async function FilesPage({
   await Promise.all(
     initialPanes.map(async (pane) => {
       if (!pane.volumeStats) {
-        pane.volumeStats = await getVolumeStats(pane.path);
+        pane.volumeStats = await getVolumeStats(volumeStatsSourcePath(pane.path));
       }
     }),
   );

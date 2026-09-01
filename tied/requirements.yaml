@@ -171,6 +171,12 @@ REQ-APP_STRUCTURE:
       method: Manual testing
     - coverage: Routes defined in src/app/ are accessible
       method: Route testing
+REQ-ARCHIVE_DIRECTORY_PANES:
+  category: Functional
+  detail_file: requirements/REQ-ARCHIVE_DIRECTORY_PANES.yaml
+  name: Open Archives as Read-Only Panes
+  priority: P1
+  status: Implemented
 REQ-BRANDING:
   category: Functional
   cross_references: []

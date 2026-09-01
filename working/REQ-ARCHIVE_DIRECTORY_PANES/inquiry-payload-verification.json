@@ -1,0 +1,111 @@
+{
+  "graph": {
+    "projectId": "panorama",
+    "criteria": [
+      {
+        "identity": {
+          "id": "REQ-ARCHIVE_DIRECTORY_PANES#close-out",
+          "kind": "criterion",
+          "derivation": "explicit",
+          "revision": "close-out-verification-20260901",
+          "sourceRevision": "docs/archive-directory-panes-plan.md"
+        },
+        "architectureConstraintIds": ["RISK-001", "RISK-002", "RISK-003", "RISK-005", "RISK-006", "RISK-009", "RISK-010"]
+      }
+    ],
+    "architectureConstraints": [
+      { "id": "RISK-001", "implementationBlockIds": ["IMPL-ARCHIVE_DIRECTORY_PANES#EXTRACT_ARCHIVE_ENTRY#block"] },
+      { "id": "RISK-002", "implementationBlockIds": ["IMPL-ARCHIVE_DIRECTORY_PANES#PROJECT_ARCHIVE_DIRECTORY#block"] },
+      { "id": "RISK-003", "implementationBlockIds": ["IMPL-ARCHIVE_DIRECTORY_PANES#EXTRACT_ARCHIVE_ENTRY#block"] },
+      { "id": "RISK-005", "implementationBlockIds": ["IMPL-ARCHIVE_DIRECTORY_PANES#DECODE_VIRTUAL_ARCHIVE_PATH#block"] },
+      { "id": "RISK-006", "implementationBlockIds": ["IMPL-WORKSPACE_MESH_BRIDGE#MESH_RESTORE_ARCHIVE_PATH#block"] },
+      { "id": "RISK-009", "implementationBlockIds": ["IMPL-FILE_PREVIEW#PREVIEW_ARCHIVE_MANIFEST#block"] },
+      { "id": "RISK-010", "implementationBlockIds": ["IMPL-ARCHIVE_DIRECTORY_PANES#EXTRACT_ARCHIVE_ENTRY#block"] }
+    ],
+    "implementationBlocks": [
+      {
+        "identity": {
+          "id": "IMPL-ARCHIVE_DIRECTORY_PANES#EXTRACT_ARCHIVE_ENTRY#block",
+          "kind": "block",
+          "name": "EXTRACT_ARCHIVE_ENTRY",
+          "derivation": "content",
+          "revision": "close-out-verification-20260901",
+          "sourceRevision": "tied/implementation-decisions/IMPL-ARCHIVE_DIRECTORY_PANES-pseudocode.md"
+        }
+      },
+      {
+        "identity": {
+          "id": "IMPL-ARCHIVE_DIRECTORY_PANES#PROJECT_ARCHIVE_DIRECTORY#block",
+          "kind": "block",
+          "name": "PROJECT_ARCHIVE_DIRECTORY",
+          "derivation": "content",
+          "revision": "close-out-verification-20260901",
+          "sourceRevision": "tied/implementation-decisions/IMPL-ARCHIVE_DIRECTORY_PANES-pseudocode.md"
+        }
+      },
+      {
+        "identity": {
+          "id": "IMPL-ARCHIVE_DIRECTORY_PANES#DECODE_VIRTUAL_ARCHIVE_PATH#block",
+          "kind": "block",
+          "name": "DECODE_VIRTUAL_ARCHIVE_PATH",
+          "derivation": "content",
+          "revision": "close-out-verification-20260901",
+          "sourceRevision": "tied/implementation-decisions/IMPL-ARCHIVE_DIRECTORY_PANES-pseudocode.md"
+        }
+      },
+      {
+        "identity": {
+          "id": "IMPL-WORKSPACE_MESH_BRIDGE#MESH_RESTORE_ARCHIVE_PATH#block",
+          "kind": "block",
+          "name": "MESH_RESTORE_ARCHIVE_PATH",
+          "derivation": "content",
+          "revision": "close-out-verification-20260901",
+          "sourceRevision": "tied/implementation-decisions/IMPL-ARCHIVE_DIRECTORY_PANES-pseudocode.md"
+        }
+      },
+      {
+        "identity": {
+          "id": "IMPL-FILE_PREVIEW#PREVIEW_ARCHIVE_MANIFEST#block",
+          "kind": "block",
+          "name": "PREVIEW_ARCHIVE_MANIFEST",
+          "derivation": "content",
+          "revision": "close-out-verification-20260901",
+          "sourceRevision": "tied/implementation-decisions/IMPL-ARCHIVE_DIRECTORY_PANES-pseudocode.md"
+        }
+      }
+    ],
+    "evidenceLoci": []
+  },
+  "fidelity": {
+    "blockRevision": "close-out-verification-20260901",
+    "specification": [
+      { "id": "stmt-immutability", "kind": "behavior", "value": "Archive file size/mtime unchanged after any extract attempt", "order": 1 },
+      { "id": "stmt-safe-extract", "kind": "behavior", "value": "Extract writes only to validated ordinary dest via temp+rename", "order": 2 },
+      { "id": "stmt-reject-symlink", "kind": "behavior", "value": "Symlink and directory entries rejected for extraction", "order": 3 },
+      { "id": "stmt-virtual-locator", "kind": "behavior", "value": "Virtual archive locators round-trip API, pane state, mesh restore", "order": 4 },
+      { "id": "stmt-preview-share", "kind": "behavior", "value": "Preview and pane listing share manifest reader at archive root", "order": 5 }
+    ],
+    "testEvidence": [
+      { "id": "test-closeout", "kind": "plan", "value": "195 scoped Vitest tests passed at close-out", "order": 1, "statementId": "stmt-immutability" },
+      { "id": "test-listing", "kind": "file", "value": "src/app/api/files/archive-listing.route.test.ts", "order": 2, "statementId": "stmt-virtual-locator" },
+      { "id": "test-preview", "kind": "file", "value": "src/app/api/files/preview/archive-preview.route.test.ts", "order": 3, "statementId": "stmt-preview-share" }
+    ],
+    "productionEvidence": [
+      { "id": "prod-closeout", "kind": "observation", "value": "Tranches 0-7 complete; shared reader in preview route; WorkspaceView archive navigation wired", "order": 1, "statementId": "stmt-preview-share" },
+      { "id": "prod-extract", "kind": "observation", "value": "extract.ts temp+rename with immutability asserts in archive.test.ts", "order": 2, "statementId": "stmt-safe-extract" },
+      { "id": "prod-mesh", "kind": "observation", "value": "MESH_RESTORE_ARCHIVE_PATH degrades with warning on missing archive", "order": 3, "statementId": "stmt-virtual-locator" }
+    ]
+  },
+  "scope": [
+    "IMPL-ARCHIVE_DIRECTORY_PANES#EXTRACT_ARCHIVE_ENTRY#block",
+    "IMPL-ARCHIVE_DIRECTORY_PANES#PROJECT_ARCHIVE_DIRECTORY#block",
+    "IMPL-ARCHIVE_DIRECTORY_PANES#DECODE_VIRTUAL_ARCHIVE_PATH#block",
+    "IMPL-WORKSPACE_MESH_BRIDGE#MESH_RESTORE_ARCHIVE_PATH#block",
+    "IMPL-FILE_PREVIEW#PREVIEW_ARCHIVE_MANIFEST#block"
+  ],
+  "policy": "advisory",
+  "repository_root": "/Users/fareed/Documents/dev/node/panorama",
+  "request_token": "REQ-ARCHIVE_DIRECTORY_PANES",
+  "run_id": "archive-close-out-verification-20260901",
+  "phase": "verification"
+}

@@ -1,0 +1,450 @@
+{
+  "phase": "pre_implementation",
+  "tracker": {
+    "tracker_version": "checklist-tracker.v1",
+    "request_token": "REQ-ARCHIVE_DIRECTORY_PANES",
+    "process_token": "PROC-AGENT_REQ_CHECKLIST",
+    "source_document": "tied/docs/agent-req-implementation-checklist.yaml",
+    "execution_evidence": {
+      "request": "REQ-ARCHIVE_DIRECTORY_PANES",
+      "completed": [
+        "refine-plan-20260901"
+      ],
+      "close_out_evidence": {
+        "date": null,
+        "deferred": [],
+        "gates": {},
+        "master_checklist": "working/REQ-ARCHIVE_DIRECTORY_PANES/checklist-tracker-ARCHIVE_DIRECTORY_PANES.yaml"
+      }
+    },
+    "steps": [
+      {
+        "slug": "session-bootstrap",
+        "tracking": {
+          "status": "completed",
+          "evidence_refs": [
+            "tied/docs/ai-principles.md",
+            "tied/vocab/routing.md",
+            "tied/vocab/workspace-pane.md"
+          ]
+        }
+      },
+      {
+        "slug": "translate-sponsor-intent",
+        "tracking": {
+          "status": "completed",
+          "evidence_refs": [
+            "docs/archive-directory-panes-plan.md"
+          ]
+        }
+      },
+      {
+        "slug": "change-definition",
+        "tracking": {
+          "status": "completed",
+          "evidence_refs": [
+            "working/REQ-ARCHIVE_DIRECTORY_PANES/citdp-draft.yaml",
+            "docs/archive-directory-panes-plan.md"
+          ]
+        }
+      },
+      {
+        "slug": "impact-discovery",
+        "tracking": {
+          "status": "completed",
+          "evidence_refs": [
+            "working/REQ-ARCHIVE_DIRECTORY_PANES/citdp-draft.yaml",
+            "docs/archive-directory-panes-plan.md"
+          ]
+        }
+      },
+      {
+        "slug": "risk-assessment",
+        "tracking": {
+          "status": "completed",
+          "evidence_refs": [
+            "working/REQ-ARCHIVE_DIRECTORY_PANES/citdp-draft.yaml"
+          ]
+        }
+      },
+      {
+        "slug": "author-requirement",
+        "tracking": {
+          "status": "completed",
+          "evidence_refs": [
+            "tied/requirements/REQ-ARCHIVE_DIRECTORY_PANES.yaml"
+          ]
+        }
+      },
+      {
+        "slug": "author-architecture",
+        "tracking": {
+          "status": "completed",
+          "evidence_refs": [
+            "tied/architecture-decisions/ARCH-ARCHIVE_DIRECTORY_PANES.yaml"
+          ]
+        }
+      },
+      {
+        "slug": "catalog-pseudocode-contracts",
+        "tracking": {
+          "status": "completed",
+          "evidence_refs": [
+            "tied/implementation-decisions/IMPL-ARCHIVE_DIRECTORY_PANES-pseudocode.md"
+          ]
+        }
+      },
+      {
+        "slug": "flag-contradictory-specs",
+        "tracking": {
+          "status": "completed",
+          "evidence_refs": [
+            "docs/archive-directory-panes-plan.md"
+          ]
+        }
+      },
+      {
+        "slug": "flag-insufficient-specs",
+        "tracking": {
+          "status": "completed",
+          "evidence_refs": [
+            "docs/archive-directory-panes-plan.md"
+          ]
+        }
+      },
+      {
+        "slug": "resolve-pseudocode",
+        "tracking": {
+          "status": "completed",
+          "evidence_refs": [
+            "tied/implementation-decisions/IMPL-ARCHIVE_DIRECTORY_PANES-pseudocode.md"
+          ]
+        }
+      },
+      {
+        "slug": "gate-pseudocode-validation",
+        "tracking": {
+          "status": "completed",
+          "evidence_refs": [
+            "tied/implementation-decisions/IMPL-ARCHIVE_DIRECTORY_PANES-pseudocode.md"
+          ]
+        }
+      },
+      {
+        "slug": "persist-implementation-records",
+        "tracking": {
+          "status": "completed",
+          "evidence_refs": [
+            "tied/implementation-decisions/IMPL-ARCHIVE_DIRECTORY_PANES.yaml"
+          ]
+        }
+      },
+      {
+        "slug": "test-strategy",
+        "tracking": {
+          "status": "completed",
+          "evidence_refs": [
+            "working/REQ-ARCHIVE_DIRECTORY_PANES/test-strategy-outline.md"
+          ]
+        }
+      },
+      {
+        "slug": "unit-test-red",
+        "tracking": {
+          "status": "pending"
+        }
+      },
+      {
+        "slug": "unit-test-green",
+        "tracking": {
+          "status": "pending"
+        }
+      },
+      {
+        "slug": "three-way-alignment-unit",
+        "tracking": {
+          "status": "pending"
+        }
+      },
+      {
+        "slug": "composition-integration",
+        "tracking": {
+          "status": "pending"
+        }
+      },
+      {
+        "slug": "unit-refactor",
+        "tracking": {
+          "status": "pending"
+        }
+      },
+      {
+        "slug": "end-to-end-ui",
+        "tracking": {
+          "status": "not_applicable",
+          "policy": "component and composition tests cover archive navigation and extract affordances",
+          "rationale": "See test-strategy-outline.md E2E policy"
+        }
+      },
+      {
+        "slug": "sub-adversarial-inquiry-pass",
+        "tracking": {
+          "status": "not_applicable",
+          "policy": "minimal depth at refine-plan; integrated inquiry scheduled before RED at author-requirement",
+          "rationale": "Planning gate only; structural inquiry runs after REQ/ARCH/IMPL and pseudo-code exist",
+          "evidence_refs": [
+            "docs/archive-directory-panes-plan.md"
+          ]
+        }
+      },
+      {
+        "slug": "apply-token-comments",
+        "tracking": {
+          "status": "completed",
+          "evidence_refs": [
+            "tied/implementation-decisions/IMPL-ARCHIVE_DIRECTORY_PANES-pseudocode.md"
+          ]
+        }
+      },
+      {
+        "slug": "verification-gate",
+        "tracking": {
+          "status": "pending"
+        }
+      },
+      {
+        "slug": "sync-tied-stack",
+        "tracking": {
+          "status": "pending"
+        }
+      },
+      {
+        "slug": "user-facing-release-notes",
+        "tracking": {
+          "status": "pending"
+        }
+      },
+      {
+        "slug": "persist-citdp-record",
+        "tracking": {
+          "status": "pending"
+        }
+      },
+      {
+        "slug": "traceable-commit",
+        "tracking": {
+          "status": "pending"
+        }
+      }
+    ],
+    "sub_procedures": [
+      {
+        "slug": "sub-adversarial-inquiry-pass",
+        "tracking": {
+          "status": "not_applicable",
+          "policy": "minimal depth at refine-plan",
+          "rationale": "Upgrade to integrated and run inquiry passes before unit-test-red"
+        }
+      },
+      {
+        "slug": "sub-client-yaml-styling",
+        "tracking": {
+          "status": "not_applicable",
+          "policy": "client formatter not configured"
+        }
+      },
+      {
+        "slug": "sub-yaml-edit-loop",
+        "tracking": {
+          "status": "completed",
+          "evidence_refs": [
+            "tied/requirements/REQ-ARCHIVE_DIRECTORY_PANES.yaml"
+          ]
+        }
+      },
+      {
+        "slug": "sub-pseudocode-validation-pass",
+        "tracking": {
+          "status": "completed",
+          "evidence_refs": [
+            "tied/implementation-decisions/IMPL-ARCHIVE_DIRECTORY_PANES-pseudocode.md"
+          ]
+        }
+      },
+      {
+        "slug": "sub-vocabulary-sync",
+        "tracking": {
+          "status": "completed",
+          "evidence_refs": [
+            "tied/vocab/archive-pane.md",
+            "tied/vocab/workspace-pane.md"
+          ]
+        }
+      },
+      {
+        "slug": "sub-leap-micro-cycle",
+        "tracking": {
+          "status": "pending"
+        }
+      },
+      {
+        "slug": "sub-evidence-chain-profile",
+        "tracking": {
+          "status": "pending"
+        }
+      }
+    ]
+  },
+  "citdp": {
+    "record_identity": {
+      "change_request_id": "ARCHIVE_DIRECTORY_PANES",
+      "recorded_at": "2026-09-01",
+      "title": "Read-only archive-backed panes with virtual directory navigation and extraction"
+    },
+    "change_definition": {
+      "current_behavior": "Archives are opaque filesystem files; archive preview type returns stub; panes list ordinary directories only; POST /api/files mutations assume ordinary paths; no virtual locator contract.",
+      "desired_behavior": "Supported archives open as read-only virtual directories in panes; entries navigate, compare, and extract to ordinary destinations; shared manifest reader replaces preview stub; archive file never mutated.",
+      "non_goals": [
+        "Nested archive navigation",
+        "Directory or bulk tree extraction",
+        "Archive creation or repacking",
+        "Archive-to-archive operations",
+        "Client-side parsing",
+        "TAR.BZ2/7z/RAR adapters in v1",
+        "NSYNC from/to archive locators"
+      ],
+      "success_criteria": [
+        "Open, browse, compare, and extract supported archives without mutating source archive",
+        "Virtual locator round-trips API, pane state, mesh restore, and URL deep links",
+        "Safety limits and stable error codes for malicious/oversized/malformed archives",
+        "Ordinary listing and file operations regression-covered",
+        "REQ/ARCH/IMPL traceability with validated pseudo-code and integrated inquiry artifacts"
+      ],
+      "unchanged_behavior": "Ordinary directory listing and mutations; mesh snapshot schema version; comparison algorithms; volume stats contract for ordinary panes; display filters and cross-pane visibility"
+    },
+    "impact_analysis": {
+      "modules_or_boundaries": "src/lib/archive/**; src/lib/files.types.ts; src/lib/files.data.ts; src/app/api/files/route.ts; src/lib/pane-display-filter.ts; src/app/files/page.tsx; src/lib/workspace-mesh-bridge.ts; WorkspaceView.tsx; FilePane.tsx; ContextMenu.tsx; src/app/api/files/preview/route.ts; tied/vocab/archive-pane.md",
+      "tied_tokens_affected": [
+        "REQ-FILE_LISTING",
+        "REQ-DIRECTORY_NAVIGATION",
+        "REQ-FILE_OPERATIONS",
+        "REQ-COPY_OPERATIONS",
+        "REQ-BULK_FILE_OPS",
+        "REQ-CROSS_PANE_COMPARISON",
+        "REQ-FILE_PREVIEW",
+        "REQ-WORKSPACE_MESH_BRIDGE",
+        "REQ-PANE_VOLUME_CAPACITY",
+        "ARCH-FILESYSTEM_ABSTRACTION",
+        "ARCH-SERVER_CLIENT_BOUNDARY",
+        "ARCH-FILE_OPERATIONS_API",
+        "ARCH-COMPARISON_INDEX",
+        "ARCH-PREVIEW_SYSTEM",
+        "IMPL-FILES_DATA",
+        "IMPL-FILES_API",
+        "IMPL-WORKSPACE_VIEW",
+        "IMPL-FILE_PANE",
+        "IMPL-WORKSPACE_MESH_BRIDGE",
+        "IMPL-COMPARISON_INDEX",
+        "IMPL-FILE_PREVIEW",
+        "IMPL-PANE_VOLUME_CAPACITY"
+      ],
+      "tied_tokens_new": [
+        "REQ-ARCHIVE_DIRECTORY_PANES",
+        "ARCH-ARCHIVE_DIRECTORY_PANES",
+        "IMPL-ARCHIVE_DIRECTORY_PANES"
+      ]
+    },
+    "risk_analysis": {
+      "abuse_cases": [
+        "Zip bomb / decompression bomb via oversized entry",
+        "Path traversal via malicious entry names",
+        "Symlink-based escape on extract",
+        "Virtual locator injection attempting to bypass path validation"
+      ],
+      "quality_profiles": [
+        "baseline-functional"
+      ],
+      "risks": [
+        {
+          "id": "RISK-001",
+          "description": "Zip bomb / decompression bomb",
+          "mitigation": "Streaming byte counters; max entry and manifest limits; abort over threshold"
+        },
+        {
+          "id": "RISK-002",
+          "description": "Path traversal in archive entry names",
+          "mitigation": "Normalize and reject .., absolute paths, drive prefixes, NUL"
+        },
+        {
+          "id": "RISK-003",
+          "description": "Symlink escape on extract",
+          "mitigation": "Reject symlink entries for extraction; list-only with flag"
+        },
+        {
+          "id": "RISK-005",
+          "description": "Virtual path injection confusing ordinary paths",
+          "mitigation": "Strict @archive/v1 prefix and JSON schema validation on decode"
+        },
+        {
+          "id": "RISK-006",
+          "description": "Mesh restore with missing archive",
+          "mitigation": "workspace-restore-warning and empty/degraded listing"
+        },
+        {
+          "id": "RISK-009",
+          "description": "Preview/pane parser drift",
+          "mitigation": "Single shared manifest module"
+        },
+        {
+          "id": "RISK-010",
+          "description": "Partial extract leaves dirty destination",
+          "mitigation": "Temp write + rename or cleanup on failure per existing copy patterns"
+        }
+      ],
+      "adversarial_inquiry": {
+        "assurance_profile": "baseline-functional",
+        "close_out_inquiry_waiver": null,
+        "counterexamples": [
+          "Extract writes outside requested destination via symlink or traversal entry",
+          "Listing or extract mutates archive file bytes or metadata",
+          "Malformed archive crashes server or leaks raw parser paths to client"
+        ],
+        "depth_change_waiver": null,
+        "depth_tier": "minimal",
+        "disconfirming_observations": [
+          "Existing path validation rejects .. before archive IO",
+          "No archive parser dependencies exist yet in package.json"
+        ],
+        "eligibility_triggers_matched": [],
+        "evidence_references": [
+          "docs/archive-directory-panes-plan.md",
+          "working/REQ-ARCHIVE_DIRECTORY_PANES/test-strategy-outline.md"
+        ],
+        "falsification_questions": [
+          "Can a malicious archive entry path cause writes outside dest?",
+          "Does any successful or failed extract change archive file mtime/size?",
+          "Do unsupported formats throw uncaught exceptions to the client?"
+        ],
+        "gate_policy": "advisory",
+        "integrated_waiver": null,
+        "prior_depth_tier": null,
+        "rationale": "Refine-plan planning gate only; upgrade to integrated at author-requirement before RED when external-input triggers are confirmed and structural inquiry artifacts exist.",
+        "research_profile": "integrated-agent",
+        "strict_eligibility_prerequisites": []
+      }
+    },
+    "test_strategy": {
+      "summary": "Module tranches A-G; strict TDD; integrated adversarial inquiry at structural, pre-RED, verification; E2E not_applicable unless component gaps documented",
+      "matrix_notes": "See working/REQ-ARCHIVE_DIRECTORY_PANES/test-strategy-outline.md",
+      "e2e_only_reason": "N/A"
+    },
+    "tdd_sequence": {
+      "summary": "Tranche 0 planning \u2192 archive domain \u2192 extraction \u2192 listing API \u2192 extract POST \u2192 pane state \u2192 presentation \u2192 preview share \u2192 verification gate"
+    }
+  },
+  "receipt_persistence": {
+    "request_token": "REQ-ARCHIVE_DIRECTORY_PANES",
+    "gates_dir": "working/REQ-ARCHIVE_DIRECTORY_PANES",
+    "ledger_path": "working/REQ-ARCHIVE_DIRECTORY_PANES/gate-ledger.jsonl"
+  }
+}

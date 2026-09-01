@@ -16,6 +16,10 @@ import {
 import type { Mesh } from "./mesh/domain";
 import type { FilesColumnConfig } from "./config.types";
 import { DEFAULT_FILE_COLUMNS, formatFileColumnsLabel, normalizeFileColumns } from "./file-columns";
+import {
+  decodeVirtualArchivePath,
+  isVirtualArchivePath,
+} from "./archive-path-client";
 
 export const WORKSPACE_SNAPSHOT_TAG = "workspace-snapshot";
 export const WORKSPACE_SNAPSHOT_VERSION = 5 as const;
@@ -640,6 +644,8 @@ export type WorkspaceRestoreBundle = {
   restoreUi: WorkspaceRestoreUi;
   restorePaneMeta: WorkspaceRestorePaneMeta[];
   snapshot: WorkspaceSnapshot;
+  /** [MESH_RESTORE_ARCHIVE_PATH] Warnings when virtual archive paths fail to hydrate */
+  restoreWarnings?: string[];
 };
 
 // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_ON_FILES_PAGE
@@ -688,8 +694,32 @@ export async function buildWorkspaceRestoreBundle(
   listDir: (path: string) => Promise<FileStat[]>,
 ): Promise<WorkspaceRestoreBundle> {
   const initialPanes: WorkspaceRestorePaneInitial[] = [];
+  const restoreWarnings: string[] = [];
   for (const pane of snapshot.panes) {
-    const files = await listDir(pane.path);
+    let files: FileStat[];
+    try {
+      files = await listDir(pane.path);
+    } catch (error) {
+      if (isVirtualArchivePath(pane.path)) {
+        console.debug(
+          "DEBUG: [MESH_RESTORE_ARCHIVE_PATH] degraded listing for virtual path",
+          pane.path,
+          error,
+        );
+        try {
+          const decoded = decodeVirtualArchivePath(pane.path);
+          const basename =
+            decoded.archivePath.split("/").filter(Boolean).pop() ??
+            decoded.archivePath;
+          restoreWarnings.push(`Archive not available: ${basename}`);
+        } catch {
+          restoreWarnings.push("Invalid archive locator in saved workspace");
+        }
+        initialPanes.push({ path: pane.path, files: [] });
+        continue;
+      }
+      throw error;
+    }
     const sortedFiles = sortFiles(
       files,
       pane.sortBy,
@@ -729,5 +759,6 @@ export async function buildWorkspaceRestoreBundle(
     restoreUi,
     restorePaneMeta,
     snapshot,
+    ...(restoreWarnings.length > 0 ? { restoreWarnings } : {}),
   };
 }

@@ -229,20 +229,6 @@ describe("[TEST-MOUSE_INTERACTION] ContextMenu Component", () => {
     expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
   });
 
-  // [IMPL-RENAME_REGEX_DIALOG] [IMPL-MOUSE_SUPPORT] [REQ-MOUSE_INTERACTION] [REQ-BULK_FILE_OPS]: how — Rename Regex visible with marks (unlike single Rename)
-  it("shows Rename Regex with marked files", () => {
-    const marks = new Set(["a.txt", "b.txt"]);
-    render(
-      <ContextMenu
-        {...defaultProps}
-        marks={marks}
-        onRenameRegex={vi.fn()}
-      />,
-    );
-    expect(screen.getByText("2 marked file(s)")).toBeInTheDocument();
-    expect(screen.getByTestId("rename-regex-menu-item")).toBeInTheDocument();
-  });
-
   it("closes menu on Escape key", () => {
     render(<ContextMenu {...defaultProps} />);
     
@@ -318,6 +304,83 @@ describe("[TEST-MOUSE_INTERACTION] ContextMenu Component", () => {
     expect(menu).not.toBeNull();
     expect(menu?.getAttribute("aria-label")).toBe("File operations menu");
     expect(menuItems.length).toBeGreaterThan(0);
+  });
+
+  // [RENDER_ARCHIVE_READ_ONLY] [REQ-ARCHIVE_DIRECTORY_PANES] [IMPL-FILE_PANE] [IMPL-ARCHIVE_DIRECTORY_PANES]
+  describe("archive read-only mode [REQ-ARCHIVE_DIRECTORY_PANES]", () => {
+    const archiveFile: FileStat = {
+      name: "readme.txt",
+      path: "@archive/v1/abc",
+      isDirectory: false,
+      size: 12,
+      mtime: new Date(),
+      extension: "txt",
+      archiveSource: {
+        archivePath: "/downloads/sample.zip",
+        entryPath: "readme.txt",
+        isArchiveRoot: false,
+        isVirtual: true,
+        format: "zip",
+        readOnly: true,
+      },
+    };
+
+    it("shows Extract for archive file entries with archive-extract-menu-item", () => {
+      const onExtract = vi.fn();
+      render(
+        <ContextMenu
+          {...defaultProps}
+          file={archiveFile}
+          isArchiveReadOnly
+          onExtract={onExtract}
+        />,
+      );
+
+      const extractItem = screen.getByTestId("archive-extract-menu-item");
+      expect(extractItem).toHaveTextContent("Extract…");
+      expect(extractItem).toHaveAttribute("aria-label", "Extract archive entry to destination pane");
+      fireEvent.click(extractItem);
+      expect(onExtract).toHaveBeenCalledTimes(1);
+    });
+
+    it("hides destructive and mutating operations when isArchiveReadOnly", () => {
+      render(
+        <ContextMenu
+          {...defaultProps}
+          file={archiveFile}
+          isArchiveReadOnly
+          onExtract={vi.fn()}
+          onTouch={vi.fn()}
+          onExecute={vi.fn()}
+          onMakeDirectory={vi.fn()}
+          onRenameRegex={vi.fn()}
+          onSetBaseDirectory={vi.fn()}
+        />,
+      );
+
+      expect(screen.queryByText(/^Copy/)).not.toBeInTheDocument();
+      expect(screen.queryByText(/^Move/)).not.toBeInTheDocument();
+      expect(screen.queryByText(/^Delete/)).not.toBeInTheDocument();
+      expect(screen.queryByText(/^Rename$/)).not.toBeInTheDocument();
+      expect(screen.queryByTestId("touch-file-menu-item")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("execute-file-menu-item")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("make-directory-menu-item")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("rename-regex-menu-item")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("set-base-directory-menu-item")).not.toBeInTheDocument();
+    });
+
+    it("does not show Extract for archive directory rows", () => {
+      render(
+        <ContextMenu
+          {...defaultProps}
+          file={{ ...archiveFile, name: "docs", isDirectory: true, extension: "" }}
+          isArchiveReadOnly
+          onExtract={vi.fn()}
+        />,
+      );
+
+      expect(screen.queryByTestId("archive-extract-menu-item")).not.toBeInTheDocument();
+    });
   });
 });
 

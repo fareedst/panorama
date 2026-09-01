@@ -1,0 +1,57 @@
+{
+  "graph": {
+    "projectId": "panorama",
+    "criteria": [
+      {
+        "identity": {
+          "id": "REQ-ARCHIVE_DIRECTORY_PANES#safe-extract",
+          "kind": "criterion",
+          "derivation": "explicit",
+          "revision": "tranche2-structural",
+          "sourceRevision": "docs/archive-directory-panes-plan.md"
+        },
+        "architectureConstraintIds": ["RISK-001", "RISK-002", "RISK-003", "RISK-010"]
+      }
+    ],
+    "architectureConstraints": [
+      { "id": "RISK-001", "implementationBlockIds": ["IMPL-ARCHIVE_DIRECTORY_PANES#EXTRACT_ARCHIVE_ENTRY#block"] },
+      { "id": "RISK-002", "implementationBlockIds": ["IMPL-ARCHIVE_DIRECTORY_PANES#EXTRACT_ARCHIVE_ENTRY#block"] },
+      { "id": "RISK-003", "implementationBlockIds": ["IMPL-ARCHIVE_DIRECTORY_PANES#EXTRACT_ARCHIVE_ENTRY#block"] },
+      { "id": "RISK-010", "implementationBlockIds": ["IMPL-ARCHIVE_DIRECTORY_PANES#EXTRACT_ARCHIVE_ENTRY#block"] }
+    ],
+    "implementationBlocks": [
+      {
+        "identity": {
+          "id": "IMPL-ARCHIVE_DIRECTORY_PANES#EXTRACT_ARCHIVE_ENTRY#block",
+          "kind": "block",
+          "name": "EXTRACT_ARCHIVE_ENTRY",
+          "derivation": "content",
+          "revision": "extract-tranche2-pre-red",
+          "sourceRevision": "tied/implementation-decisions/IMPL-ARCHIVE_DIRECTORY_PANES-pseudocode.md"
+        }
+      }
+    ],
+    "evidenceLoci": []
+  },
+  "fidelity": {
+    "blockRevision": "extract-tranche2-pre-red",
+    "specification": [
+      { "id": "stmt-immutability", "kind": "behavior", "value": "Archive file size/mtime unchanged after any extract attempt", "order": 1 },
+      { "id": "stmt-safe-extract", "kind": "behavior", "value": "Extract writes only to validated ordinary dest via temp+rename", "order": 2 },
+      { "id": "stmt-reject-symlink", "kind": "behavior", "value": "Symlink and directory entries rejected for extraction", "order": 3 },
+      { "id": "stmt-byte-limit", "kind": "behavior", "value": "Oversized entry aborts without writing dest", "order": 4 }
+    ],
+    "testEvidence": [
+      { "id": "test-plan", "kind": "plan", "value": "Module B RED cases in test-strategy-outline", "order": 1 }
+    ],
+    "productionEvidence": [
+      { "id": "prod-1", "kind": "observation", "value": "Tranche 1 manifest/projection complete; extract.ts pending", "order": 1 }
+    ]
+  },
+  "scope": ["IMPL-ARCHIVE_DIRECTORY_PANES#EXTRACT_ARCHIVE_ENTRY#block"],
+  "policy": "advisory",
+  "repository_root": "/Users/fareed/Documents/dev/node/panorama",
+  "request_token": "REQ-ARCHIVE_DIRECTORY_PANES",
+  "run_id": "archive-tranche2-structural-20260901",
+  "phase": "pre_implementation"
+}

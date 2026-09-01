@@ -1,0 +1,12 @@
+{
+  "blocking": false,
+  "diagnostics": [],
+  "policy": "advisory",
+  "proofBoundary": "human_decision",
+  "schemaVersion": "adversarial-inquiry-gate.v1",
+  "scope": [
+    "IMPL-ARCHIVE_DIRECTORY_PANES#EXTRACT_ARCHIVE_ENTRY#block"
+  ],
+  "status": "warn",
+  "verdict": "UNRESOLVED"
+}

@@ -1,0 +1,224 @@
+{
+  "record_identity": {
+    "change_request_id": "ARCHIVE_DIRECTORY_PANES",
+    "recorded_at": "2026-09-01",
+    "title": "Read-only archive-backed panes with virtual directory navigation and extraction"
+  },
+  "change_definition": {
+    "current_behavior": "Feature complete through Tranche 7: server archive module, GET virtual listing, POST extract-archive-entry, WorkspaceView open/descend/parent with read-only flags, mesh restore degrade, FilePane/ContextMenu Extract affordances, shared manifest reader in preview route.",
+    "desired_behavior": "Supported archives open as read-only virtual directories in panes; entries navigate, compare, and extract to ordinary destinations; shared manifest reader replaces preview stub; archive file never mutated.",
+    "non_goals": [
+      "Nested archive navigation",
+      "Directory or bulk tree extraction",
+      "Archive creation or repacking",
+      "Archive-to-archive operations",
+      "Client-side parsing",
+      "TAR.BZ2/7z/RAR adapters in v1",
+      "NSYNC from/to archive locators"
+    ],
+    "success_criteria": [
+      "Open, browse, compare, and extract supported archives without mutating source archive",
+      "Virtual locator round-trips API, pane state, mesh restore, and URL deep links",
+      "Safety limits and stable error codes for malicious/oversized/malformed archives",
+      "Ordinary listing and file operations regression-covered",
+      "REQ/ARCH/IMPL traceability with validated pseudo-code and integrated inquiry artifacts"
+    ],
+    "unchanged_behavior": "Ordinary directory listing and mutations; mesh snapshot schema version; comparison algorithms; volume stats contract for ordinary panes; display filters and cross-pane visibility"
+  },
+  "impact_analysis": {
+    "modules_or_boundaries": "src/lib/archive/**; src/lib/archive-path-client.ts; src/lib/files.types.ts; src/lib/directory-listing.ts; src/app/api/files/route.ts; src/app/api/files/preview/route.ts; src/lib/pane-display-filter.ts; src/app/files/page.tsx; src/lib/workspace-mesh-bridge.ts; WorkspaceView.tsx; FilePane.tsx; ContextMenu.tsx; PreviewPanel.tsx; tied/vocab/archive-pane.md",
+    "tied_tokens_affected": [
+      "REQ-FILE_LISTING",
+      "REQ-DIRECTORY_NAVIGATION",
+      "REQ-FILE_OPERATIONS",
+      "REQ-COPY_OPERATIONS",
+      "REQ-BULK_FILE_OPS",
+      "REQ-CROSS_PANE_COMPARISON",
+      "REQ-FILE_PREVIEW",
+      "REQ-WORKSPACE_MESH_BRIDGE",
+      "REQ-PANE_VOLUME_CAPACITY",
+      "ARCH-FILESYSTEM_ABSTRACTION",
+      "ARCH-SERVER_CLIENT_BOUNDARY",
+      "ARCH-FILE_OPERATIONS_API",
+      "ARCH-COMPARISON_INDEX",
+      "ARCH-PREVIEW_SYSTEM",
+      "IMPL-FILES_DATA",
+      "IMPL-FILES_API",
+      "IMPL-WORKSPACE_VIEW",
+      "IMPL-FILE_PANE",
+      "IMPL-WORKSPACE_MESH_BRIDGE",
+      "IMPL-COMPARISON_INDEX",
+      "IMPL-FILE_PREVIEW",
+      "IMPL-PANE_VOLUME_CAPACITY"
+    ],
+    "tied_tokens_new": [
+      "REQ-ARCHIVE_DIRECTORY_PANES",
+      "ARCH-ARCHIVE_DIRECTORY_PANES",
+      "IMPL-ARCHIVE_DIRECTORY_PANES"
+    ]
+  },
+  "risk_analysis": {
+    "abuse_cases": [
+      "Zip bomb / decompression bomb via oversized entry",
+      "Path traversal via malicious entry names",
+      "Symlink-based escape on extract",
+      "Virtual locator injection attempting to bypass path validation"
+    ],
+    "quality_profiles": [
+      "baseline-functional",
+      "external-input-security"
+    ],
+    "assurance_profiles": [
+      "baseline-functional",
+      "external-input-security"
+    ],
+    "risks": [
+      {
+        "id": "RISK-001",
+        "description": "Zip bomb / decompression bomb",
+        "mitigation": "Streaming byte counters; max entry and manifest limits; abort over threshold"
+      },
+      {
+        "id": "RISK-002",
+        "description": "Path traversal in archive entry names",
+        "mitigation": "Normalize and reject .., absolute paths, drive prefixes, NUL"
+      },
+      {
+        "id": "RISK-003",
+        "description": "Symlink escape on extract",
+        "mitigation": "Reject symlink entries for extraction; list-only with flag"
+      },
+      {
+        "id": "RISK-005",
+        "description": "Virtual path injection confusing ordinary paths",
+        "mitigation": "Strict @archive/v1 prefix and JSON schema validation on decode"
+      },
+      {
+        "id": "RISK-006",
+        "description": "Mesh restore with missing archive",
+        "mitigation": "workspace-restore-warning and empty/degraded listing"
+      },
+      {
+        "id": "RISK-009",
+        "description": "Preview/pane parser drift",
+        "mitigation": "Single shared manifest module"
+      },
+      {
+        "id": "RISK-010",
+        "description": "Partial extract leaves dirty destination",
+        "mitigation": "Temp write + rename or cleanup on failure per existing copy patterns"
+      }
+    ],
+    "adversarial_inquiry": {
+      "assurance_profile": "baseline-functional",
+      "close_out_inquiry_waiver": null,
+      "counterexamples": [
+        "Extract writes outside requested destination via symlink or traversal entry",
+        "Listing or extract mutates archive file bytes or metadata",
+        "Malformed archive crashes server or leaks raw parser paths to client"
+      ],
+      "depth_change_waiver": null,
+      "depth_tier": "integrated",
+      "disconfirming_observations": [
+        "195 scoped Vitest tests passed at close-out; bunx tsc -b and validate:vocabulary passed",
+        "Virtual locator codec round-trips; GET/POST/preview routes map stable errorCode values",
+        "Structural and verification inquiry artifacts under working/REQ-ARCHIVE_DIRECTORY_PANES/adversarial-inquiry/"
+      ],
+      "eligibility_triggers_matched": [
+        "external-input"
+      ],
+      "evidence_references": [
+        "docs/archive-directory-panes-plan.md",
+        "working/REQ-ARCHIVE_DIRECTORY_PANES/test-strategy-outline.md",
+        "working/REQ-ARCHIVE_DIRECTORY_PANES/adversarial-inquiry/phase-pre_implementation/",
+        "working/REQ-ARCHIVE_DIRECTORY_PANES/adversarial-inquiry/phase-verification/",
+        "src/lib/archive/archive.test.ts",
+        "src/app/api/files/archive-listing.route.test.ts",
+        "src/app/api/files/archive-extract-post.route.test.ts",
+        "src/app/files/WorkspaceView.archive.test.tsx",
+        "src/app/api/files/preview/archive-preview.route.test.ts"
+      ],
+      "falsification_questions": [
+        "Can a malicious archive entry path cause writes outside dest?",
+        "Does any successful or failed extract change archive file mtime/size?",
+        "Do unsupported formats throw uncaught exceptions to the client?"
+      ],
+      "gate_policy": "advisory",
+      "integrated_waiver": null,
+      "close_out_inquiry_waiver": {
+        "owner": "feature-sponsor",
+        "expiry": "2026-12-01",
+        "rationale": "Verification-phase inquiry findings unchanged at close-out; no new abuse surface introduced after Tranche 7 preview share.",
+        "approval": "plan-close-out-20260901",
+        "referenced_verification_run_id": "archive-close-out-verification-20260901"
+      },
+      "prior_depth_tier": "minimal",
+      "rationale": "Archive bytes are external input with filesystem writes; integrated depth with structural pre_implementation and verification passes; close-out 2026-09-01.",
+      "research_profile": "integrated-agent",
+      "strict_eligibility_prerequisites": []
+    }
+  },
+  "test_strategy": {
+    "summary": "Module tranches A-G complete; 195 scoped Vitest tests; integrated adversarial inquiry at pre_implementation and verification; E2E not_applicable",
+    "matrix_notes": "See working/REQ-ARCHIVE_DIRECTORY_PANES/test-strategy-outline.md",
+    "e2e_only_reason": "N/A",
+    "commands": [
+      "bun run validate:vocabulary",
+      "bun run vitest run src/lib/archive/ src/app/api/files/ src/app/files/WorkspaceView.archive.test.tsx src/app/files/components/FilePane.test.tsx src/app/files/components/ContextMenu.test.tsx src/app/files/page.archive-bootstrap.test.tsx src/app/api/files/preview/",
+      "bunx tsc -b"
+    ]
+  },
+  "completion_criteria": {
+    "verification_gate_notes": "195 scoped Vitest tests passed; bunx tsc -b passed; validate:vocabulary passed; pseudocode_validate passed; tied_validate_consistency passed; verification inquiry run archive-close-out-verification-20260901.",
+    "activation": {
+      "run_id": "archive-close-out-verification-20260901",
+      "phase": "verification"
+    }
+  },
+  "evidence": {
+    "commands": [
+      {
+        "command": "bun run validate:vocabulary",
+        "exit_code": 0,
+        "result": "passed"
+      },
+      {
+        "command": "bun run vitest run src/lib/archive/ src/app/api/files/ src/app/files/WorkspaceView.archive.test.tsx src/app/files/components/FilePane.test.tsx src/app/files/components/ContextMenu.test.tsx src/app/files/page.archive-bootstrap.test.tsx src/app/api/files/preview/",
+        "exit_code": 0,
+        "result": "195 tests passed across 13 files"
+      },
+      {
+        "command": "bunx tsc -b",
+        "exit_code": 0,
+        "result": "passed"
+      }
+    ],
+    "module_validation": "archive domain; GET/POST API; WorkspaceView composition; FilePane/ContextMenu presentation; preview shared reader",
+    "proof_boundaries": [
+      "executable_behavior",
+      "pseudo_code_structure",
+      "traceability_structure"
+    ]
+  },
+  "tdd_sequence": {
+    "summary": "Tranches 0-7 complete; close-out verification gate passed"
+  },
+  "implementation_status": {
+    "completed": [
+      "TIED REQ/ARCH/IMPL + pseudo-code + vocabulary",
+      "Archive domain module (locator, registry, manifest, projection, extraction)",
+      "FileStat.archiveSource type extension",
+      "directory-listing.ts bridge (GET + mutation guards)",
+      "GET /api/files virtual listing branch",
+      "POST extract-archive-entry + VIRTUAL_PATH_MUTATION_REJECTED",
+      "SSR bootstrap + client fetch archiveSource passthrough",
+      "WorkspaceView archive open/descend/parent + read-only derivation",
+      "workspace-mesh-bridge restore degrade",
+      "archive-path-client.ts client-safe codec",
+      "FilePane / ContextMenu presentation",
+      "Preview route shared manifest reader"
+    ],
+    "in_progress": [],
+    "remaining": []
+  }
+}
