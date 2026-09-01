@@ -1,0 +1,9 @@
+{
+  "schema_version": "checklist-gate-receipt.v1",
+  "phase": "verification",
+  "allowed": true,
+  "depth": "minimal",
+  "diagnostics": [],
+  "receipt": "working/REQ-NSYNC_HYBRID_MOVE/verification-2026-09-01T18-44-43-515Z.json",
+  "receipt_hash": "sha256:0f2216e82fc0e6d004f73a8a0b0d8d03300a290bc34ac4266e2b0513e8c325e8"
+}

@@ -107,7 +107,7 @@ IMPL-NSYNC_ENGINE_SyncItem(source, destinations, options, signal):
 
 ## EXECUTE_MOVE_PLAN
 
-// [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_MOVE_PLAN] [REQ-NSYNC_HYBRID_MOVE] [REQ-MOVE_SEMANTICS]: how: execute plan legs sequentially; copy or rename per leg; stop on first failure; set omitDeferredDelete from plan
+// [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_MOVE_PLAN] [REQ-NSYNC_HYBRID_MOVE] [REQ-MOVE_SEMANTICS]: how: partition initial cross-volume copy prefix for parallel batch when M>=2; same-volume copies and rename sequential; fail-fast on batch failure; set omitDeferredDelete from plan
 
 ```
 IMPL-NSYNC_ENGINE_EXECUTE_MOVE_PLAN(source, plan, destPaths, item, sourceHash, options, signal):
@@ -116,21 +116,41 @@ IMPL-NSYNC_ENGINE_EXECUTE_MOVE_PLAN(source, plan, destPaths, item, sourceHash, o
   PRE: plan.legs ordered per IMPL-NSYNC_MOVE_PLAN; count(rename) <= 1
   POST: one DestResult per destPath; omitDeferredDelete := plan.omitDeferredDelete when all legs succeed
   EFFECTS: IO
-  FAILURE_MODES: leg failure → remaining legs not executed; source preserved per REQ-MOVE_SEMANTICS when rename not yet run
+  FAILURE_MODES: leg failure → remaining legs not executed; parallel batch failure aborts sequential tail; source preserved per REQ-MOVE_SEMANTICS when rename not yet run
   TERMINATION: total when legs exhausted or first failure
   destResults := empty map destPath → DestResult
-  FOR EACH leg IN plan.legs
-    IF signal.aborted THEN SET error Cancelled on remaining dests AND BREAK
-    IF AWAIT compareFiles(leg.from, leg.to, compareMethod, hashAlgorithm) THEN
-      SET destResults[leg.to].skipped := true; recordSuccess(leg.to); CONTINUE
-    IF leg.op === copy THEN AWAIT copyFile(leg.from, leg.to)
-    ELSE IF leg.op === rename THEN AWAIT renameFile(leg.from, leg.to)
-    IF verify AND sourceHash THEN
-      IF leg.op === rename THEN LOG DIAGNOSTIC skip verify after atomic rename
-      ELSE AWAIT verifyDestination(sourceHash, leg.to, hashAlgorithm)
-    recordSuccess(leg.to); CALL observer.onItemProgress(item, item.size)
-    ON catch: SET destResults[leg.to].error; recordError; BREAK
+  { parallelBatch, sequentialTail } := partitionMovePlanLegs(plan)
+  executeLeg(leg) := compare skip OR copy/rename OR verify per leg; recordSuccess/onItemProgress; return success boolean
+  IF signal.aborted THEN SET error Cancelled AND RETURN early
+  IF parallelBatch.length > 1 THEN
+    batchResults := AWAIT Promise.all(parallelBatch.map executeLeg)
+    IF any batchResults failed THEN allLegsSucceeded := false
+    ELSE FOR EACH leg IN sequentialTail
+      IF signal.aborted THEN BREAK
+      IF NOT AWAIT executeLeg(leg) THEN BREAK
+  ELSE
+    FOR EACH leg IN plan.legs
+      IF signal.aborted THEN BREAK
+      IF NOT AWAIT executeLeg(leg) THEN BREAK
   RETURN { destResults: destPaths.map p → destResults[p], omitDeferredDelete: plan.omitDeferredDelete IF all succeeded ELSE false }
+```
+
+## PARTITION_MOVE_PLAN_LEGS
+
+// [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_MOVE_PLAN] [REQ-NSYNC_HYBRID_MOVE]: how: split initial contiguous cross-volume copy prefix from sequential tail (same-volume copies + rename)
+
+```
+IMPL-NSYNC_ENGINE_PARTITION_MOVE_PLAN_LEGS(plan):
+  INPUT: MovePlan
+  OUTPUT: { parallelBatch: MoveLeg[], sequentialTail: MoveLeg[] }
+  PRE: plan.legs ordered per BUILD_MOVE_PLAN
+  POST: parallelBatch is maximal prefix where op=copy AND volumeClass=cross-volume; sequentialTail is remainder
+  EFFECTS: pure
+  TERMINATION: total
+  parallelBatch := []
+  WHILE next leg is copy AND cross-volume THEN append to parallelBatch
+  sequentialTail := remaining legs after prefix
+  RETURN { parallelBatch, sequentialTail }
 ```
 
 ## MAP_SOURCE_TO_DEST

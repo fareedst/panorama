@@ -1,6 +1,6 @@
 # NSYNC Hybrid Move Optimization — Control Plan
 
-**Status:** Tranche 2 complete — Tranches 3–4 pending (refined 2026-09-01 post-build)  
+**Status:** All tranches complete (Tranche 2b shipped 2026-09-01)  
 **Methodology:** TIED 3.0.0  
 **Request token:** `REQ-NSYNC_HYBRID_MOVE`  
 **Related tokens (existing):** `[REQ-NSYNC_MULTI_TARGET]`, `[REQ-MOVE_SEMANTICS]`, `[REQ-FILE_OPERATIONS]`, `[REQ-VERIFY_DEST]`, `[REQ-COMPARE_METHODS]`, `[IMPL-NSYNC_ENGINE]`, `[IMPL-NSYNC_OPERATIONS]`, `[IMPL-FILES_DATA]`, `[ARCH-NSYNC_INTEGRATION]`, `[ARCH-FILESYSTEM_ABSTRACTION]`  
@@ -32,8 +32,8 @@
 | — | ~~Deferred delete~~ | — | **Not needed** — rename already removed source |
 
 **Current cost (pre-Tranche-2):** 2× full read + 2× full write (+ optional 2× verify hash).  
-**Optimized cost (Tranche 2 shipped):** 1× read + 1× write (cross-volume copy) + 1× rename for A+A+B mixes.  
-**Remaining optimization (Tranches 3–4):** EXDEV-safe rename legs; skip redundant post-rename verify.
+**Optimized cost (Tranches 1–4 shipped):** 1× read + 1× write (cross-volume copy) + 1× rename for A+A+B mixes; EXDEV-safe rename; verify skip after atomic rename.  
+**Remaining optimization (Tranche 2b):** parallelize **cross-volume copy legs** when M≥2 cross-volume destinations exist.
 
 ---
 
@@ -91,26 +91,24 @@ A passing full test suite does **not** prove hybrid move plans are optimal on ev
 
 NSYNC **never** called `files.data.moveFile` and **never** attempted `fs.rename`. The EXDEV fix in `[CITDP-CROSS_VOLUME_MOVE_EXDEV]` explicitly left NSYNC unchanged — this change **supersedes** that non-goal by design.
 
-#### A.3.2 Post–Tranche 2 (observed 2026-09-01)
+#### A.3.2 Post–Tranche 4 (observed 2026-09-01, close-out)
 
 | Path | API | Move primitive | Same-volume dest | Cross-volume dest | Source cleanup |
 |------|-----|----------------|------------------|-------------------|----------------|
-| **Move to All** | `sync-all`, `move: true` | `buildMovePlan` + `executeMovePlan` | **`renameFile`** (rename target) or copy (extra same-volume) | **`copyFile`** from source | Omit deferred delete when rename is final leg; else deferred `deleteFile` |
-| **Single pane move** | `bulk-move` / `move` | `files.data.moveFile` | **`fs.rename`** | **EXDEV → copy + delete** | Unchanged |
+| **Move to All** | `sync-all`, `move: true` | `buildMovePlan` + `executeMovePlan` (sequential legs) | **`renameOrMove`** (rename target) or copy (extra same-volume) | **`copyFile`** from source | Omit deferred delete when rename is final leg; else deferred `deleteFile` |
+| **Single pane move** | `bulk-move` / `move` | `files.data.moveFile` → `renameOrMove` | **`fs.rename`** | **EXDEV → copy + delete** | Unchanged |
 
-**Shipped code (Tranche 2):**
+**Shipped code (Tranches 1–4):**
 
-- `src/lib/sync/move-plan.ts` — `buildMovePlan`, `classifyVolumeAffinity`
-- `src/lib/sync/engine.ts` — `executeMovePlan`; hybrid path when `move: true`; parallel copy when `move: false`
-- `src/lib/sync/operations.ts` — `renameFile` via `fs.rename` only (**no EXDEV fallback** — Tranche 3)
-- `src/lib/sync/operations.ts` — `moveFile` still copy-only alias (unused by hybrid path)
+- `src/lib/sync/move-plan.ts` — `buildMovePlan`, `classifyVolumeAffinity`, single-rename invariant
+- `src/lib/sync/engine.ts` — `executeMovePlan` (strict sequential); verify skip on rename leg
+- `src/lib/move-executor.ts` — shared `renameOrMove` with EXDEV fallback
+- `src/lib/sync/operations.ts` — `renameFile` delegates to shared executor
+- `src/lib/files.data.ts` — `moveFile` delegates to shared executor
 
 **Not yet shipped:**
 
-- Shared EXDEV executor between NSYNC and `files.data` (Tranche 3)
-- EXDEV fallback on `sync/operations.renameFile` when `dev` match lies (Tranche 3, RISK-002)
-- Post-rename verify skip (Tranche 4, RISK-004)
-- Parallel cross-volume copy legs (Tranche 2b, optional)
+- Parallel cross-volume copy batch in `executeMovePlan` (Tranche 2b, optional perf)
 
 ### A.4 Desired behavior
 
@@ -120,8 +118,9 @@ When `move: true`, **SyncEngine** builds a per-item **MovePlan** before touching
 2. **Order operations** so the **original source path** still holds the file until all destinations succeed.
 3. **Use rename** for **at most one** same-volume destination per item — the **rename target** (see § B.3). **Never** two rename/move legs on the same source volume.
 4. **Use copy** for all cross-volume destinations and for **all other** same-volume destinations when the source drive is a target more than once.
-5. **Delegate** cross-volume single-step moves to shared **`files.data.moveFile`** EXDEV implementation (or extracted shared module) — **Tranche 3 pending**
-6. **Skip redundant verify** when an operation is an atomic same-volume rename (see § D) — **Tranche 4 pending**
+5. **Delegate** rename legs to shared **`renameOrMove`** (EXDEV fallback) — **Done (Tranche 3)**
+6. **Skip redundant verify** when an operation is an atomic same-volume rename — **Done (Tranche 4)**
+7. **Parallelize** initial cross-volume copy legs when M≥2 — **Tranche 2b pending**
 
 ### A.5 Tranche sizing and dependency order
 
@@ -130,9 +129,9 @@ When `move: true`, **SyncEngine** builds a per-item **MovePlan** before touching
 | 0 | Documentation + CITDP + tracker | Planning gate before TDD | Control plan, persisted CITDP, `pre_implementation` gate allowed |
 | 1 | `buildMovePlan` module (TDD, no engine wire) | Pure plan logic validated independently | `move-plan.test.ts` green; `pseudocode_validate` on `IMPL-NSYNC_MOVE_PLAN` |
 | 2 | SyncEngine integration | Behavior change; depends on plan module | `engine.test.ts` mixed A+A+B; updated `MoveSemantics` pseudo-code | **Complete** |
-| 2b | Parallel cross-volume copies (optional) | Performance; after sequential path proven | Benchmark or test asserting parallel cross-volume only | **Deferred** |
-| 3 | Shared executor + EXDEV parity | DRY with `files.data`; RISK-002/006 | EXDEV tests + NSYNC `renameFile` fallback | **Next** |
-| 4 | Verify-after-rename optimization | Correctness-sensitive skip; RISK-004 | Tests gate skip on same-volume rename only | **Pending** |
+| 2b | Parallel cross-volume copies (optional) | Performance; after sequential path proven | Engine test: M≥2 cross-volume copies run concurrently; ordering invariants unchanged | **Complete** |
+| 3 | Shared executor + EXDEV parity | DRY with `files.data`; RISK-002/006 | EXDEV tests + NSYNC `renameFile` fallback | **Complete** |
+| 4 | Verify-after-rename optimization | Correctness-sensitive skip; RISK-004 | Tests gate skip on same-volume rename only | **Complete** |
 
 **Session budget:** One tranche per session; do **not** wire engine before MovePlan unit tests pass.
 
@@ -160,12 +159,12 @@ Working copy: `working/REQ-NSYNC_HYBRID_MOVE/citdp-draft.yaml`.
 
 | Field | Value |
 |---|---|
-| **Current (post–Tranche 2)** | Move to All builds per-item MovePlan; `executeMovePlan` runs legs sequentially; `omitDeferredDelete` when final leg is rename. `sync/operations.renameFile` uses `fs.rename` only (no EXDEV). Post-rename verify not optimized. |
-| **Desired (full REQ)** | Above plus: shared EXDEV executor with `files.data.moveFile`; EXDEV fallback on rename legs; skip verify after atomic same-volume rename. |
-| **Non-goals** | Progress UI; hard-link dedup; Copy to All changes; mesh moves; directory MovePlan (defer if NSYNC file-only) |
-| **Success criteria (complete)** | `buildMovePlan` matrix; engine A+A+B; partial-failure source preserved; vocabulary RECORD; Tranche 2 verification gate |
-| **Success criteria (remaining)** | Tranche 3: EXDEV fallback + shared executor. Tranche 4: verify skip on rename leg. Final consistency validation. |
-| **Unchanged behavior** | Copy to All; bulk-move single dest; observer/cancel/store monitor; compare skip per dest |
+| **Current (post–close-out)** | Hybrid MovePlan + **sequential** `executeMovePlan`; cross-volume copy legs run one-at-a-time even when M≥2; EXDEV rename fallback; verify skip on rename leg. |
+| **Desired (Tranche 2b)** | Above plus: initial contiguous **cross-volume copy batch** runs via `Promise.all`; same-volume copies and rename remain sequential. |
+| **Non-goals** | Progress UI; hard-link dedup; parallel same-volume copies; parallel rename; Copy to All changes; mesh moves |
+| **Success criteria (Tranches 1–4)** | Delivered — see CITDP evidence (69 tests, close-out gate). |
+| **Success criteria (Tranche 2b)** | Engine test proves M≥2 cross-volume copies start concurrently; A+A+B and partial-failure tests unchanged; `[REQ-MOVE_SEMANTICS]` preserved. |
+| **Unchanged behavior** | Copy to All; bulk-move; plan ordering; single-rename invariant; verify skip on rename; observer/cancel/store monitor contract |
 
 ### B.2 Impact analysis
 
@@ -186,11 +185,11 @@ Working copy: `working/REQ-NSYNC_HYBRID_MOVE/citdp-draft.yaml`.
 | Block | IMPL | Action |
 |---|---|---|
 | `BUILD_MOVE_PLAN` | IMPL-NSYNC_MOVE_PLAN | **Done** — volume classify, order legs, single-rename invariant |
-| `EXECUTE_MOVE_PLAN` | IMPL-NSYNC_ENGINE | **Done** — sequential leg executor |
+| `EXECUTE_MOVE_PLAN` | IMPL-NSYNC_ENGINE | **Partial** — sequential legs; parallel cross-volume batch pending (Tranche 2b) |
 | `MoveSemantics` | IMPL-NSYNC_ENGINE | **Done** — omit delete when plan ended in rename |
 | `SyncItem` | IMPL-NSYNC_ENGINE | **Done** — hybrid path when `move: true` |
-| `MoveFile` / `RenameFile` | IMPL-NSYNC_OPERATIONS | **Partial** — `renameFile` added; EXDEV + shared executor pending (Tranche 3) |
-| `VERIFY_SKIP_RENAME` | IMPL-NSYNC_ENGINE | **Pending** — Tranche 4 |
+| `MoveFile` / `RenameFile` | IMPL-NSYNC_OPERATIONS | **Done** — shared `renameOrMove` delegate |
+| `VERIFY_SKIP_RENAME` | IMPL-NSYNC_ENGINE | **Done** — skip verify on rename leg |
 
 ### B.3 Architecture — hybrid move plan
 
@@ -287,7 +286,8 @@ Update **[IMPL-NSYNC_ENGINE] `MoveSemantics`** pseudo-code accordingly.
 | RISK-002 | `dev` match but EXDEV on rename (bind mounts) | medium | Catch EXDEV; fallback to copy+delete for that leg |
 | RISK-003 | Partial success after cross-volume copy but failed rename | medium | Source still intact; existing partial-failure semantics |
 | RISK-004 | Verify skipped incorrectly after rename | medium | Gate skip on same-volume rename only; Tranche 4 tests |
-| RISK-005 | Performance regression from sequential plan | low | Tranche 2b: parallel cross-volume copies only |
+| RISK-005 | Performance regression from sequential cross-volume copies | low | Tranche 2b: parallel initial cross-volume batch only |
+| RISK-008 | Parallel batch partial failure leaves some cross-volume dests copied | medium | Fail-fast `Promise.all`; do not proceed to same-volume/rename legs; source preserved |
 | RISK-006 | Divergence between NSYNC and `files.data` move | medium | Shared executor module; single EXDEV implementation |
 | RISK-007 | Plan emits two rename legs when source drive has 2+ same-volume targets | high | § B.3.2 invariant; unit test `count(rename) === 1`; builder rejects invalid plans |
 
@@ -333,43 +333,52 @@ Open the tracker before Tranche 1 TDD begins (done at refine-plan).
 
 **Checklist entry:** `unit-test-red` → `unit-test-green` → `three-way-alignment-unit` → `composition-integration`
 
-#### Tranche 2b — Parallel cross-volume copies (optional, deferred)
+#### Tranche 2b — Parallel cross-volume copies ✅
 
-Parallelize cross-volume legs only; same-volume and rename remain sequential. **Sponsor opt-in** — not required for REQ close-out.
+**Problem:** When a source has **M≥2 cross-volume destinations**, `executeMovePlan` copies sequentially. Each leg reads the full file from `source` — safe to parallelize because cross-volume copies do not mutate `source` (rename and deferred delete come later).
 
-#### Tranche 3 — Shared executor + EXDEV parity **(next session)**
+**Safety constraints (non-negotiable):**
 
-**Problem:** `sync/operations.renameFile` calls `fs.rename` directly. Bind mounts and exotic layouts can throw EXDEV despite matching `Stats.dev` (RISK-002). NSYNC and `files.data.moveFile` duplicate move logic (RISK-006).
+1. Only the **initial contiguous prefix** of legs where `op === 'copy' && volumeClass === 'cross-volume'` may run in parallel.
+2. **Same-volume copy** legs and the **rename** leg remain **strictly sequential** after the batch completes.
+3. If **any** parallel leg fails, **abort** the batch (fail-fast) and **do not** start subsequent legs — `[REQ-MOVE_SEMANTICS]` preserved.
+4. **Cancel** (`AbortSignal`): check before starting the batch and before each sequential leg; in-flight parallel legs should respect abort where practical.
+5. **Verify** after each copy leg still applies per-leg (parallel verify calls OK when `verify: true`).
 
-**Approach (recommended):**
+**Approach:**
 
-1. Extract shared module `src/lib/move-executor.ts` (or equivalent) from `files.data.moveFile`:
-   - `renameOrMove(src, dest)` — try `fs.rename`; on EXDEV → `copyFile` + `deleteFile(src)`
-   - Single `isExdevError` helper (already in `files.data.ts`)
-2. `files.data.moveFile` delegates to shared module (behavior unchanged)
-3. `sync/operations.renameFile` delegates to shared module
-4. **Do not** route multi-dest hybrid plans through `moveFile` inline delete — engine MovePlan owns ordering and `omitDeferredDelete`
+1. Add `partitionMovePlanLegs(plan)` helper (engine-private or exported for test):
+   - `parallelBatch`: initial cross-volume copy legs (may be empty or length 1)
+   - `sequentialTail`: remaining legs (same-volume copies + rename)
+2. Update `EXECUTE_MOVE_PLAN` pseudo-code block in `[IMPL-NSYNC_ENGINE]`:
+   - `Promise.all(parallelBatch.map(executeLeg))` when `parallelBatch.length > 1`
+   - Fall back to sequential when `parallelBatch.length <= 1` (no behavior change for M=1)
+   - Sequential loop for `sequentialTail`
+3. Reuse existing per-leg logic (`compareFiles`, `copyFile`, verify, store monitor, observer) inside `executeLeg` closure.
 
 **Tests (RED before code):**
 
 | Test | File | Assert |
 |------|------|--------|
-| EXDEV on rename despite dev match | `engine.test.ts` or new `operations.test.ts` | Leg falls back to copy; source preserved until plan completes |
-| Existing bulk-move EXDEV | `copy-file.data.test.ts` | Unchanged pass |
-| Existing files.data move | `files.data.test.ts` | Unchanged pass |
+| M=2 cross-volume copies run concurrently | `engine.test.ts` | Deferred `copyFile` promises — both invocations start before either resolves |
+| M=1 cross-volume unchanged | `engine.test.ts` | No parallel batch (sequential path) |
+| A+A+B ordering preserved | `engine.test.ts` | Existing test still passes |
+| Parallel batch failure aborts tail | `engine.test.ts` | One cross-volume copy rejects → rename leg not attempted; source intact |
+| Partial failure before rename (existing) | `engine.test.ts` | Regression pass |
 
-**Exit evidence:** All Tranche 3 tests green; `pseudocode_validate` on `IMPL-NSYNC_OPERATIONS`; CITDP evidence updated.
+**Exit evidence:** Tranche 2b tests green; scoped proof suite (§ C.3); `pseudocode_validate IMPL-NSYNC_ENGINE`; verification gate; vocabulary RECORD (**parallel cross-volume batch**).
 
-#### Tranche 4 — Verify optimization **(after Tranche 3)**
+**Checklist entry:** `resolve-pseudocode` → `unit-test-red` → `unit-test-green` → `verification-gate`
 
-**Problem:** `executeMovePlan` runs `verifyDestination` after every non-skipped leg when `verify: true`. Same-volume rename is inode-preserving — post-rename hash verify is redundant (§ D).
+#### Tranche 3 — Shared executor + EXDEV parity ✅
 
-1. RED: rename leg + `verify: true` → `verifyDestination` **not** called
-2. RED: cross-volume copy + `verify: true` → verify **still** called
-3. GREEN: skip in `executeMovePlan` when `leg.op === 'rename'`; log `DIAGNOSTIC: skip verify after atomic rename`
-4. LEAP: `[REQ-VERIFY_DEST]` traceability note
+#### Tranche 3 — Shared executor + EXDEV parity ✅
 
-**Exit evidence:** Tranche 4 unit tests; full proof command suite (§ C.3); verification gate; REQ close-out eligible.
+**Delivered 2026-09-01.** Shared `src/lib/move-executor.ts`; `renameOrMove` EXDEV fallback.
+
+#### Tranche 4 — Verify optimization ✅
+
+**Delivered 2026-09-01.** Post-rename verify skip when `leg.op === 'rename'`.
 
 ### C.2 Session bootstrap (every implementation session)
 
@@ -438,11 +447,11 @@ Update `tied/semantic-tokens.yaml` when implementation starts (Tranche 1).
 | Phase | Date | Result | Receipt |
 |---|---|---|---|
 | `pre_implementation` | 2026-09-01 (refine-plan) | `allowed: true`, `depth: minimal` | `gate-pre_implementation-refine-plan.json` |
-| `verification` | 2026-09-01 (Tranche 1) | `allowed: true`, `depth: minimal` | `gate-verification-tranche1.json` |
-| `verification` | 2026-09-01 (Tranche 2) | `allowed: true`, `depth: minimal` | `gate-verification-tranche2.json` |
-| `pre_implementation` | 2026-09-01 (Tranche 3 refine) | `allowed: true`, `depth: minimal` | `gate-pre_implementation-tranche3.json` |
+| `verification` | 2026-09-01 (Tranches 1–4) | `allowed: true`, `depth: minimal` | `gate-verification-tranche4.json` |
+| `close_out` | 2026-09-01 | `allowed: true`, `depth: minimal` | `close_out-2026-09-01T18-34-07-806Z.json` |
+| `pre_implementation` | 2026-09-01 (Tranche 2b refine) | `allowed: true`, `depth: minimal` | `pre_implementation-2026-09-01T18-40-46-923Z.json` |
 
-Tranches 1–2 checklist steps completed. Tracker reset for Tranche 3 (`unit-test-red` through `verification-gate` pending). `sub-adversarial-inquiry-pass`: `not_applicable` at minimal depth.
+Tranches 1–4 complete; REQ closed out. Tracker reset for Tranche 2b (`unit-test-red` through `verification-gate` pending). `sub-adversarial-inquiry-pass`: `not_applicable` at minimal depth.
 
 ---
 
@@ -457,6 +466,7 @@ Tranches 1–2 checklist steps completed. Tracker reset for Tranche 3 (`unit-tes
 | **Rename target** | The **one** same-volume destination receiving `fs.rename` (lexicographically smallest `destPath` among same-volume dests) |
 | **Single-rename invariant** | When source volume matches multiple targets, at most one MOVE leg; others COPY |
 | **Move leg** | One copy or rename step in the plan |
+| **Parallel cross-volume batch** | Initial contiguous cross-volume copy legs executed concurrently via `Promise.all` when M≥2 (Tranche 2b) |
 | **currentPath** | Path read for the next leg; starts at source; unchanged until rename removes source |
 
 ---
@@ -465,12 +475,9 @@ Tranches 1–2 checklist steps completed. Tracker reset for Tranche 3 (`unit-tes
 
 | Item | Owner tranche | Blocks close-out? |
 |------|---------------|-------------------|
-| EXDEV fallback on NSYNC rename legs | 3 | Yes (RISK-002) |
-| Shared move executor with `files.data` | 3 | Yes (RISK-006) |
-| Post-rename verify skip | 4 | No (perf/correctness already OK; REQ polish) |
-| Parallel cross-volume copies | 2b | No (optional) |
+| Parallel cross-volume copies | 2b | **Complete** (2026-09-01) |
 
-**Close-out path:** Tranche 3 verification gate → Tranche 4 verification gate → `plan-close-out` with full proof suite. See `working/REQ-NSYNC_HYBRID_MOVE/pending-work.md` for session-ready next actions.
+**All tranches:** Complete. REQ `[REQ-NSYNC_HYBRID_MOVE]` verified **Implemented** (2026-09-01); Tranche 2b parallel batch shipped same day.
 
 ---
 
@@ -489,7 +496,7 @@ Tranches 1–2 checklist steps completed. Tracker reset for Tranche 3 (`unit-tes
 
 ---
 
-*Document version:* 3.0  
+*Document version:* 4.0  
 *Created:* 2026-09-01  
-*Refined:* 2026-09-01 — post–Tranche 2; remaining Tranches 3–4 specified; tracker reset for Tranche 3  
+*Refined:* 2026-09-01 — post–close-out; Tranche 2b (parallel cross-volume batch) specified; tracker reset  
 *Author:* AI Agent (refine-plan)

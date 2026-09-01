@@ -113,3 +113,24 @@ export async function buildMovePlan(
 
   return { legs, omitDeferredDelete, renameTarget };
 }
+
+// [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_MOVE_PLAN] [REQ-NSYNC_HYBRID_MOVE]: how: extract initial contiguous cross-volume copy prefix for parallel batch execution
+export function partitionMovePlanLegs(plan: MovePlan): {
+  parallelBatch: MoveLeg[];
+  sequentialTail: MoveLeg[];
+} {
+  const parallelBatch: MoveLeg[] = [];
+  let index = 0;
+  while (
+    index < plan.legs.length &&
+    plan.legs[index]!.op === "copy" &&
+    plan.legs[index]!.volumeClass === "cross-volume"
+  ) {
+    parallelBatch.push(plan.legs[index]!);
+    index++;
+  }
+  return {
+    parallelBatch,
+    sequentialTail: plan.legs.slice(index),
+  };
+}

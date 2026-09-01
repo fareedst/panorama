@@ -1,7 +1,7 @@
 // [IMPL-NSYNC_MOVE_PLAN] [ARCH-NSYNC_MOVE_PLAN] [REQ-NSYNC_HYBRID_MOVE] [REQ-MOVE_SEMANTICS]: buildMovePlan unit tests — destination mix matrix and single-rename invariant
 
 import { describe, it, expect } from "vitest";
-import { buildMovePlan, type MoveLeg, type GetDevFn } from "./move-plan";
+import { buildMovePlan, partitionMovePlanLegs, type MoveLeg, type GetDevFn, type MovePlan } from "./move-plan";
 
 /** Map path → device id for mocked volume affinity */
 function devMap(source: string, destDevs: Record<string, number>): GetDevFn {
@@ -137,5 +137,45 @@ describe("buildMovePlan [IMPL-NSYNC_MOVE_PLAN] [REQ-NSYNC_HYBRID_MOVE]", () => {
     const plan = await buildMovePlan(source, [], devMap(source, { __source: 1 }));
     expect(plan.legs).toEqual([]);
     expect(plan.omitDeferredDelete).toBe(false);
+  });
+});
+
+describe("partitionMovePlanLegs [IMPL-NSYNC_ENGINE] [REQ-NSYNC_HYBRID_MOVE]", () => {
+  // [IMPL-NSYNC_ENGINE] [REQ-NSYNC_HYBRID_MOVE]: M>=2 cross-volume copies form parallel batch prefix
+  it("splits initial cross-volume copy prefix from sequential tail", () => {
+    const plan: MovePlan = {
+      legs: [
+        { op: "copy", from: "/s", to: "/b1", volumeClass: "cross-volume" },
+        { op: "copy", from: "/s", to: "/b2", volumeClass: "cross-volume" },
+        { op: "copy", from: "/s", to: "/a1", volumeClass: "same-volume" },
+        { op: "rename", from: "/s", to: "/a2", volumeClass: "same-volume" },
+      ],
+      omitDeferredDelete: true,
+      renameTarget: "/a2",
+    };
+
+    const { parallelBatch, sequentialTail } = partitionMovePlanLegs(plan);
+
+    expect(parallelBatch).toHaveLength(2);
+    expect(sequentialTail).toHaveLength(2);
+    expect(sequentialTail[0]!.op).toBe("copy");
+    expect(sequentialTail[1]!.op).toBe("rename");
+  });
+
+  // [IMPL-NSYNC_ENGINE] [REQ-NSYNC_HYBRID_MOVE]: M=1 cross-volume uses sequential path (empty or length-1 batch)
+  it("returns single cross-volume leg in parallelBatch when only one cross-volume copy", () => {
+    const plan: MovePlan = {
+      legs: [
+        { op: "copy", from: "/s", to: "/b1", volumeClass: "cross-volume" },
+        { op: "rename", from: "/s", to: "/a1", volumeClass: "same-volume" },
+      ],
+      omitDeferredDelete: true,
+      renameTarget: "/a1",
+    };
+
+    const { parallelBatch, sequentialTail } = partitionMovePlanLegs(plan);
+
+    expect(parallelBatch).toHaveLength(1);
+    expect(sequentialTail).toHaveLength(1);
   });
 });

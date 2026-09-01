@@ -9,14 +9,19 @@ execution_evidence:
     - tranche-2-engine-integration-20260901
     - tranche-3-shared-executor-exdev-20260901
     - tranche-4-verify-optimization-20260901
+    - close-out-20260901
+    - tranche-2b-parallel-cross-volume-20260901
+  tranche_2b_scope:
+    started: '2026-09-01'
+    completed: '2026-09-01'
+    description: Parallel cross-volume copy batch in executeMovePlan
   close_out_evidence:
     date: '2026-09-01'
-    deferred:
-      - Tranche 2b parallel cross-volume (optional)
+    deferred: []
     gates:
-      pre_implementation: working/REQ-NSYNC_HYBRID_MOVE/gate-pre_implementation-tranche4.json
-      verification: working/REQ-NSYNC_HYBRID_MOVE/gate-verification-tranche4.json
-      close_out: working/REQ-NSYNC_HYBRID_MOVE/close_out-2026-09-01T18-34-07-806Z.json
+      pre_implementation: working/REQ-NSYNC_HYBRID_MOVE/gate-pre_implementation-tranche2b.json
+      verification: working/REQ-NSYNC_HYBRID_MOVE/gate-verification-tranche2b.json
+      close_out: working/REQ-NSYNC_HYBRID_MOVE/gate-close_out-tranche2b.json
     master_checklist: working/REQ-NSYNC_HYBRID_MOVE/checklist-tracker-NSYNC_HYBRID_MOVE.yaml
 steps:
   - slug: session-bootstrap
@@ -30,9 +35,13 @@ steps:
   - slug: risk-assessment
     tracking: { status: completed }
   - slug: author-requirement
-    tracking: { status: completed }
+    tracking:
+      status: not_applicable
+      policy: Tranche 2b extends existing REQ-NSYNC_HYBRID_MOVE perf scope
   - slug: author-architecture
-    tracking: { status: completed }
+    tracking:
+      status: not_applicable
+      policy: No new ARCH token; EXECUTE_MOVE_PLAN execution model only
   - slug: catalog-pseudocode-contracts
     tracking: { status: completed }
   - slug: flag-contradictory-specs
@@ -44,7 +53,9 @@ steps:
   - slug: gate-pseudocode-validation
     tracking: { status: completed }
   - slug: persist-implementation-records
-    tracking: { status: completed }
+    tracking:
+      status: not_applicable
+      policy: Tranche 2b updates existing IMPL-NSYNC_ENGINE pseudo-code only
   - slug: test-strategy
     tracking: { status: completed }
   - slug: unit-test-red
@@ -56,7 +67,7 @@ steps:
   - slug: composition-integration
     tracking:
       status: not_applicable
-      policy: Tranche 4 changes executeMovePlan verify gate only
+      policy: Tranche 2b engine-internal parallel batch only
       rationale: No API wiring change
   - slug: unit-refactor
     tracking: { status: not_applicable }
@@ -68,7 +79,7 @@ steps:
     tracking:
       status: not_applicable
       policy: minimal depth; no integrated eligibility triggers matched
-      rationale: Tranche 4 verify skip is local engine optimization only
+      rationale: Tranche 2b parallel batch is local engine perf optimization
   - slug: apply-token-comments
     tracking: { status: completed }
   - slug: verification-gate
@@ -86,7 +97,7 @@ sub_procedures:
     tracking:
       status: not_applicable
       policy: minimal depth; no integrated eligibility triggers matched
-      rationale: Tranche 4 verify skip is local engine optimization only
+      rationale: Tranche 2b parallel batch is local engine perf optimization
   - slug: sub-client-yaml-styling
     tracking: { status: not_applicable, policy: client formatter not configured }
   - slug: sub-yaml-edit-loop

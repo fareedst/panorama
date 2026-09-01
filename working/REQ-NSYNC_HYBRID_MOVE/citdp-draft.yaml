@@ -1,12 +1,24 @@
-# CITDP draft — NSYNC Hybrid Move (refined post–Tranche 2)
+# CITDP draft — NSYNC Hybrid Move Tranche 2b
 
 **Persisted:** `tied/citdp/CITDP-NSYNC_HYBRID_MOVE.yaml`  
-**Refined:** 2026-09-01 for Tranche 3 kickoff
+**Refined:** 2026-09-01 for Tranche 2b kickoff (post–close-out)
 
-## Change definition (summary)
+## Change definition (Tranche 2b)
 
-- **Current (post–T2):** Hybrid MovePlan + sequential executeMovePlan shipped; renameFile has no EXDEV; verify not optimized
-- **Desired (full):** + shared EXDEV executor + post-rename verify skip
-- **Next tranche:** 3 — shared move-executor, EXDEV fallback on NSYNC rename legs
+- **Current:** `executeMovePlan` runs all plan legs strictly sequentially, including multiple cross-volume copies from `source`.
+- **Desired:** Initial contiguous cross-volume copy legs (M≥2) execute concurrently via `Promise.all`; same-volume copies and rename remain sequential.
+- **Non-goals:** Parallel same-volume copies; parallel rename; Copy to All changes; progress UI.
 
-See control plan § I and `pending-work.md` for session-ready actions.
+## Success criteria (Tranche 2b)
+
+- Engine test proves M≥2 cross-volume copies start concurrently
+- A+A+B, partial-failure, verify-skip tests regression pass
+- `[REQ-MOVE_SEMANTICS]` preserved on parallel batch failure
+- Vocabulary RECORD: **parallel cross-volume batch**
+
+## Risks active
+
+- RISK-005 (sequential perf) — addressed by Tranche 2b
+- RISK-008 (parallel partial failure) — fail-fast batch; no tail legs
+
+See control plan § C.1 Tranche 2b and `test-strategy-outline.md`.

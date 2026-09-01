@@ -1,0 +1,142 @@
+{
+  "phase": "pre_implementation",
+  "tracker": {
+    "tracker_version": "checklist-tracker.v1",
+    "request_token": "REQ-NSYNC_HYBRID_MOVE",
+    "process_token": "PROC-AGENT_REQ_CHECKLIST",
+    "source_document": "tied/docs/agent-req-implementation-checklist.yaml",
+    "execution_evidence": {
+      "request": "REQ-NSYNC_HYBRID_MOVE",
+      "completed": [
+        "tranche-1-move-plan-module-20260901",
+        "tranche-2-engine-integration-20260901",
+        "tranche-3-shared-executor-exdev-20260901",
+        "tranche-4-verify-optimization-20260901",
+        "close-out-20260901"
+      ],
+      "tranche_2b_scope": {
+        "started": "2026-09-01",
+        "description": "Parallel cross-volume copy batch in executeMovePlan"
+      },
+      "close_out_evidence": {
+        "date": "2026-09-01",
+        "deferred": ["Tranche 2b parallel cross-volume (optional perf — now in scope)"],
+        "gates": {
+          "pre_implementation": "working/REQ-NSYNC_HYBRID_MOVE/gate-pre_implementation-tranche2b.json",
+          "verification": "working/REQ-NSYNC_HYBRID_MOVE/gate-verification-tranche4.json",
+          "close_out": "working/REQ-NSYNC_HYBRID_MOVE/close_out-2026-09-01T18-34-07-806Z.json"
+        },
+        "master_checklist": "working/REQ-NSYNC_HYBRID_MOVE/checklist-tracker-NSYNC_HYBRID_MOVE.yaml"
+      }
+    },
+    "steps": [
+      {"slug": "session-bootstrap", "tracking": {"status": "completed"}},
+      {"slug": "translate-sponsor-intent", "tracking": {"status": "completed"}},
+      {"slug": "change-definition", "tracking": {"status": "completed"}},
+      {"slug": "impact-discovery", "tracking": {"status": "completed"}},
+      {"slug": "risk-assessment", "tracking": {"status": "completed"}},
+      {"slug": "author-requirement", "tracking": {"status": "not_applicable", "policy": "Tranche 2b extends existing REQ-NSYNC_HYBRID_MOVE perf scope"}},
+      {"slug": "author-architecture", "tracking": {"status": "not_applicable", "policy": "No new ARCH token; EXECUTE_MOVE_PLAN execution model only"}},
+      {"slug": "catalog-pseudocode-contracts", "tracking": {"status": "completed"}},
+      {"slug": "flag-contradictory-specs", "tracking": {"status": "completed"}},
+      {"slug": "flag-insufficient-specs", "tracking": {"status": "completed"}},
+      {"slug": "resolve-pseudocode", "tracking": {"status": "pending"}},
+      {"slug": "gate-pseudocode-validation", "tracking": {"status": "pending"}},
+      {"slug": "persist-implementation-records", "tracking": {"status": "not_applicable", "policy": "Tranche 2b updates existing IMPL-NSYNC_ENGINE pseudo-code only"}},
+      {"slug": "test-strategy", "tracking": {"status": "completed"}},
+      {"slug": "unit-test-red", "tracking": {"status": "pending"}},
+      {"slug": "unit-test-green", "tracking": {"status": "pending"}},
+      {"slug": "three-way-alignment-unit", "tracking": {"status": "pending"}},
+      {"slug": "composition-integration", "tracking": {"status": "not_applicable", "policy": "Tranche 2b engine-internal parallel batch only", "rationale": "No API wiring change"}},
+      {"slug": "unit-refactor", "tracking": {"status": "not_applicable"}},
+      {"slug": "end-to-end-ui", "tracking": {"status": "not_applicable", "policy": "composition tests cover sync-all API wiring"}},
+      {"slug": "sub-adversarial-inquiry-pass", "tracking": {"status": "not_applicable", "policy": "minimal depth; no integrated eligibility triggers matched", "rationale": "Tranche 2b parallel batch is local engine perf optimization"}},
+      {"slug": "apply-token-comments", "tracking": {"status": "pending"}},
+      {"slug": "verification-gate", "tracking": {"status": "pending"}},
+      {"slug": "sync-tied-stack", "tracking": {"status": "pending"}},
+      {"slug": "user-facing-release-notes", "tracking": {"status": "not_applicable"}},
+      {"slug": "persist-citdp-record", "tracking": {"status": "pending"}},
+      {"slug": "traceable-commit", "tracking": {"status": "pending"}}
+    ],
+    "sub_procedures": [
+      {"slug": "sub-adversarial-inquiry-pass", "tracking": {"status": "not_applicable", "policy": "minimal depth; no integrated eligibility triggers matched", "rationale": "Tranche 2b parallel batch is local engine perf optimization"}},
+      {"slug": "sub-client-yaml-styling", "tracking": {"status": "not_applicable", "policy": "client formatter not configured"}},
+      {"slug": "sub-yaml-edit-loop", "tracking": {"status": "pending"}},
+      {"slug": "sub-pseudocode-validation-pass", "tracking": {"status": "pending"}},
+      {"slug": "sub-vocabulary-sync", "tracking": {"status": "completed"}},
+      {"slug": "sub-leap-micro-cycle", "tracking": {"status": "pending"}},
+      {"slug": "sub-evidence-chain-profile", "tracking": {"status": "not_applicable", "policy": "minimal depth"}}
+    ]
+  },
+  "citdp": {
+    "change_definition": {
+      "current_behavior": "Move to All builds per-item MovePlan; executeMovePlan runs all legs sequentially including multiple cross-volume copies from source; EXDEV-safe renameOrMove; post-rename verify skipped when verifyDestination enabled.",
+      "desired_behavior": "Above plus: initial contiguous cross-volume copy legs (M>=2) execute concurrently via Promise.all; same-volume copies and rename remain sequential; REQ-MOVE_SEMANTICS preserved on batch failure.",
+      "non_goals": ["Changing Copy to All (move:false)", "Parallel same-volume copies", "Parallel rename", "Directory MovePlan unless NSYNC gains directory support", "Hard-link optimization for duplicate same-volume dests", "Mesh subsystem moves", "Progress UI for long cross-volume copies"],
+      "success_criteria": ["Tranches 1-4 delivered (close-out 2026-09-01)", "Tranche 2b: engine.test.ts proves M>=2 cross-volume copies start concurrently", "Tranche 2b: A+A+B and partial-failure tests regression pass", "Tranche 2b: pseudocode_validate and tied_validate_consistency pass after TIED writes", "Vocabulary RECORD parallel cross-volume batch in tied/vocab/nsync-multi-target.md"],
+      "unchanged_behavior": "Copy to All; bulk-move single destination; plan ordering; single-rename invariant; verify skip on rename; observer/cancel/store monitor"
+    },
+    "completion_criteria": {
+      "verification_gate_notes": "Tranches 1-4 complete and closed out (2026-09-01). Tranche 2b parallel cross-volume batch refined; pre_implementation gate for implementation session."
+    },
+    "evidence": {
+      "commands": [
+        {"command": "bun run validate:vocabulary", "exit_code": 0, "result": "10 client glossaries passed"},
+        {"command": "bun run vitest run src/lib/move-executor.test.ts src/lib/sync/move-plan.test.ts src/lib/sync/engine.test.ts src/lib/files.data.test.ts src/lib/copy-file.data.test.ts", "exit_code": 0, "result": "69 tests passed (Tranches 1-4 baseline)"},
+        {"command": "bunx tsc -b", "exit_code": 0, "result": "passed"},
+        {"command": "tied_validate_consistency include_pseudocode true", "exit_code": 0, "result": "ok true"}
+      ],
+      "module_validation": "Tranche 2b targets executeMovePlan parallel batch only; move-plan and move-executor unchanged",
+      "proof_boundaries": ["executable_behavior", "pseudo_code_structure", "traceability_structure"]
+    },
+    "impact_analysis": {
+      "impl_inventory_notes": "Tranche 2b: engine.ts executeMovePlan partition + Promise.all batch. No move-plan.ts changes.",
+      "modules_or_boundaries": "src/lib/sync/engine.ts; tied/vocab/nsync-multi-target.md",
+      "tied_tokens_affected": ["ARCH-NSYNC_INTEGRATION", "ARCH-NSYNC_MOVE_PLAN", "IMPL-NSYNC_ENGINE", "REQ-MOVE_SEMANTICS", "REQ-NSYNC_HYBRID_MOVE", "REQ-NSYNC_MULTI_TARGET"],
+      "tied_tokens_new": []
+    },
+    "leap_feedback": {
+      "divergences_from_analysis": [],
+      "record_status": "draft",
+      "tied_stack_updates_required": ["Optional: add Tranche 2b satisfaction criterion to REQ-NSYNC_HYBRID_MOVE after GREEN"]
+    },
+    "record_identity": {
+      "change_request_id": "NSYNC_HYBRID_MOVE",
+      "recorded_at": "2026-09-01",
+      "title": "NSYNC hybrid move plan — parallel cross-volume batch (Tranche 2b)"
+    },
+    "risk_analysis": {
+      "abuse_cases": [],
+      "adversarial_inquiry": {
+        "assurance_profile": "baseline-functional",
+        "close_out_inquiry_waiver": null,
+        "counterexamples": ["Rename starts before parallel cross-volume batch completes", "Parallel batch runs when M=1 cross-volume leg", "Execution continues to rename after parallel batch partial failure"],
+        "depth_change_waiver": null,
+        "depth_tier": "minimal",
+        "disconfirming_observations": ["Tranches 1-4 sequential path proven with 69 tests", "Plan builder already orders cross-volume copies before rename"],
+        "eligibility_triggers_matched": [],
+        "evidence_references": ["docs/nsync-hybrid-move-optimization-plan.md", "src/lib/sync/engine.ts", "working/REQ-NSYNC_HYBRID_MOVE/test-strategy-outline.md"],
+        "falsification_questions": ["Does rename start before all parallel cross-volume copies settle?", "After one parallel copy fails, does rename still run?", "Does M=1 cross-volume incorrectly use Promise.all batch?"],
+        "gate_policy": "advisory",
+        "integrated_waiver": null,
+        "prior_depth_tier": "minimal",
+        "rationale": "Post-close-out local engine perf optimization; REQ-MOVE_SEMANTICS safety constraint unchanged.",
+        "research_profile": "integrated-agent",
+        "strict_eligibility_prerequisites": []
+      },
+      "quality_profiles": ["baseline-functional", "data-integrity-migration"],
+      "risks": [
+        {"description": "Sequential cross-volume copies slow multi-dest moves", "id": "RISK-005", "mitigation": "Tranche 2b parallel batch for M>=2 cross-volume legs only"},
+        {"description": "Parallel batch partial failure leaves some cross-volume dests copied", "id": "RISK-008", "mitigation": "Fail-fast Promise.all; abort sequential tail; source preserved"}
+      ]
+    },
+    "tdd_sequence": {"summary": "Tranche 2b: pseudo-code EXECUTE_MOVE_PLAN update → RED engine concurrency tests → GREEN parallel batch → verification gate."},
+    "test_strategy": {"e2e_only_reason": "N/A", "matrix_notes": "See working/REQ-NSYNC_HYBRID_MOVE/test-strategy-outline.md Tranche 2b section", "summary": "Deferred promise harness for concurrent copyFile; regression full hybrid suite"}
+  },
+  "receipt_persistence": {
+    "request_token": "REQ-NSYNC_HYBRID_MOVE",
+    "gates_dir": "working/REQ-NSYNC_HYBRID_MOVE",
+    "ledger_path": "working/REQ-NSYNC_HYBRID_MOVE/gate-ledger.jsonl",
+    "run_id": "refine-plan-tranche2b-20260901"
+  }
+}

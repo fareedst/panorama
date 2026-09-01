@@ -1,24 +1,24 @@
 CITDP-NSYNC_HYBRID_MOVE:
   change_definition:
-    current_behavior: Move to All builds per-item MovePlan; executeMovePlan runs legs sequentially with EXDEV-safe renameOrMove; post-rename verify skipped when verifyDestination enabled; copy legs still verify.
-    desired_behavior: Per-item MovePlan classifies volume affinity; executes cross-volume copies first, same-volume copies for extra same-volume targets, single same-volume rename last; omits deferred delete when final leg is rename; skip verify after atomic same-volume rename only.
+    current_behavior: Move to All builds per-item MovePlan; executeMovePlan runs initial cross-volume copy batch concurrently when M>=2 via Promise.all; same-volume copies and rename sequential; EXDEV-safe renameOrMove; post-rename verify skipped when verifyDestination enabled.
+    desired_behavior: Move to All builds per-item MovePlan; executeMovePlan runs initial cross-volume copy batch concurrently when M>=2 via Promise.all; same-volume copies and rename sequential; EXDEV-safe renameOrMove; post-rename verify skipped when verifyDestination enabled.
     non_goals:
       - Changing Copy to All (move:false)
       - Directory MovePlan unless NSYNC gains directory support
       - Hard-link optimization for duplicate same-volume dests
       - Mesh subsystem moves
+      - Parallel rename
+      - Parallel same-volume copies
       - Progress UI for long cross-volume copies
     success_criteria:
-      - buildMovePlan unit tests cover destination mix matrix and single-rename invariant
-      - engine.test.ts mixed A+A+B uses one cross-volume copy, one rename, no deferred delete
-      - pseudocode_validate and tied_validate_consistency pass after all TIED writes
-      - REQ-MOVE_SEMANTICS preserved on partial failure
-      - Shared EXDEV executor; renameFile EXDEV fallback; files.data tests unchanged
-      - Verify skipped after atomic same-volume rename only; copy legs still verify
-      - Vocabulary RECORD in tied/vocab/nsync-multi-target.md
-    unchanged_behavior: Copy to All; bulk-move single destination; observer/cancel/store monitor; compare skip per destination
+      - 'Tranche 2b: A+A+B and partial-failure tests regression pass'
+      - 'Tranche 2b: engine.test.ts proves M>=2 cross-volume copies start concurrently'
+      - 'Tranche 2b: pseudocode_validate and tied_validate_consistency pass after TIED writes'
+      - Tranches 1-4 delivered (close-out 2026-09-01)
+      - Vocabulary RECORD parallel cross-volume batch in tied/vocab/nsync-multi-target.md
+    unchanged_behavior: Copy to All; bulk-move single destination; plan ordering; single-rename invariant; verify skip on rename; observer/cancel/store monitor
   completion_criteria:
-    verification_gate_notes: Tranches 1-4 complete (2026-09-01). REQ close-out complete; optional Tranche 2b parallel cross-volume deferred.
+    verification_gate_notes: Tranche 2b complete (2026-09-01). Parallel cross-volume batch shipped; full hybrid suite 73 tests green.
   evidence:
     commands:
       - command: bun run validate:vocabulary
@@ -26,89 +26,82 @@ CITDP-NSYNC_HYBRID_MOVE:
         result: 10 client glossaries passed
       - command: bun run vitest run src/lib/move-executor.test.ts src/lib/sync/move-plan.test.ts src/lib/sync/engine.test.ts src/lib/files.data.test.ts src/lib/copy-file.data.test.ts
         exit_code: 0
-        result: 69 tests passed
+        result: 73 tests passed (Tranche 2b)
       - command: bunx tsc -b
         exit_code: 0
         result: passed
-      - command: pseudocode_validate IMPL-NSYNC_ENGINE require_contracts true
+      - command: pseudocode_validate IMPL-NSYNC_ENGINE
         exit_code: 0
         result: ok true
       - command: tied_validate_consistency include_pseudocode true
         exit_code: 0
         result: ok true
-    module_validation: engine.test.ts validates verify skip on rename leg and verify on copy legs; move-executor and hybrid plan suites unchanged
+    module_validation: 'Tranche 2b: partitionMovePlanLegs in move-plan.ts; executeMovePlan parallel batch in engine.ts; 2 new engine tests + 2 partition unit tests; move-executor unchanged'
     proof_boundaries:
       - executable_behavior
       - pseudo_code_structure
       - traceability_structure
   impact_analysis:
-    impl_inventory_notes: 'Complete: move-plan.ts, engine.ts (executeMovePlan + verify skip), move-executor.ts, operations.renameFile, files.data.moveFile.'
-    modules_or_boundaries: src/lib/sync/; src/lib/move-executor.ts; tied/vocab/nsync-multi-target.md
+    impl_inventory_notes: 'Shipped: move-plan.ts partitionMovePlanLegs; engine.ts executeMovePlan Promise.all batch when M>=2'
+    modules_or_boundaries: src/lib/sync/engine.ts; tied/vocab/nsync-multi-target.md
     tied_tokens_affected:
-      - ARCH-FILESYSTEM_ABSTRACTION
       - ARCH-NSYNC_INTEGRATION
       - ARCH-NSYNC_MOVE_PLAN
-      - IMPL-FILES_DATA
       - IMPL-NSYNC_ENGINE
-      - IMPL-NSYNC_MOVE_PLAN
-      - IMPL-NSYNC_OPERATIONS
-      - IMPL-NSYNC_VERIFY
-      - REQ-COMPARE_METHODS
       - REQ-MOVE_SEMANTICS
       - REQ-NSYNC_HYBRID_MOVE
       - REQ-NSYNC_MULTI_TARGET
-      - REQ-VERIFY_DEST
     tied_tokens_new: []
   leap_feedback:
     divergences_from_analysis: []
-    record_status: persisted
+    record_status: applied
     tied_stack_updates_required: []
   record_identity:
     change_request_id: NSYNC_HYBRID_MOVE
     recorded_at: '2026-09-01'
-    title: NSYNC hybrid move plan — rename where possible
+    title: NSYNC hybrid move plan — parallel cross-volume batch (Tranche 2b)
   risk_analysis:
     abuse_cases: []
     adversarial_inquiry:
       assurance_profile: baseline-functional
       close_out_inquiry_waiver: null
       counterexamples:
-        - Plan emits two rename legs for two same-volume destinations
-        - Rename scheduled before all required copy legs complete
-        - Verify skipped after a copy leg misclassified as rename
+        - Execution continues to rename after parallel batch partial failure
+        - Parallel batch runs when M=1 cross-volume leg
+        - Rename starts before parallel cross-volume batch completes
       depth_change_waiver: null
       depth_tier: minimal
       disconfirming_observations:
-        - engine.test.ts confirms verify skipped only on rename legs
-        - move-plan.test.ts shows count(rename) === 1 for K>=2 same-volume dests
+        - Plan builder already orders cross-volume copies before rename
+        - Tranches 1-4 sequential path proven with 69 tests
       eligibility_triggers_matched: []
       evidence_references:
         - docs/nsync-hybrid-move-optimization-plan.md
         - src/lib/sync/engine.ts
-        - working/REQ-NSYNC_HYBRID_MOVE/checklist-tracker-NSYNC_HYBRID_MOVE.yaml
+        - working/REQ-NSYNC_HYBRID_MOVE/test-strategy-outline.md
       falsification_questions:
-        - After cross-volume copy succeeds but rename fails, is source still present?
-        - Can two rename legs be emitted when source volume matches multiple targets?
-        - Does rename ever run before all required copies finish?
+        - After one parallel copy fails, does rename still run?
+        - Does M=1 cross-volume incorrectly use Promise.all batch?
+        - Does rename start before all parallel cross-volume copies settle?
       gate_policy: advisory
       integrated_waiver: null
-      prior_depth_tier: null
-      rationale: Local filesystem I/O optimization; REQ-MOVE_SEMANTICS safety constraint.
+      prior_depth_tier: minimal
+      rationale: Post-close-out local engine perf optimization; REQ-MOVE_SEMANTICS safety constraint unchanged.
       research_profile: integrated-agent
       strict_eligibility_prerequisites: []
     quality_profiles:
       - baseline-functional
       - data-integrity-migration
     risks:
-      - description: dev match but EXDEV on rename (bind mounts)
-        id: RISK-002
-        mitigation: Catch EXDEV; fallback to copy+delete via shared renameOrMove
-      - description: Verify skipped incorrectly after rename
-        id: RISK-004
-        mitigation: Gate skip on leg.op === rename only; engine.test.ts coverage
+      - description: Parallel batch partial failure leaves some cross-volume dests copied
+        id: RISK-008
+        mitigation: Fail-fast Promise.all; abort sequential tail; source preserved
+      - description: Sequential cross-volume copies slow multi-dest moves
+        id: RISK-005
+        mitigation: Tranche 2b parallel batch for M>=2 cross-volume legs only
   tdd_sequence:
-    summary: Tranches 1-4 complete. Optional Tranche 2b parallel cross-volume copies deferred.
+    summary: 'Tranche 2b complete: pseudo-code → RED concurrency tests → GREEN parallel batch → verification gate.'
   test_strategy:
     e2e_only_reason: N/A
-    matrix_notes: See working/REQ-NSYNC_HYBRID_MOVE/test-strategy-outline.md
-    summary: Full hybrid move suite 69 tests; verify skip covered in engine.test.ts
+    matrix_notes: See working/REQ-NSYNC_HYBRID_MOVE/test-strategy-outline.md Tranche 2b section
+    summary: Deferred promise harness for concurrent copyFile; regression full hybrid suite

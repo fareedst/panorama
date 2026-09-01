@@ -507,6 +507,120 @@ describe("Hybrid move plan [REQ-NSYNC_HYBRID_MOVE] [IMPL-NSYNC_ENGINE]", () => {
     }
   });
 
+  // [IMPL-NSYNC_ENGINE] [REQ-NSYNC_HYBRID_MOVE]: M>=2 cross-volume copies start concurrently before either completes
+  it("runs M>=2 cross-volume copy legs concurrently", async () => {
+    const sourceFile = path.join(sourceDir, "file.txt");
+    await fs.writeFile(sourceFile, "parallel cross");
+
+    const destCross2Dir = path.join(tempDir, "volC", "destCross2");
+    await fs.mkdir(destCross2Dir, { recursive: true });
+    const destCrossFile = path.join(destCrossDir, "file.txt");
+    const destCross2File = path.join(destCross2Dir, "file.txt");
+
+    const statSpy = vi.spyOn(fs, "stat").mockImplementation(async (p) => {
+      const realStat = await (await import("fs/promises")).stat(String(p));
+      const fp = String(p);
+      if (fp === sourceFile || fp.startsWith(sourceDir)) {
+        return Object.assign(realStat, { dev: 1 });
+      }
+      if (fp.startsWith(destCrossDir) || fp === destCrossDir) {
+        return Object.assign(realStat, { dev: 2 });
+      }
+      if (fp.startsWith(destCross2Dir) || fp === destCross2Dir) {
+        return Object.assign(realStat, { dev: 3 });
+      }
+      return Object.assign(realStat, { dev: 1 });
+    });
+
+    const blockers: Array<{ unblock: () => void }> = [];
+    const { copyFile: realCopyFile } =
+      await vi.importActual<typeof operations>("./operations");
+    const copySpy = vi.spyOn(operations, "copyFile").mockImplementation(async (from, to) => {
+      let unblock!: () => void;
+      const gate = new Promise<void>((resolve) => {
+        unblock = resolve;
+      });
+      blockers.push({ unblock });
+      await gate;
+      return realCopyFile(from, to);
+    });
+
+    try {
+      const engine = new SyncEngine();
+      const syncPromise = engine.sync(
+        [sourceFile],
+        [destCrossDir, destCross2Dir],
+        { move: true, compareMethod: "none" }
+      );
+
+      await vi.waitFor(() => expect(blockers.length).toBe(2));
+      blockers.forEach((b) => b.unblock());
+
+      const result = await syncPromise;
+
+      expect(result.itemsCompleted).toBe(1);
+      expect(copySpy).toHaveBeenCalledTimes(2);
+      expect(await fs.readFile(destCrossFile, "utf-8")).toBe("parallel cross");
+      expect(await fs.readFile(destCross2File, "utf-8")).toBe("parallel cross");
+    } finally {
+      statSpy.mockRestore();
+      copySpy.mockRestore();
+    }
+  });
+
+  // [IMPL-NSYNC_ENGINE] [REQ-NSYNC_HYBRID_MOVE] [REQ-MOVE_SEMANTICS]: parallel batch failure aborts rename tail
+  it("parallel cross-volume batch failure aborts subsequent rename leg", async () => {
+    const sourceFile = path.join(sourceDir, "file.txt");
+    await fs.writeFile(sourceFile, "batch fail");
+
+    const destCross2Dir = path.join(tempDir, "volC", "destCross2");
+    await fs.mkdir(destCross2Dir, { recursive: true });
+    const destCrossFile = path.join(destCrossDir, "file.txt");
+
+    const statSpy = vi.spyOn(fs, "stat").mockImplementation(async (p) => {
+      const realStat = await (await import("fs/promises")).stat(String(p));
+      const fp = String(p);
+      if (fp === sourceFile || fp.startsWith(sourceDir) || fp.startsWith(destSameDir)) {
+        return Object.assign(realStat, { dev: 1 });
+      }
+      if (fp.startsWith(destCrossDir) || fp === destCrossDir) {
+        return Object.assign(realStat, { dev: 2 });
+      }
+      if (fp.startsWith(destCross2Dir) || fp === destCross2Dir) {
+        return Object.assign(realStat, { dev: 3 });
+      }
+      return Object.assign(realStat, { dev: 1 });
+    });
+
+    const { copyFile: realCopyFile } =
+      await vi.importActual<typeof operations>("./operations");
+    const copySpy = vi.spyOn(operations, "copyFile").mockImplementation(async (from, to) => {
+      if (to === destCrossFile) {
+        throw new Error("parallel batch copy failed");
+      }
+      return realCopyFile(from, to);
+    });
+    const renameSpy = vi.spyOn(operations, "renameFile");
+
+    try {
+      const engine = new SyncEngine();
+      const result = await engine.sync(
+        [sourceFile],
+        [destSameDir, destCrossDir, destCross2Dir],
+        { move: true, compareMethod: "none" }
+      );
+
+      expect(result.itemsFailed).toBe(1);
+      expect(renameSpy).not.toHaveBeenCalled();
+      expect(await fs.readFile(sourceFile, "utf-8")).toBe("batch fail");
+      expect(copySpy).toHaveBeenCalled();
+    } finally {
+      statSpy.mockRestore();
+      copySpy.mockRestore();
+      renameSpy.mockRestore();
+    }
+  });
+
   // [IMPL-NSYNC_ENGINE] [REQ-NSYNC_HYBRID_MOVE]: all cross-volume — deferred delete still runs
   it("all cross-volume destinations still use deferred delete", async () => {
     const sourceFile = path.join(sourceDir, "file.txt");

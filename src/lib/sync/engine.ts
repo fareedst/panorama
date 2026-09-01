@@ -5,7 +5,7 @@ import * as hashOps from "./hash";
 import * as verifyOps from "./verify";
 import { compareFiles } from "./compare";
 import { copyFile, moveFile, deleteFile, renameFile, getFileStat } from "./operations";
-import { buildMovePlan, type MovePlan } from "./move-plan";
+import { buildMovePlan, partitionMovePlanLegs, type MovePlan, type MoveLeg } from "./move-plan";
 import { StoreMonitor } from "./store";
 import { ErrorClass, NoopObserver } from "../sync.types";
 import type {
@@ -330,9 +330,9 @@ export class SyncEngine {
     return itemResult;
   }
 
-  // [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_MOVE_PLAN] [REQ-NSYNC_HYBRID_MOVE] [REQ-MOVE_SEMANTICS]: how: execute plan legs sequentially; copy or rename per leg; stop on first failure
+  // [IMPL-NSYNC_ENGINE] [ARCH-NSYNC_MOVE_PLAN] [REQ-NSYNC_HYBRID_MOVE] [REQ-MOVE_SEMANTICS]: how: partition cross-volume copy prefix for parallel batch when M>=2; same-volume copies and rename sequential; fail-fast on batch failure
   /**
-   * Execute a hybrid move plan sequentially
+   * Execute a hybrid move plan with parallel cross-volume copy batch when M>=2
    * [IMPL-NSYNC_ENGINE] [REQ-NSYNC_HYBRID_MOVE]
    */
   private async executeMovePlan(
@@ -357,13 +357,12 @@ export class SyncEngine {
 
     let allLegsSucceeded = true;
 
-    for (const leg of plan.legs) {
+    const executeLeg = async (leg: MoveLeg): Promise<boolean> => {
       const result = resultsByPath.get(leg.to)!;
 
       if (signal?.aborted) {
         result.error = new Error("Cancelled");
-        allLegsSucceeded = false;
-        break;
+        return false;
       }
 
       try {
@@ -379,7 +378,7 @@ export class SyncEngine {
             `Skipping leg (files equivalent): ${leg.to}`);
           result.skipped = true;
           this.storeMonitor.recordSuccess(leg.to);
-          continue;
+          return true;
         }
 
         if (leg.op === "copy") {
@@ -401,8 +400,7 @@ export class SyncEngine {
             if (!verified) {
               result.error = new Error("Verification failed: hash mismatch");
               this.storeMonitor.recordError(leg.to, ErrorClass.VerifyFailed);
-              allLegsSucceeded = false;
-              break;
+              return false;
             }
             logger.debug(["IMPL-NSYNC_ENGINE", "REQ-VERIFY_DEST"],
               `Destination verified: ${leg.to}`);
@@ -413,14 +411,59 @@ export class SyncEngine {
         logger.debug(["IMPL-NSYNC_ENGINE", "REQ-NSYNC_HYBRID_MOVE"],
           `Move leg succeeded: ${leg.op} ${leg.to}`);
         this.observer.onItemProgress(item, item.size);
+        return true;
       } catch (error) {
         result.error = error as Error;
         const errorClass = StoreMonitor.classifyError(error as Error);
         this.storeMonitor.recordError(leg.to, errorClass);
         logger.error(["IMPL-NSYNC_ENGINE", "REQ-NSYNC_HYBRID_MOVE"],
           `Move leg failed: ${leg.op} ${leg.to}`, { error: String(error) });
-        allLegsSucceeded = false;
-        break;
+        return false;
+      }
+    };
+
+    if (signal?.aborted) {
+      for (const destPath of destPaths) {
+        const result = resultsByPath.get(destPath)!;
+        if (!result.error && !result.skipped) {
+          result.error = new Error("Cancelled");
+        }
+      }
+      allLegsSucceeded = false;
+    } else {
+      const { parallelBatch, sequentialTail } = partitionMovePlanLegs(plan);
+
+      if (parallelBatch.length > 1) {
+        logger.debug(["IMPL-NSYNC_ENGINE", "REQ-NSYNC_HYBRID_MOVE"],
+          `DIAGNOSTIC: parallel cross-volume batch size ${parallelBatch.length}`);
+        const batchResults = await Promise.all(parallelBatch.map((leg) => executeLeg(leg)));
+        if (batchResults.some((ok) => !ok)) {
+          allLegsSucceeded = false;
+        } else {
+          for (const leg of sequentialTail) {
+            if (signal?.aborted) {
+              allLegsSucceeded = false;
+              break;
+            }
+            const ok = await executeLeg(leg);
+            if (!ok) {
+              allLegsSucceeded = false;
+              break;
+            }
+          }
+        }
+      } else {
+        for (const leg of plan.legs) {
+          if (signal?.aborted) {
+            allLegsSucceeded = false;
+            break;
+          }
+          const ok = await executeLeg(leg);
+          if (!ok) {
+            allLegsSucceeded = false;
+            break;
+          }
+        }
       }
     }
 

@@ -39,6 +39,7 @@
 | **Rename target** | The one same-volume destination receiving `fs.rename` (lexicographically smallest same-volume `destPath`) |
 | **Single-rename invariant** | At most one rename leg per source item when multiple same-volume destinations exist |
 | **Move leg** | One copy or rename step in a hybrid move plan |
+| **Parallel cross-volume batch** | Initial contiguous cross-volume copy legs in `executeMovePlan` run concurrently when M≥2; same-volume copies and rename remain sequential ([REQ-NSYNC_HYBRID_MOVE](../tied/requirements/REQ-NSYNC_HYBRID_MOVE.yaml) Tranche 2b) |
 | **Store monitor** | “store failure detection”, `StoreMonitor`, `storeFailureAbort` |
 | **Sync observer** | “progress callbacks”, `SyncObserver` (`onStart`, `onItemComplete`, `onFinish`, …) |
 | **Sync plan** | `SyncPlan` — `totalItems`, `totalBytes`, `totalDestinations` at start |

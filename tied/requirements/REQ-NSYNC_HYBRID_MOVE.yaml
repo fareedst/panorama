@@ -25,6 +25,7 @@ REQ-NSYNC_HYBRID_MOVE:
     - criterion: Cross-volume copies execute before same-volume rename
     - criterion: Deferred source delete omitted when final leg is rename
     - criterion: Rename target is lexicographically smallest same-volume destPath
+    - criterion: When M>=2 cross-volume destinations exist, initial cross-volume copy legs run concurrently; batch failure aborts subsequent legs
   status: Implemented
   traceability:
     architecture:
@@ -33,4 +34,5 @@ REQ-NSYNC_HYBRID_MOVE:
       - IMPL-NSYNC_ENGINE
       - IMPL-NSYNC_MOVE_PLAN
     tests:
+      - src/lib/sync/engine.test.ts
       - src/lib/sync/move-plan.test.ts
