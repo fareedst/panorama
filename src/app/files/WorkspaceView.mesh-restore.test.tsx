@@ -90,6 +90,24 @@ function mockPaneFiles(dir: string): FileStat[] {
   ];
 }
 
+/** Enriched GET /api/files listing shape expected by listDirectoryViaFilesApi [IMPL-PANE_VOLUME_CAPACITY] */
+function enrichedListingResponse(files: FileStat[]) {
+  const sourcePath = files[0]?.path ? files[0].path.replace(/\/[^/]+$/, "") : "/";
+  return {
+    files,
+    hiddenCount: 0,
+    totalCount: files.length,
+    volumeStats: {
+      totalBytes: 1_000_000,
+      availableBytes: 500_000,
+      freePercent: 50,
+      deviceId: 1,
+      sourcePath,
+      status: "available" as const,
+    },
+  };
+}
+
 const threeInitialPanes = [
   { path: "/pane0", files: mockPaneFiles("/pane0") },
   { path: "/pane1", files: mockPaneFiles("/pane1") },
@@ -1135,10 +1153,16 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
           return { ok: true, json: async () => apiBody } as Response;
         }
         if (url.includes(encodeURIComponent("/saved/pane0"))) {
-          return { ok: true, json: async () => mockPaneFiles("/saved/pane0") } as Response;
+          return {
+            ok: true,
+            json: async () => enrichedListingResponse(mockPaneFiles("/saved/pane0")),
+          } as Response;
         }
         if (url.includes(encodeURIComponent("/saved/pane1"))) {
-          return { ok: true, json: async () => mockPaneFiles("/saved/pane1") } as Response;
+          return {
+            ok: true,
+            json: async () => enrichedListingResponse(mockPaneFiles("/saved/pane1")),
+          } as Response;
         }
         return { ok: true, json: async () => [] } as Response;
       },
@@ -1220,7 +1244,10 @@ describe("REQ-WORKSPACE_MESH_BRIDGE mesh restore [IMPL-WORKSPACE_MESH_BRIDGE]", 
           return meshPromise;
         }
         if (url.includes(encodeURIComponent("/pending/pane0"))) {
-          return { ok: true, json: async () => mockPaneFiles("/pending/pane0") } as Response;
+          return {
+            ok: true,
+            json: async () => enrichedListingResponse(mockPaneFiles("/pending/pane0")),
+          } as Response;
         }
         return { ok: true, json: async () => [] } as Response;
       },

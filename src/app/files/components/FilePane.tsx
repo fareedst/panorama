@@ -8,7 +8,7 @@
 
 import { useState, useRef, useEffect, useMemo } from "react";
 import type { FileTreeRowLike } from "@/lib/file-tree";
-import type { ComparisonMode, EnhancedCompareState, FileStat } from "@/lib/files.types";
+import type { ComparisonMode, EnhancedCompareState, FileStat, VolumeStats } from "@/lib/files.types";
 import type { PaneBounds } from "@/lib/files.layout";
 import type { FilesColumnConfig, FileColumnId } from "@/lib/config.types";
 import {
@@ -18,7 +18,13 @@ import {
   measureFileMetadataColumnWidths,
   type MeasuredFileColumnWidths,
 } from "@/lib/file-columns";
-import { getSortLabel, getSortDirectionSymbol, type SortCriterion, type SortDirection } from "@/lib/files.utils";
+import {
+  formatSize,
+  getSortLabel,
+  getSortDirectionSymbol,
+  type SortCriterion,
+  type SortDirection,
+} from "@/lib/files.utils";
 import ContextMenu from "./ContextMenu";
 import type { DisplayFilterSpec } from "@/lib/display-filter.types";
 import { DisplaySpecSelector } from "./DisplaySpecSelector";
@@ -36,6 +42,8 @@ interface FilePaneProps {
   cursor: number;
   /** Set of marked file absolute paths */
   marks: Set<string>;
+  /** [IMPL-FILE_PANE] [IMPL-PANE_VOLUME_CAPACITY] [REQ-PANE_VOLUME_CAPACITY] Volume capacity for this pane */
+  volumeStats?: VolumeStats | null;
   /** Pane bounds from layout calculation */
   bounds: PaneBounds;
   /** Whether this pane has focus */
@@ -139,6 +147,7 @@ export default function FilePane({
   files,
   cursor,
   marks,
+  volumeStats = null,
   bounds,
   focused,
   onToggleExpand,
@@ -631,8 +640,8 @@ export default function FilePane({
         )}
       </div>
       
-      {/* Footer — only when listing or marks/hidden provide non-empty status [IMPL-FILE_MARKING] [IMPL-SORT_FILTER] */}
-      {(files.length > 0 || marks.size > 0 || hiddenCount > 0) && (
+      {/* [IMPL-FILE_PANE] [IMPL-PANE_VOLUME_CAPACITY] [REQ-PANE_VOLUME_CAPACITY] [REQ-FILE_LISTING]: how — footer segment with compact format, aria-label, status variants; empty dir shows capacity */}
+      {(files.length > 0 || marks.size > 0 || hiddenCount > 0 || volumeStats !== null) && (
       <div className={`
         px-3 py-1 border-t border-zinc-200 dark:border-zinc-700
         bg-zinc-50 dark:bg-zinc-800
@@ -659,6 +668,21 @@ export default function FilePane({
             [{marks.size} marked]
           </span>
         )}
+        {/* [IMPL-FILE_PANE] [IMPL-PANE_VOLUME_CAPACITY] [REQ-PANE_VOLUME_CAPACITY] [REQ-FILE_LISTING]: how — footer segment with compact format, aria-label, status variants; empty dir shows capacity */}
+        {volumeStats?.status === "available" ? (
+          <span
+            data-testid="pane-volume-stats"
+            aria-label={`Available: ${formatSize(volumeStats.availableBytes)} of ${formatSize(volumeStats.totalBytes)} (${volumeStats.freePercent.toFixed(1)}%) at ${path}`}
+            className="truncate text-right"
+          >
+            Free {formatSize(volumeStats.availableBytes)} ({volumeStats.freePercent.toFixed(1)}%) · Total{" "}
+            {formatSize(volumeStats.totalBytes)}
+          </span>
+        ) : volumeStats ? (
+          <span data-testid="pane-volume-stats-unavailable">
+            Storage: {volumeStats.status}
+          </span>
+        ) : null}
       </div>
       )}
 

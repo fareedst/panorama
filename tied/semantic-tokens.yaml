@@ -200,6 +200,19 @@ ARCH-DISPLAY_SPEC_STORE:
   source_index: architecture-decisions.yaml
   status: Accepted
   type: ARCH
+ARCH-EVIDENCE_CHAIN_PROFILE:
+  cross_references:
+    - IMPL-EVIDENCE_CHAIN_PROFILE
+    - REQ-EVIDENCE_CHAIN_PROFILE
+  description: Schema, proof-boundary model, and artifact boundary for evidence-chain-profile.v1
+  detail_file: architecture-decisions/ARCH-EVIDENCE_CHAIN_PROFILE.yaml
+  metadata:
+    last_updated: '2026-08-22'
+    registered: '2026-08-22'
+  name: Evidence chain profile architecture
+  source_index: architecture-decisions.yaml
+  status: Active
+  type: ARCH
 ARCH-FEEDBACK_STORAGE:
   cross_references:
     - IMPL-MCP_FEEDBACK_TOOLS
@@ -548,6 +561,20 @@ ARCH-PANE_REFRESH:
   source_index: architecture-decisions.yaml
   status: Active
   type: ARCH
+ARCH-PANE_VOLUME_CAPACITY:
+  cross_references:
+    - ARCH-FILESYSTEM_ABSTRACTION
+    - IMPL-PANE_VOLUME_CAPACITY
+    - REQ-PANE_VOLUME_CAPACITY
+  description: Server statfs provider and listing enrichment for per-pane capacity
+  detail_file: architecture-decisions/ARCH-PANE_VOLUME_CAPACITY.yaml
+  metadata:
+    last_updated: '2026-09-01'
+    registered: '2026-09-01'
+  name: Per-Pane Volume Capacity Architecture
+  source_index: architecture-decisions.yaml
+  status: Active
+  type: ARCH
 ARCH-PERFORMANCE_OPT:
   cross_references:
     - REQ-FILES_PERFORMANCE
@@ -567,6 +594,19 @@ ARCH-PREVIEW_SYSTEM:
     last_updated: '2026-02-07'
     registered: '2026-02-07'
   name: Server-Side File Preview Rendering
+  source_index: architecture-decisions.yaml
+  status: Active
+  type: ARCH
+ARCH-QUALITY_ASSURANCE_PROFILES:
+  cross_references:
+    - IMPL-QUALITY_EVIDENCE_MANIFEST
+    - REQ-QUALITY_ASSURANCE_EVIDENCE
+  description: Bounded applicability profiles keep TIED integrity distinct from runtime quality proof
+  detail_file: architecture-decisions/ARCH-QUALITY_ASSURANCE_PROFILES.yaml
+  metadata:
+    last_updated: '2026-08-02'
+    registered: '2026-08-02'
+  name: Risk-triggered quality assurance profiles and evidence boundary
   source_index: architecture-decisions.yaml
   status: Active
   type: ARCH
@@ -711,6 +751,33 @@ ARCH-THEME_INJECTION:
     last_updated: '2026-02-06'
     registered: '2025-11-08'
   name: CSS Variable Injection from Theme Config
+  source_index: architecture-decisions.yaml
+  status: Active
+  type: ARCH
+ARCH-TIED_ADVERSARIAL_INQUIRY:
+  cross_references:
+    - IMPL-TIED_ADVERSARIAL_INQUIRY
+    - IMPL-TIED_ADVERSARIAL_INQUIRY_CHECKLIST
+    - REQ-TIED_ADVERSARIAL_INQUIRY
+  description: Separate canonical TIED intent from deterministic adversarial obligation and fidelity evidence.
+  detail_file: architecture-decisions/ARCH-TIED_ADVERSARIAL_INQUIRY.yaml
+  metadata:
+    last_updated: '2026-08-22'
+    registered: '2026-08-22'
+  name: Read-only obligation graph and evidence gate boundary
+  source_index: architecture-decisions.yaml
+  status: Active
+  type: ARCH
+ARCH-TIED_FIDELITY_RESEARCH:
+  cross_references:
+    - IMPL-TIED_FIDELITY_RESEARCH
+    - REQ-TIED_FIDELITY_RESEARCH
+  description: Separate research evidence and adjudication from audited project TIED data and remediation
+  detail_file: architecture-decisions/ARCH-TIED_FIDELITY_RESEARCH.yaml
+  metadata:
+    last_updated: '2026-08-09'
+    registered: '2026-08-09'
+  name: Read-Only Fidelity Research Boundary
   source_index: architecture-decisions.yaml
   status: Active
   type: ARCH
@@ -1050,6 +1117,20 @@ IMPL-DISPLAY_SPEC_STORE:
     last_updated: '2026-05-22T00:00:00.000Z'
     registered: '2026-05-22T00:00:00.000Z'
   name: Display Spec Catalog Store
+  source_index: implementation-decisions.yaml
+  status: Active
+  type: IMPL
+IMPL-EVIDENCE_CHAIN_PROFILE:
+  cross_references:
+    - ARCH-EVIDENCE_CHAIN_PROFILE
+    - PROC-EVIDENCE_CHAIN
+    - REQ-EVIDENCE_CHAIN_PROFILE
+  description: Depth-gated generator and normalizer for evidence-chain-profile.v1
+  detail_file: implementation-decisions/IMPL-EVIDENCE_CHAIN_PROFILE.yaml
+  metadata:
+    last_updated: '2026-08-22'
+    registered: '2026-08-22'
+  name: Evidence chain profile orchestrator
   source_index: implementation-decisions.yaml
   status: Active
   type: IMPL
@@ -1867,6 +1948,20 @@ IMPL-PANE_REFRESH:
   source_index: implementation-decisions.yaml
   status: Active
   type: IMPL
+IMPL-PANE_VOLUME_CAPACITY:
+  cross_references:
+    - ARCH-PANE_VOLUME_CAPACITY
+    - IMPL-FILES_API
+    - REQ-PANE_VOLUME_CAPACITY
+  description: volume-stats.ts provider and downstream listing/pane integration
+  detail_file: implementation-decisions/IMPL-PANE_VOLUME_CAPACITY.yaml
+  metadata:
+    last_updated: '2026-09-01'
+    registered: '2026-09-01'
+  name: Per-Pane Volume Capacity Implementation
+  source_index: implementation-decisions.yaml
+  status: In Progress
+  type: IMPL
 IMPL-PERFORMANCE_OPT:
   cross_references:
     - ARCH-PERFORMANCE_OPT
@@ -1879,6 +1974,116 @@ IMPL-PERFORMANCE_OPT:
   name: IMPL PERFORMANCE_OPT
   source_index: implementation-decisions.yaml
   status: Planned
+  type: IMPL
+IMPL-QUALITY_ASSURANCE_PILOT_WEBHOOK:
+  cross_references:
+    - ARCH-QUALITY_ASSURANCE_PROFILES
+    - REQ-QUALITY_ASSURANCE_EVIDENCE
+  description: Bounded pilot exercising risk-triggered quality profiles
+  detail_file: implementation-decisions/IMPL-QUALITY_ASSURANCE_PILOT_WEBHOOK.yaml
+  metadata:
+    last_updated: '2026-08-02'
+    registered: '2026-08-02'
+  name: Authenticated webhook inbox pilot
+  source_index: implementation-decisions.yaml
+  status: Active
+  type: IMPL
+IMPL-QUALITY_BINDING_INVENTORY:
+  cross_references:
+    - ARCH-MODULE_VALIDATION
+    - ARCH-QUALITY_ASSURANCE_PROFILES
+    - REQ-QUALITY_ASSURANCE_EVIDENCE
+  description: Structural validation of composition binding inventory rows
+  detail_file: implementation-decisions/IMPL-QUALITY_BINDING_INVENTORY.yaml
+  metadata:
+    last_updated: '2026-08-02'
+    registered: '2026-08-02'
+  name: Quality binding inventory validator
+  source_index: implementation-decisions.yaml
+  status: Active
+  type: IMPL
+IMPL-QUALITY_EVIDENCE_COLLECTION:
+  cross_references:
+    - ARCH-QUALITY_ASSURANCE_PROFILES
+    - IMPL-QUALITY_EVIDENCE_COMMAND_RUNNER
+    - IMPL-QUALITY_EVIDENCE_MANIFEST
+    - REQ-QUALITY_ASSURANCE_EVIDENCE
+  description: Collect declared command results into verification evidence
+  detail_file: implementation-decisions/IMPL-QUALITY_EVIDENCE_COLLECTION.yaml
+  metadata:
+    last_updated: '2026-08-02'
+    registered: '2026-08-02'
+  name: Command-to-manifest evidence collector
+  source_index: implementation-decisions.yaml
+  status: Active
+  type: IMPL
+IMPL-QUALITY_EVIDENCE_COMMAND_RUNNER:
+  cross_references:
+    - ARCH-QUALITY_ASSURANCE_PROFILES
+    - REQ-QUALITY_ASSURANCE_EVIDENCE
+  description: Execute bounded quality commands and capture provenance
+  detail_file: implementation-decisions/IMPL-QUALITY_EVIDENCE_COMMAND_RUNNER.yaml
+  metadata:
+    last_updated: '2026-08-02'
+    registered: '2026-08-02'
+  name: Quality evidence command runner
+  source_index: implementation-decisions.yaml
+  status: Active
+  type: IMPL
+IMPL-QUALITY_EVIDENCE_MANIFEST:
+  cross_references:
+    - ARCH-QUALITY_ASSURANCE_PROFILES
+    - IMPL-QUALITY_EVIDENCE_COLLECTION
+    - REQ-QUALITY_ASSURANCE_EVIDENCE
+  description: Deterministic machine-derived verification evidence records
+  detail_file: implementation-decisions/IMPL-QUALITY_EVIDENCE_MANIFEST.yaml
+  metadata:
+    last_updated: '2026-08-02'
+    registered: '2026-08-02'
+  name: Verification evidence manifest generation
+  source_index: implementation-decisions.yaml
+  status: Active
+  type: IMPL
+IMPL-QUALITY_PSEUDOCODE_VALIDATOR:
+  cross_references:
+    - ARCH-QUALITY_ASSURANCE_PROFILES
+    - PROC-PSEUDOCODE_VALIDATION
+    - REQ-QUALITY_ASSURANCE_EVIDENCE
+  description: Validate pseudo-code contracts and token-commented blocks
+  detail_file: implementation-decisions/IMPL-QUALITY_PSEUDOCODE_VALIDATOR.yaml
+  metadata:
+    last_updated: '2026-08-02'
+    registered: '2026-08-02'
+  name: Layer B pseudo-code validator
+  source_index: implementation-decisions.yaml
+  status: Active
+  type: IMPL
+IMPL-QUALITY_SECURITY_PROFILE_VALIDATION:
+  cross_references:
+    - ARCH-QUALITY_ASSURANCE_PROFILES
+    - REQ-QUALITY_ASSURANCE_EVIDENCE
+  description: Validate selected external-input security abuse cases or waivers
+  detail_file: implementation-decisions/IMPL-QUALITY_SECURITY_PROFILE_VALIDATION.yaml
+  metadata:
+    last_updated: '2026-08-02'
+    registered: '2026-08-02'
+  name: External-input security profile validation
+  source_index: implementation-decisions.yaml
+  status: Active
+  type: IMPL
+IMPL-QUALITY_TEST_ADEQUACY:
+  cross_references:
+    - ARCH-QUALITY_ASSURANCE_PROFILES
+    - PROC-TEST_ADEQUACY
+    - REQ-QUALITY_ASSURANCE_EVIDENCE
+  description: Validate risk-relative test strength
+  detail_file: implementation-decisions/IMPL-QUALITY_TEST_ADEQUACY.yaml
+  metadata:
+    last_updated: '2026-08-02'
+    registered: '2026-08-02'
+  name: Risk-triggered test adequacy validator
+  source_index: implementation-decisions.yaml
+  status: Active
   type: IMPL
 IMPL-RENAME_DIALOG:
   cross_references:
@@ -1979,6 +2184,45 @@ IMPL-THEME_INJECTION:
     last_updated: '2026-02-06'
     registered: '2025-11-08'
   name: Theme Injection Implementation
+  source_index: implementation-decisions.yaml
+  status: Active
+  type: IMPL
+IMPL-TIED_ADVERSARIAL_INQUIRY:
+  cross_references:
+    - ARCH-TIED_ADVERSARIAL_INQUIRY
+    - REQ-TIED_ADVERSARIAL_INQUIRY
+  description: Validated modules and read-only composition for adversarial obligation and fidelity evidence.
+  detail_file: implementation-decisions/IMPL-TIED_ADVERSARIAL_INQUIRY.yaml
+  metadata:
+    last_updated: '2026-08-22'
+    registered: '2026-08-22'
+  name: Obligation graph, fidelity engine, and assurance gate
+  source_index: implementation-decisions.yaml
+  status: Active
+  type: IMPL
+IMPL-TIED_ADVERSARIAL_INQUIRY_CHECKLIST:
+  cross_references:
+    - ARCH-TIED_ADVERSARIAL_INQUIRY
+    - REQ-TIED_ADVERSARIAL_INQUIRY
+  description: Checklist integration for bounded adversarial inquiry artifacts and scoped gate decisions.
+  detail_file: implementation-decisions/IMPL-TIED_ADVERSARIAL_INQUIRY_CHECKLIST.yaml
+  metadata:
+    last_updated: '2026-08-22'
+    registered: '2026-08-22'
+  name: Adversarial inquiry checklist integration and evidence artifacts
+  source_index: implementation-decisions.yaml
+  status: Active
+  type: IMPL
+IMPL-TIED_FIDELITY_RESEARCH:
+  cross_references:
+    - ARCH-TIED_FIDELITY_RESEARCH
+    - REQ-TIED_FIDELITY_RESEARCH
+  description: Validated modules and read-only composition for fidelity findings and evidence
+  detail_file: implementation-decisions/IMPL-TIED_FIDELITY_RESEARCH.yaml
+  metadata:
+    last_updated: '2026-08-09'
+    registered: '2026-08-09'
+  name: Fidelity Research First Vertical Slice
   source_index: implementation-decisions.yaml
   status: Active
   type: IMPL
@@ -2095,6 +2339,21 @@ PROC-COMMIT_MESSAGES:
   source_index: processes.md
   status: Active
   type: PROC
+PROC-EVIDENCE_CHAIN:
+  cross_references:
+    - ARCH-EVIDENCE_CHAIN_PROFILE
+    - IMPL-EVIDENCE_CHAIN_PROFILE
+    - PROC-QUALITY_EVIDENCE_PROVENANCE
+    - REQ-EVIDENCE_CHAIN_PROFILE
+  description: Collection points for evidence-chain-profile.v1
+  detail_file: 'null'
+  metadata:
+    last_updated: '2026-08-22'
+    registered: '2026-08-22'
+  name: Evidence chain profile collection
+  source_index: processes.md
+  status: Active
+  type: PROC
 PROC-IMPL_PSEUDOCODE_TOKENS:
   cross_references:
     - PROC-TIED_DEV_CYCLE
@@ -2120,6 +2379,32 @@ PROC-PROJECT_SURVEY_AND_SETUP:
   source_index: processes.md
   status: Active
   type: PROC
+PROC-QUALITY_ASSURANCE:
+  cross_references:
+    - ARCH-QUALITY_ASSURANCE_PROFILES
+    - REQ-QUALITY_ASSURANCE_EVIDENCE
+  description: Select applicable assurance profiles before implementation design
+  detail_file: 'null'
+  metadata:
+    last_updated: '2026-08-02'
+    registered: '2026-08-02'
+  name: Risk-triggered quality assurance
+  source_index: processes.md
+  status: Active
+  type: PROC
+PROC-QUALITY_EVIDENCE_PROVENANCE:
+  cross_references:
+    - IMPL-QUALITY_EVIDENCE_MANIFEST
+    - REQ-QUALITY_ASSURANCE_EVIDENCE
+  description: Retain reproducible command and artifact provenance
+  detail_file: 'null'
+  metadata:
+    last_updated: '2026-08-02'
+    registered: '2026-08-02'
+  name: Quality evidence provenance
+  source_index: processes.md
+  status: Active
+  type: PROC
 PROC-RELEASE:
   cross_references:
     - PROC-COMMIT_MESSAGES
@@ -2129,6 +2414,19 @@ PROC-RELEASE:
     last_updated: {}
     registered: {}
   name: Release and version numbering
+  source_index: processes.md
+  status: Active
+  type: PROC
+PROC-TEST_ADEQUACY:
+  cross_references:
+    - ARCH-QUALITY_ASSURANCE_PROFILES
+    - REQ-QUALITY_ASSURANCE_EVIDENCE
+  description: Select advanced testing by risk and boundary
+  detail_file: 'null'
+  metadata:
+    last_updated: '2026-08-02'
+    registered: '2026-08-02'
+  name: Risk-triggered test adequacy
   source_index: processes.md
   status: Active
   type: PROC
@@ -2195,6 +2493,20 @@ PROC-TOKEN_VALIDATION:
     last_updated: {}
     registered: {}
   name: Token Validation Process
+  source_index: processes.md
+  status: Active
+  type: PROC
+PROC-VOCABULARY_INDEX:
+  cross_references:
+    - PROC-AGENT_REQ_CHECKLIST
+    - PROC-IMPL_PSEUDOCODE_TOKENS
+    - PROC-TOKEN_AUDIT
+  description: Consult and maintain domain vocabulary index files at tied/vocab/*.md whenever a concept is named or expressed; distinct from IMPL pseudo-code grammar vocabulary
+  detail_file: 'null'
+  metadata:
+    last_updated: '2026-05-29'
+    registered: '2026-05-29'
+  name: Domain vocabulary index discipline
   source_index: processes.md
   status: Active
   type: PROC
@@ -2468,6 +2780,21 @@ REQ-ERROR_HANDLING:
   name: Root-Level Error Boundary
   source_index: requirements.yaml
   status: Implemented
+  type: REQ
+REQ-EVIDENCE_CHAIN_PROFILE:
+  category: Functional
+  cross_references:
+    - ARCH-EVIDENCE_CHAIN_PROFILE
+    - IMPL-EVIDENCE_CHAIN_PROFILE
+    - PROC-EVIDENCE_CHAIN
+  description: Versioned read-only evidence-chain-profile.v1 completeness and provenance report
+  detail_file: requirements/REQ-EVIDENCE_CHAIN_PROFILE.yaml
+  metadata:
+    last_updated: '2026-08-22'
+    registered: '2026-08-22'
+  name: Evidence chain profile
+  source_index: requirements.yaml
+  status: Active
   type: REQ
 REQ-FEEDBACK_TO_TIED:
   category: Functional
@@ -3063,6 +3390,36 @@ REQ-PANE_REFRESH:
   source_index: requirements.yaml
   status: Implemented
   type: REQ
+REQ-PANE_VOLUME_CAPACITY:
+  category: Functional
+  cross_references:
+    - ARCH-PANE_VOLUME_CAPACITY
+    - IMPL-PANE_VOLUME_CAPACITY
+    - REQ-FILE_LISTING
+    - REQ-MULTI_PANE_LAYOUT
+  description: Compact per-pane volume capacity in file manager footer
+  detail_file: requirements/REQ-PANE_VOLUME_CAPACITY.yaml
+  metadata:
+    last_updated: '2026-09-01'
+    registered: '2026-09-01'
+  name: Per-Pane Volume Capacity Display
+  source_index: requirements.yaml
+  status: Planned
+  type: REQ
+REQ-QUALITY_ASSURANCE_EVIDENCE:
+  category: Non-Functional
+  cross_references:
+    - ARCH-QUALITY_ASSURANCE_PROFILES
+    - IMPL-QUALITY_EVIDENCE_MANIFEST
+  description: Bounded quality profiles and reproducible evidence for behavior-changing work
+  detail_file: requirements/REQ-QUALITY_ASSURANCE_EVIDENCE.yaml
+  metadata:
+    last_updated: '2026-08-02'
+    registered: '2026-08-02'
+  name: Risk-triggered quality assurance evidence
+  source_index: requirements.yaml
+  status: Active
+  type: REQ
 REQ-REACT_SSR_STABILITY:
   category: Non-Functional
   cross_references: []
@@ -3151,6 +3508,35 @@ REQ-TAILWIND_STYLING:
   name: Tailwind CSS Styling System
   source_index: requirements.yaml
   status: Implemented
+  type: REQ
+REQ-TIED_ADVERSARIAL_INQUIRY:
+  category: Functional
+  cross_references:
+    - ARCH-TIED_ADVERSARIAL_INQUIRY
+    - IMPL-TIED_ADVERSARIAL_INQUIRY
+    - IMPL-TIED_ADVERSARIAL_INQUIRY_CHECKLIST
+  description: Provide bounded, read-only obligation mapping and bidirectional fidelity evidence without treating structural presence as semantic or runtime proof.
+  detail_file: requirements/REQ-TIED_ADVERSARIAL_INQUIRY.yaml
+  metadata:
+    last_updated: '2026-08-22'
+    registered: '2026-08-22'
+  name: Adversarial inquiry for obligation and fidelity evidence
+  source_index: requirements.yaml
+  status: Active
+  type: REQ
+REQ-TIED_FIDELITY_RESEARCH:
+  category: Functional
+  cross_references:
+    - ARCH-TIED_FIDELITY_RESEARCH
+    - IMPL-TIED_FIDELITY_RESEARCH
+  description: Read-only fidelity and defect-origin analysis across the TIED translation chain
+  detail_file: requirements/REQ-TIED_FIDELITY_RESEARCH.yaml
+  metadata:
+    last_updated: '2026-08-09'
+    registered: '2026-08-09'
+  name: TIED Fidelity Research
+  source_index: requirements.yaml
+  status: Active
   type: REQ
 REQ-TIED_SETUP:
   category: Core Functional

@@ -7,9 +7,10 @@ import { listDirectory, getUserHomeDirectory, sortFiles } from "@/lib/files.data
 import { filterFileStats } from "@/lib/display-filter-engine";
 import { validateOperationSourcesForDisplaySpec } from "@/lib/display-filter-api-validate";
 import { serverGetDisplaySpec } from "@/lib/display-spec-store-server";
+import { getVolumeStats } from "@/lib/volume-stats";
 import { logger } from "@/lib/logger";
 
-// [IMPL-FILES_API] [ARCH-FILE_OPERATIONS_API] [ARCH-LOGGING_SYSTEM] [REQ-DIRECTORY_NAVIGATION] [REQ-FILE_OPERATIONS] [REQ-LOGGING_SYSTEM]: how: GET reads path (default home), rejects .. traversal, lists directory, optionally filters by display spec, sorts by Name with dirs first, returns legacy array or enriched object
+// [IMPL-FILES_API] [IMPL-PANE_VOLUME_CAPACITY] [ARCH-SERVER_CLIENT_BOUNDARY] [REQ-PANE_VOLUME_CAPACITY] [REQ-DIRECTORY_NAVIGATION]: how: GET reads path, lists directory, attaches volumeStats; always returns enriched object (never bare array in v1)
 /**
  * GET /api/files - List directory contents
  */
@@ -42,16 +43,38 @@ export async function GET(request: NextRequest) {
     }
     const { files: filtered, hiddenCount } = filterFileStats(rawFiles, spec);
     const sortedFiles = sortFiles(filtered, "Name", true);
-    
+    let volumeStats;
+    try {
+      volumeStats = await getVolumeStats(dirPath);
+    } catch (error) {
+      // [IMPL-FILES_API] [IMPL-PANE_VOLUME_CAPACITY] [ARCH-SERVER_CLIENT_BOUNDARY] [REQ-PANE_VOLUME_CAPACITY] [REQ-FILE_LISTING]: how — capacity collection is informational and cannot turn a successful listing into an API failure
+      console.error("DIAGNOSTIC: [IMPL-PANE_VOLUME_CAPACITY] capacity enrichment failed", error);
+      volumeStats = {
+        totalBytes: 0,
+        availableBytes: 0,
+        freePercent: 0,
+        deviceId: null,
+        sourcePath: dirPath,
+        status: "unavailable" as const,
+        errorCode: "STAT_FAILED" as const,
+      };
+    }
+
     logger.info(["IMPL-FILES_API", "REQ-DIRECTORY_NAVIGATION"], `Successfully returned ${sortedFiles.length} files for ${dirPath}`);
     if (displaySpecId) {
       return NextResponse.json({
         files: sortedFiles,
         hiddenCount,
         totalCount: rawFiles.length,
+        volumeStats,
       });
     }
-    return NextResponse.json(sortedFiles);
+    return NextResponse.json({
+      files: sortedFiles,
+      hiddenCount: 0,
+      totalCount: sortedFiles.length,
+      volumeStats,
+    });
   } catch (error) {
     logger.error(["IMPL-FILES_API", "REQ-DIRECTORY_NAVIGATION"], `Failed to list directory`, { error: String(error) });
     console.error("Error listing directory:", error);

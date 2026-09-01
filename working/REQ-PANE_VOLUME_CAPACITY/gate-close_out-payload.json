@@ -1,0 +1,180 @@
+{
+  "phase": "close_out",
+  "tracker": {
+    "tracker_version": "checklist-tracker.v1",
+    "request_token": "REQ-PANE_VOLUME_CAPACITY",
+    "process_token": "PROC-AGENT_REQ_CHECKLIST",
+    "source_document": "tied/docs/agent-req-implementation-checklist.yaml",
+    "execution_evidence": {
+      "request": "REQ-PANE_VOLUME_CAPACITY",
+      "completed": [
+        "tranche-3-client-normalization-20260901",
+        "tranche-4-pane-hydration-20260901",
+        "tranche-5-pane-footer-20260901"
+      ],
+      "close_out_evidence": {
+        "date": "2026-09-01",
+        "deferred": [],
+        "gates": {},
+        "master_checklist": "working/REQ-PANE_VOLUME_CAPACITY/checklist-tracker-PANE_VOLUME_CAPACITY.yaml"
+      }
+    },
+    "steps": [
+      {"slug": "session-bootstrap", "tracking": {"status": "completed"}},
+      {"slug": "translate-sponsor-intent", "tracking": {"status": "completed"}},
+      {"slug": "change-definition", "tracking": {"status": "completed"}},
+      {"slug": "impact-discovery", "tracking": {"status": "completed"}},
+      {"slug": "risk-assessment", "tracking": {"status": "completed"}},
+      {"slug": "author-requirement", "tracking": {"status": "completed"}},
+      {"slug": "author-architecture", "tracking": {"status": "completed"}},
+      {"slug": "catalog-pseudocode-contracts", "tracking": {"status": "completed"}},
+      {"slug": "flag-contradictory-specs", "tracking": {"status": "completed"}},
+      {"slug": "flag-insufficient-specs", "tracking": {"status": "completed"}},
+      {"slug": "resolve-pseudocode", "tracking": {"status": "completed"}},
+      {"slug": "gate-pseudocode-validation", "tracking": {"status": "completed"}},
+      {"slug": "persist-implementation-records", "tracking": {"status": "completed"}},
+      {"slug": "test-strategy", "tracking": {"status": "completed"}},
+      {"slug": "unit-test-red", "tracking": {"status": "completed"}},
+      {"slug": "unit-test-green", "tracking": {"status": "completed"}},
+      {"slug": "three-way-alignment-unit", "tracking": {"status": "completed"}},
+      {"slug": "composition-integration", "tracking": {"status": "completed", "evidence": "Tranche 2 API contract and mesh bridge integration verified by 51 scoped Vitest tests."}},
+      {"slug": "unit-refactor", "tracking": {"status": "not_applicable", "rationale": "No refactor was needed after independent module validation."}},
+      {"slug": "end-to-end-ui", "tracking": {"status": "not_applicable", "policy": "component and composition tests cover footer rendering and pane state", "rationale": "No Playwright required unless responsive/a11y gaps documented in test-strategy-outline.md"}},
+      {"slug": "sub-adversarial-inquiry-pass", "tracking": {"status": "not_applicable", "policy": "minimal depth; no integrated eligibility triggers matched", "rationale": "Extends existing server listing boundary; local statfs; no new auth or persistence surface"}},
+      {"slug": "apply-token-comments", "tracking": {"status": "completed", "evidence": "Provider, route, mesh bridge, and tests carry REQ/ARCH/IMPL token comments."}},
+      {"slug": "verification-gate", "tracking": {"status": "completed", "disposition_evidence": "6 scoped test files passed (134 tests); bunx tsc -b passed; pseudocode validation passed.", "evidence": "Scoped Vitest: 6 files, 134 tests passed; bunx tsc -b passed; vocabulary validation passed; pseudocode validation passed."}},
+      {"slug": "sync-tied-stack", "tracking": {"status": "completed", "disposition_evidence": "tied_validate_consistency returned ok: true after project record synchronization.", "evidence": "TIED requirement and implementation records synchronized; tied_validate_consistency passed."}},
+      {"slug": "user-facing-release-notes", "tracking": {"status": "not_applicable", "rationale": "Informational footer behavior is covered by the control plan and no release-note channel was requested."}},
+      {"slug": "persist-citdp-record", "tracking": {"status": "completed", "disposition_evidence": "CITDP-PANE_VOLUME_CAPACITY.yaml exists under tied/citdp and passed CITDP schema validation.", "evidence": "Persisted tied/citdp/CITDP-PANE_VOLUME_CAPACITY.yaml."}},
+      {"slug": "traceable-commit", "tracking": {"status": "completed", "rationale": "plan-close-out prepares CHANGELOG and proposed commit message; commit deferred to sponsor."}}
+    ],
+    "sub_procedures": [
+      {"slug": "sub-adversarial-inquiry-pass", "tracking": {"status": "not_applicable", "policy": "minimal depth; no integrated eligibility triggers matched", "rationale": "Extends existing server listing boundary; local statfs; no new auth or persistence surface"}},
+      {"slug": "sub-client-yaml-styling", "tracking": {"status": "not_applicable", "policy": "client formatter not configured"}},
+      {"slug": "sub-yaml-edit-loop", "tracking": {"status": "completed"}},
+      {"slug": "sub-pseudocode-validation-pass", "tracking": {"status": "completed"}},
+      {"slug": "sub-vocabulary-sync", "tracking": {"status": "completed"}},
+      {"slug": "sub-leap-micro-cycle", "tracking": {"status": "completed", "evidence": "Aligned sidecar contracts, source annotations, tests, and TIED traceability after implementation."}},
+      {"slug": "sub-evidence-chain-profile", "tracking": {"status": "not_applicable", "policy": "minimal depth; no evidence-chain profile in scope"}}
+    ]
+  },
+  "citdp": {
+      "record_identity": {
+        "change_request_id": "PANE_VOLUME_CAPACITY",
+        "recorded_at": "2026-09-01",
+        "title": "Per-pane volume capacity display in file manager footer"
+      },
+      "change_definition": {
+        "current_behavior": "Panes show listing and cursor/sort/mark footer only; GET /api/files without displaySpecId returns bare FileStat[]; SSR bootstrap uses listDirectory only; listDirectoryViaFilesApi casts response as array.",
+        "desired_behavior": "GET always returns enriched listing with volumeStats; server provider uses statfs where available; each pane stores and displays capacity in footer; SSR bootstrap and client mount backfill hydrate stats.",
+        "non_goals": [
+          "Dedicated /api/files/volume endpoint in v1",
+          "files.yaml display toggle in v1",
+          "Global storage dashboard",
+          "Low-space warning threshold in v1",
+          "Per-directory disk usage totals",
+          "Persisting capacity in workspace snapshot",
+          "Pre-operation fit prediction or quotas"
+        ],
+        "success_criteria": [
+          "Each pane shows total and available bytes plus free-space percentage when supported",
+          "GET response unified to enriched object; in-repo array consumers migrated",
+          "Listing succeeds when capacity collection fails",
+          "Provider, API, normalization, pane state, and presentation independently tested",
+          "Vocabulary RECORD in tied/vocab/workspace-pane.md"
+        ],
+        "unchanged_behavior": "Directory listing semantics; display filters; NSYNC volume affinity; mesh snapshot schema; bulk file operations"
+      },
+      "risk_analysis": {
+        "abuse_cases": [],
+        "quality_profiles": ["baseline-functional"],
+        "risks": [
+          {"id": "RISK-001", "description": "statfs latency on network mounts", "mitigation": "Non-fatal capacity failure; optional timeout in later tranche"},
+          {"id": "RISK-004", "description": "Unavailable stats shown as zero", "mitigation": "Explicit available/unavailable/unsupported status variants"},
+          {"id": "RISK-005", "description": "Empty-directory footer hides capacity", "mitigation": "Include capacity in footer visibility predicate"},
+          {"id": "RISK-009", "description": "SSR panes lack stats until client fetch", "mitigation": "SSR attach plus mount backfill"},
+          {"id": "RISK-010", "description": "GET shape migration breaks mesh rehydrate", "mitigation": "Migrate listDirectoryViaFilesApi in same tranche as route change"}
+        ],
+        "adversarial_inquiry": {
+          "assurance_profile": "baseline-functional",
+          "close_out_inquiry_waiver": null,
+          "counterexamples": [
+            "Fabricated zero bytes when statfs fails",
+            "Capacity blocks directory listing on provider error"
+          ],
+          "depth_change_waiver": null,
+          "depth_tier": "minimal",
+          "disconfirming_observations": [
+            "Existing GET already returns enriched object when displaySpecId is set",
+            "fetchDirectoryListing already normalizes wrapped responses"
+          ],
+          "eligibility_triggers_matched": [],
+          "evidence_references": [
+            "docs/pane-volume-capacity-plan.md",
+            "working/REQ-PANE_VOLUME_CAPACITY/test-strategy-outline.md"
+          ],
+          "falsification_questions": [
+            "Does listing fail when statfs throws?",
+            "Does bare-array GET response remain after migration?",
+            "Does empty directory hide capacity after implementation?"
+          ],
+          "gate_policy": "advisory",
+          "integrated_waiver": null,
+          "prior_depth_tier": "minimal",
+          "rationale": "Extends existing server listing boundary with local statfs; informational UI only; no new auth or persistence surface.",
+          "research_profile": "integrated-agent",
+          "strict_eligibility_prerequisites": []
+        }
+      },
+      "test_strategy": {
+        "summary": "Module tranches A-E; strict TDD; E2E not_applicable unless component tests insufficient",
+        "matrix_notes": "See working/REQ-PANE_VOLUME_CAPACITY/test-strategy-outline.md",
+        "e2e_only_reason": "N/A"
+      },
+      "tdd_sequence": {
+        "summary": "Tranche 0 planning → provider → API migration → normalization → pane state → FilePane UI → verification gate"
+      },
+      "completion_criteria": {
+        "verification_gate_notes": "Scoped Vitest passed 134 tests across 6 files; bunx tsc -b passed; pseudocode_validate passed; tied_validate_consistency passed; vocabulary validation passed."
+      },
+      "implementation_status": {
+        "completed": [
+          "Provider statfs normalization",
+          "Enriched GET response",
+          "Client normalization",
+          "SSR and mount hydration",
+          "Pane footer presentation"
+        ],
+        "remaining_risk": "Network mount statfs latency and unsupported Windows statfs remain explicit residual risks."
+      },
+      "leap_feedback": {
+        "divergences_from_analysis": "none",
+        "record_status": "complete",
+        "tied_stack_updates_required": []
+      },
+      "evidence": {
+        "commands": [
+          {"command": "bun run validate:vocabulary", "exit_code": 0, "result": "passed"},
+          {"command": "bun run vitest run src/lib/volume-stats.test.ts src/app/api/files/display-filter.route.test.ts src/lib/pane-display-filter.test.ts src/lib/workspace-mesh-bridge.test.ts src/app/files/WorkspaceView.test.tsx src/app/files/components/FilePane.test.tsx", "exit_code": 0, "result": "134 tests passed across 6 files"},
+          {"command": "bunx tsc -b", "exit_code": 0, "result": "passed"}
+        ],
+        "module_validation": "volume-stats provider; GET route migration; pane-display-filter normalization; workspace-mesh-bridge consumer; WorkspaceView hydration; FilePane footer",
+        "proof_boundaries": ["executable_behavior", "pseudo_code_structure", "traceability_structure"]
+      },
+      "impact_analysis": {
+        "modules_or_boundaries": "src/lib/volume-stats.ts; src/app/api/files/route.ts; src/app/files/page.tsx; src/lib/workspace-mesh-bridge.ts; src/lib/pane-display-filter.ts; WorkspaceView.tsx; FilePane.tsx; tied/vocab/workspace-pane.md",
+        "tied_tokens_affected": [
+          "REQ-FILE_LISTING", "REQ-MULTI_PANE_LAYOUT", "REQ-DIRECTORY_NAVIGATION", "REQ-FILE_MANAGER_PAGE", "REQ-WORKSPACE_MESH_BRIDGE",
+          "ARCH-FILESYSTEM_ABSTRACTION", "ARCH-SERVER_CLIENT_BOUNDARY", "ARCH-WORKSPACE_MESH_BRIDGE",
+          "IMPL-FILES_DATA", "IMPL-FILES_API", "IMPL-FILE_MANAGER_PAGE", "IMPL-WORKSPACE_MESH_BRIDGE", "IMPL-WORKSPACE_VIEW", "IMPL-FILE_PANE"
+        ],
+        "tied_tokens_new": ["REQ-PANE_VOLUME_CAPACITY", "ARCH-PANE_VOLUME_CAPACITY", "IMPL-PANE_VOLUME_CAPACITY"]
+      }
+  },
+  "receipt_persistence": {
+    "request_token": "REQ-PANE_VOLUME_CAPACITY",
+    "gates_dir": "working/REQ-PANE_VOLUME_CAPACITY",
+    "ledger_path": "working/REQ-PANE_VOLUME_CAPACITY/gate-ledger.jsonl",
+    "run_id": "plan-close-out-20260901"
+  }
+}

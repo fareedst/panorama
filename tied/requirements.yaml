@@ -2691,6 +2691,17 @@ REQ-PANE_REFRESH:
       method: Keystroke testing
     - coverage: Cursor and sort settings maintained
       method: State preservation testing
+REQ-PANE_VOLUME_CAPACITY:
+  category: Functional
+  cross_references:
+    - REQ-DIRECTORY_NAVIGATION
+    - REQ-FILE_LISTING
+    - REQ-FILE_MANAGER_PAGE
+    - REQ-MULTI_PANE_LAYOUT
+  detail_file: requirements/REQ-PANE_VOLUME_CAPACITY.yaml
+  name: Per-Pane Volume Capacity Display
+  priority: P1
+  status: Implemented
 REQ-QUALITY_ASSURANCE_EVIDENCE:
   category: Non-Functional
   cross_references:

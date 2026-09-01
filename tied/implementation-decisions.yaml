@@ -3587,6 +3587,13 @@ IMPL-PANE_REFRESH:
       - REQ-KEYBOARD_SHORTCUTS_COMPLETE
       - REQ-PANE_REFRESH
     tests: []
+IMPL-PANE_VOLUME_CAPACITY:
+  cross_references:
+    - ARCH-PANE_VOLUME_CAPACITY
+    - REQ-PANE_VOLUME_CAPACITY
+  detail_file: implementation-decisions/IMPL-PANE_VOLUME_CAPACITY.yaml
+  name: Per-Pane Volume Capacity Implementation
+  status: Active
 IMPL-PERFORMANCE_OPT:
   code_locations:
     files: []

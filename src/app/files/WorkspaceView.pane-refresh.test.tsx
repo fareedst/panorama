@@ -3,7 +3,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import WorkspaceView from "./WorkspaceView";
-import type { FileStat } from "@/lib/files.types";
+import type { FileStat, VolumeStats } from "@/lib/files.types";
 import type { FilesLayoutConfig } from "@/lib/config.types";
 
 global.fetch = vi.fn();
@@ -66,6 +66,17 @@ const mockCopy = {
   subtitle: "Browse",
 };
 
+function mockVolumeStats(sourcePath: string): VolumeStats {
+  return {
+    totalBytes: 1_000_000,
+    availableBytes: 500_000,
+    freePercent: 50,
+    deviceId: 1,
+    sourcePath,
+    status: "available",
+  };
+}
+
 function listingResponse(files: FileStat[]) {
   return {
     ok: true,
@@ -93,7 +104,9 @@ describe("WorkspaceView pane refresh [IMPL-PANE_REFRESH] [REQ-PANE_REFRESH]", ()
 
     render(
       <WorkspaceView
-        initialPanes={[{ path: "/pane1", files: mockFilesPane1 }]}
+        initialPanes={[
+          { path: "/pane1", files: mockFilesPane1, volumeStats: mockVolumeStats("/pane1") },
+        ]}
         keybindings={paneRefreshKeybindings}
         copy={mockCopy}
         layout={mockLayout}
@@ -130,8 +143,16 @@ describe("WorkspaceView pane refresh [IMPL-PANE_REFRESH] [REQ-PANE_REFRESH]", ()
     render(
       <WorkspaceView
         initialPanes={[
-          { path: "/pane1", files: mockFilesPane1 },
-          { path: "/pane2", files: mockFilesPane2 },
+          {
+            path: "/pane1",
+            files: mockFilesPane1,
+            volumeStats: mockVolumeStats("/pane1"),
+          },
+          {
+            path: "/pane2",
+            files: mockFilesPane2,
+            volumeStats: mockVolumeStats("/pane2"),
+          },
         ]}
         keybindings={paneRefreshKeybindings}
         copy={mockCopy}

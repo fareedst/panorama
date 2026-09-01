@@ -792,4 +792,67 @@ describe("FilePane [REQ_FILE_LISTING]", () => {
     expect(fileListRegion).not.toBeNull();
     expect(screen.getByTestId("file-list-table").parentElement).toBe(fileListRegion);
   });
+
+  // [IMPL-FILE_PANE] [IMPL-PANE_VOLUME_CAPACITY] [REQ-PANE_VOLUME_CAPACITY] [REQ-FILE_LISTING]: how — footer segment with compact format, aria-label, status variants; empty dir shows capacity
+  it("RENDER_PANE_VOLUME_STATS shows compact capacity and accessible values [REQ-PANE_VOLUME_CAPACITY]", () => {
+    render(
+      <FilePane
+        path="/home/user"
+        files={mockFiles}
+        cursor={0}
+        marks={new Set()}
+        bounds={mockBounds}
+        focused={true}
+        onNavigate={mockOnNavigate}
+        onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
+        fileTypes={mockFileTypes}
+        volumeStats={{
+          totalBytes: 1_000_000_000,
+          availableBytes: 412_000_000,
+          freePercent: 41.2,
+          deviceId: 1,
+          sourcePath: "/home/user",
+          status: "available",
+        }}
+      />,
+    );
+
+    expect(screen.getByTestId("pane-volume-stats")).toHaveTextContent("Free");
+    expect(screen.getByTestId("pane-volume-stats")).toHaveAttribute(
+      "aria-label",
+      expect.stringContaining("Available:"),
+    );
+  });
+
+  // [IMPL-FILE_PANE] [IMPL-PANE_VOLUME_CAPACITY] [REQ-PANE_VOLUME_CAPACITY] [REQ-FILE_LISTING]: how — footer segment with compact format, aria-label, status variants; empty dir shows capacity
+  it("FOOTER_VISIBILITY_INCLUDES_CAPACITY shows unavailable state for empty directories [REQ-PANE_VOLUME_CAPACITY]", () => {
+    render(
+      <FilePane
+        path="/home/user/empty"
+        files={[]}
+        cursor={0}
+        marks={new Set()}
+        bounds={mockBounds}
+        focused={true}
+        onNavigate={mockOnNavigate}
+        onCursorMove={mockOnCursorMove}
+        columns={mockColumns}
+        fileTypes={mockFileTypes}
+        volumeStats={{
+          totalBytes: 0,
+          availableBytes: 0,
+          freePercent: 0,
+          deviceId: null,
+          sourcePath: "/home/user/empty",
+          status: "unavailable",
+          errorCode: "STAT_FAILED",
+        }}
+      />,
+    );
+
+    expect(screen.getByTestId("pane-volume-stats-unavailable")).toHaveTextContent(
+      "Storage: unavailable",
+    );
+  });
 });

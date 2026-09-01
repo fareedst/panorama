@@ -1,0 +1,30 @@
+{
+  "schema_version": "checklist-gate-receipt.v1",
+  "phase": "verification",
+  "timestamp": "2026-09-01T19:59:46.706Z",
+  "allowed": false,
+  "diagnostics": [
+    "missing_disposition_evidence:verification-gate",
+    "missing_disposition_evidence:sync-tied-stack",
+    "missing_disposition_evidence:persist-citdp-record",
+    "missing_required_step:sub-adversarial-inquiry-pass"
+  ],
+  "depth": "minimal",
+  "input_hashes": {
+    "tracker_hash": "sha256:c9bb1a4f56c17034d81b936edc1c240289845dbbee9d7f5c96a1caec6482a114",
+    "citdp_hash": "sha256:4d7d224be36d6f354ed51ddf99899d48a01599d56534c154a5047691404b062d"
+  },
+  "gate_result": {
+    "allowed": false,
+    "ok": false,
+    "blocking": true,
+    "depth": "minimal",
+    "phase": "verification",
+    "diagnostics": [
+      "missing_disposition_evidence:verification-gate",
+      "missing_disposition_evidence:sync-tied-stack",
+      "missing_disposition_evidence:persist-citdp-record",
+      "missing_required_step:sub-adversarial-inquiry-pass"
+    ]
+  }
+}

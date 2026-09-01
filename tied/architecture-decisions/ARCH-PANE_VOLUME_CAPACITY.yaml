@@ -1,0 +1,61 @@
+ARCH-PANE_VOLUME_CAPACITY:
+  alternatives_considered:
+    - cons:
+        - Cannot access server mount points
+      name: Client-side filesystem API
+      pros:
+        - No server statfs
+      rejected_reason: Panorama browses server filesystem only
+    - cons:
+        - Extra round trip per pane
+      name: Dedicated /api/files/volume endpoint
+      pros:
+        - Separate cache policy
+      rejected_reason: v1 enriches existing listing boundary per product plan
+  cross_references:
+    - ARCH-FILE_MANAGER_HIERARCHY
+    - ARCH-FILESYSTEM_ABSTRACTION
+    - ARCH-SERVER_CLIENT_BOUNDARY
+    - REQ-PANE_VOLUME_CAPACITY
+  decision: Server-only statfs provider in src/lib/volume-stats.ts normalizes VolumeStats; GET /api/files always returns enriched object with volumeStats; pane state holds ephemeral volumeStats (not mesh snapshot); FilePane footer renders capacity segment with explicit status variants.
+  implementation_approach:
+    details:
+      - deviceId is internal cache/diagnostic metadata only
+      - Do not persist volumeStats in workspace snapshot v1-v5
+      - GET response unified to { files, volumeStats, hiddenCount?, totalCount? } in v1
+      - volume-stats.ts is server-only; no use client imports
+      - volumeStats uses bavail for user-available bytes on Unix-like platforms
+      - Windows and unsupported platforms return status unsupported — never fabricate zeros
+    summary: statfs provider + listing enrichment + per-pane ephemeral state + footer presentation
+  name: Per-Pane Volume Capacity Architecture
+  rationale:
+    benefits:
+      - Clear server-client separation
+      - Per-pane comparison across volumes
+      - Reuses existing directory listing boundary
+    problems_solved:
+      - Bare array GET response cannot carry volumeStats
+      - Client cannot call statfs safely
+    why: Filesystem access is already server-only; listing refresh paths exist for navigation and reload.
+  related_decisions:
+    depends_on:
+      - ARCH-FILESYSTEM_ABSTRACTION
+      - ARCH-SERVER_CLIENT_BOUNDARY
+    informs:
+      - IMPL-FILES_API
+      - IMPL-PANE_VOLUME_CAPACITY
+    see_also:
+      - ARCH-WORKSPACE_MESH_BRIDGE
+  status: Active
+  traceability:
+    code_annotations:
+      - ARCH-PANE_VOLUME_CAPACITY
+    implementation:
+      - IMPL-FILE_PANE
+      - IMPL-FILES_API
+      - IMPL-PANE_VOLUME_CAPACITY
+      - IMPL-WORKSPACE_VIEW
+    requirements:
+      - REQ-FILE_LISTING
+      - REQ-MULTI_PANE_LAYOUT
+      - REQ-PANE_VOLUME_CAPACITY

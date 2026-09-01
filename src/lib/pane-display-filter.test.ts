@@ -2,7 +2,11 @@
 
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { DisplaySpecStore, resetDisplaySpecStoreForTests } from "./display-spec-store";
-import { buildPaneFromRawListing, type PaneWithDisplayFilter } from "./pane-display-filter";
+import {
+  buildPaneFromRawListing,
+  fetchDirectoryListing,
+  type PaneWithDisplayFilter,
+} from "./pane-display-filter";
 import type { FileStat } from "./files.types";
 
 function mockStorage(): Storage {
@@ -34,6 +38,7 @@ function basePane(): PaneWithDisplayFilter {
   return {
     path: "/tmp",
     files: [],
+    volumeStats: null,
     cursor: 0,
     marks: new Set(),
     sortBy: "name",
@@ -103,5 +108,41 @@ describe("pane-display-filter [IMPL-PANE_DISPLAY_FILTER_UI]", () => {
     expect(listener).toHaveBeenCalledWith(
       expect.objectContaining({ type: "updated", spec: expect.objectContaining({ id: created.id }) }),
     );
+  });
+
+  // [IMPL-PANE_VOLUME_CAPACITY] [ARCH-SERVER_CLIENT_BOUNDARY] [REQ-PANE_VOLUME_CAPACITY] [REQ-FILE_LISTING]: how — client fetch normalizes enriched listing responses and gives malformed capacity an explicit unavailable status
+  it("NORMALIZE_LISTING_RESPONSE preserves enriched volume stats [REQ-PANE_VOLUME_CAPACITY]", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        files: [file("keep.txt")],
+        volumeStats: {
+          totalBytes: 1000,
+          availableBytes: 250,
+          freePercent: 25,
+          deviceId: 1,
+          sourcePath: "/tmp",
+          status: "available",
+        },
+        hiddenCount: 0,
+        totalCount: 1,
+      }),
+    }));
+
+    const response = await fetchDirectoryListing("/tmp", null);
+    expect(response.volumeStats.status).toBe("available");
+    expect(response.volumeStats.availableBytes).toBe(250);
+  });
+
+  // [IMPL-PANE_VOLUME_CAPACITY] [ARCH-SERVER_CLIENT_BOUNDARY] [REQ-PANE_VOLUME_CAPACITY] [REQ-FILE_LISTING]: how — client fetch normalizes enriched listing responses and gives malformed capacity an explicit unavailable status
+  it("NORMALIZE_LISTING_RESPONSE rejects malformed volume stats without throwing [REQ-PANE_VOLUME_CAPACITY]", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ files: [], volumeStats: { status: "available" } }),
+    }));
+
+    const response = await fetchDirectoryListing("/tmp", null);
+    expect(response.volumeStats.status).toBe("unavailable");
+    expect(response.volumeStats.errorCode).toBe("INVALID_STATS");
   });
 });

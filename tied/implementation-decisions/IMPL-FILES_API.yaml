@@ -24,18 +24,8 @@ IMPL-FILES_API:
   decision: GET /api/files for directory listing, POST /api/files for operations (copy, move, delete, rename, bulk-*, sync-all), operation-specific validation, integrated with session logger
   implementation_approach:
     details:
-      - All log entries include semantic tokens for traceability
-      - Call files.data or SyncEngine (sync-all); return JSON success/error responses
-      - Created src/app/api/files/route.ts
-      - Dynamic import of operation functions to optimize bundle
-      - Error responses logged with full context (paths, operations, error messages)
-      - 'execute-command: validate entries; delegate executeCommandBatch; return successCount and errorCount'
-      - 'GET handler at /api/files (not /api/files/list): accepts path query param, returns sorted directory listing'
-      - Integrated logger module for debug, info, warn, error logging
-      - 'Operation-specific validation: only copy, move, delete, rename require src; sync-all and bulk-delete use sources array (no src)'
-      - Path validation (..) only when src/dest present
-      - 'POST handler: extract operation, src, dest from body'
-      - Switch on operation type (copy, move, delete, rename, bulk-copy, bulk-move, bulk-delete, sync-all, execute-command)
+      - Directory listing attaches volumeStats via getVolumeStats from IMPL-PANE_VOLUME_CAPACITY; capacity failure does not fail listing
+      - GET handler v1 always returns enriched object { files, volumeStats, hiddenCount, totalCount } — bare FileStat[] array removed in-repo
     summary: GET /api/files for directory listing, POST /api/files for operations (copy, move, delete, rename, bulk-*, sync-all, execute-command), operation-specific validation, integrated with session logger
   metadata:
     created:

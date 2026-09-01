@@ -1,0 +1,49 @@
+REQ-PANE_VOLUME_CAPACITY:
+  category: Functional
+  description: Each file manager pane displays compact volume capacity (total size, available bytes, free-space percentage) for the filesystem volume containing the pane base directory. Stats are server-derived via statfs, returned on directory listing responses, stored in ephemeral pane state, and rendered in the pane footer. Capacity failure never blocks listing.
+  name: Per-Pane Volume Capacity Display
+  priority: P1
+  rationale:
+    benefits:
+      - Accessible full values via aria-label
+      - Consistent refresh on navigation and reload
+      - Per-pane capacity at a glance
+    problems_solved:
+      - Cannot compare volumes across panes
+      - No visibility into remaining disk space per pane
+    why: Multi-pane cross-volume comparison is a core product differentiator; users need mount-level free space per pane without a global dashboard.
+  related_requirements:
+    depends_on:
+      - REQ-DIRECTORY_NAVIGATION
+      - REQ-FILE_LISTING
+      - REQ-FILE_MANAGER_PAGE
+      - REQ-MULTI_PANE_LAYOUT
+    related_to:
+      - REQ-WORKSPACE_MESH_BRIDGE
+  satisfaction_criteria:
+    - criterion: Capacity is informational only — file operations do not gate on displayed stats
+    - criterion: Different volumes show different values in multi-pane layouts
+    - criterion: Directory listing succeeds when capacity collection fails
+    - criterion: Each pane shows total bytes, available bytes, and free-space percentage when platform supports statfs
+    - criterion: Empty directories can display capacity in footer
+    - criterion: Terminology aligns with tied/vocab/workspace-pane.md volume capacity terms
+  status: Implemented
+  traceability:
+    architecture:
+      - ARCH-FILESYSTEM_ABSTRACTION
+      - ARCH-PANE_VOLUME_CAPACITY
+      - ARCH-SERVER_CLIENT_BOUNDARY
+    code_annotations:
+      - REQ-PANE_VOLUME_CAPACITY
+    implementation:
+      - IMPL-FILE_MANAGER_PAGE
+      - IMPL-FILE_PANE
+      - IMPL-FILES_API
+      - IMPL-PANE_VOLUME_CAPACITY
+      - IMPL-WORKSPACE_VIEW
+    tests:
+      - src/app/api/files/display-filter.route.test.ts
+      - src/app/files/components/FilePane.test.tsx
+      - src/lib/pane-display-filter.test.ts
+      - src/lib/volume-stats.test.ts
+      - src/lib/workspace-mesh-bridge.test.ts

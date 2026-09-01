@@ -667,14 +667,18 @@ export function appendSnapshotLayoutWarnings(
   return restoreWarning;
 }
 
-// [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] RESTORE_ON_FILES_PAGE
+// [IMPL-WORKSPACE_MESH_BRIDGE] [IMPL-PANE_VOLUME_CAPACITY] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] [REQ-PANE_VOLUME_CAPACITY] RESTORE_ON_FILES_PAGE
 /** List directory via GET /api/files (client mesh rehydrate). */
 export async function listDirectoryViaFilesApi(path: string): Promise<FileStat[]> {
   const response = await fetch(`/api/files?path=${encodeURIComponent(path)}`);
   if (!response.ok) {
     throw new Error(`Failed to list directory: ${path}`);
   }
-  return (await response.json()) as FileStat[];
+  const body = (await response.json()) as { files?: FileStat[] };
+  if (!body || !Array.isArray(body.files)) {
+    throw new Error(`Invalid listing response for: ${path}`);
+  }
+  return body.files;
 }
 
 // [IMPL-WORKSPACE_MESH_BRIDGE] [ARCH-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE] BUILD_WORKSPACE_RESTORE_BUNDLE: how: **Workspace restore bundle** from **Workspace snapshot** pane paths (tied/vocab/mesh-platform.md, tied/vocab/workspace-pane.md)

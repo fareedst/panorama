@@ -13,7 +13,7 @@ import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import path from "path-browserify";
 import { resolveCrossPaneDestPath } from "@/lib/cross-pane-path";
-import type { FileStat, OperationResult, ComparisonMode } from "@/lib/files.types";
+import type { FileStat, OperationResult, ComparisonMode, VolumeStats } from "@/lib/files.types";
 import {
   swapArrayAt,
   rotateArray,
@@ -198,6 +198,7 @@ function mergePaneState(
 interface PaneInitialState {
   path: string;
   files: FileStat[];
+  volumeStats?: VolumeStats;
 }
 
 /** [IMPL-WORKSPACE_MESH_BRIDGE] Per-pane UI restored from mesh snapshot */
@@ -315,6 +316,7 @@ function buildPaneStatesFromInitial(
       loadedSpecVersion: null,
       hiddenCount: 0,
       rawFileCount: files.length,
+      volumeStats: pane.volumeStats ?? null,
     };
     const store = getDisplaySpecStore();
     const withFilter = buildPaneFromRawListing(files, base, store, { preserveMarks: true });
@@ -855,12 +857,14 @@ export default function WorkspaceView({
       if (!response.ok) {
         throw new Error("Failed to list home directory");
       }
-      const files = (await response.json()) as FileStat[];
+      const body = (await response.json()) as { files?: FileStat[]; volumeStats?: VolumeStats };
+      const files = body.files ?? [];
       const homePath = files[0]?.path ? path.dirname(files[0].path) : "/";
       const paneCount = layoutConfig.defaultPaneCount || 1;
       const defaults: PaneInitialState[] = Array.from({ length: paneCount }, () => ({
         path: homePath,
         files: [...files],
+        volumeStats: body.volumeStats,
       }));
       setPanes(buildPaneStatesFromInitial(defaults));
     }
@@ -874,6 +878,40 @@ export default function WorkspaceView({
     layoutConfig.maxPanes,
     columns,
   ]);
+
+  // [IMPL-WORKSPACE_VIEW] [IMPL-PANE_VOLUME_CAPACITY] [REQ-PANE_VOLUME_CAPACITY] [REQ-MULTI_PANE_LAYOUT]: how — MOUNT_BACKFILL_VOLUME_STATS fetches enriched listings only for SSR or mesh panes missing ephemeral capacity metadata
+  useEffect(() => {
+    let cancelled = false;
+    const missing = panes
+      .map((pane, index) => ({ pane, index }))
+      .filter(({ pane }) => pane.volumeStats == null);
+
+    if (missing.length === 0) return;
+
+    void Promise.all(
+      missing.map(async ({ pane, index }) => {
+        try {
+          const listing = await fetchDirectoryListing(pane.path, pane.activeDisplaySpecId);
+          if (cancelled) return;
+          setPanes((current) => {
+            const target = current[index];
+            if (!target || target.path !== pane.path || target.volumeStats !== null) {
+              return current;
+            }
+            const next = [...current];
+            next[index] = { ...target, volumeStats: listing.volumeStats };
+            return next;
+          });
+        } catch (error) {
+          console.error("DIAGNOSTIC: [IMPL-PANE_VOLUME_CAPACITY] mount backfill failed", error);
+        }
+      }),
+    );
+
+    return () => {
+      cancelled = true;
+    };
+  }, [panes]);
 
   // [IMPL-WORKSPACE_VIEW] [ARCH-PANE_LIFECYCLE] [REQ-MULTI_PANE_LAYOUT] [REQ-README_DEMO_AUTOMATION]: how: PANE_URL_DEEP_LINK_INIT — pane0..paneN query params navigate panes on mount for E2E and bookmarkable workspaces; skip when mesh restore active
   // Query params: ?pane0=/path/to/dir&pane1=/another/path&pane2=/third/path
@@ -1074,7 +1112,10 @@ export default function WorkspaceView({
               },
             );
             const withTree = createPaneTreeFromRootListing(built, built.files);
-            updated[idx] = mergePaneState(withTree, updated[idx], restored.cursor);
+            updated[idx] = {
+              ...mergePaneState(withTree, updated[idx], restored.cursor),
+              volumeStats: listing.volumeStats,
+            };
             return updated;
           });
         } catch (err) {
@@ -1120,7 +1161,10 @@ export default function WorkspaceView({
           },
         );
         const withTree = createPaneTreeFromRootListing(built, built.files);
-        updated[paneIndex] = mergePaneState(withTree, updated[paneIndex]);
+        updated[paneIndex] = {
+          ...mergePaneState(withTree, updated[paneIndex]),
+          volumeStats: listing.volumeStats,
+        };
         return updated;
       });
     },
@@ -1194,7 +1238,10 @@ export default function WorkspaceView({
           },
         );
         const withTree = createPaneTreeFromRootListing(built, built.files);
-        updated[paneIndex] = mergePaneState(withTree, updated[paneIndex], restored.cursor);
+        updated[paneIndex] = {
+          ...mergePaneState(withTree, updated[paneIndex], restored.cursor),
+          volumeStats: listing.volumeStats,
+        };
         return updated;
       });
       
@@ -1236,9 +1283,9 @@ export default function WorkspaceView({
             try {
               const checkResponse = await fetch(`/api/files?path=${encodeURIComponent(linkedTargetPath)}`);
               if (checkResponse.ok) {
-                const checkData: FileStat[] = await checkResponse.json();
+                const checkData = (await checkResponse.json()) as { files?: FileStat[] };
                 // Verify it's a directory (API returns files if it's a directory)
-                if (Array.isArray(checkData)) {
+                if (Array.isArray(checkData.files)) {
                   await handleNavigate(i, linkedTargetPath);
                   successCount++;
                 } else {
@@ -3522,6 +3569,7 @@ export default function WorkspaceView({
             files={displayFiles}
             cursor={pane.cursor}
             marks={pane.marks}
+            volumeStats={pane.volumeStats}
             bounds={bounds[index] || { x: 0, y: 0, width: 0, height: 0 }}
             focused={index === focusIndex}
             onNavigate={(newPath) => handleNavigate(index, newPath)}

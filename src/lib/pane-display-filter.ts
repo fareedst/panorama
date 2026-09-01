@@ -1,6 +1,7 @@
 // [IMPL-DISPLAY_FILTER_ENGINE] [IMPL-PANE_DISPLAY_FILTER_UI] [REQ-PANE_DISPLAY_FILTER]
 
 import type { FileStat } from "./files.types";
+import type { VolumeStats } from "./files.types";
 import { filterFileStats, reconcilePaneSelection } from "./display-filter-engine";
 import type { DisplayFilterSpec } from "./display-filter.types";
 import type { DisplaySpecStore } from "./display-spec-store";
@@ -16,6 +17,7 @@ export interface PaneDisplayFilterFields {
 export type PaneWithDisplayFilter = PaneDisplayFilterFields & {
   path: string;
   files: FileStat[];
+  volumeStats?: VolumeStats | null;
   cursor: number;
   marks: Set<string>;
   sortBy: SortCriterion;
@@ -34,6 +36,7 @@ export function getActiveSpec(
 /** [IMPL-DISPLAY_FILTER_API] SERVER_FILTER_LISTING — client fetch; wrapped JSON when displaySpecId set */
 export type DirectoryListingResponse = {
   files: FileStat[];
+  volumeStats: VolumeStats;
   serverPreFiltered: boolean;
   hiddenCount: number;
   totalCount: number;
@@ -53,8 +56,18 @@ export async function fetchDirectoryListing(
   }
   const data = await response.json();
   if (Array.isArray(data)) {
+    // Compatibility for older test doubles and deployments; production v1 responses are objects.
     return {
       files: data,
+      volumeStats: {
+        totalBytes: 0,
+        availableBytes: 0,
+        freePercent: 0,
+        deviceId: null,
+        sourcePath: dirPath,
+        status: "unavailable",
+        errorCode: "STAT_FAILED",
+      },
       serverPreFiltered: false,
       hiddenCount: 0,
       totalCount: data.length,
@@ -62,10 +75,42 @@ export async function fetchDirectoryListing(
   }
   return {
     files: data.files ?? [],
+    volumeStats: isVolumeStats(data.volumeStats)
+      ? data.volumeStats
+      : unavailableVolumeStats(dirPath),
     serverPreFiltered: Boolean(displaySpecId),
     hiddenCount: data.hiddenCount ?? 0,
     totalCount: data.totalCount ?? data.files?.length ?? 0,
   };
+}
+
+function unavailableVolumeStats(sourcePath: string): VolumeStats {
+  return {
+    totalBytes: 0,
+    availableBytes: 0,
+    freePercent: 0,
+    deviceId: null,
+    sourcePath,
+    status: "unavailable",
+    errorCode: "INVALID_STATS",
+  };
+}
+
+function isVolumeStats(value: unknown): value is VolumeStats {
+  if (!value || typeof value !== "object") return false;
+  const stats = value as Partial<VolumeStats>;
+  return (
+    typeof stats.totalBytes === "number" &&
+    Number.isFinite(stats.totalBytes) &&
+    typeof stats.availableBytes === "number" &&
+    Number.isFinite(stats.availableBytes) &&
+    typeof stats.freePercent === "number" &&
+    Number.isFinite(stats.freePercent) &&
+    typeof stats.sourcePath === "string" &&
+    (stats.status === "available" ||
+      stats.status === "unavailable" ||
+      stats.status === "unsupported")
+  );
 }
 
 /** [IMPL-PANE_DISPLAY_FILTER_UI] [IMPL-DISPLAY_FILTER_ENGINE] [REQ-PANE_DISPLAY_FILTER]: how: client-side filter when server did not pre-filter; sort visible files; reconcile or clear marks per preserveMarks flag */

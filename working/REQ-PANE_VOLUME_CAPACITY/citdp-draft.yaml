@@ -1,0 +1,95 @@
+CITDP-PANE_VOLUME_CAPACITY:
+  record_identity:
+    change_request_id: PANE_VOLUME_CAPACITY
+    recorded_at: '2026-09-01'
+    title: Per-pane volume capacity display in file manager footer
+  change_definition:
+    current_behavior: Panes show listing and cursor/sort/mark footer only; GET /api/files without displaySpecId returns bare FileStat[]; SSR bootstrap uses listDirectory only; listDirectoryViaFilesApi casts response as array.
+    desired_behavior: GET always returns enriched listing with volumeStats; server provider uses statfs where available; each pane stores and displays capacity in footer; SSR bootstrap and client mount backfill hydrate stats.
+    non_goals:
+      - Global storage dashboard
+      - Pre-operation fit prediction or quotas
+      - Per-directory disk usage totals
+      - Dedicated /api/files/volume endpoint in v1
+      - Low-space warning threshold in v1
+      - files.yaml display toggle in v1
+      - Persisting capacity in workspace snapshot
+    success_criteria:
+      - Each pane shows total and available bytes plus free-space percentage when supported
+      - Listing succeeds when capacity collection fails
+      - GET response unified to enriched object; in-repo array consumers migrated
+      - Provider, API, normalization, pane state, and presentation independently tested
+      - Vocabulary RECORD in tied/vocab/workspace-pane.md
+    unchanged_behavior: Directory listing semantics; display filters; NSYNC volume affinity; mesh snapshot schema; bulk file operations
+  impact_analysis:
+    modules_or_boundaries: src/lib/volume-stats.ts; src/app/api/files/route.ts; src/app/files/page.tsx; src/lib/workspace-mesh-bridge.ts; src/lib/pane-display-filter.ts; WorkspaceView.tsx; FilePane.tsx; tied/vocab/workspace-pane.md
+    tied_tokens_affected:
+      - REQ-FILE_LISTING
+      - REQ-MULTI_PANE_LAYOUT
+      - REQ-DIRECTORY_NAVIGATION
+      - REQ-FILE_MANAGER_PAGE
+      - REQ-WORKSPACE_MESH_BRIDGE
+      - ARCH-FILESYSTEM_ABSTRACTION
+      - ARCH-SERVER_CLIENT_BOUNDARY
+      - ARCH-WORKSPACE_MESH_BRIDGE
+      - IMPL-FILES_DATA
+      - IMPL-FILES_API
+      - IMPL-FILE_MANAGER_PAGE
+      - IMPL-WORKSPACE_MESH_BRIDGE
+      - IMPL-WORKSPACE_VIEW
+      - IMPL-FILE_PANE
+    tied_tokens_new:
+      - REQ-PANE_VOLUME_CAPACITY
+      - ARCH-PANE_VOLUME_CAPACITY
+      - IMPL-PANE_VOLUME_CAPACITY
+  risk_analysis:
+    abuse_cases: []
+    quality_profiles:
+      - baseline-functional
+    risks:
+      - id: RISK-001
+        description: statfs latency on network mounts
+        mitigation: Non-fatal capacity failure; optional timeout in later tranche
+      - id: RISK-004
+        description: Unavailable stats shown as zero
+        mitigation: Explicit available/unavailable/unsupported status variants
+      - id: RISK-005
+        description: Empty-directory footer hides capacity
+        mitigation: Include capacity in footer visibility predicate
+      - id: RISK-009
+        description: SSR panes lack stats until client fetch
+        mitigation: SSR attach plus mount backfill
+      - id: RISK-010
+        description: GET shape migration breaks mesh rehydrate
+        mitigation: Migrate listDirectoryViaFilesApi in same tranche as route change
+    adversarial_inquiry:
+      assurance_profile: baseline-functional
+      close_out_inquiry_waiver: null
+      counterexamples:
+        - Fabricated zero bytes when statfs fails
+        - Capacity blocks directory listing on provider error
+      depth_change_waiver: null
+      depth_tier: minimal
+      disconfirming_observations:
+        - Existing GET already returns enriched object when displaySpecId is set
+        - fetchDirectoryListing already normalizes wrapped responses
+      eligibility_triggers_matched: []
+      evidence_references:
+        - docs/pane-volume-capacity-plan.md
+        - working/REQ-PANE_VOLUME_CAPACITY/test-strategy-outline.md
+      falsification_questions:
+        - Does listing fail when statfs throws?
+        - Does bare-array GET response remain after migration?
+        - Does empty directory hide capacity after implementation?
+      gate_policy: advisory
+      integrated_waiver: null
+      prior_depth_tier: null
+      rationale: Extends existing server listing boundary with local statfs; informational UI only; no new auth or persistence surface.
+      research_profile: integrated-agent
+      strict_eligibility_prerequisites: []
+  test_strategy:
+    summary: Module tranches A-E; strict TDD; E2E not_applicable unless component tests insufficient
+    matrix_notes: See working/REQ-PANE_VOLUME_CAPACITY/test-strategy-outline.md
+    e2e_only_reason: N/A
+  tdd_sequence:
+    summary: Tranche 0 planning → provider → API migration → normalization → pane state → FilePane UI → verification gate

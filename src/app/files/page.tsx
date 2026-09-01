@@ -3,6 +3,7 @@
 // [IMPL-WORKSPACE_MESH_BRIDGE] [REQ-WORKSPACE_MESH_BRIDGE]: Restore workspace from ?meshId=
 
 import { listDirectory, getUserHomeDirectory, sortFiles as sortFilesData } from "@/lib/files.data";
+import { getVolumeStats } from "@/lib/volume-stats";
 import { getFilesConfig, getThemeConfig, DEFAULT_FILE_TYPES } from "@/lib/config";
 import WorkspaceView, {
   type RestorePaneMeta,
@@ -29,6 +30,7 @@ export const dynamic = "force-dynamic";
 export interface PaneInitialState {
   path: string;
   files: FileStat[];
+  volumeStats?: Awaited<ReturnType<typeof getVolumeStats>>;
 }
 
 /**
@@ -126,17 +128,21 @@ export default async function FilesPage({
       const panePath = pane0Query;
       const files = await listDirectory(panePath);
       const sortedFiles = sortFilesData(files, "Name", true);
+      const volumeStats = await getVolumeStats(panePath);
       initialPanes.push({
         path: panePath,
         files: sortedFiles,
+        volumeStats,
       });
     } else if (!meshId && paneDeepLinkPaths.length > 0) {
       for (const panePath of paneDeepLinkPaths) {
         const files = await listDirectory(panePath);
         const sortedFiles = sortFilesData(files, "Name", true);
+        const volumeStats = await getVolumeStats(panePath);
         initialPanes.push({
           path: panePath,
           files: sortedFiles,
+          volumeStats,
         });
       }
     } else {
@@ -161,10 +167,20 @@ export default async function FilesPage({
         initialPanes.push({
           path: panePath,
           files: sortedFiles,
+          volumeStats: await getVolumeStats(panePath),
         });
       }
     }
   }
+
+  // [IMPL-FILE_MANAGER_PAGE] [IMPL-PANE_VOLUME_CAPACITY] [ARCH-SERVER_CLIENT_BOUNDARY] [REQ-FILE_MANAGER_PAGE] [REQ-PANE_VOLUME_CAPACITY]: how — SSR_ATTACH_VOLUME_STATS ensures mesh-restored panes receive ephemeral capacity metadata before first paint
+  await Promise.all(
+    initialPanes.map(async (pane) => {
+      if (!pane.volumeStats) {
+        pane.volumeStats = await getVolumeStats(pane.path);
+      }
+    }),
+  );
 
   // [REQ-REACT_SSR_STABILITY] [IMPL-FILE_AGE_DISPLAY]: single request clock for relative mtime SSR/hydration
   const ageReferenceMs = captureRequestAgeReferenceMs();

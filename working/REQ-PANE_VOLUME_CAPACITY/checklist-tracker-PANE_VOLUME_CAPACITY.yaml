@@ -1,0 +1,118 @@
+tracker_version: checklist-tracker.v1
+request_token: REQ-PANE_VOLUME_CAPACITY
+process_token: PROC-AGENT_REQ_CHECKLIST
+source_document: tied/docs/agent-req-implementation-checklist.yaml
+execution_evidence:
+  request: REQ-PANE_VOLUME_CAPACITY
+  completed:
+    - tranche-3-client-normalization-20260901
+    - tranche-4-pane-hydration-20260901
+    - tranche-5-pane-footer-20260901
+  close_out_evidence:
+    date: '2026-09-01'
+    deferred: []
+    gates:
+      close_out: working/REQ-PANE_VOLUME_CAPACITY/close_out-2026-09-01T20-09-40-249Z.json
+      verification: working/REQ-PANE_VOLUME_CAPACITY/verification-2026-09-01T20-01-31-115Z.json
+    master_checklist: working/REQ-PANE_VOLUME_CAPACITY/checklist-tracker-PANE_VOLUME_CAPACITY.yaml
+steps:
+  - slug: session-bootstrap
+    tracking: { status: completed }
+  - slug: translate-sponsor-intent
+    tracking: { status: completed }
+  - slug: change-definition
+    tracking: { status: completed }
+  - slug: impact-discovery
+    tracking: { status: completed }
+  - slug: risk-assessment
+    tracking: { status: completed }
+  - slug: author-requirement
+    tracking: { status: completed }
+  - slug: author-architecture
+    tracking: { status: completed }
+  - slug: catalog-pseudocode-contracts
+    tracking: { status: completed }
+  - slug: flag-contradictory-specs
+    tracking: { status: completed }
+  - slug: flag-insufficient-specs
+    tracking: { status: completed }
+  - slug: resolve-pseudocode
+    tracking: { status: completed }
+  - slug: gate-pseudocode-validation
+    tracking: { status: completed }
+  - slug: persist-implementation-records
+    tracking: { status: completed }
+  - slug: test-strategy
+    tracking: { status: completed }
+  - slug: unit-test-red
+    tracking: { status: completed }
+  - slug: unit-test-green
+    tracking: { status: completed }
+  - slug: three-way-alignment-unit
+    tracking: { status: completed }
+  - slug: composition-integration
+    tracking:
+      status: completed
+      evidence: "Tranche 2 API contract and mesh bridge integration verified by 51 scoped Vitest tests."
+  - slug: unit-refactor
+    tracking:
+      status: not_applicable
+      rationale: No refactor was needed after independent module validation.
+  - slug: end-to-end-ui
+    tracking:
+      status: not_applicable
+      policy: component and composition tests cover footer rendering and pane state
+      rationale: No Playwright required unless responsive/a11y gaps documented in test-strategy-outline.md
+  - slug: sub-adversarial-inquiry-pass
+    tracking:
+      status: not_applicable
+      policy: minimal depth; no integrated eligibility triggers matched
+      rationale: Extends existing server listing boundary; local statfs; no new auth or persistence surface
+  - slug: apply-token-comments
+    tracking:
+      status: completed
+      evidence: "Provider, route, mesh bridge, and tests carry REQ/ARCH/IMPL token comments."
+  - slug: verification-gate
+    tracking:
+      status: completed
+      disposition_evidence: "6 scoped test files passed (134 tests); bunx tsc -b passed; pseudocode validation passed."
+      evidence: "Scoped Vitest: 6 files, 134 tests passed; bunx tsc -b passed; vocabulary validation passed; pseudocode validation passed."
+  - slug: sync-tied-stack
+    tracking:
+      status: completed
+      disposition_evidence: "tied_validate_consistency returned ok: true after project record synchronization."
+      evidence: "TIED requirement and implementation records synchronized; tied_validate_consistency passed."
+  - slug: user-facing-release-notes
+    tracking:
+      status: not_applicable
+      rationale: Informational footer behavior is covered by the control plan and no release-note channel was requested.
+  - slug: persist-citdp-record
+    tracking:
+      status: completed
+      disposition_evidence: "CITDP-PANE_VOLUME_CAPACITY.yaml exists under tied/citdp and passed CITDP schema validation."
+      evidence: "Persisted tied/citdp/CITDP-PANE_VOLUME_CAPACITY.yaml."
+  - slug: traceable-commit
+    tracking:
+      status: completed
+      disposition_evidence: plan-close-out prepared CHANGELOG entry and proposed commit message; commit deferred to sponsor.
+      evidence: close_out gate allowed at minimal depth (2026-09-01).
+sub_procedures:
+  - slug: sub-adversarial-inquiry-pass
+    tracking:
+      status: not_applicable
+      policy: minimal depth; no integrated eligibility triggers matched
+      rationale: Extends existing server listing boundary; local statfs; no new auth or persistence surface
+  - slug: sub-client-yaml-styling
+    tracking: { status: not_applicable, policy: client formatter not configured }
+  - slug: sub-yaml-edit-loop
+    tracking: { status: completed }
+  - slug: sub-pseudocode-validation-pass
+    tracking: { status: completed }
+  - slug: sub-vocabulary-sync
+    tracking: { status: completed }
+  - slug: sub-leap-micro-cycle
+    tracking:
+      status: completed
+      evidence: "Aligned sidecar contracts, source annotations, tests, and TIED traceability after implementation."
+  - slug: sub-evidence-chain-profile
+    tracking: { status: not_applicable, policy: minimal depth; no evidence-chain profile in scope }

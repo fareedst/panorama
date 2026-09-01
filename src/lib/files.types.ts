@@ -14,6 +14,20 @@ export interface FileStat {
   extension: string;
 }
 
+// [IMPL-PANE_VOLUME_CAPACITY] [ARCH-PANE_VOLUME_CAPACITY] [REQ-PANE_VOLUME_CAPACITY]: how — shared client-safe contract carries explicit volume capacity status without exposing filesystem errors
+export type VolumeStatsStatus = "available" | "unavailable" | "unsupported";
+export type VolumeStatsErrorCode = "STAT_FAILED" | "INVALID_STATS" | "UNSUPPORTED";
+
+export interface VolumeStats {
+  totalBytes: number;
+  availableBytes: number;
+  freePercent: number;
+  deviceId: number | string | null;
+  sourcePath: string;
+  status: VolumeStatsStatus;
+  errorCode?: VolumeStatsErrorCode;
+}
+
 /**
  * Sort types for file listing
  * [IMPL-FILES_DATA] [REQ-FILE_LISTING]

@@ -1,7 +1,7 @@
 // [IMPL-RESPONSIVE_CLASSES] [ARCH-RESPONSIVE_FIRST] [REQ-RESPONSIVE_DESIGN]
 
 import { describe, it, expect, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { HelpOverlay } from "./HelpOverlay";
 import { initializeKeybindingRegistry } from "@/lib/files.keybinds";
 

@@ -1,0 +1,129 @@
+CITDP-PANE_VOLUME_CAPACITY:
+  change_definition:
+    current_behavior: Panes show listing and cursor/sort/mark footer only; GET /api/files without displaySpecId returns bare FileStat[]; SSR bootstrap uses listDirectory only; listDirectoryViaFilesApi casts response as array.
+    desired_behavior: GET always returns enriched listing with volumeStats; server provider uses statfs where available; each pane stores and displays capacity in footer; SSR bootstrap and client mount backfill hydrate stats.
+    non_goals:
+      - Dedicated /api/files/volume endpoint in v1
+      - files.yaml display toggle in v1
+      - Global storage dashboard
+      - Low-space warning threshold in v1
+      - Per-directory disk usage totals
+      - Persisting capacity in workspace snapshot
+      - Pre-operation fit prediction or quotas
+    success_criteria:
+      - Each pane shows total and available bytes plus free-space percentage when supported
+      - GET response unified to enriched object; in-repo array consumers migrated
+      - Listing succeeds when capacity collection fails
+      - Provider, API, normalization, pane state, and presentation independently tested
+      - Vocabulary RECORD in tied/vocab/workspace-pane.md
+    unchanged_behavior: Directory listing semantics; display filters; NSYNC volume affinity; mesh snapshot schema; bulk file operations
+  completion_criteria:
+    verification_gate_notes: Scoped Vitest passed 134 tests across 6 files; bunx tsc -b passed; pseudocode_validate passed; tied_validate_consistency passed; vocabulary validation passed.
+  evidence:
+    commands:
+      - command: bun run validate:vocabulary
+        exit_code: 0
+        result: passed
+      - command: bun run vitest run src/lib/volume-stats.test.ts src/app/api/files/display-filter.route.test.ts src/lib/pane-display-filter.test.ts src/lib/workspace-mesh-bridge.test.ts src/app/files/WorkspaceView.test.tsx src/app/files/components/FilePane.test.tsx
+        exit_code: 0
+        result: 134 tests passed across 6 files
+      - command: bunx tsc -b
+        exit_code: 0
+        result: passed
+    module_validation: volume-stats provider; GET route migration; pane-display-filter normalization; workspace-mesh-bridge consumer; WorkspaceView hydration; FilePane footer
+    proof_boundaries:
+      - executable_behavior
+      - pseudo_code_structure
+      - traceability_structure
+  impact_analysis:
+    modules_or_boundaries: src/lib/volume-stats.ts; src/app/api/files/route.ts; src/app/files/page.tsx; src/lib/workspace-mesh-bridge.ts; src/lib/pane-display-filter.ts; WorkspaceView.tsx; FilePane.tsx; tied/vocab/workspace-pane.md
+    tied_tokens_affected:
+      - ARCH-FILESYSTEM_ABSTRACTION
+      - ARCH-SERVER_CLIENT_BOUNDARY
+      - ARCH-WORKSPACE_MESH_BRIDGE
+      - IMPL-FILE_MANAGER_PAGE
+      - IMPL-FILE_PANE
+      - IMPL-FILES_API
+      - IMPL-FILES_DATA
+      - IMPL-WORKSPACE_MESH_BRIDGE
+      - IMPL-WORKSPACE_VIEW
+      - REQ-DIRECTORY_NAVIGATION
+      - REQ-FILE_LISTING
+      - REQ-FILE_MANAGER_PAGE
+      - REQ-MULTI_PANE_LAYOUT
+      - REQ-WORKSPACE_MESH_BRIDGE
+    tied_tokens_new:
+      - ARCH-PANE_VOLUME_CAPACITY
+      - IMPL-PANE_VOLUME_CAPACITY
+      - REQ-PANE_VOLUME_CAPACITY
+  implementation_status:
+    completed:
+      - Client normalization
+      - Enriched GET response
+      - Pane footer presentation
+      - Provider statfs normalization
+      - SSR and mount hydration
+    remaining_risk: Network mount statfs latency and unsupported Windows statfs remain explicit residual risks.
+  leap_feedback:
+    divergences_from_analysis: none
+    record_status: complete
+    tied_stack_updates_required: []
+  record_identity:
+    change_request_id: PANE_VOLUME_CAPACITY
+    recorded_at: '2026-09-01'
+    title: Per-pane volume capacity display in file manager footer
+  risk_analysis:
+    abuse_cases: []
+    adversarial_inquiry:
+      assurance_profile: baseline-functional
+      close_out_inquiry_waiver: null
+      counterexamples:
+        - Capacity blocks directory listing on provider error
+        - Fabricated zero bytes when statfs fails
+      depth_change_waiver: null
+      depth_tier: minimal
+      disconfirming_observations:
+        - Existing GET already returns enriched object when displaySpecId is set
+        - fetchDirectoryListing already normalizes wrapped responses
+      eligibility_triggers_matched: []
+      evidence_references:
+        - docs/pane-volume-capacity-plan.md
+        - working/REQ-PANE_VOLUME_CAPACITY/test-strategy-outline.md
+      falsification_questions:
+        - Does bare-array GET response remain after migration?
+        - Does empty directory hide capacity after implementation?
+        - Does listing fail when statfs throws?
+      gate_policy: advisory
+      integrated_waiver: null
+      prior_depth_tier: minimal
+      rationale: Extends existing server listing boundary with local statfs; informational UI only; no new auth or persistence surface.
+      research_profile: integrated-agent
+      strict_eligibility_prerequisites: []
+    quality_profiles:
+      - baseline-functional
+    risks:
+      - description: Empty-directory footer hides capacity
+        id: RISK-005
+        mitigation: Include capacity in footer visibility predicate
+      - description: GET shape migration breaks mesh rehydrate
+        id: RISK-010
+        mitigation: Migrate listDirectoryViaFilesApi in same tranche as route change
+      - description: SSR panes lack stats until client fetch
+        id: RISK-009
+        mitigation: SSR attach plus mount backfill
+      - description: statfs latency on network mounts
+        id: RISK-001
+        mitigation: Non-fatal capacity failure; optional timeout in later tranche
+      - description: Unavailable stats shown as zero
+        id: RISK-004
+        mitigation: Explicit available/unavailable/unsupported status variants
+  tdd_sequence:
+    summary: Tranche 0 planning → provider → API migration → normalization → pane state → FilePane UI → verification gate
+  test_strategy:
+    commands:
+      - bun run validate:vocabulary
+      - bun run vitest run src/lib/volume-stats.test.ts src/app/api/files/display-filter.route.test.ts src/lib/pane-display-filter.test.ts src/lib/workspace-mesh-bridge.test.ts src/app/files/WorkspaceView.test.tsx src/app/files/components/FilePane.test.tsx
+      - bunx tsc -b
+    e2e_only_reason: N/A
+    matrix_notes: See working/REQ-PANE_VOLUME_CAPACITY/test-strategy-outline.md
+    summary: Module tranches A-E; strict TDD; E2E not_applicable unless component tests insufficient

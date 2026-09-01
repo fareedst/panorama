@@ -8,6 +8,11 @@ import { GET, POST } from "./route";
 import { PUT as PUT_SPECS } from "../display-specs/route";
 import { serverCreateDisplaySpec } from "@/lib/display-spec-store-server";
 
+const mockGetVolumeStats = vi.fn();
+vi.mock("@/lib/volume-stats", () => ({
+  getVolumeStats: (...args: unknown[]) => mockGetVolumeStats(...args),
+}));
+
 vi.mock("@/lib/files.data", () => ({
   listDirectory: vi.fn(async () => [
     { name: "README.md", path: "/tmp/README.md", isDirectory: false, size: 1, mtime: new Date(), extension: ".md" },
@@ -28,10 +33,20 @@ vi.mock("@/lib/files.data", () => ({
 
 const SPECS_FILE = path.join(process.cwd(), "data", "display-specs.json");
 
-// [IMPL-FILES_API] [ARCH-FILE_OPERATIONS_API] [ARCH-LOGGING_SYSTEM] [REQ-DIRECTORY_NAVIGATION] [REQ-FILE_OPERATIONS] [REQ-LOGGING_SYSTEM]: how: GET reads path (default home), rejects .. traversal, lists directory, optionally filters by display spec, sorts by Name with dirs first, returns legacy array or enriched object
+const availableVolumeStats = {
+  totalBytes: 1_000_000,
+  availableBytes: 400_000,
+  freePercent: 40,
+  deviceId: 42,
+  sourcePath: "/tmp",
+  status: "available" as const,
+};
+
+// [IMPL-FILES_API] [IMPL-PANE_VOLUME_CAPACITY] [REQ-PANE_VOLUME_CAPACITY]: GET always returns enriched listing with volumeStats
 
 describe("GET /api/files with displaySpecId [IMPL-DISPLAY_FILTER_API]", () => {
   beforeEach(async () => {
+    mockGetVolumeStats.mockResolvedValue({ ...availableVolumeStats, sourcePath: "/tmp" });
     try {
       await fs.unlink(SPECS_FILE);
     } catch {
@@ -64,6 +79,11 @@ describe("GET /api/files with displaySpecId [IMPL-DISPLAY_FILTER_API]", () => {
     const body = await res.json();
     expect(body.files.map((f: { name: string }) => f.name)).toEqual(["README.md"]);
     expect(body.hiddenCount).toBe(1);
+    expect(body.volumeStats).toMatchObject({
+      status: "available",
+      totalBytes: 1_000_000,
+      availableBytes: 400_000,
+    });
   });
 
   it("returns filtered listing after client catalog sync", async () => {
@@ -91,6 +111,7 @@ describe("GET /api/files with displaySpecId [IMPL-DISPLAY_FILTER_API]", () => {
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.files.map((f: { name: string }) => f.name)).toEqual(["README.md"]);
+    expect(body.volumeStats?.status).toBe("available");
   });
 
   it("VALIDATE_OPERATION_PATHS rejects bulk-delete of hidden path", async () => {
@@ -114,5 +135,53 @@ describe("GET /api/files with displaySpecId [IMPL-DISPLAY_FILTER_API]", () => {
     });
     const res = await POST(req);
     expect(res.status).toBe(400);
+  });
+});
+
+describe("GET /api/files listing enrichment [REQ-PANE_VOLUME_CAPACITY] [IMPL-PANE_VOLUME_CAPACITY]", () => {
+  beforeEach(() => {
+    mockGetVolumeStats.mockResolvedValue({ ...availableVolumeStats, sourcePath: "/tmp" });
+  });
+
+  it("returns enriched object without displaySpecId (not bare array)", async () => {
+    const req = new NextRequest("http://localhost/api/files?path=/tmp");
+    const res = await GET(req);
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(Array.isArray(body)).toBe(false);
+    expect(body.files.map((f: { name: string }) => f.name)).toEqual(["README.md", "app.log"]);
+    expect(body.hiddenCount).toBe(0);
+    expect(body.totalCount).toBe(2);
+    expect(body.volumeStats).toMatchObject({
+      status: "available",
+      sourcePath: "/tmp",
+    });
+    expect(mockGetVolumeStats).toHaveBeenCalledWith("/tmp");
+  });
+
+  it("returns listing when volume stats are unavailable", async () => {
+    mockGetVolumeStats.mockResolvedValueOnce({
+      totalBytes: 0,
+      availableBytes: 0,
+      freePercent: 0,
+      deviceId: null,
+      sourcePath: "/tmp",
+      status: "unavailable",
+      errorCode: "STAT_FAILED",
+    });
+    const req = new NextRequest("http://localhost/api/files?path=/tmp");
+    const res = await GET(req);
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.files).toHaveLength(2);
+    expect(body.volumeStats.status).toBe("unavailable");
+  });
+
+  it("does not call getVolumeStats for rejected traversal paths", async () => {
+    mockGetVolumeStats.mockClear();
+    const req = new NextRequest("http://localhost/api/files?path=/tmp/../secret");
+    const res = await GET(req);
+    expect(res.status).toBe(400);
+    expect(mockGetVolumeStats).not.toHaveBeenCalled();
   });
 });

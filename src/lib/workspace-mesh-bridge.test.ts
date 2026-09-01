@@ -1,6 +1,6 @@
 // [REQ-WORKSPACE_MESH_BRIDGE] [IMPL-WORKSPACE_MESH_BRIDGE]: **Workspace snapshot** capture/restore and **Workspace restore bundle** unit tests (tied/vocab/mesh-platform.md)
 
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import {
   WORKSPACE_SNAPSHOT_TAG,
   WORKSPACE_SNAPSHOT_VERSION,
@@ -18,6 +18,7 @@ import {
   applyMaxPanesLimit,
   appendSnapshotLayoutWarnings,
   buildWorkspaceRestoreBundle,
+  listDirectoryViaFilesApi,
   workspaceSnapshotSummary,
   validateWorkspaceSnapshot,
   type WorkspaceCaptureInput,
@@ -730,5 +731,53 @@ describe("REQ-WORKSPACE_MESH_BRIDGE [IMPL-WORKSPACE_MESH_BRIDGE]", () => {
     expect(parsed?.focusIndex).toBe(1);
     expect(parsed?.linkedMode).toBe(true);
     expect(parsed?.comparisonMode).toBe("name");
+  });
+});
+
+describe("listDirectoryViaFilesApi [REQ-PANE_VOLUME_CAPACITY] [IMPL-WORKSPACE_MESH_BRIDGE]", () => {
+  it("extracts files from enriched GET /api/files response", async () => {
+    const mockFiles: FileStat[] = [
+      {
+        name: "a.txt",
+        path: "/tmp/a.txt",
+        isDirectory: false,
+        size: 1,
+        mtime: new Date(),
+        extension: ".txt",
+      },
+    ];
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        files: mockFiles,
+        hiddenCount: 0,
+        totalCount: 1,
+        volumeStats: {
+          totalBytes: 1000,
+          availableBytes: 500,
+          freePercent: 50,
+          deviceId: 1,
+          sourcePath: "/tmp",
+          status: "available",
+        },
+      }),
+    } as Response);
+
+    const files = await listDirectoryViaFilesApi("/tmp");
+    expect(files).toEqual(mockFiles);
+    expect(fetchSpy).toHaveBeenCalledWith("/api/files?path=%2Ftmp");
+    fetchSpy.mockRestore();
+  });
+
+  it("throws when response body lacks files array", async () => {
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue({
+      ok: true,
+      json: async () => [{ name: "legacy" }],
+    } as Response);
+
+    await expect(listDirectoryViaFilesApi("/tmp")).rejects.toThrow(
+      "Invalid listing response for: /tmp",
+    );
+    fetchSpy.mockRestore();
   });
 });

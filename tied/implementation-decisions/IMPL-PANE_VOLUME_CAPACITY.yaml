@@ -1,0 +1,74 @@
+IMPL-PANE_VOLUME_CAPACITY:
+  code_locations:
+    files:
+      - description: Client listing response normalization
+        path: src/lib/pane-display-filter.ts
+      - description: Footer capacity presentation
+        path: src/app/files/components/FilePane.tsx
+      - description: GET listing enrichment with volumeStats
+        path: src/app/api/files/route.ts
+      - description: Pane state volumeStats and mount backfill
+        path: src/app/files/WorkspaceView.tsx
+      - description: Server-only statfs provider and normalization
+        path: src/lib/volume-stats.ts
+      - description: Shared VolumeStats contract
+        path: src/lib/files.types.ts
+      - description: SSR bootstrap and pane state volumeStats hydration
+        path: src/app/files/page.tsx
+    functions: []
+  cross_references:
+    - ARCH-PANE_VOLUME_CAPACITY
+    - IMPL-FILE_MANAGER_PAGE
+    - IMPL-FILE_PANE
+    - IMPL-FILES_API
+    - IMPL-FILES_DATA
+    - IMPL-WORKSPACE_VIEW
+    - REQ-PANE_VOLUME_CAPACITY
+  decision: src/lib/volume-stats.ts provides getVolumeStats and normalizeVolumeStats; FILES_API enriches GET listing; pane-display-filter normalizes unified response; WorkspaceView stores volumeStats with mount backfill; FilePane renders footer segment.
+  implementation_approach:
+    details:
+      - 'Numeric contract: JavaScript number with documented safe-range policy and large-volume tests'
+      - 'Tranche 1: volume-stats.ts + unit tests with mocked statfs'
+      - 'Tranche 2: route always returns enriched object; migrate listDirectoryViaFilesApi'
+      - 'Tranche 3: pane-display-filter removes bare-array branch'
+      - 'Tranche 4: SSR attach in page.tsx + WorkspaceView mount backfill'
+      - 'Tranche 5: FilePane footer with test IDs pane-volume-stats and pane-volume-stats-unavailable'
+    summary: 'Module tranches A-E: provider, API migration, client normalization, pane state hydration, footer UI'
+  metadata:
+    last_updated:
+      author: AI Agent
+      date: '2026-09-01'
+      reason: Completed client normalization, SSR/pane hydration, and footer presentation tranches
+  name: Per-Pane Volume Capacity Implementation
+  rationale:
+    benefits:
+      - Non-fatal capacity failure at API boundary
+      - Testable statfs normalization in isolation
+    problems_solved:
+      - Empty-directory footer hiding capacity
+      - Legacy bare array GET response
+    why: Independent module validation before integration per REQ-MODULE_VALIDATION.
+  related_decisions:
+    depends_on:
+      - IMPL-FILES_API
+      - IMPL-FILES_DATA
+    see_also:
+      - IMPL-FILES_UTILS
+      - IMPL-WORKSPACE_MESH_BRIDGE
+  status: Active
+  traceability:
+    architecture:
+      - ARCH-PANE_VOLUME_CAPACITY
+      - ARCH-SERVER_CLIENT_BOUNDARY
+    code_annotations:
+      - ARCH-PANE_VOLUME_CAPACITY
+      - IMPL-PANE_VOLUME_CAPACITY
+      - REQ-PANE_VOLUME_CAPACITY
+    requirements:
+      - REQ-PANE_VOLUME_CAPACITY
+    tests:
+      - src/app/api/files/display-filter.route.test.ts
+      - src/app/files/components/FilePane.test.tsx
+      - src/lib/pane-display-filter.test.ts
+      - src/lib/volume-stats.test.ts
+      - src/lib/workspace-mesh-bridge.test.ts

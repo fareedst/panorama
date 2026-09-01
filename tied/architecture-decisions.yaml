@@ -2022,6 +2022,14 @@ ARCH-PANE_REFRESH:
       - REQ-KEYBOARD_SHORTCUTS_COMPLETE
       - REQ-PANE_REFRESH
     tests: []
+ARCH-PANE_VOLUME_CAPACITY:
+  cross_references:
+    - ARCH-FILESYSTEM_ABSTRACTION
+    - ARCH-SERVER_CLIENT_BOUNDARY
+    - REQ-PANE_VOLUME_CAPACITY
+  detail_file: architecture-decisions/ARCH-PANE_VOLUME_CAPACITY.yaml
+  name: Per-Pane Volume Capacity Architecture
+  status: Active
 ARCH-PERFORMANCE_OPT:
   alternatives_considered: []
   cross_references:
