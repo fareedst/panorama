@@ -1,0 +1,99 @@
+CITDP-CROSS_VOLUME_MOVE_EXDEV:
+  change_definition:
+    current_behavior: moveFile uses fs.rename only; cross-mounted-volume moves fail with EXDEV
+    desired_behavior: moveFile tries fs.rename; on EXDEV falls back to copyFile then deleteFile
+    non_goals:
+      - Changing sync/operations.ts move semantics
+      - Progress UI for long cross-volume copies
+    success_criteria:
+      - Cross-pane move between different /Volumes/* mounts succeeds
+      - Same-volume move still uses rename fast path
+      - Unit and integration tests cover EXDEV fallback
+    unchanged_behavior: NSYNC multi-target move path; copyFile attribute preservation; bulk-move API contract
+  completion_criteria:
+    verification_gate_notes: '2026-09-01: scoped Vitest 42/42 passed; bunx tsc -b passed; pseudocode_validate IMPL-FILES_DATA passed; tied_validate_consistency passed; yaml_index_validate passed; bun run validate:vocabulary passed. Legacy scripts/validate_tokens.sh and local .cursor/skills/tied-yaml/scripts/tied-cli.sh are absent; MCP validation path used. Composition/E2E not applicable for this data-layer change.'
+  evidence:
+    commands:
+      - command: bun run validate:vocabulary
+        exit_code: 0
+        result: 10 client glossaries passed
+      - command: bun run vitest run src/lib/files.data.test.ts src/lib/copy-file.data.test.ts
+        exit_code: 0
+        result: 42 tests passed across 2 files
+      - command: bunx tsc -b
+        exit_code: 0
+        result: passed
+      - command: local tied-cli.sh
+        exit_code: 127
+        result: 'unavailable: project-local script does not exist'
+      - command: pseudocode_validate IMPL-FILES_DATA require_contracts true
+        exit_code: 0
+        result: ok true; 0 diagnostics
+      - command: scripts/validate_tokens.sh
+        exit_code: 127
+        result: 'unavailable: file does not exist'
+      - command: tied_validate_consistency include_pseudocode true
+        exit_code: 0
+        result: ok true
+      - command: yaml_index_validate
+        exit_code: 0
+        result: all four TIED indexes valid
+    module_validation: files.data.ts validated independently with mocked unit branches and real-filesystem integration coverage; no new composition or E2E binding.
+    proof_boundaries:
+      - executable_behavior
+      - pseudo_code_structure
+      - traceability_structure
+  impact_analysis:
+    impl_inventory_notes: moveFile EXDEV fallback in files.data.ts; renameFile and bulkMove inherit behavior
+    modules_or_boundaries: files.data.ts primary; files API and WorkspaceView unchanged
+    tied_tokens_affected:
+      - ARCH-FILESYSTEM_ABSTRACTION
+      - IMPL-FILES_DATA
+      - REQ-FILE_OPERATIONS
+    tied_tokens_new: []
+  leap_feedback:
+    divergences_from_analysis: []
+    record_status: persisted
+    tied_stack_updates_required: []
+  record_identity:
+    change_request_id: CROSS_VOLUME_MOVE_EXDEV
+    recorded_at: '2026-08-31'
+    title: Cross-volume move EXDEV fallback in moveFile
+  risk_analysis:
+    abuse_cases: []
+    adversarial_inquiry:
+      assurance_profile: baseline-functional
+      close_out_inquiry_waiver: null
+      counterexamples:
+        - copy succeeds but delete fails leaving duplicate at src and dest
+        - rename succeeds on same volume but test falsely forces EXDEV fallback
+      depth_change_waiver: null
+      depth_tier: minimal
+      disconfirming_observations:
+        - Integration test leaves source file after move
+        - Unit test shows copy/delete invoked when rename succeeds
+      eligibility_triggers_matched: []
+      evidence_references:
+        - src/lib/copy-file.data.test.ts
+        - src/lib/files.data.test.ts
+        - src/lib/files.data.ts
+        - tied/implementation-decisions/IMPL-FILES_DATA-pseudocode.md
+      falsification_questions:
+        - Does EXDEV fallback leave source file when delete fails?
+        - Does same-volume move still call rename without copy?
+      gate_policy: advisory
+      integrated_waiver: null
+      prior_depth_tier: null
+      rationale: Local filesystem bugfix; no integrated eligibility triggers.
+      research_profile: integrated-agent
+      strict_eligibility_prerequisites: []
+    risks:
+      - description: Copy succeeds but delete fails leaving duplicate files
+        id: RISK-001
+        mitigation: Throw after delete failure; error logged
+  tdd_sequence:
+    summary: pseudo-code update → unit RED/GREEN in files.data.test.ts → integration in copy-file.data.test.ts → LEAP REQ/ARCH/vocab
+  test_strategy:
+    e2e_only_reason: N/A — data layer fix; API/UI paths unchanged
+    matrix_notes: Unit mocks for EXDEV/EACCES; integration simulates EXDEV via rename spy across volA/volB tmp dirs
+    summary: Unit tests in files.data.test.ts; integration in copy-file.data.test.ts

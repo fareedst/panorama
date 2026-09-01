@@ -37,6 +37,8 @@
 | **marksAtOpen snapshot** | Frozen copy of `pane.marks` when a secondary dialog opens from the context menu; path resolution uses snapshot, not live marks ([IMPL-RENAME_REGEX](../tied/implementation-decisions/IMPL-RENAME_REGEX.yaml)) |
 | **Per-pane independence** | Marks do not copy across panes; bulk ops use **source pane** marks only |
 | **Cross-pane copy** | Single-destination copy from source pane to another pane’s directory via `file.copy` / `bulk-copy` (not CopyAll/NSYNC); handler `handleBulkCopy` |
+| **Cross-pane move** | Single-destination move from source pane marks to another pane’s directory via `file.move` / `bulk-move` → `moveFile` |
+| **Cross-volume move** | Cross-pane move where source and destination roots sit on different mount points (e.g. `/Volumes/A` → `/Volumes/B`); `moveFile` uses copy-then-delete when `fs.rename` returns EXDEV |
 | **Relative destination mapping** | Cross-pane copy/move and NSYNC map each source to `join(destBase, relative(source, sourceBase))` — preserves hierarchy under destination base ([directory-tree.md](directory-tree.md)); API field `sourceBase` |
 | **Recursive directory copy** | When source `stat` is directory, data layer `copyFile` uses `fs.cp(..., { recursive: true })` instead of `fs.copyFile` ([IMPL-FILES_DATA](../tied/implementation-decisions/IMPL-FILES_DATA.yaml)) |
 | **Destination parent creation** | Before copy, `fs.mkdir(path.dirname(dest), { recursive: true })` so nested destination paths succeed |
@@ -52,6 +54,7 @@
 | Clear | `marking.clearMarks` | `copy.marking.clearMarks` | `mark.clear` | `handleClearMarks` |
 | Marked styling | — | theme `bg-marked` / class overrides | — | `FilePane` row class |
 | Cross-pane copy | (confirm dialog) | — | `file.copy` | `handleBulkCopy` |
+| Cross-pane move | (confirm dialog) | — | `file.move` | `handleBulkMove` |
 
 ## Named concepts
 
@@ -63,6 +66,8 @@
 - **marksAtOpen snapshot** — Context menu passes `new Set(marks)` when opening secondary dialogs so apply uses marks frozen at open time.
 - **Visible-only marks** — When a [display spec](pane-display-filter.md) is active, `pane.files` is the filtered visible set; mark-all and footer **total** count visible items only.
 - **Cross-pane copy** — `file.copy` / `handleBulkCopy` copies marked or cursor files from source pane to the other pane’s directory via `POST /api/files` `bulk-copy` → `bulkCopy` → `copyFile`.
+- **Cross-pane move** — `file.move` / `handleBulkMove` moves marked or cursor files to the other pane’s directory via `POST /api/files` `bulk-move` → `bulkMove` → `moveFile`.
+- **Cross-volume move** — When panes are rooted on different mount points, `moveFile` falls back to `copyFile` + `deleteFile` after `fs.rename` returns EXDEV.
 - **Recursive directory copy** — Directory marks copy via `fs.cp` recursive in [IMPL-FILES_DATA](../tied/implementation-decisions/IMPL-FILES_DATA.yaml) `copyFile`.
 - **Destination parent creation** — `copyFile` mkdirs `path.dirname(dest)` before copying files or directories.
 

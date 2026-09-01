@@ -1,0 +1,17 @@
+{
+  "phase": "close_out",
+  "request_token": "REQ-FILE_OPERATIONS",
+  "citdp": "tied/citdp/CITDP-CROSS_VOLUME_MOVE_EXDEV.yaml",
+  "tracker": "working/REQ-FILE_OPERATIONS/checklist-tracker-CROSS_VOLUME_MOVE.yaml",
+  "run_id": "plan-close-out-20260901-cross-volume-final",
+  "depth": "minimal",
+  "gate_policy": "advisory",
+  "evidence": {
+    "scoped_tests": "42 passed across 2 files",
+    "typescript": "bunx tsc -b passed",
+    "pseudocode": "IMPL-FILES_DATA structural validation passed",
+    "tied_consistency": "ok true",
+    "yaml_indexes": "all four indexes valid",
+    "vocabulary": "10 client glossaries passed"
+  }
+}

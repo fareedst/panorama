@@ -15,6 +15,7 @@ ARCH-FILESYSTEM_ABSTRACTION:
     details:
       - 'copyFile: recursive mkdir on dest parent; fs.cp for directories, fs.copyFile for files; attribute preservation via IMPL-COPY_ATTRS'
       - Error handling for permissions, non-existent paths
+      - 'moveFile: fs.rename fast path; on EXDEV copyFile then deleteFile for cross-mounted-volume moves'
       - Path validation to prevent directory traversal
       - Server-only module (not imported by client components)
       - Use fs/promises for async operations
@@ -25,8 +26,8 @@ ARCH-FILESYSTEM_ABSTRACTION:
       date: {}
     last_updated:
       author: AI Agent
-      date: '2026-06-02T00:00:00.000Z'
-      reason: 'LEAP: copyFile tests in traceability'
+      date: '2026-08-31T00:00:00.000Z'
+      reason: 'LEAP: moveFile EXDEV cross-volume fallback'
     last_validated:
       date: {}
       result: pass

@@ -13,6 +13,9 @@ IMPL-FILES_DATA:
       - description: List directory contents with error handling
         file: src/lib/files.data.ts
         name: listDirectory
+      - description: Move file or directory; fs.rename with EXDEV copy+delete fallback
+        file: src/lib/files.data.ts
+        name: moveFile
       - description: Sort files by various criteria with directory priority
         file: src/lib/files.data.ts
         name: sortFiles
@@ -31,6 +34,7 @@ IMPL-FILES_DATA:
       - Implemented copyFile, moveFile, deleteFile, renameFile
       - Implemented listDirectory, getParentDirectory, joinPath, getFileInfo
       - Implemented sortFiles with SortType enum
+      - 'moveFile: fs.rename fast path; on EXDEV delegates to copyFile then deleteFile'
       - Path validation to prevent directory traversal
       - Re-exports formatSize for backward compatibility
     summary: Server-only module wraps Node.js fs/promises API with validation
@@ -40,8 +44,8 @@ IMPL-FILES_DATA:
       date: {}
     last_updated:
       author: AI Agent
-      date: '2026-06-02T00:00:00.000Z'
-      reason: 'LEAP: copy-file.data.test.ts integration coverage'
+      date: '2026-08-31T00:00:00.000Z'
+      reason: 'LEAP: moveFile EXDEV cross-volume fallback'
     last_validated:
       date: {}
       result: pass

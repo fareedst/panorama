@@ -175,7 +175,7 @@ describe("getUserHomeDirectory [REQ_DIRECTORY_NAVIGATION]", () => {
   });
 });
 
-// [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_OPERATIONS]: how: copyFile mkdirs dest parent, fs.cp recursive for directories else fs.copyFile, then preserveCopyAttributes; moveFile/renameFile use fs.rename; deleteFile branches file vs recursive directory
+// [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_OPERATIONS]: how: copyFile mkdirs dest parent, fs.cp recursive for directories else fs.copyFile, then preserveCopyAttributes; moveFile tries fs.rename with EXDEV copy+delete fallback; deleteFile branches file vs recursive directory
 describe("File Operations [REQ_FILE_OPERATIONS]", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -254,16 +254,62 @@ describe("File Operations [REQ_FILE_OPERATIONS]", () => {
     });
   });
   
-  describe("moveFile", () => {
-    it("should move file", async () => {
-      mockedFs.rename.mockResolvedValue();
-      
+  describe("moveFile [REQ-FILE_OPERATIONS]", () => {
+    it("should move file via rename on same volume", async () => {
+      mockedFs.rename.mockResolvedValue(undefined);
+
       await moveFile("/src/file.txt", "/dest/file.txt");
-      
-      expect(mockedFs.rename).toHaveBeenCalledWith(
-        "/src/file.txt",
-        "/dest/file.txt"
-      );
+
+      expect(mockedFs.rename).toHaveBeenCalledWith("/src/file.txt", "/dest/file.txt");
+      expect(mockedFs.mkdir).not.toHaveBeenCalled();
+      expect(mockedFs.copyFile).not.toHaveBeenCalled();
+      expect(mockedFs.unlink).not.toHaveBeenCalled();
+    });
+
+    it("should fall back to copy+delete when rename returns EXDEV", async () => {
+      const exdev = Object.assign(new Error("EXDEV: cross-device link not permitted"), {
+        code: "EXDEV",
+      });
+      mockedFs.rename.mockRejectedValue(exdev);
+      mockedFs.stat.mockResolvedValue({
+        isDirectory: () => false,
+      } as never);
+      mockedFs.mkdir.mockResolvedValue(undefined);
+      mockedFs.copyFile.mockResolvedValue(undefined);
+      mockedFs.unlink.mockResolvedValue(undefined);
+
+      await moveFile("/Volumes/A/file.txt", "/Volumes/B/file.txt");
+
+      expect(mockedFs.rename).toHaveBeenCalledWith("/Volumes/A/file.txt", "/Volumes/B/file.txt");
+      expect(mockedFs.copyFile).toHaveBeenCalledWith("/Volumes/A/file.txt", "/Volumes/B/file.txt");
+      expect(mockPreserveCopyAttributes).toHaveBeenCalledWith("/Volumes/A/file.txt", "/Volumes/B/file.txt");
+      expect(mockedFs.unlink).toHaveBeenCalledWith("/Volumes/A/file.txt");
+    });
+
+    it("should fall back to recursive cp+rm when rename returns EXDEV for directory", async () => {
+      const exdev = Object.assign(new Error("EXDEV: cross-device link not permitted"), {
+        code: "EXDEV",
+      });
+      mockedFs.rename.mockRejectedValue(exdev);
+      mockedFs.stat.mockResolvedValue({
+        isDirectory: () => true,
+      } as never);
+      mockedFs.mkdir.mockResolvedValue(undefined);
+      mockedFs.cp.mockResolvedValue(undefined);
+      mockedFs.rm.mockResolvedValue(undefined);
+
+      await moveFile("/Volumes/A/dir", "/Volumes/B/dir");
+
+      expect(mockedFs.cp).toHaveBeenCalledWith("/Volumes/A/dir", "/Volumes/B/dir", { recursive: true });
+      expect(mockedFs.rm).toHaveBeenCalledWith("/Volumes/A/dir", { recursive: true });
+    });
+
+    it("should rethrow non-EXDEV rename errors without copy fallback", async () => {
+      mockedFs.rename.mockRejectedValue(Object.assign(new Error("EACCES: permission denied"), { code: "EACCES" }));
+
+      await expect(moveFile("/src/file.txt", "/dest/file.txt")).rejects.toMatchObject({ code: "EACCES" });
+      expect(mockedFs.copyFile).not.toHaveBeenCalled();
+      expect(mockedFs.unlink).not.toHaveBeenCalled();
     });
   });
   

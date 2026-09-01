@@ -97,7 +97,7 @@ IMPL-FILES_DATA_GetFileInfo(filePath):
 
 ## SingleFileOperations
 
-// [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_OPERATIONS]: how: copyFile mkdirs dest parent, fs.cp recursive for directories else fs.copyFile, then preserveCopyAttributes; moveFile/renameFile use fs.rename; deleteFile branches file vs recursive directory
+// [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_OPERATIONS]: how: copyFile mkdirs dest parent, fs.cp recursive for directories else fs.copyFile, then preserveCopyAttributes; moveFile tries fs.rename then EXDEV copy+delete fallback; deleteFile branches file vs recursive directory
 
 ```
 IMPL-FILES_DATA_copyFile(src, dest):
@@ -117,14 +117,32 @@ IMPL-FILES_DATA_copyFile(src, dest):
   // [IMPL-COPY_ATTRS] [REQ-COPY_OPERATIONS] [REQ-FILE_OPERATIONS]: how: after copy completes apply best-effort utimes/chmod from source stat
   AWAIT preserveCopyAttributes(src, dest)
 
-IMPL-FILES_DATA_moveFile(src, dest):
-  INPUT: src, dest paths
-  OUTPUT: void OR thrown error
-  PRE: src exists
-  POST: file renamed/moved at dest
-  EFFECTS: IO
+IMPL-FILES_DATA_isExdevError(error):
+  // [IMPL-FILES_DATA] [REQ-FILE_OPERATIONS]: how — detect Node ErrnoException code EXDEV for cross-device rename
+  INPUT: error from fs.rename
+  OUTPUT: boolean
+  PRE: error captured from rename attempt
+  POST: true when error.code == "EXDEV"
+  EFFECTS: none
   TERMINATION: total
-  AWAIT fs.rename(src, dest)
+  RETURN error is object AND error.code == "EXDEV"
+
+IMPL-FILES_DATA_moveFile(src, dest):
+  // [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_OPERATIONS]: how — try fs.rename for same-volume atomic move; on EXDEV copy then delete for cross-volume
+  INPUT: src, dest absolute paths
+  OUTPUT: void OR thrown error after log
+  PRE: src exists
+  POST: file or directory at dest; src absent
+  EFFECTS: IO
+  FAILURE_MODES: non-EXDEV rename errors → throw; copy failure → throw src preserved; delete failure after copy → throw both may exist
+  TERMINATION: total
+  TRY
+    AWAIT fs.rename(src, dest)
+  ON error
+    IF NOT isExdevError(error) THEN throw
+    LOG debug cross-volume fallback
+    AWAIT copyFile(src, dest)
+    AWAIT deleteFile(src)
 
 IMPL-FILES_DATA_deleteFile(filePath):
   INPUT: filePath
@@ -203,7 +221,7 @@ IMPL-FILES_DATA_sortFiles(files, sortType, priorityDir):
 // FILE: src/lib/files.data.ts — server filesystem functions
 // FILE: src/lib/files.types.ts — FileStat, SortType, OperationResult interfaces
 // FILE: src/lib/files.data.test.ts — listDirectory, path helpers, operations, sortFiles, buildComparisonIndex, formatSize re-export tests
-// FILE: src/lib/copy-file.data.test.ts — copyFile integration tests on real filesystem (recursive directory copy, attribute preservation)
+// FILE: src/lib/copy-file.data.test.ts — copyFile and moveFile integration tests on real filesystem (recursive directory copy, attribute preservation, EXDEV fallback)
 
 ## ErrorHandling
 

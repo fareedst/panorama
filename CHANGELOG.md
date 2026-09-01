@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Cross-volume move** (`[REQ-FILE_OPERATIONS]`, `[ARCH-FILESYSTEM_ABSTRACTION]`, `[IMPL-FILES_DATA]`, `CITDP-CROSS_VOLUME_MOVE_EXDEV`): `moveFile` falls back to copy-then-delete when `fs.rename` returns EXDEV, enabling cross-pane moves between different mount points. Modules: [`files.data.ts`](src/lib/files.data.ts). Tests: [`files.data.test.ts`](src/lib/files.data.test.ts), [`copy-file.data.test.ts`](src/lib/copy-file.data.test.ts). Vocabulary: [`tied/vocab/file-marking.md`](tied/vocab/file-marking.md).
 - **Recursive directory copy** (`[REQ-FILE_OPERATIONS]`, `[REQ-COPY_OPERATIONS]`, `[ARCH-FILESYSTEM_ABSTRACTION]`, `[IMPL-FILES_DATA]`, `[IMPL-COPY_ATTRS]`): `copyFile` creates destination parent directories and uses `fs.cp` for directory sources; fixes cross-pane copy of marked directories. Module: [`files.data.ts`](src/lib/files.data.ts). Tests: [`files.data.test.ts`](src/lib/files.data.test.ts), [`copy-file.data.test.ts`](src/lib/copy-file.data.test.ts), [`route.test.ts`](src/app/api/files/route.test.ts) (`bulk-copy`). Vocabulary: [`tied/vocab/file-marking.md`](tied/vocab/file-marking.md), [`tied/vocab/nsync-multi-target.md`](tied/vocab/nsync-multi-target.md), [`tied/vocab/toolbar-keybind.md`](tied/vocab/toolbar-keybind.md).
 
 ### Added

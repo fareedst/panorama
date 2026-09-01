@@ -7,8 +7,8 @@ REQ-FILE_OPERATIONS:
       date: {}
     last_updated:
       author: AI Agent
-      date: '2026-06-02T00:00:00.000Z'
-      reason: 'LEAP: copyFile test coverage — preserveCopyAttributes, error path, integration tests'
+      date: '2026-08-31T00:00:00.000Z'
+      reason: 'LEAP: cross-volume move EXDEV fallback in moveFile'
     last_validated:
       date: {}
       result: pass
@@ -34,15 +34,16 @@ REQ-FILE_OPERATIONS:
       - REQ-TOUCH_MTIME
     supersedes: []
   satisfaction_criteria:
-    - criterion: Can copy directories recursively (not only files)
-    - criterion: Can copy files (keyboard shortcut or button)
-    - criterion: Can delete files (keyboard shortcut with confirmation)
-    - criterion: Can move files (keyboard shortcut or button)
-    - criterion: Can rename files (keyboard shortcut or inline edit)
-    - criterion: Can set modification time on files and directories via Touch dialog (REQ-TOUCH_MTIME)
-    - criterion: Copy creates missing destination parent directories when required
-    - criterion: Error handling for failed operations
-    - criterion: Operations work on single and marked files
+    - Can copy directories recursively (not only files)
+    - Can copy files (keyboard shortcut or button)
+    - Can delete files (keyboard shortcut with confirmation)
+    - Can move files (keyboard shortcut or button)
+    - Can move files across different mounted volumes (EXDEV copy-then-delete fallback)
+    - Can rename files (keyboard shortcut or inline edit)
+    - Can set modification time on files and directories via Touch dialog (REQ-TOUCH_MTIME)
+    - Copy creates missing destination parent directories when required
+    - Error handling for failed operations
+    - Operations work on single and marked files
   status: Implemented
   traceability:
     architecture:
@@ -61,7 +62,11 @@ REQ-FILE_OPERATIONS:
   validation_criteria:
     - coverage: files.data.test.ts copyFile rethrows on failure; errors handled gracefully (permissions, non-existent files)
       method: Error testing
+    - coverage: copy-file.data.test.ts simulated EXDEV cross-volume move on real filesystem
+      method: Integration tests
     - coverage: copy-file.data.test.ts recursive directory copy on real filesystem; all CRUD operations including recursive directory copy
       method: Operation testing
     - coverage: files.data.test.ts copyFile file and directory branches, preserveCopyAttributes invocation, error rethrow; vocabulary tied/vocab/file-marking.md
+      method: Unit tests
+    - coverage: files.data.test.ts moveFile EXDEV fallback and same-volume rename; non-EXDEV errors propagate
       method: Unit tests

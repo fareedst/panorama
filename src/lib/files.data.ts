@@ -149,10 +149,20 @@ export async function copyFile(src: string, dest: string): Promise<void> {
   }
 }
 
+// [IMPL-FILES_DATA] [REQ-FILE_OPERATIONS]: how — detect Node ErrnoException code EXDEV for cross-device rename
+function isExdevError(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    (error as NodeJS.ErrnoException).code === "EXDEV"
+  );
+}
+
 /**
  * Move/rename file from source to destination
  * [IMPL-FILES_DATA] [ARCH-FILESYSTEM_ABSTRACTION] [REQ-FILE_OPERATIONS]
- * 
+ *
  * @param src - Source file path
  * @param dest - Destination file path
  */
@@ -162,8 +172,33 @@ export async function moveFile(src: string, dest: string): Promise<void> {
     await fs.rename(src, dest);
     logger.info(["IMPL-FILES_DATA", "REQ-FILE_OPERATIONS"], `Successfully moved file: ${src} -> ${dest}`);
   } catch (error) {
-    logger.error(["IMPL-FILES_DATA", "REQ-FILE_OPERATIONS"], `Failed to move file: ${src} -> ${dest}`, { error: String(error) });
-    throw error;
+    if (!isExdevError(error)) {
+      logger.error(["IMPL-FILES_DATA", "REQ-FILE_OPERATIONS"], `Failed to move file: ${src} -> ${dest}`, {
+        error: String(error),
+      });
+      throw error;
+    }
+
+    logger.debug(
+      ["IMPL-FILES_DATA", "REQ-FILE_OPERATIONS"],
+      `Cross-volume move fallback (EXDEV): ${src} -> ${dest}`,
+    );
+
+    try {
+      await copyFile(src, dest);
+      await deleteFile(src);
+      logger.info(
+        ["IMPL-FILES_DATA", "REQ-FILE_OPERATIONS"],
+        `Successfully moved file via copy+delete: ${src} -> ${dest}`,
+      );
+    } catch (fallbackError) {
+      logger.error(
+        ["IMPL-FILES_DATA", "REQ-FILE_OPERATIONS"],
+        `Failed cross-volume move: ${src} -> ${dest}`,
+        { error: String(fallbackError) },
+      );
+      throw fallbackError;
+    }
   }
 }
 

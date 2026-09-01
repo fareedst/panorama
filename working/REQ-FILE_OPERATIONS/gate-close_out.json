@@ -1,0 +1,9 @@
+{
+  "schema_version": "checklist-gate-receipt.v1",
+  "phase": "close_out",
+  "allowed": true,
+  "depth": "minimal",
+  "diagnostics": [],
+  "receipt": "working/REQ-FILE_OPERATIONS/close_out-2026-09-01T16-30-46-411Z.json",
+  "receipt_hash": "sha256:77774c0d7278bebfdb7b171b02e6b4565c35e1616c7880d8abb85ecf40c03bd2"
+}
